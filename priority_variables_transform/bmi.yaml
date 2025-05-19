@@ -1,19 +1,19 @@
 priority_variable:
   name: bmi
-  phv:
+  phv: phv00056588
     identifiers:
-      phs:
-      pht:
+      phs: phs000007
+      pht: pht000395
     input_data_type: decimal
     value_set:
       value:
-      function: 
+      function: no transforms needed
       MeasurementObservation:
         range_low:
         range_high:
         age_at_observation:
         category:
-        observation_type:
+        observation_type: OBA:2045455 #BMI
         method_type:
         focus:
         associated_participant:
@@ -22,5 +22,8 @@ priority_variable:
         value_string:
         value_boolean:
         value_quantity:
+          value_decimal: #value goes here
+          unit: kg/m2
+          id:
         value_enum:
         id:
