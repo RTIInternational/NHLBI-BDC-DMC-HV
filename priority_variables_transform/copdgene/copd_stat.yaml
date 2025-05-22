@@ -1,0 +1,22 @@
+priority_variable: 
+  name: copd_stat
+  raw_variable: phv00159570
+    identifiers:
+      phs: phs000179
+      pht: pht002239
+    input_data_type: enum
+    value_set:
+      value: 0
+        function: Add one condition
+        Condition:
+          identity:
+          condition_concept: MONDO:0005002 #copd
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_status: 
+          condition_severity:
+          relationship_to_participant: SELF
+          associated_participant:
+          associated_visit:
+          id:
