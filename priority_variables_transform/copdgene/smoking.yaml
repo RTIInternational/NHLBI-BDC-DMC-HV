@@ -6,18 +6,21 @@ priority_variable:
       pht: pht002239
     input_data_type: enum
     value_set:
-      value: 0
-        function: Add one condition
-        Condition:
-          identity:
-          condition_concept: MONDO:0004979 #asthma
-          age_at_condition_start:
-          age_at_condition_end:
-          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
-          condition_status: ABSENT
-          condition_severity:
-          relationship_to_participant: SELF
-          associated_participant:
-          associated_visit:
-          id:
-
+      value: 
+        function: Add one MeasurementObservation
+      MeasurementObservation:
+        range_low:
+        range_high:
+        age_at_observation:
+        category:
+        observation_type: OMOP:43054909 #cigarette smoking status
+        method_type:
+        focus:
+        associated_participant:
+        associated_visit:
+        performed_by:
+        value_string:
+        value_boolean:
+        value_quantity:
+        value_enum: #answer here
+        id:
