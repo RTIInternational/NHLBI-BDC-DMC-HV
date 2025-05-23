@@ -1,0 +1,132 @@
+priority_variable: 
+  name: slp_ap
+  raw_variable: phv00159736
+    identifiers:
+      phs: phs000179
+      pht: pht002239
+    input_data_type: enum
+    value_set:
+      value: 0
+        function: Add one condition
+        Condition:
+          identity:
+          condition_concept: HP:0010535 #sleep apnea
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_status: ABSENT
+          condition_severity:
+          relationship_to_participant: SELF
+          associated_participant:
+          associated_visit:
+          id:
+      value: 1
+        function: Add one condition and go to phv00159737
+        Condition:
+          identity:
+          condition_concept: HP:0010535 #sleep apnea
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_status: PRESENT
+          condition_severity:
+          relationship_to_participant: SELF
+          associated_participant:
+          associated_visit:
+          id:
+      value: 3
+        function: Add one condition and go to phv00159737
+        Condition:
+          identity:
+          condition_concept: HP:0010535 #sleep apnea
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_status: UNKNOWN
+          condition_severity:
+          relationship_to_participant: SELF
+          associated_participant:
+          associated_visit:
+          id:
+  raw_variable: phv00159737
+    identifiers:
+      phs: phs000179
+      pht: pht002239
+    input_data_type: enum
+    value_set:
+      value: 0
+        function: Update provenance and go to phv00159739
+        Condition:
+          identity:
+          condition_concept: HP:0010535 #sleep apnea
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_status: #existing value
+          condition_severity:
+          relationship_to_participant: SELF
+          associated_participant:
+          associated_visit:
+          id:
+      value: 1
+        function: Update provenance and go to phv00159739
+        Condition:
+          identity:
+          condition_concept: HP:0010535 #sleep apnea
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: WORKING_DIAGNOSIS
+          condition_status: #existing value
+          condition_severity:
+          relationship_to_participant: SELF
+          associated_participant:
+          associated_visit:
+          id:
+  raw_variable: phv00159739
+    identifiers:
+      phs: phs000179
+      pht: pht002239
+    input_data_type: enum
+    value_set:
+      value: 0
+        function: Update status
+        Condition:
+          identity:
+          condition_concept: HP:0010535 #sleep apnea
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: #existing value
+          condition_status: HISTORY
+          condition_severity:
+          relationship_to_participant: SELF
+          associated_participant:
+          associated_visit:
+          id:
+      value: 1
+        function: Update status
+        Condition:
+          identity:
+          condition_concept: HP:0010535 #sleep apnea
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: #existing value
+          condition_status: PRESENT
+          condition_severity:
+          relationship_to_participant: SELF
+          associated_participant:
+          associated_visit:
+          id:
+      value: 3
+        function: Update status
+        Condition:
+          identity:
+          condition_concept: HP:0010535 #sleep apnea
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: #existing value
+          condition_status: UNKNOWN
+          condition_severity:
+          relationship_to_participant: SELF
+          associated_participant:
+          associated_visit:
+          id:
