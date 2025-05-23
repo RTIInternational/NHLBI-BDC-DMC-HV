@@ -1,0 +1,36 @@
+priority_variable: 
+  name: diabetes
+  raw_variable: phv00159611
+    identifiers:
+      phs: phs000179
+      pht: pht002239
+    input_data_type: enum
+    value_set:
+      value: 0
+        function: Add one condition
+        Condition:
+          identity:
+          condition_concept: MONDO:0005015 #diabetes
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_status: ABSENT
+          condition_severity:
+          relationship_to_participant: SELF
+          associated_participant:
+          associated_visit:
+          id:
+      value: 1
+        function: Add one condition
+        Condition:
+          identity:
+          condition_concept: MONDO:0005015 #diabetes
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_status: PRESENT
+          condition_severity:
+          relationship_to_participant: SELF
+          associated_participant:
+          associated_visit:
+          id:
