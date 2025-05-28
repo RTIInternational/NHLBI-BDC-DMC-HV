@@ -6,99 +6,75 @@ priority_variable:
       pht: pht002239
     input_data_type: enum
     value_set:
-      value: #value here
-        function: Add one Observation
-      Observation:
-        range_low:
-        range_high:
-        age_at_observation:
-        category:
-        observation_type: OMOP:4282779 #cigarette smoking status
-        method_type:
-        focus:
-        associated_participant:
-        associated_visit:
-        performed_by:
-        value_string:
-        value_boolean:
-        value_quantity:
-        value_enum: #answer here
-        id:
-      value: #value here
-        function: Add one Observation
-      Observation:
-        range_low:
-        range_high:
-        age_at_observation:
-        category:
-        observation_type: OMOP:4282779 #cigarette smoking status
-        method_type:
-        focus:
-        associated_participant:
-        associated_visit:
-        performed_by:
-        value_string:
-        value_boolean:
-        value_quantity:
-        value_enum: #answer here
-        id:
-      value: #value here
-        function: Add one Observation
-      Observation:
-        range_low:
-        range_high:
-        age_at_observation:
-        category:
-        observation_type: OMOP:4282779 #cigarette smoking status
-        method_type:
-        focus:
-        associated_participant:
-        associated_visit:
-        performed_by:
-        value_string:
-        value_boolean:
-        value_quantity:
-        value_enum: #answer here
-        id:
-  raw_variable: phv00159747
-    identifiers:
-      phs: phs000179
-      pht: pht002239
-    input_data_type: enum
-    value_set:
-      value: 
-        function: Add one Observation
-      Observation:
-        range_low:
-        range_high:
-        age_at_observation:
-        category:
-        observation_type: OMOP:4282779 #cigarette smoking status
-        method_type:
-        focus:
-        associated_participant:
-        associated_visit:
-        performed_by:
-        value_string:
-        value_boolean:
-        value_quantity:
-        value_enum: #answer here
-        id:
-      value: #value here
-        function: Add one Observation
-      Observation:
-        range_low:
-        range_high:
-        age_at_observation:
-        category:
-        observation_type: OMOP:4282779 #cigarette smoking status
-        method_type:
-        focus:
-        associated_participant:
-        associated_visit:
-        performed_by:
-        value_string:
-        value_boolean:
-        value_quantity:
-        value_enum: #answer here
-        id:
+      value: 0
+        function: Add one Observation and look at phv00159747
+                  if phv00159747 is 0
+        Observation:
+          range_low:
+          range_high:
+          age_at_observation:
+          category:
+          observation_type: OMOP:4282779 #cigarette smoking status
+          method_type:
+          focus:
+          associated_participant:
+          associated_visit:
+          performed_by:
+          value_string:
+          value_boolean:
+          value_quantity:
+          value_enum: NEVER
+          id:
+                  if phv00159747 is 1
+        Observation:
+          range_low:
+          range_high:
+          age_at_observation:
+          category:
+          observation_type: OMOP:4282779 #cigarette smoking status
+          method_type:
+          focus:
+          associated_participant:
+          associated_visit:  
+          performed_by:
+          value_string:
+          value_boolean:
+          value_quantity:
+          value_enum: CURRENT
+          id:
+      value: 1
+        function: Add one Observation and look at phv00159747
+                  if phv00159747 is 0
+        Observation:
+          range_low:
+          range_high:
+          age_at_observation:
+          category:  
+          observation_type: OMOP:4282779 #cigarette smoking status
+          method_type:
+          focus:
+          associated_participant:
+          associated_visit:
+          performed_by:
+          value_string:
+          value_boolean:
+          value_quantity:
+          value_enum: FORMER
+          id:
+                  if phv00159747 is 1
+        Observation:
+          range_low:
+          range_high:
+          age_at_observation:
+          category:  
+          observation_type: OMOP:4282779 #cigarette smoking status
+          method_type:
+          focus:
+          associated_participant:
+          associated_visit:
+          performed_by:
+          value_string:
+          value_boolean:
+          value_quantity:
+          value_enum: CURRENT
+          id:
