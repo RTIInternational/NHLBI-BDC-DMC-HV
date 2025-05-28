@@ -6,14 +6,14 @@ priority_variable:
       pht: pht002239
     input_data_type: enum
     value_set:
-      value: 
+      value: 1
         function: Add or update demography record
         Demography:
           identity:
           associated_participant:
           sex:
           ethnicity: 
-          race:
+          race: OMOP:8527 #WHITE
           associated_visit:
           id:
       value: 2
@@ -23,6 +23,56 @@ priority_variable:
           associated_participant:
           sex:
           ethnicity: 
-          race:
+          race: OMOP:8516 #BLACK_OR_AFRICAN_AMERICAN
+          associated_visit:
+          id:
+      value: 3
+        function: Add or update demography record
+        Demography:
+          identity:
+          associated_participant:
+          sex:
+          ethnicity: 
+          race: OMOP:8515 #ASIAN
+          associated_visit:
+          id:
+      value: 4
+        function: Add or update demography record
+        Demography:
+          identity:
+          associated_participant:
+          sex:
+          ethnicity: 
+          race: OMOP:8557 #NATIVE_HAWAIIAN_OR_OTHER_PACIFIC_ISLANDER
+          associated_visit:
+          id:
+      value: 5
+        function: Add or update demography record
+        Demography:
+          identity:
+          associated_participant:
+          sex:
+          ethnicity: 
+          race: OMOP:8657 #AMERICAN_INDIAN_OR_ALASKA_NATIVE
+          associated_visit:
+          id:
+      value: 6
+        function: Add or update demography record
+        Demography:
+          identity:
+          associated_participant:
+          sex:
+          ethnicity: 
+          race: MORE_THAN_ONE
+          associated_visit:
+          id:
+      value: 7
+        function: Add or update demography record
+        Demography:
+          identity:
+          associated_participant:
+          sex:
+          ethnicity: 
+          race: OMOP:8552 #UNKNOWN
           associated_visit:
           id:
