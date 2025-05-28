@@ -26,7 +26,7 @@ priority_variable:
         function: Add one drug exposure
         DrugExposure:
           identity:
-          drug_concept: N0000000245 #Adrenergic beta-Agonists - I can't seem to find short acting vs long-acting
+          drug_concept: RXNORM:C07A #Beta blocking agents
           refills:
           quantity:
           days_supply:
@@ -64,7 +64,7 @@ priority_variable:
         function: Add one drug exposure
         DrugExposure:
           identity:
-          drug_concept: N0000000245 #Adrenergic beta-Agonists - I can't seem to find short acting vs long-acting
+          drug_concept: RXNORM:C07A #Beta blocking agents
           refills:
           quantity:
           days_supply:
@@ -99,16 +99,16 @@ priority_variable:
           associated_visit:
           id:
       value: 1
-        function: Add one drug exposure - or two?
+        function: Add one drug exposure
         DrugExposure:
           identity:
-          drug_concept: N0000000245 #Adrenergic beta-Agonists
+          drug_concept: RXNORM:R03AL #Adrenergics in combination with anticholinergics incl. triple combinations with corticosteroids
           refills:
           quantity:
           days_supply:
           expsoure_provenance: PATIENT SELF-REPORTED MEDICATION
           sig:
-          route_concept:
+          route_concept: RESPIRATORY TRACT
           age_at_exposure_start:
           age_at_exposure_end:
           associated_participant:
