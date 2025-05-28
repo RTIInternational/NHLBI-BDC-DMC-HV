@@ -6,31 +6,25 @@ priority_variable:
       pht: pht002239
     input_data_type: enum
     value_set:
-      value: 
-        function: Add one condition
-        Condition:
+      value: 0
+        function: Do nothing
+        Procedure:
           identity:
-          condition_concept: 
-          age_at_condition_start:
-          age_at_condition_end:
-          condition_provenance: 
-          condition_status: ABSENT
-          condition_severity:
-          relationship_to_participant: SELF
+          procedure_concept: 
+          age_at_procedure_start:
+          procedure_provenance: 
+          quantity:
           associated_participant:
           associated_visit:
           id:
-      value: 
-        function: Add one condition
-        Condition:
+      value: 1
+        function: Add one procedure
+        Procedure:
           identity:
-          condition_concept: 
-          age_at_condition_start:
-          age_at_condition_end:
-          condition_provenance: 
-          condition_status: PRESENT
-          condition_severity:
-          relationship_to_participant: SELF
+          procedure_concept: OMOP:4336464 #coronary bypass graft
+          age_at_procedure_start:
+          procedure_provenance: 
+          quantity:
           associated_participant:
           associated_visit:
           id:
