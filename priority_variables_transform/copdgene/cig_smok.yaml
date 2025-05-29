@@ -23,7 +23,7 @@ priority_variable:
           value_string:
           value_boolean:
           value_quantity:
-          value_enum: NEVER
+          value_enum: OMOP:45883537 #NEVER_SMOKED 
           id:
                   if phv00159747 is 1
         Observation:
@@ -40,7 +40,7 @@ priority_variable:
           value_string:
           value_boolean:
           value_quantity:
-          value_enum: CURRENT
+          value_enum: OMOP:40766945 #CURRENT_SMOKER
           id:
       value: 1
         function: Add one Observation and look at phv00159747
@@ -59,7 +59,7 @@ priority_variable:
           value_string:
           value_boolean:
           value_quantity:
-          value_enum: FORMER
+          value_enum: OMOP:45883458 #FORMER_SOMKER 
           id:
                   if phv00159747 is 1
         Observation:
@@ -76,5 +76,5 @@ priority_variable:
           value_string:
           value_boolean:
           value_quantity:
-          value_enum: CURRENT
+          value_enum: OMOP:40766945 #CURRENT_SMOKER
           id:
