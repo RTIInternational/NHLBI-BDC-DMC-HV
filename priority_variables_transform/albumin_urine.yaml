@@ -1,13 +1,13 @@
 priority_variable:
   name: albumin_urine
-  phv: phv00007562
+  phv: phv00036493
     identifiers:
       phs: phs000007
-      pht: pht000030
+      pht: pht000313
     input_data_type: decimal
     value_set:
       value:
-      function: add measurement observation - transform unit from gram % to g/dL; "." is NULL
+      function: add measurement observation - transform unit from mg/L to mg/dL
       MeasurementObservation:
         range_low:
         range_high:
@@ -23,20 +23,20 @@ priority_variable:
         value_boolean:
         value_quantity:
           value_decimal: #value goes here
-          unit: g/dL
+          unit: mg/dL
           id:
         value_enum:
         id:
-  phv: phv00008089
+  phv: phv00071895
     identifiers:
       phs: phs000007
-      pht: pht000031
+      pht: pht000742
     input_data_type: decimal
     value_set:
       value:
-      function: add measurement observation - transform unit from gram % to g/dL; "." is NULL
+      function: add measurement observation - transform unit from mg/L to mg/dL; "." is NULL
       MeasurementObservation:
-        range_low:
+        range_low: 3.0 mg/L #should we give this in mg/dL?
         range_high:
         age_at_observation:
         category:
@@ -50,47 +50,20 @@ priority_variable:
         value_boolean:
         value_quantity:
           value_decimal: #value goes here
-          unit: g/dL
+          unit: mg/dL
           id:
         value_enum:
         id:
-  phv: phv00081013
-    identifiers:
-      phs: phs000007
-      pht: pht001045
-    input_data_type: decimal
-    value_set:
-      value:
-      function: add measurement observation - no transforms needed; "." is NULL
-      MeasurementObservation:
-        range_low:
-        range_high:
-        age_at_observation:
-        category:
-        observation_type: OBA:VT0002871 #urine albumin
-        method_type:
-        focus:
-        associated_participant:
-        associated_visit:
-        performed_by:
-        value_string:
-        value_boolean:
-        value_quantity:
-          value_decimal: #value goes here
-          unit: g/dL
-          id:
-        value_enum:
-        id:
-  phv: phv00172164
+  phv: phv00172161
     identifiers:
       phs: phs000007
       pht: pht002889
     input_data_type: decimal
     value_set:
       value:
-      function: add measurement observation - no transforms needed; "." is NULL
+      function: add measurement observation - transform unit from mg/L to mg/dL; "." is NULL; then look at phv00227069
       MeasurementObservation:
-        range_low:
+        range_low: 3.0 mg/L #should we give this in mg/dL?
         range_high:
         age_at_observation:
         category:
@@ -104,20 +77,47 @@ priority_variable:
         value_boolean:
         value_quantity:
           value_decimal: #value goes here
-          unit: g/dL
+          unit: mg/dL
           id:
         value_enum:
         id:
-  phv: phv00227048
+  phv: phv00219547
+    identifiers:
+      phs: phs000007
+      pht: pht004363
+    input_data_type: decimal
+    value_set:
+      value:
+      function: add measurement observation - transform unit from mg/L to mg/dL; "." is NULL; then look at phv00219549
+      MeasurementObservation:
+        range_low: 3.0 mg/L #should we give this in mg/dL?
+        range_high:
+        age_at_observation:
+        category:
+        observation_type: OBA:VT0002871 #urine albumin
+        method_type:
+        focus:
+        associated_participant:
+        associated_visit:
+        performed_by:
+        value_string:
+        value_boolean:
+        value_quantity:
+          value_decimal: #value goes here
+          unit: mg/dL
+          id:
+        value_enum:
+        id:
+  phv: phv00227045
     identifiers:
       phs: phs000007
       pht: pht004802
     input_data_type: decimal
     value_set:
       value:
-      function: add measurement observation - no transforms needed; "." is NULL
+      function: add measurement observation - transform unit from mg/L to mg/dL; "." is NULL; then look at phv00227069
       MeasurementObservation:
-        range_low:
+        range_low: 3.0 mg/L #should we give this in mg/dL?
         range_high:
         age_at_observation:
         category:
@@ -131,20 +131,20 @@ priority_variable:
         value_boolean:
         value_quantity:
           value_decimal: #value goes here
-          unit: g/dL
+          unit: mg/dL
           id:
         value_enum:
         id:
-  phv: phv00422388
+  phv: phv00275418
     identifiers:
       phs: phs000007
-      pht: pht006013
+      pht: pht006011
     input_data_type: decimal
     value_set:
       value:
-      function: add measurement observation - need more info
+      function: add measurement observation - transform unit from mg/L to mg/dL; "." is NULL
       MeasurementObservation:
-        range_low:
+        range_low: 3.0 mg/L #should we give this in mg/dL?
         range_high:
         age_at_observation:
         category:
@@ -158,41 +158,14 @@ priority_variable:
         value_boolean:
         value_quantity:
           value_decimal: #value goes here
-          unit: g/dL
+          unit: mg/dL
           id:
         value_enum:
         id:
-  phv: phv00276864
+  phv: phv00083436
     identifiers:
-      phs: phs000007
-      pht: pht006018
-    input_data_type: decimal
-    value_set:
-      value:
-      function: add measurement observation - no transforms needed; "." is NULL
-      MeasurementObservation:
-        range_low:
-        range_high:
-        age_at_observation:
-        category:
-        observation_type: OBA:VT0002871 #urine albumin
-        method_type:
-        focus:
-        associated_participant:
-        associated_visit:
-        performed_by:
-        value_string:
-        value_boolean:
-        value_quantity:
-          value_decimal: #value goes here
-          unit: g/dL
-          id:
-        value_enum:
-        id:
-  phv: phv00203871
-    identifiers:
-      phs: phs000280
-      pht: pht004051
+      phs: phs000209
+      pht: pht001111
     input_data_type: decimal
     value_set:
       value:
@@ -212,18 +185,234 @@ priority_variable:
         value_boolean:
         value_quantity:
           value_decimal: #value goes here
-          unit: g/dL
+          unit: mg/dL
           id:
         value_enum:
         id:
-  phv: phv00507050
+  phv: phv00085745
+    identifiers:
+      phs: phs000209
+      pht: pht001116
+    input_data_type: decimal
+    value_set:
+      value:
+      function: add measurement observation - no transforms needed
+      MeasurementObservation:
+        range_low:
+        range_high:
+        age_at_observation:
+        category:
+        observation_type: OBA:VT0002871 #urine albumin
+        method_type:
+        focus:
+        associated_participant:
+        associated_visit:
+        performed_by:
+        value_string:
+        value_boolean:
+        value_quantity:
+          value_decimal: #value goes here
+          unit: mg/dL
+          id:
+        value_enum:
+        id:
+  phv: phv00085928
+    identifiers:
+      phs: phs000209
+      pht: pht001118
+    input_data_type: decimal
+    value_set:
+      value:
+      function: add measurement observation - no transforms needed
+      MeasurementObservation:
+        range_low:
+        range_high:
+        age_at_observation:
+        category:
+        observation_type: OBA:VT0002871 #urine albumin
+        method_type:
+        focus:
+        associated_participant:
+        associated_visit:
+        performed_by:
+        value_string:
+        value_boolean:
+        value_quantity:
+          value_decimal: #value goes here
+          unit: mg/dL
+          id:
+        value_enum:
+        id:
+  phv: phv00086411
+    identifiers:
+      phs: phs000209
+      pht: pht001119
+    input_data_type: decimal
+    value_set:
+      value:
+      function: add measurement observation - no transforms needed
+      MeasurementObservation:
+        range_low:
+        range_high:
+        age_at_observation:
+        category:
+        observation_type: OBA:VT0002871 #urine albumin
+        method_type:
+        focus:
+        associated_participant:
+        associated_visit:
+        performed_by:
+        value_string:
+        value_boolean:
+        value_quantity:
+          value_decimal: #value goes here
+          unit: mg/dL
+          id:
+        value_enum:
+        id:
+  phv: phv00087529
+    identifiers:
+      phs: phs000209
+      pht: pht001121
+    input_data_type: decimal
+    value_set:
+      value:
+      function: add measurement observation - no transforms needed
+      MeasurementObservation:
+        range_low:
+        range_high:
+        age_at_observation:
+        category:
+        observation_type: OBA:VT0002871 #urine albumin
+        method_type:
+        focus:
+        associated_participant:
+        associated_visit:
+        performed_by:
+        value_string:
+        value_boolean:
+        value_quantity:
+          value_decimal: #value goes here
+          unit: mg/dL
+          id:
+        value_enum:
+        id:
+  phv: phv00175605
+    identifiers:
+      phs: phs000209
+      pht: pht003086
+    input_data_type: decimal
+    value_set:
+      value:
+      function: add measurement observation - no transforms needed
+      MeasurementObservation:
+        range_low:
+        range_high:
+        age_at_observation:
+        category:
+        observation_type: OBA:VT0002871 #urine albumin
+        method_type:
+        focus:
+        associated_participant:
+        associated_visit:
+        performed_by:
+        value_string:
+        value_boolean:
+        value_quantity:
+          value_decimal: #value goes here
+          unit: mg/dL
+          id:
+        value_enum:
+        id:
+  phv: phv00177039
+    identifiers:
+      phs: phs000209
+      pht: pht003091
+    input_data_type: decimal
+    value_set:
+      value:
+      function: add measurement observation - no transforms needed
+      MeasurementObservation:
+        range_low:
+        range_high:
+        age_at_observation:
+        category:
+        observation_type: OBA:VT0002871 #urine albumin
+        method_type:
+        focus:
+        associated_participant:
+        associated_visit:
+        performed_by:
+        value_string:
+        value_boolean:
+        value_quantity:
+          value_decimal: #value goes here
+          unit: mg/dL
+          id:
+        value_enum:
+        id:
+  phv: phv00295248
+    identifiers:
+      phs: phs000280
+      pht: pht006427
+    input_data_type: decimal
+    value_set:
+      value:
+      function: add measurement observation - transform unit from mg/g creatinine to mg/dL (may have to find creatinine measure)
+      MeasurementObservation:
+        range_low:
+        range_high:
+        age_at_observation:
+        category:
+        observation_type: OBA:VT0002871 #urine albumin
+        method_type:
+        focus:
+        associated_participant:
+        associated_visit:
+        performed_by:
+        value_string:
+        value_boolean:
+        value_quantity:
+          value_decimal: #value goes here
+          unit: mg/dL
+          id:
+        value_enum:
+        id:
+  phv: phv00295249
+    identifiers:
+      phs: phs000280
+      pht: pht006427
+    input_data_type: decimal
+    value_set:
+      value:
+      function: add measurement observation - transform unit from mg/L to mg/dL
+      MeasurementObservation:
+        range_low:
+        range_high:
+        age_at_observation:
+        category:
+        observation_type: OBA:VT0002871 #urine albumin
+        method_type:
+        focus:
+        associated_participant:
+        associated_visit:
+        performed_by:
+        value_string:
+        value_boolean:
+        value_quantity:
+          value_decimal: #value goes here
+          unit: mg/dL
+          id:
+        value_enum:
+        id:
+  phv: phv00506959
     identifiers:
       phs: phs000280
       pht: pht012503
     input_data_type: decimal
     value_set:
       value:
-      function: add measurement observation - no transforms needed
+      function: add measurement observation - transform unit from mg/L to mg/dL
       MeasurementObservation:
         range_low:
         range_high:
@@ -239,18 +428,45 @@ priority_variable:
         value_boolean:
         value_quantity:
           value_decimal: #value goes here
-          unit: g/dL
+          unit: mg/dL
           id:
         value_enum:
         id:
-  phv: phv00112409
+  phv: phv00506960
+    identifiers:
+      phs: phs000280
+      pht: pht012503
+    input_data_type: decimal
+    value_set:
+      value:
+      function: add measurement observation - transform unit from mg/L to mg/dL
+      MeasurementObservation:
+        range_low:
+        range_high:
+        age_at_observation:
+        category:
+        observation_type: OBA:VT0002871 #urine albumin
+        method_type:
+        focus:
+        associated_participant:
+        associated_visit:
+        performed_by:
+        value_string:
+        value_boolean:
+        value_quantity:
+          value_decimal: #value goes here
+          unit: mg/dL
+          id:
+        value_enum:
+        id:
+  phv: phv00119618
     identifiers:
       phs: phs000285
-      pht: pht001557
+      pht: pht001803
     input_data_type: decimal
     value_set:
       value:
-      function: add measurement observation - no transforms needed
+      function: add measurement observation - no transform needed
       MeasurementObservation:
         range_low:
         range_high:
@@ -266,18 +482,18 @@ priority_variable:
         value_boolean:
         value_quantity:
           value_decimal: #value goes here
-          unit: g/dL
+          unit: mg/dL
           id:
         value_enum:
         id:
-  phv: phv00100046
+  phv: phv00120678
     identifiers:
-      phs: phs000287
-      pht: pht001451
+      phs: phs000285
+      pht: pht001849
     input_data_type: decimal
     value_set:
       value:
-      function: add measurement observation - no transforms needed
+      function: add measurement observation - no transform needed
       MeasurementObservation:
         range_low:
         range_high:
@@ -293,18 +509,18 @@ priority_variable:
         value_boolean:
         value_quantity:
           value_decimal: #value goes here
-          unit: g/dL
+          unit: mg/dL
           id:
         value_enum:
         id:
-  phv: phv00100429
+  phv: phv00127646
     identifiers:
-      phs: phs000287
-      pht: pht001452
+      phs: phs000286
+      pht: pht001960
     input_data_type: decimal
     value_set:
       value:
-      function: add measurement observation - no transforms needed
+      function: add measurement observation - no transform needed
       MeasurementObservation:
         range_low:
         range_high:
@@ -320,88 +536,7 @@ priority_variable:
         value_boolean:
         value_quantity:
           value_decimal: #value goes here
-          unit: g/dL
-          id:
-        value_enum:
-        id:
-  phv: phv00105868
-    identifiers:
-      phs: phs000287
-      pht: pht001490
-    input_data_type: decimal
-    value_set:
-      value:
-      function: add measurement observation - no transforms needed
-      MeasurementObservation:
-        range_low:
-        range_high:
-        age_at_observation:
-        category:
-        observation_type: OBA:VT0002871 #urine albumin
-        method_type:
-        focus:
-        associated_participant:
-        associated_visit:
-        performed_by:
-        value_string:
-        value_boolean:
-        value_quantity:
-          value_decimal: #value goes here
-          unit: g/dL
-          id:
-        value_enum:
-        id:
-  phv: phv00106995
-    identifiers:
-      phs: phs000287
-      pht: pht001491
-    input_data_type: decimal
-    value_set:
-      value:
-      function: add measurement observation - no transforms needed
-      MeasurementObservation:
-        range_low:
-        range_high:
-        age_at_observation:
-        category:
-        observation_type: OBA:VT0002871 #urine albumin
-        method_type:
-        focus:
-        associated_participant:
-        associated_visit:
-        performed_by:
-        value_string:
-        value_boolean:
-        value_quantity:
-          value_decimal: #value goes here
-          unit: g/dL
-          id:
-        value_enum:
-        id:
-  phv: phv00110487
-    identifiers:
-      phs: phs000287
-      pht: pht001495
-    input_data_type: decimal
-    value_set:
-      value:
-      function: add measurement observation - no transforms needed
-      MeasurementObservation:
-        range_low:
-        range_high:
-        age_at_observation:
-        category:
-        observation_type: OBA:VT0002871 #urine albumin
-        method_type:
-        focus:
-        associated_participant:
-        associated_visit:
-        performed_by:
-        value_string:
-        value_boolean:
-        value_quantity:
-          value_decimal: #value goes here
-          unit: g/dL
+          unit: mg/dL
           id:
         value_enum:
         id:
