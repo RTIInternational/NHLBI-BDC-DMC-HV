@@ -7,7 +7,7 @@ priority_variable:
       input_data_type: decimal
       value_set:
         value:
-          function: add new MeasurementObservation - no transforms needed
+          function: add new MeasurementObservation - no transforms needed; "." is NULL
           MeasurementObservation:
             range_low:
             range_high:
@@ -34,7 +34,7 @@ priority_variable:
       input_data_type: decimal
       value_set:
         value:
-          function: add new MeasurementObservation - unit transform from mU/mL to U/L
+          function: add new MeasurementObservation - unit transform from mU/mL to U/L; "." is NULL
           MeasurementObservation:
             range_low:
             range_high:
@@ -61,7 +61,7 @@ priority_variable:
       input_data_type: decimal
       value_set:
         value:
-          function: add new MeasurementObservation - unit transform from mU/mL to IU/L
+          function: add new MeasurementObservation - unit transform from mU/mL to IU/L; "." is NULL; then look at phv00172202
           MeasurementObservation:
             range_low: 5 IU/L
             range_high:
@@ -77,6 +77,240 @@ priority_variable:
             value_boolean:
             value_quantity:
               value_decimal: #value goes here
+              unit: [IU]/L
+              id:
+            value_enum:
+            id:
+    phv: phv00227050
+      identifiers:
+        phs: phs000007
+        pht: pht004802
+      input_data_type: decimal
+      value_set:
+        value:
+          function: add new MeasurementObservation - unit transform from mU/mL to IU/L; "." is NULL; then look at phv00227066
+          MeasurementObservation:
+            range_low: 5 IU/L
+            range_high:
+            age_at_observation:
+            category:
+            observation_type: OBA:2050062 #ALT or SGPT
+            method_type:
+            focus:
+            associated_participant:
+            associated_visit:
+            performed_by:
+            value_string:
+            value_boolean:
+            value_quantity:
+              value_decimal: #value goes here
+              unit: [IU]/L
+              id:
+            value_enum:
+            id:
+    phv: phv00422390
+      identifiers:
+        phs: phs000007
+        pht: pht006013
+      input_data_type: decimal
+      value_set:
+        value:
+          function: add new MeasurementObservation - no transform needed; "." is NULL
+          MeasurementObservation:
+            range_low:
+            range_high:
+            age_at_observation:
+            category:
+            observation_type: OBA:2050062 #ALT or SGPT
+            method_type:
+            focus:
+            associated_participant:
+            associated_visit:
+            performed_by:
+            value_string:
+            value_boolean:
+            value_quantity:
+              value_decimal: #value goes here
+              unit: [IU]/L
+              id:
+            value_enum:
+            id:
+    phv: phv00172202
+      identifiers:
+        phs: phs000007
+        pht: pht002889
+      input_data_type: enum
+      value_set:
+        value: .
+          function: do nothing
+          MeasurementObservation:
+            range_low: #existing value
+            range_high:
+            age_at_observation:
+            category:
+            observation_type: OBA:2050062 #ALT or SGPT
+            method_type:
+            focus:
+            associated_participant:
+            associated_visit:
+            performed_by:
+            value_string:
+            value_boolean:
+            value_quantity:
+              value_decimal: #existing value
+              unit: [IU]/L
+              id:
+            value_enum:
+            id:
+        value: 1
+          function: modify MeasurementObservation from phv00172166
+          MeasurementObservation:
+            range_low: #existing value
+            range_high:
+            age_at_observation:
+            category:
+            observation_type: OBA:2050062 #ALT or SGPT
+            method_type:
+            focus:
+            associated_participant:
+            associated_visit:
+            performed_by:
+            value_string:
+            value_boolean:
+            value_quantity:
+              value_category: < 5 
+              unit: [IU]/L
+              id:
+            value_enum:
+            id:
+        value: 2
+          function: do nothing
+          MeasurementObservation:
+            range_low: #existing value
+            range_high:
+            age_at_observation:
+            category:
+            observation_type: OBA:2050062 #ALT or SGPT
+            method_type:
+            focus:
+            associated_participant:
+            associated_visit:
+            performed_by:
+            value_string:
+            value_boolean:
+            value_quantity:
+              value_category: #existing value
+              unit: [IU]/L
+              id:
+            value_enum:
+            id:
+        value: 3
+          function: do nothing
+          MeasurementObservation:
+            range_low: #existing value
+            range_high:
+            age_at_observation:
+            category:
+            observation_type: OBA:2050062 #ALT or SGPT
+            method_type:
+            focus:
+            associated_participant:
+            associated_visit:
+            performed_by:
+            value_string:
+            value_boolean:
+            value_quantity:
+              value_category: #existing value
+              unit: [IU]/L
+              id:
+            value_enum:
+            id:
+    phv: phv00227066
+      identifiers:
+        phs: phs000007
+        pht: pht004802
+      input_data_type: enum
+      value_set:
+        value: .
+          function: do nothing
+          MeasurementObservation:
+            range_low: #existing value
+            range_high:
+            age_at_observation:
+            category:
+            observation_type: OBA:2050062 #ALT or SGPT
+            method_type:
+            focus:
+            associated_participant:
+            associated_visit:
+            performed_by:
+            value_string:
+            value_boolean:
+            value_quantity:
+              value_decimal: #existing value
+              unit: [IU]/L
+              id:
+            value_enum:
+            id:
+        value: 1
+          function: modify MeasurementObservation from phv00227050
+          MeasurementObservation:
+            range_low: #existing value
+            range_high:
+            age_at_observation:
+            category:
+            observation_type: OBA:2050062 #ALT or SGPT
+            method_type:
+            focus:
+            associated_participant:
+            associated_visit:
+            performed_by:
+            value_string:
+            value_boolean:
+            value_quantity:
+              value_category: < 5 
+              unit: [IU]/L
+              id:
+            value_enum:
+            id:
+        value: 2
+          function: do nothing
+          MeasurementObservation:
+            range_low: #existing value
+            range_high:
+            age_at_observation:
+            category:
+            observation_type: OBA:2050062 #ALT or SGPT
+            method_type:
+            focus:
+            associated_participant:
+            associated_visit:
+            performed_by:
+            value_string:
+            value_boolean:
+            value_quantity:
+              value_category: #existing value
+              unit: [IU]/L
+              id:
+            value_enum:
+            id:
+        value: 3
+          function: do nothing
+          MeasurementObservation:
+            range_low: #existing value
+            range_high:
+            age_at_observation:
+            category:
+            observation_type: OBA:2050062 #ALT or SGPT
+            method_type:
+            focus:
+            associated_participant:
+            associated_visit:
+            performed_by:
+            value_string:
+            value_boolean:
+            value_quantity:
+              value_category: #existing value
               unit: [IU]/L
               id:
             value_enum:
