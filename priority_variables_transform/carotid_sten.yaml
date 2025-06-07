@@ -1,0 +1,38 @@
+priority_variable: 
+  name: carotid_sten
+  raw_variable: phv00021700
+    identifiers:
+      phs: phs000007
+      pht: pht000083
+    input_data_type: enum
+    value_set:
+      value: 0
+        function: Add one Condition annotation
+        Condition:
+          identity:
+          condition_concept: MONDO:0004981 #atrial fibrillation
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance:
+          condition_status: ABSENT
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:
+      value: 1
+        function: Add one Condition annotation
+        Condition:
+          identity:
+          condition_concept: MONDO:0004981 #atrial fibrillation
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance:
+          condition_status: PRESENT
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:
+      value: 9999
+        function: Do nothing
