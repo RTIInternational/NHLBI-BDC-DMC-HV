@@ -1,50 +1,110 @@
-priority_variable: 
-  name: cvd
-  raw_variable: phv00000492
-    identifiers:
-      phs: phs000007
-      pht: pht000009
-    input_data_type: enum
-    value_set:
-      value: 0
-        function: Add one Condition annotation
-        Condition:
-          identity:
-          condition_concept: MONDO:0004995 #cardiovascular disease
-          age_at_condition_start:
-          age_at_condition_end:
-          condition_provenance:
-          condition_status: ABSENT
-          condition_severity:
-          relationship_to_participant: ONESELF
-          associated_participant:
-          associated_visit:
-          id:
-      value: 1
-        function: Add one Condition annotation
-        Condition:
-          identity:
-          condition_concept: MONDO:0004995 #cardiovascular disease
-          age_at_condition_start:
-          age_at_condition_end:
-          condition_provenance:
-          condition_status: HISTORICAL
-          condition_severity:
-          relationship_to_participant: ONESELF
-          associated_participant:
-          associated_visit:
-          id:
-      value: 9999
-        function: Add one Condition annotation
-        Condition:
-          identity:
-          condition_concept: MONDO:0004995 #cardiovascular disease
-          age_at_condition_start:
-          age_at_condition_end:
-          condition_provenance:
-          condition_status: UNKNOWN
-          condition_severity:
-          relationship_to_participant: ONESELF
-          associated_participant:
-          associated_visit:
-          id:
+priority_variable:
+  name: carotid_imt
+    phv: phv00021728
+      identifiers:
+        phs: phs000007
+        pht: pht000080
+      input_data_type: decimal
+      value_set:
+        value:
+          function: add new MeasurementObservation; no transform needed; "." is NULL
+          MeasurementObservation:
+            range_low:
+            range_high:
+            age_at_observation:
+            category:
+            observation_type: OMOP:4138462 #carotid imt
+            method_type:
+            focus:
+            associated_participant:
+            associated_visit:
+            performed_by:
+            value_string:
+            value_boolean:
+            value_quantity:
+              value_decimal: #value goes here
+              unit: mm
+              id:
+            value_enum:
+            id:
+    phv: phv00021729
+      identifiers:
+        phs: phs000007
+        pht: pht000080
+      input_data_type: decimal
+      value_set:
+        value:
+          function: add new MeasurementObservation; no transform needed; "." is NULL
+          MeasurementObservation:
+            range_low:
+            range_high:
+            age_at_observation:
+            category:
+            observation_type: OMOP:4138462 #carotid imt
+            method_type:
+            focus:
+            associated_participant:
+            associated_visit:
+            performed_by:
+            value_string:
+            value_boolean:
+            value_quantity:
+              value_decimal: #value goes here
+              unit: mm
+              id:
+            value_enum:
+            id:
+    phv: phv00076366
+      identifiers:
+        phs: phs000007
+        pht: pht000907
+      input_data_type: decimal
+      value_set:
+        value:
+          function: add new MeasurementObservation; no transform needed; "." is NULL
+          MeasurementObservation:
+            range_low:
+            range_high:
+            age_at_observation:
+            category:
+            observation_type: OMOP:4138462 #carotid imt
+            method_type:
+            focus:
+            associated_participant:
+            associated_visit:
+            performed_by:
+            value_string:
+            value_boolean:
+            value_quantity:
+              value_decimal: #value goes here
+              unit: mm
+              id:
+            value_enum:
+            id:
+    phv: phv00076367
+      identifiers:
+        phs: phs000007
+        pht: pht000907
+      input_data_type: decimal
+      value_set:
+        value:
+          function: add new MeasurementObservation; no transform needed; "." is NULL
+          MeasurementObservation:
+            range_low:
+            range_high:
+            age_at_observation:
+            category:
+            observation_type: OMOP:4138462 #carotid imt
+            method_type:
+            focus:
+            associated_participant:
+            associated_visit:
+            performed_by:
+            value_string:
+            value_boolean:
+            value_quantity:
+              value_decimal: #value goes here
+              unit: mm
+              id:
+            value_enum:
+            id:
