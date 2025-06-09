@@ -1,0 +1,26 @@
+class_derivations:
+  SdohObservation:
+    populated_from: FHS
+    slot_derivations:
+      category:
+        expr: "'FAMILY_INCOME'"
+      value_enum:
+        populated_from: phv00021256
+        value_mappings:
+          '1': 8TH_GRADE_OR_LESS
+          '2': 8TH_GRADE_OR_LESS
+          '3': 8TH_GRADE_OR_LESS
+          '4': HIGH_SCHOOL_NO_DIPLOMA
+          '5': HIGH_SCHOOL_GRADUATE_GED
+          '6': SOME_COLLEGE_OR_TECH_NO_DEGREE
+          '7': COLLEGE_OR_TECH_WITH_DEGREE
+          '8': MASTERS_OR_DOCTORAL_DEGREE
+          '10': COLLEGE_OR_TECH_WITH_DEGREE
+          '.': UNKNOWN
+  PREFER NOT TO ANSWER/UNKNOWN	.
+UNDER $12,000	1
+$ 12,000 - $ 24,000	2
+$ 25,000 - $ 49,999	3
+$ 50,000 - $ 74,999	4
+$ 75,000 - $ 100,000	5
+OVER $ 100,000	6
