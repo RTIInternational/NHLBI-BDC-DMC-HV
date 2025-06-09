@@ -1,0 +1,20 @@
+class_derivations:
+  MeasurementObservationSet:
+    populated_from: FHS
+    observations:
+      MeasurementObservation:
+        slot_derivations:
+          value_decimal:
+            populated_from: phv00277034
+          observation_type:
+            expr: "'OMOP:4154790'" # diastolic bp
+          value_quantity.unit:
+            expr: "mm[Hg]"
+      MeasurementObservation:
+        slot_derivations:
+          value_decimal:
+            populated_from: phv00277045
+          observation_type:
+            expr: "'OMOP:4152194'" # systolic bp
+          value_quantity.unit:
+            expr: "'mm[Hg]'"
