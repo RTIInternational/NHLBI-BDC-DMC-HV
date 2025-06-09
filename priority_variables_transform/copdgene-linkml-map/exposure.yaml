@@ -1,0 +1,11 @@
+class_derivations:
+  # Have to figure out how to filter class creation, only create class on specific variable values.
+  DrugExposure:
+    populated_from: COPDGene
+    slot_derivations:
+      drug_concept:
+        expr: "'RXNORM:C07A'"  # Beta blocking agents
+      expsoure_provenance:
+        expr: "'PATIENT SELF-REPORTED MEDICATION'"
+      route_concept:
+        expr: "'RESPIRATORY TRACT'"

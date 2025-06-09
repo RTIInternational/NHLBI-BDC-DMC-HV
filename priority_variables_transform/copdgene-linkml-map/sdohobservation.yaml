@@ -1,0 +1,16 @@
+class_derivations:
+  SdohObservation:
+    populated_from: COPDGene
+    slot_derivations:
+      category:
+        expr: "'EDUCATIONAL_ATTAINMENT'"
+      value_enum:
+        populated_from: phv00159773
+        value_mappings:
+          '1': 8TH_GRADE_OR_LESS
+          '2': HIGH_SCHOOL_NO_DIPLOMA
+          '3': HIGH_SCHOOL_GRADUATE_GED
+          '4': SOME_COLLEGE_OR_TECH_NO_DEGREE
+          '5': COLLEGE_OR_TECH_WITH_DEGREE
+          '6': MASTERS_OR_DOCTORAL_DEGREE
+

@@ -1,0 +1,262 @@
+#angina
+class_derivations:
+  Condition:
+    populated_from: COPDGene
+    slot_derivations:
+      condition_concept:
+        expr: "'HP:0001681'" # angina
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'SELF'"
+      condition_status:
+        populated_from: phv00159608
+        value_mappings:
+          '0': ABSENT
+          '1': PRESENT
+
+# asthma
+class_derivations:
+  Condition:
+    populated_from: COPDGene
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00159568
+      condition_concept:
+        expr: "'MONDO:0004979'"  # asthma
+      condition_status:
+        expr: "case(
+          ({phv00159701} == 0, 'ABSENT'),
+          ({phv00159701} == 1, case(
+            ({phv00159705} == 0, 'HISTORICAL'),
+            ({phv00159705} == 1, 'PRESENT'),
+            ({phv00159705} == 3, case(
+              ({phv00159704} == 3, 'UNKNOWN'),
+              (True, 'HISTORICAL')
+            ))
+          )),
+          ({phv00159701} == 3, case(
+            ({phv00159705} == 0, case(
+              ({phv00159704} == 1, 'HISTORICAL'),
+              (True, 'ABSENT')
+            )),
+            ({phv00159705} == 1, 'PRESENT'),
+            ({phv00159705} == 3, case(
+              ({phv00159704} == 1, 'ABSENT'),
+              (True, 'UNKNOWN')
+            ))
+          ))
+        )"
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION' if {phv00159701} == 0 
+          else 'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'SELF'"
+      age_at_condition_start:
+        expr: "{phv00159702} * 365"  # years to days
+
+# copd
+class_derivations:
+  Condition:
+    populated_from: COPDGene
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005002'"  # COPD
+      condition_status:
+        expr: "case(
+          ({phv00159731} == 0, 'ABSENT'),
+          ({phv00159731} == 1, case(
+            ({phv00159734} == 0, 'HISTORICAL'),
+            ({phv00159734} == 1, 'PRESENT'),
+            ({phv00159734} == 3, 'HISTORICAL')
+          )),
+          ({phv00159731} == 3, case(
+            ({phv00159734} == 0, case(
+              ({phv00159732} == 0, 'ABSENT'),
+              ({phv00159732} == 1, 'HISTORICAL'),
+              ({phv00159732} == 3, 'ABSENT')
+            )),
+            ({phv00159734} == 1, 'PRESENT'),
+            ({phv00159734} == 3, case(
+              ({phv00159732} == 1, 'UNKNOWN'),
+              (True, 'UNKNOWN')
+            ))
+          ))
+        )"
+      condition_provenance:
+        expr: "case(
+          ({phv00159732} == 0, 'PATIENT_SELF-REPORTED_CONDITION'),
+          ({phv00159732} == 1, 'CLINICAL_DIAGNOSIS'),
+          (True, 'PATIENT_SELF-REPORTED_CONDITION')
+        )"
+      relationship_to_participant:
+        expr: "'SELF'"
+      age_at_condition_start:
+        expr: "{phv00159733} * 365"
+
+# diabetes
+class_derivations:
+  Condition:
+    populated_from: COPDGene
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005015'"   #diabetes
+      condition_status:
+        populated_from: phv00159611
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'SELF'"
+
+# hst_hrt_failure
+class_derivations:
+  Condition:
+    populated_from: COPDGene
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005009'"   #congestive heart failure
+      condition_status:
+        populated_from: phv00159609
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'SELF'"
+
+# hist_my_inf
+class_derivations:
+  Condition:
+    populated_from: COPDGene
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005068'"  #myocardial infarction
+      condition_status:
+        populated_from: phv00159615
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'HISTORY' # Different from other history
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'SELF'"
+
+# hyperten
+class_derivations:
+  Condition:
+    populated_from: COPDGene
+    slot_derivations:
+      condition_concept:
+        expr: "'HP:0000822'"  #hypertension
+      condition_status:
+        populated_from: phv00159612
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'SELF'"
+
+# pad
+class_derivations:
+  Condition:
+    populated_from: COPDGene
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005294'"  #peripheral arterial disease
+      condition_status:
+        populated_from: phv00159618
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'SELF'"
+
+# slp_ap
+class_derivations:
+  Condition:
+    populated_from: COPDGene
+    slot_derivations:
+      condition_concept:
+        expr: "'HP:0010535'"  # Sleep apnea
+      condition_status:
+        expr: "case(
+          ({phv00159736} == 0, 'ABSENT'),
+          ({phv00159736} == 1, case(
+            ({phv00159737} == 0, case(
+              ({phv00159739} == 0, 'HISTORICAL'),
+              ({phv00159739} == 1, 'PRESENT'),
+              ({phv00159739} == 3, 'HISTORICAL')
+            )),
+            ({phv00159737} == 1, case(
+              ({phv00159739} == 0, 'HISTORICAL'),
+              ({phv00159739} == 1, 'PRESENT'),
+              ({phv00159739} == 3, 'HISTORICAL')
+            ))
+          )),
+          ({phv00159736} == 3, case(
+            ({phv00159737} == 0, case(
+              ({phv00159739} == 0, 'ABSENT'),
+              ({phv00159739} == 1, 'PRESENT'),
+              ({phv00159739} == 3, 'ABSENT')
+            )),
+            ({phv00159737} == 1, case(
+              ({phv00159739} == 0, 'HISTORICAL'),
+              ({phv00159739} == 1, 'PRESENT'),
+              ({phv00159739} == 3, 'UNKNOWN')
+            ))
+          ))
+        )"
+      condition_provenance:
+        expr: "case(
+          ({phv00159737} == 0, 'PATIENT_SELF-REPORTED_CONDITION'),
+          ({phv00159737} == 1, 'CLINICAL_DIAGNOSIS'),
+          (True, 'PATIENT_SELF-REPORTED_CONDITION')
+        )"
+      relationship_to_participant:
+        expr: "'SELF'"
+      age_at_condition_start:
+        expr: "None"
+      age_at_condition_end:
+        expr: "None"
+
+# stroke
+class_derivations:
+  Condition:
+    populated_from: COPDGene
+    slot_derivations:
+      condition_concept:
+        expr: "'HP:0001297'"  #stroke
+      condition_status:
+        populated_from: phv00159619
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'SELF'"
+
+# stroke - transient ischemic attack
+class_derivations:
+  Condition:
+    populated_from: COPDGene
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005264'"  #transient ischemic attack
+      condition_status:
+        populated_from: phv00159620
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'SELF'"

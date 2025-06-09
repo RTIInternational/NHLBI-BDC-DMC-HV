@@ -1,0 +1,24 @@
+class_derivations:
+  Demography:
+    populated_from: COPDGene
+    slot_derivations:
+      sex:
+        populated_from: phv00159571
+        value_mappings:
+          '1': OMOP:8507  # MALE
+          '2': OMOP:8532  # FEMALE
+      ethnicity:
+        populated_from: phv00159573
+        value_mappings:
+          '1': HISPANIC_OR_LATINO
+          '2': NOT_HISPANIC_OR_LATINO
+      race:
+        populated_from: phv00159572
+        value_mappings:
+          '1': OMOP:8527
+          '2': OMOP:8516
+          '3': OMOP:8515
+          '4': OMOP:8557
+          '5': OMOP:8657
+          '6': OMOP:45880900
+          '7': OMOP:8552

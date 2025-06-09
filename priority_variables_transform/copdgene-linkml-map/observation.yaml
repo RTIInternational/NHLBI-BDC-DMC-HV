@@ -1,0 +1,8 @@
+class_derivations:
+  Observation:
+    populated_from: COPDGene
+    slot_derivations:
+      observation_type:
+        expr: "'OMOP:4282779'"  # Cigarette smoking status
+      value_enum:
+        expr: "'OMOP:40766945' if {phv00159749} == 1 else 'OMOP:45883458' if {phv00159747} == 1 else 'OMOP:45883537'"
