@@ -1,0 +1,45 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: 
+          expr: case({phv00024570} ) #transform from % to ug/mL
+      observation_type:
+        expr: "OBA:2041535'" #factor VII
+      value_quantity.unit:
+        expr: "'ug/mL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: 
+          expr: case({phv00227096} ) #transform from % to ug/mL
+      observation_type:
+        expr: "OBA:2041535'" #factor VII
+      value_quantity.unit:
+        expr: "'ug/mL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: 
+          expr: case({phv00422150} ) #transform from % to ug/mL
+      observation_type:
+        expr: "OBA:2041535'" #factor VII
+      value_quantity.unit:
+        expr: "'ug/mL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: 
+          expr: case({phv00422621} ) #transform from % to ug/mL
+      observation_type:
+        expr: "OBA:2041535'" #factor VII
+      value_quantity.unit:
+        expr: "'ug/mL'"
+        
