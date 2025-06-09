@@ -1,0 +1,37 @@
+class_derivations:
+  Demography:
+    populated_from: FHS
+    slot_derivations:
+      ethnicity:
+        populated_from: 
+          exp: case(({phv00072538} == 1, 'HISPANIC_OR_LATINO'),
+               ({phv00072538} == 0 OR {phv00072538} == ., case(
+               ({phv00072539} == 1, 'NOT_HISPANIC_OR_LATINO'))))
+class_derivations:
+  Demography:
+    populated_from: FHS
+    slot_derivations:
+      ethnicity:
+        populated_from: phv00177597
+        value_mappings:
+          '.': UNKNOWN
+          '1': HISPANIC_OR_LATINO
+          '2': NOT_HISPANIC_OR_LATINO
+class_derivations:
+  Demography:
+    populated_from: FHS
+    slot_derivations:
+      ethnicity:
+        populated_from: 
+          exp: case(({phv00251746} == 1, 'HISPANIC_OR_LATINO'),
+               ({phv00251746} == 0 OR {phv00251746} == ., case(
+               ({phv00251747} == 1, 'NOT_HISPANIC_OR_LATINO'))))
+class_derivations:
+  Demography:
+    populated_from: FHS
+    slot_derivations:
+      ethnicity:
+        populated_from: 
+          exp: case(({phv00423856} == 1, 'HISPANIC_OR_LATINO'),
+               ({phv00423856} == . AND , case(
+               ({phv00423857} == 1, 'NOT_HISPANIC_OR_LATINO'))))                       
