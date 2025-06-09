@@ -1,0 +1,21 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00422088
+      observation_type:
+        expr: "OBA:VT0010513'" #ferritin
+      value_quantity.unit:
+        expr: "'ng/mL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00423118
+      observation_type:
+        expr: "OBA:VT0010513'" #ferritin
+      value_quantity.unit:
+        expr: "'ng/mL'"
+        
