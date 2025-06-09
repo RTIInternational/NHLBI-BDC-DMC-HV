@@ -538,40 +538,6 @@ priority_variable:
           associated_participant:
           associated_visit:
           id:
-  raw_variable: phv00193030
-    identifiers:
-      phs: phs000200
-      pht: pht003405
-    input_data_type: enum
-    value_set:
-      value: 0
-        function: Add one condition
-        Condition:
-          identity:
-          condition_concept: HP:0001681 #angina
-          age_at_condition_start:
-          age_at_condition_end:
-          condition_provenance: CLINICAL_DIAGNOSIS
-          condition_status: ABSENT
-          condition_severity:
-          relationship_to_participant: SELF
-          associated_participant:
-          associated_visit:
-          id:
-      value: 1
-        function: Add one condition
-        Condition:
-          identity:
-          condition_concept: HP:0001681 #angina
-          age_at_condition_start:
-          age_at_condition_end:
-          condition_provenance: CLINICAL_DIAGNOSIS
-          condition_status: PRESENT
-          condition_severity:
-          relationship_to_participant: SELF
-          associated_participant:
-          associated_visit:
-          id:
   raw_variable: phv00193086
     identifiers:
       phs: phs000200
@@ -1521,7 +1487,7 @@ priority_variable:
           condition_concept: HP:0001681 #angina
           age_at_condition_start:
           age_at_condition_end:
-          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_provenance: CLINICAL_DIAGNOSIS
           condition_status: HISTORICAL
           condition_severity:
           relationship_to_participant: SELF
@@ -1679,7 +1645,7 @@ priority_variable:
           condition_concept: HP:0001681 #angina
           age_at_condition_start:
           age_at_condition_end:
-          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_provenance: CLINICAL_DIAGNOSIS
           condition_status: HISTORICAL
           condition_severity:
           relationship_to_participant: SELF
@@ -2324,12 +2290,26 @@ priority_variable:
           id:
       value: 1
         function: Add one condition then go to phv00108760
+                  if phv00108760 = 0 or phv00108760 = 9
         Condition:
           identity:
           condition_concept: HP:0001681 #angina
           age_at_condition_start:
           age_at_condition_end:
           condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_status: HISTORICAL
+          condition_severity:
+          relationship_to_participant: SELF
+          associated_participant:
+          associated_visit:
+          id:
+                  if phv00108760 = 1 or phv00108760 = 2
+        Condition:
+          identity:
+          condition_concept: HP:0001681 #angina
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: CLINICAL_DIAGNOSIS
           condition_status: HISTORICAL
           condition_severity:
           relationship_to_participant: SELF
