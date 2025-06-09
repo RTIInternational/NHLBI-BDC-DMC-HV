@@ -3,9 +3,9 @@ class_derivations:
     populated_from: FHS
     slot_derivations:
       condition_concept:
-        expr: "'MONDO:0005015'"   #diabetes
+        expr: "'HP:0001297'"   #stroke
       condition_status:
-        populated_from: phv00010095
+        populated_from: phv00010084
         value_mappings:
           '.': 'UNKNOWN'
           '0': 'ABSENT'
@@ -14,4 +14,21 @@ class_derivations:
       condition_provenance:
         expr: "'PATIENT_SELF-REPORTED_CONDITION'"
       relationship_to_participant:
-        expr: "'SELF'"
+        expr: "'NATURAL_FATHER'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'HP:0001297'"   #stroke
+      condition_status:
+        populated_from: phv00010091
+        value_mappings:
+          '.': 'UNKNOWN'
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'UNKNOWN'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'NATURAL_MOTHER'"
