@@ -1,0 +1,11 @@
+class_derivations:
+  Person:
+    populated_from: FHS
+    slot_derivations:
+      vital_status:
+        populated_from: phv00276841
+        value_mappings:
+          '.': #do nothing
+          '0': OMOP:4230556 #alive
+          '1': OMOP:434489 #dead
+     
