@@ -1,218 +1,170 @@
-priority_variable:
-  name: creat_bld
-    phv: phv00002416
-      identifiers:
-        phs: phs000007
-        pht: pht000016
-      input_data_type: decimal
-      value_set:
-        value:
-          function: add new MeasurementObservation; "." is NULL
-          MeasurementObservation:
-            range_low:
-            range_high:
-            age_at_observation:
-            category:
-            observation_type: OBA:2050096 #creatinine in blood
-            method_type:
-            focus:
-            associated_participant:
-            associated_visit:
-            performed_by:
-            value_string:
-            value_boolean:
-            value_quantity:
-              value_decimal: #value goes here
-              unit: mg/dL
-              id:
-            value_enum:
-            id:
-    phv: phv00002654
-      identifiers:
-        phs: phs000007
-        pht: pht000017
-      input_data_type: decimal
-      value_set:
-        value:
-          function: add new MeasurementObservation; "." is NULL
-          MeasurementObservation:
-            range_low:
-            range_high:
-            age_at_observation:
-            category:
-            observation_type: OBA:2050096 #creatinine in blood
-            method_type:
-            focus:
-            associated_participant:
-            associated_visit:
-            performed_by:
-            value_string:
-            value_boolean:
-            value_quantity:
-              value_decimal: #value goes here
-              unit: mg/dL
-              id:
-            value_enum:
-            id:
-    phv: phv00006322
-      identifiers:
-        phs: phs000007
-        pht: pht000026
-      input_data_type: decimal
-      value_set:
-        value:
-          function: add new MeasurementObservation; "." is NULL
-          MeasurementObservation:
-            range_low:
-            range_high:
-            age_at_observation:
-            category:
-            observation_type: OBA:2050096 #creatinine in blood
-            method_type:
-            focus:
-            associated_participant:
-            associated_visit:
-            performed_by:
-            value_string:
-            value_boolean:
-            value_quantity:
-              value_decimal: #value goes here
-              unit: mg/dL
-              id:
-            value_enum:
-            id:
-    phv: phv00006662
-      identifiers:
-        phs: phs000007
-        pht: pht000027
-      input_data_type: decimal
-      value_set:
-        value:
-          function: add new MeasurementObservation; "." is NULL
-          MeasurementObservation:
-            range_low:
-            range_high:
-            age_at_observation:
-            category:
-            observation_type: OBA:2050096 #creatinine in blood
-            method_type:
-            focus:
-            associated_participant:
-            associated_visit:
-            performed_by:
-            value_string:
-            value_boolean:
-            value_quantity:
-              value_decimal: #value goes here
-              unit: mg/dL
-              id:
-            value_enum:
-            id:
-    phv: phv00007526
-      identifiers:
-        phs: phs000007
-        pht: pht000029
-      input_data_type: decimal
-      value_set:
-        value:
-          function: add new MeasurementObservation; "." is NULL
-          MeasurementObservation:
-            range_low:
-            range_high:
-            age_at_observation:
-            category:
-            observation_type: OBA:2050096 #creatinine in blood
-            method_type:
-            focus:
-            associated_participant:
-            associated_visit:
-            performed_by:
-            value_string:
-            value_boolean:
-            value_quantity:
-              value_decimal: #value goes here
-              unit: mg/dL
-              id:
-            value_enum:
-            id:
-    phv: phv00021396
-      identifiers:
-        phs: phs000007
-        pht: pht000074
-      input_data_type: decimal
-      value_set:
-        value:
-          function: add new MeasurementObservation; "." is NULL
-          MeasurementObservation:
-            range_low:
-            range_high:
-            age_at_observation:
-            category:
-            observation_type: OBA:2050096 #creatinine in blood
-            method_type:
-            focus:
-            associated_participant:
-            associated_visit:
-            performed_by:
-            value_string:
-            value_boolean:
-            value_quantity:
-              value_decimal: #value goes here
-              unit: mg/dL
-              id:
-            value_enum:
-            id:
-    phv: phv00070734
-      identifiers:
-        phs: phs000007
-        pht: pht000692
-      input_data_type: decimal
-      value_set:
-        value:
-          function: add new MeasurementObservation; "." is NULL
-          MeasurementObservation:
-            range_low:
-            range_high:
-            age_at_observation:
-            category:
-            observation_type: OBA:2050096 #creatinine in blood
-            method_type:
-            focus:
-            associated_participant:
-            associated_visit:
-            performed_by:
-            value_string:
-            value_boolean:
-            value_quantity:
-              value_decimal: #value goes here
-              unit: mg/dL
-              id:
-            value_enum:
-            id:
-    phv: phv00071894
-      identifiers:
-        phs: phs000007
-        pht: pht000742
-      input_data_type: decimal
-      value_set:
-        value:
-          function: add new MeasurementObservation; "." is NULL
-          MeasurementObservation:
-            range_low:
-            range_high:
-            age_at_observation:
-            category:
-            observation_type: OBA:2050096 #creatinine in blood
-            method_type:
-            focus:
-            associated_participant:
-            associated_visit:
-            performed_by:
-            value_string:
-            value_boolean:
-            value_quantity:
-              value_decimal: #value goes here
-              unit: mg/dL
-              id:
-            value_enum:
-            id:                                                                                    
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00002416
+      observation_type:
+        expr: "'OBA:2050096'" #creatinine in blood
+      value_quantity.unit:
+        expr: "'mg/dL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00002654
+      observation_type:
+        expr: "'OBA:2050096'" #creatinine in blood
+      value_quantity.unit:
+        expr: "'mg/dL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00006322
+      observation_type:
+        expr: "'OBA:2050096'" #creatinine in blood
+      value_quantity.unit:
+        expr: "'mg/dL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00006662
+      observation_type:
+        expr: "'OBA:2050096'" #creatinine in blood
+      value_quantity.unit:
+        expr: "'mg/dL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00007526
+      observation_type:
+        expr: "'OBA:2050096'" #creatinine in blood
+      value_quantity.unit:
+        expr: "'mg/dL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00021396
+      observation_type:
+        expr: "'OBA:2050096'" #creatinine in blood
+      value_quantity.unit:
+        expr: "'mg/dL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00070734
+      observation_type:
+        expr: "'OBA:2050096'" #creatinine in blood
+      value_quantity.unit:
+        expr: "'mg/dL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00071894
+      observation_type:
+        expr: "'OBA:2050096'" #creatinine in blood
+      value_quantity.unit:
+        expr: "'mg/dL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00080753
+      observation_type:
+        expr: "'OBA:2050096'" #creatinine in blood
+      value_quantity.unit:
+        expr: "'mg/dL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00081024
+      observation_type:
+        expr: "'OBA:2050096'" #creatinine in blood
+      value_quantity.unit:
+        expr: "'mg/dL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00161767
+      observation_type:
+        expr: "'OBA:2050096'" #creatinine in blood
+      value_quantity.unit:
+        expr: "'mg/dL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00166800
+      observation_type:
+        expr: "'OBA:2050096'" #creatinine in blood
+      value_quantity.unit:
+        expr: "'mg/dL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00172175
+      observation_type:
+        expr: "'OBA:2050096'" #creatinine in blood
+      value_quantity.unit:
+        expr: "'mg/dL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00172326
+      observation_type:
+        expr: "'OBA:2050096'" #creatinine in blood
+      value_quantity.unit:
+        expr: "'mg/dL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00227058
+      observation_type:
+        expr: "'OBA:2050096'" #creatinine in blood
+      value_quantity.unit:
+        expr: "'mg/dL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00255344
+      observation_type:
+        expr: "'OBA:2050096'" #creatinine in blood
+      value_quantity.unit:
+        expr: "'mg/dL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00275408
+      observation_type:
+        expr: "'OBA:2050096'" #creatinine in blood
+      value_quantity.unit:
+        expr: "'mg/dL'"
