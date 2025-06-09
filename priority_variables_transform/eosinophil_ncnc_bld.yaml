@@ -1,0 +1,30 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00008119 
+      observation_type:
+        expr: "OBA:VT0002602'" #eosinophil count
+      value_quantity.unit:
+        expr: "'10*3/uL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00172196
+      observation_type:
+        expr: "OBA:VT0002602'" #eosinophil count
+      value_quantity.unit:
+        expr: "'10*3/uL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00227043
+      observation_type:
+        expr: "OBA:VT0002602'" #eosinophil count
+      value_quantity.unit:
+        expr: "'10*3/uL'"        
