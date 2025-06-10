@@ -1,26 +1,40 @@
-priority_variable:
-  name: hemo_a1c
-  phv:
-    identifiers:
-      phs:
-      pht:
-    input_data_type: decimal
-    value_set:
-      value:
-      function: 
-      MeasurementObservation:
-        range_low:
-        range_high:
-        age_at_observation:
-        category:
-        observation_type:
-        method_type:
-        focus:
-        associated_participant:
-        associated_visit:
-        performed_by:
-        value_string:
-        value_boolean:
-        value_quantity:
-        value_enum:
-        id:
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00071897
+      observation_type:
+        expr: "'OMOP:4184637'" #hemoglobin a1c
+      value_quantity.unit:
+        expr: "'%'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00172163
+      observation_type:
+        expr: "'OMOP:4184637'" #hemoglobin a1c
+      value_quantity.unit:
+        expr: "'%'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00227047
+      observation_type:
+        expr: "'OMOP:4184637'" #hemoglobin a1c
+      value_quantity.unit:
+        expr: "'%'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00275420
+      observation_type:
+        expr: "'OMOP:4184637'" #hemoglobin a1c
+      value_quantity.unit:
+        expr: "'%'"
