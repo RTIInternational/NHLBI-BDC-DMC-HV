@@ -64,7 +64,9 @@ priority_variable:
           function: add new MeasurementObservation; no transform needed; "." is NULL
                     if value = 0.15 go to (phv00462201 or phv00227067 - need to find out which), if value = 1 this is below limit of detection
           MeasurementObservation:
-            range_low: 0.15 mg/L
+            range_low: 
+              value_decimal: 0.15
+              unit: mg/L
             range_high:
             age_at_observation:
             category:
@@ -92,7 +94,9 @@ priority_variable:
           function: add new MeasurementObservation; no transform needed; "." is NULL
                     if value = 0.15 go to (phv00462201 or phv00227067 - need to find out which), if value = 1 this is below limit of detection
           MeasurementObservation:
-            range_low: 0.15 mg/L
+            range_low: 
+              value_decimal: 0.15
+              unit: mg/L
             range_high:
             age_at_observation:
             category:
