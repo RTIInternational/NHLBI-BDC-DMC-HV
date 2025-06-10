@@ -63,7 +63,9 @@ priority_variable:
       value:
       function: add measurement observation; "." is NULL; if value = 0.05, value was below limit of detection
       MeasurementObservation:
-        range_low: 0.1 mg/dL
+        range_low: 
+          value_decimal: 0.1
+          unit: mg/dL
         range_high:
         age_at_observation:
         category:
