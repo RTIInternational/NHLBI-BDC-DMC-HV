@@ -8,7 +8,7 @@ class_derivations:
       condition_provenance:
         expr: "'PATIENT_SELF-REPORTED_CONDITION'"
       relationship_to_participant:
-        expr: "'SELF'"
+        expr: "'ONESELF'"
       condition_status:
         populated_from: phv00159608
         value_mappings:
@@ -51,7 +51,7 @@ class_derivations:
         expr: "'PATIENT_SELF-REPORTED_CONDITION' if {phv00159701} == 0 
           else 'CLINICAL_DIAGNOSIS'"
       relationship_to_participant:
-        expr: "'SELF'"
+        expr: "'ONESELF'"
       age_at_condition_start:
         expr: "{phv00159702} * 365"  # years to days
 
@@ -90,7 +90,7 @@ class_derivations:
           (True, 'PATIENT_SELF-REPORTED_CONDITION')
         )"
       relationship_to_participant:
-        expr: "'SELF'"
+        expr: "'ONESELF'"
       age_at_condition_start:
         expr: "{phv00159733} * 365"
 
@@ -109,7 +109,7 @@ class_derivations:
       condition_provenance:
         expr: "'PATIENT_SELF-REPORTED_CONDITION'"
       relationship_to_participant:
-        expr: "'SELF'"
+        expr: "'ONESELF'"
 
 # hst_hrt_failure
 class_derivations:
@@ -126,7 +126,7 @@ class_derivations:
       condition_provenance:
         expr: "'PATIENT_SELF-REPORTED_CONDITION'"
       relationship_to_participant:
-        expr: "'SELF'"
+        expr: "'ONESELF'"
 
 # hist_my_inf
 class_derivations:
@@ -139,11 +139,11 @@ class_derivations:
         populated_from: phv00159615
         value_mappings:
           '0': 'ABSENT'
-          '1': 'HISTORY' # Different from other history
+          '1': 'HISTORICAL' # Different from other HISTORICAL
       condition_provenance:
         expr: "'PATIENT_SELF-REPORTED_CONDITION'"
       relationship_to_participant:
-        expr: "'SELF'"
+        expr: "'ONESELF'"
 
 # hyperten
 class_derivations:
@@ -160,7 +160,7 @@ class_derivations:
       condition_provenance:
         expr: "'PATIENT_SELF-REPORTED_CONDITION'"
       relationship_to_participant:
-        expr: "'SELF'"
+        expr: "'ONESELF'"
 
 # pad
 class_derivations:
@@ -177,7 +177,7 @@ class_derivations:
       condition_provenance:
         expr: "'PATIENT_SELF-REPORTED_CONDITION'"
       relationship_to_participant:
-        expr: "'SELF'"
+        expr: "'ONESELF'"
 
 # slp_ap
 class_derivations:
@@ -221,7 +221,7 @@ class_derivations:
           (True, 'PATIENT_SELF-REPORTED_CONDITION')
         )"
       relationship_to_participant:
-        expr: "'SELF'"
+        expr: "'ONESELF'"
       age_at_condition_start:
         expr: "None"
       age_at_condition_end:
@@ -242,7 +242,7 @@ class_derivations:
       condition_provenance:
         expr: "'PATIENT_SELF-REPORTED_CONDITION'"
       relationship_to_participant:
-        expr: "'SELF'"
+        expr: "'ONESELF'"
 
 # stroke - transient ischemic attack
 class_derivations:
@@ -259,4 +259,4 @@ class_derivations:
       condition_provenance:
         expr: "'PATIENT_SELF-REPORTED_CONDITION'"
       relationship_to_participant:
-        expr: "'SELF'"
+        expr: "'ONESELF'"
