@@ -63,7 +63,9 @@ priority_variable:
         value:
           function: add new MeasurementObservation - unit transform from mU/mL to IU/L; "." is NULL
           MeasurementObservation:
-            range_low: 5 IU/L
+            range_low: 
+              value_decimal: 5
+              unit: [IU]/L
             range_high:
             age_at_observation:
             category:
