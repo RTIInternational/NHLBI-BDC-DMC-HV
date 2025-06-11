@@ -1,0 +1,70 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_concept:
+        populated_from: phv00071895
+      observation_type:
+        expr: "'OBA:VT0002871'" #urine albumin
+      value_quantity.unit:
+        expr: "'mg/L'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      range_low: 
+        value_decimal: 3.0
+        unit: mg/L
+      value_concept:
+        populated_from: 
+          expr: case(({phv00172161} > 3.0, {phv00172161}),
+                ({phv00227069} == 1, "'LOD'")) #We need something to indicate a value is below or above LOD
+      observation_type:
+        expr: "'OBA:VT0002871'" #urine albumin
+      value_quantity.unit:
+        expr: "'mg/g'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_concept:
+        populated_from: phv00275418
+      observation_type:
+        expr: "'OBA:VT0002871'" #urine albumin
+      value_quantity.unit:
+        expr: "'mg/g'"        
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_concept:
+        populated_from: phv00227045
+      observation_type:
+        expr: "'OBA:VT0002871'" #urine albumin
+      value_quantity.unit:
+        expr: "'mg/g'"  
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      range_low: 
+        value_decimal: 3.0
+        unit: mg/L
+      value_concept:
+        populated_from: 
+          expr: case(({phv00219547} > 3.0, {phv00219547}),
+                ({phv00219549} == 1, "'LOD'")) #We need something to indicate a value is below or above LOD
+      observation_type:
+        expr: "'OBA:VT0002871'" #urine albumin
+      value_quantity.unit:
+        expr: "'mg/g'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_concept:
+        populated_from: phv00036493
+      observation_type:
+        expr: "'OBA:VT0002871'" #urine albumin
+      value_quantity.unit:
+        expr: "'mg/g'"
