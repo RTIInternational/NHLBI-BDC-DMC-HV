@@ -1,0 +1,16 @@
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'HP:0001681'"   #angina
+      condition_status:
+        populated_from: phv00055298
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '8': 'UNKNOWN'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
