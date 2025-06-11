@@ -1,0 +1,73 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_concept:
+        populated_from: phv00056501
+        
+      observation_type:
+        expr: "'OMOP:37396400'"  #AHI
+      value_quantity.unit:
+        expr: "'1/hr'"
+priority_variable:
+  name: apnea_hypop_index
+  phv: phv00056501
+    identifiers:
+      phs: phs000007
+      pht: pht000395
+    input_data_type: enum
+    value_set:
+      value: 0
+      function: add measurement observation - no transforms needed
+      MeasurementObservation:
+        range_low:
+        range_high:
+        age_at_observation:
+        category:
+        observation_type: OMOP:37396400 #AHI
+        method_type:
+        focus:
+        associated_participant:
+        associated_visit:
+        performed_by:
+        value_string:
+        value_boolean:
+        value_quantity:
+        value_enum: < 50
+        id:
+      value: 1
+      function: add measurement observation - no transforms needed
+      MeasurementObservation:
+        range_low:
+        range_high:
+        age_at_observation:
+        category:
+        observation_type: OMOP:37396400 #AHI
+        method_type:
+        focus:
+        associated_participant:
+        associated_visit:
+        performed_by:
+        value_string:
+        value_boolean:
+        value_quantity:
+        value_enum: > 50
+        id:
+      value: 8
+      function: do nothing
+      MeasurementObservation:
+        range_low:
+        range_high:
+        age_at_observation:
+        category:
+        observation_type: OMOP:37396400 #AHI
+        method_type:
+        focus:
+        associated_participant:
+        associated_visit:
+        performed_by:
+        value_string:
+        value_boolean:
+        value_quantity:
+        value_enum: 
+        id:
