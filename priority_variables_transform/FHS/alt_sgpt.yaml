@@ -16,8 +16,26 @@ class_derivations:
         value_decimal: 5.0
         unit: [IU]/L
       value_decimal:
-        populated_from: phv00172166
+        populated_from: 
+          expr: case(({phv00172166} > 5.0, {phv00172166}),
+                ({phv00172202} == 1, "'LOD'")) #We need something to indicate a value is below or above LOD
       observation_type:
         expr: "'OBA:2050062'"  #ALT or SGPT
       value_quantity.unit:
         expr: "'[IU]/L'"        
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      range_low: 
+        value_decimal: 5.0
+        unit: [IU]/L
+      value_decimal:
+        populated_from: 
+          expr: case(({phv00227050} > 5.0, {phv00227050}),
+                ({phv00227066} == 1, "'LOD'")) #We need something to indicate a value is below or above LOD
+      observation_type:
+        expr: "'OBA:2050062'"  #ALT or SGPT
+      value_quantity.unit:
+        expr: "'[IU]/L'" 
+      
