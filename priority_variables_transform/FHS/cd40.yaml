@@ -1,0 +1,10 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00422332
+      observation_type:
+        expr: "'OBA:2052305'"  #CD40
+      value_quantity.unit:
+        expr: "'pg/mL'"

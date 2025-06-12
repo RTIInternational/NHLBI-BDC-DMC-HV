@@ -1,0 +1,20 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      observation_type:
+        expr: "'OMOP:36303297'"
+      value_integer:
+        populated_from: phv00023792
+      value_quantity.unit:
+        expr: "'{score}'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      observation_type:
+        expr: "'OMOP:36303297'"
+      value_integer:
+        populated_from: phv00023899
+      value_quantity.unit:
+        expr: "'{score}'"

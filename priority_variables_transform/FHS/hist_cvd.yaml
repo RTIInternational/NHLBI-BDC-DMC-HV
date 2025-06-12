@@ -14,3 +14,48 @@ class_derivations:
         expr: "'PATIENT_SELF-REPORTED_CONDITION'"
       relationship_to_participant:
         expr: "'ONESELF'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0004995'"   #cardiovascular disease
+      condition_status:
+        populated_from: phv00000492
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'HISTORICAL'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0004995'"   #cardiovascular disease
+      condition_status:
+        populated_from: phv00256866
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'HISTORICAL'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0004995'"   #cardiovascular disease
+      condition_status:
+        populated_from: phv00190817
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'HISTORICAL'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'ONESELF'"        

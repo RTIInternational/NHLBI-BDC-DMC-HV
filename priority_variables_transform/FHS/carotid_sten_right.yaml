@@ -1,0 +1,17 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      observation_type:
+        expr: "'OMOP:43021859'"
+      value_concept:
+        populated_from: phv00021700
+        value_mappings:
+          '0': NONE
+          '1': 1-24
+          '2': 25-49
+          '3': 50-74
+          '4': 75-99
+          '5': 100
+      value_concept.unit:
+        expr: "'%'"

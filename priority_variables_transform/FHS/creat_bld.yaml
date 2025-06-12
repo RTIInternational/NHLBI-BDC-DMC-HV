@@ -13,6 +13,16 @@ class_derivations:
     populated_from: FHS
     slot_derivations:
       value_decimal:
+        populated_from: phv00023207
+      observation_type:
+        expr: "'OBA:2050096'" #creatinine in blood
+      value_quantity.unit:
+        expr: "'mg/dL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
         populated_from: phv00002654
       observation_type:
         expr: "'OBA:2050096'" #creatinine in blood
@@ -34,6 +44,16 @@ class_derivations:
     slot_derivations:
       value_decimal:
         populated_from: phv00006662
+      observation_type:
+        expr: "'OBA:2050096'" #creatinine in blood
+      value_quantity.unit:
+        expr: "'mg/dL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00006665
       observation_type:
         expr: "'OBA:2050096'" #creatinine in blood
       value_quantity.unit:
