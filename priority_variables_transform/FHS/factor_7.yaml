@@ -3,42 +3,38 @@ class_derivations:
     populated_from: FHS
     slot_derivations:
       value_decimal:
-        populated_from: 
-          expr: case({phv00024570} ) #transform from % to ug/mL
+        populated_from: phv00024570
       observation_type:
         expr: "OBA:2041535'" #factor VII
       value_quantity.unit:
-        expr: "'ug/mL'"
+        expr: "'%{Normal}'"
 class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
       value_decimal:
-        populated_from: 
-          expr: case({phv00227096} ) #transform from % to ug/mL
+        populated_from: phv00227096
       observation_type:
         expr: "OBA:2041535'" #factor VII
       value_quantity.unit:
-        expr: "'ug/mL'"
+        expr: "'%{Normal}'"
 class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
       value_decimal:
-        populated_from: 
-          expr: case({phv00422150} ) #transform from % to ug/mL
+        populated_from: phv00422150
       observation_type:
         expr: "OBA:2041535'" #factor VII
       value_quantity.unit:
-        expr: "'ug/mL'"
+        expr: "'%{Normal}'"
 class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
       value_decimal:
-        populated_from: 
-          expr: case({phv00422621} ) #transform from % to ug/mL
+        populated_from: {phv00422621
       observation_type:
         expr: "OBA:2041535'" #factor VII
       value_quantity.unit:
-        expr: "'ug/mL'"
+        expr: "'%{Normal}'"
