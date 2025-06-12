@@ -3,7 +3,7 @@ class_derivations:
     populated_from: FHS
     slot_derivations:
       value_decimal:
-        populated_from: phv00021744 #transform from ng/mL to mg/L
+        expr: {phv00021744} * 0.001
       observation_type:
         expr: "'OMOP:37393605'" #d dimer in blood
       value_quantity.unit:
