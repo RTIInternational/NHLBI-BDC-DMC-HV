@@ -1,0 +1,14 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      associated_participant:
+        populated_from:
+      associated_visit:
+        expr:
+      value_decimal:
+        populated_from: phv00163434
+      observation_type:
+        expr: "'OBA:2052778'"  #e selectin
+      value_quantity.unit:
+        expr: "'/uL'"
