@@ -6,7 +6,6 @@ Usage:
     python linkml_transform.py input_file.yaml [output_file.yaml]
     python linkml_transform.py --batch input_directory/ output_directory/
 """
-print("hello, world")
 
 import argparse
 # import re
@@ -332,13 +331,31 @@ class LinkMLTransformer:
         return '\n'.join(output_lines)
 
 
+usage_examples = """Example usage:
+    # Transform a single file and output to stdout
+    python linkml_transform.py input_file.yaml
+
+    # Transform a single file and save to output file
+    python linkml_transform.py input_file.yaml output_file.yaml
+
+    # Batch process an entire directory
+    python linkml_transform.py --batch input_directory/ output_directory/
+
+    # Verbose output to see what's being processed
+    python linkml_transform.py --batch --verbose source_files/ transformed_files/"""
+
+
 def main():
-    parser = argparse.ArgumentParser(description='Transform LinkML-Map files from priority_variable to class_derivations format')
+    parser = argparse.ArgumentParser(
+        description='Transform LinkML-Map files from priority_variable to class_derivations format',
+        epilog=usage_examples,
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument('input', help='Input file or directory')
     parser.add_argument('output', nargs='?', help='Output file or directory')
     parser.add_argument('--batch', action='store_true', help='Process directory of files')
     parser.add_argument('--verbose', '-v', action='store_true', help='Verbose output')
-    
+
     args = parser.parse_args()
     
     transformer = LinkMLTransformer()

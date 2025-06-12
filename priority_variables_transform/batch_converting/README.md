@@ -1,4 +1,15 @@
-# LinkML-Map Transformation Results
+# Claude.ai-generated conversion script
+
+My initial prompt was
+
+> I need to transform a bunch of LinkML-Map files into a different format. The first set of files I uploaded are in the
+> target format. They all start with `class_derivations:`; the files after that are the ones that need to be transformed;
+> they start with `priority_variable:`
+>
+> Also, make sure you capture any logic for the transform. Please stick only to the vocabulary in the target yaml.
+
+The script is [linkml_transform_script.py](linkml_transform_script.py). Following is Claude.ai's explanation and
+presentation of its results.
 
 ## Transformation Rules Applied
 
