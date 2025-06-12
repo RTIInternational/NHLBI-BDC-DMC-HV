@@ -1,0 +1,61 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00021690
+      observation_type:
+        expr: "'OMOP:4208414'"
+      value_quantity.unit:
+        expr: "'mg/L'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00021693
+      observation_type:
+        expr: "'OMOP:4208414'"
+      value_quantity.unit:
+        expr: "'mg/L'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from:
+          expr: case(({phv00172177} > 0.15, {phv00172177}),
+                ({phv00462201} == 1, "'LOD'")) #We need something to indicate a value is below or above LOD      
+      observation_type:
+        expr: "'OMOP:4208414'"
+      value_quantity.unit:
+        expr: "'mg/L'"
+      range_low:
+        value_decimal: 0.15
+        unit: "'mg/L'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from:
+          expr: case(({phv00227060} > 0.15, {phv00227060}),
+                ({phv00227067} == 1, "'LOD'")) #We need something to indicate a value is below or above LOD      
+        populated_from: phv00227060
+      observation_type:
+        expr: "'OMOP:4208414'"
+      value_quantity.unit:
+        expr: "'mg/L'"
+      range_low:
+        value_decimal: 0.15
+        unit: "'mg/L'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00422577
+      observation_type:
+        expr: "'OMOP:4208414'"
+      value_quantity.unit:
+        expr: "'mg/L'"
