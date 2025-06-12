@@ -1,0 +1,99 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00008098
+      observation_type:
+        expr: "'OBA:2050062'"
+      value_quantity.unit:
+        expr: "'[IU]/L'"
+      range_low:
+        value_decimal: 
+        unit: [IU]/L
+
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00081020
+      observation_type:
+        expr: "'OBA:2050062'"
+      value_quantity.unit:
+        expr: "'[IU]/L'"
+      range_low:
+        value_decimal: 
+        unit: [IU]/L
+
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00172166
+      observation_type:
+        expr: "'OBA:2050062'"
+      value_quantity.unit:
+        expr: "'[IU]/L'"
+      range_low:
+        value_decimal: 
+        unit: [IU]/L
+
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00227050
+      observation_type:
+        expr: "'OBA:2050062'"
+      value_quantity.unit:
+        expr: "'[IU]/L'"
+      range_low:
+        value_decimal: 
+        unit: [IU]/L
+
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00422390
+      observation_type:
+        expr: "'OBA:2050062'"
+      value_quantity.unit:
+        expr: "'[IU]/L'"
+      range_low:
+        value_decimal: 
+        unit: [IU]/L
+
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      observation_type:
+        expr: "'OBA:2050062'"
+      value_quantity.unit:
+        expr: "'[IU]/L'"
+      range_low:
+        value_decimal: #existing value
+        unit: [IU]/L
+      value_concept:
+        populated_from:
+          expr: case(({phv00172202} == 1, "''"))
+
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      observation_type:
+        expr: "'OBA:2050062'"
+      value_quantity.unit:
+        expr: "'[IU]/L'"
+      range_low:
+        value_decimal: #existing value
+        unit: [IU]/L
+      value_concept:
+        populated_from:
+          expr: case(({phv00227066} == 1, "''"))

@@ -1,0 +1,102 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      observation_type:
+        expr: "'OMOP:43020498'"
+      range_low:
+        value_decimal: 
+        unit: "unit"
+      value_concept:
+        populated_from:
+          expr: case(({phv00021702} == ., "''"))
+
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      observation_type:
+        expr: "'OMOP:43020498'"
+      value_quantity.unit:
+        expr: "'%'"
+      range_low:
+        value_decimal: 
+        unit: %
+      value_concept:
+        populated_from:
+          expr: case(({phv00021702} == 0, "''"))
+
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      observation_type:
+        expr: "'OMOP:43020498'"
+      value_quantity.unit:
+        expr: "'%'"
+      range_low:
+        value_decimal: 
+        unit: %
+      value_concept:
+        populated_from:
+          expr: case(({phv00021702} == 1, "''"))
+
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      observation_type:
+        expr: "'OMOP:43020498'"
+      value_quantity.unit:
+        expr: "'%'"
+      range_low:
+        value_decimal: 
+        unit: %
+      value_concept:
+        populated_from:
+          expr: case(({phv00021702} == 2, "''"))
+
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      observation_type:
+        expr: "'OMOP:43020498'"
+      value_quantity.unit:
+        expr: "'%'"
+      range_low:
+        value_decimal: 
+        unit: %
+      value_concept:
+        populated_from:
+          expr: case(({phv00021702} == 3, "''"))
+
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      observation_type:
+        expr: "'OMOP:43020498'"
+      value_quantity.unit:
+        expr: "'%'"
+      range_low:
+        value_decimal: 
+        unit: %
+      value_concept:
+        populated_from:
+          expr: case(({phv00021702} == 4, "''"))
+
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      observation_type:
+        expr: "'OMOP:43020498'"
+      value_quantity.unit:
+        expr: "'%'"
+      range_low:
+        value_decimal: 
+        unit: %
+      value_concept:
+        populated_from:
+          expr: case(({phv00021702} == 5, "''"))

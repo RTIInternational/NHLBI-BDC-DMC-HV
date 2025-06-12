@@ -1,0 +1,13 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00257671
+      observation_type:
+        expr: "'OMOP:4166120'"
+      value_quantity.unit:
+        expr: "'mm3'"
+      range_low:
+        value_decimal: 
+        unit: mm3
