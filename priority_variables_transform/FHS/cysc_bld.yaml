@@ -3,7 +3,7 @@ class_derivations:
     populated_from: FHS
     slot_derivations:
       value_decimal:
-        populated_from: phv00023208 #transform from mg/L to mg/dL
+        expr: {phv00023208} / 10
       observation_type:
         expr: "'OBA:2052375'" #cystatin c in blood
       value_quantity.unit:
