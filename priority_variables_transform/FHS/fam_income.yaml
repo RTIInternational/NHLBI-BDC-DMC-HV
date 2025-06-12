@@ -1,26 +1,54 @@
 class_derivations:
-  SdohObservation:
+  Observation:
     populated_from: FHS
     slot_derivations:
-      category:
-        expr: "'FAMILY_INCOME'"
-      value_enum:
+      observation_type: "'OMOP:4076114'" #family income
+      value_quantity.value_concept:
+        populated_from: phv00177608
+        value_mappings:
+          '1': < $20,000
+          '2': $20,000 - $34,999
+          '3': $35,000 - $54,999
+          '4': $55,000 - $74,999
+          '5': $75,000 - $100,000
+          '6': > $100,000
+          '9': UNKNOWN
+        value_quantity.unit: "'USD'"
+class_derivations:
+  Observation:
+    populated_from: FHS
+    slot_derivations:
+      observation_type: "'OMOP:4076114'" #family income
+      value_quantity.value_concept:
+        populated_from: phv00274078
+        value_mappings:
+          '1': < $12,000
+          '2': $12,000 - $24,000
+          '3': $25,000 - $49,999
+          '4': $50,000 - $74,999
+          '5': $75,000 - $100,000
+          '6': > $100,000
+        value_quantity.unit: "'USD'"    
+class_derivations:
+  Observation:
+    populated_from: FHS
+    slot_derivations:
+      observation_type: "'OMOP:4076114'" #family income
+      value_quantity.value_concept:
         populated_from: phv00021256
         value_mappings:
-          '1': 8TH_GRADE_OR_LESS
-          '2': 8TH_GRADE_OR_LESS
-          '3': 8TH_GRADE_OR_LESS
-          '4': HIGH_SCHOOL_NO_DIPLOMA
-          '5': HIGH_SCHOOL_GRADUATE_GED
-          '6': SOME_COLLEGE_OR_TECH_NO_DEGREE
-          '7': COLLEGE_OR_TECH_WITH_DEGREE
-          '8': MASTERS_OR_DOCTORAL_DEGREE
-          '10': COLLEGE_OR_TECH_WITH_DEGREE
-          '.': UNKNOWN
-  PREFER NOT TO ANSWER/UNKNOWN	.
-UNDER $12,000	1
-$ 12,000 - $ 24,000	2
-$ 25,000 - $ 49,999	3
-$ 50,000 - $ 74,999	4
-$ 75,000 - $ 100,000	5
-OVER $ 100,000	6
+          '1': < $12,000
+          '2': $12,000 - $24,000
+          '3': $25,000 - $49,999
+          '4': $50,000 - $74,999
+          '5': $75,000 - $100,000
+          '6': > $100,000
+        value_quantity.unit: "'USD'"    
+class_derivations:
+  Observation:
+    populated_from: FHS
+    slot_derivations:
+      observation_type: "'OMOP:4076114'" #family income
+      value_quantity.value_decimal:
+        populated_from: phv00021256
+      value_quantity.unit: "'USD'"    
