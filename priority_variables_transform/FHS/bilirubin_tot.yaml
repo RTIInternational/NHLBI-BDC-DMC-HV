@@ -23,7 +23,8 @@ class_derivations:
     populated_from: FHS
     slot_derivations:
       value_decimal:
-        populated_from: phv00081026
+        populated_from: 
+          expr: case(({phv00081026} > 0.1, {phv00081026}), "'LOD'") #We need something to indicate a value is below or above LOD      
       observation_type:
         expr: "'OMOP:4230543'"
       value_quantity.unit:
@@ -41,9 +42,6 @@ class_derivations:
         expr: "'OMOP:4230543'"
       value_quantity.unit:
         expr: "'mg/dL'"
-      range_low:
-        value_decimal: 
-        unit: mg/dL
 class_derivations:
   MeasurementObservation:
     populated_from: FHS
