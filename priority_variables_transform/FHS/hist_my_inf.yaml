@@ -19,6 +19,62 @@ class_derivations:
     populated_from: FHS
     slot_derivations:
       condition_concept:
+        populated_from: phv00003199
+        value_mappings:
+          '0': "'MONDO:0005068'"   #myocardial infarction
+          '1': "'MONDO:0005068'"   #myocardial infarction
+          '2': "'MONDO:0006803'"   #inferior myocardial infarction
+          '3': "'MONDO:0005068'"   #myocardial infarction
+          '4': "'MONDO:0005068'"   #myocardial infarction
+          '7': "'MONDO:0005068'"   #myocardial infarction
+          '8': 'UNKNOWN'
+      condition_status:
+        populated_from: phv00003199
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'HISTORICAL'
+          '2': 'HISTORICAL
+          '3': 'HISTORICAL
+          '4': 'HISTORICAL
+          '7': 'HISTORICAL
+          '8': 'UNKNOWN'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        populated_from: phv00003614
+        value_mappings:
+          '0': "'MONDO:0005068'"   #myocardial infarction
+          '1': "'MONDO:0005068'"   #myocardial infarction
+          '2': "'MONDO:0006803'"   #inferior myocardial infarction
+          '3': "'MONDO:0005068'"   #myocardial infarction
+          '4': "'MONDO:0005068'"   #myocardial infarction
+          '7': "'MONDO:0005068'"   #myocardial infarction
+          '8': 'UNKNOWN'
+      condition_status:
+        populated_from: phv00003614
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'HISTORICAL'
+          '2': 'HISTORICAL
+          '3': 'HISTORICAL
+          '4': 'HISTORICAL
+          '7': 'HISTORICAL
+          '8': 'UNKNOWN'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
         expr: "'MONDO:0005068'"   #myocardial infarction
       condition_status:
         populated_from: phv00000571
