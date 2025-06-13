@@ -114,17 +114,6 @@ class_derivations:
     slot_derivations:
       value_decimal:
         populated_from: 
-          expr: {phv00177546} * 2.54
-      observation_type:
-        expr: "'OBA:1000032'" #hip circumference
-      value_quantity.unit:
-        expr: "'cm'"
-class_derivations:
-  MeasurementObservation:
-    populated_from: FHS
-    slot_derivations:
-      value_decimal:
-        populated_from: 
           expr: {phv00251066} * 2.54
       observation_type:
         expr: "'OBA:1000032'" #hip circumference
