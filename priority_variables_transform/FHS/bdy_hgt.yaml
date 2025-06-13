@@ -15,6 +15,17 @@ class_derivations:
     slot_derivations:
       value_decimal:
         populated_from: 
+          expr: {phv00000539} * 2.54
+      observation_type:
+        expr: "'OBA:VT0001253'" #body height
+      value_quantity.unit:
+        expr: "'cm'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: 
           expr: {phv00000744} * 2.54
       observation_type:
         expr: "'OBA:VT0001253'" #body height
@@ -332,6 +343,7 @@ class_derivations:
     slot_derivations:
       value_decimal:
         populated_from: phv00056840
+          expr: {phv00056840} / 10
       observation_type:
         expr: "'OBA:VT0001253'" #body height
       value_quantity.unit:
