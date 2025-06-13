@@ -2,6 +2,10 @@ class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00007675
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 1'"
       value_decimal:
         populated_from: phv00007559
       observation_type:
@@ -12,6 +16,10 @@ class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00008379
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 2'"
       value_decimal:
         populated_from: phv00008085
       observation_type:
@@ -22,6 +30,13 @@ class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00081012
+      associated_visit:
+        populated_from: phv00081047
+        value_mappings:
+          '20': 'FHS ORIGINAL EXAM 20'
+          '21': 'FHS ORIGINAL EXAM 21'
       value_decimal:
         populated_from: phv00081023
       observation_type:
@@ -32,12 +47,13 @@ class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00276803
+      associated_visit:
+        expr: "'FHS ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 1, OMNI 2 CASE REVIEW'"
       value_decimal:
         populated_from: phv00276861
       observation_type:
         expr: "'OBA:VT0005265'"
       value_quantity.unit:
         expr: "'mg/dL'"
-      range_low:
-        value_decimal: 
-        unit: mg/dL
