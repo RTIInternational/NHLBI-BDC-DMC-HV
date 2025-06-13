@@ -213,7 +213,9 @@ class_derivations:
     populated_from: FHS
     slot_derivations:
       value_decimal:
-        populated_from: phv00172176
+        populated_from: 
+          expr: case(({phv00172176} > 16.0, {phv00172176}),
+                ({phv00172201} == 1, "'LLOD'")) #We need something to indicate a value is below or above LOD
       observation_type:
         expr: "'OBA:VT0000184'" #HDL
       value_quantity.unit:
@@ -243,7 +245,9 @@ class_derivations:
     populated_from: FHS
     slot_derivations:
       value_decimal:
-        populated_from: phv00227059
+        populated_from: 
+          expr: case(({phv00227059} > 16.0, {phv00227059}),
+                ({phv00227068} == 1, "'LLOD'")) #We need something to indicate a value is below or above LOD      
       observation_type:
         expr: "'OBA:VT0000184'" #HDL
       value_quantity.unit:
