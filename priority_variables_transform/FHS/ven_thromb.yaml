@@ -1,0 +1,472 @@
+#pulmonary embolism
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005279'"   #pulmonary embolism
+      condition_status:
+        populated_from: phv00273899 # pulmonary embolus (blood clot in lungs)
+        value_mappings:
+          '0': 'ABSENT'
+          '2': 'UNKNOWN'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005279'"   #pulmonary embolism
+      condition_status:
+        populated_from: phv00070487 # pulmonary embolus (blood clot in lungs)
+        value_mappings:
+          '0': 'ABSENT'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005279'"   #pulmonary embolism
+      condition_status:
+        populated_from: phv00021066 # pulmonary embolus (blood clot in lungs)
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'UNKNOWN'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005279'"   #pulmonary embolism
+      condition_status:
+        populated_from: phv00071923 # PE by Pulmonary arteriogram, CTPA, or MRI
+        value_mappings:
+          null : 'ABSENT' #condition is absent if source data string var is null
+          'PE by pulmonary arteriogram, CTPA, or MRI': 'PRESENT'  #condition is present if source data string var has this value
+      condition_provenance:
+        expr: "'OMOP:4822160'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005279'"   #pulmonary embolism
+      condition_status:
+        populated_from: phv00071924 # PE by history and high probability ventilation/perfusion (V/Q) Scan
+        value_mappings:
+          null : 'ABSENT' #condition is absent if source data string var is null
+          'PE by history and high probability ventilation/perfusion (V/Q) Scan': 'PRESENT'  #condition is present if source data string var has this value
+      condition_provenance:
+        expr: "'OMOP:4822160'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005279'"   #pulmonary embolism
+      condition_status:
+        populated_from: phv00071925 #PE by clinical high suspicion & documented source of PE (DVT) 
+        value_mappings:
+          null : 'ABSENT' #condition is absent if source data string var is null
+          'PE by clinical high suspicion & documented source of PE (DVT)': 'PRESENT'  #condition is present if source data string var has this value
+      condition_provenance:
+        expr: "'OMOP:4822160'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005279'"   #pulmonary embolism
+      condition_status:
+        populated_from: phv00071926 # PE by autopsy
+        value_mappings:
+          null : 'ABSENT' #condition is absent if source data string var is null
+          'PE by autopsy': 'PRESENT'  #condition is present if source data string var has this value
+      condition_provenance:
+        expr: "'OMOP:4822160'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005279'"   #pulmonary embolism
+      condition_status:
+        populated_from: phv00071928 # No PE
+        value_mappings:
+          'No PE': 'ABSENT'  
+      condition_provenance:
+        expr: "'OMOP:4822160'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005279'"   #pulmonary embolism
+      condition_status:
+        populated_from: phv00071929 # Maybe PE
+        value_mappings:
+          'Maybe PE': 'UNKNOWN'  
+      condition_provenance:
+        expr: "'OMOP:4822160'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005279'"   #pulmonary embolism
+      condition_status:
+        populated_from: phv00460989 # Have you ever had a pulmonary embolus
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005279'"   #pulmonary embolism
+      condition_status:
+        populated_from: phv00461919 # Since your last provided medical information have you had: Pulmonary embolus
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'UNKNOWN'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+
+
+
+
+# venous thrombosis
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005399'"   #venous thromboembolism
+      condition_status:
+        populated_from: phv00273898 # deep vein thrombosis
+        value_mappings:
+          '0': 'ABSENT'
+          '2': 'UNKNOWN'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005399'"   #venous thromboembolism
+      condition_status:
+        populated_from: phv00007028 # deep vein thrombosis
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005399'"   #venous thromboembolism
+      condition_status:
+        populated_from: phv00007028 # deep vein thrombosis
+        value_mappings:
+          '0': 'ABSENT'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005399'"   #venous thromboembolism
+      condition_status:
+        populated_from: phv00007461 # deep vein thrombosis
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005399'"   #venous thromboembolism
+      condition_status:
+        populated_from: phv00070486 # deep vein thrombosis
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'ONESELF'"        
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005399'"   #venous thromboembolism
+      condition_status:
+        populated_from: phv00010342 # deep vein thrombosis
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'ONESELF'"   
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005399'"   #venous thromboembolism
+      condition_status:
+        populated_from: phv00010343 # deep vein thrombosis
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'ONESELF'"   
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005399'"   #venous thromboembolism
+      condition_status:
+        populated_from: phv00010478 # deep vein thrombosis
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'UNKNOWN'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005399'"   #venous thromboembolism
+      condition_status:
+        populated_from: phv00021065 # deep vein thrombosis
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'UNKNOWN'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'ONESELF'"  
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005399'"   #venous thromboembolism
+      condition_status:
+        populated_from: phv00071915 # DVT: Venogram: Result
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'UNKNOWN'
+      condition_provenance:
+        expr: "'OMOP:4822126'" # observation recorded from EHR
+      relationship_to_participant:
+        expr: "'ONESELF'" 
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005399'"   #venous thromboembolism
+      condition_status:
+        populated_from: phv00071917 # DVT: Doppler ultrasound: Result
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'UNKNOWN'
+      condition_provenance:
+        expr: "'OMOP:4822126'" # observation recorded from EHR
+      relationship_to_participant:
+        expr: "'ONESELF'" 
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005399'"   #venous thromboembolism
+      condition_status:
+        populated_from: phv00071919 # DVT: Impedance plethysmography: Result
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'UNKNOWN'
+      condition_provenance:
+        expr: "'OMOP:4822126'" # observation recorded from EHR
+      relationship_to_participant:
+        expr: "'ONESELF'" 
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005399'"   #venous thromboembolism
+      condition_status:
+        populated_from: phv00071934  # DVT: CT: Result
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'UNKNOWN'
+      condition_provenance:
+        expr: "'OMOP:4822126'" # observation recorded from EHR
+      relationship_to_participant:
+        expr: "'ONESELF'" 
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005399'"   #venous thromboembolism
+      condition_status:
+        populated_from: phv00071930 # DVT Final Diagnostic Summary: DVT
+        value_mappings:
+          'DVT': 'PRESENT'  
+      condition_provenance:
+        expr: "'OMOP:4822160'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005399'"   #venous thromboembolism
+      condition_status:
+        populated_from: phv00071932 # DVT Final Diagnostic Summary: No DVT
+        value_mappings:
+          'No DVT': 'ABSENT'  
+      condition_provenance:
+        expr: "'OMOP:4822160'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005399'"   #venous thromboembolism
+      condition_status:
+        populated_from: phv00071933 # DVT Final Diagnostic Summary: Maybe DVT
+        value_mappings:
+          'Maybe DVT': 'UNKNOWN'  
+      condition_provenance:
+        expr: "'OMOP:4822160'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005399'"   #venous thromboembolism
+      condition_status:
+        populated_from: phv00460988 # Have you ever had a deep vein thrombosis
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'UNKNOWN'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005399'"   #venous thromboembolism
+      condition_status:
+        populated_from: phv00461918 # Since your last provided medical information have you had: Deep vein thrombosis - DVT
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'UNKNOWN'
+      condition_provenance:
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+
+
+
+# venogram
+class_derivations:
+  Procedure:
+    populated_from: FHS
+    slot_derivations:
+      procedure_concept:
+        expr: "'OMOP:4175809'" #Venography
+      procedure_provenance: 
+        expr: "'OMOP:4822126'" #observation recorded from EHR 
+      value_mappings:
+        '8': 'ABSENT' #possible values in source data are Positive / Negative / Maybe / Test not done
+        '0': 'PRESENT'
+        '1': 'PRESENT'
+        '2': 'PRESENT'
+
+# doppler ultrasound
+class_derivations:
+  Procedure:
+    populated_from: FHS
+    slot_derivations:
+      procedure_concept:
+        expr: "'OMOP:35622931'" #doppler ultrasound
+      procedure_provenance: 
+        expr: "'OMOP:4822126'" #observation recorded from EHR 
+      value_mappings:
+        '8': 'ABSENT' #possible values in source data are Positive / Negative / Maybe / Test not done
+        '0': 'PRESENT'
+        '1': 'PRESENT'
+        '2': 'PRESENT'
+
+# Impedance plethysmography
+class_derivations:
+  Procedure:
+    populated_from: FHS
+    slot_derivations:
+      procedure_concept:
+        expr: "'OMOP:4098516'" #Impedance plethysmography
+      procedure_provenance: 
+        expr: "'OMOP:4822126'" #observation recorded from EHR 
+      value_mappings:
+        '8': 'ABSENT' #possible values in source data are Positive / Negative / Maybe / Test not done
+        '1': 'PRESENT'
+

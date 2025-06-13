@@ -1,0 +1,51 @@
+# thousands per microliter
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00008108
+      observation_type:
+        expr: "'OBA:VT0000217'" #white blood cell count
+      value_quantity.unit:
+        expr: "'x10E3/uL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00172178
+      observation_type:
+        expr: "'OBA:VT0000217'" #white blood cell count
+      value_quantity.unit:
+        expr: "'x10E3/uL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00227025 #data includes abnormal values
+      observation_type:
+        expr: "'OBA:VT0000217'"
+      value_quantity.unit:
+        expr: "'x10E3/uL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00081030 #assuming unit recorded in data, 10^6 / uL,  is wrong based on actual values
+      observation_type:
+        expr: "'OBA:VT0000217'" 
+      value_quantity.unit:
+        expr: "'x10E3/uL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00276855
+      observation_type:
+        expr: "'OBA:VT0000217'" 
+      value_quantity.unit:
+        expr: "'x10E3/uL'"
