@@ -2,6 +2,10 @@ class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00023794
+      associated_visit:
+        expr: "'FHS PSIP ORIGINAL, OFFSPRING'"
       observation_type:
         expr: "'OMOP:36303297'"
       value_integer:
@@ -12,6 +16,10 @@ class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00023901
+      associated_visit:
+        expr: "'FHS PSIP ORIGINAL, OFFSPRING'"
       observation_type:
         expr: "'OMOP:36303297'"
       value_integer:
