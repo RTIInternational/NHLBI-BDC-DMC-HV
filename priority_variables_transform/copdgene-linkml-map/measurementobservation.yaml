@@ -1,3 +1,4 @@
+# bdy_hgt
 class_derivations:
   MeasurementObservation:
     populated_from: COPDGene
@@ -8,3 +9,130 @@ class_derivations:
         expr: "'OBA:VT0001253'" # height
       value_quantity.unit:
         expr: "'cm'"
+
+# bdy_wgt
+class_derivations:
+  MeasurementObservation:
+    populated_from: COPDGene
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00159568
+      value_decimal:
+        populated_from: phv00159591
+      value_quantity.unit:
+        expr: "'kg'"
+      observation_type:
+        expr: "'OBA:VT0001259'"  # body weight
+
+# bmi
+class_derivations:
+  MeasurementObservation:
+    populated_from: COPDGene
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00159568
+      value_decimal:
+        populated_from: phv00159593
+      value_quantity.unit:
+        expr: "'kg/m2'"
+      observation_type:
+        expr: "'OBA:2045455'"  # bmi
+
+# bp_diastolic
+class_derivations:
+  MeasurementObservation:
+    populated_from: COPDGene
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00159568
+      value_decimal:
+        populated_from: phv00159583
+      value_quantity.unit:
+        expr: "'mm[Hg]'"
+      observation_type:
+        expr: "'OMOP:4154790'"  # diastolic bp
+
+# bp_systolic
+class_derivations:
+  MeasurementObservation:
+    populated_from: COPDGene
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00159568
+      value_decimal:
+        populated_from: phv00159590
+      value_quantity.unit:
+        expr: "'mm[Hg]'"
+      observation_type:
+        expr: "'OMOP:4152194'"  # systolic bp
+
+# fev1
+class_derivations:
+  MeasurementObservation:
+    populated_from: COPDGene
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00159568
+      value_decimal:
+        populated_from: phv00159853
+      value_quantity.unit:
+        expr: "'L'"
+      observation_type:
+        expr: "'OMOP:42418379'"  # FEV1
+
+# fev1_fvc
+class_derivations:
+  MeasurementObservation:
+    populated_from: COPDGene
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00159568
+      value_decimal:
+        populated_from: phv00159855
+      value_quantity.unit:
+        expr: "'{ratio}'"
+      observation_type:
+        expr: "'OMOP:3011505'"  # FEV1/FVC
+
+# fvc
+class_derivations:
+  MeasurementObservation:
+    populated_from: COPDGene
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00159568
+      value_decimal:
+        populated_from: phv00159854
+      value_quantity.unit:
+        expr: "'L'"
+      observation_type:
+        expr: "'OMOP:4176265'"  # FVC
+
+# hrt_rt
+class_derivations:
+  MeasurementObservation:
+    populated_from: COPDGene
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00159568
+      value_decimal:
+        populated_from: phv00159584
+      value_quantity.unit:
+        expr: "'{beats}/min'"
+      observation_type:
+        expr: "'OBA:1001087'"  # heart rate
+
+# spo2
+class_derivations:
+  MeasurementObservation:
+    populated_from: COPDGene
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00159568
+      value_decimal:
+        expr: "{phv00159589} * 100 if {phv00159589} <= 1 else {phv00159589}"
+      value_quantity.unit:
+        expr: "'%'"
+      observation_type:
+        expr: "'OBA:2045443'"  # SpO2
+
