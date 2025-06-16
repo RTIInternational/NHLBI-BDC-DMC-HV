@@ -4,9 +4,15 @@ class_derivations:
     slot_derivations:
       associated_participant:
         populated_from: phv00159568
-      value_decimal:
-        populated_from: phv00159854
-      value_quantity.unit:
-        expr: '''L'''
       observation_type:
         expr: '''OMOP:4176265'''
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: COPDGene
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00159854
+                unit:
+                  expr: '''L'''
