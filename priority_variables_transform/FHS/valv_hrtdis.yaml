@@ -1,0 +1,191 @@
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0002869'"    # valvular heart disease
+      condition_status:
+        populated from: phv00008002 # uncompensated valvular heart disease
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          null: 'UNKNOWN'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0002869'"    # valvular heart disease
+      condition_status:
+        populated from: phv00369621   #Valvular Heart Disease - criteria other
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'PRESENT'
+          '3': 'PRESENT'
+          '9': 'UNKNOWN'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+
+
+#aortic stenosis
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0042981'"    # aortic valve stenosis
+      condition_status:
+        populated from: phv00276882 #aortic stenosis
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'PRESENT'
+          '3': 'PRESENT'
+          null: 'UNKNOWN'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0042981'"    # aortic valve stenosis
+      condition_status:
+        populated from: phv00369618  #aortic stenosis
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'PRESENT'
+          '3': 'PRESENT'
+          '9': 'UNKNOWN'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+
+
+
+#aortic insufficiency
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005648'"    # aortic valve insufficiency
+      condition_status:
+        populated from: phv00276881  #aortic insufficiency
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'PRESENT'
+          '3': 'PRESENT'
+          null: 'UNKNOWN'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0005648'"    # aortic valve insufficiency
+      condition_status:
+        populated from: phv00369617  #aortic insufficiency
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'PRESENT'
+          '3': 'PRESENT'
+          '9': 'UNKNOWN'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+
+
+#mitral regurgitation
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0001653'"    # mitral regurgitation
+      condition_status:
+        populated from: phv00276883  #mitral regurgitation
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'PRESENT'
+          '3': 'PRESENT'
+          null: 'UNKNOWN'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0001653'"    # mitral regurgitation
+      condition_status:
+        populated from: phv00369619  #mitral regurgitation
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'PRESENT'
+          '3': 'PRESENT'
+          '9': 'UNKNOWN'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+
+
+#mitral stenosis
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0001718'"    # mitral stenosis
+      condition_status:
+        populated from: phv00276884  #mitral stenosis
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'PRESENT'
+          '3': 'PRESENT'
+          null: 'UNKNOWN'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      condition_concept:
+        expr: "'MONDO:0001718'"    # mitral stenosis
+      condition_status:
+        populated from: phv00369620  #mitral stenosis
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'PRESENT'
+          '3': 'PRESENT'
+          '9': 'UNKNOWN'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
