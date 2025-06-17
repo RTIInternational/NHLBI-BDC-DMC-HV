@@ -3,131 +3,62 @@ class_derivations:
     populated_from: FHS
     slot_derivations:
       associated_participant:
-        populated_from: 
+        populated_from: phv00004939
       associated_visit:
-        expr: "''"
+        expr: "'FHS ORIGINAL EXAM 21'"
       condition_concept:
-        expr: "'HP:0001681'"   #angina
+        expr: "'MONDO:0004979'"   #asthma
       condition_status:
-        populated_from: phv00055298
+        populated_from: phv00004923
         value_mappings:
           '0': 'ABSENT'
           '1': 'PRESENT'
-          '8': 'UNKNOWN'
+          '.': 'UNKNOWN'
+          '2': 'UNKNOWN'
       condition_provenance:
         expr: "'CLINICAL_DIAGNOSIS'"
       relationship_to_participant:
         expr: "'ONESELF'"
-
-  raw_variable: phv00000484
-    identifiers:
-      phs: phs000007
-      pht: pht000009
-    input_data_type: enum
-    value_set:
-      value: 0
-        function: Add two Condition annotations, one for asthma and one for allergy
-        Condition:
-          identity:
-          condition_concept: MONDO:0004979 #asthma
-          age_at_condition_start:
-          age_at_condition_end:
-          condition_provenance:
-          condition_status: ABSENT
-          condition_severity:
-          relationship_to_participant: ONESELF
-          associated_participant:
-          associated_visit:
-          id:
-        Condition:
-          identity:
-          condition_concept: HP:0012393 #allergy
-          age_at_condition_start:
-          age_at_condition_end:
-          condition_provenance:
-          condition_status: ABSENT
-          condition_severity:
-          relationship_to_participant: ONESELF
-          associated_participant:
-          associated_visit:
-          id:
-      value: 1
-        function: Add one Condition annotation for HISTORICAL of allergies
-        Condition:
-          identity:
-          condition_concept: HP:0012393 #allergy
-          age_at_condition_start:
-          age_at_condition_end:
-          condition_provenance:
-          condition_status: HISTORICAL
-          condition_severity:
-          relationship_to_participant: ONESELF
-          associated_participant:
-          associated_visit:
-          id:
-      value: 2
-        function: Add one Condition annotation for HISTORICAL of asthma
-        Condition:
-          identity:
-          condition_concept: MONDO:0004979 #asthma
-          age_at_condition_start:
-          age_at_condition_end:
-          condition_provenance:
-          condition_status: HISTORICAL
-          condition_severity:
-          relationship_to_participant: ONESELF
-          associated_participant:
-          associated_visit:
-          id:  
-      value: 3
-        function: Add two Condition annotations, one for asthma and one for allergy
-        Condition:
-          identity:
-          condition_concept: MONDO:0004979 #asthma
-          age_at_condition_start:
-          age_at_condition_end:
-          condition_provenance:
-          condition_status: HISTORICAL
-          condition_severity:
-          relationship_to_participant: ONESELF
-          associated_participant:
-          associated_visit:
-          id:
-        Condition:
-          identity:
-          condition_concept: HP:0012393 #allergy
-          age_at_condition_start:
-          age_at_condition_end:
-          condition_provenance:
-          condition_status: HISTORICAL
-          condition_severity:
-          relationship_to_participant: ONESELF
-          associated_participant:
-          associated_visit:
-          id:
-      value: 9999
-        function: Add two Condition annotations, one for asthma and one for allergy
-        Condition:
-          identity:
-          condition_concept: MONDO:0004979 #asthma
-          age_at_condition_start:
-          age_at_condition_end:
-          condition_provenance:
-          condition_status: UNKNOWN
-          condition_severity:
-          relationship_to_participant: ONESELF
-          associated_participant:
-          associated_visit:
-          id:
-       Condition:
-        identity:
-        condition_concept: HP:0012393 #allergy
-        age_at_condition_start:
-        age_at_condition_end:
-        condition_provenance:
-        condition_status: UNKNOWN
-        condition_severity:
-        relationship_to_participant: ONESELF
-        associated_participant:
-        associated_visit:
-        id:
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00001036
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 1'"
+      condition_concept:
+        expr: "'MONDO:0004979'"   #asthma
+      condition_status:
+        populated_from: phv00000484
+        value_mappings:
+          '0': 'ABSENT'
+          '1': # do nothing, do I just leave it off?
+          '9999': 'UNKNOWN'
+          '2': 'HISTORICAL'
+          '3': 'HISTORICAL'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00001036
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 1'"
+      condition_concept:
+        expr: "'HP:0012393'"   #allergy
+      condition_status:
+        populated_from: phv00000484
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'HISTORICAL'
+          '9999': 'UNKNOWN'
+          '2': # do nothing, do I just leave it off?
+          '3': HISTORICAL
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'ONESELF'"
