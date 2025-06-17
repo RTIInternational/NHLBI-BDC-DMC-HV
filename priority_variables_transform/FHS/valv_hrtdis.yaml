@@ -1,58 +1,58 @@
 class_derivations:
-  Condition:
-    populated_from: FHS
-    slot_derivations:
-      condition_concept:
-        expr: "'MONDO:0002869'"    # valvular heart disease
-      condition_status:
-        populated from: phv00008002 # uncompensated valvular heart disease
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-          null: 'UNKNOWN'
-      condition_provenance:
-        expr: "'CLINICAL_DIAGNOSIS'"
-      relationship_to_participant:
-        expr: "'ONESELF'"
+    Condition:
+        populated_from: FHS
+        slot_derivations:
+            condition_concept:
+                expr: "'MONDO:0002869'"    # valvular heart disease
+            condition_status:
+                populated from: phv00008002 # uncompensated valvular heart disease
+            value_mappings:
+                '0': 'ABSENT'
+                '1': 'PRESENT'
+                null: 'UNKNOWN'
+            condition_provenance:
+                expr: "'CLINICAL_DIAGNOSIS'"
+            relationship_to_participant:
+                expr: "'ONESELF'"
 class_derivations:
-  Condition:
-    populated_from: FHS
-    slot_derivations:
-      condition_concept:
-        expr: "'MONDO:0002869'"    # valvular heart disease
-      condition_status:
-        populated from: phv00369621   #Valvular Heart Disease - criteria other
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-          '2': 'PRESENT'
-          '3': 'PRESENT'
-          '9': 'UNKNOWN'
-      condition_provenance:
-        expr: "'CLINICAL_DIAGNOSIS'"
-      relationship_to_participant:
-        expr: "'ONESELF'"
+    Condition:
+        populated_from: FHS
+        slot_derivations:
+            condition_concept:
+                expr: "'MONDO:0002869'"    # valvular heart disease
+            condition_status:
+                populated from: phv00369621   #Valvular Heart Disease - criteria other
+                value_mappings:
+                    '0': 'ABSENT'
+                    '1': 'PRESENT'
+                    '2': 'PRESENT'
+                    '3': 'PRESENT'
+                    '9': 'UNKNOWN'
+            condition_provenance:
+                expr: "'CLINICAL_DIAGNOSIS'"
+            relationship_to_participant:
+                expr: "'ONESELF'"
 
 
 #aortic stenosis
 class_derivations:
-  Condition:
-    populated_from: FHS
-    slot_derivations:
-      condition_concept:
-        expr: "'MONDO:0042981'"    # aortic valve stenosis
-      condition_status:
-        populated from: phv00276882 #aortic stenosis
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-          '2': 'PRESENT'
-          '3': 'PRESENT'
-          null: 'UNKNOWN'
-      condition_provenance:
-        expr: "'CLINICAL_DIAGNOSIS'"
-      relationship_to_participant:
-        expr: "'ONESELF'"
+    Condition:
+        populated_from: FHS
+        slot_derivations:
+            condition_concept:
+                expr: "'MONDO:0042981'"    # aortic valve stenosis
+            condition_status:
+                populated from: phv00276882 #aortic stenosis
+                value_mappings:
+                    '0': 'ABSENT'
+                    '1': 'PRESENT'
+                    '2': 'PRESENT'
+                    '3': 'PRESENT'
+                    null: 'UNKNOWN'
+            condition_provenance:
+                expr: "'CLINICAL_DIAGNOSIS'"
+            relationship_to_participant:
+                expr: "'ONESELF'"
 class_derivations:
   Condition:
     populated_from: FHS
