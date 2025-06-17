@@ -4,9 +4,15 @@ class_derivations:
     slot_derivations:
       associated_participant:
         populated_from: phv00159568
-      value_decimal:
-        populated_from: phv00159591
-      value_quantity.unit:
-        expr: '''kg'''
       observation_type:
         expr: '''OBA:VT0001259'''
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: COPDGene
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00159591
+                unit:
+                  expr: '''kg'''
