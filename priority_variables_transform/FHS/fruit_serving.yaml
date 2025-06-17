@@ -2,24 +2,32 @@ class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00068241
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 5'"
       value_decimal:
         populated_from: 
-          expr: "case({phv00070066} + {phv00070067} + {phv00070068} + {phv00070069} + {phv00070070} + {phv00070071} +
+          expr: "'case({phv00070066} + {phv00070067} + {phv00070068} + {phv00070069} + {phv00070070} + {phv00070071} +
                  {phv00070072} + {phv00070073} + {phv00070074} + {phv00070075} + {phv00070076} + {phv00070077} + 
-                 {phv00070078} + {phv00070079} + {phv00070080})"
+                 {phv00070078} + {phv00070079} + {phv00070080})'"
       observation_type:
-        expr: "OMOP:21493059'" #servings of fruit per week
+        expr: "'OMOP:21493059'" #servings of fruit per week
       value_quantity.unit:
         expr: "'{#}/wk'"
 class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00068713
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 6'"
       value_decimal:
         populated_from: 
-          expr: "case({phv00068474} + {phv00068475} + {phv00068476} + {phv00068477} + {phv00068473} + {phv00068478} + 
+          expr: "'case({phv00068474} + {phv00068475} + {phv00068476} + {phv00068477} + {phv00068473} + {phv00068478} + 
                  {phv00068479} + {phv00068480} + {phv00068481} + {phv00068482} + {phv00068483} + {phv00068484} + 
-                 {phv00068485} + {phv00068486} + {phv00068487})"
+                 {phv00068485} + {phv00068486} + {phv00068487})'"
       observation_type:
         expr: "OMOP:21493059'" #servings of fruit per week
       value_quantity.unit:
@@ -28,6 +36,10 @@ class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00069162
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 7'"
       value_decimal:
         populated_from: 
           expr: "case({phv00069042} + {phv00069043} + {phv00069044} + {phv00069045} + {phv00069046} + {phv00069047} + 
@@ -41,11 +53,15 @@ class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00157296
+      associated_visit:
+        expr: "'FHS GENERATION 3 EXAM 1'"
       value_decimal:
         populated_from: 
-          expr: "case({phv00157176} + {phv00157177} + {phv00157178} + {phv00157179} + {phv00157180} + {phv00157181} + 
+          expr: "'case({phv00157176} + {phv00157177} + {phv00157178} + {phv00157179} + {phv00157180} + {phv00157181} + 
                  {phv00157182} + {phv00157183} + {phv00157184} + {phv00157185} + {phv00157186} + {phv00157187} + 
-                 {phv00157188} + {phv00157189} + {phv00157190})"
+                 {phv00157188} + {phv00157189} + {phv00157190})'"
       observation_type:
         expr: "OMOP:21493059'" #servings of fruit per week
       value_quantity.unit:
@@ -54,11 +70,15 @@ class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00157771
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 20'"
       value_decimal:
         populated_from: 
-          expr: "case({phv00157617} + {phv00157618} + {phv00157619} + {phv00157620} + {phv00157621} + {phv00157622} + 
+          expr: "'case({phv00157617} + {phv00157618} + {phv00157619} + {phv00157620} + {phv00157621} + {phv00157622} + 
                  {phv00157623} + {phv00157624} + {phv00157625} + {phv00157626} + {phv00157627} + {phv00157628} + 
-                 {phv00157629} + {phv00157630} + {phv00157631})"
+                 {phv00157629} + {phv00157630} + {phv00157631})'"
       observation_type:
         expr: "OMOP:21493059'" #servings of fruit per week
       value_quantity.unit:
@@ -67,11 +87,15 @@ class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00158540
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 22'"
       value_decimal:
         populated_from: 
-          expr: "case({phv00158420} + {phv00158421} + {phv00158422} + {phv00158423} + {phv00158424} + {phv00158425} + 
+          expr: "'case({phv00158420} + {phv00158421} + {phv00158422} + {phv00158423} + {phv00158424} + {phv00158425} + 
                  {phv00158426} + {phv00158427} + {phv00158428} + {phv00158429} + {phv00158430} + {phv00158431} + 
-                 {phv00158432} + {phv00158433} + {phv00158434})"
+                 {phv00158432} + {phv00158433} + {phv00158434})'"
       observation_type:
         expr: "OMOP:21493059'" #servings of fruit per week
       value_quantity.unit:
@@ -80,11 +104,15 @@ class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00162112
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 8'"
       value_decimal:
         populated_from: 
-          expr: "case({phv00162554} + {phv00162555} + {phv00162556} + {phv00162557} + {phv00162558} + {phv00162559} + 
+          expr: "'case({phv00162554} + {phv00162555} + {phv00162556} + {phv00162557} + {phv00162558} + {phv00162559} + 
                  {phv00162560} + {phv00162561} + {phv00162562} + {phv00162563} + {phv00162564} + {phv00162565} + 
-                 {phv00162566} + {phv00162567} + {phv00162568})"
+                 {phv00162566} + {phv00162567} + {phv00162568})'"
       observation_type:
         expr: "OMOP:21493059'" #servings of fruit per week
       value_quantity.unit:
@@ -93,11 +121,15 @@ class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00172393
+      associated_visit:
+        expr: "'FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'"
       value_decimal:
         populated_from: 
-          expr: "case({phv00172953} + {phv00172954} + {phv00172955} + {phv00172956} + {phv00172957} + {phv00172958} + 
+          expr: "'case({phv00172953} + {phv00172954} + {phv00172955} + {phv00172956} + {phv00172957} + {phv00172958} + 
                  {phv00172959} + {phv00172960} + {phv00172961} + {phv00172962} + {phv00172963} + {phv00172964} + 
-                 {phv00172965} + {phv00172966} + {phv00172967} + {phv00172968} + {phv00172969})"
+                 {phv00172965} + {phv00172966} + {phv00172967} + {phv00172968} + {phv00172969})'"
       observation_type:
         expr: "OMOP:21493059'" #servings of fruit per week
       value_quantity.unit:

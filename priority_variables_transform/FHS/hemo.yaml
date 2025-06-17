@@ -2,6 +2,10 @@ class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00001036
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 1'"
       value_decimal:
         populated_from: 
           expr: {phv00000535} / 10
@@ -13,6 +17,10 @@ class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00001036
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 2'"
       value_decimal:
         populated_from: 
           expr: {phv00000627} / 10
@@ -24,6 +32,10 @@ class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00001036
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 3'"
       value_decimal:
         populated_from: 
           expr: {phv00000634} / 10
@@ -35,6 +47,10 @@ class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00001036
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 4'"
       value_decimal:
         populated_from: 
           expr: {phv00000673} / 10
@@ -46,6 +62,10 @@ class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00001036
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 5'"
       value_decimal:
         populated_from: 
           expr: {phv00000764} / 10
@@ -57,6 +77,10 @@ class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00001036
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 6'"
       value_decimal:
         populated_from: 
           expr: {phv00000841} / 10
@@ -68,6 +92,13 @@ class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00081012
+      associated_visit:
+        populated_from: phv00081047
+        value_mappings:
+          '20': 'FHS ORIGINAL EXAM 20'
+          '21': 'FHS ORIGINAL EXAM 21'
       value_decimal:
         populated_from: phv00081032
       observation_type:
@@ -78,6 +109,10 @@ class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00172159
+      associated_visit:
+        expr: "'FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'"
       value_decimal:
         populated_from: phv00172180
       observation_type:
@@ -88,6 +123,10 @@ class_derivations:
   MeasurementObservation:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00227023
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4'"
       value_decimal:
         populated_from: phv00227027
       observation_type:

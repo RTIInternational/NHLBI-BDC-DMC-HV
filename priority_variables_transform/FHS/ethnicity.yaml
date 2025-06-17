@@ -2,6 +2,10 @@ class_derivations:
   Demography:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00072580
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 8'"
       ethnicity:
         populated_from: 
           exp: case(({phv00072538} == 1, 'HISPANIC_OR_LATINO'),
@@ -11,6 +15,10 @@ class_derivations:
   Demography:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00177237
+      associated_visit:
+        expr: "'FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'"
       ethnicity:
         populated_from: phv00177597
         value_mappings:
@@ -21,6 +29,10 @@ class_derivations:
   Demography:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00251262
+      associated_visit:
+        expr: "'FHS OMNI 1 EXAM 3'"
       ethnicity:
         populated_from: 
           exp: case(({phv00251746} == 1, 'HISPANIC_OR_LATINO'),
@@ -30,6 +42,10 @@ class_derivations:
   Demography:
     populated_from: FHS
     slot_derivations:
+      associated_participant:
+        populated_from: phv00423847
+      associated_visit:
+        expr: "'FHS RE ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 1, OMNI 2'"
       ethnicity:
         populated_from: 
           exp: case(({phv00423856} == 1, 'HISPANIC_OR_LATINO'),

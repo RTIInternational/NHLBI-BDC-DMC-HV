@@ -1,13 +1,17 @@
 class_derivations:
-    MeasurementObservation:
-        populated from: FHS
-        slot_derivations:
-            value_decimal:
-                populated_from: phv00422578  #expr needed to convert data values, see notes in FHS_VariableProperties
-            observation_type:
-                expr: "'OMOP:8842'" # ICAM-1 in blood
-            value_quantity_unit: 
-                expr: "'ng/dL'"
+  MeasurementObservation:
+    populated from: FHS
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00227023
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4'"
+      value_decimal:
+        populated_from: phv00422578  #expr needed to convert data values, see notes in FHS_VariableProperties
+      observation_type:
+        expr: "'OMOP:8842'" # ICAM-1 in blood
+      value_quantity_unit: 
+        expr: "'ng/dL'"
 class_derivations:
     MeasurementObservation:
         populated from: FHS

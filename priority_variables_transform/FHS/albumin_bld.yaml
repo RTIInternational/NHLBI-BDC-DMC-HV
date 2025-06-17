@@ -5,7 +5,7 @@ class_derivations:
       associated_participant:
         populated_from: phv00007675
       associated_visit:
-        expr: "'FHS EXAM 1'"
+        expr: "'FHS OFFSPRING EXAM 1'"
       value_decimal:
         populated_from: 
           expr: {phv00007562} * 10
@@ -20,7 +20,7 @@ class_derivations:
       associated_participant:
         populated_from: phv00008379
       associated_visit:
-        expr: "'FHS EXAM 2'"
+        expr: "'FHS OFFSPRING EXAM 2'"
       value_decimal:
         populated_from: 
           expr: {phv00008089} * 10
@@ -35,7 +35,7 @@ class_derivations:
       associated_participant:
         populated_from: phv00172159
       associated_visit:
-        expr: "'FHS EXAM 2'"
+        expr: "'FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'"
       value_decimal:
         populated_from: phv00172164
       observation_type:
@@ -49,7 +49,7 @@ class_derivations:
       associated_participant:
         populated_from: phv00227023
       associated_visit:
-        expr: "'FHS EXAM 9'"
+        expr: "'FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4'"
       value_decimal:
         populated_from: phv00227048
       observation_type:
@@ -63,7 +63,10 @@ class_derivations:
       associated_participant:
         populated_from: phv00081012
       associated_visit:
-        populated_from: phv00081047 #need to see what these values are: 20 or 21?
+        populated_from: phv00081047
+        value_mappings:
+          '20': 'FHS ORIGINAL EXAM 20'
+          '21': 'FHS ORIGINAL EXAM 21'
       value_decimal:
         populated_from: phv00081013
       observation_type:
@@ -76,6 +79,8 @@ class_derivations:
     slot_derivations:
       associated_participant:
         populated_from: phv00276803
+      associated_visit:
+        expr: "'ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 1, OMNI 2 CASE REVIEW'"
       value_decimal:
         populated_from: phv00276864
       observation_type:
