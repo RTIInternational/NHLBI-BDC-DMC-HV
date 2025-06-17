@@ -33,14 +33,15 @@ class_derivations:
         populated_from: phv00000484
         value_mappings:
           '0': 'ABSENT'
-          '1': # do nothing, do I just leave it off?
+          '1': 'ABSENT'
           '9999': 'UNKNOWN'
           '2': 'HISTORICAL'
           '3': 'HISTORICAL'
       condition_provenance:
-        expr: "'CLINICAL_DIAGNOSIS'"
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
       relationship_to_participant:
         expr: "'ONESELF'"
+class_derivations:
   Condition:
     populated_from: FHS
     slot_derivations:
@@ -56,9 +57,9 @@ class_derivations:
           '0': 'ABSENT'
           '1': 'HISTORICAL'
           '9999': 'UNKNOWN'
-          '2': # do nothing, do I just leave it off?
+          '2': 'ABSENT'
           '3': HISTORICAL
       condition_provenance:
-        expr: "'CLINICAL_DIAGNOSIS'"
+        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
       relationship_to_participant:
         expr: "'ONESELF'"
