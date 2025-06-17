@@ -2,8 +2,10 @@ class_derivations:
   SdohObservation:
     populated_from: COPDGene
     slot_derivations:
+      associated_participant:
+        populated_from: phv00159568
       category:
-        expr: "'EDUCATIONAL_ATTAINMENT'"
+        expr: '''EDUCATIONAL_ATTAINMENT'''
       value_enum:
         populated_from: phv00159773
         value_mappings:
@@ -13,4 +15,3 @@ class_derivations:
           '4': SOME_COLLEGE_OR_TECH_NO_DEGREE
           '5': COLLEGE_OR_TECH_WITH_DEGREE
           '6': MASTERS_OR_DOCTORAL_DEGREE
-
