@@ -2,11 +2,13 @@ class_derivations:
   Demography:
     populated_from: COPDGene
     slot_derivations:
+      associated_participant:
+        populated_from: phv00159568
       sex:
         populated_from: phv00159571
         value_mappings:
-          '1': OMOP:8507  # MALE
-          '2': OMOP:8532  # FEMALE
+          '1': OMOP:8507
+          '2': OMOP:8532
       ethnicity:
         populated_from: phv00159573
         value_mappings:

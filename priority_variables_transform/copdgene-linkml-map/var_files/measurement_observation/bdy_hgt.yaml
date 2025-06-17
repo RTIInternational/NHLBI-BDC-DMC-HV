@@ -1,0 +1,13 @@
+# bdy_hgt
+class_derivations:
+  MeasurementObservation:
+    populated_from: COPDGene
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00159568
+      value_decimal:
+        populated_from: phv00159592
+      observation_type:
+        expr: '''OBA:VT0001253'''
+      value_quantity.unit:
+        expr: '''cm'''

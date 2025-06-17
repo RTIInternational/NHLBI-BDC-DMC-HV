@@ -1,0 +1,15 @@
+class_derivations:
+  Condition:
+    populated_from: COPDGene
+    slot_derivations:
+      condition_concept:
+        expr: '''MONDO:0005009'''
+      condition_status:
+        populated_from: phv00159609
+        value_mappings:
+          '0': ABSENT
+          '1': PRESENT
+      condition_provenance:
+        expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+      relationship_to_participant:
+        expr: '''SELF'''

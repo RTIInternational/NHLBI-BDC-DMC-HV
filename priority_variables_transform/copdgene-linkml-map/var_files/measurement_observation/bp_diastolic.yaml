@@ -1,0 +1,12 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: COPDGene
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00159568
+      value_decimal:
+        populated_from: phv00159583
+      value_quantity.unit:
+        expr: '''mm[Hg]'''
+      observation_type:
+        expr: '''OMOP:4154790'''
