@@ -347,6 +347,189 @@ class_derivations:
                             value_mappings:
                               '0': ABSENT
                               '1': PRESENT
+                measurements:
+                  object_derivations:
+                  - class_derivations:
+                      MeasurementObservation:
+                        populated_from: COPDGene
+                        slot_derivations:
+                          associated_participant:
+                            populated_from: phv00159568
+                          observation_type:
+                            expr: '''OBA:VT0001253'''
+                          value_quantity:
+                            object_derivations:
+                            - class_derivations:
+                                Quantity:
+                                  populated_from: COPDGene
+                                  slot_derivations:
+                                    value_decimal:
+                                      populated_from: phv00159592
+                                    unit:
+                                      expr: '''cm'''
+                  - class_derivations:
+                      MeasurementObservation:
+                        populated_from: COPDGene
+                        slot_derivations:
+                          associated_participant:
+                            populated_from: phv00159568
+                          observation_type:
+                            expr: '''OBA:VT0001259'''
+                          value_quantity:
+                            object_derivations:
+                            - class_derivations:
+                                Quantity:
+                                  populated_from: COPDGene
+                                  slot_derivations:
+                                    value_decimal:
+                                      populated_from: phv00159591
+                                    unit:
+                                      expr: '''kg'''
+                  - class_derivations:
+                      MeasurementObservation:
+                        populated_from: COPDGene
+                        slot_derivations:
+                          associated_participant:
+                            populated_from: phv00159568
+                          observation_type:
+                            expr: '''OBA:2045455'''
+                          value_quantity:
+                            object_derivations:
+                            - class_derivations:
+                                Quantity:
+                                  populated_from: COPDGene
+                                  slot_derivations:
+                                    value_decimal:
+                                      populated_from: phv00159593
+                                    unit:
+                                      expr: '''kg/m2'''
+                  - class_derivations:
+                      MeasurementObservation:
+                        populated_from: COPDGene
+                        slot_derivations:
+                          associated_participant:
+                            populated_from: phv00159568
+                          observation_type:
+                            expr: '''OMOP:4154790'''
+                          value_quantity:
+                            object_derivations:
+                            - class_derivations:
+                                Quantity:
+                                  populated_from: COPDGene
+                                  slot_derivations:
+                                    value_decimal:
+                                      populated_from: phv00159583
+                                    unit:
+                                      expr: '''mm[Hg]'''
+                  - class_derivations:
+                      MeasurementObservation:
+                        populated_from: COPDGene
+                        slot_derivations:
+                          associated_participant:
+                            populated_from: phv00159568
+                          observation_type:
+                            expr: '''OMOP:4152194'''
+                          value_quantity:
+                            object_derivations:
+                            - class_derivations:
+                                Quantity:
+                                  populated_from: COPDGene
+                                  slot_derivations:
+                                    value_decimal:
+                                      populated_from: phv00159590
+                                    unit:
+                                      expr: '''mm[Hg]'''
+                  - class_derivations:
+                      MeasurementObservation:
+                        populated_from: COPDGene
+                        slot_derivations:
+                          associated_participant:
+                            populated_from: phv00159568
+                          observation_type:
+                            expr: '''OMOP:42418379'''
+                          value_quantity:
+                            object_derivations:
+                            - class_derivations:
+                                Quantity:
+                                  populated_from: COPDGene
+                                  slot_derivations:
+                                    value_decimal:
+                                      populated_from: phv00159853
+                                    unit:
+                                      expr: '''L'''
+                  - class_derivations:
+                      MeasurementObservation:
+                        populated_from: COPDGene
+                        slot_derivations:
+                          associated_participant:
+                            populated_from: phv00159568
+                          observation_type:
+                            expr: '''OMOP:3011505'''
+                          value_quantity:
+                            object_derivations:
+                            - class_derivations:
+                                Quantity:
+                                  populated_from: COPDGene
+                                  slot_derivations:
+                                    value_decimal:
+                                      populated_from: phv00159855
+                                    unit:
+                                      expr: '''{ratio}'''
+                  - class_derivations:
+                      MeasurementObservation:
+                        populated_from: COPDGene
+                        slot_derivations:
+                          associated_participant:
+                            populated_from: phv00159568
+                          observation_type:
+                            expr: '''OMOP:4176265'''
+                          value_quantity:
+                            object_derivations:
+                            - class_derivations:
+                                Quantity:
+                                  populated_from: COPDGene
+                                  slot_derivations:
+                                    value_decimal:
+                                      populated_from: phv00159854
+                                    unit:
+                                      expr: '''L'''
+                  - class_derivations:
+                      MeasurementObservation:
+                        populated_from: COPDGene
+                        slot_derivations:
+                          associated_participant:
+                            populated_from: phv00159568
+                          observation_type:
+                            expr: '''OBA:1001087'''
+                          value_quantity:
+                            object_derivations:
+                            - class_derivations:
+                                Quantity:
+                                  populated_from: COPDGene
+                                  slot_derivations:
+                                    value_decimal:
+                                      populated_from: phv00159584
+                                    unit:
+                                      expr: '''{beats}/min'''
+                  - class_derivations:
+                      MeasurementObservation:
+                        populated_from: COPDGene
+                        slot_derivations:
+                          associated_participant:
+                            populated_from: phv00159568
+                          observation_type:
+                            expr: '''OBA:2045443'''
+                          value_quantity:
+                            object_derivations:
+                            - class_derivations:
+                                Quantity:
+                                  populated_from: COPDGene
+                                  slot_derivations:
+                                    value_decimal:
+                                      expr: '{phv00159589} * 100 if {phv00159589}
+                                        <= 1 else {phv00159589}'
+                                    unit:
+                                      expr: '''%'''
                 observations:
                   object_derivations:
                   - class_derivations:
