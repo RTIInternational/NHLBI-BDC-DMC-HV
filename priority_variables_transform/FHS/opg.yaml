@@ -1,0 +1,15 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht006013
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00275427
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 5'"
+      value_decimal:
+        populated_from: phv00421850
+          expr: {phv00007562} * 10
+      observation_type:
+        expr: "'OMOP:1552124'"  #osteoprotegerin
+      value_quantity.unit:
+        expr: "'ng/mL'"
