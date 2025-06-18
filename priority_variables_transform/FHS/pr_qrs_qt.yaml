@@ -1,0 +1,33 @@
+class_derivations:
+  MeasurementObservationSet:
+    populated_from: pht000299
+    slot_derivations:
+      associated_participant:
+        populated_from: 
+      associated_visit:
+        expr: "''"      
+      observations:
+        MeasurementObservation:
+          slot_derivations:
+            value_decimal:
+              populated_from: phv00036357
+            observation_type:
+              expr: "'OMOP:4274406'" # PR interval
+            value_quantity.unit:
+              expr: "'ms'"
+        MeasurementObservation:
+          slot_derivations:
+            value_decimal:
+              populated_from: phv00036361
+            observation_type:
+              expr: "'OMOP:4273021'" # QRS interval
+            value_quantity.unit:
+              expr: "'ms'"
+        MeasurementObservation:
+          slot_derivations:
+            value_decimal:
+              populated_from: phv00036353
+            observation_type:
+              expr: "'OMOP:4273023'" # QT interval
+            value_quantity.unit:
+              expr: "'ms'"            
