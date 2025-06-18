@@ -1,43 +1,14 @@
 class_derivations:
   MeasurementObservation:
-    populated_from: FHS
+    populated_from: pht000013
     slot_derivations:
       associated_participant:
-        populated_from: 
+        populated_from: phv00001803
       associated_visit:
-        expr: "''"
+        expr: "'FHS ORIGINAL EXAM 11'"
       value_decimal:
-        populated_from: phv00001582
+        populated_from: phv00001586
       observation_type:
-        expr: "OMOP:4150326'" #fasting blood lipids
+        expr: "OMOP:4150326'" #fasting total blood lipids
       value_quantity.unit:
         expr: "'mg/dL'"
-class_derivations:
-  MeasurementObservation:
-    populated_from: FHS
-    slot_derivations:
-      associated_participant:
-        populated_from: 
-      associated_visit:
-        expr: "''"
-      value_decimal:
-        populated_from: phv00001583
-      observation_type:
-        expr: "OMOP:4150326'" #fasting blood lipids
-      value_quantity.unit:
-        expr: "'mg/dL'"
-class_derivations:
-  MeasurementObservation:
-    populated_from: FHS
-    slot_derivations:
-      associated_participant:
-        populated_from: 
-      associated_visit:
-        expr: "''"
-      value_decimal:
-        populated_from: phv00001584
-      observation_type:
-        expr: "OMOP:4150326'" #fasting blood lipids
-      value_quantity.unit:
-        expr: "'mg/dL'"
-        
