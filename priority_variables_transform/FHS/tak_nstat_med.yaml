@@ -1,0 +1,48 @@
+class_derivations:
+  DrugExposure:
+    populated_from: pht004814
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00250718
+      associated_visit:
+        expr: "'FHS OMNI 1 EXAM 2'"
+      drug_concept:
+        expr: case((phv00250758 == 1, '''RxCUI:N0000180292'''), None)
+      expsoure_provenance:
+        expr: '''PATIENT SELF-REPORTED MEDICATION'''
+class_derivations:
+  DrugExposure:
+    populated_from: pht004814
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00250718
+      associated_visit:
+        expr: "'FHS OMNI 1 EXAM 2'"
+      drug_concept:
+        expr: case((phv00250759 == 1, '''RxCUI:N0000175594'''), None)
+      expsoure_provenance:
+        expr: '''PATIENT SELF-REPORTED MEDICATION'''
+class_derivations:
+  DrugExposure:
+    populated_from: pht004814
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00250718
+      associated_visit:
+        expr: "'FHS OMNI 1 EXAM 2'"
+      drug_concept:
+        expr: case((phv00250760 == 1, '''NxCUI:C10AB'''), None)
+      expsoure_provenance:
+        expr: '''PATIENT SELF-REPORTED MEDICATION'''
+class_derivations:
+  DrugExposure:
+    populated_from: pht004814
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00250718
+      associated_visit:
+        expr: "'FHS OMNI 1 EXAM 2'"
+      drug_concept:
+        expr: case((phv00250760 == 1, '''NxCUI:C10AB'''), None)
+      expsoure_provenance:
+        expr: '''PATIENT SELF-REPORTED MEDICATION'''              
