@@ -1,0 +1,32 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht000823
+    slot_derivations:
+      range_low.value_decimal: 5
+        unit: "'pg/mL'"
+      range_high.value_decimal: 35000
+        unit: "'pg/mL'"
+      associated_participant:
+        populated_from: phv00073729
+      associated_visit:
+        expr: "'FHS GENERATION 3 EXAM 1'"
+      value_decimal:
+        expr: case((phv00073727 > 4, phv00073727), "'LLOD'")
+      observation_type:
+        expr: "'OBA:2045303'"  #blood albumin
+      value_quantity.unit:
+        expr: "'pg/mL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht006013
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00275427
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 5'"
+      value_decimal:
+        populated_from: phv00423136
+      observation_type:
+        expr: "'OBA:2045303'"  #blood albumin
+      value_quantity.unit:
+        expr: "'pg/mL'"        
