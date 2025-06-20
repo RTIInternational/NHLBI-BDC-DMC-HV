@@ -21,85 +21,50 @@ class YAMLTransformer:
             return participant_phv, visit
         return None, None
     
-    def extract_condition_concept(self, value_set: Dict) -> str:
-        """Extract condition concept from comments in value_set"""
+    def extract_condition_concept(self, value_sets: List) -> str:
+        """Extract condition concept from comments in value_sets"""
         # Look for MONDO or HP codes in comments
-        for value, details in value_set.items():
-            if isinstance(details, dict) and 'Condition' in details:
-                condition = details['Condition']
-                if isinstance(condition, dict):
-                    concept = condition.get('condition_concept', '')
+        for value_set in value_sets:
+            for class_obj in value_set.get('classes', []):
+                if class_obj.get('type') == 'Condition':
+                    concept = class_obj.get('properties', {}).get('condition_concept', '')
                     if concept and '#' in concept:
                         return concept.split('#')[0].strip()
-                elif isinstance(condition, list):
-                    for cond in condition:
-                        if isinstance(cond, dict):
-                            concept = cond.get('condition_concept', '')
-                            if concept and '#' in concept and 'asthma' in concept.lower():
-                                return concept.split('#')[0].strip()
         
         # Default to asthma if not found
         return "MONDO:0004979"
     
-    def extract_condition_provenance(self, value_set: Dict) -> str:
+    def extract_condition_provenance(self, value_sets: List) -> str:
         """Determine condition provenance from patterns"""
         # Look for explicit provenance in the conditions
-        for value, details in value_set.items():
-            if isinstance(details, dict) and 'Condition' in details:
-                condition = details['Condition']
-                if isinstance(condition, dict):
-                    prov = condition.get('condition_provenance', '')
+        for value_set in value_sets:
+            for class_obj in value_set.get('classes', []):
+                if class_obj.get('type') == 'Condition':
+                    prov = class_obj.get('properties', {}).get('condition_provenance', '')
                     if prov and prov != '':
                         return prov
-                elif isinstance(condition, list):
-                    for cond in condition:
-                        if isinstance(cond, dict):
-                            prov = cond.get('condition_provenance', '')
-                            if prov and prov != '':
-                                return prov
         
         # Default based on common patterns
         return "PATIENT_SELF-REPORTED_CONDITION"
     
-    def create_value_mappings(self, value_set: Dict) -> Dict[str, str]:
+    def create_value_mappings(self, value_sets: List) -> Dict[str, str]:
         """Create value mappings for condition_status"""
         mappings = {}
         
-        for value, details in value_set.items():
-            if isinstance(details, dict) and 'Condition' in details:
-                condition = details['Condition']
-                
-                # Handle single condition
-                if isinstance(condition, dict):
-                    status = condition.get('condition_status', '')
+        for value_set in value_sets:
+            value = value_set.get('value', '')
+            
+            # Look for Condition classes in this value_set
+            for class_obj in value_set.get('classes', []):
+                if class_obj.get('type') == 'Condition':
+                    status = class_obj.get('properties', {}).get('condition_status', '')
                     if status:
                         mappings[str(value)] = status
-                
-                # Handle list of conditions - prefer asthma condition
-                elif isinstance(condition, list):
-                    asthma_status = None
-                    fallback_status = None
-                    
-                    for cond in condition:
-                        if isinstance(cond, dict):
-                            concept = cond.get('condition_concept', '')
-                            status = cond.get('condition_status', '')
-                            
-                            # Prioritize asthma conditions
-                            if status and ('asthma' in concept.lower() or 'MONDO:0004979' in concept):
-                                asthma_status = status
-                                break
-                            elif status and not fallback_status:
-                                fallback_status = status
-                    
-                    # Use asthma status if found, otherwise use fallback
-                    final_status = asthma_status or fallback_status
-                    if final_status:
-                        mappings[str(value)] = final_status
+                        break
             
             # Handle special cases with complex conditional logic
-            elif isinstance(details, dict) and 'function' in details:
-                function_text = details['function']
+            if str(value) not in mappings:
+                function_text = value_set.get('function', '')
                 
                 # Extract status from complex conditional statements
                 if 'look at' in function_text.lower():
@@ -116,19 +81,19 @@ class YAMLTransformer:
         
         return mappings
     
-    def transform_raw_variable(self, phv_id: str, raw_var_data: Dict) -> Dict:
+    def transform_raw_variable(self, phv_id: str, phv_entry: Dict) -> Dict:
         """Transform a single raw variable to class_derivation format"""
-        pht = raw_var_data.get('identifiers', {}).get('pht', '')
+        pht = phv_entry.get('identifiers', {}).get('pht', '')
         participant_phv, visit = self.get_visit_info(pht)
         
         if not participant_phv or not visit:
             print(f"Warning: Could not find visit info for pht {pht}")
             return None
         
-        value_set = raw_var_data.get('value_set', {})
-        concept = self.extract_condition_concept(value_set)
-        provenance = self.extract_condition_provenance(value_set)
-        value_mappings = self.create_value_mappings(value_set)
+        value_sets = phv_entry.get('value_sets', [])
+        concept = self.extract_condition_concept(value_sets)
+        provenance = self.extract_condition_provenance(value_sets)
+        value_mappings = self.create_value_mappings(value_sets)
         
         class_derivation = {
             "class_derivations": {
@@ -160,35 +125,39 @@ class YAMLTransformer:
         }
         
         # Check for special visit handling (like "12 months before assoc visit")
-        special_visit_pattern = self._check_for_special_visit_logic(value_set)
+        special_visit_pattern = self._check_for_special_visit_logic(value_sets)
         if special_visit_pattern:
             # Add a comment or special handling note
             class_derivation["# SPECIAL_VISIT_LOGIC"] = special_visit_pattern
         
         return class_derivation
     
-    def _check_for_special_visit_logic(self, value_set: Dict) -> Optional[str]:
-        """Check if the value_set contains special visit timing logic"""
-        for value, details in value_set.items():
-            if isinstance(details, dict) and 'function' in details:
-                function_text = details['function']
-                if '12 months before' in function_text:
-                    return "Contains 12 months before visit calculation"
-                elif 'age at previous visit' in function_text:
-                    return "Contains previous visit age calculation"
+    def _check_for_special_visit_logic(self, value_sets: List) -> Optional[str]:
+        """Check if the value_sets contain special visit timing logic"""
+        for value_set in value_sets:
+            function_text = value_set.get('function', '')
+            if '12 months before' in function_text:
+                return "Contains 12 months before visit calculation"
+            elif 'age at previous visit' in function_text:
+                return "Contains previous visit age calculation"
         return None
     
     def transform_yaml_file(self, input_file: str, output_file: str):
         """Transform the entire YAML file"""
-        # Load original YAML
+        # Load original YAML using the custom parser
         with open(input_file, 'r') as f:
             content = f.read()
-            original_data = parse_source_yaml(content) # ['variables'][0]['phv_entries']
+            
+        # Clean the content first to make it parseable
+        cleaned_content = clean_linkml_map_for_yaml(input_file)
+        
+        # Parse using the custom parser from linkml_transform_script
+        original_data = parse_source_yaml(cleaned_content)
 
         transformed_derivations = []
         
-        # Process the entire structure to find all raw_variables
-        self._process_nested_raw_variables(original_data, transformed_derivations)
+        # Process the parsed structure
+        self._process_parsed_variables(original_data, transformed_derivations)
         
         # Write output file
         with open(output_file, 'w') as f:
@@ -204,6 +173,27 @@ class YAMLTransformer:
         self._generate_summary_report(transformed_derivations, f"{output_file}_summary.txt")
         
         return transformed_derivations
+    
+    def _process_parsed_variables(self, parsed_data: Dict, transformed_derivations: List):
+        """Process the parsed data structure from parse_source_yaml"""
+        for variable in parsed_data.get('variables', []):
+            for phv_entry in variable.get('phv_entries', []):
+                phv_id = phv_entry.get('phv', '')
+                
+                # Only process if this entry has Condition classes
+                has_condition = False
+                for value_set in phv_entry.get('value_sets', []):
+                    for class_obj in value_set.get('classes', []):
+                        if class_obj.get('type') == 'Condition':
+                            has_condition = True
+                            break
+                    if has_condition:
+                        break
+                
+                if has_condition and phv_id:
+                    transformed = self.transform_raw_variable(phv_id, phv_entry)
+                    if transformed:
+                        transformed_derivations.append(transformed)
     
     def _generate_summary_report(self, transformed_derivations: List, report_file: str):
         """Generate a summary report of the transformation"""
@@ -246,34 +236,6 @@ class YAMLTransformer:
                 f.write("for proper age_at_condition_start and age_at_condition_end calculations.\n")
         
         print(f"Summary report written to {report_file}")
-    
-    def _process_nested_raw_variables(self, data: Any, transformed_derivations: List):
-        """Recursively process all raw_variables in the nested structure"""
-        if isinstance(data, dict):
-            # Check if this dict contains a raw_variable with identifiers and value_set
-            if any(key.startswith('raw_variable') for key in data.keys()) and 'identifiers' in data and 'value_set' in data:
-                # Process each raw_variable in this level
-                for key, value in data.items():
-                    if key.startswith('raw_variable') and isinstance(value, str) and value.startswith('phv'):
-                        phv_id = value
-                        raw_var_data = {
-                            'identifiers': data.get('identifiers', {}),
-                            'input_data_type': data.get('input_data_type'),
-                            'value_set': data.get('value_set', {})
-                        }
-                        
-                        transformed = self.transform_raw_variable(phv_id, raw_var_data)
-                        if transformed:
-                            transformed_derivations.append(transformed)
-            
-            # Continue recursing into nested structures
-            for key, value in data.items():
-                if key not in ['identifiers', 'input_data_type', 'value_set'] and not key.startswith('raw_variable'):
-                    self._process_nested_raw_variables(value, transformed_derivations)
-        
-        elif isinstance(data, list):
-            for item in data:
-                self._process_nested_raw_variables(item, transformed_derivations)
 
 
 def parse_source_yaml(content: str) -> Dict[str, Any]:
@@ -367,9 +329,6 @@ def parse_source_yaml(content: str) -> Dict[str, Any]:
         i += 1
 
     return result
-
-
-import re
 
 
 def clean_linkml_map_for_yaml(file_path):
