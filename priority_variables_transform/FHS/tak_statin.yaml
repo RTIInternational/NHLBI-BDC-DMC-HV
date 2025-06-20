@@ -1,0 +1,12 @@
+class_derivations:
+  DrugExposure:
+    populated_from: pht003094
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00177237
+      associated_visit:
+        expr: "'FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'"
+      drug_concept:
+        expr: case((phv00250761 == 1, '''RxCUI:A10'''), None)
+      expsoure_provenance:
+        expr: '''PATIENT SELF-REPORTED MEDICATION'''
