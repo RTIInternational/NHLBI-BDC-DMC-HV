@@ -1,4 +1,3 @@
-
 class_derivations:
   Condition:
     populated_from: FHS
@@ -14,12 +13,10 @@ class_derivations:
         value_mappings:
           '0': ABSENT
           '1': PRESENT
-          '9': UNKNOWN
       condition_provenance:
-        expr: PATIENT_SELF-REPORTED_CONDITION
+        expr: CLINICAL_DIAGNOSIS
       relationship_to_participant:
         expr: ONESELF
-
 class_derivations:
   Condition:
     populated_from: FHS
@@ -35,12 +32,10 @@ class_derivations:
         value_mappings:
           '0': ABSENT
           '1': PRESENT
-          '9': UNKNOWN
       condition_provenance:
-        expr: PATIENT_SELF-REPORTED_CONDITION
+        expr: CLINICAL_DIAGNOSIS
       relationship_to_participant:
         expr: ONESELF
-
 class_derivations:
   Condition:
     populated_from: FHS
@@ -56,12 +51,10 @@ class_derivations:
         value_mappings:
           '0': ABSENT
           '1': PRESENT
-          '9': UNKNOWN
       condition_provenance:
-        expr: PATIENT_SELF-REPORTED_CONDITION
+        expr: CLINICAL_DIAGNOSIS
       relationship_to_participant:
         expr: ONESELF
-
 class_derivations:
   Condition:
     populated_from: FHS
@@ -77,12 +70,10 @@ class_derivations:
         value_mappings:
           '0': ABSENT
           '1': PRESENT
-          .: UNKNOWN
       condition_provenance:
-        expr: PATIENT_SELF-REPORTED_CONDITION
+        expr: CLINICAL_DIAGNOSIS
       relationship_to_participant:
         expr: ONESELF
-
 class_derivations:
   Condition:
     populated_from: FHS
@@ -98,12 +89,10 @@ class_derivations:
         value_mappings:
           '0': ABSENT
           '1': PRESENT
-          .: UNKNOWN
       condition_provenance:
-        expr: PATIENT_SELF-REPORTED_CONDITION
+        expr: CLINICAL_DIAGNOSIS
       relationship_to_participant:
         expr: ONESELF
-
 class_derivations:
   Condition:
     populated_from: FHS
@@ -119,13 +108,10 @@ class_derivations:
         value_mappings:
           '0': ABSENT
           '1': PRESENT
-          .: UNKNOWN
-          '2': UNKNOWN
       condition_provenance:
-        expr: PATIENT_SELF-REPORTED_CONDITION
+        expr: CLINICAL_DIAGNOSIS
       relationship_to_participant:
         expr: ONESELF
-
 class_derivations:
   Condition:
     populated_from: FHS
@@ -141,12 +127,10 @@ class_derivations:
         value_mappings:
           '0': ABSENT
           '1': PRESENT
-          .: UNKNOWN
       condition_provenance:
-        expr: PATIENT_SELF-REPORTED_CONDITION
+        expr: CLINICAL_DIAGNOSIS
       relationship_to_participant:
         expr: ONESELF
-
 class_derivations:
   Condition:
     populated_from: FHS
@@ -162,12 +146,10 @@ class_derivations:
         value_mappings:
           '0': ABSENT
           '1': PRESENT
-          .: UNKNOWN
       condition_provenance:
-        expr: PATIENT_SELF-REPORTED_CONDITION
+        expr: CLINICAL_DIAGNOSIS
       relationship_to_participant:
         expr: ONESELF
-
 class_derivations:
   Condition:
     populated_from: FHS
@@ -183,12 +165,10 @@ class_derivations:
         value_mappings:
           '0': ABSENT
           '1': PRESENT
-          .: UNKNOWN
       condition_provenance:
-        expr: PATIENT_SELF-REPORTED_CONDITION
+        expr: CLINICAL_DIAGNOSIS
       relationship_to_participant:
         expr: ONESELF
-
 class_derivations:
   Condition:
     populated_from: FHS
@@ -204,12 +184,10 @@ class_derivations:
         value_mappings:
           '0': ABSENT
           '1': PRESENT
-          .: UNKNOWN
       condition_provenance:
-        expr: PATIENT_SELF-REPORTED_CONDITION
+        expr: CLINICAL_DIAGNOSIS
       relationship_to_participant:
         expr: ONESELF
-
 class_derivations:
   Condition:
     populated_from: FHS
@@ -225,12 +203,10 @@ class_derivations:
         value_mappings:
           '0': ABSENT
           '1': PRESENT
-          .: UNKNOWN
       condition_provenance:
-        expr: PATIENT_SELF-REPORTED_CONDITION
+        expr: CLINICAL_DIAGNOSIS
       relationship_to_participant:
         expr: ONESELF
-
 class_derivations:
   Condition:
     populated_from: FHS
@@ -246,12 +222,10 @@ class_derivations:
         value_mappings:
           '0': ABSENT
           '1': PRESENT
-          .: UNKNOWN
       condition_provenance:
-        expr: PATIENT_SELF-REPORTED_CONDITION
+        expr: CLINICAL_DIAGNOSIS
       relationship_to_participant:
         expr: ONESELF
-
 class_derivations:
   Condition:
     populated_from: FHS
@@ -267,12 +241,10 @@ class_derivations:
         value_mappings:
           '0': ABSENT
           '1': PRESENT
-          .: UNKNOWN
       condition_provenance:
         expr: PATIENT_SELF-REPORTED_CONDITION
       relationship_to_participant:
         expr: ONESELF
-
 class_derivations:
   Condition:
     populated_from: FHS
@@ -288,12 +260,10 @@ class_derivations:
         value_mappings:
           '0': ABSENT
           '1': PRESENT
-          .: UNKNOWN
       condition_provenance:
-        expr: PATIENT_SELF-REPORTED_CONDITION
+        expr: CLINICAL_DIAGNOSIS
       relationship_to_participant:
         expr: ONESELF
-
 class_derivations:
   Condition:
     populated_from: FHS
@@ -309,34 +279,10 @@ class_derivations:
         value_mappings:
           '0': ABSENT
           '1': PRESENT
-          .: UNKNOWN
       condition_provenance:
-        expr: PATIENT_SELF-REPORTED_CONDITION
+        expr: CLINICAL_DIAGNOSIS
       relationship_to_participant:
         expr: ONESELF
-
-class_derivations:
-  Condition:
-    populated_from: FHS
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00008379
-      associated_visit:
-        expr: FHS OFFSPRING EXAM 2
-      condition_concept:
-        expr: 'MONDO:0004981   #atrial fibrillation'
-      condition_status:
-        populated_from: phv00008130
-        value_mappings:
-          '0': ABSENT
-          '1': PRESENT
-          .: UNKNOWN
-          '2': UNKNOWN
-      condition_provenance:
-        expr: PATIENT_SELF-REPORTED_CONDITION
-      relationship_to_participant:
-        expr: ONESELF
-
 class_derivations:
   Condition:
     populated_from: FHS
@@ -352,12 +298,10 @@ class_derivations:
         value_mappings:
           '0': ABSENT
           '1': PRESENT
-          .: UNKNOWN
       condition_provenance:
-        expr: PATIENT_SELF-REPORTED_CONDITION
+        expr: CLINICAL_DIAGNOSIS
       relationship_to_participant:
         expr: ONESELF
-
 class_derivations:
   Condition:
     populated_from: FHS
@@ -373,12 +317,10 @@ class_derivations:
         value_mappings:
           '0': ABSENT
           '1': PRESENT
-          .: UNKNOWN
       condition_provenance:
-        expr: PATIENT_SELF-REPORTED_CONDITION
+        expr: CLINICAL_DIAGNOSIS
       relationship_to_participant:
         expr: ONESELF
-
 class_derivations:
   Condition:
     populated_from: FHS
@@ -394,13 +336,11 @@ class_derivations:
         value_mappings:
           '0': ABSENT
           '1': PRESENT
-          .: UNKNOWN
           '2': UNKNOWN
       condition_provenance:
         expr: PATIENT_SELF-REPORTED_CONDITION
       relationship_to_participant:
         expr: ONESELF
-
 class_derivations:
   Condition:
     populated_from: FHS
@@ -416,13 +356,11 @@ class_derivations:
         value_mappings:
           '0': ABSENT
           '1': PRESENT
-          .: UNKNOWN
           '2': UNKNOWN
       condition_provenance:
         expr: PATIENT_SELF-REPORTED_CONDITION
       relationship_to_participant:
         expr: ONESELF
-
 class_derivations:
   Condition:
     populated_from: FHS
@@ -434,17 +372,15 @@ class_derivations:
       condition_concept:
         expr: 'MONDO:0004981   #atrial fibrillation'
       condition_status:
-        populated_from: phv00072165
+        populated_from: phv00072166
         value_mappings:
           '0': ABSENT
           '1': PRESENT
-          .: UNKNOWN
-          '2': PRESENT
+          '2': UNKNOWN
       condition_provenance:
-        expr: PATIENT_SELF-REPORTED_CONDITION
+        expr: CLINICAL_DIAGNOSIS
       relationship_to_participant:
         expr: ONESELF
-
 class_derivations:
   Condition:
     populated_from: FHS
@@ -460,13 +396,11 @@ class_derivations:
         value_mappings:
           '0': ABSENT
           '1': PRESENT
-          .: UNKNOWN
           '2': UNKNOWN
       condition_provenance:
         expr: PATIENT_SELF-REPORTED_CONDITION
       relationship_to_participant:
         expr: ONESELF
-
 class_derivations:
   Condition:
     populated_from: FHS
@@ -483,8 +417,26 @@ class_derivations:
         value_mappings:
           '0': ABSENT
           '1': PRESENT
-          .: UNKNOWN
       condition_provenance:
-        expr: PATIENT_SELF-REPORTED_CONDITION
+        expr: CLINICAL_DIAGNOSIS
+      relationship_to_participant:
+        expr: ONESELF
+class_derivations:
+  Condition:
+    populated_from: FHS
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00001559
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 10'"
+      condition_concept:
+        expr: MONDO:0004981   #atrial fibrillation'
+      condition_status:
+        populated_from: phv00001534
+        value_mappings:
+          '0': ABSENT
+          '1': PRESENT
+      condition_provenance:
+        expr: CLINICAL_DIAGNOSIS
       relationship_to_participant:
         expr: ONESELF
