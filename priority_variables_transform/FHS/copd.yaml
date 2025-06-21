@@ -155,4 +155,86 @@ class_derivations:
       condition_provenance:
         expr: CLINICAL_DIAGNOSIS
       relationship_to_participant:
+        expr: ONESELF
+class_derivations:
+  Condition:
+    populated_from: pht000747
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00072580
+      associated_visit:
+        expr: FHS OFFSPRING EXAM 8
+      condition_concept:
+        expr: MONDO:0005002   #copd
+      condition_status:
+        populated_from: phv00072500
+        value_mappings:
+          '0': ABSENT
+          '1': PRESENT
+      condition_provenance:
+        populated_from: phv00072501
+        value_mappings:
+          '0': PATIENT_SELF-REPORTED_CONDITION
+          '1': CLINICAL_DIAGNOSIS
+      relationship_to_participant:
+        expr: ONESELF
+class_derivations:
+  Condition:
+    populated_from: pht000074
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00021427
+      associated_visit:
+        expr: FHS GENERATION 3 EXAM 1
+      condition_concept:
+        expr: MONDO:0005002   #copd
+      condition_status:
+        populated_from: phv00021307
+        value_mappings:
+          '0': ABSENT
+          '1': PRESENT
+      condition_provenance:
+        populated_from: phv00021308
+        value_mappings:
+          '0': PATIENT_SELF-REPORTED_CONDITION
+          '1': CLINICAL_DIAGNOSIS
+      relationship_to_participant:
         expr: ONESELF        
+class_derivations:
+  Condition:
+    populated_from: pht000395
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00056635
+      associated_visit:
+        expr: FHS OFFSPRING BASELINE
+      condition_concept:
+        expr: MONDO:0005002   #copd
+      condition_status:
+        populated_from: phv00055303
+        value_mappings:
+          '0': ABSENT
+          '1': PRESENT
+      condition_provenance:
+        expr: CLINICAL_DIAGNOSIS
+      relationship_to_participant:
+        expr: ONESELF        
+class_derivations:
+  Condition:
+    populated_from: pht000397
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00057982
+      associated_visit:
+        expr: FHS OFFSPRING EXAM 2
+      condition_concept:
+        expr: MONDO:0005002   #copd
+      condition_status:
+        populated_from: phv00056802
+        value_mappings:
+          '0': ABSENT
+          '1': PRESENT
+      condition_provenance:
+        expr: CLINICAL_DIAGNOSIS
+      relationship_to_participant:
+        expr: ONESELF            
