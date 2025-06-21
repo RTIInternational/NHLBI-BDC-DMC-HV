@@ -1,6 +1,6 @@
 class_derivations:
   MeasurementObservation:
-    populated from: FHS
+    populated from: pht006013
     slot_derivations:
       associated_participant:
         populated_from: phv00275427
@@ -9,39 +9,6 @@ class_derivations:
       value_decimal:
         populated_from: phv00422578  #expr needed to convert data values, see notes in FHS_VariableProperties
       observation_type:
-        expr: "'OMOP:8842'" # ICAM-1 in blood
+        expr: "'OMOP:4284103'" # ICAM-1 in blood
       value_quantity_unit: 
-        expr: "'ng/dL'"
-class_derivations:
-    MeasurementObservation:
-        populated from: FHS
-        slot_derivations:
-            value_decimal:
-                populated_from: 
-                    expr: {phv00520399}  * 100
-            observation_type:
-                expr: "'OMOP:8842'" # ICAM-1 in blood
-            value_quantity_unit: 
-                expr: "'ng/dL'"
-class_derivations:
-    MeasurementObservation:
-        populated from: FHS
-        slot_derivations:
-            value_decimal:
-                populated_from: 
-                    expr: {phv00520383} * 100  #ng/mL in raw
-            observation_type:
-                expr: "'OMOP:8842'" # ICAM-1 in blood
-            value_quantity_unit: 
-                expr: "'ng/dL'"
-class_derivations:
-    MeasurementObservation:
-        populated from: FHS
-        slot_derivations:
-            value_decimal:
-                populated_from: 
-                    expr: {phv00520367} * 100  #ng/mL in raw
-            observation_type:
-                expr: "'OMOP:8842'" # ICAM-1 in blood
-            value_quantity_unit: 
-                expr: "'ng/dL'"
+        expr: "'ng/mL'"
