@@ -310,6 +310,8 @@ class LinkMLTransformer:
                         
                         if class_type == 'MeasurementObservation':
                             lines = self.generate_measurement_observation(variable, phv_entry, value_set, class_obj)
+                        elif class_type == 'Observation':
+                            raise "Not currently handling Observation types"
                         elif class_type == 'Condition':
                             lines = self.generate_condition(variable, phv_entry, value_set, class_obj)
                         elif class_type == 'DrugExposure':
