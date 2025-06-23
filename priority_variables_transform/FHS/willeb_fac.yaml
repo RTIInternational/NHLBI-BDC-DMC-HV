@@ -21,8 +21,22 @@ class_derivations:
       associated_visit:
         expr: "'FHS OFFSPRING EXAM 5'"
       value_decimal:
-        populated_from: phv00024571
+        populated_from: phv00227097
       observation_type:
         expr: "'OBA:2052741'"  #von willebrand factor
       value_quantity.unit:
         expr: "'%'"        
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht006013
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00275427
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 5'"
+      value_decimal:
+        populated_from: phv00422103
+      observation_type:
+        expr: "'OBA:2052741'"  #von willebrand factor
+      value_quantity.unit:
+        expr: "'%'" 
