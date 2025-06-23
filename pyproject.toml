@@ -1,0 +1,21 @@
+[project]
+name = "priority_variables_transform"
+version = "0.1.0"
+description = "Using python code from LLM to convert linkml-map files from priority_variables to class_derivation format"
+authors = [
+    {name = "Sigfried Gold"}
+]
+license = {text = "GPL3"}
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pyyaml (>=6.0.2,<7.0.0)",
+    "pandas (>=2.3.0,<3.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+package-mode = false
