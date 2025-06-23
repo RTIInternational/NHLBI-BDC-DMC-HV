@@ -1,0 +1,27 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht006013
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00275427
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 5'"
+      value_decimal:
+        populated_from: phv00422475
+      observation_type:
+        expr: "'NCIT:C64855'" #Lactic acid amount present
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht001045
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00081012
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 20 AND EXAM 21'"
+      value_decimal:
+        populated_from: phv00081018
+      observation_type:
+        expr: "'NCIT:C64855'" #Lactic acid amount present
+      value_quantity.unit:
+        expr: "'U/L'" 
+

@@ -1,14 +1,14 @@
 class_derivations:
   MeasurementObservation:
-    populated from: pht006013
+    populated_from: pht006013
     slot_derivations:
       associated_participant:
         populated_from: phv00275427
       associated_visit:
         expr: "'FHS OFFSPRING EXAM 5'"
       value_decimal:
-        populated_from: phv00422578  #expr needed to convert data values, see notes in FHS_VariableProperties
+        populated_from: phv00422093
       observation_type:
-        expr: "'OMOP:4284103'" # ICAM-1 in blood
-      value_quantity_unit: 
-        expr: "'ng/mL'"
+        expr: "'NCIT:C112323'" #Interleukin 1 Beta Measurement
+      value_quantity.unit:
+        expr: "'pg/mL'" #based on online search - needs to be confirmed
