@@ -1,0 +1,221 @@
+class_derivations:
+  Demography:
+    populated_from: pht000074
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00021427
+      sex:
+        populated_from: phv00021228
+        value_mappings:
+          '1': OMOP:8507 #male
+          '2': OMOP:8532 #female
+      ethnicity:
+        populated_from: phv00021245
+        value_mappings:
+          '1': HISPANIC_OR_LATINO
+          '0': NOT_HISPANIC_OR_LATINO
+      race:
+        expr: case(((phv00021244 == 1 & phv00021246 == 0 & phv00021247 == 0 & phv00021248 == 0 & phv00021249 == 0 & phv00021250 == 0 & phv00021251 == 0), OMOP:8527), 
+              case((phv00021244 == 0 & phv00021246 == 1 & phv00021247 == 0 & phv00021248 == 0 & phv00021249 == 0 & phv00021250 == 0 & phv00021251 == 0), OMOP:8516),
+              case((phv00021244 == 0 & phv00021246 == 0 & phv00021247 == 1 & phv00021248 == 0 & phv00021249 == 0 & phv00021250 == 0 & phv00021251 == 0), OMOP:8515),     
+              case((phv00021244 == 0 & phv00021246 == 0 & phv00021247 == 0 & phv00021248 == 1 & phv00021249 == 0 & phv00021250 == 0 & phv00021251 == 0), OMOP:8557),   
+              case((phv00021244 == 0 & phv00021246 == 0 & phv00021247 == 0 & phv00021248 == 0 & phv00021249 == 1 & phv00021250 == 0 & phv00021251 == 0), OMOP:8657), 
+              case((phv00021244 == 0 & phv00021246 == 0 & phv00021247 == 0 & phv00021248 == 0 & phv00021249 == 0 & phv00021250 == 1 & phv00021251 == 0), OMOP:8552),
+              case((phv00021244 == 0 & phv00021246 == 0 & phv00021247 == 0 & phv00021248 == 0 & phv00021249 == 0 & phv00021250 == 0 & phv00021251 == 1), OMOP:8552), 
+              OMOP:45880900)
+class_derivations:
+  Demography:
+    populated_from: pht000183
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00024068
+      sex:
+        populated_from: phv00024071
+        value_mappings:
+          '1': OMOP:8507 #male
+          '2': OMOP:8532 #female         
+class_derivations:
+  Demography:
+    populated_from: pht000183
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00056635
+      ethnicity:
+        populated_from: phv00055250
+        value_mappings:
+          '5': HISPANIC_OR_LATINO
+      race:
+        populated_from: phv00055250
+        value_mappings:
+          '1': OMOP:8527 #WHITE
+          '2': OMOP:8516 #BLACK_OR_AFRICAN_AMERICAN            
+class_derivations:
+  Demography:
+    populated_from: pht000747
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00072580
+      ethnicity:
+        expr: case((phv00072538 == 1, OMOP:38003563), phv00072539 == 1, OMOP:38003564)
+      race:
+        expr: case(((phv00072530 == 1 & phv00072531 == 0 & phv00072532 == 0 & phv00072533 == 0 & phv00072534 == 0 & phv00072537 == 0 , OMOP:8527), 
+              case((phv00072530 == 0 & phv00072531 == 1 & phv00072532 == 0 & phv00072533 == 0 & phv00072534 == 0 & phv00072537 == 0), OMOP:8516),
+              case((phv00072530 == 0 & phv00072531 == 0 & phv00072532 == 1 & phv00072533 == 0 & phv00072534 == 0 & phv00072537 == 0), OMOP:8515),     
+              case((phv00072530 == 0 & phv00072531 == 0 & phv00072532 == 0 & phv00072533 == 1 & phv00072534 == 0 & phv00072537 == 0), OMOP:8557),   
+              case((phv00072530 == 0 & phv00072531 == 0 & phv00072532 == 0 & phv00072533 == 0 & phv00072534 == 1 & phv00072537 == 0), OMOP:8657), 
+              case((phv00072530 == 0 & phv00072531 == 0 & phv00072532 == 0 & phv00072533 == 0 & phv00072534 == 0 & phv00072537 == 1), OMOP:8552),
+              OMOP:45880900)               
+class_derivations:
+  Demography:
+    populated_from: pht003094
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00177237
+      sex:
+        expr: case ((phv00177257 == 1, OMOP:8507), OMOP:8532)
+      ethnicity:
+        populated_from: phv00177597
+        value_mappings:
+          '1': OMOP:38003563 #HISPANIC_OR_LATINO
+          '2': OMOP:38003564 #NOT_HISPANIC_OR_LATINO
+      race:
+        expr: case(((phv00177598 == 1 & phv00177599 == 0 & phv00177600 == 0 & phv00177601 == 0 & phv00177602 == 0 & phv00177603 == 0), OMOP:8527), 
+              case((phv00177598 == 0 & phv00177599 == 1 & phv00177600 == 0 & phv00177601 == 0 & phv00177602 == 0 & phv00177603 == 0), OMOP:8516),
+              case((phv00177598 == 0 & phv00177599 == 0 & phv00177600 == 1 & phv00177601 == 0 & phv00177602 == 0 & phv00177603 == 0), OMOP:8515),     
+              case((phv00177598 == 0 & phv00177599 == 0 & phv00177600 == 0 & phv00177601 == 1 & phv00177602 == 0 & phv00177603 == 0), OMOP:8557),   
+              case((phv00177598 == 0 & phv00177599 == 0 & phv00177600 == 0 & phv00177601 == 0 & phv00177602 == 1 & phv00177603 == 0), OMOP:8657), 
+              case((phv00177598 == 0 & phv00177599 == 0 & phv00177600 == 0 & phv00177601 == 0 & phv00177602 == 0 & phv00177603 == 1), OMOP:8552),
+              OMOP:45880900)           
+class_derivations:
+  Demography:
+    populated_from: pht003099
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00177926
+      sex:
+        populated_from: phv00177929
+        value_mappings:
+          '1': OMOP:8507 #male
+          '2': OMOP:8532 #female        
+class_derivations:
+  Demography:
+    populated_from: pht004374
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00220821
+      sex:
+        populated_from: phv00253990
+        value_mappings:
+          '1': OMOP:8507 #male
+          '2': OMOP:8532 #female           
+class_derivations:
+  Demography:
+    populated_from: pht004815
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00251262
+      ethnicity:
+        expr: case((phv00251746 == 1, OMOP:38003563), phv00251747 == 1, OMOP:38003564)
+      race:
+        expr: case(((phv00251748 == 1 & phv00251749 == 0 & phv00251750 == 0 & phv00251751 == 0 & phv00251752 == 0 & phv00251753 == 0), OMOP:8527), 
+              case((phv00251748 == 0 & phv00251749 == 1 & phv00251750 == 0 & phv00251751 == 0 & phv00251752 == 0 & phv00251753 == 0), OMOP:8516),
+              case((phv00251748 == 0 & phv00251749 == 0 & phv00251750 == 1 & phv00251751 == 0 & phv00251752 == 0 & phv00251753 == 0), OMOP:8515),     
+              case((phv00251748 == 0 & phv00251749 == 0 & phv00251750 == 0 & phv00251751 == 1 & phv00251752 == 0 & phv00251753 == 0), OMOP:8557),   
+              case((phv00251748 == 0 & phv00251749 == 0 & phv00251750 == 0 & phv00251751 == 0 & phv00251752 == 1 & phv00251753 == 0), OMOP:8657), 
+              case((phv00251748 == 0 & phv00251749 == 0 & phv00251750 == 0 & phv00251751 == 0 & phv00251752 == 0 & phv00251753 == 1), OMOP:8552),
+              OMOP:45880900)                  
+class_derivations:
+  Demography:
+    populated_from: pht005140
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00254010
+      sex:
+        expr: case((phv00254030 == 1, OMOP:8507), OMOP:8532)          
+class_derivations:
+  Demography:
+    populated_from: pht006026
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00277015
+      sex:
+        populated_from: phv00024071
+        value_mappings:
+          '1': OMOP:8507 #male
+          '2': OMOP:8532 #female                     
+class_derivations:
+  Demography:
+    populated_from: pht006027
+    slot_derivations:
+      associated_participant:
+        expr: "'UNKNOWN'"
+      sex:
+        populated_from: phv00277067
+        value_mappings:
+          '1': OMOP:8507 #male
+          '2': OMOP:8532 #female  
+class_derivations:
+  Demography:
+    populated_from: pht007777
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      sex:
+        populated_from: phv00369653
+        value_mappings:
+          '1': OMOP:8507 #male
+          '2': OMOP:8532 #female  
+class_derivations:
+  Demography:
+    populated_from: pht009760
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00423847
+      sex:
+        populated_from: phv00024071
+        value_mappings:
+          '1': OMOP:8507 #male
+          '2': OMOP:8532 #female
+      ethnicity:
+        expr: case((phv00423856 == 1, OMOP:380035630), case(phv00423857 == 1, OMOP:38003564))
+      race:
+        expr: case(((phv00423850 == 1 & phv00423851 == 0 & phv00423852 == 0 & phv00423853 == 0 & phv00423854 == 0 & phv00423855 == 0), OMOP:8527), 
+              case((phv00423850 == 0 & phv00423851 == 1 & phv00423852 == 0 & phv00423853 == 0 & phv00423854 == 0 & phv00423855 == 0), OMOP:8516),
+              case((phv00423850 == 0 & phv00423851 == 0 & phv00423852 == 1 & phv00423853 == 0 & phv00423854 == 0 & phv00423855 == 0), OMOP:8515),     
+              case((phv00423850 == 0 & phv00423851 == 0 & phv00423852 == 0 & phv00423853 == 1 & phv00423854 == 0 & phv00423855 == 0), OMOP:8557),   
+              case((phv00423850 == 0 & phv00423851 == 0 & phv00423852 == 0 & phv00423853 == 0 & phv00423854 == 1 & phv00423855 == 0), OMOP:8657), 
+              case((phv00423850 == 0 & phv00423851 == 0 & phv00423852 == 0 & phv00423853 == 0 & phv00423854 == 0 & phv00423855 == 1), OMOP:8552),
+              OMOP:45880900)                        
+class_derivations:
+  Demography:
+    populated_from: pht009760
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00423847
+      sex:
+        populated_from: phv00024071
+        value_mappings:
+          '1': OMOP:8507 #male
+          '2': OMOP:8532 #female
+      ethnicity:
+        expr: case((phv00423859 == 1, OMOP:380035630), OMOP:38003564)
+      race:
+        expr: case(((phv00423858 == 1 & phv00423860 == 0 & phv00423861 == 0 & phv00423862 == 0 & phv00423863 == 0 & phv00423864 == 0 & phv00423865 == 0), OMOP:8527), 
+              case((phv00423858 == 0 & phv00423860 == 1 & phv00423861 == 0 & phv00423862 == 0 & phv00423863 == 0 & phv00423864 == 0 & phv00423865 == 0), OMOP:8516),
+              case((phv00423858 == 0 & phv00423860 == 0 & phv00423861 == 1 & phv00423862 == 0 & phv00423863 == 0 & phv00423864 == 0 & phv00423865 == 0), OMOP:8515),     
+              case((phv00423858 == 0 & phv00423860 == 0 & phv00423861 == 0 & phv00423862 == 1 & phv00423863 == 0 & phv00423864 == 0 & phv00423865 == 0), OMOP:8557),   
+              case((phv00423858 == 0 & phv00423860 == 0 & phv00423861 == 0 & phv00423862 == 0 & phv00423863 == 1 & phv00423864 == 0 & phv00423865 == 0), OMOP:8657), 
+              case((phv00423858 == 0 & phv00423860 == 0 & phv00423861 == 0 & phv00423862 == 0 & phv00423863 == 0 & phv00423864 == 1 & phv00423865 == 0), OMOP:8552),
+              case((phv00423858 == 0 & phv00423860 == 0 & phv00423861 == 0 & phv00423862 == 0 & phv00423863 == 0 & phv00423864 == 0 & phv00423865 == 1), OMOP:8552),
+              OMOP:45880900) 
+class_derivations:
+  Demography:
+    populated_from: pht009761
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00423868
+      sex:
+        populated_from: phv00423870
+        value_mappings:
+          '1': OMOP:8507 #male
+          '2': OMOP:8532 #female
