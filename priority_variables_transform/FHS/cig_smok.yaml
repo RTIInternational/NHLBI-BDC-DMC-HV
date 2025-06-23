@@ -4,1998 +4,979 @@ class_derivations:
     slot_derivations:
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
+      value_enum:
         populated_from:
           expr: case(({phv00000543} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht003094
     slot_derivations:
+      associated_participant:
+        populated_from: phv00177237
+      associated_visit:
+        expr: "'FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00000543} == 2, "'OMOP:45883458 #FORMER_SOMKER'"))
-
+      value_enum:
+        populated_from: phv00177303
+        value_mappings:
+        '0': None
+        '1': "'OMOP:40766945 #CURRENT_SMOKER'"
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht006005
     slot_derivations:
+      associated_participant:
+        populated_from: phv00273700
+      associated_visit:
+        expr: "'FHS NEW OFFSPRING SPOUSE EXAM 1'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00000543} == 3, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00273761
+        value_mappings:
+        '0': None
+        '1': "'OMOP:40766945 #CURRENT_SMOKER'"      
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht004814
     slot_derivations:
+      associated_participant:
+        populated_from: phv00250718
+      associated_visit:
+        expr: "'FHS OMNI 1 EXAM 2'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00000543} == 5, "'OMOP:45883537 #NEVER_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00251239
+        value_mappings:
+        '0': None
+        '1': "'OMOP:40766945 #CURRENT_SMOKER'"          
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht004815
     slot_derivations:
+      associated_participant:
+        populated_from: phv00251262
+      associated_visit:
+        expr: "'FHS OMNI 1 EXAM 3'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00000543} == 7, "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
+      value_enum:
+        populated_from: phv00251297
+        value_mappings:
+        '0': None
+        '1': "'OMOP:40766945 #CURRENT_SMOKER'"      
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht005141
     slot_derivations:
+      associated_participant:
+        populated_from: phv00254596
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 29'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00000543} == 9999, "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
+      value_enum:
+        populated_from: phv00254617
+        value_mappings:
+        '0': None
+        '1': "'OMOP:40766945 #CURRENT_SMOKER'"  
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht005140
     slot_derivations:
+      associated_participant:
+        populated_from: phv00254010
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00000780} == 0, "'OMOP:45883458 #FORMER_SOMKER'"))
-
+      value_enum:
+        populated_from: phv00254043
+        value_mappings:
+        '0': None
+        '1': "'OMOP:40766945 #CURRENT_SMOKER'"     
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht000012
     slot_derivations:
+      associated_participant:
+        populated_from: phv00001559
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 10'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00000780} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00001452
+        value_mappings:
+        '0': None
+        '1': "'OMOP:40766945 #CURRENT_SMOKER'"         
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht000013
     slot_derivations:
+      associated_participant:
+        populated_from: phv00001803
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 11'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00000780} == 2, "'OMOP:45883537 #NEVER_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00001636
+        value_mappings:
+        '0': None
+        '1': "'OMOP:40766945 #CURRENT_SMOKER'"     
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht000014
     slot_derivations:
+      associated_participant:
+        populated_from: phv00002020
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 12'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00000780} == 9997, "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
+      value_enum:
+        expr: case((phv00001836 ==0, OMOP:45883537), case(phv00001836 == 1, OMOP:40766945), 
+              case(phv00001836 == 3, OMOP:40766945), case(phv00001849 == 8, OMOP:45883458), None)
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht000015
     slot_derivations:
+      associated_participant:
+        populated_from: phv00002204
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 13'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00000780} == 9999, "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
+      value_enum:
+        expr: case((phv00002055 ==0, OMOP:45883537), case(phv00002055 == 1, OMOP:40766945), 
+              case(phv00002055 == 3, OMOP:40766945), case(phv00002064 == 8, OMOP:45883458), None)        
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht000019
     slot_derivations:
+      associated_participant:
+        populated_from: phv00003261
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 17'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00001143} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        expr: case((phv00002981 == 8, OMOP:45883537), case(phv00002981 == 1, OMOP:45883458), 
+              case(phv00002981 == 2, OMOP:40766945), None)           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht000692
     slot_derivations:
+      associated_participant:
+        populated_from: phv00070736
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 28'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00001143} == 1999, "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
+      value_enum:
+        populated_from: phv00070406
+        value_mappings:
+          '0': OMOP:45883537 #never smoked
+          '1': OMOP:40766945 #current smoker
+          '2': OMOP:45883458 #former smoker        
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht000009
     slot_derivations:
+      associated_participant:
+        populated_from: phv00001036
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 1-7'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00001143} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00000543
+        value_mappings:
+          '1': OMOP:40766945 #current smoker
+          '2': OMOP:45883458 #former smoker 
+          '3': OMOP:40766945 #current smoker
+          '5': OMOP:45883537 #never smoked
+          '7': None
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht000009
     slot_derivations:
+      associated_participant:
+        populated_from: phv00001036
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 5'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00001143} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00000780
+        value_mappings:
+          '0': OMOP:45883458 #former smoker
+          '1': OMOP:40766945 #current smoker
+          '2': OMOP:45883537 #never smoked          
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht000031
     slot_derivations:
+      associated_participant:
+        populated_from: phv00008379
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 2'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00001143} == 9, "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
+      value_enum:
+        expr: case((phv00007735 == 0, OMOP:45883537), case((phv00007735 == 1 or phv00007735 == 3) and phv00007736 == 0, 
+              OMOP:45883458), OMOP:40766945)   
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht000030
     slot_derivations:
+      associated_participant:
+        populated_from: phv00007675
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 1'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00001636} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00007612
+        value_mappings:
+          '0': OMOP:45883537 #never smoked
+          '1': OMOP:40766945 #current smoker
+          '2': OMOP:45883458 #former smoker           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht000747
     slot_derivations:
+      associated_participant:
+        populated_from: phv00072580
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 8'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00001636} == 9, "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
+      value_enum:
+        populated_from: phv00072090
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945 #current smoker   
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht000074
     slot_derivations:
+      associated_participant:
+        populated_from: phv00021427
+      associated_visit:
+        expr: "'FHS GENERATION 3 EXAM 1'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00001836} == 0, "'OMOP:45883537 #NEVER_SMOKER'"))
-
+      value_enum:
+        expr: case((phv00020925 == 0, OMOP:45883537), case(phv00020927 == 0, OMOP:45883458), 
+              case(phv00020927 == 1, OMOP:40766945), None)            
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht000395
     slot_derivations:
+      associated_participant:
+        populated_from: phv00056635
+      associated_visit:
+        expr: "'FHS OFFSPRING BASELINE'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00001836} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00056589
+        value_mappings:
+          '0': OMOP:45883537
+          '1': OMOP:40766945	
+          '2': OMOP:45883458           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht000397
     slot_derivations:
+      associated_participant:
+        populated_from: phv00057982
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 2'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00001836} == 1, "'OMOP:45883458 #FORMER_SOMKER'"))
-
+      value_enum:
+        populated_from: phv00056725
+        value_mappings:
+          '0': OMOP:45883537
+          '1': OMOP:40766945	
+          '2': OMOP:45883458           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht006026
     slot_derivations:
+      associated_participant:
+        populated_from: phv00277015
+      associated_visit:
+        expr: "'FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 1'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00001836} == 3, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00277032
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945	           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht006026
     slot_derivations:
+      associated_participant:
+        populated_from: phv00277015
+      associated_visit:
+        expr: "'FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00001836} == 3, "'OMOP:45883458 #FORMER_SOMKER'"))
-
+      value_enum:
+        populated_from: phv00277033
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945	          
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht009761
     slot_derivations:
+      associated_participant:
+        populated_from: phv00423868
+      associated_visit:
+        expr: "'FHS OMNI 1 EXAM 1'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00001836} == 9, "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
+      value_enum:
+        populated_from: phv00423898
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945	          
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht009761
     slot_derivations:
+      associated_participant:
+        populated_from: phv00423868
+      associated_visit:
+        expr: "'FHS OMNI 1 EXAM 2'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00002055} == 0, "'OMOP:45883537 #NEVER_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00423899
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945	          
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht009761
     slot_derivations:
+      associated_participant:
+        populated_from: phv00423868
+      associated_visit:
+        expr: "'FHS OMNI 1 EXAM 3'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00002055} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00423900
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945	        
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht009761
     slot_derivations:
+      associated_participant:
+        populated_from: phv00423868
+      associated_visit:
+        expr: "'FHS OMNI 1 EXAM 4'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00002055} == 1, "'OMOP:45883458 #FORMER_SOMKER'"))
-
+      value_enum:
+        populated_from: phv00423901
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945	        
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht006027
     slot_derivations:
+      associated_participant:
+        expr: "'UNKNOWN'"
+      associated_visit:
+        expr: "'UNKNOWN'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00002055} == 3, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00277128
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945	          
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht006027
     slot_derivations:
+      associated_participant:
+        expr: "'UNKNOWN'"
+      associated_visit:
+        expr: "'UNKNOWN'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00002055} == 3, "'OMOP:45883458 #FORMER_SOMKER'"))
-
+      value_enum:
+        populated_from: phv00277129
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945          
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht006027
     slot_derivations:
+      associated_participant:
+        expr: "'UNKNOWN'"
+      associated_visit:
+        expr: "'UNKNOWN'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00002237} == 0, "'OMOP:45883537 #NEVER_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00277130
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945          
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht006027
     slot_derivations:
+      associated_participant:
+        expr: "'UNKNOWN'"
+      associated_visit:
+        expr: "'UNKNOWN'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00002237} == ., "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00277131
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945          
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht006027
     slot_derivations:
+      associated_participant:
+        expr: "'UNKNOWN'"
+      associated_visit:
+        expr: "'UNKNOWN'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00002237} == 0, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00277132
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945          
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht006027
     slot_derivations:
+      associated_participant:
+        expr: "'UNKNOWN'"
+      associated_visit:
+        expr: "'UNKNOWN'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00002237} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00277133
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht006027
     slot_derivations:
+      associated_participant:
+        expr: "'UNKNOWN'"
+      associated_visit:
+        expr: "'UNKNOWN'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00002237} == 8, "'OMOP:45883458 #FORMER_SOMKER'"))
-
+      value_enum:
+        populated_from: phv00277134
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945          
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht006027
     slot_derivations:
+      associated_participant:
+        expr: "'UNKNOWN'"
+      associated_visit:
+        expr: "'UNKNOWN'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00002458} == 0, "'OMOP:45883537 #NEVER_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00277135
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945          
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht006027
     slot_derivations:
+      associated_participant:
+        expr: "'UNKNOWN'"
+      associated_visit:
+        expr: "'UNKNOWN'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00002458} == ., "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00277136
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945          
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 1'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00002458} == 0, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00369809
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 2'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00002458} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00369810
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 3'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00002458} == 8, "'OMOP:45883458 #FORMER_SOMKER'"))
-
+      value_enum:
+        populated_from: phv00369811
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945 
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 4'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00002981} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
+      value_enum:
+        populated_from: phv00369812
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945 
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 5'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00002981} == 1, "'OMOP:45883458 #FORMER_SOMKER'"))
-
+      value_enum:
+        populated_from: phv00369813
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945                 
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 7'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00002981} == 2, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00369814
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 8'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00002981} == 8, "'OMOP:45883537 #NEVER_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00369815
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 9'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00007612} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
+      value_enum:
+        populated_from: phv00369816
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 10'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00007612} == 2, "'OMOP:45883458 #FORMER_SOMKER'"))
-
+      value_enum:
+        populated_from: phv00369817
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 11'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00007612} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00369818
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 12'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00007612} == 0, "'OMOP:45883537 #NEVER_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00369819
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 13'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00007994} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
+      value_enum:
+        populated_from: phv00369820
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 14'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00007994} == 0, "'OMOP:45883537 #NEVER_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00369821
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 15'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00007994} == 1, "'OMOP:45883458 #FORMER_SOMKER'"))
-
+      value_enum:
+        populated_from: phv00369822
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945                    
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 17'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00007994} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00369823
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 18'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00020925} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
+      value_enum:
+        populated_from: phv00369824
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 19'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00020925} == 0, "'OMOP:45883537 #NEVER_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00369825
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 20'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00020925} == 1, "'OMOP:45883458 #FORMER_SOMKER'"))
-
+      value_enum:
+        populated_from: phv00369826
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 21'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00020925} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00369827
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 22'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00020925} == 0, "'OMOP:45883537 #NEVER_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00369828
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 23'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00020925} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00369829
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 24'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00020925} == 2, "'OMOP:45883458 #FORMER_SOMKER'"))
-
+      value_enum:
+        populated_from: phv00369830
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 25'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00056725} == 0, "'OMOP:45883537 #NEVER_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00369831
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 26'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00056725} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00369832
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 27'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00056725} == 2, "'OMOP:45883458 #FORMER_SOMKER'"))
-
+      value_enum:
+        populated_from: phv00369833
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 28'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00070406} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00369834
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 29'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00070406} == 2, "'OMOP:45883458 #FORMER_SOMKER'"))
-
+      value_enum:
+        populated_from: phv00369835
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 30'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00251239} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
+      value_enum:
+        populated_from: phv00369836
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 31'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00277032} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
+      value_enum:
+        populated_from: phv00369837
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
 class_derivations:
   Observation:
-    populated_from: FHS
+    populated_from: pht007777
     slot_derivations:
+      associated_participant:
+        populated_from: phv00369651
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 32'"
       observation_type:
         expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00277032} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00277033} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00277033} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00277128} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00277128} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00277129} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00277129} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00277130} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00277130} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00277131} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00277131} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00277132} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00277132} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00277133} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00277133} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00277134} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00277134} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00277135} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00277135} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00277136} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00277136} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369809} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369809} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369810} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369810} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369811} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369811} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369812} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369812} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369813} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369813} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369814} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369814} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369815} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369815} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369816} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369816} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369817} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369817} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369818} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369818} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369819} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369819} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369820} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369820} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369821} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369821} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369822} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369822} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369823} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369823} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369824} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369824} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369825} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369825} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369826} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369826} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369827} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369827} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369828} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369828} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369829} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369829} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369830} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369830} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369831} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369831} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369832} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369832} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369833} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369833} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369834} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369834} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369835} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369835} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369836} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369836} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369837} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369837} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369838} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00369838} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00423898} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00423898} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00423899} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00423899} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00423900} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00423900} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00423901} == ., "'OMOP:45885135 #UNKNOWN_IF_EVER_SMOKED'"))
-
-class_derivations:
-  Observation:
-    populated_from: FHS
-    slot_derivations:
-      observation_type:
-        expr: "'OMOP:4282779'"
-      range_low:
-        value_decimal: 
-        unit: "unit"
-      value_concept:
-        populated_from:
-          expr: case(({phv00423901} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
+      value_enum:
+        populated_from: phv00369838
+        value_mappings:
+          '0': None
+          '1': OMOP:40766945           
