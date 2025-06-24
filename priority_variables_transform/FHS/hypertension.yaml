@@ -7,9 +7,28 @@ class_derivations:
       associated_visit:
         expr: "'FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'"
       condition_concept:
-        expr: "'NCIT:C3117'"   #hypertension
+        expr: "'NCIT:C160273'"   #does the individual have hypertension
       condition_status:
         populated_from: phv00177249
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'SELF'"
+class_derivations:
+  Condition:
+    populated_from: pht000015
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00002204
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 13'"
+      condition_concept:
+        expr: "'NCIT:C160273'"   #does the individual have hypertension
+      condition_status:
+        populated_from: phv00254023
         value_mappings:
           '0': 'ABSENT'
           '1': 'PRESENT'
@@ -26,12 +45,52 @@ class_derivations:
       associated_visit:
         expr: "'FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4'"
       condition_concept:
-        expr: "'NCIT:C3117'"   #hypertension
+        expr: "'NCIT:C160273'"   #does the individual have hypertension
       condition_status:
-        populated_from: phv00254023
+        populated_from: phv00002180
         value_mappings:
           '0': 'ABSENT'
           '1': 'PRESENT'
+          '2': 'UNKNOWN'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'SELF'"
+class_derivations:
+  Condition:
+    populated_from: pht000016
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00002425
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4'"
+      condition_concept:
+        expr: "'NCIT:C160273'"   #does the individual have hypertension
+      condition_status:
+        populated_from: phv00002375
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'UNKNOWN'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'SELF'"
+class_derivations:
+  Condition:
+    populated_from: pht000020
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00003667
+      associated_visit:
+        expr: "'Original Cohort Exam 18'"
+        expr: "'NCIT:C157879'"   #hypertensive heart disease
+      condition_status:
+        populated_from: phv00003634
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'UNKNOWN'
       condition_provenance:
         expr: "'CLINICAL_DIAGNOSIS'"
       relationship_to_participant:
