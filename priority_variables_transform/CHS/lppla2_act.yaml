@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001449
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00099663
+        associated_visit:
+          expr: '''CHS BASELINE'''
+        observation_type:
+          expr: '''OMOP:36305170''' #activity LP-PLA2
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001449
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00098770
+                  unit:
+                    expr: '''nmol/min/mL'''
