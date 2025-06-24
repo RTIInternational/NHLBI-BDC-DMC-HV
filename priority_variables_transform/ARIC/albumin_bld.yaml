@@ -1,1 +1,40 @@
-
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004051
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00203875
+        associated_visit:
+          expr: '''ARIC VISIT 1'''
+        observation_type:
+          expr: '''OBA:2050068''' #albumin in blood
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004051
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00203871
+                  unit:
+                    expr: '''g/dL'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht012503
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00506928
+        associated_visit:
+          expr: '''ARIC CHEM2'''
+        observation_type:
+          expr: '''OBA:2050068''' #albumin in blood
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht012503
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00507050
+                  unit:
+                    expr: '''g/dL'''
