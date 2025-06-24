@@ -424,3 +424,27 @@ class_derivations:
         expr: case((phv00055375 == 1, '''RxCUI:C07A'''), None)
       expsoure_provenance:
         expr: '''PATIENT SELF-REPORTED MEDICATION'''         
+class_derivations:
+  DrugExposure:
+    populated_from: pht000032
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00008743
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 3'"
+      drug_concept:
+        expr: case((phv00008387 == 1, '''RxCUI:C07A'''), None)
+      expsoure_provenance:
+        expr: '''PATIENT SELF-REPORTED MEDICATION'''
+class_derivations:
+  DrugExposure:
+    populated_from: pht000032
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00008743
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 3'"
+      drug_concept:
+        expr: case((phv00009179 == 1, '''RxCUI:C07A'''), None)
+      expsoure_provenance:
+        expr: '''PATIENT SELF-REPORTED MEDICATION'''        
