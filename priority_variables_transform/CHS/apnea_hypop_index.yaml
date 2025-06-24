@@ -1,0 +1,85 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003699
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00197394
+        associated_visit:
+          expr: '''CHS PSG 1'''
+        observation_type:
+          expr: '''OMOP:37396400''' #AHI
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003699
+                slot_derivations:
+                  value_concept:
+                    populated_from: phv00198702
+                    value_mappings:
+                      '0': '''< 50'''
+                      '1': '''>50'''
+                  unit: '''/h'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003700
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00198805
+        associated_visit:
+          expr: '''CHS PSG 2'''
+        observation_type:
+          expr: '''OMOP:37396400''' #AHI
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003700
+                slot_derivations:
+                  value_concept:
+                    populated_from: phv00199979
+                    value_mappings:
+                      '0': '''< 50'''
+                      '1': '''>50'''
+                      '8': None
+                  unit: '''/h'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003699
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00197394
+        associated_visit:
+          expr: '''CHS PSG 1'''
+        observation_type:
+          expr: '''OMOP:37396400''' #AHI
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003699
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00197745
+                  unit:
+                    expr: '''/h'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003700
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00198805
+        associated_visit:
+          expr: '''CHS PSG 2'''
+        observation_type:
+          expr: '''OMOP:37396400''' #AHI
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: phv00200047
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00197745
+                  unit:
+                    expr: '''/h'''
