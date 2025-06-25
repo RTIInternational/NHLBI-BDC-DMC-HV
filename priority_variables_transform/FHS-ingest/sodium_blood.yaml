@@ -1,0 +1,41 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000031
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00008379
+        associated_visit:
+          expr: '''FHS OFFSPRING EXAM 2'''
+        observation_type:
+          expr: '''OBA:VT0001776'''
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000031
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00008101
+                  unit:
+                    expr: '''mmol/L'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht006018
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00276803
+        associated_visit:
+          expr: '''FHS ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE, OMNI
+            1, OMNI 2 CASE REVIEW'''
+        observation_type:
+          expr: '''OBA:VT0001776'''
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht006018
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00276858
+                  unit:
+                    expr: '''mmol/L'''

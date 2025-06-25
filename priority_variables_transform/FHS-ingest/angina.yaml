@@ -1,0 +1,20 @@
+- class_derivations:
+    Condition:
+      populated_from: pht000395
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00056635
+        associated_visit:
+          expr: '''FHS OFFSPRING BASELINE'''
+        condition_concept:
+          expr: '''HP:0001681'''
+        condition_status:
+          populated_from: phv00055298
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '8': UNKNOWN
+        condition_provenance:
+          expr: '''CLINICAL_DIAGNOSIS'''
+        relationship_to_participant:
+          expr: '''ONESELF'''

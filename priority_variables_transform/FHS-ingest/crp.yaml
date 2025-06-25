@@ -1,0 +1,107 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000080
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00021692
+        associated_visit:
+          expr: '''FHS OFFSPRING EXAM 2'''
+        observation_type:
+          expr: '''OMOP:4208414'''
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000080
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00021690
+                  unit:
+                    expr: '''mg/L'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000081
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00021695
+        associated_visit:
+          expr: '''FHS OFFSPRING EXAM 6'''
+        observation_type:
+          expr: '''OMOP:4208414'''
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000081
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00021693
+                  unit:
+                    expr: '''mg/L'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002889
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00172159
+        associated_visit:
+          expr: '''FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'''
+        observation_type:
+          expr: '''OMOP:4208414'''
+        range_low:
+          value_decimal: 0.15
+          unit: '''mg/L'''
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002889
+                slot_derivations:
+                  value_decimal:
+                    expr: case(({phv00172177} > 0.15, {phv00172177}), ({phv00462201}
+                      == 1, "'LOD'"))
+                  unit:
+                    expr: '''mg/L'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004802
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00227023
+        associated_visit:
+          expr: '''FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4'''
+        observation_type:
+          expr: '''OMOP:4208414'''
+        range_low:
+          value_decimal: 0.15
+          unit: '''mg/L'''
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004802
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00227060
+                  unit:
+                    expr: '''mg/L'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht006013
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00275427
+        associated_visit:
+          expr: '''FHS OFFSPRING EXAM 5'''
+        observation_type:
+          expr: '''OMOP:4208414'''
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht006013
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00422577
+                  unit:
+                    expr: '''mg/L'''

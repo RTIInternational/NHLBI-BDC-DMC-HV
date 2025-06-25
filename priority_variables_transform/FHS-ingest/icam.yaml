@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006013
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00275427
+        associated_visit:
+          expr: '''FHS OFFSPRING EXAM 5'''
+        observation_type:
+          expr: '''OMOP:4284103'''
+        value_quantity_unit:
+          expr: '''ng/mL'''
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: null
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00422578
