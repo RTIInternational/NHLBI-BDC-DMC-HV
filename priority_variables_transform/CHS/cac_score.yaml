@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001459
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00100690
+        associated_visit:
+          expr: '''CHS CAC'''
+        observation_type:
+          expr: '''OMOP:42872742''' #CAC score
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001459
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00100691
+                  unit:
+                    expr: '''{score}'''
