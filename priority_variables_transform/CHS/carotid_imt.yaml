@@ -1,0 +1,61 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001468
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00100863
+        associated_visit:
+          expr: '''CHS IMT'''
+        observation_type:
+          expr: '''OMOP:4138462''' #carotid imt
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001468
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00100864
+                  unit:
+                    expr: '''mm'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001468
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00100863
+        associated_visit:
+          expr: '''CHS IMT'''
+        observation_type:
+          expr: '''OMOP:4138462''' #carotid imt
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001468
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00100865
+                  unit:
+                    expr: '''mm'''                    
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001473
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00101233
+        associated_visit:
+          expr: '''CHS YEAR 5'''
+        observation_type:
+          expr: '''OMOP:4138462''' #carotid imt
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001473
+                slot_derivations:
+                  value_decimal:
+                    expr: ({phv00101264} + {phv00101265} + {phv00101276} + {phv00101277}) / 4
+                    populated_from: phv00100865
+                  unit:
+                    expr: '''mm'''                     
