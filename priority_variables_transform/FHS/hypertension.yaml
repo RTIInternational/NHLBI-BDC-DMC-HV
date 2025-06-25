@@ -89,10 +89,69 @@ class_derivations:
         populated_from: phv00003634
         value_mappings:
           '0': 'ABSENT'
-          '8': 'ABSENT'
+          '8': 'ABSENT' # maps to 'doubtful'
           '1': 'HISTORICAL'
           '2': 'PRESENT'
           '3': 'UNKNOWN'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'SELF'"
+class_derivations:
+  Condition:
+    populated_from: pht000021
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00004083
+      associated_visit:
+        expr: "'FHS Original Exam 19'"
+        expr: "'NCIT:C160273'"   #does the individual have hypertension
+      condition_status:
+        populated_from: phv00004044
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '2': 'PRESENT' #maps to 'borderline'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'SELF'"
+class_derivations:
+  Condition:
+    populated_from: pht000009
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00004083
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 1-7'"
+        expr: "'NCIT:C160273'"   #does the individual have hypertension
+      condition_status:
+        populated_from: phv00000487
+        value_mappings:
+          '0': 'ABSENT'
+          '8': 'ABSENT' #maps to 'doubtful'
+          '1': 'PRESENT' #maps to 'transient'
+          '2': 'PRESENT' #maps to 'permanent'
+          '3': 'UNKNOWN'          
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'SELF'"
+class_derivations:
+  Condition:
+    populated_from: pht000030
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00007675
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 1'"
+      condition_concept:
+        expr: "'NCIT:C160273'"   #does the individual have hypertension
+      condition_status:
+        populated_from: phv00007583
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
       condition_provenance:
         expr: "'CLINICAL_DIAGNOSIS'"
       relationship_to_participant:
