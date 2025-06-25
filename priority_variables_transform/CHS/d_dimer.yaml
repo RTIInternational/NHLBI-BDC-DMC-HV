@@ -1,0 +1,60 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001449
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00098763
+        associated_visit:
+          expr: '''CHS BASELINE'''
+        observation_type:
+          expr: '''OMOP:37393605''' #d-dimer
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001449
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00098765
+                  unit:
+                    expr: '''mg/L'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001449
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00098763
+        associated_visit:
+          expr: '''CHS BASELINE'''
+        observation_type:
+          expr: '''OMOP:37393605''' #d-dimer
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001449
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00098768
+                  unit:
+                    expr: '''mg/L'''               
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001457
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00098763
+        associated_visit:
+          expr: '''CHS DDIM'''
+        observation_type:
+          expr: '''OMOP:37393605''' #d-dimer
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001449
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00100683
+                  unit:
+                    expr: '''mg/L'''                    
