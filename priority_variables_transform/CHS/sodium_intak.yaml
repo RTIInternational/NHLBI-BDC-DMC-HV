@@ -1,0 +1,40 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001451
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00099663
+        associated_visit:
+          expr: '''CHS BASELINE 2'''
+        observation_type:
+          expr: '''OMOP:606729''' #sodium intake
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001451
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00100131
+                  unit:
+                    expr: '''mg/d'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001494
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00109056
+        associated_visit:
+          expr: '''CHS YEAR 8'''
+        observation_type:
+          expr: '''OMOP:606729''' #sodium intake
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001494
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00109552
+                  unit:
+                    expr: '''mg/d'''                    
