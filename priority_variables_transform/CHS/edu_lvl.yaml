@@ -1,0 +1,44 @@
+- class_derivations:
+    Observation:
+      populated_from: pht001450
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00098771
+        associated_visit:
+          expr: '''CHS BASELINE 2'''
+        observation_type: '''OMOP:4022643''' #education level
+        value_quantity.value_concept:
+          populated_from: phv00098802
+          value_mappings:
+            '8': 8TH_GRADE_OR_LESS
+            '9': HIGH_SCHOOL_NO_DIPLOMA
+            '10': HIGH_SCHOOL_NO_DIPLOMA
+            '11': HIGH_SCHOOL_NO_DIPLOMA
+            '12': HIGH_SCHOOL_GRADUATE_GED
+            '14': SOME_COLLEGE_OR_TECH_NO_DEGREE
+            '17': SOME_COLLEGE_OR_TECH_NO_DEGREE
+            '18': SOME_COLLEGE_OR_TECH_NO_DEGREE
+            '20': COLLEGE_OR_TECH_WITH_DEGREE
+            '21': MASTERS_OR_DOCTORAL_DEGREE
+- class_derivations:
+    Observation:
+      populated_from: pht001490
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00105099
+        associated_visit:
+          expr: '''CHS YEAR 5 NEW'''
+        observation_type: '''OMOP:4022643''' #education level
+        value_quantity.value_concept:
+          populated_from: phv00105119
+          value_mappings:
+            '6': 8TH_GRADE_OR_LESS
+            '7': 8TH_GRADE_OR_LESS
+            '8': 8TH_GRADE_OR_LESS
+            '9': HIGH_SCHOOL_NO_DIPLOMA
+            '10': HIGH_SCHOOL_NO_DIPLOMA
+            '11': HIGH_SCHOOL_NO_DIPLOMA
+            '12': HIGH_SCHOOL_GRADUATE_GED
+            '18': SOME_COLLEGE_OR_TECH_NO_DEGREE
+            '20': COLLEGE_OR_TECH_WITH_DEGREE
+            '21': MASTERS_OR_DOCTORAL_DEGREE
