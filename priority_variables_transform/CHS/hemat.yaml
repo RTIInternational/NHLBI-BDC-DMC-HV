@@ -98,3 +98,23 @@
                     populated_from: phv00106920
                   unit:
                     expr: '''{ratio}'''                    
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001452
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00100285
+        associated_visit:
+          expr: '''CHS BASELINE BOTH'''
+        observation_type:
+          expr: '''OBA:2045381''' #hematocrit
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001452
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00100413
+                  unit:
+                    expr: '''{ratio}'''
