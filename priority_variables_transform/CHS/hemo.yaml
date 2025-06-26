@@ -78,3 +78,23 @@
                     populated_from: phv00106919
                   unit:
                     expr: '''g/dL'''                    
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001452
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00100285
+        associated_visit:
+          expr: '''CHS BASELINE BOTH'''
+        observation_type:
+          expr: '''OBA:2060175''' #hemoglobin
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001452
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00100412
+                  unit:
+                    expr: '''g/dL'''
