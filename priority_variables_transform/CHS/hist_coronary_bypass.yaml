@@ -1,0 +1,19 @@
+class_derivations:
+  Condition:
+    populated_from: pht001450
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00098771	
+      associated_visit:
+        expr: "'CHS BASELINE 2'"
+      condition_concept:
+        expr: "'NCIT:C51998'"   # Coronary Artery Bypass Surgery
+      condition_status:
+        populated_from: phv00099013
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'SELF'"
