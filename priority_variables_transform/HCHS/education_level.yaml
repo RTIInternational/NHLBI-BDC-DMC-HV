@@ -1,24 +1,16 @@
 class_derivations:
-  Condition:
+  SdohObservation:
     populated_from: pht004715
     slot_derivations:
       associated_participant:
-        populated_from: phv00100285
+        populated_from: phv00226250
       associated_visit:
-        expr: 'exam'
-      condition_concept:
-        populated_from: 
-        value_mappings:
-          '1': '''MONDO:0005015''' #diabetes
-          '2': '''HP:0040270''' #impaired glucose tolerance
-          '3': '''MONDO:0005015''' #diabetes
-      condition_status:
+        expr: "'HCHS EXAM'"
+      category:
+        expr: "'EDUCATIONAL_ATTAINMENT'"
+      value_enum:
         populated_from: phv00226276
         value_mappings:
-          '1': '''ABSENT'''
-          '2': '''PRESENT'''
-          '3': '''PRESENT''' 
-      condition_provenance:
-        expr: '''CLINICAL_DIAGNOSIS'''
-      relationship_to_participant:
-        expr: '''ONESELF'''
+          '1': 'LESS THAN HIGH SCHOOL'
+          '2': 'HIGH SCHOOL OR EQUIVALENT'
+          '3': 'GREATER THAN HIGH SCHOOL OR EQUIVALENT'
