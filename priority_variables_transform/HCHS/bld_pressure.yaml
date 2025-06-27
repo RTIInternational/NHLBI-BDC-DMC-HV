@@ -1,0 +1,39 @@
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht004715
+      slot_derivations: 
+        associated_participant:
+          populated_from: phv00226250
+        associated_visit:
+          expr: '''HCHS EXAM'''
+      observations:
+        MeasurementObservation:
+          slot_derivations:
+            observation_type:
+              expr: "'OMOP:4154790'" # diastolic bp
+            value_quantity:
+              object_derivations:
+              - class_derivations:
+                  Quantity:
+                    populated_from: pht004715
+                    slot_derivations:
+                      value_decimal:
+                        populated_from: phv00226391
+                      unit:
+                        expr: '''mm[Hg]'''
+            method_type: '''average'''
+        MeasurementObservation:
+          slot_derivations:
+            observation_type:
+              expr: "'OMOP:4152194'" # systolic bp
+            value_quantity:
+              object_derivations:
+              - class_derivations:
+                  Quantity:
+                    populated_from: pht004715
+                    slot_derivations:
+                      value_decimal:
+                        populated_from: phv00226390
+                      unit:
+                        expr: '''mm[Hg]'''
+            method_type: '''average'''                        
