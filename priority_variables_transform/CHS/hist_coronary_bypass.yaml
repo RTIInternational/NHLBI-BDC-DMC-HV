@@ -9,7 +9,64 @@ class_derivations:
       condition_concept:
         expr: "'NCIT:C51998'"   # Coronary Artery Bypass Surgery
       condition_status:
-        populated_from: phv00099013
+        populated_from: phv00099031
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'SELF'"
+class_derivations:
+  Condition:
+    populated_from: pht001452
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00100321
+      associated_visit:
+        expr: "'CHS BASELINE BOTH'"
+      condition_concept:
+        expr: "'NCIT:C51998'"   # Coronary Artery Bypass Surgery
+      condition_status:
+        populated_from: phv00100322
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'SELF'"
+class_derivations:
+  Condition:
+    populated_from: pht001464
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00100773
+      associated_visit:
+        expr: "'CHS SUMMARY'"
+      condition_concept:
+        expr: "'NCIT:C51998'"   # Coronary Artery Bypass Surgery
+      condition_status:
+        populated_from: phv00100785
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: "'CLINICAL_DIAGNOSIS'"
+      relationship_to_participant:
+        expr: "'SELF'"
+class_derivations:
+  Condition:
+    populated_from: pht001490
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00105099	
+      associated_visit:
+        expr: "'CHS YEAR 5 NEW'"
+      condition_concept:
+        expr: "'NCIT:C51998'"   # Coronary Artery Bypass Surgery
+      condition_status:
+        populated_from: phv00105974
         value_mappings:
           '0': 'ABSENT'
           '1': 'PRESENT'
