@@ -5,8 +5,10 @@ class_derivations:
       observation_type:
         expr: "'OMOP:4282779'"
       value_enum:
-        populated_from:
-          expr: case(({phv00000543} == 1, "'OMOP:40766945 #CURRENT_SMOKER'"))
+        populated_from: phv00000543
+        value_mappings:
+        '0': None
+        '1': "'OMOP:40766945 #CURRENT_SMOKER'"
 class_derivations:
   Observation:
     populated_from: pht003094
@@ -287,8 +289,8 @@ class_derivations:
         populated_from: phv00056589
         value_mappings:
           '0': OMOP:45883537
-          '1': OMOP:40766945	
-          '2': OMOP:45883458           
+          '1': OMOP:40766945
+          '2': OMOP:45883458
 class_derivations:
   Observation:
     populated_from: pht000397
@@ -303,8 +305,8 @@ class_derivations:
         populated_from: phv00056725
         value_mappings:
           '0': OMOP:45883537
-          '1': OMOP:40766945	
-          '2': OMOP:45883458           
+          '1': OMOP:40766945
+          '2': OMOP:45883458
 class_derivations:
   Observation:
     populated_from: pht006026
@@ -319,7 +321,7 @@ class_derivations:
         populated_from: phv00277032
         value_mappings:
           '0': None
-          '1': OMOP:40766945	           
+          '1': OMOP:40766945
 class_derivations:
   Observation:
     populated_from: pht006026
@@ -334,7 +336,7 @@ class_derivations:
         populated_from: phv00277033
         value_mappings:
           '0': None
-          '1': OMOP:40766945	          
+          '1': OMOP:40766945
 class_derivations:
   Observation:
     populated_from: pht009761
@@ -349,7 +351,7 @@ class_derivations:
         populated_from: phv00423898
         value_mappings:
           '0': None
-          '1': OMOP:40766945	          
+          '1': OMOP:40766945 
 class_derivations:
   Observation:
     populated_from: pht009761
@@ -364,7 +366,7 @@ class_derivations:
         populated_from: phv00423899
         value_mappings:
           '0': None
-          '1': OMOP:40766945	          
+          '1': OMOP:40766945
 class_derivations:
   Observation:
     populated_from: pht009761
@@ -379,7 +381,7 @@ class_derivations:
         populated_from: phv00423900
         value_mappings:
           '0': None
-          '1': OMOP:40766945	        
+          '1': OMOP:40766945        
 class_derivations:
   Observation:
     populated_from: pht009761
@@ -394,7 +396,7 @@ class_derivations:
         populated_from: phv00423901
         value_mappings:
           '0': None
-          '1': OMOP:40766945	        
+          '1': OMOP:40766945
 class_derivations:
   Observation:
     populated_from: pht006027
@@ -409,7 +411,7 @@ class_derivations:
         populated_from: phv00277128
         value_mappings:
           '0': None
-          '1': OMOP:40766945	          
+          '1': OMOP:40766945          
 class_derivations:
   Observation:
     populated_from: pht006027

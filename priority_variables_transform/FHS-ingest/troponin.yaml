@@ -1,0 +1,43 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: FHS
+      slot_derivations:
+        observation_type:
+          expr: '''OMOP:8842'''
+        value_quantity_unit:
+          expr: '''ng/mL'''
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: null
+                slot_derivations:
+                  value_decimal:
+                    expr: case(({phv00141866} > 0.77, ({phv00141866} / 1000)), ({phv00141868}
+                      == 1, "'LOD'"))
+        range_low:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: null
+                slot_derivations:
+                  value_decimal:
+                    expr: '0.00078'
+                  unit:
+                    expr: ng/L
+- class_derivations:
+    MeasurementObservation:
+      populated from: FHS
+      slot_derivations:
+        observation_type:
+          expr: '''OMOP:8842'''
+        value_quantity_unit:
+          expr: '''ng/mL'''
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: null
+                slot_derivations:
+                  value_decimal:
+                    expr: phv00276804

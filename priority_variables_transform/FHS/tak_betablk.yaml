@@ -79,8 +79,13 @@ class_derivations:
       associated_visit:
         expr: "'FHS OMNI 1 EXAM 2'"
       drug_concept:
-        expr: case((phv00250735 == 1, '''RxCUI:8787'''), case(phv00250735 == 3, '''RxCUI:7226'''), case(phv00250735 == 4, '''RxCUI:1202'''), 
-              case(phv00250735 == 5, '''RxCUI:6918'''), case(phv00250735 == 9, '''RxCUI:C07A'''), None)
+        populated_from: phv00250735
+        value_mappings:
+          '1': '''RxCUI:8787'''
+          '3': '''RxCUI:7226'''
+          '4': '''RxCUI:1202'''
+          '5': '''RxCUI:6918'''
+          '9': '''RxCUI:C07A'''
       dosage phv00250736
       expsoure_provenance:
         expr: '''PATIENT SELF-REPORTED MEDICATION'''
