@@ -1,0 +1,30 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00082638
+        associated_visit:
+          expr: '''MESA AIR EXAM'''
+        observation_type:
+          expr: '''OMOP:43021859''' #carotid artery stenosis right
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001116
+                slot_derivations:
+                  value_category:
+                    populated_from: phv00084798
+                    value_mappings:
+                      '1': '''1-24'''
+                      '2': '''25-49'''
+                      '3': '''50-74'''
+                      '4': '''75-99'''
+                      '5': '''100'''
+                      '6': '''0'''
+                      '7': None
+                      '8': None
+                  unit:
+                    expr: '''%'''
+                    
