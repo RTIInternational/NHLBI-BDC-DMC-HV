@@ -7,7 +7,7 @@ class_derivations:
       associated_visit:
         expr: 'HCHS EXAM'
       observation_type:
-        expr: 'OMOP:37208698' #eosinophil percent
+        expr: 'NCIT:C70465' #percent of eosinophils
       value_quantity:
         object_derivations:
         - class_derivations:
@@ -35,7 +35,6 @@ class_derivations:
               populated_from: pht004715
               slot_derivations:
                 value_decimal:
-                  populated_from: phv00226287
+                  expr: {phv00226300} / 1000000
                 unit:
-                  expr: '%''
-                  
+                  expr: '10E3/uL'
