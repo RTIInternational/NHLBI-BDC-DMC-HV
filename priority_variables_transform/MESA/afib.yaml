@@ -74,3 +74,78 @@
           expr: '''PATIENT_SELF-REPORTED_CONDITION'''
         relationship_to_participant:
           expr: '''ONESELF'''          
+- class_derivations:
+    Condition:
+      populated_from: pht001217
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00090301
+        associated_visit:
+          expr: '''MESA AFIB'''
+        condition_concept:
+          expr: case((phv00090305 == 427.31, '''MONDO:0004981'''), case(phv00090305 == 427.32, '''MONDO:0005310'''), ) #how do I get it to make two conditions for the last conditional?
+        condition_status:
+          expr: '''PRESENT'''
+        condition_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+        relationship_to_participant:
+          expr: '''ONESELF'''
+- class_derivations:
+    Condition:
+      populated_from: pht003091
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00176007
+        associated_visit:
+          expr: '''MESA CLASSIC EXAM 5'''
+        condition_concept:
+          expr: '''MONDO:0004981''' #atrial fibrillation
+        condition_status:
+          populated_from: phv00176281
+          value_mappings:
+            '0': '''ABSENT'''
+            '1': '''PRESENT'''
+        condition_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+        relationship_to_participant:
+          expr: '''ONESELF'''          
+- class_derivations:
+    Condition:
+      populated_from: pht003091
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00176007
+        associated_visit:
+          expr: '''MESA CLASSIC EXAM 5'''
+        condition_concept:
+          expr: '''MONDO:0004981''' #atrial fibrillation
+        condition_status:
+          populated_from: phv00176292
+          value_mappings:
+            '0': '''ABSENT'''
+            '1': '''PRESENT'''
+            '2': '''PRESENT'''
+        condition_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+        relationship_to_participant:
+          expr: '''ONESELF'''          
+- class_derivations:
+    Condition:
+      populated_from: pht003091
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00176007
+        associated_visit:
+          expr: '''MESA CLASSIC EXAM 5'''
+        condition_concept:
+          expr: '''MONDO:0004981''' #atrial fibrillation
+        condition_status:
+          populated_from: phv00176292
+          value_mappings:
+            '0': '''ABSENT'''
+            '1': '''PRESENT'''
+            '2': '''PRESENT'''
+        condition_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+        relationship_to_participant:
+          expr: '''ONESELF'''           
