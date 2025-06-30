@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002512
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00165046
+        associated_visit:
+          expr: '''MESA ANCILLARY'''
+        observation_type:
+          expr: '''OMOP:36305170''' #Activity LP-PLA2 in blood
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002512
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00165052
+                  unit:
+                    expr: '''nmol/min/mL'''
