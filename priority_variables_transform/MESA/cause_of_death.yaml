@@ -1,0 +1,25 @@
+- class_derivations:
+    Person:
+      populated_from: pht001123
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087848
+        associated_visit:
+          expr: '''MESA CLASSIC CVE'''
+        cause_of_death:
+          populated_from: phv00087883
+            value_mappings:
+              '1': '''ATHEROSCLEROTIC CORONARY HEART DISEASE'''
+              '2': '''STROKE'''
+              '3': '''ATHEROSCLEROTIC DISEASE OTHER THAN CORONARY DISEASE- STROKE'''
+              '4': '''OTHER CARDIOVASCULAR DISEASE'''
+              '5': '''NON-CARDIOVASCULAR  SPC'''
+              '6': None
+              '7': None
+              '8': None
+              '999': None
+        vital_status:
+          populated_from: Death
+          value_mappings:
+            '0': '''OMOP:4230556''' #ALIVE
+            '1': '''OMOP:434489''' #DEAD
