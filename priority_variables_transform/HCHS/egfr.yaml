@@ -1,0 +1,22 @@
+class_derivations:
+  Condition:
+    populated_from: pht004715
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00226250
+      associated_visit:
+        expr: 'HCHS EXAM'
+      condition_concept:
+        expr: 'NCIT:C_80078' #Chronic Kidney Disease
+      condition_status:
+        populated_from: phv00226259
+        value_mappings:
+          '1': 'NORMAL'
+          '2': 'MILD'
+          '3': 'MODERATE'
+          '4': 'SEVERE'
+          '5': 'END-STAGE'
+      condition_provenance:
+        expr: 'PATIENT_SELF-REPORTED_CONDITION'
+      relationship_to_participant:
+        expr: 'ONESELF'
