@@ -1,0 +1,21 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003086
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00174584
+        associated_visit:
+          expr: '''MESA AIR EXAM 5'''
+        observation_type:
+          expr: '''OMOP:4138462''' #carotid imt
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003086
+                slot_derivations:
+                  value_decimal:
+                    expr: ({phv00175623} + {phv00175683}) / 2
+                    populated_from: phv00175623
+                  unit:
+                    expr: '''mm'''
