@@ -1,0 +1,60 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001111
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00082638
+        associated_visit:
+          expr: '''MESA AIR EXAM'''
+        observation_type:
+          expr: '''OBA:2052778''' #e selectin
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001111
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00082969
+                  unit:
+                    expr: '''ng/mL'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00084441
+        associated_visit:
+          expr: '''MESA CLASSIC EXAM 1'''
+        observation_type:
+          expr: '''OBA:2052778''' #e selectin
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001111
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00085022
+                  unit:
+                    expr: '''ng/mL'''                    
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001120
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00086726
+        associated_visit:
+          expr: '''MESA CLASSIC EXAM 4'''
+        observation_type:
+          expr: '''OBA:2052778''' #e selectin
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001111
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00086827
+                  unit:
+                    expr: '''ng/mL'''                    
