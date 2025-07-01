@@ -21,8 +21,10 @@ class_derivations:
       associated_visit: 
        expr: "'FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'"
       range_low: 
-        value_decimal: 3.0
-        unit: mg/L
+        value_decimal:
+          expr: "' 3.0'"
+        unit:
+          expr: "'mg/L'"
       value_concept:
         populated_from: 
           expr: case(({phv00172161} > 3.0, {phv00172161}),
@@ -68,8 +70,10 @@ class_derivations:
       associated_visit:
         expr: "'FHS OFFSPRING EXAM 7, OMNI 1 EXAM 2'"
       range_low: 
-        value_decimal: 3.0
-        unit: mg/L
+        value_decimal:
+          expr: "' 3.0'"
+        unit:
+          expr: "'mg/L'"
       value_concept:
         populated_from: 
           expr: case(({phv00219547} > 3.0, {phv00219547}),

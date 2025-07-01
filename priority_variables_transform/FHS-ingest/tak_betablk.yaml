@@ -7,7 +7,7 @@
         associated_visit:
           expr: '''FHS ORIGINAL EXAM 14'''
         drug_concept:
-          expr: case((phv00002221 == 1, '''RxCUI:8787'''), None)
+          expr: '''case((phv00002221 == 1, ''''''RxCUI:8787''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -19,7 +19,7 @@
         associated_visit:
           expr: '''FHS ORIGINAL EXAM 15'''
         drug_concept:
-          expr: case((phv00002441 == 1, '''RxCUI:8787'''), None)
+          expr: '''case((phv00002441 == 1, ''''''RxCUI:8787''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -31,7 +31,7 @@
         associated_visit:
           expr: '''FHS ORIGINAL EXAM 16'''
         drug_concept:
-          expr: case((phv00002695 == 1, '''RxCUI:8787'''), None)
+          expr: '''case((phv00002695 == 1, ''''''RxCUI:8787''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -43,7 +43,7 @@
         associated_visit:
           expr: '''FHS OFFSPRING EXAM 2'''
         drug_concept:
-          expr: case((phv00007704 == 1, '''RxCUI:8787'''), None)
+          expr: '''case((phv00007704 == 1, ''''''RxCUI:8787''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -56,7 +56,7 @@
           expr: '''FHS ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE, OMNI
             1, OMNI 2 CASE REVIEW'''
         drug_concept:
-          expr: case((phv00276806 == 1, '''RxCUI:C07A'''), None)
+          expr: '''case((phv00276806 == 1, ''''''RxCUI:C07A''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -68,7 +68,7 @@
         associated_visit:
           expr: '''FHS OMNI 1 EXAM 2'''
         drug_concept:
-          expr: case((phv00250734 == 1, '''RxCUI:C07A'''), None)
+          expr: '''case((phv00250734 == 1, ''''''RxCUI:C07A''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -100,7 +100,7 @@
         associated_visit:
           expr: '''FHS ORIGINAL EXAM 17'''
         drug_concept:
-          expr: case((phv00002955 == 1, '''RxCUI:C07A'''), None)
+          expr: '''case((phv00002955 == 1, ''''''RxCUI:C07A''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -112,7 +112,7 @@
         associated_visit:
           expr: '''FHS ORIGINAL EXAM 18'''
         drug_concept:
-          expr: case((phv00003328 == 1, '''RxCUI:C07A'''), None)
+          expr: '''case((phv00003328 == 1, ''''''RxCUI:C07A''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -142,7 +142,7 @@
         associated_visit:
           expr: '''FHS ORIGINAL EXAM 19'''
         drug_concept:
-          expr: case((phv00003768 == 1, '''RxCUI:C07A'''), None)
+          expr: '''case((phv00003768 == 1, ''''''RxCUI:C07A''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -154,7 +154,7 @@
         associated_visit:
           expr: '''FHS ORIGINAL EXAM 20'''
         drug_concept:
-          expr: case((phv00004203 == 1, '''RxCUI:C07A'''), None)
+          expr: '''case((phv00004203 == 1, ''''''RxCUI:C07A''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -166,7 +166,7 @@
         associated_visit:
           expr: '''FHS ORIGINAL EXAM 21'''
         drug_concept:
-          expr: case((phv00004598 == 1, '''RxCUI:C07A'''), None)
+          expr: '''case((phv00004598 == 1, ''''''RxCUI:C07A''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -178,7 +178,7 @@
         associated_visit:
           expr: '''FHS ORIGINAL EXAM 22'''
         drug_concept:
-          expr: case((phv00004952 == 1, '''RxCUI:C07A'''), None)
+          expr: '''case((phv00004952 == 1, ''''''RxCUI:C07A''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -190,12 +190,12 @@
         associated_visit:
           expr: '''FHS ORIGINAL EXAM 22'''
         drug_concept:
-          expr: 'case( ({phv00004953} == 1, ''''''RxCUI: 8787''''''), (phv00004953}
+          expr: '''case( ({phv00004953} == 1, ''''''RxCUI: 8787''''''), (phv00004953}
             == 2, ''''''RxCUI: 10600''''''), ({phv00004953} == 3, ''''''RxCUI: 7226''''''),
             ({phv00004953} == 4, ''''''RxCUI: 1202''''''), ({phv00004953} == 5, ''''''RxCUI:
             6918''''''), ({phv00004953} == 6, ''''''RxCUI: 8332''''''), ({phv00004953}
             == 7, ''''''RxCUI: 149''''''), ({phv00004953} == 8, ''''''RxCUI: 6185''''''),
-            ({phv00004953} == 9, ''''''RxCUI: C07A''''''), (True, None) )'
+            ({phv00004953} == 9, ''''''RxCUI: C07A''''''), (True, None) )'''
         dosage:
           populated_from: phv00004954
         expsoure_provenance:
@@ -209,7 +209,7 @@
         associated_visit:
           expr: '''FHS ORIGINAL EXAM 23'''
         drug_concept:
-          expr: case((phv00005572 == 1, '''RxCUI:C07A'''), None)
+          expr: '''case((phv00005572 == 1, ''''''RxCUI:C07A''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -221,12 +221,12 @@
         associated_visit:
           expr: '''FHS ORIGINAL EXAM 23'''
         drug_concept:
-          expr: 'case((phv00005573 == 1, ''''''RxCUI:8787''''''), (phv00005573 ==
+          expr: '''case((phv00005573 == 1, ''''''RxCUI:8787''''''), (phv00005573 ==
             2, ''''''RxCUI:10600''''''), (phv00005573 == 3, ''''''RxCUI:7226''''''),
             (phv00005573 == 4, ''''''RxCUI:1202''''''), (phv00005573 == 5, ''''''RxCUI:
             6918''''''), (phv00005573 == 6, ''''''RxCUI:8332''''''), (phv00005573
             == 7, ''''''RxCUI:149''''''), (phv00005573 == 8, ''''''RxCUI:6185''''''),
-            (phv00005573 == 9, ''''''RxCUI: C07A''''''), None)'
+            (phv00005573 == 9, ''''''RxCUI: C07A''''''), None)'''
         dosage:
           populated_from: phv00005574
         expsoure_provenance:
@@ -240,7 +240,7 @@
         associated_visit:
           expr: '''FHS ORIGINAL EXAM 24'''
         drug_concept:
-          expr: case((phv00006124 == 1, '''RxCUI:C07A'''), None)
+          expr: '''case((phv00006124 == 1, ''''''RxCUI:C07A''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -252,12 +252,12 @@
         associated_visit:
           expr: '''FHS ORIGINAL EXAM 24'''
         drug_concept:
-          expr: 'case((phv00006125 == 1, ''''''RxCUI:8787''''''), (phv00006125 ==
+          expr: '''case((phv00006125 == 1, ''''''RxCUI:8787''''''), (phv00006125 ==
             2, ''''''RxCUI:10600''''''), (phv00006125 == 3, ''''''RxCUI:7226''''''),
             (phv00006125 == 4, ''''''RxCUI:1202''''''), (phv000061253 == 5, ''''''RxCUI:
             6918''''''), (phv00006125 == 6, ''''''RxCUI:8332''''''), (phv00006125
             == 7, ''''''RxCUI:149''''''), (phv00006125 == 8, ''''''RxCUI:6185''''''),
-            (phv000061253 == 9, ''''''RxCUI: C07A''''''), None)'
+            (phv000061253 == 9, ''''''RxCUI: C07A''''''), None)'''
         dosage:
           populated_from: phv00006126
         expsoure_provenance:
@@ -271,7 +271,7 @@
         associated_visit:
           expr: '''FHS ORIGINAL EXAM 25'''
         drug_concept:
-          expr: case((phv00006466 == 1, '''RxCUI:C07A'''), None)
+          expr: '''case((phv00006466 == 1, ''''''RxCUI:C07A''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -283,13 +283,13 @@
         associated_visit:
           expr: '''FHS ORIGINAL EXAM 25'''
         drug_concept:
-          expr: 'case((phv00006467 == 1, ''''''RxCUI:8787''''''), case(phv00006467
+          expr: '''case((phv00006467 == 1, ''''''RxCUI:8787''''''), case(phv00006467
             == 2, ''''''RxCUI:10600''''''), case(phv00006467 == 3, ''''''RxCUI:7226''''''),
             case(phv00006467 == 4, ''''''RxCUI:1202''''''), case(phv00006467 == 5,
             ''''''RxCUI: 6918''''''), case(phv00006467 == 6, ''''''RxCUI:8332''''''),
             case(phv00006467 == 7, ''''''RxCUI:149''''''), case(phv00006467 == 8,
             ''''''RxCUI:6185''''''), case(phv00006467 == 9, ''''''RxCUI: C07A''''''),
-            None)'
+            None)'''
         dosage:
           populated_from: phv00006468
         expsoure_provenance:
@@ -303,7 +303,7 @@
         associated_visit:
           expr: '''FHS ORIGINAL EXAM 26'''
         drug_concept:
-          expr: case((phv00006854 == 1, '''RxCUI:C07A'''), None)
+          expr: '''case((phv00006854 == 1, ''''''RxCUI:C07A''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -315,13 +315,13 @@
         associated_visit:
           expr: '''FHS ORIGINAL EXAM 26'''
         drug_concept:
-          expr: 'case((phv00006855 == 1, ''''''RxCUI:8787''''''), case(phv00006855
+          expr: '''case((phv00006855 == 1, ''''''RxCUI:8787''''''), case(phv00006855
             == 2, ''''''RxCUI:10600''''''), case(phv00006855 == 3, ''''''RxCUI:7226''''''),
             case(phv00006855 == 4, ''''''RxCUI:1202''''''), case(phv00006855 == 5,
             ''''''RxCUI: 6918''''''), case(phv00006855 == 6, ''''''RxCUI:8332''''''),
             case(phv00006855 == 7, ''''''RxCUI:149''''''), case(phv00006855 == 8,
             ''''''RxCUI:6185''''''), case(phv00006855 == 9, ''''''RxCUI: C07A''''''),
-            None)'
+            None)'''
         dosage:
           populated_from: phv00006856
         expsoure_provenance:
@@ -335,7 +335,7 @@
         associated_visit:
           expr: '''FHS ORIGINAL EXAM 27'''
         drug_concept:
-          expr: case((phv00007291 == 1, '''RxCUI:C07A'''), None)
+          expr: '''case((phv00007291 == 1, ''''''RxCUI:C07A''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -347,13 +347,13 @@
         associated_visit:
           expr: '''FHS ORIGINAL EXAM 27'''
         drug_concept:
-          expr: 'case((phv00007292 == 1, ''''''RxCUI:8787''''''), case(phv00007292
+          expr: '''case((phv00007292 == 1, ''''''RxCUI:8787''''''), case(phv00007292
             == 2, ''''''RxCUI:10600''''''), case(phv00007292 == 3, ''''''RxCUI:7226''''''),
             case(phv00007292 == 4, ''''''RxCUI:1202''''''), case(phv00007292 == 5,
             ''''''RxCUI: 6918''''''), case(phv00007292 == 6, ''''''RxCUI:8332''''''),
             case(phv00007292 == 7, ''''''RxCUI:149''''''), case(phv00007292 == 8,
             ''''''RxCUI:6185''''''), case(phv00007292 == 9, ''''''RxCUI: C07A''''''),
-            None)'
+            None)'''
         dosage:
           populated_from: phv00007293
         expsoure_provenance:
@@ -367,7 +367,7 @@
         associated_visit:
           expr: '''FHS OFFSPRING EXAM 4'''
         drug_concept:
-          expr: case((phv00008784 == 1, '''RxCUI:C07A'''), None)
+          expr: '''case((phv00008784 == 1, ''''''RxCUI:C07A''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -379,13 +379,13 @@
         associated_visit:
           expr: '''FHS OFFSPRING EXAM 4'''
         drug_concept:
-          expr: 'case((phv00009180 == 1, ''''''RxCUI:8787''''''), case(phv00009180
+          expr: '''case((phv00009180 == 1, ''''''RxCUI:8787''''''), case(phv00009180
             == 2, ''''''RxCUI:10600''''''), case(phv00009180 == 3, ''''''RxCUI:7226''''''),
             case(phv00009180 == 4, ''''''RxCUI:1202''''''), case(phv00009180 == 5,
             ''''''RxCUI: 6918''''''), case(phv00009180 == 6, ''''''RxCUI:8332''''''),
             case(phv00009180 == 7, ''''''RxCUI:149''''''), case(phv00009180 == 8,
             ''''''RxCUI:6185''''''), case(phv00009180 == 9, ''''''RxCUI: C07A''''''),
-            None)'
+            None)'''
         dosage:
           populated_from: phv00009181
         expsoure_provenance:
@@ -399,7 +399,7 @@
         associated_visit:
           expr: '''FHS OFFSPRING EXAM 6'''
         drug_concept:
-          expr: case((phv00009680 == 1, '''RxCUI:C07A'''), None)
+          expr: '''case((phv00009680 == 1, ''''''RxCUI:C07A''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -411,13 +411,13 @@
         associated_visit:
           expr: '''FHS OFFSPRING EXAM 6'''
         drug_concept:
-          expr: 'case((phv00009681 == 1, ''''''RxCUI:8787''''''), case(phv00009681
+          expr: '''case((phv00009681 == 1, ''''''RxCUI:8787''''''), case(phv00009681
             == 2, ''''''RxCUI:10600''''''), case(phv00009681 == 3, ''''''RxCUI:7226''''''),
             case(phv00009681 == 4, ''''''RxCUI:1202''''''), case(phv00009681 == 5,
             ''''''RxCUI: 6918''''''), case(phv00009681 == 6, ''''''RxCUI:8332''''''),
             case(phv00009681 == 7, ''''''RxCUI:149''''''), case(phv00009681 == 8,
             ''''''RxCUI:6185''''''), case(phv00009681 == 9, ''''''RxCUI: C07A''''''),
-            None)'
+            None)'''
         dosage:
           populated_from: phv00009682
         expsoure_provenance:
@@ -431,7 +431,7 @@
         associated_visit:
           expr: '''FHS OFFSPRING EXAM 7'''
         drug_concept:
-          expr: case((phv00010160 == 1, '''RxCUI:C07A'''), None)
+          expr: '''case((phv00010160 == 1, ''''''RxCUI:C07A''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -443,12 +443,12 @@
         associated_visit:
           expr: '''FHS OFFSPRING EXAM 7'''
         drug_concept:
-          expr: 'case((phv00010161 == 1, ''''''RxCUI:8787''''''), (phv00010161 ==
+          expr: '''case((phv00010161 == 1, ''''''RxCUI:8787''''''), (phv00010161 ==
             2, ''''''RxCUI:10600''''''), (phv00010161 == 3, ''''''RxCUI:7226''''''),
             (phv00010161 == 4, ''''''RxCUI:1202''''''), (phv00010161 == 5, ''''''RxCUI:
             6918''''''), (phv00010161 == 6, ''''''RxCUI:8332''''''), (phv00010161
             == 7, ''''''RxCUI:149''''''), (phv00010161 == 8, ''''''RxCUI:6185''''''),
-            (phv00010161 == 9, ''''''RxCUI: C07A''''''), None)'
+            (phv00010161 == 9, ''''''RxCUI: C07A''''''), None)'''
         dosage:
           populated_from: phv00010162
         expsoure_provenance:
@@ -462,7 +462,7 @@
         associated_visit:
           expr: '''FHS OFFSPRING BASELINE'''
         drug_concept:
-          expr: case((phv00055374 == 1, '''RxCUI:C07A'''), None)
+          expr: '''case((phv00055374 == 1, ''''''RxCUI:C07A''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -474,7 +474,7 @@
         associated_visit:
           expr: '''FHS OFFSPRING BASELINE'''
         drug_concept:
-          expr: case((phv00055375 == 1, '''RxCUI:C07A'''), None)
+          expr: '''case((phv00055375 == 1, ''''''RxCUI:C07A''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -486,7 +486,7 @@
         associated_visit:
           expr: '''FHS OFFSPRING EXAM 3'''
         drug_concept:
-          expr: case((phv00008387 == 1, '''RxCUI:C07A'''), None)
+          expr: '''case((phv00008387 == 1, ''''''RxCUI:C07A''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -498,6 +498,6 @@
         associated_visit:
           expr: '''FHS OFFSPRING EXAM 3'''
         drug_concept:
-          expr: case((phv00009179 == 1, '''RxCUI:C07A'''), None)
+          expr: '''case((phv00009179 == 1, ''''''RxCUI:C07A''''''), None)'''
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''

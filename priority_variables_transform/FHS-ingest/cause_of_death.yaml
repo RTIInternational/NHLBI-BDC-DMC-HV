@@ -2,52 +2,113 @@
     Person:
       populated_from: pht000094
       slot_derivations:
-        species:
-          expr: '''Homo Sapiens'''
-        identity:
-          populated_from: dbGaP_Subject_ID
         associated_participant:
           populated_from: phv00021961
         associated_visit:
           expr: '''FHS ORIGINAL EXAM 2-19'''
         cause_of_death:
-          expr: "case(
-            (phv00021951, 'ACCIDENTAL'),
-            (phv00021952, 'ACCIDENTAL'),
-            (phv00021953, 'ACCIDENTAL'),
-            (phv00021954, 'ACCIDENTAL'),
-            (phv00021955, 'ACCIDENTAL'),
-            (phv00021956, 'ACCIDENTAL'),
-          )"
+          populated_from: phv00021951
+          value_mappings:
+            '1': ACCIDENTAL
         vital_status:
-          expr: "case(
-            (phv00021951, 'OMOP:434489'),
-            (phv00021952, 'OMOP:434489'),
-            (phv00021953, 'OMOP:434489'),
-            (phv00021954, 'OMOP:434489'),
-            (phv00021955, 'OMOP:434489'),
-            (phv00021956, 'OMOP:434489'),
-          )"
+          expr: '''OMOP:434489'''
+- class_derivations:
+    Person:
+      populated_from: pht000094
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00021961
+        associated_visit:
+          expr: '''FHS ORIGINAL EXAM 2-19'''
+        cause_of_death:
+          populated_from: phv00021952
+          value_mappings:
+            '1': ACCIDENTAL
+        vital_status:
+          expr: '''OMOP:434489'''
+- class_derivations:
+    Person:
+      populated_from: pht000094
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00021961
+        associated_visit:
+          expr: '''FHS ORIGINAL EXAM 2-19'''
+        cause_of_death:
+          populated_from: phv00021953
+          value_mappings:
+            '1': ACCIDENTAL
+        vital_status:
+          expr: '''OMOP:434489'''
+- class_derivations:
+    Person:
+      populated_from: pht000094
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00021961
+        associated_visit:
+          expr: '''FHS ORIGINAL EXAM 2-19'''
+        cause_of_death:
+          populated_from: phv00021954
+          value_mappings:
+            '1': ACCIDENTAL
+        vital_status:
+          expr: '''OMOP:434489'''
+- class_derivations:
+    Person:
+      populated_from: pht000094
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00021961
+        associated_visit:
+          expr: '''FHS ORIGINAL EXAM 2-19'''
+        cause_of_death:
+          populated_from: phv00021955
+          value_mappings:
+            '1': ACCIDENTAL
+        vital_status:
+          expr: '''OMOP:434489'''
+- class_derivations:
+    Person:
+      populated_from: pht000094
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00021961
+        associated_visit:
+          expr: '''FHS ORIGINAL EXAM 2-19'''
+        cause_of_death:
+          populated_from: phv00021956
+          value_mappings:
+            '1': ACCIDENTAL
+        vital_status:
+          expr: '''OMOP:434489'''
 - class_derivations:
     Person:
       populated_from: pht003317
       slot_derivations:
-        species:
-          expr: '''Homo Sapiens'''
-        identity:
-          populated_from: dbGaP_Subject_ID
         associated_participant:
           populated_from: phv00190826
         associated_visit:
           expr: '''FHS SURVIVAL ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE,
             OMNI1, OMNI 2'''
         cause_of_death:
-          expr: "case(
-            (phv00190829, 'CARDIOVASCULAR DISEASE'),
-            (phv00190830, 'CARDIOVASCULAR DISEASE'),
-          )"
+          populated_from: phv00190829
+          value_mappings:
+            '1': CARDIOVASCULAR DISEASE
         vital_status:
-          expr: "case(
-            (phv00190829, 'OMOP:434489'),
-            (phv00190830, 'OMOP:434489'),
-          )"
+          expr: '''OMOP:434489'''
+- class_derivations:
+    Person:
+      populated_from: pht003317
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00190826
+        associated_visit:
+          expr: '''FHS SURVIVAL ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE,
+            OMNI1, OMNI 2'''
+        cause_of_death:
+          populated_from: phv00190830
+          value_mappings:
+            '1': CARDIOVASCULAR DISEASE
+        vital_status:
+          expr: '''OMOP:434489'''

@@ -51,9 +51,6 @@
             '21': FHS ORIGINAL EXAM 21
         observation_type:
           expr: '''OMOP:4230543'''
-        range_low:
-          value_decimal: 0.1
-          unit: mg/dL
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -61,9 +58,19 @@
                 populated_from: pht001045
                 slot_derivations:
                   value_decimal:
-                    expr: case(({phv00081026} > 0.1, {phv00081026}), "'LOD'")
+                    expr: '''case(({phv00081026} > 0.1, {phv00081026}), "''LOD''")'''
                   unit:
                     expr: '''mg/dL'''
+        range_low:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001045
+                slot_derivations:
+                  value_decimal:
+                    expr: ''' 0.1'''
+                  unit:
+                    expr: '''mg/dL '''
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
