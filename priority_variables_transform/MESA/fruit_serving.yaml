@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004317
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00218303
+        associated_visit:
+          expr: '''MESA DIET EXAM 5'''
+        observation_type:
+          expr: '''OMOP:21493059''' #fruit servings per week
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004317
+                slot_derivations:
+                  value_decimal:
+                    expr: (({phv00218767} + {phv00218768}) / 30) * 7
+                  unit:
+                    expr: '''{#}/wk'''
