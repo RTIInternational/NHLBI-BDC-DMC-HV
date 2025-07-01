@@ -1,0 +1,62 @@
+- class_derivations:
+    Condition:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00084441
+        associated_visit:
+          expr: '''MESA CLASSIC EXAM 1'''
+        condition_concept:
+          expr: '''HP:0001297''' #stroke
+        condition_status:
+          populated_from: phv00085314
+          value_mappings:
+            '0': '''ABSENT'''
+            '1': '''PRESENT'''
+            '9': '''UNKNOWN'''
+        condition_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+        relationship_to_participant:
+          expr: '''OMOP:4029630''' #natural parent
+- class_derivations:
+    Condition:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00084441
+        associated_visit:
+          expr: '''MESA CLASSIC EXAM 1'''
+        condition_concept:
+          expr: '''HP:0001297''' #stroke
+        condition_status:
+          populated_from: phv00085316
+          value_mappings:
+            '0': '''ABSENT'''
+            '1': '''PRESENT'''
+            '9': '''UNKNOWN'''
+            '8': None
+        condition_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+        relationship_to_participant:
+          expr: '''OMOP:4218412''' #natural sibling
+- class_derivations:
+    Condition:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00084441
+        associated_visit:
+          expr: '''MESA CLASSIC EXAM 1'''
+        condition_concept:
+          expr: '''HP:0001297''' #stroke
+        condition_status:
+          populated_from: phv00085319
+          value_mappings:
+            '0': '''ABSENT'''
+            '1': '''PRESENT'''
+            '9': '''UNKNOWN'''
+            '8': None
+        condition_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+        relationship_to_participant:
+          expr: '''OMOP:4326600''' #natural child         
