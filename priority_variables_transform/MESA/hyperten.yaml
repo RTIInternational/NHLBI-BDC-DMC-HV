@@ -250,3 +250,22 @@
           expr: '''PATIENT_SELF-REPORTED_CONDITION'''
         relationship_to_participant:
           expr: '''ONESELF'''           
+- class_derivations:
+    Condition:
+      populated_from: pht003087
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00175794
+        associated_visit:
+          expr: '''MESA LUNG CT'''
+        condition_concept:
+          expr: '''HP:0000822''' #hypertension
+        condition_status:
+          populated_from: phv00175955
+          value_mappings:
+            '0': '''ABSENT'''
+            '1': '''PRESENT'''
+        condition_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+        relationship_to_participant:
+          expr: '''ONESELF'''          
