@@ -1,0 +1,60 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001112
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00083440
+        associated_visit:
+          expr: '''MESA AIR SPIROMETRY'''
+        observation_type:
+          expr: '''OMOP:4241837''' #FEV1
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001112
+                slot_derivations:
+                  value_decimal:
+                    expr: {phv00083475} / 1000
+                  unit:
+                    expr: '''L'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001114
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00083675
+        associated_visit:
+          expr: '''MESA LUNG SPIROMETRY'''
+        observation_type:
+          expr: '''OMOP:4241837''' #FEV1
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001114
+                slot_derivations:
+                  value_decimal:
+                    expr: {phv00083710} / 1000
+                  unit:
+                    expr: '''L'''                    
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001122
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087666
+        associated_visit:
+          expr: '''MESA FAMILY SPIROMETRY'''
+        observation_type:
+          expr: '''OMOP:4241837''' #FEV1
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001122
+                slot_derivations:
+                  value_decimal:
+                    expr: {phv00087701} / 1000
+                  unit:
+                    expr: '''L'''                     
