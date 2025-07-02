@@ -1,0 +1,40 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001984
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00128699
+        associated_visit:
+          expr: '''MESA INFLAMMATION'''
+        observation_type:
+          expr: '''OBA:VT0000223''' #monocyte count
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001984
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00128706
+                  unit:
+                    expr: '''10*3/uL'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004319
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00218989
+        associated_visit:
+          expr: '''MESA EPIGENOMICS'''
+        observation_type:
+          expr: '''OBA:VT0000223''' #monocyte count
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004319
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00219000
+                  unit:
+                    expr: '''10*3/uL'''                    
