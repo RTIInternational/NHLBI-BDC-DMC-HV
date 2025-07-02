@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00084441
+        associated_visit:
+          expr: '''MESA CLASSIC EXAM 1'''
+        observation_type:
+          expr: '''OBA:2051975''' #TNFa-R1 in blood
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001116
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00085029
+                  unit:
+                    expr: '''pg/mL'''
