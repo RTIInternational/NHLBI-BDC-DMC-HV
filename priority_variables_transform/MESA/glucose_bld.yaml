@@ -1,0 +1,14 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht003087
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00175794	
+      associated_visit:
+        expr: 'MESA LUNG CT'
+      value_decimal:
+        populated_from: phv00175887
+      observation_type:
+        expr:"'OBA:VT0000188'" #blood glucose
+      value_quantity.unit:
+        expr: "'mg/dL'"
