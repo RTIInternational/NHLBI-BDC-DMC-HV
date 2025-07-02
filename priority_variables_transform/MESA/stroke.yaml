@@ -106,6 +106,79 @@
         associated_visit:
           expr: '''MESA CLASSIC CVE''
         condition_concept:
+          expr: '''MONDO:0005099''' #subarachnoid hemorrhage
+        condition_status:
+          populated_from: phv00087877
+          value_mappings:
+            '1': '''HISTORICAL'''
+        condition_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+        relationship_to_participant:
+          expr: '''ONESELF'''
+- class_derivations:
+    Condition:
+      populated_from: pht001123
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087848
+        associated_visit:
+          expr: '''MESA CLASSIC CVE''
+        condition_concept:
+          expr: '''MONDO:0013792''' #intracerebral hemorrhage
+        condition_status:
+          populated_from: phv00087877
+          value_mappings:
+            '2': '''HISTORICAL'''
+        condition_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+        relationship_to_participant:
+          expr: '''ONESELF'''
+- class_derivations:
+    Condition:
+      populated_from: pht001123
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087848
+        associated_visit:
+          expr: '''MESA CLASSIC CVE''
+        condition_concept:
+          expr: '''HP:0002140''' #ischemic stroke
+        condition_status:
+          populated_from: phv00087877
+          value_mappings:
+            '4': '''HISTORICAL'''
+        condition_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+        relationship_to_participant:
+          expr: '''ONESELF'''
+- class_derivations:
+    Condition:
+      populated_from: pht001123
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087848
+        associated_visit:
+          expr: '''MESA CLASSIC CVE''
+        condition_concept:
+          expr: '''HP:0001297''' #stroke
+        condition_status:
+          populated_from: phv00087877
+          value_mappings:
+            '5': '''HISTORICAL'''
+            '9': '''HISTORICAL'''
+        condition_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+        relationship_to_participant:
+          expr: '''ONESELF'''
+- class_derivations:
+    Condition:
+      populated_from: pht001123
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087848
+        associated_visit:
+          expr: '''MESA CLASSIC CVE''
+        condition_concept:
           expr: '''HP:0001297''' #stroke
         condition_status:
           populated_from: phv00087879
