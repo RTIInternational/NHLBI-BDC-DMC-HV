@@ -1,1 +1,100 @@
-
+- class_derivations:
+  MeasurementObservation:
+    populated_from: pht001111
+    slot_derivations:
+    associated_participant:
+      populated_from: phv00082638
+      associated_visit:
+        expr: '''MESA_AirNRExamMain'''
+      observation_type:
+        expr: '''OMOP:4208414''' #c-reactive protein CRP
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00082967
+                unit:
+                  expr: '''mg/L''' #reported_units: mg/L
+- class_derivations:
+  MeasurementObservation:
+    populated_from: pht001116
+    slot_derivations:
+    associated_participant:
+      populated_from: phv00084441
+      associated_visit:
+        expr: '''MESA_Exam1Main'''
+      observation_type:
+        expr: '''OMOP:4208414''' #c-reactive protein CRP
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00085015
+                unit:
+                  expr: '''mg/L''' #reported_units: mg/L
+- class_derivations:
+  MeasurementObservation:
+    populated_from: pht001120
+    slot_derivations:
+    associated_participant:
+      populated_from: phv00086726
+      associated_visit:
+        expr: '''MESA_Exam4Main'''
+      observation_type:
+        expr: '''OMOP:4208414''' #c-reactive protein CRP
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: pht001120
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00086825
+                unit:
+                  expr: '''mg/L''' #reported_units: mg/l
+- class_derivations:
+  MeasurementObservation:
+    populated_from: pht001121
+    slot_derivations:
+    associated_participant:
+      populated_from: phv00087070
+      associated_visit:
+        expr: '''MESA_FamilyExamMain'''
+      observation_type:
+        expr: '''OMOP:4208414''' #c-reactive protein CRP
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: pht001121
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00087661
+                unit:
+                  expr: '''mg/L''' #reported_units: mg/L
+- class_derivations:
+  MeasurementObservation:
+    populated_from: pht002198
+    slot_derivations:
+    associated_participant:
+      populated_from: phv00159198
+      associated_visit:
+        expr: '''MESA_AncilMesaAbdBodyComposition'''
+      observation_type:
+        expr: '''OMOP:4208414''' #c-reactive protein CRP
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: pht002198
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00160534
+                unit:
+                  expr: '''mg/L''' #reported_units: mg/L
