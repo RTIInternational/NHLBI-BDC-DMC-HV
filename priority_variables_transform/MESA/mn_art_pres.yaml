@@ -1,0 +1,44 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00084441
+        associated_visit:
+          expr: '''MESA CLASSIC EXAM 1'''
+        observation_type:
+          expr: '''OBA:VT2000000''' #mean arterial pressure
+        method_type:
+          expr: '''oscillometric cuff'''
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001116
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00085705
+                  unit:
+                    expr: '''mm[Hg]'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00084441
+        associated_visit:
+          expr: '''MESA CLASSIC EXAM 1'''
+        observation_type:
+          expr: '''OBA:VT2000000''' #mean arterial pressure
+        method_type:
+          expr: '''waveform analysis'''
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001116
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00085710
+                  unit:
+                    expr: '''mm[Hg]'''                    
