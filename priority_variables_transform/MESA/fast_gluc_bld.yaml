@@ -17,7 +17,8 @@
                   value_decimal:
                     populated_from: phv00082953
                   unit:
-                    expr: 'mg/dL' #calibrated
+                    expr: 'mg/dL'
+        method_type: 'CALIBRATED'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001111
@@ -57,7 +58,8 @@
                   value_decimal:
                     populated_from: phv00084969
                   unit:
-                    expr: 'mg/dL' #calibrated
+                    expr: 'mg/dL'
+        method_type: 'CALIBRATED'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
@@ -97,7 +99,8 @@
                   value_decimal:
                     populated_from: phv00085932
                   unit:
-                    expr: 'mg/dL' #calibrated
+                    expr: 'mg/dL'
+        method_type: 'CALIBRATED'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001119
@@ -117,7 +120,8 @@
                   value_decimal:
                     populated_from: phv00086415
                   unit:
-                    expr: 'mg/dL' #calibrated
+                    expr: 'mg/dL'
+        method_type: 'CALIBRATED'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001120
@@ -137,7 +141,8 @@
                   value_decimal:
                     populated_from: phv00086834
                   unit:
-                    expr: 'mg/dL' #calibrated
+                    expr: 'mg/dL'
+        method_type: 'CALIBRATED'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001121
@@ -157,7 +162,8 @@
                   value_decimal:
                     populated_from: phv00087088
                   unit:
-                    expr: 'mg/dL' #calibrated
+                    expr: 'mg/dL'
+        method_type: 'CALIBRATED'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003086
@@ -198,6 +204,7 @@
                     populated_from: phv00175863
                   unit:
                     expr: 'mg/dL'
+        method_type: 'CALIBRATED'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003087
@@ -218,6 +225,7 @@
                     populated_from: phv00175948
                   unit:
                     expr: 'mg/dL'
+        method_type: 'CALIBRATED'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003091
@@ -227,7 +235,7 @@
         associated_visit:
           expr: 'MESA CLASSIC EXAM 5'
         observation_type:
-          expr: 'OMOP:37208635'	#Estimated glomerular filtration rate by laboratory calculation
+          expr: 'OMOP:4156660'	#Fasting blood glucose measurement
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -235,26 +243,27 @@
                 populated_from: pht003091
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00176025
+                    populated_from: phv00176663
                   unit:
                     expr: 'mg/dL'
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht003091
+      populated_from: pht004326
       slot_derivations:
         associated_participant:
-          populated_from: phv00176007
+          populated_from: phv00219018
         associated_visit:
-          expr: 'MESA CLASSIC EXAM 5'
+          expr: 'MESA STRESS'
         observation_type:
-          expr: 'OMOP:37208635'	#Estimated glomerular filtration rate by laboratory calculation
+          expr: 'OMOP:4156660'	#Fasting blood glucose measurement
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht003091
+                populated_from: pht004326
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00176027
+                    populated_from: phv00219026
                   unit:
                     expr: 'mg/dL'
+        method_type: 'CALIBRATED'
