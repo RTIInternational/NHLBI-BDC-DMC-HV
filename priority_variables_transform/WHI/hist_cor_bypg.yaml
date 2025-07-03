@@ -1,0 +1,57 @@
+- class_derivations:
+    Procedure:
+      populated_from: pht000999
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00078506	
+        associated_visit:
+          expr: '''WHI FORM 30 - MEDICAL HISTORY QUESTIONNAIRE'''
+        condition_concept:
+          expr: '''OMOP:4336464''' #Coronary artery bypass graft
+        condition_status:
+          populated_from: phv00078535
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          expr: '''CLINICAL_DIAGNOSIS'''
+        relationship_to_participant:
+          expr: '''ONESELF'''
+- class_derivations:
+    Procedure:
+      populated_from: pht003407
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193141
+        associated_visit:
+          expr: '''WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED'''
+        condition_concept:
+          expr: '''OMOP:4336464''' #Coronary artery bypass graft
+        condition_status:
+          populated_from: phv00193157
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          expr: '''CLINICAL_DIAGNOSIS'''
+        relationship_to_participant:
+          expr: '''ONESELF'''          
+- class_derivations:
+    Procedure:
+      populated_from: pht006223
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00283451
+        associated_visit:
+          expr: '''WHI UNC HEART FAILURE DETAILS'''
+        condition_concept:
+          expr: '''OMOP:4336464''' #Coronary artery bypass graft
+        condition_status:
+          populated_from: phv00283623
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          expr: '''CLINICAL_DIAGNOSIS'''
+        relationship_to_participant:
+          expr: '''ONESELF'''           
