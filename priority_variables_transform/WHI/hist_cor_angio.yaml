@@ -1,0 +1,57 @@
+- class_derivations:
+    Procedure:
+      populated_from: pht000999
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00078506	
+        associated_visit:
+          expr: '''WHI FORM 30 - MEDICAL HISTORY QUESTIONNAIRE'''
+        condition_concept:
+          expr: '''OMOP:4184832''' #coronary angioplasty
+        condition_status:
+          populated_from: phv00078536
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          expr: '''CLINICAL_DIAGNOSIS'''
+        relationship_to_participant:
+          expr: '''ONESELF'''
+- class_derivations:
+    Procedure:
+      populated_from: pht000999
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00078506	
+        associated_visit:
+          expr: '''WHI FORM 30 - MEDICAL HISTORY QUESTIONNAIRE'''
+        condition_concept:
+          expr: '''OMOP:1242799''' #carotid surgery
+        condition_status:
+          populated_from: phv00078537
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          expr: '''CLINICAL_DIAGNOSIS'''
+        relationship_to_participant:
+          expr: '''ONESELF'''          
+- class_derivations:
+    Procedure:
+      populated_from: pht003407
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193141
+        associated_visit:
+          expr: '''WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED'''
+        condition_concept:
+          expr: '''OMOP:4006788''' #Percutaneous Transluminal Coronary Angioplasty
+        condition_status:
+          populated_from: phv00193199
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          expr: '''CLINICAL_DIAGNOSIS'''
+        relationship_to_participant:
+          expr: '''ONESELF'''          
