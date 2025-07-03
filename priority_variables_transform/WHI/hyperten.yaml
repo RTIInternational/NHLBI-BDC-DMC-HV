@@ -75,4 +75,35 @@
           expr: '''PATIENT_SELF-REPORTED_CONDITION'''
         relationship_to_participant:
           expr: '''ONESELF'''          
-        
+- class_derivations:
+    Condition:
+      populated_from: pht006223
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00283451
+        associated_visit:
+          expr: '''WHI UNC HEART FAILURE DETAILS'''
+        condition_concept:
+          expr: '''MONDO:0005149''' #pulmonary hypertension
+        condition_status:
+          populated_from: phv00283592
+          value_mappings:
+            '1': '''PRESENT'''
+            '2': '''PRESENT'''
+            '3': '''PRESENT'''
+            '4': '''ABSENT'''
+            '5': '''PRESENT'''
+            '6': '''UNKNOWN'''
+        condition_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+        condition_severity:
+          populated_from: phv00283592
+          value_mappings:
+            '1': '''OMOP:4116992''' #mild
+            '2': '''OMOP:3272197''' #moderate
+            '3': '''OMOP:4087703''' #severe
+            '4': None
+            '5': None
+            '6': None     
+        relationship_to_participant:
+          expr: '''ONESELF'''         
