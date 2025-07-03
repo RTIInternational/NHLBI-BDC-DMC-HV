@@ -5,9 +5,11 @@
         associated_participant:
           populated_from: phv00056635
         associated_visit:
-          expr: '''FHS OFFSPRING BASELINE'''
+          value: FHS OFFSPRING BASELINE
+          range: string
         condition_concept:
-          expr: '''HP:0001681'''
+          value: HP:0001681
+          range: string
         condition_status:
           populated_from: phv00055298
           value_mappings:
@@ -15,6 +17,8 @@
             '1': PRESENT
             '8': UNKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string

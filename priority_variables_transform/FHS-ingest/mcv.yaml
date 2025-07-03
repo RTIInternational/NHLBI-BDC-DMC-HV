@@ -5,9 +5,11 @@
         associated_participant:
           populated_from: phv00008379
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 2'''
+          value: FHS OFFSPRING EXAM 2
+          range: string
         observation_type:
-          expr: '''OBA:0003460'''
+          value: OBA:0003460
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -17,7 +19,7 @@
                   value_decimal:
                     populated_from: phv00008112
                   unit:
-                    expr: '''fL'''
+                    value: fL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
@@ -25,9 +27,11 @@
         associated_participant:
           populated_from: phv00172159
         associated_visit:
-          expr: '''FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'''
+          value: FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2
+          range: string
         observation_type:
-          expr: '''OBA:0003460'''
+          value: OBA:0003460
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -37,7 +41,7 @@
                   value_decimal:
                     populated_from: phv00172182
                   unit:
-                    expr: '''fL'''
+                    value: fL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001045
@@ -50,7 +54,8 @@
             '20': FHS ORIGINAL EXAM 20
             '21': FHS ORIGINAL EXAM 21
         observation_type:
-          expr: '''OBA:0003460'''
+          value: OBA:0003460
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -60,4 +65,4 @@
                   value_decimal:
                     populated_from: phv00081033
                   unit:
-                    expr: '''fL'''
+                    value: fL

@@ -5,9 +5,11 @@
         associated_participant:
           populated_from: phv00073729
         associated_visit:
-          expr: '''FHS GENERATION 3 EXAM 1'''
+          value: FHS GENERATION 3 EXAM 1
+          range: string
         observation_type:
-          expr: '''OBA:2045303'''
+          value: OBA:2045303
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -15,7 +17,7 @@
                 populated_from: pht000823
                 slot_derivations:
                   value_decimal:
-                    expr: case((phv00073727 > 4, phv00073727), "'LLOD'")
+                    expr: case(({phv00073727} > 4, {phv00073727}), "'LLOD'")
                   unit:
                     expr: '''pg/mL'''
         range_low:
@@ -45,9 +47,11 @@
         associated_participant:
           populated_from: phv00275427
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 5'''
+          value: FHS OFFSPRING EXAM 5
+          range: string
         observation_type:
-          expr: '''OBA:2045303'''
+          value: OBA:2045303
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:

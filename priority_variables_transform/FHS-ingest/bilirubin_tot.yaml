@@ -5,9 +5,11 @@
         associated_participant:
           populated_from: phv00007675
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 1'''
+          value: FHS OFFSPRING EXAM 1
+          range: string
         observation_type:
-          expr: '''OMOP:4230543'''
+          value: OMOP:4230543
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -25,9 +27,11 @@
         associated_participant:
           populated_from: phv00008379
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 2'''
+          value: FHS OFFSPRING EXAM 2
+          range: string
         observation_type:
-          expr: '''OMOP:4230543'''
+          value: OMOP:4230543
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -50,7 +54,8 @@
             '20': FHS ORIGINAL EXAM 20
             '21': FHS ORIGINAL EXAM 21
         observation_type:
-          expr: '''OMOP:4230543'''
+          value: OMOP:4230543
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -58,7 +63,8 @@
                 populated_from: pht001045
                 slot_derivations:
                   value_decimal:
-                    expr: '''case(({phv00081026} > 0.1, {phv00081026}), "''LOD''")'''
+                    expr: 'case(({phv00081026} > 0.1, {phv00081026}), "''LOD''") #We
+                      need something to indicate a value is below or above LOD'
                   unit:
                     expr: '''mg/dL'''
         range_low:
@@ -78,9 +84,11 @@
         associated_participant:
           populated_from: phv00172159
         associated_visit:
-          expr: '''FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'''
+          value: FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2
+          range: string
         observation_type:
-          expr: '''OMOP:4230543'''
+          value: OMOP:4230543
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -98,9 +106,11 @@
         associated_participant:
           populated_from: phv00227023
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4'''
+          value: FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4
+          range: string
         observation_type:
-          expr: '''OMOP:4230543'''
+          value: OMOP:4230543
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -118,9 +128,11 @@
         associated_participant:
           populated_from: phv00255349
         associated_visit:
-          expr: '''FHS GENERATION 3 EXAM 1'''
+          value: FHS GENERATION 3 EXAM 1
+          range: string
         observation_type:
-          expr: '''OMOP:4230543'''
+          value: OMOP:4230543
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:

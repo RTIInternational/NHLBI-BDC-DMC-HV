@@ -5,9 +5,11 @@
         associated_participant:
           populated_from: phv00023794
         associated_visit:
-          expr: '''FHS PSIP ORIGINAL, OFFSPRING'''
+          value: FHS PSIP ORIGINAL, OFFSPRING
+          range: string
         observation_type:
-          expr: '''OMOP:36303297'''
+          value: OMOP:36303297
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -17,7 +19,7 @@
                   value_integer:
                     populated_from: phv00023792
                   unit:
-                    expr: '''{score}'''
+                    value: '{score}'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000172
@@ -25,9 +27,11 @@
         associated_participant:
           populated_from: phv00023901
         associated_visit:
-          expr: '''FHS PSIP ORIGINAL, OFFSPRING'''
+          value: FHS PSIP ORIGINAL, OFFSPRING
+          range: string
         observation_type:
-          expr: '''OMOP:36303297'''
+          value: OMOP:36303297
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -37,4 +41,4 @@
                   value_integer:
                     populated_from: phv00023899
                   unit:
-                    expr: '''{score}'''
+                    value: '{score}'

@@ -5,11 +5,13 @@
         associated_participant:
           populated_from: phv00250718
         associated_visit:
-          expr: '''FHS OMNI 1 EXAM 2'''
+          value: FHS OMNI 1 EXAM 2
+          range: string
         drug_concept:
-          expr: case((phv00250748 == 1, '''RxCUI:C09C'''), None)
+          expr: case(({phv00250748} == 1, '''RxCUI:C09C'''), None)
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
 - class_derivations:
     DrugExposure:
       populated_from: pht000028
@@ -17,11 +19,13 @@
         associated_participant:
           populated_from: phv00007095
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 26'''
+          value: FHS ORIGINAL EXAM 26
+          range: string
         drug_concept:
-          expr: case((phv00006868 == 1, '''RxCUI:C09C'''), None)
+          expr: case(({phv00006868} == 1, '''RxCUI:C09C'''), None)
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
 - class_derivations:
     DrugExposure:
       populated_from: pht000029
@@ -29,11 +33,13 @@
         associated_participant:
           populated_from: phv00007534
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 27'''
+          value: FHS ORIGINAL EXAM 27
+          range: string
         drug_concept:
-          expr: case((phv00007305 == 1, '''RxCUI:C09C'''), None)
+          expr: case(({phv00007305} == 1, '''RxCUI:C09C'''), None)
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
 - class_derivations:
     DrugExposure:
       populated_from: pht000036
@@ -41,11 +47,13 @@
         associated_participant:
           populated_from: phv00010694
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 7'''
+          value: FHS OFFSPRING EXAM 7
+          range: string
         drug_concept:
-          expr: case((phv00010174 == 1, '''RxCUI:C09C'''), None)
+          expr: case(({phv00010174} == 1, '''RxCUI:C09C'''), None)
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
 - class_derivations:
     DrugExposure:
       populated_from: pht000397
@@ -53,11 +61,13 @@
         associated_participant:
           populated_from: phv00057982
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 2'''
+          value: FHS OFFSPRING EXAM 2
+          range: string
         drug_concept:
-          expr: case((phv00056924 == 1, '''RxCUI:C09C'''), None)
+          expr: case(({phv00056924} == 1, '''RxCUI:C09C'''), None)
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
 - class_derivations:
     DrugExposure:
       populated_from: pht000397
@@ -65,11 +75,13 @@
         associated_participant:
           populated_from: phv00057982
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 2'''
+          value: FHS OFFSPRING EXAM 2
+          range: string
         drug_concept:
-          expr: case((phv00056925 == 1, '''RxCUI:C09DA'''), None)
+          expr: case(({phv00056925} == 1, '''RxCUI:C09DA'''), None)
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
 - class_derivations:
     DrugExposure:
       populated_from: pht006018
@@ -77,12 +89,14 @@
         associated_participant:
           populated_from: phv00276803
         associated_visit:
-          expr: '''FHS ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE, OMNI
-            1, OMNI 2 CASE REVIEW'''
+          value: FHS ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE, OMNI
+            1, OMNI 2 CASE REVIEW
+          range: string
         drug_concept:
-          expr: case((phv00276809 == 1, '''RxCUI:C09C'''), None)
+          expr: case(({phv00276809} == 1, '''RxCUI:C09C'''), None)
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
 - class_derivations:
     DrugExposure:
       populated_from: pht006018
@@ -90,9 +104,11 @@
         associated_participant:
           populated_from: phv00276803
         associated_visit:
-          expr: '''FHS ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE, OMNI
-            1, OMNI 2 CASE REVIEW'''
+          value: FHS ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE, OMNI
+            1, OMNI 2 CASE REVIEW
+          range: string
         drug_concept:
-          expr: case((phv00276809 == 1, '''RxCUI:C09C'''), None)
+          expr: case(({phv00276809} == 1, '''RxCUI:C09C'''), None)
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string

@@ -3,7 +3,8 @@
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -19,13 +20,15 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: '{phv00423783} * 0.295'
+                    expr: '{phv00423783} * 0.295     #Variable comment is "Multiply
+                      by 0.295 to transform to mg/dL units.""'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -41,13 +44,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00001593
+                    value: '{phv00001593}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -63,13 +67,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00001594
+                    value: '{phv00001594}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -85,13 +90,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00006321
+                    value: '{phv00006321}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -107,13 +113,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00006669
+                    value: '{phv00006669}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -129,13 +136,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00007530
+                    value: '{phv00007530}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -151,13 +159,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00070733
+                    value: '{phv00070733}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -173,13 +182,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00000931
+                    value: '{phv00000931}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -195,13 +205,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00001053
+                    value: '{phv00001053}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -217,13 +228,15 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00001054
+                    expr: '{phv00001054}    # assumed unit is mg/dL based on context
+                      clues'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -239,13 +252,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00001209
+                    value: '{phv00001209}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -261,13 +275,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00007976
+                    value: '{phv00007976}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -283,13 +298,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00008105
+                    value: '{phv00008105}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -305,13 +321,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00009576
+                    value: '{phv00009576}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -327,13 +344,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00010136
+                    value: '{phv00010136}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -349,13 +367,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00010144
+                    value: '{phv00010144}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -371,13 +390,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00021393
+                    value: '{phv00021393}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -393,13 +413,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00071892
+                    value: '{phv00071892}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -415,13 +436,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00172172
+                    value: '{phv00172172}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -437,13 +459,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00255342
+                    value: '{phv00255342}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -459,13 +482,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00227015
+                    value: '{phv00227015}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -481,13 +505,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00275403
+                    value: '{phv00275403}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -503,13 +528,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00275415
+                    value: '{phv00275415}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -525,13 +551,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00227056
+                    value: '{phv00227056}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -547,13 +574,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00081038
+                    value: '{phv00081038}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -569,13 +597,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00055264
+                    value: '{phv00055264}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -591,13 +620,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00277049
+                    value: '{phv00277049}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -613,13 +643,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00277050
+                    value: '{phv00277050}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -635,13 +666,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00423933
+                    value: '{phv00423933}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -657,13 +689,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00423934
+                    value: '{phv00423934}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -679,13 +712,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00423935
+                    value: '{phv00423935}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -701,13 +735,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00423936
+                    value: '{phv00423936}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -723,13 +758,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00370082
+                    value: '{phv00370082}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -745,13 +781,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00370083
+                    value: '{phv00370083}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -767,13 +804,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00370084
+                    value: '{phv00370084}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -789,13 +827,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00370085
+                    value: '{phv00370085}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -811,13 +850,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00370086
+                    value: '{phv00370086}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -833,13 +873,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00370087
+                    value: '{phv00370087}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -855,13 +896,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00370088
+                    value: '{phv00370088}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -877,13 +919,14 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00520307
+                    value: '{phv00520307}'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
       slot_derivations:
         observation_type:
-          expr: '''OBA:VT0002644'''
+          value: OBA:VT0002644
+          range: string
         value_quantity_unit:
           expr: '''mg/dL'''
         associated_visit:
@@ -900,4 +943,4 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: phv00462194
+                    value: '{phv00462194}'

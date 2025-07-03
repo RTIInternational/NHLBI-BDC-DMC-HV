@@ -5,9 +5,11 @@
         associated_participant:
           populated_from: phv00010138
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 6'''
+          value: FHS OFFSPRING EXAM 6
+          range: string
         condition_concept:
-          expr: '''HP:0001297'''
+          value: HP:0001297
+          range: string
         condition_status:
           populated_from: phv00010084
           value_mappings:
@@ -16,9 +18,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''NATURAL_FATHER'''
+          value: NATURAL_FATHER
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000035
@@ -26,9 +30,11 @@
         associated_participant:
           populated_from: phv00010138
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 6'''
+          value: FHS OFFSPRING EXAM 6
+          range: string
         condition_concept:
-          expr: '''HP:0001297'''
+          value: HP:0001297
+          range: string
         condition_status:
           populated_from: phv00010091
           value_mappings:
@@ -37,6 +43,8 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''NATURAL_MOTHER'''
+          value: NATURAL_MOTHER
+          range: string

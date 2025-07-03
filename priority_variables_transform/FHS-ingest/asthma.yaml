@@ -5,9 +5,11 @@
         associated_participant:
           populated_from: phv00004939
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 21'''
+          value: FHS ORIGINAL EXAM 21
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
         condition_status:
           populated_from: phv00004923
           value_mappings:
@@ -15,9 +17,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000009
@@ -25,9 +29,11 @@
         associated_participant:
           populated_from: phv00001036
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 1'''
+          value: FHS ORIGINAL EXAM 1
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
         condition_status:
           populated_from: phv00000484
           value_mappings:
@@ -37,9 +43,11 @@
             '2': HISTORICAL
             '3': HISTORICAL
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000009
@@ -47,9 +55,11 @@
         associated_participant:
           populated_from: phv00001036
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 1'''
+          value: FHS ORIGINAL EXAM 1
+          range: string
         condition_concept:
-          expr: '''HP:0012393'''
+          value: HP:0012393
+          range: string
         condition_status:
           populated_from: phv00000484
           value_mappings:
@@ -59,9 +69,11 @@
             '2': ABSENT
             '3': HISTORICAL
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000009
@@ -69,9 +81,13 @@
         associated_participant:
           populated_from: phv00001036
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 1-7'''
+          value: FHS ORIGINAL EXAM 1-7
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00000484
           value_mappings:
@@ -81,9 +97,11 @@
             '3': HISTORICAL
             '9999': UNKNOWN
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000009
@@ -91,9 +109,13 @@
         associated_participant:
           populated_from: phv00001036
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 2'''
+          value: FHS ORIGINAL EXAM 2
+          range: string
         condition_concept:
-          expr: '''MONDO:0005492'''
+          value: MONDO:0005492
+          range: string
+          comments:
+          - hives
         condition_status:
           populated_from: phv00000603
           value_mappings:
@@ -108,9 +130,11 @@
             '9997': UNKNOWN
             '9999': UNKNOWN
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000009
@@ -118,9 +142,13 @@
         associated_participant:
           populated_from: phv00001036
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 2'''
+          value: FHS ORIGINAL EXAM 2
+          range: string
         condition_concept:
-          expr: '''HP:0003193'''
+          value: HP:0003193
+          range: string
+          comments:
+          - hayfever
         condition_status:
           populated_from: phv00000603
           value_mappings:
@@ -135,9 +163,11 @@
             '9997': UNKNOWN
             '9999': UNKNOWN
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000009
@@ -145,9 +175,13 @@
         associated_participant:
           populated_from: phv00001036
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 2'''
+          value: FHS ORIGINAL EXAM 2
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00000603
           value_mappings:
@@ -162,9 +196,11 @@
             '9997': UNKNOWN
             '9999': UNKNOWN
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000009
@@ -172,9 +208,13 @@
         associated_participant:
           populated_from: phv00001036
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 4'''
+          value: FHS ORIGINAL EXAM 4
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00000701
           value_mappings:
@@ -182,9 +222,11 @@
             '1': HISTORICAL
             '2': UNKNOWN
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000018
@@ -192,18 +234,24 @@
         associated_participant:
           populated_from: phv00002946
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 16'''
+          value: FHS ORIGINAL EXAM 16
+          range: string
         condition_concept:
-          expr: '''HP:0030828'''
+          value: HP:0030828
+          range: string
+          comments:
+          - wheezing
         condition_status:
           populated_from: phv00002713
           value_mappings:
             '0': ABSENT
             '1': HISTORICAL
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000019
@@ -211,18 +259,24 @@
         associated_participant:
           populated_from: phv00003261
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 17'''
+          value: FHS ORIGINAL EXAM 17
+          range: string
         condition_concept:
-          expr: '''HP:0030828'''
+          value: HP:0030828
+          range: string
+          comments:
+          - wheezing
         condition_status:
           populated_from: phv00003013
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000019
@@ -230,18 +284,24 @@
         associated_participant:
           populated_from: phv00003261
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 17'''
+          value: FHS ORIGINAL EXAM 17
+          range: string
         condition_concept:
-          expr: '''MONDO:0850282'''
+          value: MONDO:0850282
+          range: string
+          comments:
+          - persistent asthma
         condition_status:
           populated_from: phv00003014
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000019
@@ -249,18 +309,24 @@
         associated_participant:
           populated_from: phv00003261
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 17'''
+          value: FHS ORIGINAL EXAM 17
+          range: string
         condition_concept:
-          expr: '''MONDO:0004784'''
+          value: MONDO:0004784
+          range: string
+          comments:
+          - allergic asthma
         condition_status:
           populated_from: phv00003015
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000019
@@ -268,18 +334,24 @@
         associated_participant:
           populated_from: phv00003261
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 17'''
+          value: FHS ORIGINAL EXAM 17
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00003016
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000019
@@ -287,18 +359,24 @@
         associated_participant:
           populated_from: phv00003261
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 17'''
+          value: FHS ORIGINAL EXAM 17
+          range: string
         condition_concept:
-          expr: '''MONDO:0024355'''
+          value: MONDO:0024355
+          range: string
+          comments:
+          - respiratory infection
         condition_status:
           populated_from: phv00003016
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000020
@@ -306,18 +384,24 @@
         associated_participant:
           populated_from: phv00003667
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 18'''
+          value: FHS ORIGINAL EXAM 18
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00003399
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000020
@@ -325,18 +409,24 @@
         associated_participant:
           populated_from: phv00003667
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 18'''
+          value: FHS ORIGINAL EXAM 18
+          range: string
         condition_concept:
-          expr: '''HP:0030828'''
+          value: HP:0030828
+          range: string
+          comments:
+          - wheezing
         condition_status:
           populated_from: phv00003399
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000021
@@ -344,18 +434,24 @@
         associated_participant:
           populated_from: phv00004083
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 19'''
+          value: FHS ORIGINAL EXAM 19
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00003856
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000021
@@ -363,18 +459,24 @@
         associated_participant:
           populated_from: phv00004083
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 19'''
+          value: FHS ORIGINAL EXAM 19
+          range: string
         condition_concept:
-          expr: '''HP:0030828'''
+          value: HP:0030828
+          range: string
+          comments:
+          - wheezing
         condition_status:
           populated_from: phv00003856
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000021
@@ -382,9 +484,13 @@
         associated_participant:
           populated_from: phv00004083
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 19'''
+          value: FHS ORIGINAL EXAM 19
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00004065
           value_mappings:
@@ -392,9 +498,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000022
@@ -402,18 +510,24 @@
         associated_participant:
           populated_from: phv00004525
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 20'''
+          value: FHS ORIGINAL EXAM 20
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00004292
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000022
@@ -421,18 +535,24 @@
         associated_participant:
           populated_from: phv00004525
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 20'''
+          value: FHS ORIGINAL EXAM 20
+          range: string
         condition_concept:
-          expr: '''HP:0030828'''
+          value: HP:0030828
+          range: string
+          comments:
+          - wheezing
         condition_status:
           populated_from: phv00004292
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000022
@@ -440,18 +560,24 @@
         associated_participant:
           populated_from: phv00004525
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 20'''
+          value: FHS ORIGINAL EXAM 20
+          range: string
         condition_concept:
-          expr: '''MONDO:0850282'''
+          value: MONDO:0850282
+          range: string
+          comments:
+          - persistent asthma
         condition_status:
           populated_from: phv00004293
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000022
@@ -459,18 +585,24 @@
         associated_participant:
           populated_from: phv00004525
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 20'''
+          value: FHS ORIGINAL EXAM 20
+          range: string
         condition_concept:
-          expr: '''MONDO:0004784'''
+          value: MONDO:0004784
+          range: string
+          comments:
+          - allergic asthma
         condition_status:
           populated_from: phv00004294
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000022
@@ -478,18 +610,24 @@
         associated_participant:
           populated_from: phv00004525
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 20'''
+          value: FHS ORIGINAL EXAM 20
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00004295
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000022
@@ -497,18 +635,24 @@
         associated_participant:
           populated_from: phv00004525
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 20'''
+          value: FHS ORIGINAL EXAM 20
+          range: string
         condition_concept:
-          expr: '''MONDO:0024355'''
+          value: MONDO:0024355
+          range: string
+          comments:
+          - respiratory infection
         condition_status:
           populated_from: phv00004295
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000022
@@ -516,9 +660,13 @@
         associated_participant:
           populated_from: phv00004525
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 20'''
+          value: FHS ORIGINAL EXAM 20
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00004487
           value_mappings:
@@ -526,9 +674,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000023
@@ -536,18 +686,24 @@
         associated_participant:
           populated_from: phv00004939
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 21'''
+          value: FHS ORIGINAL EXAM 21
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00004694
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000024
@@ -555,18 +711,24 @@
         associated_participant:
           populated_from: phv00005557
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 22'''
+          value: FHS ORIGINAL EXAM 22
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00005045
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000024
@@ -574,9 +736,13 @@
         associated_participant:
           populated_from: phv00005557
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 22'''
+          value: FHS ORIGINAL EXAM 22
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00005285
           value_mappings:
@@ -584,9 +750,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000025
@@ -594,18 +762,24 @@
         associated_participant:
           populated_from: phv00006030
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 23'''
+          value: FHS ORIGINAL EXAM 23
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00005665
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000025
@@ -613,9 +787,13 @@
         associated_participant:
           populated_from: phv00006030
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 23'''
+          value: FHS ORIGINAL EXAM 23
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00005912
           value_mappings:
@@ -623,9 +801,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000026
@@ -633,18 +813,24 @@
         associated_participant:
           populated_from: phv00006325
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 24'''
+          value: FHS ORIGINAL EXAM 24
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00006183
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000027
@@ -652,9 +838,13 @@
         associated_participant:
           populated_from: phv00006663
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 25'''
+          value: FHS ORIGINAL EXAM 25
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00006529
           value_mappings:
@@ -662,9 +852,11 @@
             '1': PRESENT
             '2': HISTORICAL
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000027
@@ -672,9 +864,13 @@
         associated_participant:
           populated_from: phv00006663
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 25'''
+          value: FHS ORIGINAL EXAM 25
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00006650
           value_mappings:
@@ -682,9 +878,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000028
@@ -692,9 +890,13 @@
         associated_participant:
           populated_from: phv00007095
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 26'''
+          value: FHS ORIGINAL EXAM 26
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00006960
           value_mappings:
@@ -702,9 +904,11 @@
             '1': PRESENT
             '2': HISTORICAL
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000028
@@ -712,9 +916,13 @@
         associated_participant:
           populated_from: phv00007095
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 26'''
+          value: FHS ORIGINAL EXAM 26
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00007085
           value_mappings:
@@ -722,9 +930,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000029
@@ -732,9 +942,13 @@
         associated_participant:
           populated_from: phv00007534
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 27'''
+          value: FHS ORIGINAL EXAM 27
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00007392
           value_mappings:
@@ -742,9 +956,11 @@
             '1': PRESENT
             '2': HISTORICAL
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000029
@@ -752,9 +968,13 @@
         associated_participant:
           populated_from: phv00007534
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 27'''
+          value: FHS ORIGINAL EXAM 27
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00007519
           value_mappings:
@@ -762,9 +982,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000031
@@ -772,18 +994,24 @@
         associated_participant:
           populated_from: phv00008379
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 2'''
+          value: FHS OFFSPRING EXAM 2
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00007778
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000032
@@ -791,18 +1019,24 @@
         associated_participant:
           populated_from: phv00008743
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 3'''
+          value: FHS OFFSPRING EXAM 3
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00008468
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000032
@@ -810,18 +1044,24 @@
         associated_participant:
           populated_from: phv00008743
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 3'''
+          value: FHS OFFSPRING EXAM 3
+          range: string
         condition_concept:
-          expr: '''MONDO:0850282'''
+          value: MONDO:0850282
+          range: string
+          comments:
+          - persistent asthma
         condition_status:
           populated_from: phv00008469
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000032
@@ -829,18 +1069,24 @@
         associated_participant:
           populated_from: phv00008743
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 3'''
+          value: FHS OFFSPRING EXAM 3
+          range: string
         condition_concept:
-          expr: '''MONDO:0004784'''
+          value: MONDO:0004784
+          range: string
+          comments:
+          - allergic asthma
         condition_status:
           populated_from: phv00008470
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000032
@@ -848,18 +1094,24 @@
         associated_participant:
           populated_from: phv00008743
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 3'''
+          value: FHS OFFSPRING EXAM 3
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00008471
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000032
@@ -867,9 +1119,13 @@
         associated_participant:
           populated_from: phv00008743
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 3'''
+          value: FHS OFFSPRING EXAM 3
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00008701
           value_mappings:
@@ -877,9 +1133,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000033
@@ -887,18 +1145,24 @@
         associated_participant:
           populated_from: phv00009127
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 4'''
+          value: FHS OFFSPRING EXAM 4
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00008881
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000033
@@ -906,18 +1170,24 @@
         associated_participant:
           populated_from: phv00009127
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 4'''
+          value: FHS OFFSPRING EXAM 4
+          range: string
         condition_concept:
-          expr: '''MONDO:0850282'''
+          value: MONDO:0850282
+          range: string
+          comments:
+          - persistent asthma
         condition_status:
           populated_from: phv00008882
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000033
@@ -925,18 +1195,24 @@
         associated_participant:
           populated_from: phv00009127
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 4'''
+          value: FHS OFFSPRING EXAM 4
+          range: string
         condition_concept:
-          expr: '''MONDO:0004784'''
+          value: MONDO:0004784
+          range: string
+          comments:
+          - allergic asthma
         condition_status:
           populated_from: phv00008883
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000033
@@ -944,18 +1220,24 @@
         associated_participant:
           populated_from: phv00009127
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 4'''
+          value: FHS OFFSPRING EXAM 4
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00008884
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000033
@@ -963,18 +1245,24 @@
         associated_participant:
           populated_from: phv00009127
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 4'''
+          value: FHS OFFSPRING EXAM 4
+          range: string
         condition_concept:
-          expr: '''MONDO:0024355'''
+          value: MONDO:0024355
+          range: string
+          comments:
+          - respiratory infection
         condition_status:
           populated_from: phv00008884
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000033
@@ -982,9 +1270,13 @@
         associated_participant:
           populated_from: phv00009127
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 4'''
+          value: FHS OFFSPRING EXAM 4
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00009088
           value_mappings:
@@ -992,9 +1284,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000034
@@ -1002,18 +1296,24 @@
         associated_participant:
           populated_from: phv00009579
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 5'''
+          value: FHS OFFSPRING EXAM 5
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00009292
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000034
@@ -1021,9 +1321,13 @@
         associated_participant:
           populated_from: phv00009579
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 5'''
+          value: FHS OFFSPRING EXAM 5
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00009543
           value_mappings:
@@ -1032,9 +1336,11 @@
             '2': PRESENT
             '4': UNKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000035
@@ -1042,18 +1348,24 @@
         associated_participant:
           populated_from: phv00010138
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 6'''
+          value: FHS OFFSPRING EXAM 6
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00009799
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000035
@@ -1061,9 +1373,13 @@
         associated_participant:
           populated_from: phv00010138
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 6'''
+          value: FHS OFFSPRING EXAM 6
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00010057
           value_mappings:
@@ -1071,9 +1387,11 @@
             '1': PRESENT
             '2': UKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000036
@@ -1081,9 +1399,13 @@
         associated_participant:
           populated_from: phv00010694
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 7'''
+          value: FHS OFFSPRING EXAM 7
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00010270
           value_mappings:
@@ -1091,9 +1413,11 @@
             '1': PRESENT
             '2': HISTORICAL
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000036
@@ -1101,9 +1425,13 @@
         associated_participant:
           populated_from: phv00010694
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 7'''
+          value: FHS OFFSPRING EXAM 7
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00010489
           value_mappings:
@@ -1111,9 +1439,11 @@
             '1': PRESENT
             '2': UKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000036
@@ -1121,18 +1451,24 @@
         associated_participant:
           populated_from: phv00010694
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 7'''
+          value: FHS OFFSPRING EXAM 7
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00010661
           value_mappings:
             '0': ABSENT
             '1': HISTORICAL
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000036
@@ -1140,18 +1476,24 @@
         associated_participant:
           populated_from: phv00010694
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 7'''
+          value: FHS OFFSPRING EXAM 7
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00010662
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000074
@@ -1159,9 +1501,13 @@
         associated_participant:
           populated_from: phv00021427
         associated_visit:
-          expr: '''FHS GENERATION 3 EXAM 1'''
+          value: FHS GENERATION 3 EXAM 1
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00021205
           value_mappings:
@@ -1169,9 +1515,11 @@
             '1': PRESENT
             '2': UKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000074
@@ -1179,19 +1527,24 @@
         associated_participant:
           populated_from: phv00021427
         associated_visit:
-          expr: '''FHS GENERATION 3 EXAM 1'''
+          value: FHS GENERATION 3 EXAM 1
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
-          expr: '''case((phv00021292 == 0, ''ABSENT''), case(phv00021293 == 0, ''HISTORICAL''),
-            ''PRESENT'')'''
+          expr: case(({phv00021292} == 0, 'ABSENT'), case({phv00021293} == 0, 'HISTORICAL'),
+            'PRESENT')
         condition_provenance:
           populated_from: phv00021294
           value_mappings:
             '0': PATIENT_SELF-REPORTED_CONDITION
             '1': CLINICAL_DIAGNOSIS
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000107
@@ -1204,14 +1557,19 @@
             '5': FHS OFFSPRING EXAM 5
             '6': FHS OFFSPRING EXAM 6
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
-          expr: '''case((phv00022715 == 0, ''ABSENT''), case(phv00022716 == 0, ''HISTORICAL''),
-            ''PRESENT'')'''
+          expr: case(({phv00022715} == 0, 'ABSENT'), case({phv00022716} == 0, 'HISTORICAL'),
+            'PRESENT')
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000395
@@ -1219,9 +1577,13 @@
         associated_participant:
           populated_from: phv00056635
         associated_visit:
-          expr: '''FHS OFFSPRING BASELINE'''
+          value: FHS OFFSPRING BASELINE
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00055305
           value_mappings:
@@ -1235,7 +1597,8 @@
             '1': CLINICAL_DIAGNOSIS
             '8': PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000397
@@ -1243,16 +1606,22 @@
         associated_participant:
           populated_from: phv00057982
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 2'''
+          value: FHS OFFSPRING EXAM 2
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
-          expr: '''case((phv00056803 == 0, ''ABSENT''), case((phv00056804 == 0, ''HISTORICAL'',
-            ''PRESENT'')))'''
+          expr: case(({phv00056803} == 0, 'ABSENT'), case(({phv00056804} == 0, 'HISTORICAL',
+            'PRESENT')))
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000692
@@ -1260,9 +1629,13 @@
         associated_participant:
           populated_from: phv00070736
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 28'''
+          value: FHS ORIGINAL EXAM 28
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00070545
           value_mappings:
@@ -1270,9 +1643,11 @@
             '1': PRESENT
             '2': UKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000747
@@ -1280,9 +1655,13 @@
         associated_participant:
           populated_from: phv00072580
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 8'''
+          value: FHS OFFSPRING EXAM 8
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00072313
           value_mappings:
@@ -1290,9 +1669,11 @@
             '1': PRESENT
             '2': UKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000747
@@ -1300,23 +1681,28 @@
         associated_participant:
           populated_from: phv00072580
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 8'''
+          value: FHS OFFSPRING EXAM 8
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00072488
           value_mappings:
             '0': ABSENT
             '1': HISTORICAL
-          expr: '''case((phv00072488 == 0, ''ABSENT''), case(phv00072489 == 0, ''HISTORICAL''),
-            ''PRESENT'')'''
+          expr: case(({phv00072488} == 0, 'ABSENT'), case({phv00072489} == 0, 'HISTORICAL'),
+            'PRESENT')
         condition_provenance:
           populated_from: phv00072490
           value_mappings:
             '0': PATIENT_SELF-REPORTED_CONDITION
             '1': CLINICAL_DIAGNOSIS
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht003094
@@ -1324,9 +1710,13 @@
         associated_participant:
           populated_from: phv00177237
         associated_visit:
-          expr: '''FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'''
+          value: FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00177516
           value_mappings:
@@ -1334,9 +1724,11 @@
             '1': PRESENT
             '2': UKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht003094
@@ -1344,18 +1736,24 @@
         associated_participant:
           populated_from: phv00177237
         associated_visit:
-          expr: '''FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'''
+          value: FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00177565
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht004814
@@ -1363,9 +1761,13 @@
         associated_participant:
           populated_from: phv00250718
         associated_visit:
-          expr: '''FHS OMNI 1 EXAM 2'''
+          value: FHS OMNI 1 EXAM 2
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00250838
           value_mappings:
@@ -1373,9 +1775,11 @@
             '1': PRESENT
             '2': HISTORICAL
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht004814
@@ -1383,9 +1787,13 @@
         associated_participant:
           populated_from: phv00250718
         associated_visit:
-          expr: '''FHS OMNI 1 EXAM 2'''
+          value: FHS OMNI 1 EXAM 2
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00251049
           value_mappings:
@@ -1393,9 +1801,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht004814
@@ -1403,17 +1813,22 @@
         associated_participant:
           populated_from: phv00250718
         associated_visit:
-          expr: '''FHS OMNI 1 EXAM 2'''
+          value: FHS OMNI 1 EXAM 2
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
-          populated_from: phv00251235
-          expr: '''case( ({phv00251235} == 0, ''ABSENT''), case( ({phv00251236} ==
-            0, ''HISTORICAL''), ({phv00251236} == 1, ''PRESENT'')))'''
+          expr: case( ({phv00251235} == 0, 'ABSENT'), case( ({phv00251236} == 0, 'HISTORICAL'),
+            ({phv00251236} == 1, 'PRESENT')))
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht004815
@@ -1421,9 +1836,13 @@
         associated_participant:
           populated_from: phv00251262
         associated_visit:
-          expr: '''FHS OMNI 1 EXAM 3'''
+          value: FHS OMNI 1 EXAM 3
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00251510
           value_mappings:
@@ -1431,9 +1850,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht004815
@@ -1441,18 +1862,24 @@
         associated_participant:
           populated_from: phv00251262
         associated_visit:
-          expr: '''FHS OMNI 1 EXAM 3'''
+          value: FHS OMNI 1 EXAM 3
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00251703
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht005140
@@ -1460,9 +1887,13 @@
         associated_participant:
           populated_from: phv00254010
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4'''
+          value: FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00254260
           value_mappings:
@@ -1470,9 +1901,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht005140
@@ -1480,18 +1913,24 @@
         associated_participant:
           populated_from: phv00254010
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4'''
+          value: FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00254489
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht005141
@@ -1499,9 +1938,13 @@
         associated_participant:
           populated_from: phv00254596
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 29'''
+          value: FHS ORIGINAL EXAM 29
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00254754
           value_mappings:
@@ -1509,9 +1952,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht005142
@@ -1519,18 +1964,24 @@
         associated_participant:
           populated_from: phv00254989
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 30'''
+          value: FHS ORIGINAL EXAM 30
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00255145
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht006005
@@ -1538,9 +1989,13 @@
         associated_participant:
           populated_from: phv00273700
         associated_visit:
-          expr: '''FHS NEW OFFSPRING SPOUSE EXAM 1'''
+          value: FHS NEW OFFSPRING SPOUSE EXAM 1
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00274028
           value_mappings:
@@ -1548,9 +2003,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht006005
@@ -1558,19 +2015,24 @@
         associated_participant:
           populated_from: phv00273700
         associated_visit:
-          expr: '''FHS NEW OFFSPRING SPOUSE EXAM 1'''
+          value: FHS NEW OFFSPRING SPOUSE EXAM 1
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
-          expr: '''case( ({phv00274119} == 0, ''ABSENT''), case( ({phv00274120} ==
-            0, ''HISTORICAL''), ({phv00274120} == 1, ''PRESENT'')))'''
+          expr: case( ({phv00274119} == 0, 'ABSENT'), case( ({phv00274120} == 0, 'HISTORICAL'),
+            ({phv00274120} == 1, 'PRESENT')))
         condition_provenance:
           populated_from: phv00274121
           value_mappings:
             '0': PATIENT_SELF-REPORTED_CONDITION
             '1': CLINICAL_DIAGNOSIS
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht006007
@@ -1578,18 +2040,24 @@
         associated_participant:
           populated_from: phv00274708
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 31'''
+          value: FHS ORIGINAL EXAM 31
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00274870
           value_mappings:
             '0': ABSENT
             '1': ABSENT
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht006008
@@ -1597,9 +2065,13 @@
         associated_participant:
           populated_from: phv00275063
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 32'''
+          value: FHS ORIGINAL EXAM 32
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00275228
           value_mappings:
@@ -1607,9 +2079,11 @@
             '1': ABSENT
             '2': UNKNOWN
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht006018
@@ -1617,10 +2091,16 @@
         associated_participant:
           populated_from: phv00276803
         associated_visit:
-          expr: '''FHS ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE, OMNI
-            1, OMNI 2 CASE REVIEW'''
+          value: 'FHS ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE, OMNI
+            1,
+
+            OMNI 2 CASE REVIEW'
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00276870
           value_mappings:
@@ -1628,9 +2108,11 @@
             '1': ABSENT
             '2': UNKNOWN
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000009
@@ -1638,9 +2120,13 @@
         associated_participant:
           populated_from: phv00001036
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 5'''
+          value: FHS ORIGINAL EXAM 5
+          range: string
         condition_concept:
-          expr: '''MONDO:0004979'''
+          value: MONDO:0004979
+          range: string
+          comments:
+          - asthma
         condition_status:
           populated_from: phv00000789
           value_mappings:
@@ -1654,9 +2140,11 @@
             '9997': UNKNOWN
             '9999': UNKNOWN
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht000009
@@ -1664,9 +2152,13 @@
         associated_participant:
           populated_from: phv00001036
         associated_visit:
-          expr: '''FHS ORIGINAL EXAM 5'''
+          value: FHS ORIGINAL EXAM 5
+          range: string
         condition_concept:
-          expr: '''HP:0003193'''
+          value: HP:0003193
+          range: string
+          comments:
+          - hayfever
         condition_status:
           populated_from: phv00000789
           value_mappings:
@@ -1680,6 +2172,8 @@
             '9997': UNKNOWN
             '9999': UNKNOWN
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string

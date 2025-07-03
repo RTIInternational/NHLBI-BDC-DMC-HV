@@ -5,9 +5,11 @@
         associated_participant:
           populated_from: phv00021692
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 2'''
+          value: FHS OFFSPRING EXAM 2
+          range: string
         observation_type:
-          expr: '''OMOP:4208414'''
+          value: OMOP:4208414
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -25,9 +27,11 @@
         associated_participant:
           populated_from: phv00021695
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 6'''
+          value: FHS OFFSPRING EXAM 6
+          range: string
         observation_type:
-          expr: '''OMOP:4208414'''
+          value: OMOP:4208414
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -45,12 +49,11 @@
         associated_participant:
           populated_from: phv00172159
         associated_visit:
-          expr: '''FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'''
+          value: FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2
+          range: string
         observation_type:
-          expr: '''OMOP:4208414'''
-        range_low:
-          value_decimal: 0.15
-          unit: '''mg/L'''
+          value: OMOP:4208414
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -58,8 +61,20 @@
                 populated_from: pht002889
                 slot_derivations:
                   value_decimal:
-                    expr: case(({phv00172177} > 0.15, {phv00172177}), ({phv00462201}
-                      == 1, "'LOD'"))
+                    expr: 'case(({phv00172177} > 0.15, {phv00172177}),
+
+                      ({phv00462201} == 1, "''LOD''")) #We need something to indicate
+                      a value is below or above LOD'
+                  unit:
+                    expr: '''mg/L'''
+        range_low:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002889
+                slot_derivations:
+                  value_decimal:
+                    expr: ''' 0.15'''
                   unit:
                     expr: '''mg/L'''
 - class_derivations:
@@ -69,12 +84,11 @@
         associated_participant:
           populated_from: phv00227023
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4'''
+          value: FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4
+          range: string
         observation_type:
-          expr: '''OMOP:4208414'''
-        range_low:
-          value_decimal: 0.15
-          unit: '''mg/L'''
+          value: OMOP:4208414
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -82,7 +96,20 @@
                 populated_from: pht004802
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00227060
+                    expr: 'case(({phv00227060} > 0.15, {phv00227060}),
+
+                      ({phv00227067} == 1, "''LOD''")) #We need something to indicate
+                      a value is below or above LOD'
+                  unit:
+                    expr: '''mg/L'''
+        range_low:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004802
+                slot_derivations:
+                  value_decimal:
+                    expr: ''' 0.15'''
                   unit:
                     expr: '''mg/L'''
 - class_derivations:
@@ -92,9 +119,11 @@
         associated_participant:
           populated_from: phv00275427
         associated_visit:
-          expr: '''FHS OFFSPRING EXAM 5'''
+          value: FHS OFFSPRING EXAM 5
+          range: string
         observation_type:
-          expr: '''OMOP:4208414'''
+          value: OMOP:4208414
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
