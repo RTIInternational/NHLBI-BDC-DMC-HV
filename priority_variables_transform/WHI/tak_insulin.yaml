@@ -1,0 +1,60 @@
+- class_derivations:
+    DrugExposure:
+      populated_from: pht000998
+      slot_derivations:
+        associated_participant:
+          populated_from:  phv00078435
+        associated_visit:
+          expr: '''WHI ELIGIBILITY'''
+        drug_concept:
+          expr: case((phv00078469 == 1, '''RxCUI:D007328'''), None)
+        expsoure_provenance:
+          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+- class_derivations:
+    DrugExposure:
+      populated_from: pht002769
+      slot_derivations:
+        associated_participant:
+          populated_from:  phv00170566
+        associated_visit:
+          expr: '''WHI CAD'''
+        drug_concept:
+          expr: case((phv00170601 == 1, '''RxCUI:D007328'''), None)
+        expsoure_provenance:
+          expr: '''PATIENT SELF-REPORTED MEDICATION'''          
+- class_derivations:
+    DrugExposure:
+      populated_from: pht002770
+      slot_derivations:
+        associated_participant:
+          populated_from:  phv00170648
+        associated_visit:
+          expr: '''WHI CTOS'''
+        drug_concept:
+          expr: case((phv00170683 == 1, '''RxCUI:D007328'''), None)
+        expsoure_provenance:
+          expr: '''PATIENT SELF-REPORTED MEDICATION'''           
+- class_derivations:
+    DrugExposure:
+      populated_from: pht003413
+      slot_derivations:
+        associated_participant:
+          populated_from:  phv00193628
+        associated_visit:
+          expr: '''WHI EXTENSION STUDY 2 MRC'''
+        drug_concept:
+          expr: case((phv00193671 == 1, '''RxCUI:D007328'''), None)
+        expsoure_provenance:
+          expr: '''PATIENT SELF-REPORTED MEDICATION'''           
+- class_derivations:
+    DrugExposure:
+      populated_from: pht003414
+      slot_derivations:
+        associated_participant:
+          populated_from:  phv00193686
+        associated_visit:
+          expr: '''WHI EXTENSION STUDY 2 SRC'''
+        drug_concept:
+          expr: case((phv00193783 == 1, '''RxCUI:D007328'''), None)
+        expsoure_provenance:
+          expr: '''PATIENT SELF-REPORTED MEDICATION'''             
