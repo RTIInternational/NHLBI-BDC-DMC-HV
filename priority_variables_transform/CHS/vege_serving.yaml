@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001490
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00105099
+        associated_visit:
+          expr: '''CHS YEAR 5 NEW'''
+        observation_type:
+          expr: '''OMOP:4042886''' #vege servings per week
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001490
+                slot_derivations:
+                  value_decimal:
+                    expr: {phv00105771} * 7 
+                  unit:
+                    expr: '''{#}/wk'''
