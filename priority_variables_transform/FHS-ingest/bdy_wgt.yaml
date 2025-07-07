@@ -303,8 +303,7 @@
                 populated_from: pht007777
                 slot_derivations:
                   value_decimal:
-                    expr: 'case(({phv00370127} < 300, {phv00370127} * 0.453592), "''ULOD''"))
-                      #We need something to indicate a value is below or above LOD'
+                    expr: 'case(({phv00370127} < 300, {phv00370127} * 0.453592), (True, "ULOD")))'
                   unit:
                     value: kg
         range_high:
