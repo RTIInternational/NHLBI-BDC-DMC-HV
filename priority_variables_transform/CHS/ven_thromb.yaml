@@ -550,3 +550,24 @@
           expr: '''CLINICAL_DIAGNOSIS'''
         relationship_to_participant:
           expr: '''ONESELF'''           
+- class_derivations:
+    Condition:
+      populated_from: pht005981
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00273564
+        associated_visit:
+          expr: '''CHS VTE'''
+        condition_concept:
+          expr: '''MONDO:0005399''' #venous thromboembolism
+        condition_status:
+          populated_from: phv00273567
+          value_mappings:
+            '0': '''ABSENT'''
+            '1': '''PRESENT'''
+            '-99': '''UNKNOWN'''
+        condition_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+        relationship_to_participant:
+          expr: '''ONESELF''' 
+         
