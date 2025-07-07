@@ -1,1 +1,20 @@
-
+- class_derivations:
+  MeasurementObservation:
+    populated_from: pht001984
+    slot_derivations:
+    associated_participant:
+      populated_from: phv00128699
+      associated_visit:
+        expr: '''MESA_AncilMesaInflammation'''
+      observation_type:
+        expr: '''OMOP:37208690''' #Lymphocytes percent
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: pht001984
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00128734
+                unit:
+                  expr: '''%''' #reported_units: "percentage"
