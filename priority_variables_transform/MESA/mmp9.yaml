@@ -1,1 +1,20 @@
-
+- class_derivations:
+  MeasurementObservation:
+    populated_from: pht001116
+    slot_derivations:
+    associated_participant:
+      populated_from: phv00084441
+      associated_visit:
+        expr: '''MESA_Exam1Main'''
+      observation_type:
+        expr: '''OMOP:40761106''' #MMP9 in blood
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00085027
+                unit:
+                  expr: '''ng/mL''' #reported_units: ng/mL
