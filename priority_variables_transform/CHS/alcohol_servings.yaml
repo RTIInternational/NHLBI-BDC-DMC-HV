@@ -218,3 +218,23 @@
                     expr: {phv00197486} + {phv00197487} + {phv00197488}
                   unit:
                     expr: '''{#}/wk'''                     
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003700
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00198805
+        associated_visit:
+          expr: '''CHS PSG 2'''
+        observation_type:
+          expr: '''OMOP:35609491''' #alcohol servings per week
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003700
+                slot_derivations:
+                  value_decimal:
+                    expr: {phv00198833} + {phv00198834} + {phv00198835}
+                  unit:
+                    expr: '''{#}/wk'''
