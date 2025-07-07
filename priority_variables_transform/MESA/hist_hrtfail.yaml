@@ -1,1 +1,39 @@
-
+class_derivations:
+  Condition:
+    populated_from: pht001121
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00082638	
+      associated_visit:
+        expr: 'MESA FAMILY'
+      condition_concept:
+        expr: 'NCIT:C50577'   #heart failure
+      condition_status:
+        populated_from: phv00087140
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          '9': 'UNKNOWN'
+      condition_provenance:
+        expr: 'PATIENT_SELF-REPORTED_CONDITION'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht001123
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00087848
+      associated_visit:
+        expr: 'MESA CLASSIC CVE'
+      condition_concept:
+        expr: 'NCIT:C50577'   #heart failure
+      condition_status:
+        populated_from: phv00087848
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: 'PATIENT_SELF-REPORTED_CONDITION'
+      relationship_to_participant:
+        expr: 'ONESELF'
