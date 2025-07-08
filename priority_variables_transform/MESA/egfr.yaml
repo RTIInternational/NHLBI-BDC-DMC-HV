@@ -17,7 +17,7 @@
                   value_decimal:
                     populated_from: phv00082961
                   unit:
-                    expr: 'mg/dL'
+                    expr: 'mL/min/{1.73_m2}'
         method_type: 'SIMPLIFIED MDRD EQUATION'
 - class_derivations:
     MeasurementObservation:
@@ -38,7 +38,7 @@
                   value_decimal:
                     populated_from: phv00195567
                   unit:
-                    expr: 'mg/dL'
+                    expr: 'mL/min/{1.73_m2}'
         method_type: 'CKD-EPI EQUATION'
 - class_derivations:
     MeasurementObservation:
@@ -59,7 +59,7 @@
                   value_decimal:
                     populated_from: phv00084464
                   unit:
-                    expr: 'mg/dL'
+                    expr: 'mL/min/{1.73_m2}'
         method_type: 'SIMPLIFIED MDRD EQUATION'
 - class_derivations:
     MeasurementObservation:
@@ -80,7 +80,7 @@
                   value_decimal:
                     populated_from: phv00111943
                   unit:
-                    expr: 'mg/dL'
+                    expr: 'mL/min/{1.73_m2}'
         method_type: 'CKD-EPI EQUATION'
 - class_derivations:
     MeasurementObservation:
@@ -91,7 +91,7 @@
         associated_visit:
           expr: 'MESA CLASSIC EXAM 3'
         observation_type:
-          expr: 'OMOP:37208635'	#Estimated glomerular filtration rate by laboratory calculation
+          expr: '''OMOP:4213477''' #GFR
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -101,7 +101,7 @@
                   value_decimal:
                     populated_from: phv00086284
                   unit:
-                    expr: 'mg/dL'
+                    expr: 'mL/min/{1.73_m2}'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001119
@@ -121,7 +121,7 @@
                   value_decimal:
                     populated_from: phv00111948
                   unit:
-                    expr: 'mg/dL'
+                    expr: 'mL/min/{1.73_m2}'
         method_type: 'CKD-EPI EQUATION'
 - class_derivations:
     MeasurementObservation:
@@ -142,7 +142,7 @@
                   value_decimal:
                     populated_from: phv00111952
                   unit:
-                    expr: 'mg/dL'
+                    expr: 'mL/min/{1.73_m2}'
         method_type: 'CKD-EPI EQUATION'
 - class_derivations:
     MeasurementObservation:
@@ -163,7 +163,7 @@
                   value_decimal:
                     populated_from: phv00087096
                   unit:
-                    expr: 'mg/dL'
+                    expr: 'mL/min/{1.73_m2}'
         method_type: 'SIMPLIFIED MDRD EQUATION'
 - class_derivations:
     MeasurementObservation:
@@ -184,7 +184,7 @@
                   value_decimal:
                     populated_from: phv00174602
                   unit:
-                    expr: 'mg/dL'
+                    expr: 'mL/min/{1.73_m2}'
         method_type: 'SIMPLIFIED MDRD EQUATION'
 - class_derivations:
     MeasurementObservation:
@@ -205,7 +205,7 @@
                   value_decimal:
                     populated_from: phv00174604
                   unit:
-                    expr: 'mg/dL'
+                    expr: 'mL/min/{1.73_m2}'
         method_type: 'CKD-EPI EQUATION'
 - class_derivations:
     MeasurementObservation:
@@ -226,7 +226,7 @@
                   value_decimal:
                     populated_from: phv00176025
                   unit:
-                    expr: 'mg/dL'
+                    expr: 'mL/min/{1.73_m2}'
         method_type: 'SIMPLIFIED MDRD EQUATION'
 - class_derivations:
     MeasurementObservation:
@@ -247,5 +247,5 @@
                   value_decimal:
                     populated_from: phv00176027
                   unit:
-                    expr: 'mg/dL'
+                    expr: 'mL/min/{1.73_m2}'
         method_type: 'CKD-EPI EQUATION'
