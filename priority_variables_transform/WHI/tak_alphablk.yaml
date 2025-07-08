@@ -1,0 +1,12 @@
+- class_derivations:
+    DrugExposure:
+      populated_from: pht000998
+      slot_derivations:
+        associated_participant: phv00078435
+          populated_from:  
+        associated_visit:
+          expr: '''RxCUI: C03DA'''
+        drug_concept:
+          expr: case((phv00078436 == 1, '''WHI ELIGIBILITY'''), None)
+        expsoure_provenance:
+          expr: '''PATIENT SELF-REPORTED MEDICATION'''
