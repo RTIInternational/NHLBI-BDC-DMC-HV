@@ -1,1 +1,60 @@
-
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht001116
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00084441	
+      associated_visit:
+        expr: 'MESA CLASSIC EXAM 1'
+      value_decimal:
+        populated_from: 
+        expr: {phv00160488}*5.975 #conversion from mIU/L based on molar mass of insulin and IU to mg insulin conversion tool
+      observation_type:
+        expr: 'OBA:2060174'	#amount of insulin in blood
+      value_quantity.unit:
+        expr: 'pmol/L'
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht002198
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00084441	
+      associated_visit:
+        expr: 'MESA CLASSIC EXAM 1'
+      value_decimal:
+        populated_from: 
+        expr: {phv00160542}*0.172 #conversion from pg/mL based on molar mass of insulin
+      observation_type:
+        expr: 'OBA:2060174'	#amount of insulin in blood
+      value_quantity.unit:
+        expr: 'pmol/L'
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht001116
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00174584	
+      associated_visit:
+        expr: 'MESA AIR EXAM 5'
+      value_decimal:
+        populated_from: 
+        expr: {phv00175251}*5.975 #conversion from mIU/L based on molar mass of insulin and IU to mg insulin conversion tool
+      observation_type:
+        expr: 'OBA:2060174'	#amount of insulin in blood
+      value_quantity.unit:
+        expr: 'pmol/L'
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht003091
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00176007		
+      associated_visit:
+        expr: 'MESA CLASSIC EXAM 5'
+      value_decimal:
+        populated_from: 
+        expr: {phv00176674}*5.975 #conversion from mIU/L based on molar mass of insulin and IU to mg insulin conversion tool
+      observation_type:
+        expr: 'OBA:2060174'	#amount of insulin in blood
+      value_quantity.unit:
+        expr: 'pmol/L'
