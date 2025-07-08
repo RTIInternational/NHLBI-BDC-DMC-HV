@@ -18,6 +18,8 @@
                     populated_from: phv00100042
                   unit:
                     expr: '''mg/dL'''
+        method_type:
+          expr: case((phv00099923 >= 12, '''Fasted minimum 12 hours'''), None)
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001452
@@ -37,7 +39,7 @@
                   value_decimal:
                     populated_from: phv00100426
                   unit:
-                    expr: '''mg/dL'''                  
+                    expr: '''mg/dL'''   
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001490
