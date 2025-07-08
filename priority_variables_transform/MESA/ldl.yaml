@@ -7,7 +7,7 @@
         associated_visit:
           expr: '''MESA AIR EXAM'''
         observation_type:
-          expr: '''OBA:VT0000181''' #LDL
+          expr: case((phv00083303 >= 12, '''OMOP:4041721'''), '''OBA:VT0000181''')        
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -18,6 +18,8 @@
                     populated_from: phv00082951
                   unit:
                     expr: '''mg/dL'''
+        method_type:
+          expr: case((phv00083303 >= 12, '''Fasted minimum 12 hours'''), None)                     
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
@@ -27,7 +29,7 @@
         associated_visit:
           expr: '''MESA CLASSIC EXAM 1'''
         observation_type:
-          expr: '''OBA:VT0000181''' #LDL
+          expr: case((phv00084980 >= 12, '''OMOP:4041721'''), '''OBA:VT0000181''')        
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -37,7 +39,9 @@
                   value_decimal:
                     populated_from: phv00084971
                   unit:
-                    expr: '''mg/dL'''                    
+                    expr: '''mg/dL'''  
+        method_type:
+          expr: case((phv00084980 >= 12, '''Fasted minimum 12 hours'''), None)                      
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001118
@@ -107,6 +111,7 @@
         associated_visit:
           expr: '''MESA FAMILY'''
         observation_type:
+          expr: case((phv00087524 >= 12, '''OMOP:4041721'''), '''OBA:VT0000181''')        
           expr: '''OBA:VT0000181''' #LDL
         value_quantity:
           object_derivations:
@@ -117,7 +122,9 @@
                   value_decimal:
                     populated_from: phv00087098
                   unit:
-                    expr: '''mg/dL'''                    
+                    expr: '''mg/dL'''        
+        method_type:
+          expr: case((phv00087524 >= 12, '''Fasted minimum 12 hours'''), None)                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003086
