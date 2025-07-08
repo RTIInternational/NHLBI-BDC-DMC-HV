@@ -1,0 +1,14 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht001120
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00086726		
+      associated_visit:
+        expr: 'MESA CLASSIC EXAM 4'
+      value_decimal:
+        populated_from: phv00191191
+      observation_type:
+        expr:"'OBA:VT0000188'" #blood glucose
+      value_quantity.unit:
+        expr: "'mg/dL'"
