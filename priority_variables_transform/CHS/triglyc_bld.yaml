@@ -7,7 +7,7 @@
         associated_visit:
           expr: '''CHS BASELINE 2'''
         observation_type:
-          expr: '''OBA:VT0002644''' #triglycerides in blood
+          expr: case((phv00099923 >= 12, '''OMOP:4041722'''), '''OBA:VT0002644''')
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -18,6 +18,8 @@
                     populated_from: phv00100041
                   unit:
                     expr: '''mg/dL'''
+        method_type:
+          expr: case((phv00099923 >= 12, '''Fasted minimum 12 hours'''), None)                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001452
