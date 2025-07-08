@@ -19,7 +19,7 @@
                   value_decimal:
                     populated_from: phv00002656
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000022
@@ -41,7 +41,7 @@
                   value_decimal:
                     populated_from: phv00004519
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000024
@@ -63,7 +63,7 @@
                   value_decimal:
                     populated_from: phv00005552
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000025
@@ -85,7 +85,7 @@
                   value_decimal:
                     populated_from: phv00006028
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000026
@@ -107,7 +107,7 @@
                   value_decimal:
                     populated_from: phv00006320
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000027
@@ -129,7 +129,7 @@
                   value_decimal:
                     populated_from: phv00006660
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000028
@@ -151,7 +151,7 @@
                   value_decimal:
                     populated_from: phv00006667
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000029
@@ -173,7 +173,7 @@
                   value_decimal:
                     populated_from: phv00007528
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000030
@@ -195,7 +195,7 @@
                   value_decimal:
                     populated_from: phv00007537
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000032
@@ -217,7 +217,7 @@
                   value_decimal:
                     populated_from: phv00008728
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000032
@@ -239,7 +239,7 @@
                   value_decimal:
                     populated_from: phv00008729
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000033
@@ -261,7 +261,7 @@
                   value_decimal:
                     populated_from: phv00009122
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000033
@@ -283,7 +283,7 @@
                   value_decimal:
                     populated_from: phv00009123
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000034
@@ -305,7 +305,7 @@
                   value_decimal:
                     populated_from: phv00009574
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000034
@@ -327,7 +327,7 @@
                   value_decimal:
                     populated_from: phv00009575
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000035
@@ -349,7 +349,7 @@
                   value_decimal:
                     populated_from: phv00010134
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000036
@@ -371,7 +371,7 @@
                   value_decimal:
                     populated_from: phv00010141
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000074
@@ -393,7 +393,7 @@
                   value_decimal:
                     populated_from: phv00021392
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000395
@@ -415,7 +415,7 @@
                   value_decimal:
                     populated_from: phv00055263
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000692
@@ -437,7 +437,7 @@
                   value_decimal:
                     populated_from: phv00070732
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000742
@@ -459,7 +459,7 @@
                   value_decimal:
                     populated_from: phv00071891
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
@@ -479,12 +479,10 @@
                 populated_from: pht002889
                 slot_derivations:
                   value_decimal:
-                    expr: 'case(({phv00172176} > 16.0, {phv00172176}),
-
-                      ({phv00172201} == 1, "''LLOD''")) #We need something to indicate
-                      a value is below or above LOD'
+                    expr: case(({phv00172176} > 16.0, {phv00172176}),({phv00172201}
+                      == 1, "'LLOD'"))
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004801
@@ -506,7 +504,7 @@
                   value_decimal:
                     populated_from: phv00227018
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004801
@@ -528,7 +526,7 @@
                   value_decimal:
                     populated_from: phv00227022
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
@@ -548,12 +546,10 @@
                 populated_from: pht004802
                 slot_derivations:
                   value_decimal:
-                    expr: 'case(({phv00227059} > 16.0, {phv00227059}),
-
-                      ({phv00227068} == 1, "''LLOD''")) #We need something to indicate
-                      a value is below or above LOD'
+                    expr: case(({phv00227059} > 16.0, {phv00227059}),({phv00227068}
+                      == 1, "'LLOD'"))
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht005143
@@ -575,7 +571,7 @@
                   value_decimal:
                     populated_from: phv00255345
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006010
@@ -597,7 +593,7 @@
                   value_decimal:
                     populated_from: phv00275405
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006011
@@ -619,7 +615,7 @@
                   value_decimal:
                     populated_from: phv00275414
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006026
@@ -641,7 +637,7 @@
                   value_decimal:
                     populated_from: phv00277040
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006026
@@ -663,7 +659,7 @@
                   value_decimal:
                     populated_from: phv00277041
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006027
@@ -685,7 +681,7 @@
                   value_decimal:
                     populated_from: phv00277162
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006027
@@ -707,7 +703,7 @@
                   value_decimal:
                     populated_from: phv00277163
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006027
@@ -729,7 +725,7 @@
                   value_decimal:
                     populated_from: phv00277164
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006027
@@ -751,7 +747,7 @@
                   value_decimal:
                     populated_from: phv00277165
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006027
@@ -773,7 +769,7 @@
                   value_decimal:
                     populated_from: phv00277166
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006027
@@ -795,7 +791,7 @@
                   value_decimal:
                     populated_from: phv00277167
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006027
@@ -817,7 +813,7 @@
                   value_decimal:
                     populated_from: phv00277168
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006027
@@ -839,7 +835,7 @@
                   value_decimal:
                     populated_from: phv00277169
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006027
@@ -861,7 +857,7 @@
                   value_decimal:
                     populated_from: phv00277170
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -883,7 +879,7 @@
                   value_decimal:
                     populated_from: phv00369935
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -905,7 +901,7 @@
                   value_decimal:
                     populated_from: phv00369936
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -927,7 +923,7 @@
                   value_decimal:
                     populated_from: phv00369937
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -949,7 +945,7 @@
                   value_decimal:
                     populated_from: phv00369938
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -971,7 +967,7 @@
                   value_decimal:
                     populated_from: phv00369939
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -993,7 +989,7 @@
                   value_decimal:
                     populated_from: phv00369940
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -1015,7 +1011,7 @@
                   value_decimal:
                     populated_from: phv00369941
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -1037,7 +1033,7 @@
                   value_decimal:
                     populated_from: phv00369942
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -1059,7 +1055,7 @@
                   value_decimal:
                     populated_from: phv00369943
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009755
@@ -1067,8 +1063,7 @@
         associated_participant:
           populated_from: phv00423778
         associated_visit:
-          value: FHS ORIGINAL EXAM 10-12
-          range: string
+          expr: FHS ORIGINAL EXAM 10-12
         observation_type:
           value: OBA:VT0000184
           range: string
@@ -1081,7 +1076,7 @@
                   value_decimal:
                     populated_from: phv00423781
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1103,7 +1098,7 @@
                   value_decimal:
                     populated_from: phv00423914
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1125,7 +1120,7 @@
                   value_decimal:
                     populated_from: phv00423915
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1147,7 +1142,7 @@
                   value_decimal:
                     populated_from: phv00423916
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1169,7 +1164,7 @@
                   value_decimal:
                     populated_from: phv00423917
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
@@ -1191,7 +1186,7 @@
                   value_decimal:
                     populated_from: phv00172176
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004801
@@ -1213,7 +1208,7 @@
                   value_decimal:
                     populated_from: phv00227018
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004801
@@ -1235,7 +1230,7 @@
                   value_decimal:
                     populated_from: phv00227022
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
@@ -1257,7 +1252,7 @@
                   value_decimal:
                     populated_from: phv00227059
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht005143
@@ -1279,7 +1274,7 @@
                   value_decimal:
                     populated_from: phv00255345
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006010
@@ -1301,7 +1296,7 @@
                   value_decimal:
                     populated_from: phv00275405
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006011
@@ -1323,7 +1318,7 @@
                   value_decimal:
                     populated_from: phv00275414
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006026
@@ -1331,8 +1326,7 @@
         associated_participant:
           populated_from: phv00277015
         associated_visit:
-          value: FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 1-3
-          range: string
+          expr: FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 1-3
         observation_type:
           value: OBA:VT0000184
           range: string
@@ -1345,7 +1339,7 @@
                   value_decimal:
                     populated_from: phv00277040
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006026
@@ -1353,8 +1347,7 @@
         associated_participant:
           populated_from: phv00277015
         associated_visit:
-          value: FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 1-3
-          range: string
+          expr: FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 1-3
         observation_type:
           value: OBA:VT0000184
           range: string
@@ -1367,7 +1360,7 @@
                   value_decimal:
                     populated_from: phv00277041
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006027
@@ -1389,7 +1382,7 @@
                   value_decimal:
                     populated_from: phv00277162
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006027
@@ -1411,4 +1404,4 @@
                   value_decimal:
                     populated_from: phv00277163
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL

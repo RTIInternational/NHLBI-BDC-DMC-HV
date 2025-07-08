@@ -19,7 +19,8 @@
                   value_decimal:
                     populated_from: phv00071895
                   unit:
-                    expr: '''mg/L'''
+                    value: mg/L
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
@@ -39,12 +40,11 @@
                 populated_from: pht002889
                 slot_derivations:
                   value_concept:
-                    expr: 'case(({phv00172161} > 3.0, {phv00172161}),
-
-                      ({phv00227069} == 1, "''LOD''")) #We need something to indicate
-                      a value is below or above LOD'
+                    expr: case(({phv00172161} > 3.0, {phv00172161}),({phv00227069}
+                      == 1, "'LOD'"))
                   unit:
-                    expr: '''mg/g'''
+                    value: mg/g
+                    range: string
         range_low:
           object_derivations:
           - class_derivations:
@@ -52,9 +52,11 @@
                 populated_from: pht002889
                 slot_derivations:
                   value_decimal:
-                    expr: ''' 3.0'''
+                    value: '3.0'
+                    range: string
                   unit:
-                    expr: '''mg/L'''
+                    value: mg/L
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006011
@@ -76,7 +78,8 @@
                   value_decimal:
                     populated_from: phv00275418
                   unit:
-                    expr: '''mg/g'''
+                    value: mg/g
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
@@ -98,7 +101,8 @@
                   value_decimal:
                     populated_from: phv00227045
                   unit:
-                    expr: '''mg/g'''
+                    value: mg/g
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004363
@@ -118,12 +122,11 @@
                 populated_from: pht004363
                 slot_derivations:
                   value_concept:
-                    expr: 'case(({phv00219547} > 3.0, {phv00219547}),
-
-                      ({phv00219549} == 1, "''LOD''")) #We need something to indicate
-                      a value is below or above LOD'
+                    expr: case(({phv00219547} > 3.0, {phv00219547}),({phv00219549}
+                      == 1, "'LOD'"))
                   unit:
-                    expr: '''mg/g'''
+                    value: mg/g
+                    range: string
         range_low:
           object_derivations:
           - class_derivations:
@@ -131,9 +134,11 @@
                 populated_from: pht004363
                 slot_derivations:
                   value_decimal:
-                    expr: ''' 3.0'''
+                    value: '3.0'
+                    range: string
                   unit:
-                    expr: '''mg/L'''
+                    value: mg/L
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000313
@@ -155,4 +160,5 @@
                   value_concept:
                     populated_from: phv00036493
                   unit:
-                    expr: '''mg/g'''
+                    value: mg/g
+                    range: string

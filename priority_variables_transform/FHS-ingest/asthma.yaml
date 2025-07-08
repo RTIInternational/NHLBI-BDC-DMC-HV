@@ -43,8 +43,7 @@
             '2': HISTORICAL
             '3': HISTORICAL
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -69,8 +68,7 @@
             '2': ABSENT
             '3': HISTORICAL
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -81,13 +79,10 @@
         associated_participant:
           populated_from: phv00001036
         associated_visit:
-          value: FHS ORIGINAL EXAM 1-7
-          range: string
+          expr: FHS ORIGINAL EXAM 1-7
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00000484
           value_mappings:
@@ -97,8 +92,7 @@
             '3': HISTORICAL
             '9999': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -114,8 +108,6 @@
         condition_concept:
           value: MONDO:0005492
           range: string
-          comments:
-          - hives
         condition_status:
           populated_from: phv00000603
           value_mappings:
@@ -130,8 +122,7 @@
             '9997': UNKNOWN
             '9999': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -147,8 +138,6 @@
         condition_concept:
           value: HP:0003193
           range: string
-          comments:
-          - hayfever
         condition_status:
           populated_from: phv00000603
           value_mappings:
@@ -163,8 +152,7 @@
             '9997': UNKNOWN
             '9999': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -180,8 +168,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00000603
           value_mappings:
@@ -196,8 +182,7 @@
             '9997': UNKNOWN
             '9999': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -213,8 +198,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00000701
           value_mappings:
@@ -222,8 +205,7 @@
             '1': HISTORICAL
             '2': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -239,16 +221,13 @@
         condition_concept:
           value: HP:0030828
           range: string
-          comments:
-          - wheezing
         condition_status:
           populated_from: phv00002713
           value_mappings:
             '0': ABSENT
             '1': HISTORICAL
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -264,16 +243,13 @@
         condition_concept:
           value: HP:0030828
           range: string
-          comments:
-          - wheezing
         condition_status:
           populated_from: phv00003013
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -289,16 +265,13 @@
         condition_concept:
           value: MONDO:0850282
           range: string
-          comments:
-          - persistent asthma
         condition_status:
           populated_from: phv00003014
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -314,16 +287,13 @@
         condition_concept:
           value: MONDO:0004784
           range: string
-          comments:
-          - allergic asthma
         condition_status:
           populated_from: phv00003015
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -339,16 +309,13 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00003016
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -364,16 +331,13 @@
         condition_concept:
           value: MONDO:0024355
           range: string
-          comments:
-          - respiratory infection
         condition_status:
           populated_from: phv00003016
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -389,16 +353,13 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00003399
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -414,16 +375,13 @@
         condition_concept:
           value: HP:0030828
           range: string
-          comments:
-          - wheezing
         condition_status:
           populated_from: phv00003399
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -439,16 +397,13 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00003856
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -464,16 +419,13 @@
         condition_concept:
           value: HP:0030828
           range: string
-          comments:
-          - wheezing
         condition_status:
           populated_from: phv00003856
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -489,8 +441,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00004065
           value_mappings:
@@ -515,16 +465,13 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00004292
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -540,16 +487,13 @@
         condition_concept:
           value: HP:0030828
           range: string
-          comments:
-          - wheezing
         condition_status:
           populated_from: phv00004292
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -565,16 +509,13 @@
         condition_concept:
           value: MONDO:0850282
           range: string
-          comments:
-          - persistent asthma
         condition_status:
           populated_from: phv00004293
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -590,16 +531,13 @@
         condition_concept:
           value: MONDO:0004784
           range: string
-          comments:
-          - allergic asthma
         condition_status:
           populated_from: phv00004294
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -615,16 +553,13 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00004295
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -640,16 +575,13 @@
         condition_concept:
           value: MONDO:0024355
           range: string
-          comments:
-          - respiratory infection
         condition_status:
           populated_from: phv00004295
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -665,8 +597,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00004487
           value_mappings:
@@ -691,16 +621,13 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00004694
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -716,16 +643,13 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00005045
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -741,8 +665,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00005285
           value_mappings:
@@ -767,16 +689,13 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00005665
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -792,8 +711,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00005912
           value_mappings:
@@ -818,8 +735,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00006183
           value_mappings:
@@ -843,8 +758,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00006529
           value_mappings:
@@ -852,8 +765,7 @@
             '1': PRESENT
             '2': HISTORICAL
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -869,8 +781,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00006650
           value_mappings:
@@ -878,8 +788,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -895,8 +804,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00006960
           value_mappings:
@@ -904,8 +811,7 @@
             '1': PRESENT
             '2': HISTORICAL
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -921,8 +827,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00007085
           value_mappings:
@@ -947,8 +851,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00007392
           value_mappings:
@@ -956,8 +858,7 @@
             '1': PRESENT
             '2': HISTORICAL
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -973,8 +874,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00007519
           value_mappings:
@@ -999,16 +898,13 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00007778
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1024,16 +920,13 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00008468
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1049,16 +942,13 @@
         condition_concept:
           value: MONDO:0850282
           range: string
-          comments:
-          - persistent asthma
         condition_status:
           populated_from: phv00008469
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1074,16 +964,13 @@
         condition_concept:
           value: MONDO:0004784
           range: string
-          comments:
-          - allergic asthma
         condition_status:
           populated_from: phv00008470
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1099,16 +986,13 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00008471
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1124,8 +1008,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00008701
           value_mappings:
@@ -1150,16 +1032,13 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00008881
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1175,16 +1054,13 @@
         condition_concept:
           value: MONDO:0850282
           range: string
-          comments:
-          - persistent asthma
         condition_status:
           populated_from: phv00008882
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1200,16 +1076,13 @@
         condition_concept:
           value: MONDO:0004784
           range: string
-          comments:
-          - allergic asthma
         condition_status:
           populated_from: phv00008883
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1225,16 +1098,13 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00008884
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1250,16 +1120,13 @@
         condition_concept:
           value: MONDO:0024355
           range: string
-          comments:
-          - respiratory infection
         condition_status:
           populated_from: phv00008884
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1275,8 +1142,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00009088
           value_mappings:
@@ -1301,16 +1166,13 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00009292
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1326,8 +1188,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00009543
           value_mappings:
@@ -1353,16 +1213,13 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00009799
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1378,8 +1235,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00010057
           value_mappings:
@@ -1404,8 +1259,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00010270
           value_mappings:
@@ -1413,8 +1266,7 @@
             '1': PRESENT
             '2': HISTORICAL
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1430,8 +1282,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00010489
           value_mappings:
@@ -1456,16 +1306,13 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00010661
           value_mappings:
             '0': ABSENT
             '1': HISTORICAL
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1481,16 +1328,13 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00010662
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1506,8 +1350,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00021205
           value_mappings:
@@ -1532,8 +1374,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           expr: case(({phv00021292} == 0, 'ABSENT'), case({phv00021293} == 0, 'HISTORICAL'),
             'PRESENT')
@@ -1559,14 +1399,11 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           expr: case(({phv00022715} == 0, 'ABSENT'), case({phv00022716} == 0, 'HISTORICAL'),
             'PRESENT')
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1582,8 +1419,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00055305
           value_mappings:
@@ -1611,8 +1446,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           expr: case(({phv00056803} == 0, 'ABSENT'), case(({phv00056804} == 0, 'HISTORICAL',
             'PRESENT')))
@@ -1634,8 +1467,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00070545
           value_mappings:
@@ -1660,8 +1491,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00072313
           value_mappings:
@@ -1686,8 +1515,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00072488
           value_mappings:
@@ -1715,8 +1542,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00177516
           value_mappings:
@@ -1741,16 +1566,13 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00177565
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1766,8 +1588,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00250838
           value_mappings:
@@ -1775,8 +1595,7 @@
             '1': PRESENT
             '2': HISTORICAL
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1792,8 +1611,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00251049
           value_mappings:
@@ -1818,14 +1635,11 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           expr: case( ({phv00251235} == 0, 'ABSENT'), case( ({phv00251236} == 0, 'HISTORICAL'),
             ({phv00251236} == 1, 'PRESENT')))
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1841,8 +1655,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00251510
           value_mappings:
@@ -1867,16 +1679,13 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00251703
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1892,8 +1701,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00254260
           value_mappings:
@@ -1918,16 +1725,13 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00254489
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1943,8 +1747,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00254754
           value_mappings:
@@ -1969,16 +1771,13 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00255145
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -1994,8 +1793,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00274028
           value_mappings:
@@ -2020,8 +1817,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           expr: case( ({phv00274119} == 0, 'ABSENT'), case( ({phv00274120} == 0, 'HISTORICAL'),
             ({phv00274120} == 1, 'PRESENT')))
@@ -2045,8 +1840,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00274870
           value_mappings:
@@ -2070,8 +1863,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00275228
           value_mappings:
@@ -2079,8 +1870,7 @@
             '1': ABSENT
             '2': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -2091,16 +1881,12 @@
         associated_participant:
           populated_from: phv00276803
         associated_visit:
-          value: 'FHS ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE, OMNI
-            1,
-
-            OMNI 2 CASE REVIEW'
+          value: FHS ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE, OMNI
+            1,OMNI 2 CASE REVIEW
           range: string
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00276870
           value_mappings:
@@ -2108,8 +1894,7 @@
             '1': ABSENT
             '2': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -2125,8 +1910,6 @@
         condition_concept:
           value: MONDO:0004979
           range: string
-          comments:
-          - asthma
         condition_status:
           populated_from: phv00000789
           value_mappings:
@@ -2140,8 +1923,7 @@
             '9997': UNKNOWN
             '9999': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -2157,8 +1939,6 @@
         condition_concept:
           value: HP:0003193
           range: string
-          comments:
-          - hayfever
         condition_status:
           populated_from: phv00000789
           value_mappings:
@@ -2172,8 +1952,7 @@
             '9997': UNKNOWN
             '9999': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
           range: string

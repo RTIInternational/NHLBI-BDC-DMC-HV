@@ -19,7 +19,7 @@
                   value_decimal:
                     expr: case(({phv00073727} > 4, {phv00073727}), "'LLOD'")
                   unit:
-                    expr: '''pg/mL'''
+                    expr: pg/mL
         range_low:
           object_derivations:
           - class_derivations:
@@ -27,9 +27,10 @@
                 populated_from: pht000823
                 slot_derivations:
                   value_decimal:
-                    expr: '''5'''
+                    value: '5'
+                    range: string
                   unit:
-                    expr: '''pg/mL'''
+                    expr: pg/mL
         range_high:
           object_derivations:
           - class_derivations:
@@ -37,9 +38,10 @@
                 populated_from: pht000823
                 slot_derivations:
                   value_decimal:
-                    expr: '''35000'''
+                    value: '35000'
+                    range: string
                   unit:
-                    expr: '''pg/mL'''
+                    expr: pg/mL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006013
@@ -61,4 +63,4 @@
                   value_decimal:
                     populated_from: phv00423136
                   unit:
-                    expr: '''pg/mL'''
+                    expr: pg/mL

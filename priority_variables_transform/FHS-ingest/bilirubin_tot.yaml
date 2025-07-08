@@ -19,8 +19,7 @@
                   value_decimal:
                     populated_from: phv00007564
                   unit:
-                    value: mg/dL
-                    range: string
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000031
@@ -42,8 +41,7 @@
                   value_decimal:
                     populated_from: phv00008090
                   unit:
-                    value: mg/dL
-                    range: string
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001045
@@ -67,8 +65,7 @@
                   value_decimal:
                     expr: case(({phv00081026} > 0.1, {phv00081026}), "'LOD'")
                   unit:
-                    value: mg/dL
-                    range: string
+                    expr: mg/dL
         range_low:
           object_derivations:
           - class_derivations:
@@ -79,8 +76,7 @@
                     value: '0.1'
                     range: string
                   unit:
-                    value: mg/dL
-                    range: string
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
@@ -102,8 +98,7 @@
                   value_decimal:
                     populated_from: phv00172167
                   unit:
-                    value: mg/dL
-                    range: string
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
@@ -125,8 +120,7 @@
                   value_decimal:
                     populated_from: phv00227051
                   unit:
-                    value: mg/dL
-                    range: string
+                    expr: mg/dL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht005144
@@ -148,5 +142,4 @@
                   value_decimal:
                     populated_from: phv00255363
                   unit:
-                    value: mg/dL
-                    range: string
+                    expr: mg/dL

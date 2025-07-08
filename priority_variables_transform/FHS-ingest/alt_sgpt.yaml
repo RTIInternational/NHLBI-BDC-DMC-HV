@@ -19,7 +19,7 @@
                   value_decimal:
                     populated_from: phv00008098
                   unit:
-                    expr: '''[IU]/L'''
+                    expr: '[IU]/L'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
@@ -39,12 +39,10 @@
                 populated_from: pht002889
                 slot_derivations:
                   value_decimal:
-                    expr: 'case(({phv00172166} > 5.0, {phv00172166}),
-
-                      ({phv00172202} == 1, "''LOD''")) #We need something to indicate
-                      a value is below or above LOD'
+                    expr: case(({phv00172166} > 5.0, {phv00172166}),({phv00172202}
+                      == 1, "'LOD'"))
                   unit:
-                    expr: '''[IU]/L'''
+                    expr: '[IU]/L'
         range_low:
           object_derivations:
           - class_derivations:
@@ -52,9 +50,10 @@
                 populated_from: pht002889
                 slot_derivations:
                   value_decimal:
-                    expr: '''5.0'''
+                    value: '5.0'
+                    range: string
                   unit:
-                    expr: '''[IU]/L'''
+                    expr: '[IU]/L'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
@@ -74,12 +73,10 @@
                 populated_from: pht004802
                 slot_derivations:
                   value_decimal:
-                    expr: 'case(({phv00227050} > 5.0, {phv00227050}),
-
-                      ({phv00227066} == 1, "''LOD''")) #We need something to indicate
-                      a value is below or above LOD'
+                    expr: case(({phv00227050} > 5.0, {phv00227050}),({phv00227066}
+                      == 1, "'LOD'"))
                   unit:
-                    expr: '''[IU]/L'''
+                    expr: '[IU]/L'
         range_low:
           object_derivations:
           - class_derivations:
@@ -87,6 +84,7 @@
                 populated_from: pht004802
                 slot_derivations:
                   value_decimal:
-                    expr: '''5.0'''
+                    value: '5.0'
+                    range: string
                   unit:
-                    expr: '''[IU]/L'''
+                    expr: '[IU]/L'
