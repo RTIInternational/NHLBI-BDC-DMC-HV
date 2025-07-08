@@ -7,7 +7,7 @@
         associated_visit:
           expr: '''HCHS EXAM'''
         observation_type:
-          expr: '''OBA:VT0000184''' #HDL
+          expr: case((phv00253225 >= 12, '''OMOP:4041557'''), '''OBA:VT0000184''')
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -18,3 +18,5 @@
                     populated_from: phv00253239
                   unit:
                     expr: '''mg/dL'''
+        method_type:
+          expr: case((phv00253225 >= 12, '''Fasted minimum 12 hours'''), None)
