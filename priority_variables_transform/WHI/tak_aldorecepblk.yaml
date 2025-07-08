@@ -1,0 +1,12 @@
+- class_derivations:
+    DrugExposure:
+      populated_from: 
+      slot_derivations:
+        associated_participant:
+          populated_from:  
+        associated_visit:
+          expr: '''RxCUI:'''
+        drug_concept:
+          expr: case((phv00078436 == 1, ''''''), None)
+        expsoure_provenance:
+          expr: '''PATIENT SELF-REPORTED MEDICATION'''
