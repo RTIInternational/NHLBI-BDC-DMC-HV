@@ -10,7 +10,8 @@
         drug_concept:
           expr: case(({phv00177254} == 1, '''RxCUI:A10'''), None)
         expsoure_provenance:
-          expr: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
 - class_derivations:
     DrugExposure:
       populated_from: pht006005
@@ -23,7 +24,8 @@
         drug_concept:
           expr: case(({phv00273715} == 1, '''RxCUI:A10'''), None)
         expsoure_provenance:
-          expr: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
 - class_derivations:
     DrugExposure:
       populated_from: pht005140
@@ -36,7 +38,8 @@
         drug_concept:
           expr: case(({phv00254028} == 1, '''RxCUI:A10'''), None)
         expsoure_provenance:
-          expr: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
 - class_derivations:
     DrugExposure:
       populated_from: pht006008
@@ -49,7 +52,8 @@
         drug_concept:
           expr: case(({phv00275073} == 1, '''RxCUI:A10'''), None)
         expsoure_provenance:
-          expr: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
 - class_derivations:
     DrugExposure:
       populated_from: pht000074
@@ -62,4 +66,5 @@
         drug_concept:
           expr: case(({phv00020881} == 1, '''RxCUI:A10'''), None)
         expsoure_provenance:
-          expr: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string

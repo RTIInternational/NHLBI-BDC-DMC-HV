@@ -15,8 +15,7 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    value: '{phv00023150} / 10'
-                    range: string
+                    expr: '{phv00023150} / 10'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
@@ -34,8 +33,7 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    value: '{phv00023159} / 10'
-                    range: string
+                    expr: '{phv00023159} / 10'
 - class_derivations:
     MeasurementObservation:
       populated from: FHS
@@ -179,7 +177,8 @@
                 populated_from: null
                 slot_derivations:
                   value_decimal:
-                    expr: '{} * 2.54'
+                    value: '{} * 2.54'
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: FHS

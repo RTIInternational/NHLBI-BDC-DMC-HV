@@ -19,7 +19,8 @@
                   value_decimal:
                     populated_from: phv00008098
                   unit:
-                    expr: '[IU]/L'
+                    value: '[IU]/L'
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
@@ -42,7 +43,8 @@
                     expr: case(({phv00172166} > 5.0, {phv00172166}),({phv00172202}
                       == 1, "'LOD'"))
                   unit:
-                    expr: '[IU]/L'
+                    value: '[IU]/L'
+                    range: string
         range_low:
           object_derivations:
           - class_derivations:
@@ -53,7 +55,8 @@
                     value: '5.0'
                     range: string
                   unit:
-                    expr: '[IU]/L'
+                    value: '[IU]/L'
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
@@ -76,7 +79,8 @@
                     expr: case(({phv00227050} > 5.0, {phv00227050}),({phv00227066}
                       == 1, "'LOD'"))
                   unit:
-                    expr: '[IU]/L'
+                    value: '[IU]/L'
+                    range: string
         range_low:
           object_derivations:
           - class_derivations:
@@ -87,4 +91,5 @@
                     value: '5.0'
                     range: string
                   unit:
-                    expr: '[IU]/L'
+                    value: '[IU]/L'
+                    range: string
