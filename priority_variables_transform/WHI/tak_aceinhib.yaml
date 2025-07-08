@@ -99,10 +99,22 @@
       populated_from: pht006223
       slot_derivations:
         associated_participant:
-          populated_from:  
+          populated_from: phv00283451
         associated_visit:
           expr: '''RxCUI:C09A'''
         drug_concept:
-          expr: case((phv00283673 == 1, ''' '''), None)
+          expr: case((phv00283673 == 1, '''WHI UNC HEART FAILURE DETAILS'''), None)
+        expsoure_provenance:
+          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+- class_derivations:
+    DrugExposure:
+      populated_from: pht006223
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00283451
+        associated_visit:
+          expr: '''RxCUI:C09A'''
+        drug_concept:
+          expr: case((phv00283674 == 1, '''WHI UNC HEART FAILURE DETAILS'''), None)
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
