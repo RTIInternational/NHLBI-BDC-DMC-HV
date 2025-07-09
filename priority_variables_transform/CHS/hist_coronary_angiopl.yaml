@@ -1,96 +1,60 @@
-class_derivations:
-  Condition:
-    populated_from: pht001450
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00098771	
-      associated_visit:
-        expr: "'CHS BASELINE 2'"
-      condition_concept:
-        expr: '''OMOP:4184832''' #coronary angioplasty
-      condition_status:
-        populated_from: phv00099038
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-      condition_provenance:
-        expr: "'CLINICAL_DIAGNOSIS'"
-      relationship_to_participant:
-        expr: "'SELF'"
-class_derivations:
-  Condition:
-    populated_from: pht001452
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00100285	
-      associated_visit:
-        expr: "'CHS BASELINE BOTH'"
-      condition_concept:
-        expr: '''OMOP:4184832''' #coronary angioplasty
-      condition_status:
-        populated_from: phv00100322
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-      condition_provenance:
-        expr: "'CLINICAL_DIAGNOSIS'"
-      relationship_to_participant:
-        expr: "'SELF'"
-class_derivations:
-  Condition:
-    populated_from: pht001464
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00100773
-      associated_visit:
-        expr: "'CHS SUMMARY'"
-      condition_concept:
-        expr: '''OMOP:4184832''' #coronary angioplasty
-      condition_status:
-        populated_from: phv00100782
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-      condition_provenance:
-        expr: "'CLINICAL_DIAGNOSIS'"
-      relationship_to_participant:
-        expr: "'SELF'"
-class_derivations:
-  Condition:
-    populated_from: pht001490
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00105099	
-      associated_visit:
-        expr: "'CHS YEAR 5 NEW'"
-      condition_concept:
-        expr: '''OMOP:4184832''' #coronary angioplasty
-      condition_status:
-        populated_from: phv00105981
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-      condition_provenance:
-        expr: "'CLINICAL_DIAGNOSIS'"
-      relationship_to_participant:
-        expr: "'SELF'"
-class_derivations:
-  Condition:
-    populated_from: pht003699
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00197394		
-      associated_visit:
-        expr: "'CHS PSG 1'"
-      condition_concept:
-        expr: '''OMOP:4184832''' #coronary angioplasty
-      condition_status:
-        populated_from: phv00197455
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-          '8': 'UNKNOWN'
-      condition_provenance:
-        expr: "'CLINICAL_DIAGNOSIS'"
-      relationship_to_participant:
-        expr: "'SELF'"
+- class_derivations:
+    Procedure:
+      populated_from: pht001450
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00098771		
+        associated_visit:
+          expr: '''CHS BASELINE 2'''
+        procedure_concept:
+          expr: case((phv00099038 == 1, '''OMOP:4184832'''), None)
+        procedure_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+- class_derivations:
+    Procedure:
+      populated_from: pht001452
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00100285	
+        associated_visit:
+          expr: '''CHS BASELINE BOTH'''
+        procedure_concept:
+          expr: case((phv00100322 == 1, '''OMOP:4184832'''), None)
+        procedure_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+- class_derivations:
+    Procedure:
+      populated_from: pht001464
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00100773
+        associated_visit:
+          expr: '''CHS SUMMARY'''
+        procedure_concept:
+          expr: case((phv00100782 == 1, '''OMOP:4184832'''), None)
+        procedure_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+- class_derivations:
+    Procedure:
+      populated_from: pht001490
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00105099	
+        associated_visit:
+          expr: '''CHS YEAR 5 NEW'''
+        procedure_concept:
+          expr: case((phv00105981 == 1, '''OMOP:4184832'''), None)
+        procedure_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+- class_derivations:
+    Procedure:
+      populated_from: pht003699
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00197394
+        associated_visit:
+          expr: '''CHS PSG 1'''
+        procedure_concept:
+          expr: case((phv00197455 == 1, '''OMOP:4184832'''), None)
+        procedure_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
