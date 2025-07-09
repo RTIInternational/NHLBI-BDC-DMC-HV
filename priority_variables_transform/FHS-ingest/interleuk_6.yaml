@@ -21,62 +21,74 @@
                   unit:
                     value: pg/mL
                     range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht010727
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00462203
-        associated_visit:
-          value: OFFSPRING EXAM 7
-          range: string
-        observation_type:
-          value: NCIT:C74834
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht010727
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00462411
-                  unit:
-                    value: pg/mL
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht010727
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00462203
-        associated_visit:
-          value: OFFSPRING EXAM 7
-          range: string
-        observation_type:
-          value: NCIT:C74834
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht010727
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00462780
-                  unit:
-                    value: pg/mL
-                    range: string
-  MeasurementObservation:
-    populated_from: pht012882
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00520400
-      associated_visit:
-        expr: Offspring Exam 8 and Omni 1 Exam 3
-      value_decimal:
-        populated_from: phv00520400
-      observation_type:
-        expr: NCIT:C74834'"
-      value_quantity.unit:
-        expr: pg/mL'"
+# - class_derivations:
+#     MeasurementObservation:
+#       populated_from: pht010727
+#       slot_derivations:
+#         associated_participant:
+#           populated_from: phv00462203
+#         associated_visit:
+#           value: OFFSPRING EXAM 7
+#           range: string
+#         observation_type:
+#           value: NCIT:C74834
+#           range: string
+#         value_quantity:
+#           object_derivations:
+#           - class_derivations:
+#               Quantity:
+#                 populated_from: pht010727
+#                 slot_derivations:
+#                   value_decimal:
+#                     populated_from: phv00462411
+#                   unit:
+#                     value: pg/mL
+#                     range: string
+# - class_derivations:
+#     MeasurementObservation:
+#       populated_from: pht010727
+#       slot_derivations:
+#         associated_participant:
+#           populated_from: phv00462203
+#         associated_visit:
+#           value: OFFSPRING EXAM 7
+#           range: string
+#         observation_type:
+#           value: NCIT:C74834
+#           range: string
+#         value_quantity:
+#           object_derivations:
+#           - class_derivations:
+#               Quantity:
+#                 populated_from: pht010727
+#                 slot_derivations:
+#                   value_decimal:
+#                     populated_from: phv00462780
+#                   unit:
+#                     value: pg/mL
+#                     range: string
+# - class_derivations:
+#     MeasurementObservation:
+#       populated_from: pht012882
+#       slot_derivations:
+#         associated_participant:
+#           populated_from: phv00520400
+#         associated_visit:
+#           value: Offspring Exam 8 and Omni 1 Exam 3
+#           range: string
+#         value_decimal:
+#           populated_from: phv00520400
+#         observation_type:
+#           value: NCIT:C74834
+#           range: string
+#         value_quantity:
+#           object_derivations:
+#           - class_derivations:
+#               Quantity:
+#                 populated_from: pht006013
+#                 slot_derivations:
+#                   value_decimal:
+#                     populated_from: phv00422661
+#                   unit:
+#                     value: pg/mL
+#                     range: string

@@ -21,29 +21,29 @@
                   unit:
                     value: pmol/L
                     range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht003901
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00201989
-        associated_visit:
-          value: Offspring Exam 8 and Omni 1 Exam 3
-          range: string
-        observation_type:
-          value: OBA:OBA_2060174
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003901
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv002019991
-                  unit:
-                    value: pmol/L
-                    range: string
+# - class_derivations:
+#     MeasurementObservation:
+#       populated_from: pht003901
+#       slot_derivations:
+#         associated_participant:
+#           populated_from: phv00201989
+#         associated_visit:
+#           value: Offspring Exam 8 and Omni 1 Exam 3
+#           range: string
+#         observation_type:
+#           value: OBA:OBA_2060174
+#           range: string
+#         value_quantity:
+#           object_derivations:
+#           - class_derivations:
+#               Quantity:
+#                 populated_from: pht003901
+#                 slot_derivations:
+#                   value_decimal:
+#                     populated_from: phv002019991
+#                   unit:
+#                     value: pmol/L
+#                     range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003902

@@ -550,26 +550,26 @@
                   unit:
                     value: mg/dL
                     range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht006027
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00277066
-        associated_visit:
-          value: UNKNOWN
-          range: string
-        observation_type:
-          value: OBA:VT0000181
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006027
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00520292
-                  unit:
-                    value: mg/dL
-                    range: string
+# - class_derivations:
+#     MeasurementObservation:
+#       populated_from: pht006027
+#       slot_derivations:
+#         associated_participant:
+#           populated_from: phv00277066
+#         associated_visit:
+#           value: UNKNOWN
+#           range: string
+#         observation_type:
+#           value: OBA:VT0000181
+#           range: string
+#         value_quantity:
+#           object_derivations:
+#           - class_derivations:
+#               Quantity:
+#                 populated_from: pht006027
+#                 slot_derivations:
+#                   value_decimal:
+#                     populated_from: phv00520292
+#                   unit:
+#                     value: mg/dL
+#                     range: string

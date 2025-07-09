@@ -638,8 +638,8 @@
           value: FHS ORIGINAL EXAM 6
           range: string
         drug_concept:
-          expr: case(({phv00000868} == 1, '''RxCUI:C10A'''), case({phv00000868} ==
-            3, '''RxCUI:C10A'''),None)
+          expr: case(({phv00000868} == 1, '''RxCUI:C10A'''), ({phv00000868} ==
+            3, '''RxCUI:C10A'''))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
