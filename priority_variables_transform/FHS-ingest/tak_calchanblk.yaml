@@ -8,7 +8,7 @@
           value: FHS OMNI 1 EXAM 2
           range: string
         drug_concept:
-          expr: case(({phv00250730} == 1, '''RxCUI:C08'''), None)
+          expr: case(({phv00250730} == 1, "RxCUI:C08"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -22,13 +22,15 @@
           value: FHS OMNI 1 EXAM 2
           range: string
         drug_concept:
-          expr: case(({phv00250731} == 1, '''RxCUI:11170'''), case({phv00250731} ==
-            2, '''RxCUI:3443'''), case({phv00250731} == 3, '''RxCUI:7417'''), case({phv00250731}
-            == 6, '''RxCUI:17767'''),
-          case(phv00250731 == 7, '''RxCUI: 4316'''), case(phv00250731 == 10, '''RxCUI:7435'''),
-            None)
-        dosage:
-          populated_from: phv00250732
+          expr: 'case(
+                   ({phv00250731} == 1, "RxCUI:11170"),
+                   ({phv00250731} == 2, "RxCUI:3443"),
+                   ({phv00250731} == 3, "RxCUI:7417"),
+                   ({phv00250731} == 6, "RxCUI:17767"),
+                   ({phv00250731} == 7, "RxCUI:4316"),
+                   ({phv00250731} == 10, "RxCUI:7435"))'
+#         dosage:
+#           populated_from: phv00250732
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -42,7 +44,7 @@
           value: FHS ORIGINAL EXAM 17
           range: string
         drug_concept:
-          expr: case(({phv00002954} == 1, '''RxCUI:C08'''), None)
+          expr: case(({phv00002954} == 1, "RxCUI:C08"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -56,7 +58,7 @@
           value: FHS ORIGINAL EXAM 18
           range: string
         drug_concept:
-          expr: case(({phv00003326} == 1, '''RxCUI:C08'''), None)
+          expr: case(({phv00003326} == 1, "RxCUI:C08"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -70,7 +72,7 @@
           value: FHS ORIGINAL EXAM 19
           range: string
         drug_concept:
-          expr: case(({phv00003767} == 1, '''RxCUI:C08'''), None)
+          expr: case(({phv00003767} == 1, "RxCUI:C08"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -84,7 +86,7 @@
           value: FHS ORIGINAL EXAM 19
           range: string
         drug_concept:
-          expr: case(({phv00004202} == 1, '''RxCUI:C08'''), None)
+          expr: case(({phv00004202} == 1, "RxCUI:C08"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -98,7 +100,7 @@
           value: FHS ORIGINAL EXAM 21
           range: string
         drug_concept:
-          expr: case(({phv00004597} == 1, '''RxCUI:C08'''), None)
+          expr: case(({phv00004597} == 1, "RxCUI:C08"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -112,7 +114,7 @@
           value: FHS ORIGINAL EXAM 22
           range: string
         drug_concept:
-          expr: case(({phv00004951} == 1, '''RxCUI:C08'''), None)
+          expr: case(({phv00004951} == 1, "RxCUI:C08"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -126,7 +128,7 @@
           value: FHS ORIGINAL EXAM 23
           range: string
         drug_concept:
-          expr: case(({phv00005571} == 1, '''RxCUI:C08'''), None)
+          expr: case(({phv00005571} == 1, "RxCUI:C08"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -140,7 +142,7 @@
           value: FHS ORIGINAL EXAM 24
           range: string
         drug_concept:
-          expr: case(({phv00006122} == 1, '''RxCUI:C08'''), None)
+          expr: case(({phv00006122} == 1, "RxCUI:C08"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -154,7 +156,7 @@
           value: FHS ORIGINAL EXAM 25
           range: string
         drug_concept:
-          expr: case(({phv00006462} == 1, '''RxCUI:C08'''), None)
+          expr: case(({phv00006462} == 1, "RxCUI:C08"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -168,14 +170,17 @@
           value: FHS ORIGINAL EXAM 25
           range: string
         drug_concept:
-          expr: case(({phv00006463} == 1, '''RxCUI:11170'''), case({phv00006463} ==
-            2, '''RxCUI:3443'''), case({phv00006463} == 3, '''RxCUI:7417'''), case({phv00006463}
-            == 4, '''RxCUI:7396'''),
-          case(phv00006463 == 5, '''RxCUI: 33910'''), case(phv00006463 == 6, '''RxCUI:17767'''),
-            case(phv00006463 == 7, '''RxCUI:4316'''), case(phv00006463 == 10, '''RxCUI:7435'''),
-            None)
-        dosage:
-          populated_from: phv00006464
+          expr: case(
+                  ({phv00006463} == 1, "RxCUI:11170"),
+                  ({phv00006463} == 2, "RxCUI:3443"),
+                  ({phv00006463} == 3, "RxCUI:7417"),
+                  ({phv00006463} == 4, "RxCUI:7396"),
+                  ({phv00006463} == 5, "RxCUI:33910"), 
+                  ({phv00006463} == 6, "RxCUI:17767"),
+                  ({phv00006463} == 7, "RxCUI:4316"),
+                  ({phv00006463} == 10, "RxCUI:7435"))
+#         dosage:
+#           populated_from: phv00006464
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -189,7 +194,7 @@
           value: FHS ORIGINAL EXAM 26
           range: string
         drug_concept:
-          expr: case(({phv00006850} == 1, '''RxCUI:C08'''), None)
+          expr: case(({phv00006850} == 1, "RxCUI:C08"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -203,14 +208,18 @@
           value: FHS ORIGINAL EXAM 26
           range: string
         drug_concept:
-          expr: case(({phv00006851} == 1, '''RxCUI:11170'''), case({phv00006851} ==
-            2, '''RxCUI:3443'''), case({phv00006851} == 3, '''RxCUI:7417'''), case({phv00006851}
-            == 4, '''RxCUI:7396'''),
-          case(phv00006851 == 5, '''RxCUI: 33910'''), case(phv00006851 == 6, '''RxCUI:17767'''),
-            case(phv00006851 == 7, '''RxCUI:4316'''), case(phv00006851 == 10, '''RxCUI:7435'''),
-          case(phv00006851 == 11, '''RxCUI: 1436'''), None)
-        dosage:
-          populated_from: phv00006852
+          expr: case(
+                  ({phv00006851} == 1, "RxCUI:11170"),
+                  ({phv00006851} == 2, "RxCUI:3443"),
+                  ({phv00006851} == 3, "RxCUI:7417"),
+                  ({phv00006851} == 4, "RxCUI:7396"),
+                  ({phv00006851} == 5, "RxCUI:33910"),
+                  ({phv00006851} == 6, "RxCUI:17767"),
+                  ({phv00006851} == 7, "RxCUI:4316"),
+                  ({phv00006851} == 10, "RxCUI:7435"),
+                  ({phv00006851} == 11, "RxCUI:1436"))
+#         dosage:
+#           populated_from: phv00006852
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -224,7 +233,7 @@
           value: FHS ORIGINAL EXAM 27
           range: string
         drug_concept:
-          expr: case(({phv00007287} == 1, '''RxCUI:C08'''), None)
+          expr: case(({phv00007287} == 1, "RxCUI:C08"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -238,14 +247,18 @@
           value: FHS ORIGINAL EXAM 27
           range: string
         drug_concept:
-          expr: case(({phv00007288} == 1, '''RxCUI:11170'''), case({phv00007288} ==
-            2, '''RxCUI:3443'''), case({phv00007288} == 3, '''RxCUI:7417'''), case({phv00007288}
-            == 4, '''RxCUI:7396'''),
-          case(phv00007288 == 5, '''RxCUI: 33910'''), case(phv00007288 == 6, '''RxCUI:17767'''),
-            case(phv00007288 == 7, '''RxCUI:4316'''), case(phv00007288 == 10, '''RxCUI:7435'''),
-          case(phv00007288 == 11, '''RxCUI: 1436'''), None)
-        dosage:
-          populated_from: phv00006852
+          expr: case(
+                  ({phv00007288} == 1, "RxCUI:11170"),
+                  ({phv00007288} == 2, "RxCUI:3443"),
+                  ({phv00007288} == 3, "RxCUI:7417"),
+                  ({phv00007288} == 4, "RxCUI:7396"),
+                  ({phv00007288} == 5, "RxCUI:33910"),
+                  ({phv00007288} == 6, "RxCUI:17767"),
+                  ({phv00007288} == 7, "RxCUI:4316"),
+                  ({phv00007288} == 10, "RxCUI:7435"),
+                  ({phv00007288} == 11, "RxCUI:1436"))
+#         dosage:
+#           populated_from: phv00006852
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -259,7 +272,7 @@
           value: FHS OFFSPRING EXAM 3
           range: string
         drug_concept:
-          expr: case(({phv00008386} == 1, '''RxCUI:C08'''), None)
+          expr: case(({phv00008386} == 1, "RxCUI:C08"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -273,7 +286,7 @@
           value: FHS OFFSPRING EXAM 4
           range: string
         drug_concept:
-          expr: case(({phv00008783} == 1, '''RxCUI:C08'''), None)
+          expr: case(({phv00008783} == 1, "RxCUI:C08"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -287,7 +300,7 @@
           value: FHS OFFSPRING EXAM 5
           range: string
         drug_concept:
-          expr: case(({phv00009178} == 1, '''RxCUI:C08'''), None)
+          expr: case(({phv00009178} == 1, "RxCUI:C08"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -301,7 +314,7 @@
           value: FHS OFFSPRING EXAM 6
           range: string
         drug_concept:
-          expr: case(({phv00009679} == 1, '''RxCUI:C08'''), None)
+          expr: case(({phv00009679} == 1, "RxCUI:C08"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -315,7 +328,7 @@
           value: FHS OFFSPRING EXAM 7
           range: string
         drug_concept:
-          expr: case(({phv00010156} == 1, '''RxCUI:C08'''), None)
+          expr: case(({phv00010156} == 1, "RxCUI:C08"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -329,7 +342,7 @@
           value: FHS OFFSPRING EXAM 7
           range: string
         drug_concept:
-          expr: case(({phv00010156} == 1, '''RxCUI:C08'''), None)
+          expr: case(({phv00010156} == 1, "RxCUI:C08"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -343,12 +356,15 @@
           value: FHS OFFSPRING EXAM 7
           range: string
         drug_concept:
-          expr: case(({phv00010157} == 1, '''RxCUI:11170'''), case({phv00010157} ==
-            2, '''RxCUI:3443'''), case({phv00010157} == 3, '''RxCUI:7417'''), case({phv00010157}
-            == 4, '''RxCUI:7396'''),
-          case(phv00010157 == 5, '''RxCUI: 33910'''), case(phv00010157 == 6, '''RxCUI:17767'''),
-            case(phv00010157 == 7, '''RxCUI:4316'''), case(phv00010157 == 10, '''RxCUI:7435'''),
-          case(phv00010157 == 11, '''RxCUI: 1436'''), None)
+          expr: case(({phv00010157} == 1, "RxCUI:11170"),
+                  ({phv00010157} == 2, "RxCUI:3443"),
+                  ({phv00010157} == 3, "RxCUI:7417"),
+                  ({phv00010157} == 4, "RxCUI:7396"),
+                  ({phv00010157} == 5, "RxCUI:33910"),
+                  ({phv00010157} == 6, "RxCUI:17767"),
+                  ({phv00010157} == 7, "RxCUI:4316"),
+                  ({phv00010157} == 10, "RxCUI:7435"),
+                  ({phv00010157} == 11, "RxCUI:1436"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -362,7 +378,7 @@
           value: FHS OFFSPRING BASELINE
           range: string
         drug_concept:
-          expr: case(({phv00055376} == 1, '''RxCUI:C08'''), None)
+          expr: case(({phv00055376} == 1, "RxCUI:C08"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -376,7 +392,7 @@
           value: FHS OFFSPRING EXAM 2
           range: string
         drug_concept:
-          expr: case(({phv00056933} == 1, '''RxCUI:17767'''), None)
+          expr: case(({phv00056933} == 1, "RxCUI:17767"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -390,7 +406,7 @@
           value: FHS OFFSPRING EXAM 2
           range: string
         drug_concept:
-          expr: case(({phv00056953} == 1, '''RxCUI:3443'''), None)
+          expr: case(({phv00056953} == 1, "RxCUI:3443"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -404,7 +420,7 @@
           value: FHS OFFSPRING EXAM 2
           range: string
         drug_concept:
-          expr: case(({phv00056954} == 1, '''RxCUI:3443'''), None)
+          expr: case(({phv00056954} == 1, "RxCUI:3443"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -418,7 +434,7 @@
           value: FHS OFFSPRING EXAM 2
           range: string
         drug_concept:
-          expr: case(({phv00056999} == 1, '''RxCUI:11170'''), None)
+          expr: case(({phv00056999} == 1, "RxCUI:11170"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -432,7 +448,7 @@
           value: FHS OFFSPRING EXAM 2
           range: string
         drug_concept:
-          expr: case(({phv00057000} == 1, '''RxCUI:11170'''), None)
+          expr: case(({phv00057000} == 1, "RxCUI:11170"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string

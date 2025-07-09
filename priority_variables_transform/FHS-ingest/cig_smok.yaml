@@ -159,8 +159,12 @@
           value: OMOP:4282779
           range: string
         value_enum:
-          expr: 'case(({phv00001836} ==0, "OMOP:45883537"), ({phv00001836} == 1, "OMOP:40766945"),({phv00001836}
-            == 3, OMOP: 40766945), ({phv00001849} == 8, "OMOP:45883458"), (True, None))'
+          expr: 'case(
+                  ({phv00001836} ==0, "OMOP:45883537"),
+                  ({phv00001836} == 1, "OMOP:40766945"),
+                  ({phv00001836} == 3, "OMOP:40766945"),
+                  ({phv00001849} == 8, "OMOP:45883458"),
+                  (True, None))'
 - class_derivations:
     Observation:
       populated_from: pht000015
@@ -175,7 +179,7 @@
           range: string
         value_enum:
           expr: 'case(({phv00002055} ==0, "OMOP:45883537"), ({phv00002055} == 1, "OMOP:40766945"),({phv00002055}
-            == 3, OMOP: 40766945), ({phv00002064} == 8, "OMOP:45883458"), (True, None))'
+            == 3, "OMOP:40766945"), ({phv00002064} == 8, "OMOP:45883458"), (True, None))'
 - class_derivations:
     Observation:
       populated_from: pht000019
@@ -190,7 +194,7 @@
           range: string
         value_enum:
           expr: 'case(({phv00002981} == 8, "OMOP:45883537"), ({phv00002981} == 1,
-            "OMOP:45883458"),({phv00002981} == 2, OMOP: 40766945), (True, None))'
+            "OMOP:45883458"),({phv00002981} == 2, "OMOP:40766945"), (True, None))'
 - class_derivations:
     Observation:
       populated_from: pht000692
@@ -260,9 +264,14 @@
           value: OMOP:4282779
           range: string
         value_enum:
-          expr: 'case(({phv00007735} == 0, "OMOP:45883537"), (({phv00007735} == 1
-            or {phv00007735} == 3) and {phv00007736} == 0,OMOP: 45883458), (True,
-            "OMOP:40766945"))'
+          expr: 'case(
+                   ({phv00007735} == 0, "OMOP:45883537"),
+                   ({phv00007735} == 1, "OMOP:45883458"),
+                   ({phv00007735} == 3, case(
+                     ({phv00007736} == 0, "OMOP:45883458")
+                   )),
+                   (True, "OMOP:40766945")
+                 )'
 - class_derivations:
     Observation:
       populated_from: pht000030
@@ -312,7 +321,7 @@
           range: string
         value_enum:
           expr: 'case(({phv00020925} == 0, "OMOP:45883537"), ({phv00020927} == 0,
-            "OMOP:45883458"),({phv00020927} == 1, OMOP: 40766945), (True, None))'
+            "OMOP:45883458"),({phv00020927} == 1, "OMOP:40766945"), (True, None))'
 - class_derivations:
     Observation:
       populated_from: pht000395

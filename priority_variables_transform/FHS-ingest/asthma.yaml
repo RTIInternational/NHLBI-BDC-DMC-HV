@@ -1421,8 +1421,8 @@
           value: MONDO:0004979
           range: string
         condition_status:
-          expr: case(({phv00021292} == 0, 'ABSENT'), case({phv00021293} == 0, 'HISTORICAL'),
-            'PRESENT')
+          expr: case(({phv00021292} == 0, 'ABSENT'), ({phv00021293} == 0, 'HISTORICAL'),
+            (True, 'PRESENT'))
         condition_provenance:
           populated_from: phv00021294
           value_mappings:
@@ -1446,8 +1446,8 @@
           value: MONDO:0004979
           range: string
         condition_status:
-          expr: case(({phv00022715} == 0, 'ABSENT'), case({phv00022716} == 0, 'HISTORICAL'),
-            'PRESENT')
+          expr: case(({phv00022715} == 0, 'ABSENT'), ({phv00022716} == 0, 'HISTORICAL'),
+            (True, 'PRESENT'))
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -1494,8 +1494,8 @@
           value: MONDO:0004979
           range: string
         condition_status:
-          expr: case(({phv00056803} == 0, 'ABSENT'), case(({phv00056804} == 0, 'HISTORICAL',
-            'PRESENT')))
+          expr: case(({phv00056803} == 0, 'ABSENT'), ({phv00056804} == 0, 'HISTORICAL'),
+            (True, 'PRESENT'))
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
@@ -1567,8 +1567,8 @@
           value_mappings:
             '0': ABSENT
             '1': HISTORICAL
-          expr: case(({phv00072488} == 0, 'ABSENT'), case({phv00072489} == 0, 'HISTORICAL'),
-            'PRESENT')
+          expr: case(({phv00072488} == 0, 'ABSENT'), ({phv00072489} == 0, 'HISTORICAL'),
+            (True, 'PRESENT'))
         condition_provenance:
           populated_from: phv00072490
           value_mappings:
@@ -1685,8 +1685,8 @@
           value: MONDO:0004979
           range: string
         condition_status:
-          expr: case( ({phv00251235} == 0, 'ABSENT'), case( ({phv00251236} == 0, 'HISTORICAL'),
-            ({phv00251236} == 1, 'PRESENT')))
+          expr: case(({phv00251235} == 0, 'ABSENT'), ({phv00251236} == 0, 'HISTORICAL'),
+            ({phv00251236} == 1, 'PRESENT'))
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -1871,8 +1871,8 @@
           value: MONDO:0004979
           range: string
         condition_status:
-          expr: case( ({phv00274119} == 0, 'ABSENT'), case( ({phv00274120} == 0, 'HISTORICAL'),
-            ({phv00274120} == 1, 'PRESENT')))
+          expr: case(({phv00274119} == 0, 'ABSENT'), ({phv00274120} == 0, 'HISTORICAL'),
+            ({phv00274120} == 1, 'PRESENT'))
         condition_provenance:
           populated_from: phv00274121
           value_mappings:

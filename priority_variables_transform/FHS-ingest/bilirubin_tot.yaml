@@ -65,7 +65,7 @@
                 populated_from: pht001045
                 slot_derivations:
                   value_decimal:
-                    expr: case(({phv00081026} > 0.1, {phv00081026}), "'LOD'")
+                    expr: case(({phv00081026} > 0.1, {phv00081026}), (True, "'LOD'"))
                   unit:
                     value: mg/dL
                     range: string
