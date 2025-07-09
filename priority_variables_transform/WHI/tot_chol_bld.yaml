@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht000987
+      slot_derivations:
+        associated_participant: 
+          populated_from: 
+        associated_visit: 
+          expr: ''''''
+        observation_type: 
+          expr: '''OBA:VT0000180'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000987
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00077396
+                  unit: 
+                    expr: '''mg/dl'''

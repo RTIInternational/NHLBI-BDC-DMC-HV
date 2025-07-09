@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht002125
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00156379
+        associated_visit: 
+          expr: '''WHI FG 60 2'''
+        observation_type: 
+          expr: '''OMOP:606729'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht002125
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00156452
+                  unit: 
+                    expr: '''mg/day'''
