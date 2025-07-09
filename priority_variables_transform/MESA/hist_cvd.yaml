@@ -1,114 +1,95 @@
-class_derivations:
-  Condition:
-    populated_from: pht001123
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00087848		
-      associated_visit:
-        expr: 'MESA CLASSIC CVE'
-      condition_concept:
-        expr: 'NCIT:C66921' #cardiovascular history
-      condition_status:
-        populated_from: phv00087853
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-      condition_provenance:
-        expr: 'CLINICAL_DIAGNOSIS'
-      relationship_to_participant:
-        expr: 'SELF'
-class_derivations:
-  Condition:
-    populated_from: pht001123
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00087848		
-      associated_visit:
-        expr: 'MESA CLASSIC CVE'
-      condition_concept:
-        expr: 'NCIT:C66921' #cardiovascular history
-      condition_status:
-        populated_from: phv00087856
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-      condition_provenance:
-        expr: 'CLINICAL_DIAGNOSIS'
-      relationship_to_participant:
-        expr: 'SELF'
-class_derivations:
-  Condition:
-    populated_from: pht001123
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00087848		
-      associated_visit:
-        expr: 'MESA CLASSIC CVE'
-      condition_concept:
-        expr: 'NCIT:C66921' #cardiovascular history
-      condition_status:
-        populated_from: phv00087859
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-      condition_provenance:
-        expr: 'CLINICAL_DIAGNOSIS'
-      relationship_to_participant:
-        expr: 'SELF'
-class_derivations:
-  Condition:
-    populated_from: pht001123
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00087848		
-      associated_visit:
-        expr: 'MESA CLASSIC CVE'
-      condition_concept:
-        expr: 'NCIT:C66921' #cardiovascular history
-      condition_status:
-        populated_from: phv00087890
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-      condition_provenance:
-        expr: 'CLINICAL_DIAGNOSIS'
-      relationship_to_participant:
-        expr: 'SELF'
-class_derivations:
-  Condition:
-    populated_from: pht001123
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00087848		
-      associated_visit:
-        expr: 'MESA CLASSIC CVE'
-      condition_concept:
-        expr: 'NCIT:C66921' #cardiovascular history
-      condition_status:
-        populated_from: phv00087892
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-      condition_provenance:
-        expr: 'CLINICAL_DIAGNOSIS'
-      relationship_to_participant:
-        expr: 'SELF'
-class_derivations:
-  Condition:
-    populated_from: pht002515
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00165061	
-      associated_visit:
-        expr: 'MESA ANCILLARY FET'
-      condition_concept:
-        expr: 'NCIT:C66921' #cardiovascular history
-      condition_status:
-        populated_from: phv00165065
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-      condition_provenance:
-        expr: 'CLINICAL_DIAGNOSIS'
-      relationship_to_participant:
-        expr: 'SELF'
+- class_derivations:
+    Condition:
+      populated_from: pht001123
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087848		
+        associated_visit:
+          expr: 'MESA CLASSIC CVE'
+        condition_concept:
+          expr: '''MONDO:0005068''' #myocardial infarction
+        condition_status:
+          populated_from: phv00087853
+          value_mappings:
+            '0': 'ABSENT'
+            '1': 'PRESENT'
+        condition_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+        relationship_to_participant:
+          expr: '''ONESELF'''
+- class_derivations:
+    Condition:
+      populated_from: pht001123
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087848		
+        associated_visit:
+          expr: 'MESA CLASSIC CVE'
+        condition_concept:
+          expr: '''MONDO:0000745''' #cardiac arrest
+        condition_status:
+          populated_from: phv00087856
+          value_mappings:
+            '0': 'ABSENT'
+            '1': 'PRESENT'
+        condition_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+        relationship_to_participant:
+          expr: '''ONESELF'''
+- class_derivations:
+    Condition:
+      populated_from: pht001123
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087848		
+        associated_visit:
+          expr: 'MESA CLASSIC CVE'
+        condition_concept:
+          expr: '''HP:0002621''' #arteriosclerosis
+        condition_status:
+          populated_from: phv00087890
+          value_mappings:
+            '0': 'ABSENT'
+            '1': 'PRESENT'
+        condition_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+        relationship_to_participant:
+          expr: '''ONESELF'''
+- class_derivations:
+    Condition:
+      populated_from: pht001123
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087848		
+        associated_visit:
+          expr: 'MESA CLASSIC CVE'
+        condition_concept:
+          expr: '''MONDO:0004995''' #cardiovascular disease
+        condition_status:
+          populated_from: phv00087892
+          value_mappings:
+            '0': 'ABSENT'
+            '1': 'PRESENT'
+        condition_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+        relationship_to_participant:
+          expr: '''ONESELF'''
+- class_derivations:
+    Condition:
+      populated_from: pht002515
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00165061	
+        associated_visit:
+          expr: 'MESA ANCILLARY FET'
+        condition_concept:
+          expr: '''HP:0002621''' #arteriosclerosis
+        condition_status:
+          populated_from: phv00165065
+          value_mappings:
+            '0': 'ABSENT'
+            '1': 'PRESENT'
+        condition_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+        relationship_to_participant:
+          expr: '''ONESELF'''
