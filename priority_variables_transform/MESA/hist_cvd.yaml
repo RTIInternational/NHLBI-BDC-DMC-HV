@@ -5,18 +5,22 @@
         associated_participant:
           populated_from: phv00087848		
         associated_visit:
-          expr: 'MESA CLASSIC CVE'
+          value: MESA CLASSIC CVE
+          range: string
         condition_concept:
-          expr: '''MONDO:0005068''' #myocardial infarction
+          value: MONDO:0005068 #myocardial infarction
+          range: string
         condition_status:
           populated_from: phv00087853
           value_mappings:
-            '0': 'ABSENT'
-            '1': 'PRESENT'
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: strong
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht001123
@@ -24,18 +28,22 @@
         associated_participant:
           populated_from: phv00087848		
         associated_visit:
-          expr: 'MESA CLASSIC CVE'
+          value: MESA CLASSIC CVE
+          range: string
         condition_concept:
-          expr: '''MONDO:0000745''' #cardiac arrest
+          value: MONDO:0000745 #cardiac arrest
+          range: string
         condition_status:
           populated_from: phv00087856
           value_mappings:
-            '0': 'ABSENT'
-            '1': 'PRESENT'
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht001123
@@ -43,18 +51,22 @@
         associated_participant:
           populated_from: phv00087848		
         associated_visit:
-          expr: 'MESA CLASSIC CVE'
+          value: MESA CLASSIC CVE
+          range: string
         condition_concept:
-          expr: '''HP:0002621''' #arteriosclerosis
+          value: HP:0002621 #arteriosclerosis
+          range: string
         condition_status:
           populated_from: phv00087890
           value_mappings:
-            '0': 'ABSENT'
-            '1': 'PRESENT'
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht001123
@@ -62,18 +74,22 @@
         associated_participant:
           populated_from: phv00087848		
         associated_visit:
-          expr: 'MESA CLASSIC CVE'
+          value: MESA CLASSIC CVE
+          range: string
         condition_concept:
-          expr: '''MONDO:0004995''' #cardiovascular disease
+          value: MONDO:0004995 #cardiovascular disease
+          range: string
         condition_status:
           populated_from: phv00087892
           value_mappings:
-            '0': 'ABSENT'
-            '1': 'PRESENT'
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht002515
@@ -81,15 +97,19 @@
         associated_participant:
           populated_from: phv00165061	
         associated_visit:
-          expr: 'MESA ANCILLARY FET'
+          value: MESA ANCILLARY FET
+          range: string
         condition_concept:
-          expr: '''HP:0002621''' #arteriosclerosis
+          value: HP:0002621 #arteriosclerosis
+          range: string
         condition_status:
           populated_from: phv00165065
           value_mappings:
-            '0': 'ABSENT'
-            '1': 'PRESENT'
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: string
