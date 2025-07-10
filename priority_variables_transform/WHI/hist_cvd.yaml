@@ -5,18 +5,22 @@
         associated_participant:
           populated_from: phv00078506
         associated_visit:
-          expr: '''WHI FORM 30 - MEDICAL HISTORY QUESTIONNAIRE'''
+          value: WHI FORM 30 - MEDICAL HISTORY QUESTIONNAIRE
+          range: value
         condition_concept:
-          expr: '''MONDO:0004995''' #cardiovascular disorder
+          value: MONDO:0004995 #cardiovascular disorder
+          range: value
         condition_status:
-          populated_from: phv00078531 #
+          populated_from: phv00078531
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: value
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: value
 - class_derivations:
     Condition:
       populated_from: pht006223
@@ -24,18 +28,22 @@
         associated_participant:
           populated_from: phv00283451
         associated_visit:
-          expr: '''WHI UNC HEART FAILURE DETAILS'''
+          value: WHI UNC HEART FAILURE DETAILS
+          range: value
         condition_concept:
-          '''MONDO:0004995''' #cardiovascular disorder
+          value: MONDO:0005279 #pulmonary embolism
+          range: value
         condition_status:
           populated_from: phv00283512
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: value
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: value
 - class_derivations:
     Condition:
       populated_from: pht006223
@@ -43,37 +51,22 @@
         associated_participant:
           populated_from: phv00283451
         associated_visit:
-          expr: '''WHI UNC HEART FAILURE DETAILS'''
+          value: WHI UNC HEART FAILURE DETAILS
+          range: value
         condition_concept:
-          expr: '''MONDO:0004995''' #cardiovascular disorder
-        condition_status:
-          populated_from: phv00283515
-          value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
-        condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
-        relationship_to_participant:
-          expr: '''ONESELF'''
-- class_derivations:
-    Condition:
-      populated_from: pht006223
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00283451
-        associated_visit:
-          expr: '''WHI UNC HEART FAILURE DETAILS'''
-        condition_concept:
-          expr: '''MONDO:0004995''' #cardiovascular disorder
+          value: MONDO:0004995 #cardiovascular disorder
+          range: value
         condition_status:
           populated_from: phv00283524
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: value
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: value
 - class_derivations:
     Condition:
       populated_from: pht006223
@@ -81,18 +74,22 @@
         associated_participant:
           populated_from: phv00283451
         associated_visit:
-          expr: '''WHI UNC HEART FAILURE DETAILS'''
+          value: WHI UNC HEART FAILURE DETAILS
+          range: value
         condition_concept:
-          expr: '''MONDO:0004995''' #cardiovascular disorder
+          value: MONDO:0004995 #cardiovascular disorder
+          range: value
         condition_status:
           populated_from: phv00283525
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: value
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: value
 - class_derivations:
     Condition:
       populated_from: pht006223
@@ -100,37 +97,22 @@
         associated_participant:
           populated_from: phv00283451
         associated_visit:
-          expr: '''WHI UNC HEART FAILURE DETAILS'''
+          value: WHI UNC HEART FAILURE DETAILS
+          range: value
         condition_concept:
-          expr: '''MONDO:0004995''' #cardiovascular disorder
-        condition_status:
-          populated_from: phv00283527
-          value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
-        condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
-        relationship_to_participant:
-          expr: '''ONESELF'''
-- class_derivations:
-    Condition:
-      populated_from: pht006223
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00283451
-        associated_visit:
-          expr: '''WHI UNC HEART FAILURE DETAILS'''
-        condition_concept:
-          expr: '''MONDO:0004995''' #cardiovascular disorder
+          value: MONDO:0005294 #peripheral vascular disease
+          range: value
         condition_status:
           populated_from: phv00283529
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: value
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: value
 - class_derivations:
     Condition:
       populated_from: pht006223
@@ -138,15 +120,19 @@
         associated_participant:
           populated_from: phv00283451
         associated_visit:
-          expr: '''WHI UNC HEART FAILURE DETAILS'''
+          value: WHI UNC HEART FAILURE DETAILS
+          range: value
         condition_concept:
-          expr: '''MONDO:0004995''' #cardiovascular disorder
+          value: MONDO:0002869 #heart valve disorder
+          range: value
         condition_status:
           populated_from: phv00283530
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: value
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
+          range: value
