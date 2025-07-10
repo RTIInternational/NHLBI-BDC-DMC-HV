@@ -5,18 +5,11 @@
         associated_participant:
           populated_from: phv00078506	
         associated_visit:
-          expr: '''WHI FORM 30 - MEDICAL HISTORY QUESTIONNAIRE'''
-        condition_concept:
-          expr: '''OMOP:4184832''' #coronary angioplasty
-        condition_status:
-          populated_from: phv00078536
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
-        relationship_to_participant:
-          expr: '''ONESELF'''
+          value: WHI FORM 30 - MEDICAL HISTORY QUESTIONNAIRE
+        procedure_concept:
+          expr: case((phv00078536 == 1, OMOP:4184832), None)
+        procedure_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
 - class_derivations:
     Procedure:
       populated_from: pht000999
@@ -24,18 +17,11 @@
         associated_participant:
           populated_from: phv00078506	
         associated_visit:
-          expr: '''WHI FORM 30 - MEDICAL HISTORY QUESTIONNAIRE'''
-        condition_concept:
-          expr: '''OMOP:1242799''' #carotid surgery
-        condition_status:
-          populated_from: phv00078537
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
-        relationship_to_participant:
-          expr: '''ONESELF'''          
+          value: WHI FORM 30 - MEDICAL HISTORY QUESTIONNAIRE
+        procedure_concept:
+          expr: case((phv00078537 == 1, OMOP:1242799), None)
+        procedure_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION         
 - class_derivations:
     Procedure:
       populated_from: pht003407
@@ -43,15 +29,8 @@
         associated_participant:
           populated_from: phv00193141
         associated_visit:
-          expr: '''WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED'''
-        condition_concept:
-          expr: '''OMOP:4006788''' #Percutaneous Transluminal Coronary Angioplasty
-        condition_status:
-          populated_from: phv00193199
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+          value: WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED
+        procedure_concept:
+          expr: case((phv00193199 == 1, OMOP:4006788), None)
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
-        relationship_to_participant:
-          expr: '''ONESELF'''          
+          value: PATIENT_SELF-REPORTED_CONDITION           
