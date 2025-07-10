@@ -1,14 +1,23 @@
-class_derivations:
-  MeasurementObservation:
-    populated_from: pht003089
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00175973			
-      associated_visit:
-        expr: 'MESA Ancillary'
-      value_decimal:
-        populated_from: phv00175981
-      observation_type:
-        expr: 'OBA:VT0001776'	#blood sodium amount
-      value_quantity.unit:
-        expr: 'mmol/L' #units listed as mIU/L, which is equivalent
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003089
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00175973			
+        associated_visit:
+          value: MESA Ancillary
+          range: string
+        observation_type:
+          value: OBA:VT0001776	#blood sodium amount
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003089
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00175981
+                  unit:
+                    value: mmol/L #units listed as mIU/L, which is equivalent
+                    range: string
