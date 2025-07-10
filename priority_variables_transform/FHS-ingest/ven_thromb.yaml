@@ -62,8 +62,7 @@
         condition_status:
           populated_from: phv00071923
           value_mappings:
-            null: ABSENT
-            PE by pulmonary arteriogram, CTPA, or MRI: PRESENT
+            "PE by pulmonary arteriogram, CTPA, or MRI": "PRESENT"
         condition_provenance:
           value: OMOP:4822160
           range: string
@@ -77,8 +76,7 @@
         condition_status:
           populated_from: phv00071924
           value_mappings:
-            null: ABSENT
-            PE by history and high probability ventilation/perfusion (V/Q) Scan: PRESENT
+            "PE by history and high probability ventilation/perfusion (V/Q) Scan": "PRESENT"
         condition_provenance:
           value: OMOP:4822160
           range: string
@@ -92,8 +90,7 @@
         condition_status:
           populated_from: phv00071925
           value_mappings:
-            null: ABSENT
-            PE by clinical high suspicion & documented source of PE (DVT): PRESENT
+            "PE by clinical high suspicion & documented source of PE (DVT)": "PRESENT"
         condition_provenance:
           value: OMOP:4822160
           range: string
@@ -107,8 +104,7 @@
         condition_status:
           populated_from: phv00071926
           value_mappings:
-            null: ABSENT
-            PE by autopsy: PRESENT
+            "PE by autopsy": "PRESENT"
         condition_provenance:
           value: OMOP:4822160
           range: string
@@ -140,43 +136,43 @@
         condition_provenance:
           value: OMOP:4822160
           range: string
-- class_derivations:
-    Condition:
-      populated_from: FHS
-      slot_derivations:
-        condition_concept:
-          value: MONDO:0005279
-          range: string
-        condition_status:
-          populated_from: phv00460989
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: FHS
-      slot_derivations:
-        condition_concept:
-          value: MONDO:0005279
-          range: string
-        condition_status:
-          populated_from: phv00461919
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '2': UNKNOWN
-        condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
+# - class_derivations:
+#     Condition:
+#       populated_from: FHS
+#       slot_derivations:
+#         condition_concept:
+#           value: MONDO:0005279
+#           range: string
+#         condition_status:
+#           populated_from: phv00460989
+#           value_mappings:
+#             '0': ABSENT
+#             '1': PRESENT
+#         condition_provenance:
+#           value: PATIENT_SELF-REPORTED_CONDITION
+#           range: string
+#         relationship_to_participant:
+#           value: ONESELF
+#           range: string
+# - class_derivations:
+#     Condition:
+#       populated_from: FHS
+#       slot_derivations:
+#         condition_concept:
+#           value: MONDO:0005279
+#           range: string
+#         condition_status:
+#           populated_from: phv00461919
+#           value_mappings:
+#             '0': ABSENT
+#             '1': PRESENT
+#             '2': UNKNOWN
+#         condition_provenance:
+#           value: PATIENT_SELF-REPORTED_CONDITION
+#           range: string
+#         relationship_to_participant:
+#           value: ONESELF
+#           range: string
 - class_derivations:
     Condition:
       populated_from: pht006005
@@ -458,84 +454,41 @@
         condition_provenance:
           value: OMOP:4822160
           range: string
-- class_derivations:
-    Condition:
-      populated_from: FHS
-      slot_derivations:
-        condition_concept:
-          value: MONDO:0005399
-          range: string
-        condition_status:
-          populated_from: phv00460988
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '2': UNKNOWN
-        condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: FHS
-      slot_derivations:
-        condition_concept:
-          value: MONDO:0005399
-          range: string
-        condition_status:
-          populated_from: phv00461918
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '2': UNKNOWN
-        condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Procedure:
-      populated_from: FHS
-      slot_derivations:
-        procedure_concept:
-          value: OMOP:4175809
-          range: string
-        procedure_provenance:
-          value: OMOP:4822126
-          range: string
-        value_mappings:
-          '8': ABSENT
-          '0': PRESENT
-          '1': PRESENT
-          '2': PRESENT
-- class_derivations:
-    Procedure:
-      populated_from: FHS
-      slot_derivations:
-        procedure_concept:
-          value: OMOP:35622931
-          range: string
-        procedure_provenance:
-          value: OMOP:4822126
-          range: string
-        value_mappings:
-          '8': ABSENT
-          '0': PRESENT
-          '1': PRESENT
-          '2': PRESENT
-- class_derivations:
-    Procedure:
-      populated_from: FHS
-      slot_derivations:
-        procedure_concept:
-          value: OMOP:4098516
-          range: string
-        procedure_provenance:
-          value: OMOP:4822126
-          range: string
-        value_mappings:
-          '8': ABSENT
-          '1': PRESENT
+# - class_derivations:
+#     Condition:
+#       populated_from: FHS
+#       slot_derivations:
+#         condition_concept:
+#           value: MONDO:0005399
+#           range: string
+#         condition_status:
+#           populated_from: phv00460988
+#           value_mappings:
+#             '0': ABSENT
+#             '1': PRESENT
+#             '2': UNKNOWN
+#         condition_provenance:
+#           value: PATIENT_SELF-REPORTED_CONDITION
+#           range: string
+#         relationship_to_participant:
+#           value: ONESELF
+#           range: string
+# - class_derivations:
+#     Condition:
+#       populated_from: FHS
+#       slot_derivations:
+#         condition_concept:
+#           value: MONDO:0005399
+#           range: string
+#         condition_status:
+#           populated_from: phv00461918
+#           value_mappings:
+#             '0': ABSENT
+#             '1': PRESENT
+#             '2': UNKNOWN
+#         condition_provenance:
+#           value: PATIENT_SELF-REPORTED_CONDITION
+#           range: string
+#         relationship_to_participant:
+#           value: ONESELF
+#           range: string
