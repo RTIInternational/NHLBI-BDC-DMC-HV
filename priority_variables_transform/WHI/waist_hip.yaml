@@ -5,9 +5,11 @@
         associated_participant: 
           populated_from: phv00079849
         associated_visit: 
-          expr: '''WHI PM 80'''
+          value: WHI PM 80
+          range: string
         observation_type: 
-          expr: '''OMOP:4087501'''
+          value: OMOP:4087501
+          range: string
         value_quantity:
           object_derivations:
           - class derivations:
@@ -17,4 +19,5 @@
                   value_decimal:
                     populated_from: phv00079869
                   unit: 
-                    expr: '''ratio'''
+                    value: {ratio}
+                    range: string
