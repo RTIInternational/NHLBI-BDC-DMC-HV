@@ -1,28 +1,48 @@
-class_derivations:
-  MeasurementObservation:
-    populated_from: pht002099
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00142665
-      associated_visit:
-        expr: 'MESA CLASSIC 1-5'
-      value_decimal:
-        populated_from: phv00142667
-      observation_type:
-        expr: 'OMOP:3004578'	#Interleukin 10 [Mass/volume] in Serum or Plasma
-      value_quantity.unit:
-        expr: 'pg/mL'
-class_derivations:
-  MeasurementObservation:
-    populated_from: pht002105
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00150369	
-      associated_visit:
-        expr: 'MESA STRESS'
-      value_decimal:
-        populated_from: phv00160519
-      observation_type:
-        expr: 'OMOP:3004578'	#Interleukin 10 [Mass/volume] in Serum or Plasma
-      value_quantity.unit:
-        expr: 'pg/mL'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002099
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00142665
+        associated_visit:
+          value: MESA CLASSIC 1-5
+          range: string
+        observation_type:
+          value: OMOP:3004578	#Interleukin 10 [Mass/volume] in Serum or Plasma
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001111
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00142667
+                  unit:
+                    value: pg/mL
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002105
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00150369	
+        associated_visit:
+          value: MESA STRESS
+          range: string
+        value_decimal:
+          populated_from: phv00160519
+        observation_type:
+          value: OMOP:3004578	#Interleukin 10 [Mass/volume] in Serum or Plasma
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001111
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00160519          
+                  unit:
+                    value: pg/mL
+                    range: string
