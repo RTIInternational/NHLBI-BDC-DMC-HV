@@ -5,15 +5,15 @@
         associated_participant:
           populated_from: phv00078506
         associated_visit:
-          expr: '''WHI FORM 30 - MEDICAL HISTORY QUESTIONNAIRE'''
+          value: WHI FORM 30 - MEDICAL HISTORY QUESTIONNAIRE
         condition_concept:
-          expr: '''OMOP:134057''' #Cardiovascular disease MONDO:0004995 Cardiovascular disorder?
+          value: OMOP:134057 #Cardiovascular disease MONDO:0004995 Cardiovascular disorder?
         condition_status:
           populated_from: phv00078531
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
