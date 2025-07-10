@@ -5,9 +5,11 @@
         associated_participant: 
           populated_from: phv00079849
         associated_visit: 
-          expr: '''WHI PM 80'''
+          value: WHI PM 80
+          range: string
         observation_type: 
-          expr: '''OBA:1001085'''
+          value: OBA:1001085
+          range: string
         value_quantity:
           object_derivations:
           - class derivations:
@@ -17,7 +19,8 @@
                   value_decimal:
                     populated_from: phv00079860
                   unit: 
-                    expr: '''cm'''
+                    value: cm
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht006217
@@ -25,9 +28,11 @@
         associated_participant: 
           populated_from: phv00283284
         associated_visit: 
-          expr: '''WHI LLS'''
+          value: WHI LLS
+          range: string
         observation_type: 
-          expr: '''OBA:1001085'''
+          value: OBA:1001085
+          range: string
         value_quantity:
           object_derivations:
           - class derivations:
@@ -37,4 +42,5 @@
                   value_decimal:
                     expr: {phv00283313} * 2.54
                   unit: 
-                    expr: '''cm'''
+                    value: cm
+                    range: string
