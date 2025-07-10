@@ -5,18 +5,13 @@
         associated_participant:
           populated_from: phv00078506	
         associated_visit:
-          expr: '''WHI FORM 30 - MEDICAL HISTORY QUESTIONNAIRE'''
-        condition_concept:
-          expr: '''OMOP:4336464''' #Coronary artery bypass graft
-        condition_status:
-          populated_from: phv00078535
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
-        relationship_to_participant:
-          expr: '''ONESELF'''
+          value: WHI FORM 30 - MEDICAL HISTORY QUESTIONNAIRE
+          range: string
+        procedure_concept:
+          expr: case((phv00078535 == 1, OMOP:4336464), None)
+        procedure_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
 - class_derivations:
     Procedure:
       populated_from: pht003407
@@ -24,18 +19,13 @@
         associated_participant:
           populated_from: phv00193141
         associated_visit:
-          expr: '''WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED'''
-        condition_concept:
-          expr: '''OMOP:4336464''' #Coronary artery bypass graft
-        condition_status:
-          populated_from: phv00193157
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
-        relationship_to_participant:
-          expr: '''ONESELF'''          
+          value: WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED
+          range: string
+        procedure_concept:
+          expr: case((phv00193157 == 1, OMOP:4336464), None)
+        procedure_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
 - class_derivations:
     Procedure:
       populated_from: pht006223
@@ -43,15 +33,10 @@
         associated_participant:
           populated_from: phv00283451
         associated_visit:
-          expr: '''WHI UNC HEART FAILURE DETAILS'''
-        condition_concept:
-          expr: '''OMOP:4336464''' #Coronary artery bypass graft
-        condition_status:
-          populated_from: phv00283623
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
-        relationship_to_participant:
-          expr: '''ONESELF'''           
+          value: WHI UNC HEART FAILURE DETAILS
+          range: string
+        procedure_concept:
+          expr: case((phv00283623 == 1, OMOP:4336464), None)
+        procedure_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
