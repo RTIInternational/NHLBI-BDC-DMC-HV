@@ -1,96 +1,25 @@
 - class_derivations:
     DrugExposure:
-      populated_from: pht000998
+      populated_from: pht006223
       slot_derivations:
         associated_participant:
-          populated_from:  phv00078435
+          populated_from: phv00283451
         associated_visit:
-          expr: '''WHI ELIGIBILITY'''
+          value: WHI UNC HEART FAILURE DETAILS
         drug_concept:
-          expr: case((phv00078436 == 1, '''RxCUI:C07A'''), None)
+          expr: case((phv00283677 == 1, RxCUI:C07A), None)
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
-      populated_from: pht000998
+      populated_from: pht006223
       slot_derivations:
         associated_participant:
-          populated_from:  phv00078435
+          populated_from: phv00283451
         associated_visit:
-          expr: '''WHI ELIGIBILITY'''
+          value: WHI UNC HEART FAILURE DETAILS
         drug_concept:
-          expr: case((phv00078437 == 1, '''RxCUI:C07A'''), None)
+          expr: case((phv00283678 == 1, RxCUI:C07A), None)
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
-- class_derivations:
-    DrugExposure:
-      populated_from: pht001019
-      slot_derivations:
-        associated_participant:
-          populated_from:  phv00079849
-        associated_visit:
-          expr: '''WHI PM 80'''
-        drug_concept:
-          expr: case((phv00079850 == 1, '''RxCUI:C07A'''), None)
-        expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
-- class_derivations:
-    DrugExposure:
-      populated_from: pht001019
-      slot_derivations:
-        associated_participant:
-          populated_from:  phv00079849
-        associated_visit:
-          expr: '''WHI PM 80'''
-        drug_concept:
-          expr: case((phv00079852 == 1, '''RxCUI:C07A'''), None)
-        expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
-- class_derivations:
-    DrugExposure:
-      populated_from: pht002754
-      slot_derivations:
-        associated_participant:
-          populated_from:  phv00169602
-        associated_visit:
-          expr: '''WWHI MAIN 44'''
-        drug_concept:
-          expr: case((phv00169603 == 1, '''RxCUI:C07A'''), None)
-        expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
-- class_derivations:
-    DrugExposure:
-      populated_from: pht002754
-      slot_derivations:
-        associated_participant:
-          populated_from:  phv00169602
-        associated_visit:
-          expr: '''WWHI MAIN 44'''
-        drug_concept:
-          expr: case((phv00169605 == 1, '''RxCUI:C07A'''), None)
-        expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
-- class_derivations:
-    DrugExposure:
-      populated_from: pht002754
-      slot_derivations:
-        associated_participant:
-          populated_from:  phv00169602
-        associated_visit:
-          expr: '''WWHI MAIN 44'''
-        drug_concept:
-          expr: case((phv00169608 == 1, '''RxCUI:C07A'''), None)
-        expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
-- class_derivations:
-    DrugExposure:
-      populated_from: pht002754
-      slot_derivations:
-        associated_participant:
-          populated_from:  phv00169602
-        associated_visit:
-          expr: '''WWHI MAIN 44'''
-        drug_concept:
-          expr: case((phv00169611 == 1, '''RxCUI:C07A'''), None)
-        expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          value: PATIENT SELF-REPORTED MEDICATION
+
