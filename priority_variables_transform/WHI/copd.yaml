@@ -5,18 +5,18 @@
         associated_participant:
           populated_from: phv00193628
         associated_visit:
-          expr: '''WHI EXTENSION STUDY 2 MRC'''
+          value: WHI EXTENSION STUDY 2 MRC
         condition_concept:
-          expr: '''OMOP:44788836''' #COPD MONDO:0005002?
+          value: MONDO:0005002 #COPD 
         condition_status:
           populated_from: phv00193631 #F33 COPD
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
 - class_derivations:
     Condition:
       populated_from: pht003413
@@ -24,15 +24,15 @@
         associated_participant:
           populated_from: phv00193628
         associated_visit:
-          expr: '''WHI EXTENSION STUDY 2 MRC'''
+          value: WHI EXTENSION STUDY 2 MRC
         condition_concept:
-          expr: '''OMOP:44788836''' #COPD MONDO:0005002?
+          value: MONDO:0005002 #COPD 
         condition_status:
           populated_from: phv00193632 #Days enrollment to F33 COPD
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
 - class_derivations:
     Condition:
       populated_from: pht003414
@@ -40,18 +40,18 @@
         associated_participant:
           populated_from: phv00193628
         associated_visit:
-          expr: '''WHI EXTENSION STUDY 2 SRC'''
+          value: WHI EXTENSION STUDY 2 SRC
         condition_concept:
-          expr: '''OMOP:44788836''' #COPD MONDO:0005002?
+          value: MONDO:0005002 #COPD 
         condition_status:
           populated_from: phv00193741 #F33 COPD
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
-          expr: '''ONESELF'''
+          value: ONESELF
 - class_derivations:
     Condition:
       populated_from: pht003414
@@ -59,15 +59,15 @@
         associated_participant:
           populated_from: phv00193628
         associated_visit:
-          expr: '''WHI EXTENSION STUDY 2 SRC'''
+          value: WHI EXTENSION STUDY 2 SRC
         condition_concept:
-          expr: '''OMOP:44788836''' #COPD MONDO:0005002?
+          value: MONDO:0005002 #COPD 
         condition_status:
           populated_from: phv00193742 #Days enrollment to F33 COPD
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
-          expr: '''ONESELF'''      
+          value: ONESELF      
 - class_derivations:
     Condition:
       populated_from: pht006223
@@ -75,15 +75,15 @@
         associated_participant:
           populated_from: phv00283510
         associated_visit:
-          expr: '''WHI UNC HEART FAILURE DETAILS'''
+          value: WHI UNC HEART FAILURE DETAILS
         condition_concept:
-          expr: '''OMOP:44788836''' #COPD MONDO:0005002?
+          value: MONDO:0005002 #COPD 
         condition_status:
           populated_from: phv00283510
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''HISTORICAL'''
+            '0': ABSENT
+            '1': HISTORICAL
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          value: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
-          expr: '''ONESELF'''        
+          value: ONESELF        
