@@ -5,9 +5,11 @@
     associated_participant:
       populated_from: phv00218989
       associated_visit:
-        expr: '''MESA_AncilMesaEpigenomicCBC'''
+        value: MESA_AncilMesaEpigenomicCBC
+        range: string
       observation_type:
-        expr: '''OMOP:37398674''' #mean corpuscular hemoglobin
+        value: OMOP:37398674 #mean corpuscular hemoglobin
+        range: string
       value_quantity:
         object_derivations:
         - class_derivations:
@@ -17,4 +19,5 @@
                 value_decimal:
                   populated_from: phv00218994
                 unit:
-                  expr: '''pg/{cell}''' #reported_units: pg
+                  value: pg/{cell} #reported_units: pg
+                  range: string
