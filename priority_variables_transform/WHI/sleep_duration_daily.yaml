@@ -5,19 +5,31 @@
         associated_participant: 
           populated_from: phv00077450
         associated_visit: 
-          expr: '''WHI YEAR 3'''
+          value: WHI YEAR 3
+          range: string
         observation_type: 
-          expr: '''OBA:2040171'''
+          value: OBA:2040171
+          range: string
         value_quantity:
           object_derivations:
           - class derivations:
               Quantity:
                 populated_from: pht000990
                 slot_derivations:
-                  value_decimal:
+                  value_category:
                     populated_from: phv00077490
+                    value_mappings:
+                      '1': < 4
+                      '2': 4-5
+                      '3': 6-7
+                      '4': 8-9
+                      '5': 10-11
+                      '6': 12-13
+                      '7': 14-15
+                      '8': > 16
                   unit: 
-                    expr: '''hrs'''
+                    value: h
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht000993
@@ -25,9 +37,11 @@
         associated_participant: 
           populated_from: phv00077907
         associated_visit: 
-          expr: '''WHI YEAR 6'''
+          value: WHI YEAR 6
+          range: string
         observation_type: 
-          expr: '''OBA:2040171'''
+          value: OBA:2040171
+          range: string
         value_quantity:
           object_derivations:
           - class derivations:
@@ -36,8 +50,18 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00077943
+                    value_mappings:
+                      '1': < 4
+                      '2': 4-5
+                      '3': 6-7
+                      '4': 8-9
+                      '5': 10-11
+                      '6': 12-13
+                      '7': 14-15
+                      '8': > 16                    
                   unit: 
-                    expr: '''hrs'''
+                    value: h
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht001005
@@ -45,19 +69,29 @@
         associated_participant: 
           populated_from: phv00078867
         associated_visit: 
-          expr: '''WHI TF 37'''
+          value: WHI TF 37
+          range: string
         observation_type: 
-          expr: '''OBA:2040171'''
+          value: OBA:2040171
+          range: string
         value_quantity:
           object_derivations:
           - class derivations:
               Quantity:
                 populated_from: pht001005
                 slot_derivations:
-                  value_decimal:
+                  value_category:
                     populated_from: phv00079041
+                    value_mappings:
+                      '1': < 5
+                      '2': 6
+                      '3': 7
+                      '4': 8
+                      '5': 9
+                      '6': > 10                    
                   unit: 
-                    expr: '''hrs'''
+                    value: h
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht001006
@@ -65,19 +99,29 @@
         associated_participant: 
           populated_from: phv00079085
         associated_visit: 
-          expr: '''WHI DL 38'''
+          value: WHI DL 38
+          range: string
         observation_type: 
-          expr: '''OBA:2040171'''
+          value: OBA:2040171
+          range: string
         value_quantity:
           object_derivations:
           - class derivations:
               Quantity:
                 populated_from: pht001006
                 slot_derivations:
-                  value_decimal:
+                  value_category:
                     populated_from: phv00079193
+                    value_mappings:
+                      '1': < 5
+                      '2': 6
+                      '3': 7
+                      '4': 8
+                      '5': 9
+                      '6': > 10                     
                   unit: 
-                    expr: '''hrs'''
+                    value: h
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht001010
@@ -85,9 +129,11 @@
         associated_participant: 
           populated_from: phv00079332
         associated_visit: 
-          expr: '''WHI OS 42'''
+          value: WHI OS 42
+          range: string
         observation_type: 
-          expr: '''OBA:2040171'''
+          value: OBA:2040171
+          range: string
         value_quantity:
           object_derivations:
           - class derivations:
@@ -96,8 +142,18 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00079391
+                    value_mappings:
+                      '1': < 4
+                      '2': 4-5
+                      '3': 6-7
+                      '4': 8-9
+                      '5': 10-11
+                      '6': 12-13
+                      '7': 14-15
+                      '8': > 16                      
                   unit: 
-                    expr: '''hrs'''
+                    value: h
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht006214
@@ -105,9 +161,11 @@
         associated_participant: 
           populated_from: phv00282977
         associated_visit: 
-          expr: '''WHI LQ 155'''
+          value: WHI LQ 155
+          range: string
         observation_type: 
-          expr: '''OBA:2040171'''
+          value: OBA:2040171
+          range: string
         value_quantity:
           object_derivations:
           - class derivations:
@@ -116,5 +174,15 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00283093
+                    value_mappings:
+                      '1': < 4
+                      '2': 4-5
+                      '3': 6-7
+                      '4': 8-9
+                      '5': 10-11
+                      '6': 12-13
+                      '7': 14-15
+                      '8': > 16                      
                   unit: 
-                    expr: '''hrs'''
+                    value: h
+                    range: string
