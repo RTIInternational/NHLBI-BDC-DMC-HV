@@ -5,9 +5,11 @@
         associated_participant: 
           populated_from: phv00283451
         associated_visit: 
-          expr: '''WHI UNC HEART FAILURE DETAILS'''
+          value: WHI UNC HEART FAILURE DETAILS
+          range: string
         observation_type: 
-          expr: '''OBA:VT0001776'''
+          value: OBA:VT0001776
+          range: string
         value_quantity:
           object_derivations:
           - class derivations:
@@ -17,4 +19,5 @@
                   value_decimal:
                     populated_from: phv00283658
                   unit: 
-                    expr: '''mmol/l'''
+                    value: mmol/l
+                    range: string
