@@ -5,9 +5,11 @@
         associated_participant: 
           populated_from: phv00079849
         associated_visit: 
-          expr: '''WHI PM 80'''
+          value: WHI PM 80
+          range: string
         observation_type: 
-          expr: '''OBA:2045455'''
+          value: OBA:2045455
+          range: string
         value_quantity:
           object_derivations:
           - class derivations:
@@ -17,7 +19,8 @@
                   value_decimal:
                     populated_from: phv00079867
                   unit: 
-                    expr: '''kg/m2'''
+                    value: kg/m2
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht006217
@@ -25,9 +28,11 @@
         associated_participant: 
           populated_from: phv00283284
         associated_visit: 
-          expr: '''WHI LLS'''
+          value: WHI LLS
+          range: string
         observation_type: 
-          expr: '''OBA:2045455'''
+          value: OBA:2045455
+          range: string
         value_quantity:
           object_derivations:
           - class derivations:
@@ -37,7 +42,8 @@
                   value_decimal:
                     populated_from: phv00283344
                   unit: 
-                    expr: '''kg/m2'''
+                    value: kg/m2
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht006217
@@ -45,16 +51,26 @@
         associated_participant: 
           populated_from: phv00283284
         associated_visit: 
-          expr: '''WHI LLS'''
+          value: WHI LLS
+          range: string
         observation_type: 
-          expr: '''OBA:2045455'''
+          value: OBA:2045455
+          range: string
         value_quantity:
           object_derivations:
           - class derivations:
               Quantity:
                 populated_from: pht006217
                 slot_derivations:
-                  value_decimal:
+                  value_category:
                     populated_from: phv00283345
+                    value_mappings:
+                      '1': < 18.5
+                      '2': 18.5 - 24.9
+                      '3': 25.0 - 29.9
+                      '4': 30.0 - 34.9
+                      '5': 35.0 - 39.9
+                      '6': >= 40
                   unit: 
-                    expr: '''kg/m2'''
+                    value: kg/m2
+                    range: string
