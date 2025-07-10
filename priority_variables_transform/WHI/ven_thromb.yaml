@@ -7,12 +7,9 @@
         associated_visit:
           expr: '''WHI ELIGIBILITY'''
         condition_concept:
-          expr: '''MONDO:0005399''' #venous thromboembolism
+          expr: '''HP:0002625''' #DVT
         condition_status:
-          populated_from: phv00078472
-          value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
+          expr: case((phv00078472 == 0, ABSENT), case(phv00078473 == 0, HISTORICAL), PRESENT)
         condition_provenance:
           expr: '''PATIENT_SELF-REPORTED_CONDITION'''
         relationship_to_participant:
@@ -26,35 +23,14 @@
         associated_visit:
           expr: '''WHI ELIGIBILITY'''
         condition_concept:
-          expr: '''MONDO:0005399''' #venous thromboembolism
+          expr: '''MONDO:0005279''' #PE
         condition_status:
-          populated_from: phv00078473
-          value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
+          expr: case((phv00078475 == 0, ABSENT), case(phv00078476 == 0, HISTORICAL), PRESENT)
         condition_provenance:
           expr: '''PATIENT_SELF-REPORTED_CONDITION'''
         relationship_to_participant:
           expr: '''ONESELF'''
-- class_derivations:
-    Condition:
-      populated_from: pht000998
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00078435
-        associated_visit:
-          expr: '''WHI ELIGIBILITY'''
-        condition_concept:
-          expr: '''MONDO:0005399''' #venous thromboembolism
-        condition_status:
-          populated_from: phv00078474
-          value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
-        condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
-        relationship_to_participant:
-          expr: '''ONESELF'''
+
 - class_derivations:
     Condition:
       populated_from: pht000998
