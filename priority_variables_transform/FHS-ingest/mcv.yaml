@@ -1,0 +1,71 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000031
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00008379
+        associated_visit:
+          value: FHS OFFSPRING EXAM 2
+          range: string
+        observation_type:
+          value: OBA:0003460
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000031
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00008112
+                  unit:
+                    value: fL
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002889
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00172159
+        associated_visit:
+          value: FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2
+          range: string
+        observation_type:
+          value: OBA:0003460
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002889
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00172182
+                  unit:
+                    value: fL
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001045
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00172159
+        associated_visit:
+          populated_from: phv00081047
+          value_mappings:
+            '20': FHS ORIGINAL EXAM 20
+            '21': FHS ORIGINAL EXAM 21
+        observation_type:
+          value: OBA:0003460
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001045
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00081033
+                  unit:
+                    value: fL
+                    range: string

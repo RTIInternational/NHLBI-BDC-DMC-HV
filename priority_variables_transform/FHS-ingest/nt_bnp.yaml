@@ -1,0 +1,70 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000823
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00073729
+        associated_visit:
+          value: FHS GENERATION 3 EXAM 1
+          range: string
+        observation_type:
+          value: OBA:2045303
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000823
+                slot_derivations:
+                  value_decimal:
+                    expr: case(({phv00073727} > 4, {phv00073727}), (True, "'LLOD'"))
+                  unit:
+                    value: pg/mL
+                    range: string
+        range_low:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000823
+                slot_derivations:
+                  value_decimal:
+                    value: '5'
+                    range: string
+                  unit:
+                    value: pg/mL
+                    range: string
+        range_high:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000823
+                slot_derivations:
+                  value_decimal:
+                    value: '35000'
+                    range: string
+                  unit:
+                    value: pg/mL
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht006013
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00275427
+        associated_visit:
+          value: FHS OFFSPRING EXAM 5
+          range: string
+        observation_type:
+          value: OBA:2045303
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht006013
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00423136
+                  unit:
+                    value: pg/mL
+                    range: string
