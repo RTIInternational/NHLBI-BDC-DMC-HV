@@ -8,8 +8,7 @@
           value: WHI CORE
           range: string
         observation_type: 
-          value: OBA:VT0000180
-          range: string
+          expr: case((phv00077373 >= 12, OMOP:44791053), OBA:VT0000180)        
         value_quantity:
           object_derivations:
           - class derivations:
@@ -21,3 +20,5 @@
                   unit: 
                     value: mg/dl
                     range: string
+        method_type:
+          expr: case((phv00077373 >= 12, '''Fasted minimum 12 hours'''), None)  
