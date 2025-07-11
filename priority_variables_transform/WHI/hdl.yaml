@@ -8,8 +8,7 @@
           value: WHI CORE
           range: string
         observation_type: 
-          value: OBA:VT0000184
-          range: string
+          expr: case((phv00077373 >= 12, OMOP:4041720), OBA:VT0000184)
         value_quantity:
           object_derivations:
           - class derivations:
@@ -21,6 +20,8 @@
                   unit: 
                     value: mg/dl
                     range: string
+        method_type:
+          expr: case((phv00077373 >= 12, '''Fasted minimum 12 hours'''), None)                     
 - class_derivations:
     MeasurementObservation:
       populated from: pht000987
@@ -31,8 +32,7 @@
           value: WHI CORE
           range: string
         observation_type: 
-          value: OBA:VT0000184
-          range: string
+          expr: case((phv00077373 >= 12, OMOP:4041720), OBA:VT0000184)
         value_quantity:
           object_derivations:
           - class derivations:
@@ -44,6 +44,8 @@
                   unit: 
                     value: mg/dl
                     range: string
+        method_type:
+          expr: case((phv00077373 >= 12, '''Fasted minimum 12 hours'''), None)                      
 - class_derivations:
     MeasurementObservation:
       populated from: pht000987
@@ -54,8 +56,7 @@
           value: WHI CORE
           range: string
         observation_type: 
-          value: OBA:VT0000184
-          range: string
+          expr: case((phv00077373 >= 12, OMOP:4041720), OBA:VT0000184)
         value_quantity:
           object_derivations:
           - class derivations:
@@ -67,3 +68,5 @@
                   unit: 
                     value: mg/dl
                     range: string
+        method_type:
+          expr: case((phv00077373 >= 12, '''Fasted minimum 12 hours'''), None)  
