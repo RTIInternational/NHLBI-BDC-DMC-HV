@@ -18,6 +18,9 @@
                     populated_from: phv00100864
                   unit:
                     expr: '''mm'''
+        method_type: 
+          value: Mean of the mean far wall intima media t (var=CCA_FWME)
+          range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001468
@@ -37,7 +40,10 @@
                   value_decimal:
                     populated_from: phv00100865
                   unit:
-                    expr: '''mm'''                    
+                    expr: '''mm'''     
+        method_type:
+          value: Mean of the mean far wall intima-media t
+          range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001473
@@ -56,6 +62,54 @@
                 slot_derivations:
                   value_decimal:
                     expr: ({phv00101265} + {phv00101277}) / 2
-                    populated_from: phv00100865
                   unit:
-                    expr: '''mm'''                     
+                    expr: '''mm'''         
+        method_type:
+          value: mean of YEAR 5 FAR WALL MAX, R. COMMON and YEAR 5 FAR WALL MAX, L. COMMON
+          range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001473
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00101233
+        associated_visit:
+          expr: '''CHS YEAR 5'''
+        observation_type:
+          expr: '''OMOP:4138462''' #carotid imt
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001473
+                slot_derivations:
+                  value_decimal:
+                    expr: ({phv00101238} + {phv00101239} + {phv00101250} + {phv00101251}) / 4
+                  unit:
+                    expr: '''mm'''         
+        method_type:
+          value: mean of four measurements: BL REREAD NEAR WALL MAX, R. COMMON and BL REREAD FAR WALL MAX, R. COMMON and BL REREAD NEAR WALL MAX, L. COMMON and BL REREAD FAR WALL MAX, L. COMMON
+          range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001473
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00101233
+        associated_visit:
+          expr: '''CHS YEAR 5'''
+        observation_type:
+          expr: '''OMOP:4138462''' #carotid imt
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001473
+                slot_derivations:
+                  value_decimal:
+                    expr: ({phv00101265} + {phv00101277} + {phv00101264} + {phv00101276}) / 4
+                  unit:
+                    expr: '''mm'''         
+        method_type:
+          value: mean of four measurements: YEAR 5 NEAR WALL MAX, R. COMMON and YEAR 5 FAR WALL MAX, R. COMMON and YEAR 5 NEAR WALL MAX, L. COMMON and YEAR 5 FAR WALL MAX, L. COMMON
+          range: string          
