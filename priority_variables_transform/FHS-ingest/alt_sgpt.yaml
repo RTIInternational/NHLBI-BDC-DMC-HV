@@ -40,8 +40,8 @@
                 populated_from: pht002889
                 slot_derivations:
                   value_decimal:
-                    expr: case(({phv00172166} > 5.0, {phv00172166}),({phv00172202}
-                      == 1, "'LOD'"))
+                    expr: case(({phv00172166} > 5.0, {phv00172166}), case(({phv00172202}
+                      == 1, "'LLOD'"), {phv00172166})
                   unit:
                     value: '[IU]/L'
                     range: string
@@ -76,8 +76,8 @@
                 populated_from: pht004802
                 slot_derivations:
                   value_decimal:
-                    expr: case(({phv00227050} > 5.0, {phv00227050}),({phv00227066}
-                      == 1, "'LOD'"))
+                    expr: case(({phv00227050} > 5.0, {phv00227050}), case(({phv00227066}
+                      == 1, "'LLOD'"), {phv00227050})
                   unit:
                     value: '[IU]/L'
                     range: string
