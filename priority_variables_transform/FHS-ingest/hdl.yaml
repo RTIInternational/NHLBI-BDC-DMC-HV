@@ -1586,3 +1586,53 @@
                   unit:
                     value: mg/dL
                     range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000013
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00001803
+        associated_visit:
+          value: FHS ORIGINAL EXAM 11
+          range: string
+        observation_type:
+          expr: case(({phv00001585 == 1, OMOP:4041557), ({phv00001585 == 2, OMOP:4041720), OBA:VT0000184)
+        method_type:
+          value: fasted for minimum 12 hrs
+          range: string          
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000013
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00001582
+                  unit:
+                    value: mg/dL
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000013
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00001803
+        associated_visit:
+          value: FHS ORIGINAL EXAM 11
+          range: string
+        observation_type:
+          expr: case(({phv00001592 == 1, OMOP:4041557), ({phv00001592 == 2, OMOP:4041720), OBA:VT0000184)
+        method_type:
+          value: fasted for minimum 12 hrs
+          range: string          
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000013
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00001589
+                  unit:
+                    value: mg/dL
+                    range: string                    
