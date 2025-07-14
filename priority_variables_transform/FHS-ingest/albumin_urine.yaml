@@ -23,6 +23,139 @@
                     range: string
 - class_derivations:
     MeasurementObservation:
+      populated_from: pht000016
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00002425
+        associated_visit:
+          value: FHS ORIGINAL EXAM 14
+          range: string
+        observation_type:
+          value: OBA:VT0002871
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000016
+                slot_derivations:
+                  value_category:
+                    populated_from: phv00002422
+                    value_mappings:
+                      'NEGATIVE' : 0
+                      '10': 100
+                      '30': 300
+                      '100': 1000
+                      '300': 3000
+                      '20': 200
+                      '5': 50
+                      '200': 2000
+                      '40': 400
+                  unit:
+                    value: mg/L
+                    range: string
+        method_type: dipstick
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000031
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00008379
+        associated_visit:
+          value: FHS OFFSPRING EXAM 2
+          range: string
+        observation_type:
+          value: OBA:VT0002871
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000031
+                slot_derivations:
+                  value_category:
+                    populated_from: phv00007968
+                    value_mappings:
+                      '10': 100
+                      '0' : 0
+                      '1' : 10
+                      '3': 30
+                      '3000': 30000
+                      '2000': 20000
+                      '1000': 10000
+                      '3003': 30030
+                      '9000': 90000
+                      '1003': 10030
+                  unit:
+                    value: mg/L
+                    range: string
+        method_type: dipstick
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000032
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00008743
+        associated_visit:
+          value: FHS OFFSPRING EXAM 3
+          range: string
+        observation_type:
+          value: OBA:VT0002871
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000032
+                slot_derivations:
+                  value_category:
+                    populated_from: phv00008722
+                    value_mappings:
+                      'TRACE': 100
+                      'NEG' : 0
+                      'SM': 300
+                      'MOD': 1000
+                      '300-2000 LG': > 3000
+                  unit:
+                    value: mg/L
+                    range: string
+        method_type: dipstick           
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000017
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00002668
+        associated_visit:
+          value: FHS ORIGINAL EXAM 15
+          range: string
+        observation_type:
+          value: OBA:VT0002871
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000017
+                slot_derivations:
+                  value_category:
+                    populated_from: phv00002662
+                    value_mappings:
+                      'NEGATIVE' : 0
+                      '10': 100
+                      '30': 300
+                      '100': 1000
+                      '300': 3000
+                      '20': 200
+                      '5': 50
+                      '200': 2000
+                      '40': 400
+                  unit:
+                    value: mg/L
+                    range: string
+        method_type: dipstick
+- class_derivations:
+    MeasurementObservation:
       populated_from: pht002889
       slot_derivations:
         associated_participant:
