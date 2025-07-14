@@ -1560,3 +1560,29 @@
                   unit:
                     value: mg/dL
                     range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000031
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00008379
+        associated_visit:
+          value: FHS OFFSPRING EXAM 2
+          range: string
+        observation_type:
+          value: OMOP:4041720
+          range: string
+        method_type:
+          value: fasted for minimum 12 hrs - electrophoresis
+          range: string          
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000031
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00007973
+                  unit:
+                    value: mg/dL
+                    range: string
