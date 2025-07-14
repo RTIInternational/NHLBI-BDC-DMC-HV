@@ -40,10 +40,10 @@
                 populated_from: pht002889
                 slot_derivations:
                   value_concept:
-                    expr: case(({phv00172161} > 3.0, {phv00172161}),({phv00227069}
-                      == 1, "'LOD'"))
+                    expr: case(({phv00172161} > 3.0, {phv00172161}), case(({phv00227069}
+                      == 1, "'LLOD'"), {phv00172161})
                   unit:
-                    value: mg/g
+                    value: mg/L
                     range: string
         range_low:
           object_derivations:
@@ -122,10 +122,10 @@
                 populated_from: pht004363
                 slot_derivations:
                   value_concept:
-                    expr: case(({phv00219547} > 3.0, {phv00219547}),({phv00219549}
-                      == 1, "'LOD'"))
+                    expr: case(({phv00219547} > 3.0, {phv00219547}), case(({phv00219549}
+                      == 1, "'LLOD'"), {phv00219547})
                   unit:
-                    value: mg/g
+                    value: mg/L
                     range: string
         range_low:
           object_derivations:
