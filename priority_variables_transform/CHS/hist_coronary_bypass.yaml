@@ -7,7 +7,7 @@
         associated_visit:
           expr: '''CHS BASELINE 2'''
         procedure_concept:
-          expr: case((phv00099031 == 1, '''OMOP:4336464'''), None)
+          expr: case((phv00099031 == 1, '''OMOP:4336464'''))
         procedure_provenance:
           expr: '''PATIENT_SELF-REPORTED_CONDITION'''
 - class_derivations:
@@ -19,7 +19,7 @@
         associated_visit:
           expr: '''CHS BASELINE BOTH'''
         procedure_concept:
-          expr: case((phv00100322 == 1, '''OMOP:4336464'''), None)
+          expr: case((phv00100322 == 1, '''OMOP:4336464'''))
         procedure_provenance:
           expr: '''PATIENT_SELF-REPORTED_CONDITION'''
 - class_derivations:
@@ -31,7 +31,7 @@
         associated_visit:
           expr: '''CHS SUMMARY'''
         procedure_concept:
-          expr: case((phv00100785 == 1, '''OMOP:4336464'''), None)
+          expr: case((phv00100785 == 1, '''OMOP:4336464'''))
         procedure_provenance:
           expr: '''PATIENT_SELF-REPORTED_CONDITION'''
 - class_derivations:
@@ -43,6 +43,6 @@
         associated_visit:
           expr: '''CHS SUMMARY'''
         procedure_concept:
-          expr: case((phv00105974 == 1, '''OMOP:4336464'''), None)
+          expr: case((phv00105974 == 1, '''OMOP:4336464'''))
         procedure_provenance:
           expr: '''PATIENT_SELF-REPORTED_CONDITION'''
