@@ -8,9 +8,9 @@
           value: CHS BASELINE 2
           range: string
         observation_type:
-          expr: case(({phv00099923} >= 12, '''"OMOP:4041720"'''), '''OBA:VT0000184''')
+          expr: case(({phv00099923} >= 12, '''"OMOP:4041720"'''), (True, '''OBA:VT0000184'''))
         method_type:
-          expr: case(({phv00099923} >= 12, '''Fasted minimum 12 hours'''), None)
+          expr: case(({phv00099923} >= 12, '''Fasted minimum 12 hours'''))
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001452

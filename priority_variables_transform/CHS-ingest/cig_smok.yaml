@@ -234,8 +234,8 @@
           value: OMOP:4282779
           range: string
         value_enum:
-          expr: case(({phv00197474} == 0, ""OMOP:45883537""), ({phv00197478} == 0,
-            ""OMOP:45883458""), (True, ""OMOP:40766945"")
+          expr: case(({phv00197474} == 0, "OMOP:45883537"), ({phv00197478} == 0, "OMOP:45883458"),
+            (True, "OMOP:40766945"))
 - class_derivations:
     Observation:
       populated_from: pht003700
