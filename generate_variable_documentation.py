@@ -31,11 +31,34 @@ def main():
     by_element = df.groupby('BDCHM element')
 
     with open(f'{root_dir()}/VARIABLE_DOCUMENTATION.md', 'w') as f:
+        f.write("# BDCHM Variable Documentation\n\n")
+        
         for grp, grp_df in by_element:
-            md = pd.DataFrame.to_markdown(grp_df, index=False)
-            f.write(f"# {grp}\n")
-            f.write(md)
-            f.write('\n')
+            f.write(f"## {grp}\n\n")
+            
+            for _, row in grp_df.iterrows():
+                f.write(f"### {row['variable label']}\n\n")
+                f.write(f"**Machine-readable name:** `{row['machine-readable label']}`\n\n")
+                
+                if row['Text definition']:
+                    f.write(f"{row['Text definition']}\n\n")
+                
+                f.write("**Properties:**\n")
+                f.write(f"- **Datatype:** {row['datatype']}\n")
+                if row['unit']:
+                    f.write(f"- **Unit:** {row['unit']}\n")
+                if row['UCUM unit']:
+                    f.write(f"- **UCUM Unit:** {row['UCUM unit']}\n")
+                
+                f.write("\n**Ontology References:**\n")
+                if row['OMOP concept id as CURIE'] and not row['OMOP concept id as CURIE'].endswith('nan'):
+                    f.write(f"- **OMOP:** {row['OMOP concept id as CURIE']}\n")
+                if row['OBA CURIE']:
+                    f.write(f"- **OBA:** {row['OBA CURIE']}\n")
+                if row['OMOP UCUM id as CURIE']:
+                    f.write(f"- **OMOP UCUM:** {row['OMOP UCUM id as CURIE']}\n")
+                
+                f.write("\n---\n\n")
 
     pass
 

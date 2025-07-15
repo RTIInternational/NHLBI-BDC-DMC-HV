@@ -1,124 +1,2017 @@
-# Demography
-| BDCHM element   | variable label   | machine-readable label   | datatype      | unit   | OMOP concept id as CURIE   | OMOP UCUM id as CURIE   | OBA CURIE   | UCUM unit   | Text definition                                                                                                  |
-|:----------------|:-----------------|:-------------------------|:--------------|:-------|:---------------------------|:------------------------|:------------|:------------|:-----------------------------------------------------------------------------------------------------------------|
-| Demography      | Ethnicity        | ethnicity                | EthnicityEnum | NONE   | OMOP:44803968              |                         |             |             | A person's cultural heritage or ancestry                                                                         |
-| Demography      | Race             | race                     | RaceEnum      | NONE   | OMOP:4013886               |                         |             |             | Self-reported category reflecting an individual's identity and social understanding of race in the United States |
-| Demography      | Sex              | sex                      | SexEnum       | NONE   | OMOP:3046965               |                         |             |             | Self-reported category reflecting an individual's biological sex and/or gender identity                          |
-# MeasurementObservation
-| BDCHM element          | variable label                            | machine-readable label   | datatype   | unit                        | OMOP concept id as CURIE   | OMOP UCUM id as CURIE   | OBA CURIE                  | UCUM unit        | Text definition                                                                                                                                                                                                                                                                                                              |
-|:-----------------------|:------------------------------------------|:-------------------------|:-----------|:----------------------------|:---------------------------|:------------------------|:---------------------------|:-----------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| MeasurementObservation | 8-epi-PGF2a in urine                      | isoprostane_8_epi_pgf2a  | decimal    | pg/mL                       | OMOP:3011888               | OMOP:9017               | REQUESTED                  | pg/mL            | Concentration of urinary 8-epi-prostaglandin F2 alpha                                                                                                                                                                                                                                                                        |
-| MeasurementObservation | Activity LP-PLA2 in blood                 | lppla2_act               | decimal    | nmol/min/mL                 | OMOP:36305170              | OMOP:44777635           | REQUESTED                  | nmol/min/mL      | Measurement of the activity of the Lp-PLA2 (lipoprotein-associated phospholipase A2) enzyme in serum or plasma.                                                                                                                                                                                                              |
-| MeasurementObservation | AHI Apnea-Hypopnea Index                  | apnea_hypop_index        | decimal    | events/hr                   | OMOP:37396400              |                         | REQUESTED                  | /h               | Measurement used to diagnose and assess the severity of sleep apnea. It is calculated by counting the number of apneas and hypopneas that occur per hour of sleep.                                                                                                                                                           |
-| MeasurementObservation | Albumin creatinine ratio in urine         | albumin_creatinine       | decimal    | mg/g                        | OMOP:4154347               | OMOP:9511               | REQUESTED                  | mg/g{creat}      | Measurement of the ratio of albumin to creatinine in urine. Also known as uACR.                                                                                                                                                                                                                                              |
-| MeasurementObservation | Albumin in blood                          | albumin_bld              | decimal    | g/dL                        | OMOP:2212186               | OMOP:8713               | OBA:2050068                | g/dL             | Measurement of albumin in blood serum                                                                                                                                                                                                                                                                                        |
-| MeasurementObservation | Alcohol                                   | alcohol_servings         | integer    | servings per week           | OMOP:35609491              |                         | REQUESTED                  | {#}/wk           | Servings of alcohol consumed per week                                                                                                                                                                                                                                                                                        |
-| MeasurementObservation | ALT SGPT                                  | alt_sgpt                 | decimal    | IU/L                        | OMOP:4146380               | OMOP:8923               | OBA:2050062                | [IU]/L           | Concentration of ALT/SGPT in the blood. ALT, or alanine transaminase, is the same as SGPT, which stands for serum glutamic-pyruvic transaminase. Typically measured in serum or plasma.                                                                                                                                      |
-| MeasurementObservation | AST SGOT                                  | ast_sgot                 | decimal    | IU/L                        | OMOP:4263457               | OMOP:8923               | REQUESTED                  | [IU]/L           | Concentration of AST/SGOT in blood. AST (aspartate aminotransferase), also known as SGOT (Serum Glutamic Oxaloacetic Transaminase), is typically measured in serum or plasma.                                                                                                                                                |
-| MeasurementObservation | basophils count                           | basophil_ncnc_bld        | decimal    | x10E3/uL                    | OMOP:3006315               | OMOP:8848               | OBA:VT0002607              | 10*3/uL          | Concentration of basophil cells in whole blood                                                                                                                                                                                                                                                                               |
-| MeasurementObservation | Bilirubin Conjugated Direct               | bilirubin_con            | decimal    | mg/dL                       | OMOP:44805650              | OMOP:8840               | REQUESTED                  | mg/dL            | Concentration of conjugated (or direct) bilirubin in blood, typically measured in serum or plasma                                                                                                                                                                                                                            |
-| MeasurementObservation | Bilirubin total                           | bilirubin_tot            | decimal    | mg/dL                       | OMOP:4230543               | OMOP:8840               | REQUESTED                  | mg/dL            | Concentration of total bilirubin in blood, typically measured in serum or plasma                                                                                                                                                                                                                                             |
-| MeasurementObservation | Bilirubin Unconjugated Indirect           | bilirubin_uncon          | decimal    | mg/dL                       | OMOP:4018181               | OMOP:8840               | OBA:VT0001569              | mg/dL            | Concentration of unconjugated (or indirect) bilirubin in blood, typically measured in serum or plasma                                                                                                                                                                                                                        |
-| MeasurementObservation | BMI                                       | bmi                      | decimal    | kg/m2                       | OMOP:3038553               | OMOP:9531               | OBA:2045455                | kg/m2            | Also known as body mass index: ratio of a person's weight in kilos to the square of their height in meters                                                                                                                                                                                                                   |
-| MeasurementObservation | BNP                                       | bnp                      | decimal    | pg/mL                       | OMOP:4307029               | OMOP:8845               | OBA:2045303                | pg/mL            | Concentration of BNP in blood, typically measured in plasma or whole blood. Also known as B-type natriuretic peptide, a hormone.                                                                                                                                                                                             |
-| MeasurementObservation | Body weight                               | bdy_wgt                  | decimal    | kg                          | OMOP:4099154               | OMOP:9529               | OBA:VT0001259              | kg               | Mass of a person                                                                                                                                                                                                                                                                                                             |
-| MeasurementObservation | BUN                                       | bun                      | decimal    | mg/dL                       | OMOP:4017361               | OMOP:8840               | OBA:VT0005265              | mg/dL            | Concentration of blood urea nitrogen in blood, typically measured in serum or plasma                                                                                                                                                                                                                                         |
-| MeasurementObservation | BUN Creatinine ratio                      | bun_creatinine           | decimal    | ratio                       | OMOP:4112223               | OMOP:8523               | REQUESTED                  | {ratio}          | Ratio of blood urea nitrogen (BUN) to creatinine in blood, typically measured in serum or plasma                                                                                                                                                                                                                             |
-| MeasurementObservation | c-reactive protein CRP                    | crp                      | decimal    | mg/L                        | OMOP:4208414               | OMOP:8751               | REQUESTED                  | mg/L             | Concentration of c-reactive protein (CRP) in blood, typically measured in serum or plasma                                                                                                                                                                                                                                    |
-| MeasurementObservation | CAC Score                                 | cac_score                | decimal    | Agatston unit               | OMOP:42872742              |                         | REQUESTED                  | {score}          | The Coronary Artery Calcium Score is a measure of the amount of calcium in the arteries of the heart. Measured from a CT Scan.                                                                                                                                                                                               |
-| MeasurementObservation | CAC volume                                | cac_volume               | decimal    | Hounsfield units (HU)       | OMOP:4166120               | OMOP:9322               | REQUESTED                  |                  | Volume of coronarty artery calcium in the arteries of the heart. Measured by CT Scan.                                                                                                                                                                                                                                        |
-| MeasurementObservation | Carotid IMT                               | carotid_imt              | decimal    | mm                          | OMOP:4138462               | OMOP:8588               | OBA_2050108 or OBA_2050107 | mm               | Carotid intima-media thickness (IMT) measures the thickness of the inner two layers (intima and media layers) of the carotid artery walls - there are many ways to take this measurement                                                                                                                                     |
-| MeasurementObservation | Carotid stenosis right                    | carotid_sten_right       |            |                             | OMOP:43021859              |                         |                            | %                |                                                                                                                                                                                                                                                                                                                              |
-| MeasurementObservation | Carotid stenosis left                     | carotid_sten_left        |            |                             | OMOP:43020498              |                         |                            | %                |                                                                                                                                                                                                                                                                                                                              |
-| MeasurementObservation | CD40 in blood                             | cd40                     | decimal    | pg/mL                       | OMOP:4209737               | OMOP:8845               | OBA:2052305                | pg/mL            | Concentration of CD40 (Cluster of differentiation antigen 40) in blood, typically measured in serum or plasma                                                                                                                                                                                                                |
-| MeasurementObservation | Chloride in blood                         | chloride_bld             | decimal    | mmol/L                      | OMOP:4188066               | OMOP:8753               | OBA:VT0003018              | mmol/L           | Concentration of chloride in blood, also known as serum chloride                                                                                                                                                                                                                                                             |
-| MeasurementObservation | Creatinine in blood                       | creat_bld                | decimal    | mg/dL                       | OMOP:2212294               | OMOP:8840               | OBA:2050096                | mg/dL            | Concentration of creatinine in blood, typically measured in serum or plasma                                                                                                                                                                                                                                                  |
-| MeasurementObservation | Creatinine in urine                       | creat_urin               | decimal    | mg/dL                       | OMOP:3007081               | OMOP:8840               | OBA:VT0010540              | mg/dL            | Concentration of creatinine in urine                                                                                                                                                                                                                                                                                         |
-| MeasurementObservation | Cystatin C in blood                       | cysc_bld                 | decimal    | mg/dL                       | OMOP:4136584               | OMOP:8840               | OBA:2052375                | mg/dL            | Concentration of cystatin C in blood, typically measured in serum or plasma                                                                                                                                                                                                                                                  |
-| MeasurementObservation | D-Dimer                                   | d_dimer                  | decimal    | mg/L FEU                    | OMOP:37393605              | OMOP:8751               | REQUESTED                  | mg/L             | Concentration of D-dimer in blood, can be measured in whole blood or plasma                                                                                                                                                                                                                                                  |
-| MeasurementObservation | Diastolic blood pressure                  | bp_diastolic             | decimal    | mmHg                        | OMOP:4154790               | OMOP:8876               | REQUESTED                  | mm[Hg]           | Measurement of pressure in your arteries when your heart is at rest between beats, the bottom number in a blood pressure reading                                                                                                                                                                                             |
-| MeasurementObservation | E-selectin in blood                       | eselectin                | decimal    | ng/ML                       | OMOP:3010372               | OMOP:8842               | OBA:2052778                | ng/mL            | Concentration of E-selectin in blood, typically measured in serum or plasma                                                                                                                                                                                                                                                  |
-| MeasurementObservation | EGFR                                      | egfr                     | decimal    | mL/min/1.73m2               | OMOP:37208635              | OMOP:720870             | REQUESTED                  | mL/min/{1.73_m2} | Stands for estimated glomerular filtration rate - calculated from creatinine concentration, age, sex, and body size.                                                                                                                                                                                                         |
-| MeasurementObservation | Eosinophils count                         | eosinophil_ncnc_bld      | decimal    | x10E3/uL                    | OMOP:3013115               | OMOP:8848               | OBA:VT0002602              | 10*3/uL          | Concentration of eosinophil cells in whole blood                                                                                                                                                                                                                                                                             |
-| MeasurementObservation | Erythrocyte Sed Rate                      | ery_sed_rate             | decimal    | mm/hr                       | OMOP:4212065               | OMOP:8752               | OBA:2045235                | mm/h             | Measurement of how quickly red blood cells (erythrocytes) settle to the bottom of a test tube in one hour. Also known as ESR                                                                                                                                                                                                 |
-| MeasurementObservation | Factor VII                                | factor_7                 | decimal    | % of normal                 | OMOP:4217630               | OMOP:8859               | OBA:2041535                | %{Normal}        | Concentration of Factor VII in blood, typically measured in plasma. Also known as FVII and proconvertin                                                                                                                                                                                                                      |
-| MeasurementObservation | Fasting blood glucose                     | fast_gluc_bld            | decimal    | mg/dL                       | OMOP:4156660               | OMOP:8840               | REQUESTED                  | mg/dL            | Concentration of glucose in blood after not eating or drinking (except water) for a set period, typically 8-12 hours                                                                                                                                                                                                         |
-| MeasurementObservation | Ferritin                                  | ferritin                 | decimal    | ng/mL                       | OMOP:4176561               | OMOP:8842               | OBA:VT0010513              | ng/mL            | Concentration of ferritin in blood, typically measured in serum or plasma                                                                                                                                                                                                                                                    |
-| MeasurementObservation | FEV1 - Forced Expiratory Volume in 1 sec  | fev1                     | decimal    | L                           | OMOP:4241837               | OMOP:8519               | REQUESTED                  | L                | Volume of air a person can exhale forcefully in one second, measured before the administration of bronchodilator medication                                                                                                                                                                                                  |
-| MeasurementObservation | FEV1 FVC                                  | fev1_fvc                 | decimal    | ratio                       | OMOP:3011505               | OMOP:8523               | REQUESTED                  | {ratio}          | Ratio of the volume of air a person can exhale forcefully in one second (FEV1) to the total volume of air a person can exhale from their lungs after taking the deepest possible breath and then exhaling as forcefully and as completely as possible (FVC), measured before the administration of bronchodilator medication |
-| MeasurementObservation | Fibrinogen                                | fibrin                   | decimal    | mg/dL                       | OMOP:4094436               | OMOP:8845               | OBA:0000061                | mg/dL            | Concentration of fibrinogen in blood, typically measured in plasma                                                                                                                                                                                                                                                           |
-| MeasurementObservation | Fruits                                    | fruit_serving            | integer    | servings per week           | OMOP:21493059              |                         | REQUESTED                  | {#}/wk           | Servings of fruits consumed per week (includes fruit and fruit juice)                                                                                                                                                                                                                                                        |
-| MeasurementObservation | FVC - Forced Vital Capacity               | fvc                      | decimal    | L                           | OMOP:4176265               | OMOP:8519               | REQUESTED                  | L                | Total volume of air a person can exhale from their lungs after taking the deepest possible breath and then exhaling as forcefully and as completely as possible, measured before the administration of bronchodilator medication                                                                                             |
-| MeasurementObservation | GFR                                       | gfr                      | decimal    | mL/min/1.73 m2              | OMOP:4213477               | OMOP:720870             | OBA:0003747                | mL/min/{1.73_m2} | Stands for glomerular filtration rate: a measure of how much blood passes through the glomeruli                                                                                                                                                                                                                              |
-| MeasurementObservation | Glucose in blood                          | glucose_bld              | decimal    | mg/dL                       | OMOP:4149519               | OMOP:8840               | OBA:VT0000188              | mg/dL            | Concentration of glucose in blood, can be measured in whole blood, serum, or plasma                                                                                                                                                                                                                                          |
-| MeasurementObservation | HDL                                       | hdl                      | decimal    | mg/dL                       | OMOP:4076704               | OMOP:8840               | OBA:VT0000184              | mg/dL            | Concentration of high-density lipoprotein (HDL) in blood, typically measured in serum                                                                                                                                                                                                                                        |
-| MeasurementObservation | Heart rate                                | hrtrt                    | integer    | bpm                         | OMOP:3027018               |                         | OBA:1001087                | {beats}/min      | Number of times a heart beats per minute - also known as pulse rate                                                                                                                                                                                                                                                          |
-| MeasurementObservation | Height                                    | bdy_hgt                  | decimal    | cm                          | OMOP:607590                | OMOP:8582               | OBA:VT0001253              | cm               | Measure of the vertical distance of a standing person from head to foot                                                                                                                                                                                                                                                      |
-| MeasurementObservation | Hematocrit                                | hemat                    | decimal    | percent                     | OMOP:4151358               |                         | OBA:2045381                | %                | The percentage of whole blood volume that consists of red blood cells - also known as packed cell volume (PCV)                                                                                                                                                                                                               |
-| MeasurementObservation | Hemoglobin                                | hemo                     | decimal    | g/dL                        | OMOP:4094758               | OMOP:8713               | OBA:2060175                | g/dL             | Concentration of hemoglobin (Hb) in whole blood                                                                                                                                                                                                                                                                              |
-| MeasurementObservation | Hemoglobin A1c                            | hemo_a1c                 | decimal    | percent                     | OMOP:4184637               |                         | REQUESTED                  | %                | Percentage of hemoglobin in your red blood cells that has glucose attached to it. Also known as HbA1c                                                                                                                                                                                                                        |
-| MeasurementObservation | Hip circumference                         | hip_circ                 | decimal    | cm                          | OMOP:4111665               | OMOP:8582               | OBA:1000032                | cm               | Distance measurement taken around the fullest part of the hips                                                                                                                                                                                                                                                               |
-| MeasurementObservation | ICAM1 in blood                            | icam                     | decimal    | ng/ML                       | OMOP:4284103               | OMOP:8842               | REQUESTED                  | ng/mL            | Concentration of Intercellular adhesion molecule 1 (ICAM-1) in blood, typically measured in serum or plasma                                                                                                                                                                                                                  |
-| MeasurementObservation | Insulin in blood                          | insulin_blood            | decimal    | pmol/L                      | OMOP:4060873               | OMOP:8729               | OBA:2060174                | pmol/L           | Concentration of insulin in blood, typically measured in serum or plasma                                                                                                                                                                                                                                                     |
-| MeasurementObservation | Interleukin 1 beta in blood               | il1_beta                 | decimal    | pg/mL                       | OMOP:3001804               | OMOP:8845               | REQUESTED                  | pg/mL            | Concentration of Interleukin-1 beta (IL-1β) in blood, typically measured in serum or plasma                                                                                                                                                                                                                                  |
-| MeasurementObservation | Interleukin 10 in blood                   | il10                     | decimal    | pg/mL                       | OMOP:3004578               | OMOP:8845               | REQUESTED                  | pg/mL            | Concentration of Interleukin-1 beta (IL-10) in blood, typically measured in serum or plasma                                                                                                                                                                                                                                  |
-| MeasurementObservation | Interleukin 18 in blood                   | il18                     | decimal    | pg/mL                       | OMOP:3043144               | OMOP:8845               | REQUESTED                  | pg/mL            | Concentration of Interleukin-1 beta (IL-18) in blood, typically measured in serum or plasma                                                                                                                                                                                                                                  |
-| MeasurementObservation | interleukin 6 in blood                    | il6                      | decimal    | pg/mL                       | OMOP:4332015               | OMOP:8845               | OBA:2052890                | pg/mL            | Concentration of Interleukin-1 beta (IL-6) in blood, typically measured in serum or plasma                                                                                                                                                                                                                                   |
-| MeasurementObservation | Lactate Dehydrogenase LDH                 | lactate_dehyd            | decimal    | U/L                         | OMOP:4012918               | OMOP:8645               | OBA:VT0010477              |                  | Concentration of lactate dehydrogenase (LDH) in blood, typically in serum or plasma                                                                                                                                                                                                                                          |
-| MeasurementObservation | Lactate in blood                          | lactate_blood            | decimal    | mmol/L                      | OMOP:1246795               |                         | OBA:VT0010616              |                  | Concentration of lactate in blood, typically measured in whole blood or plasma                                                                                                                                                                                                                                               |
-| MeasurementObservation | LDL                                       | ldl                      | decimal    | mg/dL                       | OMOP:4331302               | OMOP:8840               | OBA:VT0000181              | mg/dL            | Concentration of low-density lipoprotein (LDL) in blood, typically measured in serum                                                                                                                                                                                                                                         |
-| MeasurementObservation | Lymphocytes count                         | lympho_ct                | decimal    | x10E3/uL                    | OMOP:37208689              | OMOP:8848               | OBA:VT0000217              | 10*3/uL          | Concentration of lymphocytes in whole blood                                                                                                                                                                                                                                                                                  |
-| MeasurementObservation | Lymphocytes percent                       | lympho_pct               | decimal    | percent of total leukocytes | OMOP:37208690              | OMOP:8554               | REQUESTED                  | %                | Percent of total leukocytes that are lymphocytes                                                                                                                                                                                                                                                                             |
-| MeasurementObservation | Mass LP-PLA2 in blood                     | lppla2_mass              | decimal    | ng/mL                       | OMOP:3041450               | OMOP:8842               | REQUESTED                  | ng/mL            | Concentration of Lp-PLA2 (lipoprotein-associated phospholipase A2) enzyme in serum or plasma.                                                                                                                                                                                                                                |
-| MeasurementObservation | MCP1 in blood                             | mcp1                     | decimal    | pg/mL                       | OMOP:1617307               | OMOP:8845               | OBA:2052436                | pg/mL            | Concentration of Monocyte Chemoattractant Protein-1 (MCP-1), also known as CCL2, in blood, typically in serum or plasma                                                                                                                                                                                                      |
-| MeasurementObservation | Mean arterial pressure                    | mn_art_pres              | decimal    | mmHg                        | OMOP:37168599              | OMOP:8876               | OBA:VT2000000              | mm[Hg]           | Average pressure in your arteries throughout one complete cardiac cycle, also known as MAP                                                                                                                                                                                                                                   |
-| MeasurementObservation | mean corpuscular hemoglobin               | mch                      | decimal    | pg/cell                     | OMOP:37398674              | OMOP:8704               | OBA:2045301                | pg/{cell}        | Average amount of hemoglobin in each red blood cell, also known as MCH                                                                                                                                                                                                                                                       |
-| MeasurementObservation | mean corpuscular hemoglobin concentration | mchc                     | decimal    | g/dL                        | OMOP:37393850              | OMOP:8840               | REQUESTED                  | g/dL             | Average concentration of hemoglobin within a single red blood cell, also known as MCHC                                                                                                                                                                                                                                       |
-| MeasurementObservation | mean corpuscular volume                   | mcv                      | decimal    | fL                          | OMOP:37393851              | OMOP:8583               | OBA:0003460                | fL               | Average size/volume of a red blood cell, also known as MCV                                                                                                                                                                                                                                                                   |
-| MeasurementObservation | mean platelet volume                      | pmv                      | decimal    | fL                          | OMOP:37397923              | OMOP:8583               | OBA:0003277                | fL               | Average size/volume of a platelet, also known as MPV                                                                                                                                                                                                                                                                         |
-| MeasurementObservation | MMP9 in blood                             | mmp9                     | decimal    | ng/mL                       | OMOP:40761106              | OMOP:8842               | OBA:2052397                | ng/mL            | Concentration of Matrix Metalloproteinase-9 (MMP-9) in blood, typically measured in serum or plasma                                                                                                                                                                                                                          |
-| MeasurementObservation | Myeloperoxidase in blood                  | mpo                      | decimal    | ng/mL                       | OMOP:1988928               | OMOP:8842               | OBA:2052389                | ng/mL            | Concentration of Myeloperoxidase (MPO) in blood, typically measured in plasma or serum                                                                                                                                                                                                                                       |
-| MeasurementObservation | Neutrophils count                         | neutro_ct                | decimal    | x10E3/uL                    | OMOP:37208699              | OMOP:8848               | OBA:VT0000222              | 10*3/uL          | Concentration of neutrophil cells in whole blood                                                                                                                                                                                                                                                                             |
-| MeasurementObservation | Neutrophils percent                       | neutro_pct               | decimal    | percent of total leukocytes | OMOP:37208698              |                         | REQUESTED                  | %                | Percent of total leukocytes that are neutrophils                                                                                                                                                                                                                                                                             |
-| MeasurementObservation | NT pro BNP                                | nt_bnp                   | decimal    | pg/mL                       | OMOP:4189511               | OMOP:8845               | OBA:2045303                | pg/mL            | Concentration of NT-proBNP in blood, typically measured in serum or plasma. Also known as N-terminal prohormone of brain natriuretic peptide                                                                                                                                                                                 |
-| MeasurementObservation | Osteoprotegerin in blood                  | opg                      | decimal    | ng/mL                       | OMOP:1552124               | OMOP:8842               | REQUESTED                  | ng/mL            | Concentration of Osteoprotegerin (OPG) in blood, typically measured in serum or plasma                                                                                                                                                                                                                                       |
-| MeasurementObservation | P-selectin in blood                       | pselectin                | decimal    | ng/mL                       | OMOP:3007356               | OMOP:8842               | OBA:2052701                | ng/mL            | Concentration of P-selectin in blood, typicall measured in plasma                                                                                                                                                                                                                                                            |
-| MeasurementObservation | pH of blood                               | ph_blood                 | decimal    | pH                          | OMOP:3010421               | OMOP:8482               | OBA:2045409                | [pH]             | pH of whole blood                                                                                                                                                                                                                                                                                                            |
-| MeasurementObservation | Platelet count                            | platelet_ct              | decimal    | x10E3/uL                    | OMOP:4267147               | OMOP:8848               | Same as platelet quantity? | 10*3/uL          | Concentration of platelets in whole blood                                                                                                                                                                                                                                                                                    |
-| MeasurementObservation | Potassium in blood                        | potassium                | decimal    | mmol/L                      | OMOP:4245152               | OMOP:8753               | OBA:VT0002668              | mmol/L           | Concentration of potassium in blood, typically measured in whole blood or serum                                                                                                                                                                                                                                              |
-| MeasurementObservation | PR interval                               | pr_ekg                   | decimal    | ms                          | OMOP:4274406               | OMOP:9593               | REQUESTED                  | ms               | Time it takes for electrical impulses to travel from the atria to the ventricles of the heart. Measured using ECG/EKG                                                                                                                                                                                                        |
-| MeasurementObservation | Procalcitonin                             | procal                   | decimal    | ng/mL                       | OMOP:44791466              | OMOP:8842               | REQUESTED                  | ng/mL            | Concentration of procalcitonin (PCT) in blood, can be measured in serum, plasma, or whole blood                                                                                                                                                                                                                              |
-| MeasurementObservation | QRS interval                              | qrs_ekg                  | decimal    | ms                          | OMOP:4273021               | OMOP:9593               | OBA:1001086                | ms               | Time that elapses from the beginning of the Q wave to the end of the S wave. Measured using ECG/EKG                                                                                                                                                                                                                          |
-| MeasurementObservation | QT interval                               | qt_ekg                   | decimal    | ms                          | OMOP:4273023               | OMOP:8555               | REQUESTED                  | ms               | Time it takes for the ventricles of the heart to depolarize and repolarize. Measured using ECG/EKG                                                                                                                                                                                                                           |
-| MeasurementObservation | Red blood cell count                      | rdbld_ct                 | decimal    | millions/uL                 | OMOP:4030871               | OMOP:8815               | OBA:VT0001586              | 10*6/uL          | Concentration of red blood cells in whole blood                                                                                                                                                                                                                                                                              |
-| MeasurementObservation | Red cell distribution width               | rdw                      | decimal    | %                           | OMOP:37397924              |                         | REQUESTED                  | %                | Measure of the variation in the size and volume of red blood cells, also known as RDW. SD or CV?                                                                                                                                                                                                                             |
-| MeasurementObservation | Respiratory rate                          | resp_rt                  | decimal    | breaths/min                 | OMOP:4313591               |                         | REQUESTED                  |                  | Number of breaths a person takes in one minute                                                                                                                                                                                                                                                                               |
-| MeasurementObservation | Sleep hours                               | sleep_duration_daily     | decimal    | hours                       | OMOP:40768653              |                         | OBA:2040171                | h                | Cumulative amount of time spent sleeping each night                                                                                                                                                                                                                                                                          |
-| MeasurementObservation | Sodium in blood                           | sodium_blood             | decimal    | mmol/L                      | OMOP:4097430               | OMOP:8753               | OBA:VT0001776              |                  | Concentration of sodium in blood, typically measured in serum or plasma                                                                                                                                                                                                                                                      |
-| MeasurementObservation | Sodium intake                             | sodium_intak             | decimal    | mg/day                      | OMOP:606729                | OMOP:8909               | REQUESTED                  | mg/d             | Mass of sodium consumed by an individual per day                                                                                                                                                                                                                                                                             |
-| MeasurementObservation | SpO2                                      | spo2                     | decimal    | percent                     | OMOP:4020553               |                         | OBA:2045443                | %                | Percentage of oxygen-carrying hemoglobin in the blood compared to the total amount of hemoglobin. Also known as oxygen saturation.                                                                                                                                                                                           |
-| MeasurementObservation | Temperature                               | bdy_temp                 | decimal    | C                           | OMOP:4302666               |                         | OBA:VT0005535              | Cel              | An individual's internal body temperature                                                                                                                                                                                                                                                                                    |
-| MeasurementObservation | TNFa in blood                             | tnfa                     | decimal    | pg/mL                       | OMOP:3004282               | OMOP:8845               | OBA:2051979                | pg/mL            | Concentration of TNF in blood, typically measured in serum or plasma. Also known as TNF-alpha, TNFα,  and tumor necrosis factor                                                                                                                                                                                              |
-| MeasurementObservation | TNFa-R1 in blood                          | tnfa_r1                  | decimal    | ng/mL                       | OMOP:46235360              | OMOP:8842               | OBA:2051975                | pg/mL            | Concentration of TNF receptor 1  in blood, typically measured in serum or plasma. Also known as TNFR1, TNFRSF1A, CD120a, and tumor necrosis factor receptor 1                                                                                                                                                                |
-| MeasurementObservation | TNFR2 in blood                            | tnfr2                    | decimal    | ng/mL                       | OMOP:37543055              | OMOP:8842               | REQUESTED                  |                  | Concentration of TNFR2 in blood, typically measured in serum or plasma. Also known as tumor Necrosis Factor Receptor 2                                                                                                                                                                                                       |
-| MeasurementObservation | Total cholesterol in blood                | tot_chol_bld             | decimal    | mg/dL                       | OMOP:4008265               | OMOP:8840               | OBA:VT0000180              | mg/dL            | Concentration of all cholesterol in your blood, including both HDL and LDL                                                                                                                                                                                                                                                   |
-| MeasurementObservation | Triglycerides in blood                    | triglyc_bld              | decimal    | mg/dL                       | OMOP:4032789               | OMOP:8840               | OBA:VT0002644              | mg/dL            | Concentration of triglycerides in blood, typically measured in serum or plasma                                                                                                                                                                                                                                               |
-| MeasurementObservation | Troponin all types                        | troponin                 | decimal    | ng/mL                       | OMOP:4021291               | OMOP:8842               | REQUESTED                  |                  | Concentration of all types of troponin in blood                                                                                                                                                                                                                                                                              |
-| MeasurementObservation | Vegetables                                | vege_serving             | integer    | servings per week           | OMOP:4042886               |                         | REQUESTED                  |                  | Servings of vegetables consumed per week                                                                                                                                                                                                                                                                                     |
-| MeasurementObservation | von Willebrand factor                     | willeb_fac               | decimal    | IU/dL                       | OMOP:4252203               | OMOP:9332               | OBA:2052741                | %{Normal}        | Concentration of von willebrand factor in blood                                                                                                                                                                                                                                                                              |
-| MeasurementObservation | Waist circumference                       | waist_circ               | decimal    | cm                          | OMOP:4172830               | OMOP:8582               | OBA:1001085                | cm               | Distance measurement taken around the waist, just above the hip bone                                                                                                                                                                                                                                                         |
-| MeasurementObservation | Waist-hip ratio                           | waist_hip                | decimal    | ratio                       | OMOP:4087501               | OMOP:8523               | REQUESTED                  | {ratio}          | Ratio of the circumference of the waist to the circumference of the hips                                                                                                                                                                                                                                                     |
-| MeasurementObservation | White blood cell count                    | whtbld_ct                | decimal    | x10E3/uL                    | OMOP:4298431               | OMOP:8848               | OBA:VT0000217              | 10*3/uL          | Concentration of white blood cells in whole blood                                                                                                                                                                                                                                                                            |
-| MeasurementObservation | Albumin in urine                          | albumin_urine            | decimal    | mg/dL                       | OMOP:2212188               | OMOP:8861               | OBA:VT0002871              | mg/L             | Concentration of albumin in urine                                                                                                                                                                                                                                                                                            |
-| MeasurementObservation | CESD score                                | cesd_score               | integer    | NONE                        | OMOP:36303297              | OMOP:44777566           | REQUESTED                  | {score}          | Score from a self-report questionnaire, the CES-D (Center for Epidemiological Studies Depression Scale)                                                                                                                                                                                                                      |
-| MeasurementObservation | Factor VIII                               | factor_8                 | decimal    | IU/mL                       | OMOP:4148587               |                         | OBA:2041536                | [iU]/mL          | Measure of the amount of FVIII activity in a volume of plasma                                                                                                                                                                                                                                                                |
-| MeasurementObservation | Fasting lipids                            | fast_lipids              | decimal    | mg/dL                       | OMOP:4150326               |                         | REQUESTED                  | mg/dL            | Concentration of lipids in blood after not eating or drinking (except water) for a set period, typically 8-12 hours                                                                                                                                                                                                          |
-| MeasurementObservation | Medication adherence                      | med_adher                | BaseEnum   | NONE                        | OMOP:4056965               |                         | REQUESTED                  |                  |                                                                                                                                                                                                                                                                                                                              |
-| MeasurementObservation | Pacemaker implant status                  | pacem_stat               | BaseEnum   | NONE                        | OMOP:45772840              |                         |                            |                  |                                                                                                                                                                                                                                                                                                                              |
-| MeasurementObservation | Systolic blood pressure                   | bp_systolic              | integer    | mmHg                        | OMOP:4152194               | OMOP:8876               | REQUESTED                  |                  | Measurement of pressure in your arteries when your heart pumps blood, the top number in a blood pressure reading                                                                                                                                                                                                             |
-| MeasurementObservation | monocytes count                           | monocyte_ncnc_bld        | decimal    | 10^3cells/uL                | OMOP:3001604               |                         | OBA:VT0000223              | 10*3/uL          | Concentration of monocyte cells in whole blood                                                                                                                                                                                                                                                                               |
-# SdohObservation
-| BDCHM element   | variable label   | machine-readable label   | datatype   | unit   | OMOP concept id as CURIE   | OMOP UCUM id as CURIE   | OBA CURIE   | UCUM unit   | Text definition                                                                                                     |
-|:----------------|:-----------------|:-------------------------|:-----------|:-------|:---------------------------|:------------------------|:------------|:------------|:--------------------------------------------------------------------------------------------------------------------|
-| SdohObservation | Education level  | edu_lvl                  | BaseEnum   | NONE   | OMOP:4022643               |                         |             |             | Highest level of education that an individual has completed                                                         |
-| SdohObservation | Family income    | fam_income               |            | NONE   | OMOP:4076114               |                         |             |             | The sum of the income of all family members 15 years and older living in the household over 12 months, before taxes |
+# BDCHM Variable Documentation
+
+## Demography
+
+### Ethnicity
+
+**Machine-readable name:** `ethnicity`
+
+A person's cultural heritage or ancestry
+
+**Properties:**
+- **Datatype:** EthnicityEnum
+- **Unit:** NONE
+
+**Ontology References:**
+- **OMOP:** OMOP:44803968
+
+---
+
+### Race
+
+**Machine-readable name:** `race`
+
+Self-reported category reflecting an individual's identity and social understanding of race in the United States
+
+**Properties:**
+- **Datatype:** RaceEnum
+- **Unit:** NONE
+
+**Ontology References:**
+- **OMOP:** OMOP:4013886
+
+---
+
+### Sex
+
+**Machine-readable name:** `sex`
+
+Self-reported category reflecting an individual's biological sex and/or gender identity
+
+**Properties:**
+- **Datatype:** SexEnum
+- **Unit:** NONE
+
+**Ontology References:**
+- **OMOP:** OMOP:3046965
+
+---
+
+## MeasurementObservation
+
+### 8-epi-PGF2a in urine
+
+**Machine-readable name:** `isoprostane_8_epi_pgf2a`
+
+Concentration of urinary 8-epi-prostaglandin F2 alpha
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** pg/mL
+- **UCUM Unit:** pg/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:3011888
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:9017
+
+---
+
+### Activity LP-PLA2 in blood
+
+**Machine-readable name:** `lppla2_act`
+
+Measurement of the activity of the Lp-PLA2 (lipoprotein-associated phospholipase A2) enzyme in serum or plasma. 
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** nmol/min/mL
+- **UCUM Unit:** nmol/min/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:36305170
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:44777635
+
+---
+
+### AHI Apnea-Hypopnea Index
+
+**Machine-readable name:** `apnea_hypop_index`
+
+Measurement used to diagnose and assess the severity of sleep apnea. It is calculated by counting the number of apneas and hypopneas that occur per hour of sleep.
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** events/hr
+- **UCUM Unit:** /h
+
+**Ontology References:**
+- **OMOP:** OMOP:37396400
+- **OBA:** REQUESTED
+
+---
+
+### Albumin creatinine ratio in urine
+
+**Machine-readable name:** `albumin_creatinine`
+
+Measurement of the ratio of albumin to creatinine in urine. Also known as uACR.
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mg/g
+- **UCUM Unit:** mg/g{creat}
+
+**Ontology References:**
+- **OMOP:** OMOP:4154347
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:9511
+
+---
+
+### Albumin in blood
+
+**Machine-readable name:** `albumin_bld`
+
+Measurement of albumin in blood serum
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** g/dL
+- **UCUM Unit:** g/dL
+
+**Ontology References:**
+- **OMOP:** OMOP:2212186
+- **OBA:** OBA:2050068
+- **OMOP UCUM:** OMOP:8713
+
+---
+
+### Alcohol
+
+**Machine-readable name:** `alcohol_servings`
+
+Servings of alcohol consumed per week
+
+**Properties:**
+- **Datatype:** integer
+- **Unit:** servings per week
+- **UCUM Unit:** {#}/wk
+
+**Ontology References:**
+- **OMOP:** OMOP:35609491
+- **OBA:** REQUESTED
+
+---
+
+### ALT SGPT
+
+**Machine-readable name:** `alt_sgpt`
+
+Concentration of ALT/SGPT in the blood. ALT, or alanine transaminase, is the same as SGPT, which stands for serum glutamic-pyruvic transaminase. Typically measured in serum or plasma.
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** IU/L
+- **UCUM Unit:** [IU]/L
+
+**Ontology References:**
+- **OMOP:** OMOP:4146380
+- **OBA:** OBA:2050062
+- **OMOP UCUM:** OMOP:8923
+
+---
+
+### AST SGOT
+
+**Machine-readable name:** `ast_sgot`
+
+Concentration of AST/SGOT in blood. AST (aspartate aminotransferase), also known as SGOT (Serum Glutamic Oxaloacetic Transaminase), is typically measured in serum or plasma.
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** IU/L
+- **UCUM Unit:** [IU]/L
+
+**Ontology References:**
+- **OMOP:** OMOP:4263457
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8923
+
+---
+
+### basophils count
+
+**Machine-readable name:** `basophil_ncnc_bld`
+
+Concentration of basophil cells in whole blood
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** x10E3/uL
+- **UCUM Unit:** 10*3/uL
+
+**Ontology References:**
+- **OMOP:** OMOP:3006315
+- **OBA:** OBA:VT0002607
+- **OMOP UCUM:** OMOP:8848
+
+---
+
+### Bilirubin Conjugated Direct
+
+**Machine-readable name:** `bilirubin_con`
+
+Concentration of conjugated (or direct) bilirubin in blood, typically measured in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mg/dL
+- **UCUM Unit:** mg/dL
+
+**Ontology References:**
+- **OMOP:** OMOP:44805650
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8840
+
+---
+
+### Bilirubin total
+
+**Machine-readable name:** `bilirubin_tot`
+
+Concentration of total bilirubin in blood, typically measured in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mg/dL
+- **UCUM Unit:** mg/dL
+
+**Ontology References:**
+- **OMOP:** OMOP:4230543
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8840
+
+---
+
+### Bilirubin Unconjugated Indirect
+
+**Machine-readable name:** `bilirubin_uncon`
+
+Concentration of unconjugated (or indirect) bilirubin in blood, typically measured in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mg/dL
+- **UCUM Unit:** mg/dL
+
+**Ontology References:**
+- **OMOP:** OMOP:4018181
+- **OBA:** OBA:VT0001569
+- **OMOP UCUM:** OMOP:8840
+
+---
+
+### BMI
+
+**Machine-readable name:** `bmi`
+
+Also known as body mass index: ratio of a person's weight in kilos to the square of their height in meters
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** kg/m2
+- **UCUM Unit:** kg/m2
+
+**Ontology References:**
+- **OMOP:** OMOP:3038553
+- **OBA:** OBA:2045455
+- **OMOP UCUM:** OMOP:9531
+
+---
+
+### BNP
+
+**Machine-readable name:** `bnp`
+
+Concentration of BNP in blood, typically measured in plasma or whole blood. Also known as B-type natriuretic peptide, a hormone. 
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** pg/mL
+- **UCUM Unit:** pg/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:4307029
+- **OBA:** OBA:2045303
+- **OMOP UCUM:** OMOP:8845
+
+---
+
+### Body weight
+
+**Machine-readable name:** `bdy_wgt`
+
+Mass of a person
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** kg
+- **UCUM Unit:** kg
+
+**Ontology References:**
+- **OMOP:** OMOP:4099154
+- **OBA:** OBA:VT0001259
+- **OMOP UCUM:** OMOP:9529
+
+---
+
+### BUN
+
+**Machine-readable name:** `bun`
+
+Concentration of blood urea nitrogen in blood, typically measured in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mg/dL
+- **UCUM Unit:** mg/dL
+
+**Ontology References:**
+- **OMOP:** OMOP:4017361
+- **OBA:** OBA:VT0005265
+- **OMOP UCUM:** OMOP:8840
+
+---
+
+### BUN Creatinine ratio
+
+**Machine-readable name:** `bun_creatinine`
+
+Ratio of blood urea nitrogen (BUN) to creatinine in blood, typically measured in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** ratio
+- **UCUM Unit:** {ratio}
+
+**Ontology References:**
+- **OMOP:** OMOP:4112223
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8523
+
+---
+
+### c-reactive protein CRP
+
+**Machine-readable name:** `crp`
+
+Concentration of c-reactive protein (CRP) in blood, typically measured in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mg/L
+- **UCUM Unit:** mg/L
+
+**Ontology References:**
+- **OMOP:** OMOP:4208414
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8751
+
+---
+
+### CAC Score
+
+**Machine-readable name:** `cac_score`
+
+The Coronary Artery Calcium Score is a measure of the amount of calcium in the arteries of the heart. Measured from a CT Scan.
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** Agatston unit
+- **UCUM Unit:** {score}
+
+**Ontology References:**
+- **OMOP:** OMOP:42872742
+- **OBA:** REQUESTED
+
+---
+
+### CAC volume
+
+**Machine-readable name:** `cac_volume`
+
+Volume of coronarty artery calcium in the arteries of the heart. Measured by CT Scan.
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** Hounsfield units (HU)
+
+**Ontology References:**
+- **OMOP:** OMOP:4166120
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:9322
+
+---
+
+### Carotid IMT
+
+**Machine-readable name:** `carotid_imt`
+
+Carotid intima-media thickness (IMT) measures the thickness of the inner two layers (intima and media layers) of the carotid artery walls - there are many ways to take this measurement
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mm
+- **UCUM Unit:** mm
+
+**Ontology References:**
+- **OMOP:** OMOP:4138462
+- **OBA:** OBA_2050108 or OBA_2050107
+- **OMOP UCUM:** OMOP:8588
+
+---
+
+### Carotid stenosis right
+
+**Machine-readable name:** `carotid_sten_right`
+
+**Properties:**
+- **Datatype:** 
+- **UCUM Unit:** %
+
+**Ontology References:**
+- **OMOP:** OMOP:43021859
+
+---
+
+### Carotid stenosis left
+
+**Machine-readable name:** `carotid_sten_left`
+
+**Properties:**
+- **Datatype:** 
+- **UCUM Unit:** %
+
+**Ontology References:**
+- **OMOP:** OMOP:43020498
+
+---
+
+### CD40 in blood
+
+**Machine-readable name:** `cd40`
+
+Concentration of CD40 (Cluster of differentiation antigen 40) in blood, typically measured in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** pg/mL
+- **UCUM Unit:** pg/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:4209737
+- **OBA:** OBA:2052305
+- **OMOP UCUM:** OMOP:8845
+
+---
+
+### Chloride in blood
+
+**Machine-readable name:** `chloride_bld`
+
+Concentration of chloride in blood, also known as serum chloride
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mmol/L
+- **UCUM Unit:** mmol/L
+
+**Ontology References:**
+- **OMOP:** OMOP:4188066
+- **OBA:** OBA:VT0003018
+- **OMOP UCUM:** OMOP:8753
+
+---
+
+### Creatinine in blood
+
+**Machine-readable name:** `creat_bld`
+
+Concentration of creatinine in blood, typically measured in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mg/dL
+- **UCUM Unit:** mg/dL
+
+**Ontology References:**
+- **OMOP:** OMOP:2212294
+- **OBA:** OBA:2050096
+- **OMOP UCUM:** OMOP:8840
+
+---
+
+### Creatinine in urine
+
+**Machine-readable name:** `creat_urin`
+
+Concentration of creatinine in urine
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mg/dL
+- **UCUM Unit:** mg/dL
+
+**Ontology References:**
+- **OMOP:** OMOP:3007081
+- **OBA:** OBA:VT0010540
+- **OMOP UCUM:** OMOP:8840
+
+---
+
+### Cystatin C in blood
+
+**Machine-readable name:** `cysc_bld`
+
+Concentration of cystatin C in blood, typically measured in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mg/dL
+- **UCUM Unit:** mg/dL
+
+**Ontology References:**
+- **OMOP:** OMOP:4136584
+- **OBA:** OBA:2052375
+- **OMOP UCUM:** OMOP:8840
+
+---
+
+### D-Dimer
+
+**Machine-readable name:** `d_dimer`
+
+Concentration of D-dimer in blood, can be measured in whole blood or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mg/L FEU
+- **UCUM Unit:** mg/L
+
+**Ontology References:**
+- **OMOP:** OMOP:37393605
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8751
+
+---
+
+### Diastolic blood pressure
+
+**Machine-readable name:** `bp_diastolic`
+
+Measurement of pressure in your arteries when your heart is at rest between beats, the bottom number in a blood pressure reading
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mmHg
+- **UCUM Unit:** mm[Hg]
+
+**Ontology References:**
+- **OMOP:** OMOP:4154790
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8876
+
+---
+
+### E-selectin in blood
+
+**Machine-readable name:** `eselectin`
+
+Concentration of E-selectin in blood, typically measured in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** ng/ML
+- **UCUM Unit:** ng/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:3010372
+- **OBA:** OBA:2052778
+- **OMOP UCUM:** OMOP:8842
+
+---
+
+### EGFR
+
+**Machine-readable name:** `egfr`
+
+Stands for estimated glomerular filtration rate - calculated from creatinine concentration, age, sex, and body size. 
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mL/min/1.73m2
+- **UCUM Unit:** mL/min/{1.73_m2}
+
+**Ontology References:**
+- **OMOP:** OMOP:37208635
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:720870
+
+---
+
+### Eosinophils count
+
+**Machine-readable name:** `eosinophil_ncnc_bld`
+
+Concentration of eosinophil cells in whole blood
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** x10E3/uL
+- **UCUM Unit:** 10*3/uL
+
+**Ontology References:**
+- **OMOP:** OMOP:3013115
+- **OBA:** OBA:VT0002602
+- **OMOP UCUM:** OMOP:8848
+
+---
+
+### Erythrocyte Sed Rate
+
+**Machine-readable name:** `ery_sed_rate`
+
+Measurement of how quickly red blood cells (erythrocytes) settle to the bottom of a test tube in one hour. Also known as ESR
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mm/hr
+- **UCUM Unit:** mm/h
+
+**Ontology References:**
+- **OMOP:** OMOP:4212065
+- **OBA:** OBA:2045235
+- **OMOP UCUM:** OMOP:8752
+
+---
+
+### Factor VII
+
+**Machine-readable name:** `factor_7`
+
+Concentration of Factor VII in blood, typically measured in plasma. Also known as FVII and proconvertin
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** % of normal
+- **UCUM Unit:** %{Normal}
+
+**Ontology References:**
+- **OMOP:** OMOP:4217630
+- **OBA:** OBA:2041535
+- **OMOP UCUM:** OMOP:8859
+
+---
+
+### Fasting blood glucose
+
+**Machine-readable name:** `fast_gluc_bld`
+
+Concentration of glucose in blood after not eating or drinking (except water) for a set period, typically 8-12 hours
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mg/dL
+- **UCUM Unit:** mg/dL
+
+**Ontology References:**
+- **OMOP:** OMOP:4156660
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8840
+
+---
+
+### Ferritin
+
+**Machine-readable name:** `ferritin`
+
+Concentration of ferritin in blood, typically measured in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** ng/mL
+- **UCUM Unit:** ng/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:4176561
+- **OBA:** OBA:VT0010513
+- **OMOP UCUM:** OMOP:8842
+
+---
+
+### FEV1 - Forced Expiratory Volume in 1 sec
+
+**Machine-readable name:** `fev1`
+
+Volume of air a person can exhale forcefully in one second, measured before the administration of bronchodilator medication
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** L
+- **UCUM Unit:** L
+
+**Ontology References:**
+- **OMOP:** OMOP:4241837
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8519
+
+---
+
+### FEV1 FVC
+
+**Machine-readable name:** `fev1_fvc`
+
+Ratio of the volume of air a person can exhale forcefully in one second (FEV1) to the total volume of air a person can exhale from their lungs after taking the deepest possible breath and then exhaling as forcefully and as completely as possible (FVC), measured before the administration of bronchodilator medication
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** ratio
+- **UCUM Unit:** {ratio}
+
+**Ontology References:**
+- **OMOP:** OMOP:3011505
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8523
+
+---
+
+### Fibrinogen
+
+**Machine-readable name:** `fibrin`
+
+Concentration of fibrinogen in blood, typically measured in plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mg/dL
+- **UCUM Unit:** mg/dL
+
+**Ontology References:**
+- **OMOP:** OMOP:4094436
+- **OBA:** OBA:0000061
+- **OMOP UCUM:** OMOP:8845
+
+---
+
+### Fruits
+
+**Machine-readable name:** `fruit_serving`
+
+Servings of fruits consumed per week (includes fruit and fruit juice)
+
+**Properties:**
+- **Datatype:** integer
+- **Unit:** servings per week
+- **UCUM Unit:** {#}/wk
+
+**Ontology References:**
+- **OMOP:** OMOP:21493059
+- **OBA:** REQUESTED
+
+---
+
+### FVC - Forced Vital Capacity
+
+**Machine-readable name:** `fvc`
+
+Total volume of air a person can exhale from their lungs after taking the deepest possible breath and then exhaling as forcefully and as completely as possible, measured before the administration of bronchodilator medication
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** L
+- **UCUM Unit:** L
+
+**Ontology References:**
+- **OMOP:** OMOP:4176265
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8519
+
+---
+
+### GFR
+
+**Machine-readable name:** `gfr`
+
+Stands for glomerular filtration rate: a measure of how much blood passes through the glomeruli
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mL/min/1.73 m2
+- **UCUM Unit:** mL/min/{1.73_m2}
+
+**Ontology References:**
+- **OMOP:** OMOP:4213477
+- **OBA:** OBA:0003747
+- **OMOP UCUM:** OMOP:720870
+
+---
+
+### Glucose in blood
+
+**Machine-readable name:** `glucose_bld`
+
+Concentration of glucose in blood, can be measured in whole blood, serum, or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mg/dL
+- **UCUM Unit:** mg/dL
+
+**Ontology References:**
+- **OMOP:** OMOP:4149519
+- **OBA:** OBA:VT0000188
+- **OMOP UCUM:** OMOP:8840
+
+---
+
+### HDL
+
+**Machine-readable name:** `hdl`
+
+Concentration of high-density lipoprotein (HDL) in blood, typically measured in serum
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mg/dL
+- **UCUM Unit:** mg/dL
+
+**Ontology References:**
+- **OMOP:** OMOP:4076704
+- **OBA:** OBA:VT0000184
+- **OMOP UCUM:** OMOP:8840
+
+---
+
+### Heart rate
+
+**Machine-readable name:** `hrtrt`
+
+Number of times a heart beats per minute - also known as pulse rate
+
+**Properties:**
+- **Datatype:** integer
+- **Unit:** bpm
+- **UCUM Unit:** {beats}/min
+
+**Ontology References:**
+- **OMOP:** OMOP:3027018
+- **OBA:** OBA:1001087
+
+---
+
+### Height
+
+**Machine-readable name:** `bdy_hgt`
+
+Measure of the vertical distance of a standing person from head to foot
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** cm
+- **UCUM Unit:** cm
+
+**Ontology References:**
+- **OMOP:** OMOP:607590
+- **OBA:** OBA:VT0001253
+- **OMOP UCUM:** OMOP:8582
+
+---
+
+### Hematocrit
+
+**Machine-readable name:** `hemat`
+
+The percentage of whole blood volume that consists of red blood cells - also known as packed cell volume (PCV)
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** percent
+- **UCUM Unit:** %
+
+**Ontology References:**
+- **OMOP:** OMOP:4151358
+- **OBA:** OBA:2045381
+
+---
+
+### Hemoglobin
+
+**Machine-readable name:** `hemo`
+
+Concentration of hemoglobin (Hb) in whole blood
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** g/dL
+- **UCUM Unit:** g/dL
+
+**Ontology References:**
+- **OMOP:** OMOP:4094758
+- **OBA:** OBA:2060175
+- **OMOP UCUM:** OMOP:8713
+
+---
+
+### Hemoglobin A1c
+
+**Machine-readable name:** `hemo_a1c`
+
+Percentage of hemoglobin in your red blood cells that has glucose attached to it. Also known as HbA1c
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** percent
+- **UCUM Unit:** %
+
+**Ontology References:**
+- **OMOP:** OMOP:4184637
+- **OBA:** REQUESTED
+
+---
+
+### Hip circumference
+
+**Machine-readable name:** `hip_circ`
+
+Distance measurement taken around the fullest part of the hips
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** cm
+- **UCUM Unit:** cm
+
+**Ontology References:**
+- **OMOP:** OMOP:4111665
+- **OBA:** OBA:1000032
+- **OMOP UCUM:** OMOP:8582
+
+---
+
+### ICAM1 in blood
+
+**Machine-readable name:** `icam`
+
+Concentration of Intercellular adhesion molecule 1 (ICAM-1) in blood, typically measured in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** ng/ML
+- **UCUM Unit:** ng/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:4284103
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8842
+
+---
+
+### Insulin in blood
+
+**Machine-readable name:** `insulin_blood`
+
+Concentration of insulin in blood, typically measured in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** pmol/L
+- **UCUM Unit:** pmol/L
+
+**Ontology References:**
+- **OMOP:** OMOP:4060873
+- **OBA:** OBA:2060174
+- **OMOP UCUM:** OMOP:8729
+
+---
+
+### Interleukin 1 beta in blood
+
+**Machine-readable name:** `il1_beta`
+
+Concentration of Interleukin-1 beta (IL-1β) in blood, typically measured in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** pg/mL
+- **UCUM Unit:** pg/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:3001804
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8845
+
+---
+
+### Interleukin 10 in blood
+
+**Machine-readable name:** `il10`
+
+Concentration of Interleukin-1 beta (IL-10) in blood, typically measured in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** pg/mL
+- **UCUM Unit:** pg/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:3004578
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8845
+
+---
+
+### Interleukin 18 in blood
+
+**Machine-readable name:** `il18`
+
+Concentration of Interleukin-1 beta (IL-18) in blood, typically measured in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** pg/mL
+- **UCUM Unit:** pg/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:3043144
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8845
+
+---
+
+### interleukin 6 in blood
+
+**Machine-readable name:** `il6`
+
+Concentration of Interleukin-1 beta (IL-6) in blood, typically measured in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** pg/mL
+- **UCUM Unit:** pg/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:4332015
+- **OBA:** OBA:2052890
+- **OMOP UCUM:** OMOP:8845
+
+---
+
+### Lactate Dehydrogenase LDH
+
+**Machine-readable name:** `lactate_dehyd`
+
+Concentration of lactate dehydrogenase (LDH) in blood, typically in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** U/L
+
+**Ontology References:**
+- **OMOP:** OMOP:4012918
+- **OBA:** OBA:VT0010477
+- **OMOP UCUM:** OMOP:8645
+
+---
+
+### Lactate in blood
+
+**Machine-readable name:** `lactate_blood`
+
+Concentration of lactate in blood, typically measured in whole blood or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mmol/L
+
+**Ontology References:**
+- **OMOP:** OMOP:1246795
+- **OBA:** OBA:VT0010616
+
+---
+
+### LDL
+
+**Machine-readable name:** `ldl`
+
+Concentration of low-density lipoprotein (LDL) in blood, typically measured in serum
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mg/dL
+- **UCUM Unit:** mg/dL
+
+**Ontology References:**
+- **OMOP:** OMOP:4331302
+- **OBA:** OBA:VT0000181
+- **OMOP UCUM:** OMOP:8840
+
+---
+
+### Lymphocytes count
+
+**Machine-readable name:** `lympho_ct`
+
+Concentration of lymphocytes in whole blood
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** x10E3/uL
+- **UCUM Unit:** 10*3/uL
+
+**Ontology References:**
+- **OMOP:** OMOP:37208689
+- **OBA:** OBA:VT0000217
+- **OMOP UCUM:** OMOP:8848
+
+---
+
+### Lymphocytes percent
+
+**Machine-readable name:** `lympho_pct`
+
+Percent of total leukocytes that are lymphocytes
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** percent of total leukocytes
+- **UCUM Unit:** %
+
+**Ontology References:**
+- **OMOP:** OMOP:37208690
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8554
+
+---
+
+### Mass LP-PLA2 in blood
+
+**Machine-readable name:** `lppla2_mass`
+
+Concentration of Lp-PLA2 (lipoprotein-associated phospholipase A2) enzyme in serum or plasma.
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** ng/mL
+- **UCUM Unit:** ng/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:3041450
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8842
+
+---
+
+### MCP1 in blood
+
+**Machine-readable name:** `mcp1`
+
+Concentration of Monocyte Chemoattractant Protein-1 (MCP-1), also known as CCL2, in blood, typically in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** pg/mL
+- **UCUM Unit:** pg/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:1617307
+- **OBA:** OBA:2052436
+- **OMOP UCUM:** OMOP:8845
+
+---
+
+### Mean arterial pressure
+
+**Machine-readable name:** `mn_art_pres`
+
+Average pressure in your arteries throughout one complete cardiac cycle, also known as MAP
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mmHg
+- **UCUM Unit:** mm[Hg]
+
+**Ontology References:**
+- **OMOP:** OMOP:37168599
+- **OBA:** OBA:VT2000000
+- **OMOP UCUM:** OMOP:8876
+
+---
+
+### mean corpuscular hemoglobin
+
+**Machine-readable name:** `mch`
+
+Average amount of hemoglobin in each red blood cell, also known as MCH
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** pg/cell
+- **UCUM Unit:** pg/{cell}
+
+**Ontology References:**
+- **OMOP:** OMOP:37398674
+- **OBA:** OBA:2045301
+- **OMOP UCUM:** OMOP:8704
+
+---
+
+### mean corpuscular hemoglobin concentration
+
+**Machine-readable name:** `mchc`
+
+Average concentration of hemoglobin within a single red blood cell, also known as MCHC
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** g/dL
+- **UCUM Unit:** g/dL
+
+**Ontology References:**
+- **OMOP:** OMOP:37393850
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8840
+
+---
+
+### mean corpuscular volume
+
+**Machine-readable name:** `mcv`
+
+Average size/volume of a red blood cell, also known as MCV
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** fL
+- **UCUM Unit:** fL
+
+**Ontology References:**
+- **OMOP:** OMOP:37393851
+- **OBA:** OBA:0003460
+- **OMOP UCUM:** OMOP:8583
+
+---
+
+### mean platelet volume
+
+**Machine-readable name:** `pmv`
+
+Average size/volume of a platelet, also known as MPV
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** fL
+- **UCUM Unit:** fL
+
+**Ontology References:**
+- **OMOP:** OMOP:37397923
+- **OBA:** OBA:0003277
+- **OMOP UCUM:** OMOP:8583
+
+---
+
+### MMP9 in blood
+
+**Machine-readable name:** `mmp9`
+
+Concentration of Matrix Metalloproteinase-9 (MMP-9) in blood, typically measured in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** ng/mL
+- **UCUM Unit:** ng/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:40761106
+- **OBA:** OBA:2052397
+- **OMOP UCUM:** OMOP:8842
+
+---
+
+### Myeloperoxidase in blood
+
+**Machine-readable name:** `mpo`
+
+Concentration of Myeloperoxidase (MPO) in blood, typically measured in plasma or serum
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** ng/mL
+- **UCUM Unit:** ng/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:1988928
+- **OBA:** OBA:2052389
+- **OMOP UCUM:** OMOP:8842
+
+---
+
+### Neutrophils count
+
+**Machine-readable name:** `neutro_ct`
+
+Concentration of neutrophil cells in whole blood
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** x10E3/uL
+- **UCUM Unit:** 10*3/uL
+
+**Ontology References:**
+- **OMOP:** OMOP:37208699
+- **OBA:** OBA:VT0000222
+- **OMOP UCUM:** OMOP:8848
+
+---
+
+### Neutrophils percent
+
+**Machine-readable name:** `neutro_pct`
+
+Percent of total leukocytes that are neutrophils
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** percent of total leukocytes
+- **UCUM Unit:** %
+
+**Ontology References:**
+- **OMOP:** OMOP:37208698
+- **OBA:** REQUESTED
+
+---
+
+### NT pro BNP
+
+**Machine-readable name:** `nt_bnp`
+
+Concentration of NT-proBNP in blood, typically measured in serum or plasma. Also known as N-terminal prohormone of brain natriuretic peptide
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** pg/mL
+- **UCUM Unit:** pg/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:4189511
+- **OBA:** OBA:2045303
+- **OMOP UCUM:** OMOP:8845
+
+---
+
+### Osteoprotegerin in blood
+
+**Machine-readable name:** `opg`
+
+Concentration of Osteoprotegerin (OPG) in blood, typically measured in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** ng/mL
+- **UCUM Unit:** ng/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:1552124
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8842
+
+---
+
+### P-selectin in blood
+
+**Machine-readable name:** `pselectin`
+
+Concentration of P-selectin in blood, typicall measured in plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** ng/mL
+- **UCUM Unit:** ng/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:3007356
+- **OBA:** OBA:2052701
+- **OMOP UCUM:** OMOP:8842
+
+---
+
+### pH of blood
+
+**Machine-readable name:** `ph_blood`
+
+pH of whole blood
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** pH
+- **UCUM Unit:** [pH]
+
+**Ontology References:**
+- **OMOP:** OMOP:3010421
+- **OBA:** OBA:2045409
+- **OMOP UCUM:** OMOP:8482
+
+---
+
+### Platelet count
+
+**Machine-readable name:** `platelet_ct`
+
+Concentration of platelets in whole blood
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** x10E3/uL
+- **UCUM Unit:** 10*3/uL
+
+**Ontology References:**
+- **OMOP:** OMOP:4267147
+- **OBA:** Same as platelet quantity?
+- **OMOP UCUM:** OMOP:8848
+
+---
+
+### Potassium in blood
+
+**Machine-readable name:** `potassium`
+
+Concentration of potassium in blood, typically measured in whole blood or serum
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mmol/L
+- **UCUM Unit:** mmol/L
+
+**Ontology References:**
+- **OMOP:** OMOP:4245152
+- **OBA:** OBA:VT0002668
+- **OMOP UCUM:** OMOP:8753
+
+---
+
+### PR interval
+
+**Machine-readable name:** `pr_ekg`
+
+Time it takes for electrical impulses to travel from the atria to the ventricles of the heart. Measured using ECG/EKG
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** ms
+- **UCUM Unit:** ms
+
+**Ontology References:**
+- **OMOP:** OMOP:4274406
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:9593
+
+---
+
+### Procalcitonin
+
+**Machine-readable name:** `procal`
+
+Concentration of procalcitonin (PCT) in blood, can be measured in serum, plasma, or whole blood
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** ng/mL
+- **UCUM Unit:** ng/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:44791466
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8842
+
+---
+
+### QRS interval
+
+**Machine-readable name:** `qrs_ekg`
+
+Time that elapses from the beginning of the Q wave to the end of the S wave. Measured using ECG/EKG
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** ms
+- **UCUM Unit:** ms
+
+**Ontology References:**
+- **OMOP:** OMOP:4273021
+- **OBA:** OBA:1001086
+- **OMOP UCUM:** OMOP:9593
+
+---
+
+### QT interval
+
+**Machine-readable name:** `qt_ekg`
+
+Time it takes for the ventricles of the heart to depolarize and repolarize. Measured using ECG/EKG
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** ms
+- **UCUM Unit:** ms
+
+**Ontology References:**
+- **OMOP:** OMOP:4273023
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8555
+
+---
+
+### Red blood cell count
+
+**Machine-readable name:** `rdbld_ct`
+
+Concentration of red blood cells in whole blood
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** millions/uL
+- **UCUM Unit:** 10*6/uL
+
+**Ontology References:**
+- **OMOP:** OMOP:4030871
+- **OBA:** OBA:VT0001586
+- **OMOP UCUM:** OMOP:8815
+
+---
+
+### Red cell distribution width
+
+**Machine-readable name:** `rdw`
+
+Measure of the variation in the size and volume of red blood cells, also known as RDW. SD or CV?
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** %
+- **UCUM Unit:** %
+
+**Ontology References:**
+- **OMOP:** OMOP:37397924
+- **OBA:** REQUESTED
+
+---
+
+### Respiratory rate
+
+**Machine-readable name:** `resp_rt`
+
+Number of breaths a person takes in one minute
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** breaths/min
+
+**Ontology References:**
+- **OMOP:** OMOP:4313591
+- **OBA:** REQUESTED
+
+---
+
+### Sleep hours
+
+**Machine-readable name:** `sleep_duration_daily`
+
+Cumulative amount of time spent sleeping each night
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** hours
+- **UCUM Unit:** h
+
+**Ontology References:**
+- **OMOP:** OMOP:40768653
+- **OBA:** OBA:2040171
+
+---
+
+### Sodium in blood
+
+**Machine-readable name:** `sodium_blood`
+
+Concentration of sodium in blood, typically measured in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mmol/L
+
+**Ontology References:**
+- **OMOP:** OMOP:4097430
+- **OBA:** OBA:VT0001776
+- **OMOP UCUM:** OMOP:8753
+
+---
+
+### Sodium intake
+
+**Machine-readable name:** `sodium_intak`
+
+Mass of sodium consumed by an individual per day
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mg/day
+- **UCUM Unit:** mg/d
+
+**Ontology References:**
+- **OMOP:** OMOP:606729
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8909
+
+---
+
+### SpO2
+
+**Machine-readable name:** `spo2`
+
+Percentage of oxygen-carrying hemoglobin in the blood compared to the total amount of hemoglobin. Also known as oxygen saturation.
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** percent
+- **UCUM Unit:** %
+
+**Ontology References:**
+- **OMOP:** OMOP:4020553
+- **OBA:** OBA:2045443
+
+---
+
+### Temperature
+
+**Machine-readable name:** `bdy_temp`
+
+An individual's internal body temperature
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** C
+- **UCUM Unit:** Cel
+
+**Ontology References:**
+- **OMOP:** OMOP:4302666
+- **OBA:** OBA:VT0005535
+
+---
+
+### TNFa in blood
+
+**Machine-readable name:** `tnfa`
+
+Concentration of TNF in blood, typically measured in serum or plasma. Also known as TNF-alpha, TNFα,  and tumor necrosis factor
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** pg/mL
+- **UCUM Unit:** pg/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:3004282
+- **OBA:** OBA:2051979
+- **OMOP UCUM:** OMOP:8845
+
+---
+
+### TNFa-R1 in blood
+
+**Machine-readable name:** `tnfa_r1`
+
+Concentration of TNF receptor 1  in blood, typically measured in serum or plasma. Also known as TNFR1, TNFRSF1A, CD120a, and tumor necrosis factor receptor 1
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** ng/mL
+- **UCUM Unit:** pg/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:46235360
+- **OBA:** OBA:2051975
+- **OMOP UCUM:** OMOP:8842
+
+---
+
+### TNFR2 in blood
+
+**Machine-readable name:** `tnfr2`
+
+Concentration of TNFR2 in blood, typically measured in serum or plasma. Also known as tumor Necrosis Factor Receptor 2
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** ng/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:37543055
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8842
+
+---
+
+### Total cholesterol in blood
+
+**Machine-readable name:** `tot_chol_bld`
+
+Concentration of all cholesterol in your blood, including both HDL and LDL
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mg/dL
+- **UCUM Unit:** mg/dL
+
+**Ontology References:**
+- **OMOP:** OMOP:4008265
+- **OBA:** OBA:VT0000180
+- **OMOP UCUM:** OMOP:8840
+
+---
+
+### Triglycerides in blood
+
+**Machine-readable name:** `triglyc_bld`
+
+Concentration of triglycerides in blood, typically measured in serum or plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mg/dL
+- **UCUM Unit:** mg/dL
+
+**Ontology References:**
+- **OMOP:** OMOP:4032789
+- **OBA:** OBA:VT0002644
+- **OMOP UCUM:** OMOP:8840
+
+---
+
+### Troponin all types
+
+**Machine-readable name:** `troponin`
+
+Concentration of all types of troponin in blood
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** ng/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:4021291
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8842
+
+---
+
+### Vegetables
+
+**Machine-readable name:** `vege_serving`
+
+Servings of vegetables consumed per week
+
+**Properties:**
+- **Datatype:** integer
+- **Unit:** servings per week
+
+**Ontology References:**
+- **OMOP:** OMOP:4042886
+- **OBA:** REQUESTED
+
+---
+
+### von Willebrand factor
+
+**Machine-readable name:** `willeb_fac`
+
+Concentration of von willebrand factor in blood
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** IU/dL
+- **UCUM Unit:** %{Normal}
+
+**Ontology References:**
+- **OMOP:** OMOP:4252203
+- **OBA:** OBA:2052741
+- **OMOP UCUM:** OMOP:9332
+
+---
+
+### Waist circumference
+
+**Machine-readable name:** `waist_circ`
+
+Distance measurement taken around the waist, just above the hip bone
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** cm
+- **UCUM Unit:** cm
+
+**Ontology References:**
+- **OMOP:** OMOP:4172830
+- **OBA:** OBA:1001085
+- **OMOP UCUM:** OMOP:8582
+
+---
+
+### Waist-hip ratio
+
+**Machine-readable name:** `waist_hip`
+
+Ratio of the circumference of the waist to the circumference of the hips
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** ratio
+- **UCUM Unit:** {ratio}
+
+**Ontology References:**
+- **OMOP:** OMOP:4087501
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8523
+
+---
+
+### White blood cell count
+
+**Machine-readable name:** `whtbld_ct`
+
+Concentration of white blood cells in whole blood
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** x10E3/uL
+- **UCUM Unit:** 10*3/uL
+
+**Ontology References:**
+- **OMOP:** OMOP:4298431
+- **OBA:** OBA:VT0000217
+- **OMOP UCUM:** OMOP:8848
+
+---
+
+### Albumin in urine
+
+**Machine-readable name:** `albumin_urine`
+
+Concentration of albumin in urine
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mg/dL
+- **UCUM Unit:** mg/L
+
+**Ontology References:**
+- **OMOP:** OMOP:2212188
+- **OBA:** OBA:VT0002871
+- **OMOP UCUM:** OMOP:8861
+
+---
+
+### CESD score
+
+**Machine-readable name:** `cesd_score`
+
+Score from a self-report questionnaire, the CES-D (Center for Epidemiological Studies Depression Scale)
+
+**Properties:**
+- **Datatype:** integer
+- **Unit:** NONE
+- **UCUM Unit:** {score}
+
+**Ontology References:**
+- **OMOP:** OMOP:36303297
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:44777566
+
+---
+
+### Factor VIII
+
+**Machine-readable name:** `factor_8`
+
+Measure of the amount of FVIII activity in a volume of plasma
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** IU/mL
+- **UCUM Unit:** [iU]/mL
+
+**Ontology References:**
+- **OMOP:** OMOP:4148587
+- **OBA:** OBA:2041536
+
+---
+
+### Fasting lipids
+
+**Machine-readable name:** `fast_lipids`
+
+Concentration of lipids in blood after not eating or drinking (except water) for a set period, typically 8-12 hours
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** mg/dL
+- **UCUM Unit:** mg/dL
+
+**Ontology References:**
+- **OMOP:** OMOP:4150326
+- **OBA:** REQUESTED
+
+---
+
+### Medication adherence
+
+**Machine-readable name:** `med_adher`
+
+**Properties:**
+- **Datatype:** BaseEnum
+- **Unit:** NONE
+
+**Ontology References:**
+- **OMOP:** OMOP:4056965
+- **OBA:** REQUESTED
+
+---
+
+### Pacemaker implant status
+
+**Machine-readable name:** `pacem_stat`
+
+**Properties:**
+- **Datatype:** BaseEnum
+- **Unit:** NONE
+
+**Ontology References:**
+- **OMOP:** OMOP:45772840
+
+---
+
+### Systolic blood pressure
+
+**Machine-readable name:** `bp_systolic`
+
+Measurement of pressure in your arteries when your heart pumps blood, the top number in a blood pressure reading
+
+**Properties:**
+- **Datatype:** integer
+- **Unit:** mmHg
+
+**Ontology References:**
+- **OMOP:** OMOP:4152194
+- **OBA:** REQUESTED
+- **OMOP UCUM:** OMOP:8876
+
+---
+
+### monocytes count
+
+**Machine-readable name:** `monocyte_ncnc_bld`
+
+Concentration of monocyte cells in whole blood
+
+**Properties:**
+- **Datatype:** decimal
+- **Unit:** 10^3cells/uL
+- **UCUM Unit:** 10*3/uL
+
+**Ontology References:**
+- **OMOP:** OMOP:3001604
+- **OBA:** OBA:VT0000223
+
+---
+
+## SdohObservation
+
+### Education level
+
+**Machine-readable name:** `edu_lvl`
+
+Highest level of education that an individual has completed
+
+**Properties:**
+- **Datatype:** BaseEnum
+- **Unit:** NONE
+
+**Ontology References:**
+- **OMOP:** OMOP:4022643
+
+---
+
+### Family income
+
+**Machine-readable name:** `fam_income`
+
+The sum of the income of all family members 15 years and older living in the household over 12 months, before taxes
+
+**Properties:**
+- **Datatype:** 
+- **Unit:** NONE
+
+**Ontology References:**
+- **OMOP:** OMOP:4076114
+
+---
+
