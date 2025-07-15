@@ -1,0 +1,46 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001120
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00086726		
+        associated_visit:
+          value: MESA CLASSIC EXAM 4
+          range: string
+        observation_type:
+          value: OBA:VT0002668	#blood potassium amount
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001120
+                slot_derivations: 
+                  value_decimal:
+                    populated_from: phv00191191
+                  unit:
+                    value: mmol/L #units not provided, conversion may be needed
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003089
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00175973			
+        associated_visit:
+          value: MESA Ancillary
+          range: string
+        observation_type:
+          value: OBA:VT0002668	#blood potassium amount
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003089
+                slot_derivations: 
+                  value_decimal:
+                    populated_from: phv00175982
+                  unit:
+                    value: mmol/L #units listed as mIU/L, which is equivalent
+                    range: string

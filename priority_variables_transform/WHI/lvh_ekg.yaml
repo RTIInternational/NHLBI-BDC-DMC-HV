@@ -1,0 +1,52 @@
+- class_derivations:
+    Condition:
+      populated_from: pht002118
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00154925
+        associated_visit:
+          expr: '''WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP'''
+        condition_concept:
+          expr: '''HP:0001712''' #left ventricular hypertrophy
+        condition_status:
+          populated_from: phv00155172
+          value_mappings:
+            '0': '''ABSENT'''
+            '1': '''PRESENT'''
+        condition_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+        relationship_to_participant:
+          expr: '''ONESELF'''
+- class_derivations:
+    Condition:
+      populated_from: pht006223
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00283451
+        associated_visit:
+          expr: '''WHI UNC HEART FAILURE DETAILS'''
+        condition_concept:
+          expr: '''HP:0001712''' #left ventricular hypertrophy
+        condition_status:
+          populated_from: phv00283580
+          value_mappings:
+            '1': '''PRESENT'''
+            '2': '''PRESENT'''
+            '3': '''PRESENT'''
+            '4': None
+            '5': '''PRESENT'''
+            '6': '''UNKNOWN'''
+        condition_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+        condition_severity:
+          populated_from: phv00283580
+          value_mappings:
+            '1': '''OMOP:4116992''' #mild
+            '2': '''OMOP:3272197''' #moderate
+            '3': '''OMOP:4087703''' #severe
+            '4': None
+            '5': None
+            '6': None
+        relationship_to_participant:
+          expr: '''ONESELF'''          
+        

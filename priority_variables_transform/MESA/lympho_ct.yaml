@@ -1,0 +1,23 @@
+- class_derivations:
+  MeasurementObservation:
+    populated_from: pht004319
+    slot_derivations:
+    associated_participant:
+      populated_from: phv00218989
+      associated_visit:
+        value: MESA_AncilMesaEpigenomicCBC
+        range: string
+      observation_type:
+        value: OMOP:37208689 #Lymphocytes count
+        range: string
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: pht004319
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00218998
+                unit:
+                  value: 10*3/uL #reported_units: x10E3/uL
+                  range: string

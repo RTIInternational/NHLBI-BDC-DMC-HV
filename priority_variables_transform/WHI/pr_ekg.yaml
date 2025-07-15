@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht002118
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00154925
+        associated_visit: 
+          expr: '''WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP'''
+        observation_type: 
+          expr: '''OMOP:4274406'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht002118
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00155286
+                  unit: 
+                    expr: '''ms'''

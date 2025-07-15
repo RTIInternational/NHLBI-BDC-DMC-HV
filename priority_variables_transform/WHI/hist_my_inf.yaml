@@ -1,0 +1,76 @@
+- class_derivations:
+    Condition:
+      populated_from: pht000998
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00078435
+        associated_visit:
+          expr: '''WHI ELIGIBILITY'''
+        condition_concept:
+          expr: '''MONDO:0005068''' #myocardial infarction
+        condition_status:
+          populated_from: phv00078482
+          value_mappings:
+            '0': '''ABSENT'''
+            '1': '''PRESENT'''
+        condition_provenance:
+          expr: '''CLINICAL_DIAGNOSIS'''
+        relationship_to_participant:
+          expr: '''ONESELF'''
+- class_derivations:
+    Condition:
+      populated_from: pht003407
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193141
+        associated_visit:
+          expr: '''WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED'''
+        condition_concept:
+          expr: '''MONDO:0005068''' #myocardial infarction
+        condition_status:
+          populated_from: phv00193169
+          value_mappings:
+            '0': '''ABSENT'''
+            '1': '''PRESENT'''
+        condition_provenance:
+          expr: '''CLINICAL_DIAGNOSIS'''
+        relationship_to_participant:
+          expr: '''ONESELF'''          
+- class_derivations:
+    Condition:
+      populated_from: pht006223
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00283451
+        associated_visit:
+          expr: '''WHI UNC HEART FAILURE DETAILS'''
+        condition_concept:
+          expr: '''MONDO:0005068''' #myocardial infarction
+        condition_status:
+          populated_from: phv00283527
+          value_mappings:
+            '0': '''ABSENT'''
+            '1': '''PRESENT'''
+        condition_provenance:
+          expr: '''CLINICAL_DIAGNOSIS'''
+        relationship_to_participant:
+          expr: '''ONESELF'''
+- class_derivations:
+    Condition:
+      populated_from: pht006223
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00283451
+        associated_visit:
+          expr: '''WHI UNC HEART FAILURE DETAILS'''
+        condition_concept:
+          expr: '''MONDO:0005068''' #myocardial infarction
+        condition_status:
+          populated_from: phv00283527
+          value_mappings:
+            '0': '''ABSENT'''
+            '1': '''PRESENT'''
+        condition_provenance:
+          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+        relationship_to_participant:
+          expr: '''ONESELF'''          

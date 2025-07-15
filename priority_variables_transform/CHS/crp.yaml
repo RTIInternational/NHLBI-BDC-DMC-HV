@@ -1,0 +1,80 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001452
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00100285
+        associated_visit:
+          expr: '''CHS BASELINE BOTH'''
+        observation_type:
+          expr: '''OMOP:4208414''' #c reactive protein
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001452
+                slot_derivations:
+                  value_decimal:
+                    expr: {phv00100498} * 10
+                  unit:
+                    expr: '''mg/L'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001452
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00100285
+        associated_visit:
+          expr: '''CHS BASELINE BOTH'''
+        observation_type:
+          expr: '''OMOP:4208414''' #c reactive protein
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001452
+                slot_derivations:
+                  value_decimal:
+                    expr: {phv00100499} * 10
+                  unit:
+                    expr: '''mg/L'''                    
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001490
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00105099
+        associated_visit:
+          expr: '''CHS YEAR 5 NEW'''
+        observation_type:
+          expr: '''OMOP:4208414''' #c reactive protein
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001490
+                slot_derivations:
+                  value_decimal:
+                    expr: {phv00106421} * 10
+                  unit:
+                    expr: '''mg/L'''                    
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001491
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00106520
+        associated_visit:
+          expr: '''CHS YEAR 5 OLD'''
+        observation_type:
+          expr: '''OMOP:4208414''' #c reactive protein
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001491
+                slot_derivations:
+                  value_decimal:
+                    expr: {phv00107353} * 10
+                  unit:
+                    expr: '''mg/L'''                     

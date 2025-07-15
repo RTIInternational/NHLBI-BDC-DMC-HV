@@ -1,0 +1,20 @@
+- class_derivations:
+  MeasurementObservation:
+    populated_from: pht004319
+    slot_derivations:
+    associated_participant:
+      populated_from: phv00218989
+      associated_visit:
+        expr: '''MESA_AncilMesaEpigenomicCBC'''
+      observation_type:
+        expr: '''OMOP:37208699''' #Neutrophils count
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: pht004319
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00218999
+                unit:
+                  expr: '''10*3/uL''' #reported_units: x10E3/uL

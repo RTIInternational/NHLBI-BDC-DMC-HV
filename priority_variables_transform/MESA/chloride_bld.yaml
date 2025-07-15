@@ -1,0 +1,14 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003089
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00175973
+        associated_visit:
+          expr: 'MESA ANCILLARY'
+        value_decimal:
+          populated_from: phv00175983
+        observation_type:
+          expr: '''OBA:VT0003018'''
+        value_quantity.unit:
+          expr: '''mmol/L''' #listed as mEq/L, which is equivalent

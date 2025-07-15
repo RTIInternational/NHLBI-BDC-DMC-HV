@@ -1,0 +1,47 @@
+- class_derivations:
+    Condition:
+      populated_from: pht001121
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00082638	
+        associated_visit:
+          value: MESA FAMILY
+          range: string
+        condition_concept:
+          value: MONDO:0005252   #heart failure
+          range: string
+        condition_status:
+          populated_from: phv00087140
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001123
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087848
+        associated_visit:
+          value: MESA CLASSIC CVE
+          range: string
+        condition_concept:
+          value: MONDO:0005009   #congestive heart failure
+          range: string
+        condition_status:
+          populated_from: phv00087848
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string

@@ -1,0 +1,46 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000031
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00008379
+        associated_visit:
+          value: FHS OFFSPRING EXAM 2
+          range: string
+        observation_type:
+          value: OBA:VT0003018
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000031
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00008103
+                  unit:
+                    value: mmol/L
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001045
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00081012
+        associated_visit:
+          value: FHS ORIGINAL EXAM 20 AND EXAM 21
+          range: string
+        observation_type:
+          value: OBA:VT0003018
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001045
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00081017
+                  unit:
+                    value: mmol/L
+                    range: string

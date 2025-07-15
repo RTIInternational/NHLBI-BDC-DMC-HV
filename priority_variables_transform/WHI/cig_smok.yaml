@@ -1,0 +1,17 @@
+- class_derivations:
+    Observation:
+      populated_from: pht001003
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00078772
+        associated_visit:
+          expr: '''WHI PH 34'''
+        observation_type:
+          expr: '''OMOP:4282779'''
+        value_enum:
+          populated_from: phv00078825
+          value_mappings:
+            '0': '''OMOP:45883537''' #NEVER_SMOKED
+            '1': '''OMOP:45883458''' #FORMER_SOMKER
+            '2': '''OMOP:40766945''' #CURRENT_SMOKER 
+           

@@ -1,0 +1,20 @@
+- class_derivations:
+  MeasurementObservation:
+    populated_from: pht001120
+    slot_derivations:
+    associated_participant:
+      populated_from: phv00086726
+      associated_visit:
+        expr: '''MESA_Exam4Main'''
+      observation_type:
+        expr: '''OMOP:4213477''' #GFR
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: pht001120
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00111951
+                unit:
+                  expr: '''mL/min/{1.73_m2}''' #reported_units: ""

@@ -2,10 +2,16 @@ class_derivations:
   MeasurementObservation:
     populated_from: pht000823
     slot_derivations:
-      range_low.value_decimal: 5
-        unit: "'pg/mL'"
-      range_high.value_decimal: 35000
-        unit: "'pg/mL'"
+      range_low:
+        value_decimal:
+          expr: "'5'"
+        unit:
+          expr: "'pg/mL'"
+      range_high:
+        value_decimal:
+          expr: "'35000'"
+        unit:
+          expr: "'pg/mL'"
       associated_participant:
         populated_from: phv00073729
       associated_visit:

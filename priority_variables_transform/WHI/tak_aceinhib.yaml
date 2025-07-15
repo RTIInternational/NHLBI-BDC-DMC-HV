@@ -1,0 +1,24 @@
+- class_derivations:
+    DrugExposure:
+      populated_from: pht006223
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00283451
+        associated_visit:
+          value: WHI UNC HEART FAILURE DETAILS
+        drug_concept:
+          expr: case((phv00283673 == 1, RxCUI:C09A), None)
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+- class_derivations:
+    DrugExposure:
+      populated_from: pht006223
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00283451
+        associated_visit:
+          value: WHI UNC HEART FAILURE DETAILS
+        drug_concept:
+          expr: case((phv00283674 == 1, RxCUI:C09A), None)
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION

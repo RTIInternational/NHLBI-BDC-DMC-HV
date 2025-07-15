@@ -1,0 +1,60 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001451
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00099663
+        associated_visit:
+          expr: '''CHS BASELINE 2'''
+        observation_type:
+          expr: '''OMOP:4241837''' #FEV1
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001451
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00099665
+                  unit:
+                    expr: '''L'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001492
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00107443
+        associated_visit:
+          expr: '''CHS YEAR 6'''
+        observation_type:
+          expr: '''OMOP:4241837''' #FEV1
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001451
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00107763
+                  unit:
+                    expr: '''L'''                    
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001495
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00109768
+        associated_visit:
+          expr: '''CHS YEAR 9'''
+        observation_type:
+          expr: '''OMOP:4241837''' #FEV1
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001451
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00110365
+                  unit:
+                    expr: '''L'''                    

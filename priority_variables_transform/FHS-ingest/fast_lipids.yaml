@@ -1,0 +1,23 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000013
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00001803
+        associated_visit:
+          value: FHS ORIGINAL EXAM 11
+          range: string
+        observation_type:
+          value: OMOP:4150326
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000013
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00001586
+                  unit:
+                    value: mg/dL
+                    range: string

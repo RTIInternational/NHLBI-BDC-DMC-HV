@@ -1,0 +1,100 @@
+- class_derivations:
+  MeasurementObservation:
+    populated_from: pht001111
+    slot_derivations:
+    associated_participant:
+      populated_from: phv00082638
+      associated_visit:
+        expr: '''MESA_AirNRExamMain'''
+      observation_type:
+        expr: '''OMOP:37393605''' #D-Dimer
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00082971
+                unit:
+                  expr: '''mg/L''' #reported_units: ug/ml
+- class_derivations:
+  MeasurementObservation:
+    populated_from: pht001116
+    slot_derivations:
+    associated_participant:
+      populated_from: phv00084441
+      associated_visit:
+        expr: '''MESA_Exam1Main'''
+      observation_type:
+        expr: '''OMOP:37393605''' #D-Dimer
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00085017
+                unit:
+                  expr: '''mg/L''' #reported_units: ug/mL
+- class_derivations:
+  MeasurementObservation:
+    populated_from: pht001120
+    slot_derivations:
+    associated_participant:
+      populated_from: phv00086726
+      associated_visit:
+        expr: '''MESA_Exam4Main'''
+      observation_type:
+        expr: '''OMOP:37393605''' #D-Dimer
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: pht001120
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00086829
+                unit:
+                  expr: '''mg/L''' #reported_units: ug/ml
+- class_derivations:
+  MeasurementObservation:
+    populated_from: pht001121
+    slot_derivations:
+    associated_participant:
+      populated_from: phv00087070
+      associated_visit:
+        expr: '''MESA_FamilyExamMain'''
+      observation_type:
+        expr: '''OMOP:37393605''' #D-Dimer
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: pht001121
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00087663
+                unit:
+                  expr: '''mg/L''' #reported_units: ug/mL
+- class_derivations:
+  MeasurementObservation:
+    populated_from: pht002105
+    slot_derivations:
+    associated_participant:
+      populated_from: phv00150369
+      associated_visit:
+        expr: '''MESA_AncilMesaStressCortisol'''
+      observation_type:
+        expr: '''OMOP:37393605''' #D-Dimer
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: pht002105
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00160521
+                unit:
+                  expr: '''mg/L''' #reported_units: ug/ml

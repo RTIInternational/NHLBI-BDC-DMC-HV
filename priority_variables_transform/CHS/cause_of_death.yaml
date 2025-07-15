@@ -1,0 +1,21 @@
+- class_derivations:
+    Person:
+      populated_from: pht001464
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00100773
+        associated_visit:
+          expr: '''CHS SUMMARY'''
+        cause_of_death:
+          populated_from: phv00100775
+            value_mappings:
+              '1': '''ATHEROSCLEROTIC CHD'''
+              '2': '''CEREBROVASCULAR DISEASE'''
+              '3': '''OTHER ATHEROSCLEROTIC DISEASE'''
+              '4': '''OTHER CARDIOVASCULAR'''
+              '5': '''NON-CARDIOVASCULAR  SPC'''
+        vital_status:
+          populated_from: phv00100774
+          value_mappings:
+            '0': '''OMOP:4230556''' #ALIVE
+            '1': '''OMOP:434489''' #DEAD

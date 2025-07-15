@@ -1,0 +1,49 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002072
+      slot_derivations:
+        observation_type:
+          value: OMOP:8842
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002072
+                slot_derivations:
+                  value_decimal:
+                    expr: case(({phv00141866} >= 0.79, ({phv00141866} / 1000)),({phv00141868}
+                      == 1, "'LLOD'"), {phv00141866} / 1000)
+                  unit:
+                    value: ng/mL
+                    range: string
+        range_low:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002072
+                slot_derivations:
+                  value_decimal:
+                    value: '0.00078'
+                    range: string
+                  unit:
+                    value: ng/mL
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002072
+      slot_derivations:
+        observation_type:
+          value: OMOP:8842
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht006018
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00276804}'
+                  unit:
+                    value: ng/mL
+                    range: string

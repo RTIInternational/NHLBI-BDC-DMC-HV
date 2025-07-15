@@ -1,0 +1,60 @@
+- class_derivations:
+  MeasurementObservation:
+    populated_from: pht001118
+    slot_derivations:
+    associated_participant:
+      populated_from: phv00085772
+      associated_visit:
+        expr: '''MESA_Exam2Main'''
+      observation_type:
+        expr: '''OMOP:4184637''' #Hemoglobin A1c
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: pht001118
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00174583
+                unit:
+                  expr: '''%''' #reported_units: "percentage"
+- class_derivations:
+  MeasurementObservation:
+    populated_from: pht003086
+    slot_derivations:
+    associated_participant:
+      populated_from: phv00174584
+      associated_visit:
+        expr: '''MESA_AirNRExam5Main'''
+      observation_type:
+        expr: '''OMOP:4184637''' #Hemoglobin A1c
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: pht003086
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00175243
+                unit:
+                  expr: '''%''' #reported_units: "percentage"
+- class_derivations:
+  MeasurementObservation:
+    populated_from: pht003091
+    slot_derivations:
+    associated_participant:
+      populated_from: phv00176007
+      associated_visit:
+        expr: '''MESA_Exam5Main'''
+      observation_type:
+        expr: '''OMOP:4184637''' #Hemoglobin A1c
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: pht003091
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00176666
+                unit:
+                  expr: '''%''' #reported_units: "percentage"

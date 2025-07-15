@@ -1,8 +1,11 @@
-#pulmonary embolism
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht006005
     slot_derivations:
+      associated_participant:
+        populated_from: phv00273700
+      associated_visit:
+        expr: '''FHS NEW OFFSPRING SPOUSE EXAM 1'''
       condition_concept:
         expr: "'MONDO:0005279'"   #pulmonary embolism
       condition_status:
@@ -16,8 +19,12 @@ class_derivations:
         expr: "'ONESELF'"
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht000692
     slot_derivations:
+      associated_participant:
+        populated_from: phv00070736
+      associated_visit:
+        expr: '''FHS ORIGINAL EXAM 28'''   
       condition_concept:
         expr: "'MONDO:0005279'"   #pulmonary embolism
       condition_status:
@@ -30,8 +37,12 @@ class_derivations:
         expr: "'ONESELF'"
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht000074
     slot_derivations:
+      associated_participant:
+        populated_from: phv00021427
+      associated_visit:
+        expr: '''FHS GENERATION 3 EXAM 1'''       
       condition_concept:
         expr: "'MONDO:0005279'"   #pulmonary embolism
       condition_status:
@@ -46,60 +57,84 @@ class_derivations:
         expr: "'ONESELF'"
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht000744
     slot_derivations:
+      associated_participant:
+        populated_from: phv00071949
+      associated_visit:
+        expr: '''FHS DVT ORIGINAL, OFFSPRING, NEW OFFSPRING SPOUSE, GENERATION 3, OMNI1, OMNI2'''           
       condition_concept:
         expr: "'MONDO:0005279'"   #pulmonary embolism
       condition_status:
         populated_from: phv00071923 # PE by Pulmonary arteriogram, CTPA, or MRI
         value_mappings:
-          null : 'ABSENT' #condition is absent if source data string var is null
           'PE by pulmonary arteriogram, CTPA, or MRI': 'PRESENT'  #condition is present if source data string var has this value
       condition_provenance:
-        expr: "'OMOP:4822160'"
+        expr: '''CLINICAL_DIAGNOSIS'''
+      relationship_to_participant:
+        expr: "'ONESELF'"        
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht000744
     slot_derivations:
+      associated_participant:
+        populated_from: phv00071949
+      associated_visit:
+        expr: '''FHS DVT ORIGINAL, OFFSPRING, NEW OFFSPRING SPOUSE, GENERATION 3, OMNI1, OMNI2'''     
       condition_concept:
         expr: "'MONDO:0005279'"   #pulmonary embolism
       condition_status:
         populated_from: phv00071924 # PE by history and high probability ventilation/perfusion (V/Q) Scan
         value_mappings:
-          null : 'ABSENT' #condition is absent if source data string var is null
           'PE by history and high probability ventilation/perfusion (V/Q) Scan': 'PRESENT'  #condition is present if source data string var has this value
       condition_provenance:
-        expr: "'OMOP:4822160'"
+        expr: '''CLINICAL_DIAGNOSIS'''
+      relationship_to_participant:
+        expr: "'ONESELF'"        
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht000744
     slot_derivations:
+      associated_participant:
+        populated_from: phv00071949
+      associated_visit:
+        expr: '''FHS DVT ORIGINAL, OFFSPRING, NEW OFFSPRING SPOUSE, GENERATION 3, OMNI1, OMNI2'''      
       condition_concept:
         expr: "'MONDO:0005279'"   #pulmonary embolism
       condition_status:
         populated_from: phv00071925 #PE by clinical high suspicion & documented source of PE (DVT) 
         value_mappings:
-          null : 'ABSENT' #condition is absent if source data string var is null
           'PE by clinical high suspicion & documented source of PE (DVT)': 'PRESENT'  #condition is present if source data string var has this value
       condition_provenance:
-        expr: "'OMOP:4822160'"
+        expr: '''CLINICAL_DIAGNOSIS'''
+      relationship_to_participant:
+        expr: "'ONESELF'"        
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht000744
     slot_derivations:
+      associated_participant:
+        populated_from: phv00071949
+      associated_visit:
+        expr: '''FHS DVT ORIGINAL, OFFSPRING, NEW OFFSPRING SPOUSE, GENERATION 3, OMNI1, OMNI2'''    
       condition_concept:
         expr: "'MONDO:0005279'"   #pulmonary embolism
       condition_status:
         populated_from: phv00071926 # PE by autopsy
         value_mappings:
-          null : 'ABSENT' #condition is absent if source data string var is null
           'PE by autopsy': 'PRESENT'  #condition is present if source data string var has this value
       condition_provenance:
-        expr: "'OMOP:4822160'"
+        expr: '''CLINICAL_DIAGNOSIS'''
+      relationship_to_participant:
+        expr: "'ONESELF'"        
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht000744
     slot_derivations:
+      associated_participant:
+        populated_from: phv00071949
+      associated_visit:
+        expr: '''FHS DVT ORIGINAL, OFFSPRING, NEW OFFSPRING SPOUSE, GENERATION 3, OMNI1, OMNI2'''      
       condition_concept:
         expr: "'MONDO:0005279'"   #pulmonary embolism
       condition_status:
@@ -107,11 +142,17 @@ class_derivations:
         value_mappings:
           'No PE': 'ABSENT'  
       condition_provenance:
-        expr: "'OMOP:4822160'"
+        expr: '''CLINICAL_DIAGNOSIS'''
+      relationship_to_participant:
+        expr: "'ONESELF'"        
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht000744
     slot_derivations:
+      associated_participant:
+        populated_from: phv00071949
+      associated_visit:
+        expr: '''FHS DVT ORIGINAL, OFFSPRING, NEW OFFSPRING SPOUSE, GENERATION 3, OMNI1, OMNI2'''     
       condition_concept:
         expr: "'MONDO:0005279'"   #pulmonary embolism
       condition_status:
@@ -119,47 +160,18 @@ class_derivations:
         value_mappings:
           'Maybe PE': 'UNKNOWN'  
       condition_provenance:
-        expr: "'OMOP:4822160'"
-class_derivations:
-  Condition:
-    populated_from: FHS
-    slot_derivations:
-      condition_concept:
-        expr: "'MONDO:0005279'"   #pulmonary embolism
-      condition_status:
-        populated_from: phv00460989 # Have you ever had a pulmonary embolus
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-      condition_provenance:
-        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
+        expr: '''CLINICAL_DIAGNOSIS'''
       relationship_to_participant:
         expr: "'ONESELF'"
-class_derivations:
-  Condition:
-    populated_from: FHS
-    slot_derivations:
-      condition_concept:
-        expr: "'MONDO:0005279'"   #pulmonary embolism
-      condition_status:
-        populated_from: phv00461919 # Since your last provided medical information have you had: Pulmonary embolus
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-          '2': 'UNKNOWN'
-      condition_provenance:
-        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
-      relationship_to_participant:
-        expr: "'ONESELF'"
-
-
-
-
 # venous thrombosis
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht006005
     slot_derivations:
+      associated_participant:
+        populated_from: phv00273700
+      associated_visit:
+        expr: '''FHS NEW OFFSPRING SPOUSE EXAM 1'''    
       condition_concept:
         expr: "'MONDO:0005399'"   #venous thromboembolism
       condition_status:
@@ -173,8 +185,12 @@ class_derivations:
         expr: "'ONESELF'"
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht000028
     slot_derivations:
+      associated_participant:
+        populated_from: phv00007095
+      associated_visit:
+        expr: '''FHS ORIGINAL EXAM 26'''       
       condition_concept:
         expr: "'MONDO:0005399'"   #venous thromboembolism
       condition_status:
@@ -188,22 +204,12 @@ class_derivations:
         expr: "'ONESELF'"
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht000029
     slot_derivations:
-      condition_concept:
-        expr: "'MONDO:0005399'"   #venous thromboembolism
-      condition_status:
-        populated_from: phv00007028 # deep vein thrombosis
-        value_mappings:
-          '0': 'ABSENT'
-      condition_provenance:
-        expr: "'PATIENT_SELF-REPORTED_CONDITION'"
-      relationship_to_participant:
-        expr: "'ONESELF'"
-class_derivations:
-  Condition:
-    populated_from: FHS
-    slot_derivations:
+      associated_participant:
+        populated_from: phv00007534
+      associated_visit:
+        expr: '''FHS ORIGINAL EXAM 27'''     
       condition_concept:
         expr: "'MONDO:0005399'"   #venous thromboembolism
       condition_status:
@@ -217,8 +223,12 @@ class_derivations:
         expr: "'ONESELF'"
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht000692
     slot_derivations:
+      associated_participant:
+        populated_from: phv00070736
+      associated_visit:
+        expr: '''FHS ORIGINAL EXAM 28'''     
       condition_concept:
         expr: "'MONDO:0005399'"   #venous thromboembolism
       condition_status:
@@ -232,8 +242,12 @@ class_derivations:
         expr: "'ONESELF'"        
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht000036
     slot_derivations:
+      associated_participant:
+        populated_from: phv00010694
+      associated_visit:
+        expr: '''FHS OFFSPRING EXAM 7'''     
       condition_concept:
         expr: "'MONDO:0005399'"   #venous thromboembolism
       condition_status:
@@ -247,8 +261,12 @@ class_derivations:
         expr: "'ONESELF'"   
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht000036
     slot_derivations:
+      associated_participant:
+        populated_from: phv00010694
+      associated_visit:
+        expr: '''FHS OFFSPRING EXAM 7'''    
       condition_concept:
         expr: "'MONDO:0005399'"   #venous thromboembolism
       condition_status:
@@ -262,8 +280,12 @@ class_derivations:
         expr: "'ONESELF'"   
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht000036
     slot_derivations:
+      associated_participant:
+        populated_from: phv00010694
+      associated_visit:
+        expr: '''FHS OFFSPRING EXAM 7'''        
       condition_concept:
         expr: "'MONDO:0005399'"   #venous thromboembolism
       condition_status:
@@ -278,8 +300,12 @@ class_derivations:
         expr: "'ONESELF'"
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht000074 
     slot_derivations:
+      associated_participant:
+        populated_from: phv00021427
+      associated_visit:
+        expr: '''FHS GENERATION 3 EXAM 1'''      
       condition_concept:
         expr: "'MONDO:0005399'"   #venous thromboembolism
       condition_status:
@@ -294,8 +320,12 @@ class_derivations:
         expr: "'ONESELF'"  
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht000744
     slot_derivations:
+      associated_participant:
+        populated_from: phv00071949
+      associated_visit:
+        expr: '''FHS DVT ORIGINAL, OFFSPRING, NEW OFFSPRING SPOUSE, GENERATION 3, OMNI1, OMNI2'''  
       condition_concept:
         expr: "'MONDO:0005399'"   #venous thromboembolism
       condition_status:
@@ -305,13 +335,17 @@ class_derivations:
           '1': 'PRESENT'
           '2': 'UNKNOWN'
       condition_provenance:
-        expr: "'OMOP:4822126'" # observation recorded from EHR
+        expr: '''CLINICAL_DIAGNOSIS'''
       relationship_to_participant:
         expr: "'ONESELF'" 
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht000744
     slot_derivations:
+      associated_participant:
+        populated_from: phv00071949
+      associated_visit:
+        expr: '''FHS DVT ORIGINAL, OFFSPRING, NEW OFFSPRING SPOUSE, GENERATION 3, OMNI1, OMNI2'''  
       condition_concept:
         expr: "'MONDO:0005399'"   #venous thromboembolism
       condition_status:
@@ -321,13 +355,17 @@ class_derivations:
           '1': 'PRESENT'
           '2': 'UNKNOWN'
       condition_provenance:
-        expr: "'OMOP:4822126'" # observation recorded from EHR
+        expr: '''CLINICAL_DIAGNOSIS''' # observation recorded from EHR
       relationship_to_participant:
         expr: "'ONESELF'" 
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht000744
     slot_derivations:
+      associated_participant:
+        populated_from: phv00071949
+      associated_visit:
+        expr: '''FHS DVT ORIGINAL, OFFSPRING, NEW OFFSPRING SPOUSE, GENERATION 3, OMNI1, OMNI2'''  
       condition_concept:
         expr: "'MONDO:0005399'"   #venous thromboembolism
       condition_status:
@@ -337,13 +375,17 @@ class_derivations:
           '1': 'PRESENT'
           '2': 'UNKNOWN'
       condition_provenance:
-        expr: "'OMOP:4822126'" # observation recorded from EHR
+        expr: '''CLINICAL_DIAGNOSIS'''
       relationship_to_participant:
         expr: "'ONESELF'" 
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht000744
     slot_derivations:
+      associated_participant:
+        populated_from: phv00071949
+      associated_visit:
+        expr: '''FHS DVT ORIGINAL, OFFSPRING, NEW OFFSPRING SPOUSE, GENERATION 3, OMNI1, OMNI2'''  
       condition_concept:
         expr: "'MONDO:0005399'"   #venous thromboembolism
       condition_status:
@@ -353,13 +395,17 @@ class_derivations:
           '1': 'PRESENT'
           '2': 'UNKNOWN'
       condition_provenance:
-        expr: "'OMOP:4822126'" # observation recorded from EHR
+        expr: '''CLINICAL_DIAGNOSIS'''
       relationship_to_participant:
         expr: "'ONESELF'" 
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht000744
     slot_derivations:
+      associated_participant:
+        populated_from: phv00071949
+      associated_visit:
+        expr: '''FHS DVT ORIGINAL, OFFSPRING, NEW OFFSPRING SPOUSE, GENERATION 3, OMNI1, OMNI2'''  
       condition_concept:
         expr: "'MONDO:0005399'"   #venous thromboembolism
       condition_status:
@@ -367,11 +413,17 @@ class_derivations:
         value_mappings:
           'DVT': 'PRESENT'  
       condition_provenance:
-        expr: "'OMOP:4822160'"
+        expr: '''CLINICAL_DIAGNOSIS'''
+      relationship_to_participant:
+        expr: "'ONESELF'"         
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht000744
     slot_derivations:
+      associated_participant:
+        populated_from: phv00071949
+      associated_visit:
+        expr: '''FHS DVT ORIGINAL, OFFSPRING, NEW OFFSPRING SPOUSE, GENERATION 3, OMNI1, OMNI2'''  
       condition_concept:
         expr: "'MONDO:0005399'"   #venous thromboembolism
       condition_status:
@@ -379,11 +431,17 @@ class_derivations:
         value_mappings:
           'No DVT': 'ABSENT'  
       condition_provenance:
-        expr: "'OMOP:4822160'"
+        expr: '''CLINICAL_DIAGNOSIS'''
+      relationship_to_participant:
+        expr: "'ONESELF'"         
 class_derivations:
   Condition:
-    populated_from: FHS
+    populated_from: pht000744
     slot_derivations:
+      associated_participant:
+        populated_from: phv00071949
+      associated_visit:
+        expr: '''FHS DVT ORIGINAL, OFFSPRING, NEW OFFSPRING SPOUSE, GENERATION 3, OMNI1, OMNI2''' 
       condition_concept:
         expr: "'MONDO:0005399'"   #venous thromboembolism
       condition_status:
@@ -391,7 +449,7 @@ class_derivations:
         value_mappings:
           'Maybe DVT': 'UNKNOWN'  
       condition_provenance:
-        expr: "'OMOP:4822160'"
+        expr: '''CLINICAL_DIAGNOSIS'''
 class_derivations:
   Condition:
     populated_from: FHS

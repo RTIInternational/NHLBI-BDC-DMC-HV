@@ -1,0 +1,140 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001111
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00082638
+        associated_visit:
+          expr: '''MESA AIR EXAM'''
+        observation_type:
+          expr: '''OMOP:36303297''' #cesd score
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001111
+                slot_derivations:
+                  value_integer:
+                    populated_from: phv00082949
+                  unit:
+                    expr: '''{score}'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00084441
+        associated_visit:
+          expr: '''MESA CLASSIC EXAM 1'''
+        observation_type:
+          expr: '''OMOP:36303297''' #cesd score
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001116
+                slot_derivations:
+                  value_integer:
+                    populated_from: phv00084787
+                  unit:
+                    expr: '''{score}'''                    
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001119
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00086258
+        associated_visit:
+          expr: '''MESA CLASSIC EXAM 3'''
+        observation_type:
+          expr: '''OMOP:36303297''' #cesd score
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001119
+                slot_derivations:
+                  value_integer:
+                    populated_from: phv00086398
+                  unit:
+                    expr: '''{score}'''                     
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001120
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00086726
+        associated_visit:
+          expr: '''MESA CLASSIC EXAM 4'''
+        observation_type:
+          expr: '''OMOP:36303297''' #cesd score
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001120
+                slot_derivations:
+                  value_integer:
+                    populated_from: phv00086819
+                  unit:
+                    expr: '''{score}'''                     
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001121
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087070
+        associated_visit:
+          expr: '''MESA FAMILY'''
+        observation_type:
+          expr: '''OMOP:36303297''' #cesd score
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001121
+                slot_derivations:
+                  value_integer:
+                    populated_from: phv00087477
+                  unit:
+                    expr: '''{score}'''              
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003086
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00174584
+        associated_visit:
+          expr: '''MESA AIR EXAM 5'''
+        observation_type:
+          expr: '''OMOP:36303297''' #cesd score
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003086
+                slot_derivations:
+                  value_integer:
+                    populated_from: phv00175236
+                  unit:
+                    expr: '''{score}'''                   
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003091
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00176007
+        associated_visit:
+          expr: '''MESA CLASSIC EXAM 5'''
+        observation_type:
+          expr: '''OMOP:36303297''' #cesd score
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003086
+                slot_derivations:
+                  value_integer:
+                    populated_from: phv00176659
+                  unit:
+                    expr: '''{score}'''                    

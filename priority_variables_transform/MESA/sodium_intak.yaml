@@ -1,0 +1,20 @@
+- class_derivations:
+  MeasurementObservation:
+    populated_from: pht004317
+    slot_derivations:
+    associated_participant:
+      populated_from: phv00218303
+      associated_visit:
+        expr: '''MESA_exam5dietnutrients'''
+      observation_type:
+        expr: '''OMOP:606729''' #Sodium intake
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: pht004317
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00218866
+                unit:
+                  expr: '''mg/d''' #reported_units: mg

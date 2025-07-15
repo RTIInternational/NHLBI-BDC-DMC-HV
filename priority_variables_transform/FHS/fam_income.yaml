@@ -15,9 +15,10 @@ class_derivations:
           '3': $35,000 - $54,999
           '4': $55,000 - $74,999
           '5': $75,000 - $100,000
-          '6': > $100,000
+          '6': '> $100,000'
           '9': UNKNOWN
-        value_quantity.unit: "'USD'"
+      value_quantity.unit:
+        expr: "'USD'"
 class_derivations:
   Observation:
     populated_from: FHS
@@ -35,8 +36,9 @@ class_derivations:
           '3': $25,000 - $49,999
           '4': $50,000 - $74,999
           '5': $75,000 - $100,000
-          '6': > $100,000
-        value_quantity.unit: "'USD'"    
+          '6': '> $100,000'
+      value_quantity.unit:
+        expr: "'USD'"
 class_derivations:
   Observation:
     populated_from: FHS
@@ -54,8 +56,9 @@ class_derivations:
           '3': $25,000 - $49,999
           '4': $50,000 - $74,999
           '5': $75,000 - $100,000
-          '6': > $100,000
-        value_quantity.unit: "'USD'"    
+          '6': '> $100,000'
+      value_quantity.unit:
+        expr: "'USD'"
 class_derivations:
   Observation:
     populated_from: FHS
@@ -67,4 +70,5 @@ class_derivations:
       observation_type: "'OMOP:4076114'" #family income
       value_quantity.value_decimal:
         populated_from: phv00022428
-      value_quantity.unit: "'USD'"    
+      value_quantity.unit:
+        expr: "'USD'"

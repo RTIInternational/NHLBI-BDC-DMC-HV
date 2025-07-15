@@ -1,0 +1,72 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht000987
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00077369
+        associated_visit: 
+          value: WHI CORE
+          range: string
+        observation_type: 
+          expr: case((phv00077373 >= 12, OMOP:4041720), OBA:VT0000184)
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000987
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00077386
+                  unit: 
+                    value: mg/dl
+                    range: string
+        method_type:
+          expr: case((phv00077373 >= 12, '''Fasted minimum 12 hours'''), None)                     
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht000987
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00077369
+        associated_visit: 
+          value: WHI CORE
+          range: string
+        observation_type: 
+          expr: case((phv00077373 >= 12, OMOP:4041720), OBA:VT0000184)
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000987
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00077387
+                  unit: 
+                    value: mg/dl
+                    range: string
+        method_type:
+          expr: case((phv00077373 >= 12, '''Fasted minimum 12 hours'''), None)                      
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht000987
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00077369
+        associated_visit: 
+          value: WHI CORE
+          range: string
+        observation_type: 
+          expr: case((phv00077373 >= 12, OMOP:4041720), OBA:VT0000184)
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000987
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00077388
+                  unit: 
+                    value: mg/dl
+                    range: string
+        method_type:
+          expr: case((phv00077373 >= 12, '''Fasted minimum 12 hours'''), None)  

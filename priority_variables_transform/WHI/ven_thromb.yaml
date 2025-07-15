@@ -1,0 +1,523 @@
+- class_derivations:
+    Condition:
+      populated_from: pht000998
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00078435
+        associated_visit:
+          value: WHI ELIGIBILITY
+        condition_concept:
+          value: HP:0002625 #DVT
+        condition_status:
+          expr: case((phv00078472 == 0, ABSENT), case(phv00078473 == 0, HISTORICAL), PRESENT)
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht000998
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00078435
+        associated_visit:
+          value: WHI ELIGIBILITY
+        condition_concept:
+          value: MONDO:0005279 #PE
+        condition_status:
+          expr: case((phv00078475 == 0, ABSENT), case(phv00078476 == 0, HISTORICAL), PRESENT)
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht002769
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00170566
+        associated_visit:
+          value: WHI CAD
+        condition_concept:
+          value: HP:0002625 #DVT
+        condition_status:
+          populated_from: phv00170567
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht002769
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00170566
+        associated_visit:
+          value: WHI CAD
+        condition_concept:
+          value: MONDO:0005279 #PE
+        condition_status:
+          populated_from: phv00170569
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht002770
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00170648
+        associated_visit:
+          value: WHI CTOS
+        condition_concept:
+          value: HP:0002625 #DVT
+        condition_status:
+          populated_from: phv00170649
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht002770
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00170648
+        associated_visit:
+          value: WHI CTOS
+        condition_concept:
+          value: MONDO:0005279 #PE
+        condition_status:
+          populated_from: phv00170651
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht003402
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00192476
+        associated_visit:
+          value: WHI CAD
+        condition_concept:
+          value: HP:0002625 #DVT
+        condition_status:
+          populated_from: phv00192501
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht003407
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193141
+        associated_visit:
+          value: WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED
+        condition_concept:
+          value: HP:0002625 #DVT
+        condition_status:
+          populated_from: phv00193178
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht003410
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193552
+        associated_visit:
+          value: WHI DVTPE
+        condition_concept:
+          value: HP:0002625 #DVT
+        condition_status:
+          populated_from: phv00193554
+          value_mappings:
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht003410
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193552
+        associated_visit:
+          value: WHI DVTPE
+        condition_concept:
+          value: MONDO:0005279 #PE
+        condition_status:
+          populated_from: phv00193555
+          value_mappings:
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht003410
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193552
+        associated_visit:
+          value: WHI DVTPE
+        condition_concept:
+          value: HP:0002625 #DVT
+        condition_status:
+          populated_from: phv00193557
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht003410
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193552
+        associated_visit:
+          value: WHI DVTPE
+        condition_concept:
+          value: HP:0002625 #DVT
+        condition_status:
+          populated_from: phv00193558
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht003410
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193552
+        associated_visit:
+          value: WHI DVTPE
+        condition_concept:
+          value: HP:0002625 #DVT
+        condition_status:
+          populated_from: phv00193559
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht003410
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193552
+        associated_visit:
+          value: WHI DVTPE
+        condition_concept:
+          value: HP:0002625 #DVT
+        condition_status:
+          populated_from: phv00193560
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht003410
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193552
+        associated_visit:
+          value: WHI DVTPE
+        condition_concept:
+          value: HP:0002625 #DVT
+        condition_status:
+          populated_from: phv00193561
+          value_mappings:
+            '0': ABSENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht003410
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193552
+        associated_visit:
+          value: WHI DVTPE
+        condition_concept:
+          value: MONDO:0005279 #PE
+        condition_status:
+          populated_from: phv00193565
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht003410
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193552
+        associated_visit:
+          value: WHI DVTPE
+        condition_concept:
+          value: MONDO:0005279 #PE
+        condition_status:
+          populated_from: phv00193566
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht003410
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193552
+        associated_visit:
+          value: WHI DVTPE
+        condition_concept:
+          value: MONDO:0005279 #PE
+        condition_status:
+          populated_from: phv00193567
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht003410
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193552
+        associated_visit:
+          value: WHI DVTPE
+        condition_concept:
+          value: MONDO:0005279 #PE
+        condition_status:
+          populated_from: phv00193568
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht003410
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193552
+        associated_visit:
+          value: WHI DVTPE
+        condition_concept:
+          value: MONDO:0005279 #PE
+        condition_status:
+          populated_from: phv00193569
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht003414
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193686
+        associated_visit:
+          value: WHI EXTENSION STUDY 2 SRC
+        condition_concept:
+          value: HP:0002625 #DVT
+        condition_status:
+          populated_from: phv00202394
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht003414
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193686
+        associated_visit:
+          value: WHI EXTENSION STUDY 2 SRC
+        condition_concept:
+          value: MONDO:0005279 #PE
+        condition_status:
+          populated_from: phv00193691
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht003414
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193686
+        associated_visit:
+          value: WHI EXTENSION STUDY 2 SRC
+        condition_concept:
+          value: MONDO:0005279 #PE
+        condition_status:
+          populated_from: phv00193693
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht003414
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193686
+        associated_visit:
+          value: WHI EXTENSION STUDY 2 SRC
+        condition_concept:
+          value: MONDO:0005399 #venous thromboembolism
+        condition_status:
+          populated_from: phv00193695
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht003414
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193686
+        associated_visit:
+          value: WHI EXTENSION STUDY 2 SRC
+        condition_concept:
+          value: MONDO:0005399 #venous thromboembolism
+        condition_status:
+          populated_from: phv00193697
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht006223
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00283451
+        associated_visit:
+          value: WHI UNC HEART FAILURE DETAILS
+        condition_concept:
+          value: MONDO:0005279 #PE
+        condition_status:
+          populated_from: phv00283512
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht006223
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00283451
+        associated_visit:
+          value: WHI UNC HEART FAILURE DETAILS
+        condition_concept:
+          value: HP:0002625 #DVT
+        condition_status:
+          populated_from: phv00283701
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht006223
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00283451
+        associated_visit:
+          value: WHI UNC HEART FAILURE DETAILS
+        condition_concept:
+          value: MONDO:0005279 #PE
+        condition_status:
+          populated_from: phv00283703
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+        relationship_to_participant:
+          value: ONESELF

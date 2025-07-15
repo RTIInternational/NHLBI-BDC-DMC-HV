@@ -1,0 +1,51 @@
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht002118
+      slot_derivations: 
+        associated_participant:
+          populated_from: phv00154925
+        associated_visit:
+          expr: '''WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP'''
+      observations:
+        MeasurementObservation:
+          slot_derivations:
+            observation_type:
+              expr: '''OMOP:4274406''' # PR interval
+            value_quantity:
+              object_derivations:
+              - class_derivations:
+                  Quantity:
+                    populated_from: pht002118
+                    slot_derivations:
+                      value_decimal:
+                        populated_from: phv00155286
+                      unit:
+                        expr: '''ms'''
+        MeasurementObservation:
+          slot_derivations:
+            observation_type:
+              expr: '''OMOP:4273021''' # QRS interval
+            value_quantity:
+              object_derivations:
+              - class_derivations:
+                  Quantity:
+                    populated_from: pht002118
+                    slot_derivations:
+                      value_decimal:
+                        populated_from: phv00155364
+                      unit:
+                        expr: '''ms'''
+         MeasurementObservation:
+          slot_derivations:
+            observation_type:
+              expr: '''OMOP:4273023''' # QT interval
+            value_quantity:
+              object_derivations:
+              - class_derivations:
+                  Quantity:
+                    populated_from: pht002118
+                    slot_derivations:
+                      value_decimal:
+                        populated_from: phv00155366
+                      unit:
+                        expr: '''ms'''

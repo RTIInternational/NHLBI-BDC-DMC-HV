@@ -1,0 +1,23 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002889
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00172159
+        associated_visit:
+          value: FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2
+          range: string
+        observation_type:
+          value: OMOP:37397924
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002889
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00172185
+                  unit:
+                    value: '%'
+                    range: string

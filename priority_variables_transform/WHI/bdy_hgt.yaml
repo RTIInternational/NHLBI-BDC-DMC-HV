@@ -1,0 +1,69 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001019
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00079849
+        associated_visit: 
+          value: WHI PM 80
+          range: string
+        observation_type: 
+          value: OBA:VT0001253
+          range: string
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001019
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00079858
+                  unit: 
+                    value: cm
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006217
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00283284
+        associated_visit: 
+          value: WHI LLS
+          range: string
+        observation_type: 
+          value: OBA:VT0001253
+          range: string
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006217
+                slot_derivations:
+                  value_decimal:
+                    expr: {phv00283311} * 2.54
+                  unit: 
+                    value: cm
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006223
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00283451
+        associated_visit: 
+          value: WHI UNC HEART FAILURE DETAILS
+          range: string
+        observation_type: 
+          value: OBA:VT0001253
+          range: string
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006223
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00283539
+                  unit: 
+                    value: cm
+                    range: string

@@ -1,0 +1,95 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000030
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00007675
+        associated_visit:
+          value: FHS OFFSPRING EXAM 1
+          range: string
+        observation_type:
+          value: OBA:2050062
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000031
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00008098
+                  unit:
+                    value: '[IU]/L'
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002889
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00172159
+        associated_visit:
+          value: FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2
+          range: string
+        observation_type:
+          value: OBA:2050062
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002889
+                slot_derivations:
+                  value_decimal:
+                    expr: case(({phv00172166} > 5.0, {phv00172166}), case(({phv00172202}
+                      == 1, "'LLOD'"), {phv00172166})
+                  unit:
+                    value: '[IU]/L'
+                    range: string
+        range_low:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002889
+                slot_derivations:
+                  value_decimal:
+                    value: '5.0'
+                    range: string
+                  unit:
+                    value: '[IU]/L'
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004802
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00227023
+        associated_visit:
+          value: FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4
+          range: string
+        observation_type:
+          value: OBA:2050062
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004802
+                slot_derivations:
+                  value_decimal:
+                    expr: case(({phv00227050} > 5.0, {phv00227050}), case(({phv00227066}
+                      == 1, "'LLOD'"), {phv00227050})
+                  unit:
+                    value: '[IU]/L'
+                    range: string
+        range_low:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004802
+                slot_derivations:
+                  value_decimal:
+                    value: '5.0'
+                    range: string
+                  unit:
+                    value: '[IU]/L'
+                    range: string

@@ -1,0 +1,40 @@
+- class_derivations:
+  MeasurementObservation:
+    populated_from: pht003086
+    slot_derivations:
+    associated_participant:
+      populated_from: phv00174584
+      associated_visit:
+        expr: '''MESA_AirNRExam5Main'''
+      observation_type:
+        expr: '''OMOP:2212294''' #Creatinine in blood
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: pht003086
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00175241
+                unit:
+                  expr: '''mg/dL''' #reported_units: mg/dl
+- class_derivations:
+  MeasurementObservation:
+    populated_from: pht003091
+    slot_derivations:
+    associated_participant:
+      populated_from: phv00176007
+      associated_visit:
+        expr: '''MESA_Exam5Main'''
+      observation_type:
+        expr: '''OMOP:2212294''' #Creatinine in blood
+      value_quantity:
+        object_derivations:
+        - class_derivations:
+            Quantity:
+              populated_from: pht003091
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00176664
+                unit:
+                  expr: '''mg/dL''' #reported_units: mg/dl

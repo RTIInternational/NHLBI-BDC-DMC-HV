@@ -1,0 +1,186 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001111
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00082638			
+        associated_visit:
+          expr: 'MESA AIR EXAM'
+        observation_type:
+          expr: case((phv00083303 >= 12, '''OBA:VT0000180'''), '''OBA:VT0000180''') 
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001111
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00082956
+                  unit:
+                    expr: '''mg/dL'''
+        method_type:
+          expr: case((phv00083303 >= 12, '''Fasted minimum 12 hours'''), None)    
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00084441			
+        associated_visit:
+          expr: 'MESA CLASSIC EXAM 1'
+        observation_type:
+          expr: case((phv00084980 >= 12, '''OBA:VT0000180'''), '''OBA:VT0000180''') 
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001116
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00084974
+                  unit:
+                    expr: '''mg/dL'''
+        method_type:
+          expr: case((phv00084980 >= 12, '''Fasted minimum 12 hours'''), None)       
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001118
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00085772		
+        associated_visit:
+          expr: 'MESA CLASSIC EXAM 2'
+        observation_type:
+        expr: 'OBA:VT0000180'	#blood cholesterol amount
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001118
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00085921
+                  unit:
+                    expr: '''mg/dL'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001119
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00086258		
+        associated_visit:
+          expr: 'MESA CLASSIC EXAM 3'
+        observation_type:
+        expr: 'OBA:VT0000180'	#blood cholesterol amount
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001119
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00086404
+                  unit:
+                    expr: '''mg/dL'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001120
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00086726		
+        associated_visit:
+          expr: 'MESA CLASSIC EXAM 4'
+        observation_type:
+        expr: 'OBA:VT0000180'	#blood cholesterol amount
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001120
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00086836
+                  unit:
+                    expr: '''mg/dL'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001121
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087070		
+        associated_visit:
+          expr: 'MESA FAMILY'
+        observation_type:
+          expr: case((phv00087524 >= 12, '''OBA:VT0000180'''), '''OBA:VT0000180''') 
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001121
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00087100
+                  unit:
+                    expr: '''mg/dL'''
+        method_type:
+          expr: case((phv00087524 >= 12, '''Fasted minimum 12 hours'''), None) 
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003086
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00174584	
+        associated_visit:
+          expr: 'MESA CLASSIC EXAM 5'
+        observation_type:
+        expr: 'OBA:VT0000180'	#blood cholesterol amount
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003086
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00175242
+                  unit:
+                    expr: '''mg/dL'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003087
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00175794	
+        associated_visit:
+          expr: 'MESA LUNG CT'
+        observation_type:
+        expr: 'OBA:VT0000180'	#blood cholesterol amount
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003087
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00175867
+                  unit:
+                    expr: '''mg/dL'''
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003091
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00176007	
+        associated_visit:
+          expr: 'MESA CLASSIC EXAM 5'
+        observation_type:
+        expr: 'OBA:VT0000180'	#blood cholesterol amount
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003091
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00176665
+                  unit:
+                    expr: '''mg/dL'''

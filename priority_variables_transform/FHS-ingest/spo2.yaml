@@ -1,0 +1,27 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht006018
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00276803
+        associated_visit:
+          value: FHS ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE, OMNI
+            1, OMNI 2 CASE REVIEW
+          range: string
+        method_type:
+          value: lowest of repeated measurements
+          range: string
+        observation_type:
+          value: OBA:2045443
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht006018
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00276851
+                  unit:
+                    value: '%'
+                    range: string

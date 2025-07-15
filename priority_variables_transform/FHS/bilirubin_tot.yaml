@@ -45,8 +45,10 @@ class_derivations:
       value_quantity.unit:
         expr: "'mg/dL'"
       range_low:
-        value_decimal: 0.1
-        unit: mg/dL 
+        value_decimal:
+          expr: "' 0.1'"
+        unit:
+          expr: "'mg/dL '"
 class_derivations:
   MeasurementObservation:
     populated_from: FHS
