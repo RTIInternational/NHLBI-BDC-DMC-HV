@@ -1,6 +1,7 @@
 import pandas as pd
 import gspread
 from gspread_dataframe import set_with_dataframe, get_as_dataframe
+import re
 
 def root_dir():
     # this script is currently in the root directory, so
@@ -18,8 +19,8 @@ def main():
         'machine-readable label':   sheet['Variable (Machine Readable Name)'],
         'datatype':                 sheet['Standardized Data Type'],
         'unit':                     sheet['Standardized Unit'],
-        'OMOP concept id as CURIE': 'OMOP:' + sheet['OMOP Standard Concept ID'].astype(str),
-        'OMOP UCUM id as CURIE':    sheet['OMOP UCUM CURIE'],
+        'OMOP CURIE':               sheet['OMOP Standard Concept ID'].astype(str),
+        # 'OMOP UCUM id as CURIE':    sheet['OMOP UCUM CURIE'],
         'OBA CURIE':                sheet['OBA CURIE'],
         'UCUM unit':                sheet['UCUM unit'],
         'Text definition':          sheet['Text definition'],
@@ -44,20 +45,34 @@ def main():
                     f.write(f"{row['Text definition']}\n\n")
                 
                 f.write("**Properties:**\n")
-                f.write(f"- **Datatype:** {row['datatype']}\n")
+
+                dt = row['datatype']
+                if dt.endswith('Enum'):
+                    f.write(f"- **Datatype:** [{row['datatype']}](https://rtiinternational.github.io/NHLBI-BDC-DMC-HM/{row['datatype']})\n")
+                else:
+                    f.write(f"- **Datatype:** {row['datatype']}\n")
+
                 if row['unit']:
                     f.write(f"- **Unit:** {row['unit']}\n")
                 if row['UCUM unit']:
                     f.write(f"- **UCUM Unit:** {row['UCUM unit']}\n")
                 
                 f.write("\n**Ontology References:**\n")
-                if row['OMOP concept id as CURIE'] and not row['OMOP concept id as CURIE'].endswith('nan'):
-                    f.write(f"- **OMOP:** {row['OMOP concept id as CURIE']}\n")
+                if row['OMOP CURIE'] and not row['OMOP CURIE'].endswith('nan'):
+                    f.write(f"- **OMOP:** [OMOP:{row['OMOP CURIE']}](https://athena.ohdsi.org/search-terms/terms/{row['OMOP CURIE']})\n")
                 if row['OBA CURIE']:
-                    f.write(f"- **OBA:** {row['OBA CURIE']}\n")
-                if row['OMOP UCUM id as CURIE']:
-                    f.write(f"- **OMOP UCUM:** {row['OMOP UCUM id as CURIE']}\n")
-                
+                    oc = row['OBA CURIE']
+                    if oc == 'REQUESTED':
+                        f.write(f"- **OBA:** [REQUESTED](https://github.com/obophenotype/bio-attribute-ontology/issues/364)\n")
+                    elif not oc:
+                        pass
+                    elif not re.match(r'^OBA:(VT)?\d+$', oc):
+                        f.write(f"- **OBA:** {oc}\n")
+                        print(oc)
+                    else:
+                        f.write(f"- **OBA:** [{oc}](http://purl.obolibrary.org/obo/{oc.replace(':', '_')})\n")
+                # if row['OMOP UCUM id as CURIE']: f.write(f"- **OMOP UCUM:** {row['OMOP UCUM id as CURIE']}\n")
+
                 f.write("\n---\n\n")
 
     pass
