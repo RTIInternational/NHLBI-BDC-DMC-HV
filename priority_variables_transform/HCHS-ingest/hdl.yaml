@@ -8,6 +8,6 @@
           value: HCHS EXAM
           range: string
         observation_type:
-          expr: case(({phv00253225} >= 12, '''"OMOP:4041557"'''), '''OBA:VT0000184''')
+          expr: case(({phv00253225} >= 12, '''"OMOP:4041557"'''), (True, '''OBA:VT0000184'''))
         method_type:
-          expr: case(({phv00253225} >= 12, '''Fasted minimum 12 hours'''), None)
+          expr: case(({phv00253225} >= 12, '''Fasted minimum 12 hours'''))
