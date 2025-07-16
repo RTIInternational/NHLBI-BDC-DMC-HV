@@ -1,0 +1,14 @@
+- class_derivations:
+    Demography:
+      populated_from: pht004715
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00226250
+        sex:
+          populated_from: phv00226279
+          value_mappings:
+            M: '''OMOP:8507'''
+            F: '''OMOP:8532'''
+        ethnicity:
+          value: OMOP:38003563
+          range: string

@@ -9,4 +9,4 @@
         observation_type:
           expr: '''OMOP:4282779''' #cigarette smoking
         value_enum:
-          expr: case(((phv00258107 == 3, '''OMOP:45883537'''), case((phv00258107 == 1, '''OMOP:40766945'''), case(phv00258110 == NULL, '''OMOP:45883458'''), '''OMOP:40766945'''))
+          expr: case((phv00258107 == 3, OMOP:45883537), (phv00258107 == 1, OMOP:40766945), (phv00258110 == NULL, OMOP:45883458), (True, OMOP:40766945))

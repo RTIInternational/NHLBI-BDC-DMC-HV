@@ -1,0 +1,46 @@
+- class_derivations:
+    Condition:
+      populated_from: pht004715
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00100285
+        associated_visit:
+          value: HCHS EXAM
+          range: string
+        condition_concept:
+          value: MONDO:0005068
+          range: string
+        condition_status:
+          populated_from: phv00226366
+          value_mappings:
+            '0': '''ABSENT'''
+            '1': '''PRESENT'''
+        condition_provenance:
+          value: CLILNICAL_DIAGNOSIS
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht004715
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00100285
+        associated_visit:
+          value: HCHS EXAM
+          range: string
+        condition_concept:
+          value: MONDO:0005068
+          range: string
+        condition_status:
+          populated_from: phv00258068
+          value_mappings:
+            '0': '''ABSENT'''
+            '1': '''PRESENT'''
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
