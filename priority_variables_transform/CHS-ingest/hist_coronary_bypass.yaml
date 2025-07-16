@@ -1,0 +1,56 @@
+- class_derivations:
+    Procedure:
+      populated_from: pht001450
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00098771
+        associated_visit:
+          value: CHS BASELINE 2
+          range: string
+        procedure_concept:
+          expr: case(({phv00099031} == 1, '''"OMOP:4336464"'''))
+        procedure_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+- class_derivations:
+    Procedure:
+      populated_from: pht001452
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00100321
+        associated_visit:
+          value: CHS BASELINE BOTH
+          range: string
+        procedure_concept:
+          expr: case(({phv00100322} == 1, '''"OMOP:4336464"'''))
+        procedure_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+- class_derivations:
+    Procedure:
+      populated_from: pht001464
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00100773
+        associated_visit:
+          value: CHS SUMMARY
+          range: string
+        procedure_concept:
+          expr: case(({phv00100785} == 1, '''"OMOP:4336464"'''))
+        procedure_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+- class_derivations:
+    Procedure:
+      populated_from: pht001490
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00105099
+        associated_visit:
+          value: CHS SUMMARY
+          range: string
+        procedure_concept:
+          expr: case(({phv00105974} == 1, '''"OMOP:4336464"'''))
+        procedure_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string

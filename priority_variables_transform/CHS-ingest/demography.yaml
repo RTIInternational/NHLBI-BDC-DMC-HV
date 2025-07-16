@@ -1,0 +1,159 @@
+- class_derivations:
+    Demography:
+      populated_from: pht001450
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00098771
+        sex:
+          populated_from: phv00098797
+          value_mappings:
+            '1': '''OMOP:8507'''
+            '0': '''OMOP:8532'''
+        ethnicity:
+          expr: case(({phv00099434} == 1, ""OMOP:38003563""), ({phv00098800} == 'MEXICAN',
+            ""OMOP:38003563""), ({phv00098800} == 'HISPANIC', ""OMOP:38003563""),
+            (True, ""OMOP:38003564""))
+        race:
+          expr: 'case(({phv00099569} == 1, ""OMOP:8527""), ({phv00099569} == 2, ""OMOP:8516""),
+            ({phv00099569} == 3, ""OMOP:8657""), ({phv00099569} == 4, ""OMOP:8515""),
+            ({phv00098800} == ''NEGRO'', ""OMOP:8516""),({phv00098800} == ''COLORED'',
+            "OMOP: 8516"), ({phv00098800} == ''BLACK/INDIAN'', ""OMOP:45880900""),
+            ({phv00098800} == ''BLACK/AMER IND'', ""OMOP:45880900""), (True, ""OMOP:8552""))'
+- class_derivations:
+    Demography:
+      populated_from: pht001452
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00100285
+        sex:
+          populated_from: phv00098797
+          value_mappings:
+            '1': '''OMOP:8507'''
+            '0': '''OMOP:8532'''
+        race:
+          populated_from: phv00100488
+          value_mappings:
+            '1': '''OMOP:8527'''
+            '2': '''OMOP:8516'''
+            '3': '''OMOP:8657'''
+            '4': '''OMOP:8515'''
+            '5': '''OMOP:8552'''
+- class_derivations:
+    Demography:
+      populated_from: pht001466
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00100808
+        sex:
+          populated_from: phv00098797
+          value_mappings:
+            '1': '''OMOP:8507'''
+            '0': '''OMOP:8532'''
+        race:
+          populated_from: phv00100837
+          value_mappings:
+            '1': '''OMOP:8527'''
+            '2': '''OMOP:8516'''
+            '3': '''OMOP:8552'''
+- class_derivations:
+    Demography:
+      populated_from: pht001466
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00100808
+        sex:
+          populated_from: phv00098797
+          value_mappings:
+            '1': '''OMOP:8507'''
+            '0': '''OMOP:8532'''
+- class_derivations:
+    Demography:
+      populated_from: pht001490
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00098771
+        sex:
+          populated_from: phv00105644
+          value_mappings:
+            '1': '''OMOP:8507'''
+            '0': '''OMOP:8532'''
+        ethnicity:
+          populated_from: phv00105652
+          value_mappings:
+            '0': '''OMOP:38003564'''
+            '1': '''OMOP:38003563'''
+        race:
+          expr: 'case(({phv00105645} == 2, ""OMOP:8516""),({phv00105117} == "AM OF
+            AFRI DESC", "OMOP: 8516"),({phv00105117} == "AFRO AMERICAN", "OMOP: 8516"),({phv00105117}
+            == "AFRICAN-AM", "OMOP: 8516"),({phv00105645} == 3, "OMOP: 8657"),({phv00105117}
+            == ''MIXED'', "OMOP: 45880900"),({phv00105117} == ''BLACK/INDIAN'', "OMOP:
+            45880900"),({phv00105117} == ''PART HISPANIC'', "OMOP: 45880900"),({phv00105117}
+            == ''BIRACIAL'', "OMOP: 45880900"),({phv00105117} == ''CHATAQUA/AFR/FR'',
+            "OMOP: 45880900"),({phv00105117} == ''MIX OF 1 & 2'', "OMOP: 45880900"),(True,
+            OMOP: 8552))'
+- class_derivations:
+    Demography:
+      populated_from: pht001491
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00106520
+        sex:
+          populated_from: phv00106545
+          value_mappings:
+            '1': '''OMOP:8507'''
+            '0': '''OMOP:8532'''
+- class_derivations:
+    Demography:
+      populated_from: pht001493
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00108303
+        sex:
+          populated_from: phv00108393
+          value_mappings:
+            '1': '''OMOP:8507'''
+            '0': '''OMOP:8532'''
+- class_derivations:
+    Demography:
+      populated_from: pht001494
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00109056
+        sex:
+          populated_from: phv00109144
+          value_mappings:
+            '1': '''OMOP:8507'''
+            '0': '''OMOP:8532'''
+- class_derivations:
+    Demography:
+      populated_from: pht001495
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00109768
+        sex:
+          populated_from: phv00109854
+          value_mappings:
+            '1': '''OMOP:8507'''
+            '0': '''OMOP:8532'''
+- class_derivations:
+    Demography:
+      populated_from: pht003699
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00197394
+        sex:
+          populated_from: phv00197398
+          value_mappings:
+            M: '''OMOP:8507'''
+            F: '''OMOP:8532'''
+- class_derivations:
+    Demography:
+      populated_from: pht003699
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00197394
+        sex:
+          populated_from: phv00197400
+          value_mappings:
+            M: '''OMOP:8507'''
+            F: '''OMOP:8532'''

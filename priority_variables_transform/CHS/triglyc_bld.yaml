@@ -7,7 +7,7 @@
         associated_visit:
           expr: '''CHS BASELINE 2'''
         observation_type:
-          expr: case((phv00099923 >= 12, '''OMOP:4041722'''), '''OBA:VT0002644''')
+          expr: case((phv00099923 >= 12, '''OMOP:4041722'''), (True, '''OBA:VT0002644'''))
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -19,7 +19,7 @@
                   unit:
                     expr: '''mg/dL'''
         method_type:
-          expr: case((phv00099923 >= 12, '''Fasted minimum 12 hours'''), None)                    
+          expr: case((phv00099923 >= 12, '''Fasted minimum 12 hours'''))                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001452

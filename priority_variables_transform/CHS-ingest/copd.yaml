@@ -1,0 +1,47 @@
+- class_derivations:
+    Condition:
+      populated_from: pht001452
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00100285
+        associated_visit:
+          value: CHS BASELINE BOTH
+          range: string
+        condition_concept:
+          value: MONDO:0005002
+          range: string
+        condition_status:
+          populated_from: phv00100497
+          value_mappings:
+            '0': '''ABSENT'''
+            '1': '''PRESENT'''
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht003699
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00197394
+        associated_visit:
+          value: CHS PSG 1
+          range: string
+        condition_concept:
+          value: MONDO:0005002
+          range: string
+        condition_status:
+          populated_from: phv00197462
+          value_mappings:
+            '0': '''ABSENT'''
+            '1': '''PRESENT'''
+            '8': '''UNKNOWN'''
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string

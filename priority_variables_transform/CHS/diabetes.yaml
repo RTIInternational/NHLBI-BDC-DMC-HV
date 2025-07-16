@@ -129,7 +129,7 @@
             '0': '''ABSENT'''
             '1': '''PRESENT'''
         condition_provenance:
-          expr: case((phv00101793 == 1, '''CLINICAL_DIAGNOSIS'''), '''PATIENT_SELF-REPORTED_CONDITION''')
+          expr: case((phv00101793 == 1, '''CLINICAL_DIAGNOSIS'''), (True, '''PATIENT_SELF-REPORTED_CONDITION'''))
         relationship_to_participant:
           expr: '''ONESELF'''           
 - class_derivations:

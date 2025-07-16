@@ -14,7 +14,7 @@
             '0': '''ABSENT'''
             '1': '''PRESENT'''
         condition_provenance:
-          expr: case((phv00099466 == 1, '''CLINICAL_DIAGNOSIS'''), '''PATIENT_SELF-REPORTED_CONDITION''')
+          expr: case((phv00099466 == 1, "CLINICAL_DIAGNOSIS"), (True, "PATIENT_SELF-REPORTED_CONDITION"))
         relationship_to_participant:
           expr: '''ONESELF'''
 - class_derivations:
@@ -391,7 +391,7 @@
             '0': '''ABSENT'''
             '1': '''PRESENT'''
         condition_provenance:
-          expr: case((phv00105885 == 1 OR phv00106407 == 1, '''CLINICAL_DIAGNOSIS'''), '''PATIENT_SELF-REPORTED_CONDITION''')
+          expr: case((phv00105885 == 1, "CLINICAL_DIAGNOSIS"), (phv00106407 == 1, "CLINICAL_DIAGNOSIS"), (True, "PATIENT_SELF-REPORTED_CONDITION"))
         relationship_to_participant:
           expr: '''ONESELF'''          
 - class_derivations:
@@ -405,9 +405,9 @@
         condition_concept:
           expr: '''MONDO:0004979''' #asthma
         condition_status:
-          expr: case((phv00107849 == 0, '''ABSENT'''), case(phv00107850 == 0, '''HISTORICAL'''), '''PRESENT''')
+          expr: case((phv00107849 == 0, "ABSENT"), (phv00107850 == 0, "HISTORICAL"), (True, "PRESENT"))
         condition_provenance:
-          expr: case((phv00107851 == 1 or phv00108215 == 1 or phv00108216 == 1, '''CLINICAL_DIAGNOSIS'''), '''PATIENT_SELF-REPORTED_CONDITION''')
+          expr: case((phv00107851 == 1, "CLINICAL_DIAGNOSIS"), (phv00108215 == 1, "CLINICAL_DIAGNOSIS"), (phv00108216 == 1, "CLINICAL_DIAGNOSIS"), (True, "PATIENT_SELF-REPORTED_CONDITION"))
         relationship_to_participant:
           expr: '''ONESELF'''          
 - class_derivations:
@@ -447,7 +447,7 @@
             '1': '''PRESENT'''
             '8': '''UNKNOWN'''
         condition_provenance:
-          expr: case((phv00197463 == 1, '''CLINICAL_DIAGNOSIS'''), '''PATIENT_SELF-REPORTED_CONDITION''')
+          expr: case((phv00197463 == 1, "CLINICAL_DIAGNOSIS"), (True, "PATIENT_SELF-REPORTED_CONDITION"))
         relationship_to_participant:
           expr: '''ONESELF'''          
 - class_derivations:
@@ -461,7 +461,16 @@
         condition_concept:
           expr: '''MONDO:0004979''' #asthma
         condition_status:
-          expr: case((phv00198892 == 0, '''ABSENT'''), case((phv00198892 == 1, case(phv00198893 == 0, '''HISTORICAL'''), '''PRESENT'''), '''UNKKNOWN'''))
+          expr: case(
+                  (phv00198892 == 0, "ABSENT"),
+                  (phv00198892 == 1,
+                    case(
+                      (phv00198893 == 0, "HISTORICAL"),
+                      (True, "PRESENT")
+                    )
+                  ),
+                  (True, "UNKKNOWN")
+                 )
         condition_provenance:
           expr: '''PATIENT_SELF-REPORTED_CONDITION'''
         relationship_to_participant:
