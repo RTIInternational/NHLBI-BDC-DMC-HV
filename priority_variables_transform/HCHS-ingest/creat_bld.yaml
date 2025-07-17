@@ -10,3 +10,14 @@
         observation_type:
           value: OBA:2050096
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004715
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00226307
+                  unit:
+                    value: mg/dL
+                    range: string

@@ -13,6 +13,17 @@
         method_type:
           value: atrial
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004715
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00226274
+                  unit:
+                    value: '{beats}/min'
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004715
@@ -28,3 +39,14 @@
         method_type:
           value: ventricular
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004715
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00258056
+                  unit:
+                    value: '{beats}/min'
+                    range: string
