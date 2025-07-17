@@ -7,11 +7,17 @@
         associated_visit:
           value: MESA ANCILLARY
           range: string
-        value_decimal:
-          populated_from: phv00175983
         observation_type:
           value: OBA:VT0003018
           range: string
-        value_quantity.unit:
-          value: mmol/L
-          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003089
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00175983
+                  unit:
+                    value: mmol/L
+                    range: string

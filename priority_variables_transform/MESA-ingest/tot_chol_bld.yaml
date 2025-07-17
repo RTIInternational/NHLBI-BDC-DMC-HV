@@ -8,7 +8,7 @@
           value: MESA AIR EXAM
           range: string
         observation_type:
-          expr: case(({phv00083303} >= 12, '''OBA:VT0000180'''), (True, '''OBA:VT0000180''')))
+          expr: case(({phv00083303} >= 12, '''OBA:VT0000180'''), (True, '''OBA:VT0000180'''))
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -21,7 +21,7 @@
                     value: mg/dL
                     range: string
         method_type:
-          expr: case(({phv00083303} >= 12, '''Fasted minimum 12 hours'''), None)
+          expr: case(({phv00083303} >= 12, '''Fasted minimum 12 hours'''))
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
@@ -32,7 +32,7 @@
           value: MESA CLASSIC EXAM 1
           range: string
         observation_type:
-          expr: case(({phv00084980} >= 12, '''OBA:VT0000180'''), (True, '''OBA:VT0000180''')))
+          expr: case(({phv00084980} >= 12, '''OBA:VT0000180'''), (True, '''OBA:VT0000180'''))
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -45,7 +45,7 @@
                     value: mg/dL
                     range: string
         method_type:
-          expr: case(({phv00084980} >= 12, '''Fasted minimum 12 hours'''), None)
+          expr: case(({phv00084980} >= 12, '''Fasted minimum 12 hours'''))
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001118
@@ -55,8 +55,9 @@
         associated_visit:
           value: MESA CLASSIC EXAM 2
           range: string
-        observation_type: null
-        expr: OBA:VT0000180'
+        observation_type:
+          value: OBA:VT0000180
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -77,8 +78,9 @@
         associated_visit:
           value: MESA CLASSIC EXAM 3
           range: string
-        observation_type: null
-        expr: OBA:VT0000180'
+        observation_type:
+          value: OBA:VT0000180
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -99,8 +101,9 @@
         associated_visit:
           value: MESA CLASSIC EXAM 4
           range: string
-        observation_type: null
-        expr: OBA:VT0000180'
+        observation_type:
+          value: OBA:VT0000180
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -122,7 +125,7 @@
           value: MESA FAMILY
           range: string
         observation_type:
-          expr: case(({phv00087524} >= 12, '''OBA:VT0000180'''), (True, '''OBA:VT0000180''')))
+          expr: case(({phv00087524} >= 12, '''OBA:VT0000180'''), (True, '''OBA:VT0000180'''))
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -135,7 +138,7 @@
                     value: mg/dL
                     range: string
         method_type:
-          expr: case(({phv00087524} >= 12, '''Fasted minimum 12 hours'''), None)
+          expr: case(({phv00087524} >= 12, '''Fasted minimum 12 hours'''))
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003086
@@ -145,8 +148,9 @@
         associated_visit:
           value: MESA CLASSIC EXAM 5
           range: string
-        observation_type: null
-        expr: OBA:VT0000180'
+        observation_type:
+          value: OBA:VT0000180
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -167,8 +171,9 @@
         associated_visit:
           value: MESA LUNG CT
           range: string
-        observation_type: null
-        expr: OBA:VT0000180'
+        observation_type:
+          value: OBA:VT0000180
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -189,8 +194,9 @@
         associated_visit:
           value: MESA CLASSIC EXAM 5
           range: string
-        observation_type: null
-        expr: OBA:VT0000180'
+        observation_type:
+          value: OBA:VT0000180
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:

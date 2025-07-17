@@ -8,7 +8,7 @@
           value: MESA AIR EXAM
           range: string
         observation_type:
-          expr: case(({phv00083303} >= 12, '''"OMOP:4041722"'''), '''OBA:VT0002644''')
+          expr: case(({phv00083303} >= 12, '''"OMOP:4041722"'''), (True, '''OBA:VT0002644'''))
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -21,7 +21,7 @@
                     value: mg/dL
                     range: string
         method_type:
-          expr: case(({phv00083303} >= 12, '''Fasted minimum 12 hours'''), None)
+          expr: case(({phv00083303} >= 12, '''Fasted minimum 12 hours'''))
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
@@ -32,7 +32,7 @@
           value: MESA CLASSIC EXAM 1
           range: string
         observation_type:
-          expr: case(({phv00084980} >= 12, '''"OMOP:4041722"'''), '''OBA:VT0002644''')
+          expr: case(({phv00084980} >= 12, '''"OMOP:4041722"'''), (True, '''OBA:VT0002644'''))
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -45,7 +45,7 @@
                     value: mg/dL
                     range: string
         method_type:
-          expr: case(({phv00084980} >= 12, '''Fasted minimum 12 hours'''), None)
+          expr: case(({phv00084980} >= 12, '''Fasted minimum 12 hours'''))
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
@@ -56,7 +56,7 @@
           value: MESA CLASSIC EXAM 1
           range: string
         observation_type:
-          expr: case(({phv00084980} >= 12, '''"OMOP:4041722"'''), '''OBA:VT0002644''')
+          expr: case(({phv00084980} >= 12, '''"OMOP:4041722"'''), (True, '''OBA:VT0002644'''))
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -70,8 +70,8 @@
                     range: string
         method_type:
           expr: case(({phv00084980} >= 12, '''Fasted minimum 12 hours-CALCULATED FROM
-            NMR LIPOPROFILE-3 SPECTRAL ANALYSIS'''), '''CALCULATED FROM NMR LIPOPROFILE-3
-            SPECTRAL ANALYSIS''')
+            NMR LIPOPROFILE-3 SPECTRAL ANALYSIS'''), (True, '''CALCULATED FROM NMR
+            LIPOPROFILE-3 SPECTRAL ANALYSIS'''))
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001118
@@ -151,7 +151,7 @@
           value: MESA FAMILY
           range: string
         observation_type:
-          expr: case(({phv00087524} >= 12, '''"OMOP:4041722"'''), '''OBA:VT0002644''')
+          expr: case(({phv00087524} >= 12, '''"OMOP:4041722"'''), (True, '''OBA:VT0002644'''))
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -164,7 +164,7 @@
                     value: mg/dL
                     range: string
         method_type:
-          expr: case(({phv00087524} >= 12, '''Fasted minimum 12 hours'''), None)
+          expr: case(({phv00087524} >= 12, '''Fasted minimum 12 hours'''))
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003086

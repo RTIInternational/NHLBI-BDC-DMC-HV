@@ -1,224 +1,249 @@
 - class_derivations:
     DrugExposure:
-      populated_from: pht001111
+      populated_from: pht001450
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          populated_from: phv00098771
         associated_visit:
-          value: MESA AIR EXAM
+          value: CHS BASELINE 2
           range: string
         drug_concept:
-          expr: case(({phv00083083} == 1, "RxCUI:C09A"))
+          expr: case(({phv00099332} == 1, "RxCUI:C07A"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht001111
+      populated_from: pht001450
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          populated_from: phv00098771
         associated_visit:
-          value: MESA AIR EXAM
+          value: CHS BASELINE 2
           range: string
         drug_concept:
-          expr: case(({phv00083084} == 1, "RxCUI:C09BA"))
+          populated_from: phv00099333
+          range: string
+          value_mappings:
+            o: RxCUI:C07A
+            O: RxCUI:C07A
+            i: RxCUI:151890
+            t: RxCUI:152413
+            I: RxCUI:151890
+            T: RxCUI:152413
+            l: RxCUI:203344
+            L: RxCUI:203344
+            c: RxCUI:151549
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht001116
+      populated_from: pht001450
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          populated_from: phv00098771
         associated_visit:
-          value: MESA CLASSIC EXAM 1
+          value: CHS BASELINE 2
           range: string
         drug_concept:
-          expr: case(({phv00085328} == 1, "RxCUI:C09A"))
+          expr: case(({phv00099455} == 1, "RxCUI:C07A"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht001116
+      populated_from: pht001452
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          populated_from: phv00100285
         associated_visit:
-          value: MESA CLASSIC EXAM 1
+          value: CHS BASELINE BOTH
           range: string
         drug_concept:
-          expr: case(({phv00085329} == 1, "RxCUI:C09BA"))
+          expr: case(({phv00100439} == 1, "RxCUI:C07A"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht001118
+      populated_from: pht001452
       slot_derivations:
         associated_participant:
-          populated_from: phv00085772
+          populated_from: phv00100285
         associated_visit:
-          value: MESA CLASSIC EXAM 2
+          value: CHS BASELINE BOTH
           range: string
         drug_concept:
-          expr: case(({phv00086001} == 1, "RxCUI:C09A"))
+          expr: case(({phv00100595} == 1, "RxCUI:C02"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht001118
+      populated_from: pht001474
       slot_derivations:
         associated_participant:
-          populated_from: phv00085772
+          populated_from: phv00101324
         associated_visit:
-          value: MESA CLASSIC EXAM 2
+          value: CHS YEAR 10
           range: string
         drug_concept:
-          expr: case(({phv00086002} == 1, "RxCUI:C09BA"))
+          expr: case(({phv00102000} == 1, "RxCUI:C07A"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht001119
+      populated_from: pht001475
       slot_derivations:
         associated_participant:
-          populated_from: phv00086258
+          populated_from: phv00102174
         associated_visit:
-          value: MESA CLASSIC EXAM 3
+          value: CHS YEAR 11
           range: string
         drug_concept:
-          expr: case(({phv00086483} == 1, "RxCUI:C09A"))
+          expr: case(({phv00102628} == 1, "RxCUI:C07A"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht001119
+      populated_from: pht001488
       slot_derivations:
         associated_participant:
-          populated_from: phv00086258
+          populated_from: phv00103781
         associated_visit:
-          value: MESA CLASSIC EXAM 3
+          value: CHS YEAR 3
           range: string
         drug_concept:
-          expr: case(({phv00086484} == 1, "RxCUI:C09BA"))
+          expr: case(({phv00104359} == 1, "RxCUI:C07A"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht001120
+      populated_from: pht001489
       slot_derivations:
         associated_participant:
-          populated_from: phv00086726
+          populated_from: phv00104468
         associated_visit:
-          value: MESA CLASSIC EXAM 4
+          value: CHS YEAR 4
           range: string
         drug_concept:
-          expr: case(({phv00086920} == 1, "RxCUI:C09A"))
+          expr: case(({phv00104765} == 1, "RxCUI:C07A"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht001120
+      populated_from: pht001490
       slot_derivations:
         associated_participant:
-          populated_from: phv00086726
+          populated_from: phv00105099
         associated_visit:
-          value: MESA CLASSIC EXAM 4
+          value: CHS YEAR 5 NEW
           range: string
         drug_concept:
-          expr: case(({phv00086921} == 1, "RxCUI:C09BA"))
+          expr: case(({phv00105625} == 1, "RxCUI:C07A"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht001121
+      populated_from: pht001491
       slot_derivations:
         associated_participant:
-          populated_from: phv00087070
+          populated_from: phv00106520
         associated_visit:
-          value: MESA FAMILY
+          value: CHS YEAR 5 OLD
           range: string
         drug_concept:
-          expr: case(({phv00087304} == 1, "RxCUI:C09A"))
+          expr: case(({phv00107350} == 1, "RxCUI:C07A"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht001121
+      populated_from: pht001492
       slot_derivations:
         associated_participant:
-          populated_from: phv00087070
+          populated_from: phv00107443
         associated_visit:
-          value: MESA FAMILY
+          value: CHS YEAR 6
           range: string
         drug_concept:
-          expr: case(({phv00087305} == 1, "RxCUI:C09BA"))
+          expr: case(({phv00107783} == 1, "RxCUI:C07A"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht003086
+      populated_from: pht001493
       slot_derivations:
         associated_participant:
-          populated_from: phv00174584
+          populated_from: phv00108303
         associated_visit:
-          value: MESA AIR EXAM 5
+          value: CHS YEAR 7
           range: string
         drug_concept:
-          expr: case(({phv00175329} == 1, "RxCUI:C09A"))
+          expr: case(({phv00108842} == 1, "RxCUI:C07A"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht003086
+      populated_from: pht001494
       slot_derivations:
         associated_participant:
-          populated_from: phv00174584
+          populated_from: phv00109056
         associated_visit:
-          value: MESA AIR EXAM 5
+          value: CHS YEAR 8
           range: string
         drug_concept:
-          expr: case(({phv00175330} == 1, "RxCUI:C09BA"))
+          expr: case(({phv00109506} == 1, "RxCUI:C07A"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht003091
+      populated_from: pht001495
       slot_derivations:
         associated_participant:
-          populated_from: phv00176007
+          populated_from: phv00109768
         associated_visit:
-          value: MESA CLASSIC EXAM 5
+          value: CHS YEAR 9
           range: string
         drug_concept:
-          expr: case(({phv00176752} == 1, "RxCUI:C09A"))
+          expr: case(({phv00110187} == 1, "RxCUI:C07A"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht003091
+      populated_from: pht003699
       slot_derivations:
         associated_participant:
-          populated_from: phv00176007
+          populated_from: phv00197394
         associated_visit:
-          value: MESA CLASSIC EXAM 5
+          value: CHS PSG 1
           range: string
         drug_concept:
-          expr: case(({phv00176753} == 1, "RxCUI:C09BA"))
+          expr: case(({phv00197549} == 1, "RxCUI:C07A"))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht003699
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00197394
+        associated_visit:
+          value: CHS PSG 1
+          range: string
+        drug_concept:
+          expr: case(({phv00197550} == 1, "RxCUI:C07D"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string

@@ -100,8 +100,8 @@
           value: MESA AFIB
           range: string
         condition_concept:
-          expr: case(({phv00090305} == 427.31, '''"MONDO:0004981"'''), case({phv00090305}
-            == 427.32, '''"MONDO:0005310"'''), )
+          expr: case(({phv00090305} == 427.31, '''"MONDO:0004981"'''), ({phv00090305}
+            == 427.32, '''"MONDO:0005310"'''))
         condition_status:
           value: PRESENT
           range: string
