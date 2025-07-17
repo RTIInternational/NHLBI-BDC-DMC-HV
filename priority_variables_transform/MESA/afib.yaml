@@ -83,7 +83,7 @@
         associated_visit:
           expr: '''MESA AFIB'''
         condition_concept:
-          expr: case((phv00090305 == 427.31, '''MONDO:0004981'''), case(phv00090305 == 427.32, '''MONDO:0005310'''), ) #how do I get it to make two conditions for the last conditional?
+          expr: case((phv00090305 == 427.31, '''MONDO:0004981'''), (phv00090305 == 427.32, '''MONDO:0005310''')) #how do I get it to make two conditions for the last conditional?
         condition_status:
           expr: '''PRESENT'''
         condition_provenance:
