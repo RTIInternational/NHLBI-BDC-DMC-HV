@@ -63,7 +63,14 @@
             '1': '''OMOP:8507''' #male
             '0': '''OMOP:8532''' #female
         ethnicity:
-          expr: case((phv00085775 == 4 or phv00085776 == 1 or phv00085777 == 1 or phv00085778 == 1 or phv00085779 == 1 or phv00085780 == 1, '''OMOP:38003563'''), None)
+          expr: case(
+                  (phv00085775 == 4, '''OMOP:38003563'''),
+                  (phv00085776 == 1, '''OMOP:38003563'''),
+                  (phv00085777 == 1, '''OMOP:38003563'''),
+                  (phv00085778 == 1, '''OMOP:38003563'''),
+                  (phv00085779 == 1, '''OMOP:38003563'''),
+                  (phv00085780 == 1, '''OMOP:38003563''')
+                )
         race:
           populated_from: phv00085775
           value_mappings:
@@ -82,7 +89,13 @@
             '1': '''OMOP:8507''' #male
             '0': '''OMOP:8532''' #female
         ethnicity:
-          expr: case((phv00086261 == 4 or phv00086262 == 1 or phv00086263 == 1 or phv00086264 == 1 or phv00086265 == 1 or phv00086266 == 1, '''OMOP:38003563'''), None)
+          expr: case(
+                  (phv00086261 == 4, '''OMOP:38003563'''),
+                  (phv00086262 == 1, '''OMOP:38003563'''),
+                  (phv00086263 == 1, '''OMOP:38003563'''),
+                  (phv00086264 == 1, '''OMOP:38003563'''),
+                  (phv00086265 == 1, '''OMOP:38003563'''),
+                  (phv00086266 == 1, '''OMOP:38003563'''))
         race:
           populated_from: phv00086261
           value_mappings:

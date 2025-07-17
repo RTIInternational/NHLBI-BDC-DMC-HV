@@ -1,40 +1,40 @@
 - class_derivations:
-  MeasurementObservation:
-    populated_from: pht001116
-    slot_derivations:
-    associated_participant:
-      populated_from: phv00084441
-      associated_visit:
-        expr: '''MESA_Exam1Main'''
-      observation_type:
-        expr: '''OMOP:4136584''' #Cystatin C in blood
-      value_quantity:
-        object_derivations:
-        - class_derivations:
-            Quantity:
-              populated_from: pht001116
-              slot_derivations:
-                value_decimal:
-                  expr: {phv00084545} * 0.1
-                unit:
-                  expr: '''mg/dL''' #reported_units: mg/L
+    MeasurementObservation:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00084441
+        associated_visit:
+          expr: '''MESA_Exam1Main'''
+        observation_type:
+          expr: '''OMOP:4136584''' #Cystatin C in blood
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001116
+                slot_derivations:
+                  value_decimal:
+                    expr: {phv00084545} * 0.1
+                  unit:
+                    expr: '''mg/dL''' #reported_units: mg/L
 - class_derivations:
-  MeasurementObservation:
-    populated_from: pht003091
-    slot_derivations:
-    associated_participant:
-      populated_from: phv00176007
-      associated_visit:
-        expr: '''MESA_Exam5Main'''
-      observation_type:
-        expr: '''OMOP:4136584''' #Cystatin C in blood
-      value_quantity:
-        object_derivations:
-        - class_derivations:
-            Quantity:
-              populated_from: pht003091
-              slot_derivations:
-                value_decimal:
-                  expr: {phv00196280} * 0.1
-                unit:
-                  expr: '''mg/dL''' #reported_units: mg/L
+    MeasurementObservation:
+      populated_from: pht003091
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00176007
+        associated_visit:
+          expr: '''MESA_Exam5Main'''
+        observation_type:
+          expr: '''OMOP:4136584''' #Cystatin C in blood
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003091
+                slot_derivations:
+                  value_decimal:
+                    expr: {phv00196280} * 0.1
+                  unit:
+                    expr: '''mg/dL''' #reported_units: mg/L

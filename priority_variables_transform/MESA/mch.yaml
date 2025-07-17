@@ -1,23 +1,23 @@
 - class_derivations:
-  MeasurementObservation:
-    populated_from: pht004319
-    slot_derivations:
-    associated_participant:
-      populated_from: phv00218989
-      associated_visit:
-        value: MESA_AncilMesaEpigenomicCBC
-        range: string
-      observation_type:
-        value: OMOP:37398674 #mean corpuscular hemoglobin
-        range: string
-      value_quantity:
-        object_derivations:
-        - class_derivations:
-            Quantity:
-              populated_from: pht004319
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00218994
-                unit:
-                  value: pg/{cell} #reported_units: pg
-                  range: string
+    MeasurementObservation:
+      populated_from: pht004319
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00218989
+        associated_visit:
+          value: MESA_AncilMesaEpigenomicCBC
+          range: string
+        observation_type:
+          value: OMOP:37398674 #mean corpuscular hemoglobin
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004319
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00218994
+                  unit:
+                    value: pg/{cell} #reported_units: pg
+                    range: string

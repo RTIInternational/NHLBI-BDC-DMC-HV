@@ -7,7 +7,7 @@
         associated_visit:
           value: MESA AIR EXAM
         drug_concept:
-          expr: case((phv00083083 == 1, RxCUI:C09A), None)
+          expr: case((phv00083083 == 1, RxCUI:C09A))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
@@ -19,19 +19,7 @@
         associated_visit:
           value: MESA AIR EXAM
         drug_concept:
-          expr: case((phv00083084 == 1, RxCUI:C09BA), None)
-        expsoure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-  - class_derivations:
-    DrugExposure:
-      populated_from: pht001116
-      slot_derivations:
-        associated_participant:
-          populated_from:  phv00084441
-        associated_visit:
-          value: MESA CLASSIC EXAM 1
-        drug_concept:
-          expr: case((phv00085328 == 1, RxCUI:C09A), None)
+          expr: case((phv00083084 == 1, RxCUI:C09BA))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
@@ -43,7 +31,19 @@
         associated_visit:
           value: MESA CLASSIC EXAM 1
         drug_concept:
-          expr: case((phv00085329 == 1, RxCUI:C09BA), None)
+          expr: case((phv00085328 == 1, RxCUI:C09A))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          populated_from:  phv00084441
+        associated_visit:
+          value: MESA CLASSIC EXAM 1
+        drug_concept:
+          expr: case((phv00085329 == 1, RxCUI:C09BA))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
@@ -55,10 +55,10 @@
         associated_visit:
           value: MESA CLASSIC EXAM 2
         drug_concept:
-          expr: case((phv00086001 == 1, RxCUI:C09A), None)
+          expr: case((phv00086001 == 1, RxCUI:C09A))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
-  - class_derivations:
+- class_derivations:
     DrugExposure:
       populated_from: pht001118
       slot_derivations:
@@ -67,19 +67,7 @@
         associated_visit:
           value: MESA CLASSIC EXAM 2
         drug_concept:
-          expr: case((phv00086002 == 1, RxCUI:C09BA), None)
-        expsoure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-  - class_derivations:
-    DrugExposure:
-      populated_from: pht001119
-      slot_derivations:
-        associated_participant:
-          populated_from:  phv00086258
-        associated_visit:
-          value: MESA CLASSIC EXAM 3
-        drug_concept:
-          expr: case((phv00086483 == 1, RxCUI:C09A), None)
+          expr: case((phv00086002 == 1, RxCUI:C09BA))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
@@ -91,10 +79,22 @@
         associated_visit:
           value: MESA CLASSIC EXAM 3
         drug_concept:
-          expr: case((phv00086484 == 1, RxCUI:C09BA), None)
+          expr: case((phv00086483 == 1, RxCUI:C09A))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
-  - class_derivations:
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001119
+      slot_derivations:
+        associated_participant:
+          populated_from:  phv00086258
+        associated_visit:
+          value: MESA CLASSIC EXAM 3
+        drug_concept:
+          expr: case((phv00086484 == 1, RxCUI:C09BA))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+- class_derivations:
     DrugExposure:
       populated_from: pht001120
       slot_derivations:
@@ -103,10 +103,10 @@
         associated_visit:
           value: MESA CLASSIC EXAM 4
         drug_concept:
-          expr: case((phv00086920 == 1, RxCUI:C09A), None)
+          expr: case((phv00086920 == 1, RxCUI:C09A))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
-  - class_derivations:
+- class_derivations:
     DrugExposure:
       populated_from: pht001120
       slot_derivations:
@@ -115,10 +115,10 @@
         associated_visit:
           value: MESA CLASSIC EXAM 4
         drug_concept:
-          expr: case((phv00086921 == 1, RxCUI:C09BA), None)
+          expr: case((phv00086921 == 1, RxCUI:C09BA))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
-  - class_derivations:
+- class_derivations:
     DrugExposure:
       populated_from: pht001121
       slot_derivations:
@@ -127,10 +127,10 @@
         associated_visit:
           value: MESA FAMILY
         drug_concept:
-          expr: case((phv00087304 == 1, RxCUI:C09A), None)
+          expr: case((phv00087304 == 1, RxCUI:C09A))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
-  - class_derivations:
+- class_derivations:
     DrugExposure:
       populated_from: pht001121
       slot_derivations:
@@ -139,10 +139,10 @@
         associated_visit:
           value: MESA FAMILY
         drug_concept:
-          expr: case((phv00087305 == 1, RxCUI:C09BA), None)
+          expr: case((phv00087305 == 1, RxCUI:C09BA))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
-  - class_derivations:
+- class_derivations:
     DrugExposure:
       populated_from: pht003086
       slot_derivations:
@@ -151,10 +151,10 @@
         associated_visit:
           value: MESA AIR EXAM 5
         drug_concept:
-          expr: case((phv00175329 == 1, RxCUI:C09A), None)
+          expr: case((phv00175329 == 1, RxCUI:C09A))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
-  - class_derivations:
+- class_derivations:
     DrugExposure:
       populated_from: pht003086
       slot_derivations:
@@ -163,10 +163,10 @@
         associated_visit:
           value: MESA AIR EXAM 5
         drug_concept:
-          expr: case((phv00175330 == 1, RxCUI:C09BA), None)
+          expr: case((phv00175330 == 1, RxCUI:C09BA))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
-  - class_derivations:
+- class_derivations:
     DrugExposure:
       populated_from: pht003091
       slot_derivations:
@@ -175,10 +175,10 @@
         associated_visit:
           value: MESA CLASSIC EXAM 5
         drug_concept:
-          expr: case((phv00176752 == 1, RxCUI:C09A), None)
+          expr: case((phv00176752 == 1, RxCUI:C09A))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
-  - class_derivations:
+- class_derivations:
     DrugExposure:
       populated_from: pht003091
       slot_derivations:
@@ -187,6 +187,6 @@
         associated_visit:
           value: MESA CLASSIC EXAM 5
         drug_concept:
-          expr: case((phv00176753 == 1, RxCUI:C09BA), None)
+          expr: case((phv00176753 == 1, RxCUI:C09BA))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION

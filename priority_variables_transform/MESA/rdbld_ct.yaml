@@ -1,20 +1,20 @@
 - class_derivations:
-  MeasurementObservation:
-    populated_from: pht001984
-    slot_derivations:
-    associated_participant:
-      populated_from: phv00128699
-      associated_visit:
-        expr: '''MESA_AncilMesaInflammation'''
-      observation_type:
-        expr: '''OMOP:4030871''' #Red blood cell count volume
-      value_quantity:
-        object_derivations:
-        - class_derivations:
-            Quantity:
-              populated_from: pht001984
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00128762
-                unit:
-                  expr: '''10*6/uL''' #reported_units: m/cmm
+    MeasurementObservation:
+      populated_from: pht001984
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00128699
+        associated_visit:
+          expr: '''MESA_AncilMesaInflammation'''
+        observation_type:
+          expr: '''OMOP:4030871''' #Red blood cell count volume
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001984
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00128762
+                  unit:
+                    expr: '''10*6/uL''' #reported_units: m/cmm
