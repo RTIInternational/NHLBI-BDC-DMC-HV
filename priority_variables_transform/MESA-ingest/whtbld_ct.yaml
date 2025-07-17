@@ -1,0 +1,46 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001984
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00128699
+        associated_visit:
+          value: MESA_AncilMesaInflammation
+          range: string
+        observation_type:
+          value: OMOP:4298431
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001984
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00128764
+                  unit:
+                    value: 10*3/uL
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004319
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00218989
+        associated_visit:
+          value: MESA_AncilMesaEpigenomicCBC
+          range: string
+        observation_type:
+          value: OMOP:4298431
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004319
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00218997
+                  unit:
+                    value: 10*3/uL
+                    range: string

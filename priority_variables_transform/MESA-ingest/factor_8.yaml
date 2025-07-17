@@ -1,0 +1,72 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00084441
+        associated_visit:
+          value: MESA CLASSIC EXAM 1
+          range: string
+        observation_type:
+          value: OBA:2041536
+          range: string
+        method_type:
+          value: calibrated
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001116
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00084463} * 0.01'
+                  unit:
+                    value: '[iU]/mL'
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00084441
+        associated_visit:
+          value: MESA CLASSIC EXAM 1
+          range: string
+        observation_type:
+          value: OBA:2041536
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001116
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00085019} * 0.01'
+                  unit:
+                    value: '[iU]/mL'
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002105
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00150369
+        associated_visit:
+          value: MESA STRESS
+          range: string
+        observation_type:
+          value: OBA:2041536
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002105
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00160522} * 0.01'
+                  unit:
+                    value: '[iU]/mL'
+                    range: string

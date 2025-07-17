@@ -1,0 +1,84 @@
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001111
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00082638
+        associated_visit:
+          value: MESA AIR EXAM
+          range: string
+        drug_concept:
+          expr: case(({phv00083006} == 1, '''RxCUI:A10'''), None)
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00084441
+        associated_visit:
+          value: MESA CLASSIC EXAM 1
+          range: string
+        drug_concept:
+          expr: case(({phv00085234} == 1, '''RxCUI:A10'''), None)
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001121
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087070
+        associated_visit:
+          value: MESA FAMILY
+          range: string
+        drug_concept:
+          expr: case(({phv00087115} == 1, '''RxCUI:A10'''), None)
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht003086
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00174584
+        associated_visit:
+          value: MESA AIR EXAM 5
+          range: string
+        drug_concept:
+          expr: case(({phv00175292} == 1, '''RxCUI:A10'''), None)
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht003087
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00175794
+        associated_visit:
+          value: MESA LUNG CT
+          range: string
+        drug_concept:
+          expr: case(({phv00175870} == 1, '''RxCUI:A10'''), None)
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht003091
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00176007
+        associated_visit:
+          value: MESA CLASSIC EXAM 5
+          range: string
+        drug_concept:
+          expr: case(({phv00176715} == 1, '''RxCUI:A10'''), None)
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string

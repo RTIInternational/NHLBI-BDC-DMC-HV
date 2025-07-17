@@ -1,0 +1,115 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001111
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00082638
+        associated_visit:
+          value: MESA_AirNRExamMain
+          range: string
+        observation_type:
+          value: OMOP:4099154
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001111
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00082685} * 0.453592'
+                  unit:
+                    value: kg
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00084441
+        associated_visit:
+          value: MESA_Exam1Main
+          range: string
+        observation_type:
+          value: OMOP:4099154
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001116
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00084484} * 0.453592'
+                  unit:
+                    value: kg
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001121
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087070
+        associated_visit:
+          value: MESA_FamilyExamMain
+          range: string
+        observation_type:
+          value: OMOP:4099154
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001121
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00087079} * 0.453592'
+                  unit:
+                    value: kg
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003086
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00174584
+        associated_visit:
+          value: MESA_AirNRExam5Main
+          range: string
+        observation_type:
+          value: OMOP:4099154
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003086
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00174637
+                  unit:
+                    value: kg
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003091
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00176007
+        associated_visit:
+          value: MESA_Exam5Main
+          range: string
+        observation_type:
+          value: OMOP:4099154
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003091
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00176060
+                  unit:
+                    value: kg
+                    range: string

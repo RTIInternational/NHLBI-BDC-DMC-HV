@@ -1,0 +1,69 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001122
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087666
+        associated_visit:
+          value: MESA_FamilySpirometry
+          range: string
+        observation_type:
+          value: OMOP:3011505
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001122
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00087687} * 0.01'
+                  unit:
+                    value: '{ratio}'
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001122
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087666
+        associated_visit:
+          value: MESA_FamilySpirometry
+          range: string
+        observation_type:
+          value: OMOP:3011505
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001122
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00087708
+                  unit:
+                    value: '{ratio}'
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001122
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087666
+        associated_visit:
+          value: MESA_FamilySpirometry
+          range: string
+        observation_type:
+          value: OMOP:3011505
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001122
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00087833} * 0.01'
+                  unit:
+                    value: '{ratio}'
+                    range: string

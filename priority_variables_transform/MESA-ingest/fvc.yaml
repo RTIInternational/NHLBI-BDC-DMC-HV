@@ -1,0 +1,92 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001112
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00083440
+        associated_visit:
+          value: MESA AIR SPIROMETRY
+          range: string
+        observation_type:
+          value: OMOP:4176265
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001112
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00083474} / 1000'
+                  unit:
+                    value: L
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001114
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00083675
+        associated_visit:
+          value: MESA LUNG SPIROMETRY
+          range: string
+        observation_type:
+          value: OMOP:4176265
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001114
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00083709} / 1000'
+                  unit:
+                    value: L
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001122
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087666
+        associated_visit:
+          value: MESA FAMILY SPIROMETRY
+          range: string
+        observation_type:
+          value: OMOP:4176265
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001122
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00087700} / 1000'
+                  unit:
+                    value: L
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001122
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087666
+        associated_visit:
+          value: MESA FAMILY SPIROMETRY
+          range: string
+        observation_type:
+          value: OMOP:4176265
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001122
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00087700} / 1000'
+                  unit:
+                    value: L
+                    range: string

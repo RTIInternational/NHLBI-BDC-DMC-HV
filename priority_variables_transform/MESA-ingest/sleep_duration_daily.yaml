@@ -1,0 +1,23 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001120
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00086726
+        associated_visit:
+          value: MESA CLASSIC EXAM 4
+          range: string
+        observation_type:
+          value: OBA:2040171
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001120
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00087048
+                  unit:
+                    value: h
+                    range: string

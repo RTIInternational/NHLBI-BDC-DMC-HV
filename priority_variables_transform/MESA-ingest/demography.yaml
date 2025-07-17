@@ -1,0 +1,236 @@
+- class_derivations:
+    Demography:
+      populated_from: pht001109
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00082629
+        sex:
+          populated_from: phv00082632
+          value_mappings:
+            '1': '''OMOP:8507'''
+            '2': '''OMOP:8532'''
+- class_derivations:
+    Demography:
+      populated_from: pht001111
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00082638
+        sex:
+          populated_from: phv00082643
+          value_mappings:
+            '1': '''OMOP:8507'''
+            '0': '''OMOP:8532'''
+        ethnicity:
+          populated_from: phv00082641
+          value_mappings:
+            '4': '''OMOP:38003563'''
+        race:
+          populated_from: phv00082641
+          value_mappings:
+            '1': '''OMOP:8527'''
+            '2': '''OMOP:8515'''
+            '3': '''OMOP:8516'''
+- class_derivations:
+    Demography:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00084441
+        sex:
+          populated_from: phv00084446
+          value_mappings:
+            '1': '''OMOP:8507'''
+            '0': '''OMOP:8532'''
+        ethnicity:
+          populated_from: phv00084444
+          value_mappings:
+            '4': '''OMOP:38003563'''
+        race:
+          populated_from: phv00084444
+          value_mappings:
+            '1': '''OMOP:8527'''
+            '2': '''OMOP:8515'''
+            '3': '''OMOP:8516'''
+- class_derivations:
+    Demography:
+      populated_from: pht001118
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00085772
+        sex:
+          populated_from: phv00085782
+          value_mappings:
+            '1': '''OMOP:8507'''
+            '0': '''OMOP:8532'''
+        ethnicity:
+          expr: 'case(({phv00085775} == 4, ''''''OMOP: 38003563''''''),({phv00085776}
+            == 1, ''''''OMOP: 38003563''''''),({phv00085777} == 1, ''''''OMOP: 38003563''''''),({phv00085778}
+            == 1, ''''''OMOP: 38003563''''''),({phv00085779} == 1, ''''''OMOP: 38003563''''''),({phv00085780}
+            == 1, ''''''OMOP: 38003563''''''))'
+        race:
+          populated_from: phv00085775
+          value_mappings:
+            '1': '''OMOP:8527'''
+            '2': '''OMOP:8515'''
+            '3': '''OMOP:8516'''
+- class_derivations:
+    Demography:
+      populated_from: pht001119
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00086258
+        sex:
+          populated_from: phv00085782
+          value_mappings:
+            '1': '''OMOP:8507'''
+            '0': '''OMOP:8532'''
+        ethnicity:
+          expr: 'case(({phv00086261} == 4, ''''''OMOP: 38003563''''''),({phv00086262}
+            == 1, ''''''OMOP: 38003563''''''),({phv00086263} == 1, ''''''OMOP: 38003563''''''),({phv00086264}
+            == 1, ''''''OMOP: 38003563''''''),({phv00086265} == 1, ''''''OMOP: 38003563''''''),({phv00086266}
+            == 1, ''''''OMOP: 38003563''''''))'
+        race:
+          populated_from: phv00086261
+          value_mappings:
+            '1': '''OMOP:8527'''
+            '2': '''OMOP:8515'''
+            '3': '''OMOP:8516'''
+- class_derivations:
+    Demography:
+      populated_from: pht001120
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00086726
+        sex:
+          populated_from: phv00086736
+          value_mappings:
+            '1': '''OMOP:8507'''
+            '0': '''OMOP:8532'''
+        ethnicity:
+          expr: case(({phv00086729} == 4 or {phv00086730} == 1 or {phv00086731} ==
+            1 or {phv00086732} == 1 or {phv00086733} == 1 or {phv00086734} == 1, '''"OMOP:38003563"'''),
+            None)
+        race:
+          populated_from: phv00086729
+          value_mappings:
+            '1': '''OMOP:8527'''
+            '2': '''OMOP:8515'''
+            '3': '''OMOP:8516'''
+- class_derivations:
+    Demography:
+      populated_from: pht001121
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087070
+        sex:
+          populated_from: phv00087073
+          value_mappings:
+            '1': '''OMOP:8507'''
+            '0': '''OMOP:8532'''
+        ethnicity:
+          expr: case(({phv00087074} == 4 or {phv00087659} == 1, '''"OMOP:38003563"'''),
+            None)
+        race:
+          populated_from: phv00087074
+          value_mappings:
+            '1': '''OMOP:8527'''
+            '2': '''OMOP:8515'''
+            '3': '''OMOP:8516'''
+- class_derivations:
+    Demography:
+      populated_from: pht003086
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00174584
+        sex:
+          populated_from: phv00174586
+          value_mappings:
+            '1': '''OMOP:8507'''
+            '0': '''OMOP:8532'''
+        ethnicity:
+          populated_from: phv00174585
+          value_mappings:
+            '4': '''OMOP:38003563'''
+        race:
+          populated_from: phv00174585
+          value_mappings:
+            '1': '''OMOP:8527'''
+            '2': '''OMOP:8515'''
+            '3': '''OMOP:8516'''
+- class_derivations:
+    Demography:
+      populated_from: pht003087
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00175794
+        sex:
+          expr: case(({phv00175856} == 1 or {phv00175877} == 1 or {phv00175940} ==
+            1, '''"OMOP:8507"'''), case({phv00175856} == 0 or {phv00175877} == 0 or
+            {phv00175940} == 0, '''"OMOP:8532"'''), None)
+        ethnicity:
+          expr: case(({phv00175941} == 4 or {phv00175855} == 4 or {phv00175876} ==
+            4 or {phv00175941} == 4, '''"OMOP:38003563"'''), None)
+        race:
+          expr: case(({phv00175941} == 3 or {phv00175855} == 3 or {phv00175876} ==
+            3 or {phv00175941} == 3, '''"OMOP:8516"'''), None)
+          populated_from: phv00174585
+          value_mappings:
+            '1': '''OMOP:8527'''
+            '2': '''OMOP:8515'''
+            '3': '''OMOP:8516'''
+- class_derivations:
+    Demography:
+      populated_from: pht003088
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00175966
+        ethnicity:
+          populated_from: phv00175967
+          value_mappings:
+            Hispanic: '''OMOP:38003563'''
+        race:
+          populated_from: phv00175967
+          value_mappings:
+            Black: '''OMOP:8516'''
+- class_derivations:
+    Demography:
+      populated_from: pht003091
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00176007
+        sex:
+          populated_from: phv00176009
+          value_mappings:
+            '1': '''OMOP:8507'''
+            '0': '''OMOP:8532'''
+        ethnicity:
+          populated_from: phv00176008
+          value_mappings:
+            '4': '''OMOP:38003563'''
+        race:
+          populated_from: phv00176008
+          value_mappings:
+            '1': '''OMOP:8527'''
+            '2': '''OMOP:8515'''
+            '3': '''OMOP:8516'''
+- class_derivations:
+    Demography:
+      populated_from: pht004326
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00219018
+        sex:
+          populated_from: phv00219022
+          value_mappings:
+            '1': '''OMOP:8507'''
+            '0': '''OMOP:8532'''
+        ethnicity:
+          populated_from: phv00219021
+          value_mappings:
+            '4': '''OMOP:38003563'''
+        race:
+          populated_from: phv00219021
+          value_mappings:
+            '1': '''OMOP:8527'''
+            '2': '''OMOP:8515'''
+            '3': '''OMOP:8516'''

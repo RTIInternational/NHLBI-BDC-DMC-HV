@@ -1,0 +1,48 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002099
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00142665
+        associated_visit:
+          value: MESA CLASSIC 1-5
+          range: string
+        observation_type:
+          value: OMOP:3004578
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001111
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00142667
+                  unit:
+                    value: pg/mL
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002105
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00150369
+        associated_visit:
+          value: MESA STRESS
+          range: string
+        value_decimal:
+          populated_from: phv00160519
+        observation_type:
+          value: OMOP:3004578
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001111
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00160519
+                  unit:
+                    value: pg/mL
+                    range: string
