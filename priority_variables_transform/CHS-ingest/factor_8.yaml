@@ -10,3 +10,14 @@
         observation_type:
           value: OBA:2041536
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001451
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00100039
+                  unit:
+                    value: '%{Normal}'
+                    range: string

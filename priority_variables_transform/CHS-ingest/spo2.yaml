@@ -10,6 +10,20 @@
         observation_type:
           value: OBA:2045443
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001495
+                slot_derivations:
+                  value_category:
+                    populated_from: phv00110401
+                    value_mappings:
+                      '0': '''<90'''
+                      '1': '''>90'''
+                  unit:
+                    value: '%'
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001495
@@ -22,6 +36,17 @@
         observation_type:
           value: OBA:2045443
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001495
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00110402
+                  unit:
+                    value: '%'
+                    range: string
         method_type:
           value: baseline
           range: string
@@ -37,6 +62,17 @@
         observation_type:
           value: OBA:2045443
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001495
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00110418
+                  unit:
+                    value: '%'
+                    range: string
         method_type:
           value: exercise
           range: string

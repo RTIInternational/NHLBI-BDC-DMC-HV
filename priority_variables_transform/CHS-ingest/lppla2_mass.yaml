@@ -10,3 +10,14 @@
         observation_type:
           value: OMOP:3041450
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001449
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00098769
+                  unit:
+                    value: ng/mL
+                    range: string

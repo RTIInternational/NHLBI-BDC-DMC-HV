@@ -9,6 +9,17 @@
           range: string
         observation_type:
           expr: case(({phv00099923} >= 12, '''"OMOP:4041720"'''), (True, '''OBA:VT0000184'''))
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001451
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00100042
+                  unit:
+                    value: mg/dL
+                    range: string
         method_type:
           expr: case(({phv00099923} >= 12, '''Fasted minimum 12 hours'''))
 - class_derivations:
@@ -23,6 +34,17 @@
         observation_type:
           value: OBA:VT0000184
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001452
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00100426
+                  unit:
+                    value: mg/dL
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001490
@@ -35,6 +57,17 @@
         observation_type:
           value: OBA:VT0000184
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001490
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00105865
+                  unit:
+                    value: mg/dL
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001491
@@ -47,3 +80,14 @@
         observation_type:
           value: OBA:VT0000184
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001491
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00106991
+                  unit:
+                    value: mg/dL
+                    range: string
