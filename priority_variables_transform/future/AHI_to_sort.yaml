@@ -12184,3 +12184,23 @@
                   unit:
                     expr: '''/h'''
         method_type: '''calculated - central apnea index at 4% or arousal'''  
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003699
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00197394
+        associated_visit:
+          expr: '''CHS PSG 1'''
+        observation_type:
+          expr: '''OMOP:37396400''' #AHI
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003699
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00197745
+                  unit:
+                    expr: '''/h'''
