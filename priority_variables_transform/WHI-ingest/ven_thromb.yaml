@@ -9,8 +9,8 @@
         condition_concept:
           value: HP:0002625
         condition_status:
-          expr: case(({phv00078472} == 0, ABSENT), case({phv00078473} == 0, HISTORICAL),
-            PRESENT)
+          expr: case(({phv00078472} == 0, "ABSENT"), ({phv00078473} == 0, "HISTORICAL"),
+            (True, "PRESENT"))
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
@@ -26,8 +26,8 @@
         condition_concept:
           value: MONDO:0005279
         condition_status:
-          expr: case(({phv00078475} == 0, ABSENT), case({phv00078476} == 0, HISTORICAL),
-            PRESENT)
+          expr: case(({phv00078475} == 0, "ABSENT"), ({phv00078476} == 0, "HISTORICAL"),
+            (True, "PRESENT"))
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:

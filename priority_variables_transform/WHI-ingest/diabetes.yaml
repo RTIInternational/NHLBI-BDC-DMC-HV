@@ -11,8 +11,8 @@
           value: MONDO:0005015
           range: string
         condition_status:
-          expr: case(({phv00078464} == 0, '''ABSENT'''), case({phv00078471} == 0,
-            '''HISTORICAL'''), '''PRESENT''')
+          expr: case(({phv00078464} == 0, '''ABSENT'''), ({phv00078471} == 0, '''HISTORICAL'''),
+            (True, '''PRESENT'''))
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
