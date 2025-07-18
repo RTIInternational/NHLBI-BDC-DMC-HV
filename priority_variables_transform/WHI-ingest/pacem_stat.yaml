@@ -1,0 +1,52 @@
+- class_derivations:
+    Procedure:
+      populated_from: pht002118
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00154925
+        associated_visit:
+          value: WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP
+          range: string
+        procedure_concept:
+          expr: case(({phv00155223} == 1, "OMOP:45772840"))
+        procedure_provenance:
+          expr: case(({phv00155223} == 1, "OMOP:4822157"))
+- class_derivations:
+    Procedure:
+      populated_from: pht002118
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00154925
+        associated_visit:
+          value: WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP
+          range: string
+        procedure_concept:
+          expr: case(({phv00193137} == 1, "OMOP:45772840"))
+        procedure_provenance:
+          expr: case(({phv00193137} == 1, "OMOP:4822157"))
+- class_derivations:
+    Procedure:
+      populated_from: pht002118
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00154925
+        associated_visit:
+          value: WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP
+          range: string
+        procedure_concept:
+          expr: case(({phv00193137} == 1, "OMOP:4323629"))
+        procedure_provenance:
+          expr: case(({phv00193137} == 1, "OMOP:4822157"))
+- class_derivations:
+    Procedure:
+      populated_from: pht006223
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00283451
+        associated_visit:
+          value: WHI UNC HEART FAILURE DETAILS
+          range: string
+        procedure_concept:
+          expr: case(({phv00283522} == 1, "OMOP:45772840"))
+        procedure_provenance:
+          expr: case(({phv00283522} == 1, "OMOP:4822157"))

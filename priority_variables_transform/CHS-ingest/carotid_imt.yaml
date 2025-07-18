@@ -10,6 +10,17 @@
         observation_type:
           value: OMOP:4138462
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001468
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00100864
+                  unit:
+                    value: mm
+                    range: string
         method_type:
           value: Mean of the mean far wall intima media t (var=CCA_FWME)
           range: string
@@ -25,6 +36,17 @@
         observation_type:
           value: OMOP:4138462
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001468
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00100865
+                  unit:
+                    value: mm
+                    range: string
         method_type:
           value: Mean of the mean far wall intima-media t
           range: string
@@ -40,6 +62,17 @@
         observation_type:
           value: OMOP:4138462
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001473
+                slot_derivations:
+                  value_decimal:
+                    expr: ({phv00101265} + {phv00101277}) / 2
+                  unit:
+                    value: mm
+                    range: string
         method_type:
           value: mean of YEAR 5 FAR WALL MAX, R. COMMON and YEAR 5 FAR WALL MAX, L.
             COMMON
@@ -56,6 +89,18 @@
         observation_type:
           value: OMOP:4138462
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001473
+                slot_derivations:
+                  value_decimal:
+                    expr: ({phv00101238} + {phv00101239} + {phv00101250} + {phv00101251})
+                      / 4
+                  unit:
+                    value: mm
+                    range: string
         method_type:
           value: mean of four measurements, BL REREAD NEAR WALL MAX, R. COMMON and
             BL REREAD FAR WALL MAX, R. COMMON and BL REREAD NEAR WALL MAX, L. COMMON
@@ -73,6 +118,18 @@
         observation_type:
           value: OMOP:4138462
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001473
+                slot_derivations:
+                  value_decimal:
+                    expr: ({phv00101265} + {phv00101277} + {phv00101264} + {phv00101276})
+                      / 4
+                  unit:
+                    value: mm
+                    range: string
         method_type:
           value: mean of four measurements, YEAR 5 NEAR WALL MAX, R. COMMON and YEAR
             5 FAR WALL MAX, R. COMMON and YEAR 5 NEAR WALL MAX, L. COMMON and YEAR

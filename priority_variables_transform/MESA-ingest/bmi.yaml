@@ -1,0 +1,69 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001112
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00083440
+        associated_visit:
+          value: MESA_AirNRSpirometry
+          range: string
+        observation_type:
+          value: OMOP:3038553
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001112
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00083481
+                  unit:
+                    value: kg/m2
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001114
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00083675
+        associated_visit:
+          value: MESA_AncilMesaLungSpirometry
+          range: string
+        observation_type:
+          value: OMOP:3038553
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001114
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00083716
+                  unit:
+                    value: kg/m2
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001122
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087666
+        associated_visit:
+          value: MESA_FamilySpirometry
+          range: string
+        observation_type:
+          value: OMOP:3038553
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001122
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00087707
+                  unit:
+                    value: kg/m2
+                    range: string

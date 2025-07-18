@@ -1,0 +1,53 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003086
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00174584
+        associated_visit:
+          value: MESA AIR EXAM 5
+          range: string
+        observation_type:
+          value: OMOP:4138462
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003086
+                slot_derivations:
+                  value_decimal:
+                    expr: ({phv00175623} + {phv00175683}) / 2
+                  unit:
+                    value: mm
+                    range: string
+        method_type:
+          value: LT DISTAL CCA MAX CIMT (mm) AVG and RT DISTAL CCA MAX CIMT (mm) AVG
+            averaged
+          range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00084441
+        associated_visit:
+          value: MESA CLASSIC EXAM 1
+          range: string
+        observation_type:
+          value: OMOP:4138462
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001116
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00084966
+                  unit:
+                    value: mm
+                    range: string
+        method_type:
+          value: MEAN OF MEAN FAR WALL IMT FOR COMMON CAROTID ARTERY
+          range: string

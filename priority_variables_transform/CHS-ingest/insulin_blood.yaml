@@ -10,6 +10,17 @@
         observation_type:
           value: OBA:2060174
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001451
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00100044} * 6'
+                  unit:
+                    value: pmol/L
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001452
@@ -22,6 +33,17 @@
         observation_type:
           value: OBA:2060174
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001452
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00100428} * 6'
+                  unit:
+                    value: pmol/L
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001490
@@ -34,6 +56,17 @@
         observation_type:
           value: OBA:2060174
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001490
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00105866} * 6'
+                  unit:
+                    value: pmol/L
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001491
@@ -46,3 +79,14 @@
         observation_type:
           value: OBA:2060174
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001491
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00106993} * 6'
+                  unit:
+                    value: pmol/L
+                    range: string

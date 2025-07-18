@@ -10,6 +10,17 @@
         observation_type:
           value: OMOP:37393605
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001449
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00098765
+                  unit:
+                    value: mg/L
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001449
@@ -22,6 +33,17 @@
         observation_type:
           value: OMOP:37393605
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001449
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00098768
+                  unit:
+                    value: mg/L
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001457
@@ -34,3 +56,14 @@
         observation_type:
           value: OMOP:37393605
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001449
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00100683
+                  unit:
+                    value: mg/L
+                    range: string

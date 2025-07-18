@@ -10,3 +10,14 @@
         observation_type:
           value: OBA:VT0000217
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001452
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00100411
+                  unit:
+                    value: 10*3/uL
+                    range: string

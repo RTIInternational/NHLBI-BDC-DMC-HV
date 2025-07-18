@@ -35,18 +35,22 @@
           object_derivations:
           - class_derivations:
               Quantity:
+                populated_from: pht002198
                 slot_derivations:
                   value_decimal:
                     value: 0.16
+                    range: string
                   unit:
                     expr: '''pg/mL'''                    
         range_high:
           object_derivations:
           - class_derivations:
               Quantity:
+                populated_from: pht002198
                 slot_derivations:
                   value_decimal:
                     value: 12.0
+                    range: string
                   unit:
                     expr: '''pg/mL''' 
         value_quantity:
@@ -56,7 +60,7 @@
                 populated_from: pht002198
                 slot_derivations:
                   value_decimal:
-                    expr: case((phv00160541 == -333, '''LLOD'''), case(phv00160541 == -555, '''ULOD'''), phv00160540)
+                    expr: case((phv00160541 == -333, '''LLOD'''), (phv00160541 == -555, '''ULOD'''), (True, phv00160540))
                   unit:
                     expr: '''pg/mL'''                    
 - class_derivations:

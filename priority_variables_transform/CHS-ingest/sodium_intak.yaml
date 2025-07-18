@@ -10,6 +10,17 @@
         observation_type:
           value: OMOP:606729
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001451
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00100131
+                  unit:
+                    value: mg/d
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001494
@@ -22,3 +33,14 @@
         observation_type:
           value: OMOP:606729
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001494
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00109552
+                  unit:
+                    value: mg/d
+                    range: string

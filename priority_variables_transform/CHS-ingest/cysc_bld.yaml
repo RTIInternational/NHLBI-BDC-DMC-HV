@@ -10,6 +10,17 @@
         observation_type:
           value: OBA:2052375
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001462
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00100770} / 10'
+                  unit:
+                    value: mg/dL
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001490
@@ -22,6 +33,17 @@
         observation_type:
           value: OBA:2052375
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001490
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00106429} / 10'
+                  unit:
+                    value: mg/dL
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001491
@@ -34,3 +56,14 @@
         observation_type:
           value: OBA:2052375
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001491
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00107354} / 10'
+                  unit:
+                    value: mg/dL
+                    range: string

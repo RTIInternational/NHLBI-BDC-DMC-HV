@@ -22,22 +22,22 @@
     MeasurementObservation:
       populated_from: pht001116
       slot_derivations:
-      associated_participant:
-        populated_from: phv00084441
-      associated_visit:
-        expr: '''MESA_Exam1Main'''
-      observation_type:
-        expr: '''OMOP:4099154''' #Body weight
-      value_quantity:
-        object_derivations:
-        - class_derivations:
-            Quantity:
-              populated_from: pht001116
-              slot_derivations:
-                value_decimal:
-                  expr: {phv00084484} * 0.453592
-                unit:
-                  expr: '''kg''' #reported_units: lbs
+        associated_participant:
+          populated_from: phv00084441
+        associated_visit:
+          expr: '''MESA_Exam1Main'''
+        observation_type:
+          expr: '''OMOP:4099154''' #Body weight
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001116
+                slot_derivations:
+                  value_decimal:
+                    expr: {phv00084484} * 0.453592
+                  unit:
+                    expr: '''kg''' #reported_units: lbs
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001121
@@ -82,19 +82,19 @@
     MeasurementObservation:
       populated_from: pht003091
       slot_derivations:
-      associated_participant:
-        populated_from: phv00176007
-      associated_visit:
-        expr: '''MESA_Exam5Main'''
-      observation_type:
-        expr: '''OMOP:4099154''' #Body weight
-      value_quantity:
-        object_derivations:
-        - class_derivations:
-            Quantity:
-              populated_from: pht003091
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00176060
-                unit:
-                  expr: '''kg''' #reported_units: kg
+        associated_participant:
+          populated_from: phv00176007
+        associated_visit:
+          expr: '''MESA_Exam5Main'''
+        observation_type:
+          expr: '''OMOP:4099154''' #Body weight
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003091
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00176060
+                  unit:
+                    expr: '''kg''' #reported_units: kg

@@ -1,0 +1,23 @@
+- class_derivations:
+    Condition:
+      populated_from: pht006223
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00283451
+        associated_visit:
+          value: WHI UNC HEART FAILURE DETAILS
+          range: string
+        condition_concept:
+          value: MONDO:0002869
+          range: string
+        condition_status:
+          populated_from: phv00283530
+          value_mappings:
+            '0': '''ABSENT'''
+            '1': '''PRESENT'''
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string

@@ -7,7 +7,7 @@
         associated_visit:
           expr: '''HCHS EXAM'''
         drug_concept:
-          expr: case((phv00226324 == 1, '''RxCUI:C02'''), None)
+          expr: case((phv00226324 == 1, '''RxCUI:C02'''))
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -19,7 +19,7 @@
         associated_visit:
           expr: '''HCHS EXAM'''
         drug_concept:
-          expr: case((phv00226325 == 1, '''RxCUI:C09A'''), None)
+          expr: case((phv00226325 == 1, '''RxCUI:C09A'''))
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''          
 - class_derivations:
@@ -31,6 +31,6 @@
         associated_visit:
           expr: '''HCHS EXAM'''
         drug_concept:
-          expr: case((phv00226326 == 1, '''RxCUI:C09C'''), None)
+          expr: case((phv00226326 == 1, '''RxCUI:C09C'''))
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''          

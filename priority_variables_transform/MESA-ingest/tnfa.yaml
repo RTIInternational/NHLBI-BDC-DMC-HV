@@ -1,0 +1,96 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002105
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00150369
+        associated_visit:
+          value: MESA STRESS
+          range: string
+        observation_type:
+          value: OBA:2051979
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002105
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00160520
+                  unit:
+                    value: pg/mL
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002198
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00159198
+        associated_visit:
+          populated_from: phv00160529
+          value_mappings:
+            '2': '''MESA CLASSIC EXAM 2'''
+            '3': '''MESA CLASSIC EXAM 3'''
+        observation_type:
+          value: OBA:2051979
+          range: string
+        range_low:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002198
+                slot_derivations:
+                  value_decimal:
+                    value: 0.16
+                    range: string
+                  unit:
+                    value: pg/mL
+                    range: string
+        range_high:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002198
+                slot_derivations:
+                  value_decimal:
+                    value: 12.0
+                    range: string
+                  unit:
+                    value: pg/mL
+                    range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002198
+                slot_derivations:
+                  value_decimal:
+                    expr: case(({phv00160541} == -333, '''LLOD'''), ({phv00160541}
+                      == -555, '''ULOD'''), (True, {phv00160540}))
+                  unit:
+                    value: pg/mL
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004326
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00219018
+        associated_visit:
+          value: MESA STRESS
+          range: string
+        observation_type:
+          value: OBA:2051979
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004326
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00219028
+                  unit:
+                    value: pg/mL
+                    range: string

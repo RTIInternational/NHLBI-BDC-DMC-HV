@@ -8,7 +8,7 @@
           value: WHI FORM 30 - MEDICAL HISTORY QUESTIONNAIRE
           range: string
         procedure_concept:
-          expr: case((phv00078535 == 1, OMOP:4336464), None)
+          expr: case((phv00078535 == 1, OMOP:4336464))
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -22,7 +22,7 @@
           value: WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED
           range: string
         procedure_concept:
-          expr: case((phv00193157 == 1, OMOP:4336464), None)
+          expr: case((phv00193157 == 1, OMOP:4336464))
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -36,7 +36,7 @@
           value: WHI UNC HEART FAILURE DETAILS
           range: string
         procedure_concept:
-          expr: case((phv00283623 == 1, OMOP:4336464), None)
+          expr: case((phv00283623 == 1, OMOP:4336464))
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string

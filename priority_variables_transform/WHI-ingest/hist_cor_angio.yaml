@@ -1,0 +1,36 @@
+- class_derivations:
+    Procedure:
+      populated_from: pht000999
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00078506
+        associated_visit:
+          value: WHI FORM 30 - MEDICAL HISTORY QUESTIONNAIRE
+        procedure_concept:
+          expr: case(({phv00078536} == 1, "OMOP:4184832"))
+        procedure_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+- class_derivations:
+    Procedure:
+      populated_from: pht000999
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00078506
+        associated_visit:
+          value: WHI FORM 30 - MEDICAL HISTORY QUESTIONNAIRE
+        procedure_concept:
+          expr: case(({phv00078537} == 1, "OMOP:1242799"))
+        procedure_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+- class_derivations:
+    Procedure:
+      populated_from: pht003407
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193141
+        associated_visit:
+          value: WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED
+        procedure_concept:
+          expr: case(({phv00193199} == 1, "OMOP:4006788"))
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION

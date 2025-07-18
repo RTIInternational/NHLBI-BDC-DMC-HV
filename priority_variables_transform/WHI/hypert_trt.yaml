@@ -7,7 +7,7 @@
         associated_visit:
           expr: '''WHI FORM 30 - MEDICAL HISTORY QUESTIONNAIRE'''
         drug_concept:
-          expr: case((phv00078559 == 1, '''RxCUI:C02'''), None)
+          expr: case((phv00078559 == 1, '''RxCUI:C02'''))
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -19,7 +19,7 @@
         associated_visit:
           expr: '''WHI CAD'''
         drug_concept:
-          expr: case((phv00170607 == 1, '''RxCUI:C02'''), None)
+          expr: case((phv00170607 == 1, '''RxCUI:C02'''))
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''          
 - class_derivations:
@@ -31,7 +31,7 @@
         associated_visit:
           expr: '''WHI CTOS'''
         drug_concept:
-          expr: case((phv00170689 == 1, '''RxCUI:C02'''), None)
+          expr: case((phv00170689 == 1, '''RxCUI:C02'''))
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''          
 - class_derivations:
@@ -43,7 +43,7 @@
         associated_visit:
           expr: '''WHI EXTENSION STUDY 2 MRC'''
         drug_concept:
-          expr: case((phv00193667 == 1, '''RxCUI:C02'''), None)
+          expr: case((phv00193667 == 1, '''RxCUI:C02'''))
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -55,7 +55,7 @@
         associated_visit:
           expr: '''WHI EXTENSION STUDY 2 SRC'''
         drug_concept:
-          expr: case((phv00193779 == 1, '''RxCUI:C02'''), None)
+          expr: case((phv00193779 == 1, '''RxCUI:C02'''))
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''          
 - class_derivations:
@@ -67,6 +67,6 @@
         associated_visit:
           expr: '''WHI EXTENSION STUDY 2 SRC'''
         drug_concept:
-          expr: case((phv00193779 == 1, '''RxCUI:C02'''), None)
+          expr: case((phv00193779 == 1, '''RxCUI:C02'''))
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''          

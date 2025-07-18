@@ -1,0 +1,59 @@
+- class_derivations:
+    Condition:
+      populated_from: pht002118
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00154925
+        associated_visit:
+          value: WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP
+          range: string
+        condition_concept:
+          value: HP:0001712
+          range: string
+        condition_status:
+          populated_from: phv00155172
+          value_mappings:
+            '0': '''ABSENT'''
+            '1': '''PRESENT'''
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht006223
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00283451
+        associated_visit:
+          value: WHI UNC HEART FAILURE DETAILS
+          range: string
+        condition_concept:
+          value: HP:0001712
+          range: string
+        condition_status:
+          populated_from: phv00283580
+          value_mappings:
+            '1': '''PRESENT'''
+            '2': '''PRESENT'''
+            '3': '''PRESENT'''
+            '4': None
+            '5': '''PRESENT'''
+            '6': '''UNKNOWN'''
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        condition_severity:
+          populated_from: phv00283580
+          value_mappings:
+            '1': '''OMOP:4116992'''
+            '2': '''OMOP:3272197'''
+            '3': '''OMOP:4087703'''
+            '4': None
+            '5': None
+            '6': None
+        relationship_to_participant:
+          value: ONESELF
+          range: string

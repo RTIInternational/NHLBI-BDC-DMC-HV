@@ -10,6 +10,17 @@
         observation_type:
           value: OBA:VT0000180
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001452
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00100491
+                  unit:
+                    value: mg/dL
+                    range: string
         method_type:
           value: adjusted
           range: string

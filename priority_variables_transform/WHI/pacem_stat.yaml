@@ -5,11 +5,11 @@
         associated_participant:
           populated_from: phv00154925
         associated_visit:
-          expr: '''WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP'''
+          expr: WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP
         procedure_concept:
-          expr: case(phv00155223 == 1, '''OMOP:45772840'''), None)
+          expr: case((phv00155223 == 1, OMOP:45772840))
         procedure_provenance:
-          expr: case(phv00155223 == 1, '''OMOP:4822157'''), None)
+          expr: case((phv00155223 == 1, OMOP:4822157))
 - class_derivations:
     Procedure:
       populated_from: pht002118
@@ -17,11 +17,11 @@
         associated_participant:
           populated_from: phv00154925
         associated_visit:
-          expr: '''WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP'''
+          expr: WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP
         procedure_concept: 
-          expr: case(phv00193137 == 1, '''OMOP:45772840'''), None)
+          expr: case((phv00193137 == 1, OMOP:45772840))
         procedure_provenance:
-          expr: case(phv00193137 == 1, '''OMOP:4822157'''), None)         
+          expr: case((phv00193137 == 1, OMOP:4822157))         
 - class_derivations:
     Procedure:
       populated_from: pht002118
@@ -29,11 +29,11 @@
         associated_participant:
           populated_from: phv00154925
         associated_visit:
-          expr: '''WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP'''
+          expr: WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP
         procedure_concept: 
-          expr: case(phv00193137 == 1, '''OMOP:4323629'''), None)
+          expr: case((phv00193137 == 1, OMOP:4323629))
         procedure_provenance:
-          expr: case(phv00193137 == 1, '''OMOP:4822157'''), None)           
+          expr: case((phv00193137 == 1, OMOP:4822157))           
 - class_derivations:
     Procedure:
       populated_from: pht006223
@@ -41,9 +41,9 @@
         associated_participant:
           populated_from: phv00283451
         associated_visit:
-          expr: '''WHI UNC HEART FAILURE DETAILS'''
+          expr: WHI UNC HEART FAILURE DETAILS
         procedure_concept: 
-          expr: case(phv00283522 == 1, '''OMOP:45772840'''), None)
+          expr: case((phv00283522 == 1, OMOP:45772840))
         procedure_provenance:
-          expr: case(phv00283522 == 1, '''OMOP:4822157'''), None) 
+          expr: case((phv00283522 == 1, OMOP:4822157)) 
     

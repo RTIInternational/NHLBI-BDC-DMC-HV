@@ -1,0 +1,23 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003087
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00175794
+        associated_visit:
+          value: MESA LUNG CT
+          range: string
+        observation_type:
+          value: OBA:VT0000188
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003087
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00175887
+                  unit:
+                    value: mg/dL
+                    range: string

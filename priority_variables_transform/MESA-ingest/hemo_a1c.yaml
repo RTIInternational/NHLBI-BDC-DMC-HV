@@ -1,0 +1,69 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001118
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00085772
+        associated_visit:
+          value: MESA_Exam2Main
+          range: string
+        observation_type:
+          value: OMOP:4184637
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001118
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00174583
+                  unit:
+                    value: '%'
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003086
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00174584
+        associated_visit:
+          value: MESA_AirNRExam5Main
+          range: string
+        observation_type:
+          value: OMOP:4184637
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003086
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00175243
+                  unit:
+                    value: '%'
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003091
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00176007
+        associated_visit:
+          value: MESA_Exam5Main
+          range: string
+        observation_type:
+          value: OMOP:4184637
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003091
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00176666
+                  unit:
+                    value: '%'
+                    range: string

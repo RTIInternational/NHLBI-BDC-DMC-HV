@@ -10,6 +10,17 @@
         observation_type:
           value: OMOP:21493059
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001451
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00099896} * 7'
+                  unit:
+                    value: '{#}/wk'
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001490
@@ -22,3 +33,14 @@
         observation_type:
           value: OMOP:21493059
           range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001451
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00105773} * 7'
+                  unit:
+                    value: '{#}/wk'
+                    range: string

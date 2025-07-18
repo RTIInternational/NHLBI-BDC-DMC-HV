@@ -1,0 +1,23 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004317
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00218303
+        associated_visit:
+          value: MESA DIET EXAM 5
+          range: string
+        observation_type:
+          value: OMOP:21493059
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004317
+                slot_derivations:
+                  value_decimal:
+                    expr: (({phv00218767} + {phv00218768}) / 30) * 7
+                  unit:
+                    value: '{#}/wk'
+                    range: string

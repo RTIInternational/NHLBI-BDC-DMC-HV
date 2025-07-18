@@ -1,0 +1,46 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00084441
+        associated_visit:
+          value: MESA_Exam1Main
+          range: string
+        observation_type:
+          value: OMOP:4136584
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001116
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00084545} * 0.1'
+                  unit:
+                    value: mg/dL
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003091
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00176007
+        associated_visit:
+          value: MESA_Exam5Main
+          range: string
+        observation_type:
+          value: OMOP:4136584
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003091
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00196280} * 0.1'
+                  unit:
+                    value: mg/dL
+                    range: string
