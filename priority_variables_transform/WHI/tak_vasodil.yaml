@@ -7,7 +7,7 @@
         associated_visit:
           expr: '''WHI UNC HEART FAILURE DETAILS'''
         drug_concept:
-          expr: case((phv00283691 == 1, '''RxCUI:5470'''), None)
+          expr: case((phv00283691 == 1, '''RxCUI:5470'''))
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION''' 
 - class_derivations:
@@ -19,6 +19,6 @@
         associated_visit:
           expr: '''WHI UNC HEART FAILURE DETAILS'''
         drug_concept:
-          expr: case((phv00283692 == 1, '''RxCUI:5470'''), None)
+          expr: case((phv00283692 == 1, '''RxCUI:5470'''))
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''          

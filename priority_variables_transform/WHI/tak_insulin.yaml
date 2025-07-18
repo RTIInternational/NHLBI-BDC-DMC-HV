@@ -7,7 +7,7 @@
         associated_visit:
           expr: '''WHI ELIGIBILITY'''
         drug_concept:
-          expr: case((phv00078469 == 1, '''RxCUI:D007328'''), None)
+          expr: case((phv00078469 == 1, '''RxCUI:D007328'''))
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
@@ -19,7 +19,7 @@
         associated_visit:
           expr: '''WHI CAD'''
         drug_concept:
-          expr: case((phv00170601 == 1, '''RxCUI:D007328'''), None)
+          expr: case((phv00170601 == 1, '''RxCUI:D007328'''))
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''          
 - class_derivations:
@@ -31,7 +31,7 @@
         associated_visit:
           expr: '''WHI CTOS'''
         drug_concept:
-          expr: case((phv00170683 == 1, '''RxCUI:D007328'''), None)
+          expr: case((phv00170683 == 1, '''RxCUI:D007328'''))
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''           
 - class_derivations:
@@ -43,7 +43,7 @@
         associated_visit:
           expr: '''WHI EXTENSION STUDY 2 MRC'''
         drug_concept:
-          expr: case((phv00193671 == 1, '''RxCUI:D007328'''), None)
+          expr: case((phv00193671 == 1, '''RxCUI:D007328'''))
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''           
 - class_derivations:
@@ -55,6 +55,6 @@
         associated_visit:
           expr: '''WHI EXTENSION STUDY 2 SRC'''
         drug_concept:
-          expr: case((phv00193783 == 1, '''RxCUI:D007328'''), None)
+          expr: case((phv00193783 == 1, '''RxCUI:D007328'''))
         expsoure_provenance:
           expr: '''PATIENT SELF-REPORTED MEDICATION'''             
