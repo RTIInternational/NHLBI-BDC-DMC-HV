@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001019
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00079849
+        associated_visit:
+          value: WHI PM 80
+        observation_type:
+          value: OBA:1000032
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001019
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00079861
+                  unit:
+                    value: cm

@@ -1,0 +1,42 @@
+- class_derivations:
+    Procedure:
+      populated_from: pht000999
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00078506
+        associated_visit:
+          value: WHI FORM 30 - MEDICAL HISTORY QUESTIONNAIRE
+          range: string
+        procedure_concept:
+          expr: case(({phv00078535} == 1, "OMOP:4336464"), None)
+        procedure_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+- class_derivations:
+    Procedure:
+      populated_from: pht003407
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00193141
+        associated_visit:
+          value: WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED
+          range: string
+        procedure_concept:
+          expr: case(({phv00193157} == 1, "OMOP:4336464"), None)
+        procedure_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+- class_derivations:
+    Procedure:
+      populated_from: pht006223
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00283451
+        associated_visit:
+          value: WHI UNC HEART FAILURE DETAILS
+          range: string
+        procedure_concept:
+          expr: case(({phv00283623} == 1, "OMOP:4336464"), None)
+        procedure_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string

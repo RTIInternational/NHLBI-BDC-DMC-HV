@@ -1,0 +1,14 @@
+- class_derivations:
+    DrugExposure:
+      populated_from: pht002754
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00169602
+        associated_visit:
+          value: WHI MAIN 44
+          range: string
+        drug_concept:
+          expr: case(({phv00169610} == 1, '''RxCUI:HS051'''), None)
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string

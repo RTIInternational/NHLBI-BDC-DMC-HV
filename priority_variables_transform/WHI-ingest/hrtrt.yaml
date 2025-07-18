@@ -1,0 +1,46 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002118
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00154925
+        associated_visit:
+          value: WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP
+          range: string
+        observation_type:
+          value: OBA:1001087
+          range: string
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht002118
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00155154
+                  unit:
+                    value: bpm
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht006223
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00283451
+        associated_visit:
+          value: WHI UNC HEART FAILURE DETAILS
+          range: string
+        observation_type:
+          value: OBA:1001087
+          range: string
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006223
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00283538
+                  unit:
+                    value: bpm
+                    range: string

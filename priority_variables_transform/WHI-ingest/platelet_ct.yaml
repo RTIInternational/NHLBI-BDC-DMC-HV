@@ -1,0 +1,23 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000986
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00077360
+        associated_visit:
+          value: WHI CBC
+          range: string
+        observation_type:
+          value: OMOP:4267147
+          range: string
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000986
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00077367
+                  unit:
+                    value: 10^3/ul
+                    range: string

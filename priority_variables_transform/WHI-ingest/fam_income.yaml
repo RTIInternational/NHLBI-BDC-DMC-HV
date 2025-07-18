@@ -1,0 +1,94 @@
+- class_derivations:
+    Observation:
+      populated_from: pht000990
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00077450
+        associated_visit:
+          value: WHI YEAR 3
+          range: string
+        observation_type:
+          value: OMOP:4076114
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000990
+                slot_derivations:
+                  value_category:
+                    populated_from: phv00077579
+                    value_mappings:
+                      '1': < $10,000
+                      '2': $10,000 - $19,999
+                      '3': $20,000 - $34,999
+                      '4': $35,000 - $49,999
+                      '5': $50,000 - $74,999
+                      '6': $75,000 - $99,999
+                      '7': $100,000 - $149,999
+                      '8': '> $150,000'
+                      '9': None
+              unit: '''USD'''
+- class_derivations:
+    Observation:
+      populated_from: pht000993
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00077907
+        associated_visit:
+          value: WHI YEAR 6
+          range: string
+        observation_type:
+          value: OMOP:4076114
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000993
+                slot_derivations:
+                  value_category:
+                    populated_from: phv00078072
+                    value_mappings:
+                      '4': $12,000 - $15,999
+                      '5': $16,000 - $19,999
+                      '6': $20,000 - $24,999
+                      '7': $25,000 - $29,999
+                      '8': $30,000 - $34,999
+                      '9': $35,000 - $49,999
+                      '10': $50,000 - $74,999
+                      '11': $75,000 - $99,999
+                      '12': $100,000 - $149,999
+                      '13': '> $150,000'
+              unit: '''USD'''
+- class_derivations:
+    Observation:
+      populated_from: pht000997
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00078385
+        associated_visit:
+          value: WHI PI 20
+          range: string
+        observation_type:
+          value: OMOP:4076114
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000997
+                slot_derivations:
+                  value_category:
+                    populated_from: phv00078409
+                    value_mappings:
+                      '1': < $10,000
+                      '2': $10,000 - $19,999
+                      '3': $20,000 - $34,999
+                      '4': $35,000 - $49,999
+                      '5': $50,000 - $74,999
+                      '6': $75,000 - $99,999
+                      '7': $100,000 - $149,999
+                      '8': '> $150,000'
+                      '9': None
+              unit: '''USD'''

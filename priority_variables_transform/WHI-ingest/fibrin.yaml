@@ -1,0 +1,23 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000987
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00077369
+        associated_visit:
+          value: WHI CORE
+          range: string
+        observation_type:
+          value: OBA:0000061
+          range: string
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000987
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00077383
+                  unit:
+                    value: mg/dl
+                    range: string
