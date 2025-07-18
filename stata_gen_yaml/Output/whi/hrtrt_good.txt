@@ -1,0 +1,40 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006223
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00283451
+        associated_visit: 
+          expr: '''WHI UNC HEART FAILURE DETAILS'''
+        observation_type: 
+          expr: '''OBA:1001087'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006223
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00283538
+                  unit: 
+                    expr: '''bpm'''
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht002118
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00154925
+        associated_visit: 
+          expr: '''WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP'''
+        observation_type: 
+          expr: '''OBA:1001087'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht002118
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00155154
+                  unit: 
+                    expr: '''bpm'''

@@ -1,0 +1,40 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht000031 #CHECK
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00008379
+        associated_visit: 
+          expr: '''FHS OFFSPRING EXAM 2'''
+        observation_type: 
+          expr: '''OBA:2045301'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000031
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00008113 #CHECK
+                  unit: 
+                    expr: '''pg/cell''' #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht004802 #CHECK
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00227023
+        associated_visit: 
+          expr: '''FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4'''
+        observation_type: 
+          expr: '''OBA:2045301'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht004802
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00227030 #CHECK
+                  unit: 
+                    expr: '''pg/cell''' #CHECK

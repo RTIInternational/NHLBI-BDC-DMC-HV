@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012881 #CHECK
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00520376
+        associated_visit: 
+          expr: '''OFFSPRING EXAM 7 AND OMNI 1 EXAM 2'''
+        observation_type: 
+          expr: '''OMOP:3043144'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht012881
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00520385 #CHECK
+                  unit: 
+                    expr: '''pg/ml''' #CHECK

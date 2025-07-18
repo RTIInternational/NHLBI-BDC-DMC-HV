@@ -1,0 +1,40 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012897 #CHECK
+      slot_derivations:
+        associated_participant: 
+          populated_from: 
+        associated_visit: 
+          expr: ''''''
+        observation_type: 
+          expr: '''OMOP:4313591'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht012897
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00522542 #CHECK
+                  unit: 
+                    expr: '''breaths/min''' #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012897 #CHECK
+      slot_derivations:
+        associated_participant: 
+          populated_from: 
+        associated_visit: 
+          expr: ''''''
+        observation_type: 
+          expr: '''OMOP:4313591'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht012897
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00522564 #CHECK
+                  unit: 
+                    expr: '''breaths/min''' #CHECK

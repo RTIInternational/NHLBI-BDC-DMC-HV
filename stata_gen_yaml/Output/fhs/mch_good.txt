@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001045
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00081012
+        associated_visit: 
+          expr: '''FHS ORIGINAL EXAM 20 AND EXAM 21'''
+        observation_type: 
+          expr: '''OBA:2045301'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001045
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00081035
+                  unit: 
+                    expr: '''pg/cell'''

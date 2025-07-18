@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht004809 #CHECK
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00227261
+        associated_visit: 
+          expr: '''FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4'''
+        observation_type: 
+          expr: '''OMOP:4112223'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht004809
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00227285 #CHECK
+                  unit: 
+                    expr: '''ratio''' #CHECK

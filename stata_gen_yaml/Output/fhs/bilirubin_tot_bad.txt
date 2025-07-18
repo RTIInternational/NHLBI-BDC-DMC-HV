@@ -1,0 +1,80 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht000031 #CHECK
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00008379
+        associated_visit: 
+          expr: '''FHS OFFSPRING EXAM 2'''
+        observation_type: 
+          expr: '''OMOP:4230543'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000031
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00008090 #CHECK
+                  unit: 
+                    expr: '''mg/dl''' #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012889 #CHECK
+      slot_derivations:
+        associated_participant: 
+          populated_from: 
+        associated_visit: 
+          expr: ''''''
+        observation_type: 
+          expr: '''OMOP:4230543'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht012889
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00521148 #CHECK
+                  unit: 
+                    expr: '''mg/dl''' #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht005144 #CHECK
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00255349
+        associated_visit: 
+          expr: '''FHS GENERATION 3 EXAM 1'''
+        observation_type: 
+          expr: '''OMOP:4230543'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht005144
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00255363 #CHECK
+                  unit: 
+                    expr: '''mg/dl''' #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012890 #CHECK
+      slot_derivations:
+        associated_participant: 
+          populated_from: 
+        associated_visit: 
+          expr: ''''''
+        observation_type: 
+          expr: '''OMOP:4230543'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht012890
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00521385 #CHECK
+                  unit: 
+                    expr: '''mg/dl''' #CHECK

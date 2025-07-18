@@ -1,0 +1,60 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht004802
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00227023
+        associated_visit: 
+          expr: '''FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4'''
+        observation_type: 
+          expr: '''OMOP:4267147'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht004802
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00227033
+                  unit: 
+                    expr: '''10^3/ul'''
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht002889
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00172159
+        associated_visit: 
+          expr: '''FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'''
+        observation_type: 
+          expr: '''OMOP:4267147'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht002889
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00172186
+                  unit: 
+                    expr: '''10^3/ul'''
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001045
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00081012
+        associated_visit: 
+          expr: '''FHS ORIGINAL EXAM 20 AND EXAM 21'''
+        observation_type: 
+          expr: '''OMOP:4267147'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001045
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00081034
+                  unit: 
+                    expr: '''10^3/ul'''
