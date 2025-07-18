@@ -30,7 +30,7 @@ local macroname = "`entity'_`cohort'"
 use "$der\shortdata_$today.dta", clear
 keep if bdchm_entity=="`entity'"
 keep if cohort=="`cohort'"
-gen macroname="x"+bdchm_entity+"_"+cohort
+gen macroname="`macroname'"
 keep macroname bdchm_varname
 sort bdchm_varname
 duplicates drop
