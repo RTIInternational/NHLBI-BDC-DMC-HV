@@ -40,7 +40,7 @@
                 populated_from: pht006217
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00283344
+                    expr: case((phv00283344 == NULL, > 70), phv00283344)
                   unit: 
                     value: kg/m2
                     range: string
