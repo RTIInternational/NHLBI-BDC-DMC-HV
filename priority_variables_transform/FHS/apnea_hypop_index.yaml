@@ -14,32 +14,20 @@ class_derivations:
       observation_type:
         expr: "'OMOP:37396400'"  #AHI
       value_quantity.unit:
-        expr: "'1/hr'"
+        expr: "'/h'"
 class_derivations:
   MeasurementObservation:
-    populated_from: FHS
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00056635
-      associated_visit:
-        expr: "'FHS OFFSPRING BASELINE'"
-      value_decimal:
-        populated_from: phv00055553
-      observation_type:
-        expr: "'OMOP:37396400'"  #AHI
-      value_quantity.unit:
-        expr: "'1/hr'"
-class_derivations:
-  MeasurementObservation:
-    populated_from: FHS
+    populated_from: pht000397
     slot_derivations:
       associated_participant:
         populated_from: phv00057982
       associated_visit:
         expr: "'FHS OFFSPRING EXAM 2'"
-      value_decimal:
-        populated_from: phv00057941
+      value_category:
+        populated_from: phv00057873
+        value_mappings:
+          'Medical Alert for AHI over 50': > 50
       observation_type:
         expr: "'OMOP:37396400'"  #AHI
       value_quantity.unit:
-        expr: "'1/hr'"        
+        expr: "'/h'"       
