@@ -10,15 +10,24 @@
             '1': '''OMOP:8507'''
             '0': '''OMOP:8532'''
         ethnicity:
-          expr: case(({phv00099434} == 1, ""OMOP:38003563""), ({phv00098800} == 'MEXICAN',
-            ""OMOP:38003563""), ({phv00098800} == 'HISPANIC', ""OMOP:38003563""),
-            (True, ""OMOP:38003564""))
+          expr: 'case(
+                  ({phv00099434} == 1, "OMOP:38003563"),
+                  ({phv00098800} == "MEXICAN", "OMOP:38003563"),
+                  ({phv00098800} == "HISPANIC", "OMOP:38003563"),
+                  (True, "OMOP:38003564")
+                )'
         race:
-          expr: 'case(({phv00099569} == 1, ""OMOP:8527""), ({phv00099569} == 2, ""OMOP:8516""),
-            ({phv00099569} == 3, ""OMOP:8657""), ({phv00099569} == 4, ""OMOP:8515""),
-            ({phv00098800} == ''NEGRO'', ""OMOP:8516""),({phv00098800} == ''COLORED'',
-            "OMOP: 8516"), ({phv00098800} == ''BLACK/INDIAN'', ""OMOP:45880900""),
-            ({phv00098800} == ''BLACK/AMER IND'', ""OMOP:45880900""), (True, ""OMOP:8552""))'
+          expr: 'case(
+                  ({phv00099569} == 1, "OMOP:8527"),
+                  ({phv00099569} == 2, "OMOP:8516"),
+                  ({phv00099569} == 3, "OMOP:8657"),
+                  ({phv00099569} == 4, "OMOP:8515"),
+                  ({phv00098800} == "NEGRO", "OMOP:8516"),
+                  ({phv00098800} == "COLORED", "OMOP: 8516"),
+                  ({phv00098800} == "BLACK/INDIAN", "OMOP:45880900"),
+                  ({phv00098800} == "BLACK/AMER IND", "OMOP:45880900"),
+                  (True, "OMOP:8552")
+                )'
 - class_derivations:
     Demography:
       populated_from: pht001452
@@ -83,14 +92,20 @@
             '0': '''OMOP:38003564'''
             '1': '''OMOP:38003563'''
         race:
-          expr: 'case(({phv00105645} == 2, ""OMOP:8516""),({phv00105117} == "AM OF
-            AFRI DESC", "OMOP: 8516"),({phv00105117} == "AFRO AMERICAN", "OMOP: 8516"),({phv00105117}
-            == "AFRICAN-AM", "OMOP: 8516"),({phv00105645} == 3, "OMOP: 8657"),({phv00105117}
-            == ''MIXED'', "OMOP: 45880900"),({phv00105117} == ''BLACK/INDIAN'', "OMOP:
-            45880900"),({phv00105117} == ''PART HISPANIC'', "OMOP: 45880900"),({phv00105117}
-            == ''BIRACIAL'', "OMOP: 45880900"),({phv00105117} == ''CHATAQUA/AFR/FR'',
-            "OMOP: 45880900"),({phv00105117} == ''MIX OF 1 & 2'', "OMOP: 45880900"),(True,
-            OMOP: 8552))'
+          expr: 'case(
+                   ({phv00105645} == 2, "OMOP:8516"),
+                   ({phv00105117} == "AM OF AFRI DESC", "OMOP: 8516"),
+                   ({phv00105117} == "AFRO AMERICAN", "OMOP: 8516"),
+                   ({phv00105117} == "AFRICAN-AM", "OMOP: 8516"),
+                   ({phv00105645} == 3, "OMOP: 8657"),
+                   ({phv00105117} == "MIXED", "OMOP: 45880900"),
+                   ({phv00105117} == "BLACK/INDIAN", "OMOP:45880900"),
+                   ({phv00105117} == "PART HISPANIC", "OMOP: 45880900"),
+                   ({phv00105117} == "BIRACIAL", "OMOP: 45880900"),
+                   ({phv00105117} == "CHATAQUA/AFR/FR", "OMOP: 45880900"),
+                   ({phv00105117} == "MIX OF 1 & 2", "OMOP: 45880900"),
+                   (True, "OMOP: 8552")
+                )'
 - class_derivations:
     Demography:
       populated_from: pht001491
@@ -135,25 +150,25 @@
           value_mappings:
             '1': '''OMOP:8507'''
             '0': '''OMOP:8532'''
-- class_derivations:
-    Demography:
-      populated_from: pht003699
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00197394
-        sex:
-          populated_from: phv00197398
-          value_mappings:
-            M: '''OMOP:8507'''
-            F: '''OMOP:8532'''
-- class_derivations:
-    Demography:
-      populated_from: pht003699
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00197394
-        sex:
-          populated_from: phv00197400
-          value_mappings:
-            M: '''OMOP:8507'''
-            F: '''OMOP:8532'''
+# - class_derivations:
+#     Demography:
+#       populated_from: pht003699
+#       slot_derivations:
+#         associated_participant:
+#           populated_from: phv00197394
+#         sex:
+#           populated_from: phv00197398
+#           value_mappings:
+#             M: '''OMOP:8507'''
+#             F: '''OMOP:8532'''
+# - class_derivations:
+#     Demography:
+#       populated_from: pht003699
+#       slot_derivations:
+#         associated_participant:
+#           populated_from: phv00197394
+#         sex:
+#           populated_from: phv00197400
+#           value_mappings:
+#             M: '''OMOP:8507'''
+#             F: '''OMOP:8532'''
