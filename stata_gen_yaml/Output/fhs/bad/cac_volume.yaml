@@ -1,0 +1,40 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht000147
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00023247 #CHECK
+        associated_visit: 
+          value: FHS OFFSPRING EXAM 6-7
+        observation_type: 
+          value: OMOP:4166120
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000147
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00023230 #CHECK
+                  unit: 
+                    value: [hnsf'U] #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht005161
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00257668 #CHECK
+        associated_visit: 
+          value: FHS OFFSPRING, GENERATION 3, OMNI 1, OMNI 2
+        observation_type: 
+          value: OMOP:4166120
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht005161
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00257671 #CHECK
+                  unit: 
+                    value: [hnsf'U] #CHECK

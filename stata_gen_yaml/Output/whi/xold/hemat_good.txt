@@ -1,0 +1,40 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht000986
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00077360
+        associated_visit: 
+          expr: '''WHI CBC'''
+        observation_type: 
+          expr: '''OBA:2045381'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000986
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00077365
+                  unit: 
+                    expr: '''%'''
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006223
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00283451
+        associated_visit: 
+          expr: '''WHI UNC HEART FAILURE DETAILS'''
+        observation_type: 
+          expr: '''OBA:2045381'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006223
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00283662
+                  unit: 
+                    expr: '''%'''

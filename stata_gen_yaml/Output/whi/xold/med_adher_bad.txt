@@ -1,0 +1,80 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006214 #CHECK
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00282977
+        associated_visit: 
+          expr: '''WHI LQ 155'''
+        observation_type: 
+          expr: '''OMOP:4056965'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006214
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00283017 #CHECK
+                  unit: 
+                    expr: '''''' #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006212 #CHECK
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00282951
+        associated_visit: 
+          expr: '''WHI CAD MED'''
+        observation_type: 
+          expr: '''OMOP:4056965'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006212
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00282958 #CHECK
+                  unit: 
+                    expr: '''''' #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht003396 #CHECK
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00192304
+        associated_visit: 
+          expr: '''WHI ADL 151'''
+        observation_type: 
+          expr: '''OMOP:4056965'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht003396
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00192330 #CHECK
+                  unit: 
+                    expr: '''''' #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006213 #CHECK
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00282964
+        associated_visit: 
+          expr: '''WHI HRT MED'''
+        observation_type: 
+          expr: '''OMOP:4056965'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006213
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00282969 #CHECK
+                  unit: 
+                    expr: '''''' #CHECK

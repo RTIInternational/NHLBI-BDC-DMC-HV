@@ -1,0 +1,40 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006217
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00283284
+        associated_visit: 
+          value: WHI LLS
+        observation_type: 
+          value: OBA:1001085
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006217
+                slot_derivations:
+                  value_decimal:
+                    expr: {phv00283313} * 2.54
+                  unit: 
+                    value: cm
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001019
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00079849
+        associated_visit: 
+          value: WHI PM 80
+        observation_type: 
+          value: OBA:1001085
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001019
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00079860
+                  unit: 
+                    value: cm

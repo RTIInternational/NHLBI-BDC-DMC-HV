@@ -38,21 +38,23 @@ save "$temp\\`tab2'.dta", replace
 
 /* ----- 1. Unit documentation ----- */
 * Write code to standardize values of bdchm_unit based on unit_harmonization crosswalk *;
-foreach tab in unit_key conversions equivalencies {
+foreach tab in unit_key conversions equivalencies ucum {
 import excel using "$doc\unit_harmonization.xlsx", sheet("`tab'") firstrow allstring clear
 save "$temp\\`tab'.dta", replace
 }
+
+/* should we replace the units for 1/2 and 1/4cup to be cup units, then do the operand? */
 
 * Unit key *;
 use "$temp\\unit_key.dta", clear
 drop note
 drop if standard_value==""
+sort standard_value
 drop if source_value==standard_value
 gen item=`"`=char(34)'"'+source_value+`"`=char(34)'"'+","
 gen rep_value=`"`=char(34)'"'+standard_value+`"`=char(34)'"'
 keep rep_value item
 duplicates drop
-
 sort rep_value
 by rep_value: gen count=_n
 summ count
@@ -83,6 +85,7 @@ sort unit_merge_key
 keep unit_merge_key
 gen equivalent_units=1
 save "$doc\equivalencies.dta", replace
+
 
 
 

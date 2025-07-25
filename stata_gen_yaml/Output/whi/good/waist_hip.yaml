@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001019
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00079849
+        associated_visit: 
+          value: WHI PM 80
+        observation_type: 
+          value: OMOP:4087501
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001019
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00079869
+                  unit: 
+                    value: {ratio}

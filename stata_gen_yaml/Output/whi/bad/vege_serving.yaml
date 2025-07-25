@@ -1,0 +1,40 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006218
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00283348 #CHECK
+        associated_visit: 
+          value: WHI BASELINE
+        observation_type: 
+          value: OMOP:4042886
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006218
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00283396 #CHECK
+                  unit: 
+                    value: {servings}/wk #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006218
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00283348 #CHECK
+        associated_visit: 
+          value: WHI BASELINE
+        observation_type: 
+          value: OMOP:4042886
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006218
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00283395 #CHECK
+                  unit: 
+                    value: {servings}/wk #CHECK

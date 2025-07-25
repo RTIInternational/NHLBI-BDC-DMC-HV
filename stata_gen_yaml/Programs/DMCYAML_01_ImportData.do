@@ -51,6 +51,7 @@ import excel using "$raw\\`dtaset'.xlsx", sheet("Export_BDCHM_noFHS-noCOPDGene_p
 		replace `x'=ustrtrim(`x')
 		} 
 missings dropvars, force
+replace bdchmlabel=bdchmlabelcorrected
 save "$raw\\`dtaset'_$today.dta", replace
 }
 
@@ -169,7 +170,7 @@ replace newname=varlab5+"_"+varlab6 if inlist(varlab5,"stat","enum","example")
 
 * -- Flag variables to drop, add new variable label and name to key -- *;
 gen dropvar=0
-/* yes */replace dropvar=1 if inlist(name,"firstdata_tablestudy_id","firstdata_tabledataset_id","firstdata_tablevariableid","sourcevariabledescription")
+/* yes */replace dropvar=1 if inlist(name,"firstdata_tablestudy_id","firstdata_tabledataset_id","firstdata_tablevariableid","sourcevariabledescription","bdchmlabelcorrected")
 /* yes */replace dropvar=1 if inlist(varlab,"var_report.variable.var_name","var_report.variable.total.stats.example.count")
 /*replace dropvar=1 if inlist(varlab,"var_report.variable.var_name","var_report.study_id","var_report.dataset_id")*/
 drop varlab1-varlab6

@@ -4,7 +4,7 @@
 /* Program: DMCYAML_03_CleanData													*/
 /* Programmer: Sabrina McCutchan (CDMS)												*/
 /* Date Created: 2025/06/20															*/
-/* Date Last Updated: 2025/07/18													*/
+/* Date Last Updated: 2025/07/25													*/
 /* Description:	This program imports key spreadsheets with metadata.				*/
 /*		1. Append & clean data														*/
 /*		2. Correct BDCHM variable mappings											*/
@@ -106,6 +106,10 @@ replace bdchm_label="history of heart failure" if bdchm_label=="heart failure"
 	replace bdchm_label="taking medication for diabetes" if bdchm_label=="medication use" & regexm(var_desc,"diabetes")==1
 	replace bdchm_label="taking alpha blockers" if bdchm_label=="medication use" & regexm(var_desc,"alpha")==1 & regexm(var_desc,"block")==1
 	
+	* Sleep apnea - define HVs for different apnea indices, then map phvs to those, not directy to Condition sleep apnea *;
+	replace bdchm_label=lower("AHI Apnea-Hypopnea Index") if bdchm_label=="sleep apnea" & regexm(var_desc,"apnea/hypopnea index")
+	replace bdchm_label="" if bdchm_label=="sleep apnea" & regexm(var_desc," rdi |obstructive|central") /* rdi=respiratory disturbance index */
+	
 	* Redact BDCHV mappings if it's a time measurement that got mapped to a non-time measurement BDCHV *;
 	gen time_indic_var=1 if regexm(var_desc,"^days |days since| date$|^date of|visit year|^age|age at|\(days\)|follow up days|\(years\)")
 	/*gen test=1 if regexm(var_desc,"^days ")
@@ -122,19 +126,30 @@ gen merge_bdchm_label=subinstr(bdchm_label," ","",.)
 
 /* ----- 3. Correct units ----- */
 /* Note: bad var_units occur due to data quality issues in dbgap metadata, and should ideally be fixed in the source data files read in at the top of program 1. They are handled for this processing pipeline by code below*/
-replace var_units="iu/l" if phv=="phv00007567" & bdchm_label=="ast sgot"
-replace var_units="ml" if inlist(phv,"phv00083475","phv00083710","phv00087701")
-replace var_units="bpm" if phv=="phv00066705"
-replace var_units="l" if inlist(phv,"phv00022586","phv00022598","phv00022611","phv00022624","phv00022637","phv00022652")
+replace var_units="[IU]/L" if phv=="phv00007567" & bdchm_label=="ast sgot"
+replace var_units="mL" if inlist(phv,"phv00083475","phv00083710","phv00087701")
+replace var_units="{beats}/min" if phv=="phv00066705"
+replace var_units="L" if inlist(phv,"phv00022586","phv00022598","phv00022611","phv00022624","phv00022637","phv00022652")
+replace var_units="mmol/L" if phv=="phv00204734"
+replace var_units="mmol/L" if phv=="phv00204735"
+replace var_units="mmol/L" if phv=="phv00204738"
+replace var_units="pmol/L" if phv=="phv00204739"
+replace var_units="mmol/L" if phv=="phv00204765"
+replace var_units="mmol/L" if phv=="phv00204766"
+replace var_units="mmol/L" if phv=="phv00204767"
+replace var_units="%{WBCs}" if inlist(phv,"phv00112694","phv00207259","phv00226284","phv00207274","phv00207261","phv00207276","phv00226285")
+
 
 gen servday=regexm(var_desc,"serv/day|daily|per day")
 gen servweek=regexm(var_desc,"per week|weekly|serv/week")
 gen hrs=regexm(var_desc,"how many hours|number of hours|hours")
 gen kgm2=regexm(var_desc,"kg/m2")
-replace var_units="servings/day" if servday==1 & inlist(bdchm_label,"alcohol","fruits","vegetables") & (var_units=="" | var_units=="servings")
-replace var_units="servings/week" if servweek==1 & inlist(bdchm_label,"alcohol","fruits","vegetables") & (var_units=="" | var_units=="servings")
-replace var_units="hr" if hrs==1 & bdchm_label=="sleep hours" & var_units==""
+replace var_units="{servings}/d" if servday==1 & inlist(bdchm_label,"alcohol","fruits","vegetables") & (var_units=="" | var_units=="{servings}")
+replace var_units="{servings}/wk" if servweek==1 & inlist(bdchm_label,"alcohol","fruits","vegetables") & (var_units=="" | var_units=="{servings}")
+replace var_units="h" if hrs==1 & bdchm_label=="sleep hours" & var_units==""
 replace var_units="kg/m2" if kgm2==1 & var_units==""
+
+
 
 
 
@@ -146,7 +161,7 @@ drop left right time_indic_var
 duplicates drop /*n=280 dropped*/
 drop if bdchm_label==""
 drop if phv==""
-save "$temp\alldata_$today.dta", replace /*n=46568*/
+save "$temp\alldata_$today.dta", replace /*n=42899*/
 
 
 
@@ -190,11 +205,11 @@ save "$der\alldata_$today.dta", replace
 use "$der\alldata_$today.dta", clear
 keep bdchm_label phv var_desc var_units bdchm_unit conversion_rule equivalent_units
 sort var_units bdchm_unit phv
-duplicates drop /*n=11,841*/
-drop if var_units=="" /*n=2955*/
-drop if var_units==bdchm_unit /*n=814*/
-drop if conversion_rule!="" /*n=463*/
-drop if equivalent_units==1 /*n=415*/
+duplicates drop /*n=11,311*/
+drop if var_units=="" /*n=2911*/
+drop if var_units==bdchm_unit /*n=776*/
+drop if conversion_rule!="" /*n=420*/
+drop if equivalent_units==1 /*n=364*/
 tab var_units
 export excel using "$doc\units_toreview_$today.xlsx", sheet("unit_key") first(var) nolabel keepcellfmt replace
 
@@ -239,7 +254,7 @@ keep bdchm_entity bdchm_label bdchm_varname pht phv phs onto_id bdchm_unit assoc
 duplicates drop
 duplicates list phv 
 		/*browse if inlist(phv,"phv00083163")*/	
-save "$der\shortdata_$today.dta", replace /*n=11841*/
+save "$der\shortdata_$today.dta", replace /*n=11311*/
 
 
 

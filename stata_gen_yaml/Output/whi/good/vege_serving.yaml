@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001517
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00111654
+        associated_visit: 
+          value: WHI FG 60 1
+        observation_type: 
+          value: OMOP:4042886
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001517
+                slot_derivations:
+                  value_decimal:
+                    expr: {phv00111871} * 7
+                  unit: 
+                    value: {servings}/wk
