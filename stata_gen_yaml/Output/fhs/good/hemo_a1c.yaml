@@ -40,26 +40,6 @@
                     value: %
 - class_derivations:
     MeasurementObservation:
-      populated from: pht006011
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00275410
-        associated_visit: 
-          value: FHS OMNI 1 EXAM 3
-        observation_type: 
-          value: OMOP:4184637
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht006011
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00275420
-                  unit: 
-                    value: %
-- class_derivations:
-    MeasurementObservation:
       populated from: pht004802
       slot_derivations:
         associated_participant: 
@@ -76,5 +56,25 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00227047
+                  unit: 
+                    value: %
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006011
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00275410
+        associated_visit: 
+          value: FHS OMNI 1 EXAM 3
+        observation_type: 
+          value: OMOP:4184637
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006011
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00275420
                   unit: 
                     value: %

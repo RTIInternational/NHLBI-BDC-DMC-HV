@@ -4,7 +4,7 @@
 /* Program: DMCYAML_02_ImportDocs													*/
 /* Programmer: Sabrina McCutchan (CDMS)												*/
 /* Date Created: 2025/06/20															*/
-/* Date Last Updated: 2025/07/18													*/
+/* Date Last Updated: 2025/07/25													*/
 /* Description:	This program imports key documentation used to enrich data files.	*/
 /*		0. Read in data																*/
 /*		1. Unit documentation														*/
@@ -70,10 +70,32 @@ export delimited "$prog\units.txt", delimiter(tab) novarnames /*datafmt quote*/ 
 /* Manual step:  paste output into units.do as codelines*/
 
 
+* UCUM *;
+use "$temp\ucum.dta", replace
+gen valid_ucum=1
+gen this_unit=ucum_code
+gen that_unit=ucum_code
+save "$doc\ucum.dta", replace
+
+
+
 * Unit conversion key *;
 use "$temp\\conversions.dta", clear
 gen unit_merge_key=this_unit+"_"+that_unit
 sort unit_merge_key
+sort this_unit
+merge m:1 this_unit using "$doc\ucum.dta", keepusing(valid_ucum)
+drop if _merge==2
+drop _merge
+rename valid_ucum source_unit_valid
+sort that_unit
+merge m:1 that_unit using "$doc\ucum.dta", keepusing(valid_ucum)
+drop if _merge==2
+drop _merge
+rename valid_ucum target_unit_valid
+rename this_unit source_unit
+rename that_unit target_unit
+gen both_valid_ucums=1 if source_unit_valid==1 & target_unit_valid==1
 save "$doc\conversions.dta", replace
 
 

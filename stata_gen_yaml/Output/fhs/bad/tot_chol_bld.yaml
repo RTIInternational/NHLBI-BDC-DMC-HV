@@ -20,6 +20,26 @@
                     value: mg/dL #CHECK
 - class_derivations:
     MeasurementObservation:
+      populated from: pht000035
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00010138 #CHECK
+        associated_visit: 
+          value: FHS OFFSPRING EXAM 6
+        observation_type: 
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000035
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00010135 #CHECK
+                  unit: 
+                    value: mg/dL #CHECK
+- class_derivations:
+    MeasurementObservation:
       populated from: pht000033
       slot_derivations:
         associated_participant: 
@@ -76,26 +96,6 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00520306 #CHECK
-                  unit: 
-                    value: mg/dL #CHECK
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000035
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00010138 #CHECK
-        associated_visit: 
-          value: FHS OFFSPRING EXAM 6
-        observation_type: 
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht000035
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00010135 #CHECK
                   unit: 
                     value: mg/dL #CHECK
 - class_derivations:

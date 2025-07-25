@@ -1,25 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000397
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00057982 #CHECK
-        associated_visit: 
-          value: FHS OFFSPRING EXAM 2
-        observation_type: 
-          value: OMOP:37396400
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht000397
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00057941 #CHECK
-                  unit: 
-                    value: {events}/h #CHECK
-- class_derivations:
-    MeasurementObservation:
       populated from: pht000395
       slot_derivations:
         associated_participant: 
@@ -40,22 +20,22 @@
                     value: {events}/h #CHECK
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000395
+      populated from: pht000397
       slot_derivations:
         associated_participant: 
-          populated_from: phv00056635 #CHECK
+          populated_from: phv00057982 #CHECK
         associated_visit: 
-          value: FHS OFFSPRING BASELINE
+          value: FHS OFFSPRING EXAM 2
         observation_type: 
           value: OMOP:37396400
         value_quantity:
           object_derivations:
           - class derivations:
               Quantity:
-                populated_from: pht000395
+                populated_from: pht000397
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00056501 #CHECK
+                    populated_from: phv00057941 #CHECK
                   unit: 
                     value: {events}/h #CHECK
 - class_derivations:
@@ -76,5 +56,25 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00057873 #CHECK
+                  unit: 
+                    value: {events}/h #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht000395
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00056635 #CHECK
+        associated_visit: 
+          value: FHS OFFSPRING BASELINE
+        observation_type: 
+          value: OMOP:37396400
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000395
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00056501 #CHECK
                   unit: 
                     value: {events}/h #CHECK

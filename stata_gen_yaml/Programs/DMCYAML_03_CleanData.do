@@ -157,7 +157,7 @@ replace var_units="kg/m2" if kgm2==1 & var_units==""
 /* ----- 3. Save clean data ----- */
 order cohort bdchm_label phv phs pht var_name var_desc var_units var_type enum* example* 
 sort merge_bdchm_label phv enum_code
-drop left right time_indic_var
+drop left right time_indic_var servday servweek hrs kgm2
 duplicates drop /*n=280 dropped*/
 drop if bdchm_label==""
 drop if phv==""
@@ -187,6 +187,7 @@ rename _merge merge_pht
 gen unit_merge_key=var_units+"_"+bdchm_unit
 merge m:1 unit_merge_key using "$doc\conversions.dta"
 drop if _merge==2
+drop conversion_formula
 rename _merge merge_conversionrules
 
 * Merge unit equivalencies *;
@@ -242,15 +243,19 @@ C. some unit representations cannot be converted to the standard unit. these cas
 use "$der\alldata_$today.dta", clear
 
 * Create flags for if-then rules*;
-gen unit_match=1 if (var_units==bdchm_unit & var_units!="")
-	replace unit_match=1 if equivalent_units==1
 gen has_pht=1 if merge_pht==3
 gen has_onto=1 if onto_id!=""
+gen unit_match=1 if (var_units==bdchm_unit & var_units!="") /* unit matches exactly */
+	replace unit_match=1 if equivalent_units==1
+gen unit_convert=0 /* row eligible for YAML unit_conversion: statement */
+	replace unit_convert=1 if unit_match!=1 & both_valid_ucums==1
+gen unit_expr=0 /* use expr statement for everything else that can be converted */
+	replace unit_expr=1 if unit_match!=1 & both_valid_ucums!=1 & conversion_rule!=""
 gen row_good=0
-replace row_good=1 if has_pht==1 & has_onto==1 & (unit_match==1 | (unit_match!=1 & conversion_rule!=""))
+replace row_good=1 if has_pht==1 & has_onto==1 & (unit_match==1 | unit_convert==1 | unit_expr==1)
 
 * Remove duplicates and unneeded vars *; 
-keep bdchm_entity bdchm_label bdchm_varname pht phv phs onto_id bdchm_unit associatedvisit participantidphv var_units bdchm_unit unit_match has_pht has_onto var_desc cohort row_good conversion_rule
+keep bdchm_entity bdchm_label bdchm_varname pht phv phs onto_id var_desc cohort bdchm_unit associatedvisit participantidphv var_units bdchm_unit has_pht has_onto unit_match unit_convert unit_expr row_good conversion_rule source_unit target_unit
 duplicates drop
 duplicates list phv 
 		/*browse if inlist(phv,"phv00083163")*/	

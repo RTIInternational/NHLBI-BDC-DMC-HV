@@ -1,43 +1,27 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000024
+      populated from: pht009761
       slot_derivations:
         associated_participant: 
-          populated_from: phv00005557
+          populated_from: phv00423868
         associated_visit: 
-          value: FHS ORIGINAL EXAM 22
+          value: FHS OMNI 1 EXAM 1-4
         observation_type: 
           value: OBA:1000032
         value_quantity:
           object_derivations:
           - class derivations:
               Quantity:
-                populated_from: pht000024
+                populated_from: pht009761
                 slot_derivations:
                   value_decimal:
-                    expr: {phv00005545} * 2.54
+                    populated_from: phv00423923
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
                   unit: 
                     value: cm
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000036
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00010694
-        associated_visit: 
-          value: FHS OFFSPRING EXAM 7
-        observation_type: 
-          value: OBA:1000032
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht000036
-                slot_derivations:
-                  value_decimal:
-                    expr: {phv00010503} * 2.54
-                  unit: 
-                    value: cm
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht007777
@@ -55,9 +39,13 @@
                 populated_from: pht007777
                 slot_derivations:
                   value_decimal:
-                    expr: {phv00369974} * 2.54
+                    populated_from: phv00369973
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
                   unit: 
                     value: cm
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht006027
@@ -75,9 +63,13 @@
                 populated_from: pht006027
                 slot_derivations:
                   value_decimal:
-                    expr: {phv00277183} * 2.54
+                    populated_from: phv00277182
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
                   unit: 
                     value: cm
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht000025
@@ -95,69 +87,37 @@
                 populated_from: pht000025
                 slot_derivations:
                   value_decimal:
-                    expr: {phv00005925} * 2.54
+                    populated_from: phv00005925
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
                   unit: 
                     value: cm
+                    range: string
 - class_derivations:
     MeasurementObservation:
-      populated from: pht009761
+      populated from: pht000024
       slot_derivations:
         associated_participant: 
-          populated_from: phv00423868
+          populated_from: phv00005557
         associated_visit: 
-          value: FHS OMNI 1 EXAM 1-4
+          value: FHS ORIGINAL EXAM 22
         observation_type: 
           value: OBA:1000032
         value_quantity:
           object_derivations:
           - class derivations:
               Quantity:
-                populated_from: pht009761
+                populated_from: pht000024
                 slot_derivations:
                   value_decimal:
-                    expr: {phv00423922} * 2.54
+                    populated_from: phv00005545
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
                   unit: 
                     value: cm
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht007777
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00369651
-        associated_visit: 
-          value: FHS ORIGINAL EXAM 1-32
-        observation_type: 
-          value: OBA:1000032
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht007777
-                slot_derivations:
-                  value_decimal:
-                    expr: {phv00369970} * 2.54
-                  unit: 
-                    value: cm
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000034
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00009579
-        associated_visit: 
-          value: FHS OFFSPRING EXAM 5
-        observation_type: 
-          value: OBA:1000032
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht000034
-                slot_derivations:
-                  value_decimal:
-                    expr: {phv00009556} * 2.54
-                  unit: 
-                    value: cm
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht006027
@@ -175,89 +135,13 @@
                 populated_from: pht006027
                 slot_derivations:
                   value_decimal:
-                    expr: {phv00277181} * 2.54
+                    populated_from: phv00277183
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
                   unit: 
                     value: cm
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht007777
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00369651
-        associated_visit: 
-          value: FHS ORIGINAL EXAM 1-32
-        observation_type: 
-          value: OBA:1000032
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht007777
-                slot_derivations:
-                  value_decimal:
-                    expr: {phv00369971} * 2.54
-                  unit: 
-                    value: cm
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht005140
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00254010
-        associated_visit: 
-          value: FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4
-        observation_type: 
-          value: OBA:1000032
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht005140
-                slot_derivations:
-                  value_decimal:
-                    expr: {phv00254293} * 2.54
-                  unit: 
-                    value: cm
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000022
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00004525
-        associated_visit: 
-          value: FHS ORIGINAL EXAM 20
-        observation_type: 
-          value: OBA:1000032
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht000022
-                slot_derivations:
-                  value_decimal:
-                    expr: {phv00004089} * 2.54
-                  unit: 
-                    value: cm
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht004814
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00250718
-        associated_visit: 
-          value: FHS OMNI 1 EXAM 2
-        observation_type: 
-          value: OBA:1000032
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht004814
-                slot_derivations:
-                  value_decimal:
-                    expr: {phv00251066} * 2.54
-                  unit: 
-                    value: cm
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht006026
@@ -275,9 +159,13 @@
                 populated_from: pht006026
                 slot_derivations:
                   value_decimal:
-                    expr: {phv00277044} * 2.54
+                    populated_from: phv00277044
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
                   unit: 
                     value: cm
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht007777
@@ -295,129 +183,13 @@
                 populated_from: pht007777
                 slot_derivations:
                   value_decimal:
-                    expr: {phv00369973} * 2.54
+                    populated_from: phv00369970
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
                   unit: 
                     value: cm
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht006027
-      slot_derivations:
-        associated_participant: 
-          populated_from: 
-        associated_visit: 
-          value: 
-        observation_type: 
-          value: OBA:1000032
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht006027
-                slot_derivations:
-                  value_decimal:
-                    expr: {phv00277184} * 2.54
-                  unit: 
-                    value: cm
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000023
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00004939
-        associated_visit: 
-          value: FHS ORIGINAL EXAM 21
-        observation_type: 
-          value: OBA:1000032
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht000023
-                slot_derivations:
-                  value_decimal:
-                    expr: {phv00004531} * 2.54
-                  unit: 
-                    value: cm
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht009761
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00423868
-        associated_visit: 
-          value: FHS OMNI 1 EXAM 1-4
-        observation_type: 
-          value: OBA:1000032
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht009761
-                slot_derivations:
-                  value_decimal:
-                    expr: {phv00423924} * 2.54
-                  unit: 
-                    value: cm
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000021
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00004083
-        associated_visit: 
-          value: FHS ORIGINAL EXAM 19
-        observation_type: 
-          value: OBA:1000032
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht000021
-                slot_derivations:
-                  value_decimal:
-                    expr: {phv00003673} * 2.54
-                  unit: 
-                    value: cm
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht007777
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00369651
-        associated_visit: 
-          value: FHS ORIGINAL EXAM 1-32
-        observation_type: 
-          value: OBA:1000032
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht007777
-                slot_derivations:
-                  value_decimal:
-                    expr: {phv00369972} * 2.54
-                  unit: 
-                    value: cm
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht003094
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00177237
-        associated_visit: 
-          value: FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2
-        observation_type: 
-          value: OBA:1000032
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht003094
-                slot_derivations:
-                  value_decimal:
-                    expr: {phv00177545} * 2.54
-                  unit: 
-                    value: cm
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht000033
@@ -435,29 +207,109 @@
                 populated_from: pht000033
                 slot_derivations:
                   value_decimal:
-                    expr: {phv00008768} * 2.54
+                    populated_from: phv00008768
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
                   unit: 
                     value: cm
+                    range: string
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000035
+      populated from: pht005140
       slot_derivations:
         associated_participant: 
-          populated_from: phv00010138
+          populated_from: phv00254010
         associated_visit: 
-          value: FHS OFFSPRING EXAM 6
+          value: FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4
         observation_type: 
           value: OBA:1000032
         value_quantity:
           object_derivations:
           - class derivations:
               Quantity:
-                populated_from: pht000035
+                populated_from: pht005140
                 slot_derivations:
                   value_decimal:
-                    expr: {phv00010113} * 2.54
+                    populated_from: phv00254293
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
                   unit: 
                     value: cm
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht007777
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00369651
+        associated_visit: 
+          value: FHS ORIGINAL EXAM 1-32
+        observation_type: 
+          value: OBA:1000032
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht007777
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00369971
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
+                  unit: 
+                    value: cm
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht007777
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00369651
+        associated_visit: 
+          value: FHS ORIGINAL EXAM 1-32
+        observation_type: 
+          value: OBA:1000032
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht007777
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00369972
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
+                  unit: 
+                    value: cm
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht000021
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00004083
+        associated_visit: 
+          value: FHS ORIGINAL EXAM 19
+        observation_type: 
+          value: OBA:1000032
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000021
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00003673
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
+                  unit: 
+                    value: cm
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht006027
@@ -475,29 +327,13 @@
                 populated_from: pht006027
                 slot_derivations:
                   value_decimal:
-                    expr: {phv00277182} * 2.54
+                    populated_from: phv00277180
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
                   unit: 
                     value: cm
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht006027
-      slot_derivations:
-        associated_participant: 
-          populated_from: 
-        associated_visit: 
-          value: 
-        observation_type: 
-          value: OBA:1000032
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht006027
-                slot_derivations:
-                  value_decimal:
-                    expr: {phv00277180} * 2.54
-                  unit: 
-                    value: cm
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht009761
@@ -515,6 +351,274 @@
                 populated_from: pht009761
                 slot_derivations:
                   value_decimal:
-                    expr: {phv00423923} * 2.54
+                    populated_from: phv00423924
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
                   unit: 
                     value: cm
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht000022
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00004525
+        associated_visit: 
+          value: FHS ORIGINAL EXAM 20
+        observation_type: 
+          value: OBA:1000032
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000022
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00004089
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
+                  unit: 
+                    value: cm
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht004814
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00250718
+        associated_visit: 
+          value: FHS OMNI 1 EXAM 2
+        observation_type: 
+          value: OBA:1000032
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht004814
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00251066
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
+                  unit: 
+                    value: cm
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht000023
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00004939
+        associated_visit: 
+          value: FHS ORIGINAL EXAM 21
+        observation_type: 
+          value: OBA:1000032
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000023
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00004531
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
+                  unit: 
+                    value: cm
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht000034
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00009579
+        associated_visit: 
+          value: FHS OFFSPRING EXAM 5
+        observation_type: 
+          value: OBA:1000032
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000034
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00009556
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
+                  unit: 
+                    value: cm
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht000036
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00010694
+        associated_visit: 
+          value: FHS OFFSPRING EXAM 7
+        observation_type: 
+          value: OBA:1000032
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000036
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00010503
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
+                  unit: 
+                    value: cm
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht000035
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00010138
+        associated_visit: 
+          value: FHS OFFSPRING EXAM 6
+        observation_type: 
+          value: OBA:1000032
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000035
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00010113
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
+                  unit: 
+                    value: cm
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006027
+      slot_derivations:
+        associated_participant: 
+          populated_from: 
+        associated_visit: 
+          value: 
+        observation_type: 
+          value: OBA:1000032
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006027
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00277181
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
+                  unit: 
+                    value: cm
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht007777
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00369651
+        associated_visit: 
+          value: FHS ORIGINAL EXAM 1-32
+        observation_type: 
+          value: OBA:1000032
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht007777
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00369974
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
+                  unit: 
+                    value: cm
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006027
+      slot_derivations:
+        associated_participant: 
+          populated_from: 
+        associated_visit: 
+          value: 
+        observation_type: 
+          value: OBA:1000032
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006027
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00277184
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
+                  unit: 
+                    value: cm
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht003094
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00177237
+        associated_visit: 
+          value: FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2
+        observation_type: 
+          value: OBA:1000032
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht003094
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00177545
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
+                  unit: 
+                    value: cm
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht009761
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00423868
+        associated_visit: 
+          value: FHS OMNI 1 EXAM 1-4
+        observation_type: 
+          value: OBA:1000032
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht009761
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00423922
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
+                  unit: 
+                    value: cm
+                    range: string

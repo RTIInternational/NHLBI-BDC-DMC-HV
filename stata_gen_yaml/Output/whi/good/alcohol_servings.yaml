@@ -1,25 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000990
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00077450
-        associated_visit: 
-          value: WHI YEAR 3
-        observation_type: 
-          value: OMOP:35609491
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht000990
-                slot_derivations:
-                  value_decimal:
-                    expr: {phv00077552} * 7
-                  unit: 
-                    value: {servings}/wk
-- class_derivations:
-    MeasurementObservation:
       populated from: pht000993
       slot_derivations:
         associated_participant: 
@@ -35,9 +15,13 @@
                 populated_from: pht000993
                 slot_derivations:
                   value_decimal:
-                    expr: {phv00077954} * 7
+                    populated_from: phv00077954
+                    unit_conversion:
+                      source_unit: "{servings}/d"
+                      target_unit: {servings}/wk
                   unit: 
                     value: {servings}/wk
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht001517
@@ -55,9 +39,37 @@
                 populated_from: pht001517
                 slot_derivations:
                   value_decimal:
-                    expr: {phv00111862} * 7
+                    populated_from: phv00111861
+                    unit_conversion:
+                      source_unit: "{servings}/d"
+                      target_unit: {servings}/wk
                   unit: 
                     value: {servings}/wk
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht000990
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00077450
+        associated_visit: 
+          value: WHI YEAR 3
+        observation_type: 
+          value: OMOP:35609491
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000990
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00077552
+                    unit_conversion:
+                      source_unit: "{servings}/d"
+                      target_unit: {servings}/wk
+                  unit: 
+                    value: {servings}/wk
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht001517
@@ -75,9 +87,13 @@
                 populated_from: pht001517
                 slot_derivations:
                   value_decimal:
-                    expr: {phv00111861} * 7
+                    populated_from: phv00111862
+                    unit_conversion:
+                      source_unit: "{servings}/d"
+                      target_unit: {servings}/wk
                   unit: 
                     value: {servings}/wk
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht001517
@@ -95,7 +111,31 @@
                 populated_from: pht001517
                 slot_derivations:
                   value_decimal:
-                    expr: {phv00111860} * 7
+                    populated_from: phv00111860
+                    unit_conversion:
+                      source_unit: "{servings}/d"
+                      target_unit: {servings}/wk
+                  unit: 
+                    value: {servings}/wk
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht002125
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00156379
+        associated_visit: 
+          value: WHI FG 60 2
+        observation_type: 
+          value: OMOP:35609491
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht002125
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00156410
                   unit: 
                     value: {servings}/wk
 - class_derivations:
@@ -136,25 +176,5 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00078826
-                  unit: 
-                    value: {servings}/wk
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002125
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00156379
-        associated_visit: 
-          value: WHI FG 60 2
-        observation_type: 
-          value: OMOP:35609491
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht002125
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00156410
                   unit: 
                     value: {servings}/wk

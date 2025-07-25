@@ -1,25 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002118
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00154925
-        associated_visit: 
-          value: WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP
-        observation_type: 
-          value: OBA:1001087
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht002118
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00155154
-                  unit: 
-                    value: {beats}/min
-- class_derivations:
-    MeasurementObservation:
       populated from: pht006223
       slot_derivations:
         associated_participant: 
@@ -36,5 +16,25 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00283538
+                  unit: 
+                    value: {beats}/min
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht002118
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00154925
+        associated_visit: 
+          value: WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP
+        observation_type: 
+          value: OBA:1001087
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht002118
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00155154
                   unit: 
                     value: {beats}/min

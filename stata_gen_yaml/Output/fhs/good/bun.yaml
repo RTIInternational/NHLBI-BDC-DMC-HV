@@ -1,25 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht001045
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00081012
-        associated_visit: 
-          value: FHS ORIGINAL EXAM 20 AND EXAM 21
-        observation_type: 
-          value: OBA:VT0005265
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht001045
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00081023
-                  unit: 
-                    value: mg/dL
-- class_derivations:
-    MeasurementObservation:
       populated from: pht000030
       slot_derivations:
         associated_participant: 
@@ -36,6 +16,26 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00007559
+                  unit: 
+                    value: mg/dL
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001045
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00081012
+        associated_visit: 
+          value: FHS ORIGINAL EXAM 20 AND EXAM 21
+        observation_type: 
+          value: OBA:VT0005265
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001045
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00081023
                   unit: 
                     value: mg/dL
 - class_derivations:

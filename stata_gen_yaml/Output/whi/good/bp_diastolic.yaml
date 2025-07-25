@@ -15,6 +15,26 @@
                 populated_from: pht006217
                 slot_derivations:
                   value_decimal:
+                    populated_from: phv00283298
+                  unit: 
+                    value: mm[Hg]
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006217
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00283284
+        associated_visit: 
+          value: WHI LLS
+        observation_type: 
+          value: OMOP:4154790
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006217
+                slot_derivations:
+                  value_decimal:
                     populated_from: phv00283300
                   unit: 
                     value: mm[Hg]
@@ -35,27 +55,7 @@
                 populated_from: pht001019
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00079855
-                  unit: 
-                    value: mm[Hg]
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht001019
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00079849
-        associated_visit: 
-          value: WHI PM 80
-        observation_type: 
-          value: OMOP:4154790
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht001019
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00079857
+                    populated_from: phv00079854
                   unit: 
                     value: mm[Hg]
 - class_derivations:
@@ -115,26 +115,26 @@
                 populated_from: pht001019
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00079854
+                    populated_from: phv00079855
                   unit: 
                     value: mm[Hg]
 - class_derivations:
     MeasurementObservation:
-      populated from: pht006217
+      populated from: pht001019
       slot_derivations:
         associated_participant: 
-          populated_from: phv00283284
+          populated_from: phv00079849
         associated_visit: 
-          value: WHI LLS
+          value: WHI PM 80
         observation_type: 
           value: OMOP:4154790
         value_quantity:
           object_derivations:
           - class derivations:
               Quantity:
-                populated_from: pht006217
+                populated_from: pht001019
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00283298
+                    populated_from: phv00079857
                   unit: 
                     value: mm[Hg]

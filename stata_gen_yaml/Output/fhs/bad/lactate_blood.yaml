@@ -60,26 +60,6 @@
                     value: mmol/L #CHECK
 - class_derivations:
     MeasurementObservation:
-      populated from: pht012888
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00521067 #CHECK
-        associated_visit: 
-          value: GENERATION 3 EXAM 3
-        observation_type: 
-          value: OBA:VT0010616
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht012888
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00521118 #CHECK
-                  unit: 
-                    value: mmol/L #CHECK
-- class_derivations:
-    MeasurementObservation:
       populated from: pht012887
       slot_derivations:
         associated_participant: 
@@ -96,5 +76,25 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00521044 #CHECK
+                  unit: 
+                    value: mmol/L #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012888
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00521067 #CHECK
+        associated_visit: 
+          value: GENERATION 3 EXAM 3
+        observation_type: 
+          value: OBA:VT0010616
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht012888
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00521118 #CHECK
                   unit: 
                     value: mmol/L #CHECK

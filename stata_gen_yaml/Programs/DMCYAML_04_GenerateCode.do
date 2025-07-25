@@ -20,7 +20,7 @@
 
 /* Note: change value of cohort local macro to desired cohort before running */
 local entity = "MeasurementObservation"
-local cohort = "whi"
+local cohort = "fhs"
 local macroname = "`entity'_`cohort'"
 
 
@@ -66,7 +66,6 @@ foreach bdchm in $`macroname' {
 	keep if cohort=="`cohort'"
 	keep if bdchm_varname=="`bdchm'"
 	keep if row_good==1
-	count
 	save "$temp\\`cohort'\good\\`bdchm'.dta", replace
 
 	use "$der\shortdata_$today.dta", clear
@@ -75,7 +74,6 @@ foreach bdchm in $`macroname' {
 	keep if bdchm_varname=="`bdchm'"
 	keep if row_good!=1
 	count
-	/*if r(N) > 0 {*/
 	save "$temp\\`cohort'\bad\\`bdchm'.dta", replace
 }
 
@@ -102,8 +100,10 @@ forv i = 1/`nobs' {
 	local visit=associatedvisit[`i']
 	local participant=participantidphv[`i']
 	local convert=conversion_rule[`i']
+	local source_unit=source_unit[`i']
+	local target_unit=target_unit[`i']
 
-if conversion_rule[`i']=="" {
+if unit_match[`i']==1 {
 file write `bdchm'_good "- class_derivations:" _n ///
 	_column(5) "`entity'" ":" _n ///
 			_column(7) "populated from: " "`pht'" _n ///
@@ -126,7 +126,7 @@ file write `bdchm'_good "- class_derivations:" _n ///
 										_column(21) "value: " "`unit'" _n	
 
 	}
-else if conversion_rule[`i']!="" {
+else if unit_convert[`i']==1 {
 file write `bdchm'_good "- class_derivations:" _n ///
 	_column(5) "`entity'" ":" _n ///
 			_column(7) "populated from: " "`pht'" _n ///
@@ -144,9 +144,13 @@ file write `bdchm'_good "- class_derivations:" _n ///
 								_column(17) "populated_from: " "`pht'" _n ///
 								_column(17) "slot_derivations:" _n ///
 									_column(19) "value_decimal:" _n ///
-										_column(21) "expr: {" "`phv'" "} " "`convert'" _n ///
+										_column(21) "populated_from: " "`phv'" _n ///
+										_column(21)	"unit_conversion:" _n ///
+											_column(23)	"source_unit: " _char(34) "`source_unit'" _char(34) _n ///
+											_column(23) "target_unit: " "`target_unit'" _n ///
 									_column(19) "unit: " _n ///
-										_column(21) "value: " "`unit'" _n
+										_column(21) "value: " "`unit'" _n ///
+										_column(21)	"range: string" _n
 	
 	}
 }
@@ -211,3 +215,15 @@ file close `bdchm'_bad
 }
 
 
+
+
+
+
+
+
+
+
+
+/* ARCHIVED 
+
+										/*_column(21) "expr: {" "`phv'" "} " "`convert'" _n /// */

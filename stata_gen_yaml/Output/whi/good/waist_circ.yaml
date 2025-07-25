@@ -15,9 +15,13 @@
                 populated_from: pht006217
                 slot_derivations:
                   value_decimal:
-                    expr: {phv00283313} * 2.54
+                    populated_from: phv00283313
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: cm
                   unit: 
                     value: cm
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht001019

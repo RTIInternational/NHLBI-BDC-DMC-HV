@@ -20,26 +20,6 @@
                     value: mg/dL #CHECK
 - class_derivations:
     MeasurementObservation:
-      populated from: pht010726
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00462185 #CHECK
-        associated_visit: 
-          value: FHS EXAM LAB ASSAYS, GENERATION 3 EXAM 3, NEW OFFSPRING SPOUSE EXAM 3, OMNI 2 EXAM 3
-        observation_type: 
-          value: OBA:2050096
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht010726
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00462191 #CHECK
-                  unit: 
-                    value: mg/dL #CHECK
-- class_derivations:
-    MeasurementObservation:
       populated from: pht002566
       slot_derivations:
         associated_participant: 
@@ -76,6 +56,26 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00161767 #CHECK
+                  unit: 
+                    value: mg/dL #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht010726
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00462185 #CHECK
+        associated_visit: 
+          value: FHS EXAM LAB ASSAYS, GENERATION 3 EXAM 3, NEW OFFSPRING SPOUSE EXAM 3, OMNI 2 EXAM 3
+        observation_type: 
+          value: OBA:2050096
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht010726
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00462191 #CHECK
                   unit: 
                     value: mg/dL #CHECK
 - class_derivations:
