@@ -64,7 +64,7 @@
                 slot_derivations:
                   value_decimal:
                     expr: case(({phv00172177} > 0.15, {phv00172177}),({phv00462201}
-                      == 1, "'LLOD'"))
+                      == 1, "'LLOD'"), {phv00172177})
                   unit:
                     value: mg/L
                     range: string
@@ -100,7 +100,7 @@
                 slot_derivations:
                   value_decimal:
                     expr: case(({phv00227060} > 0.15, {phv00227060}),({phv00227067}
-                      == 1, "'LLOD'"))
+                      == 1, "'LLOD'"), {phv00227060})
                   unit:
                     value: mg/L
                     range: string
