@@ -1,0 +1,24 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006018
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00276803
+        associated_visit: 
+          value: FHS ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 1, OMNI 2 CASE REVIEW
+        observation_type: 
+          value: OBA:VT0001776
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006018
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00276858
+                    unit_conversion:
+                      source_unit: "meq/L"
+                      target_unit: mmol/L
+                  unit: 
+                    value: mmol/L
+                    range: string

@@ -1,0 +1,24 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht000146
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00023209
+        associated_visit: 
+          value: FHS OFFSPRING EXAM 7
+        observation_type: 
+          value: OBA:2052375
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000146
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00023208
+                    unit_conversion:
+                      source_unit: "mg/L"
+                      target_unit: mg/dL
+                  unit: 
+                    value: mg/dL
+                    range: string

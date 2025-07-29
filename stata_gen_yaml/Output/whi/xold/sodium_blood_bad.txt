@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006223 #CHECK
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00283451
+        associated_visit: 
+          expr: '''WHI UNC HEART FAILURE DETAILS'''
+        observation_type: 
+          expr: '''OBA:VT0001776'''
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006223
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00283658 #CHECK
+                  unit: 
+                    expr: '''mmol/l''' #CHECK

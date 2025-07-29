@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006223
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00283451
+        associated_visit: 
+          value: WHI UNC HEART FAILURE DETAILS
+        observation_type: 
+          value: OBA:2050096
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006223
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00283659
+                  unit: 
+                    value: mg/dL
