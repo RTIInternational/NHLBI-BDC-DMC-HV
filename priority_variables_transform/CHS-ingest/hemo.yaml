@@ -90,26 +90,3 @@
                   unit:
                     value: g/dL
                     range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001452
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00100285
-        associated_visit:
-          value: CHS BASELINE BOTH
-          range: string
-        observation_type:
-          value: OBA:2060175
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001452
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00100412
-                  unit:
-                    value: g/dL
-                    range: string
