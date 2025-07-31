@@ -6,17 +6,15 @@
           populated_from: phv00021738
         associated_visit:
           value: FHS OFFSPRING EXAM 6
-          range: string
         observation_type:
           value: OMOP:43020498
-          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
                 populated_from: pht000083
                 slot_derivations:
-                  value_category:
+                  value_concept:
                     populated_from: phv00021702
                     value_mappings:
                       '0': 0
@@ -25,6 +23,5 @@
                       '3': 50-74
                       '4': 75-99
                       '5': 100
-                    unit:
-                      value: %
-                      range: string
+                  unit:
+                    value: '%'
