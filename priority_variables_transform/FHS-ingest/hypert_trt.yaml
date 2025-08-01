@@ -780,3 +780,23 @@
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht000020
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00003667
+        associated_visit:
+          value: FHS ORIGINAL EXAM 18
+          range: string
+        drug_concept:
+          populated_from: phv00003349
+          value_mappings:
+            'LOZOL': 'RxCUI:5764'
+            'CAPDOPEN': 'RxCUI:1998'
+            'TRANDATE': 'RxCUI:152440'
+            'VISKEN': 'RxCUI:8332'
+            'ESIDRIX': 'RxCUI:5487'
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
