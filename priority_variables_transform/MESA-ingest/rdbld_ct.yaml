@@ -21,3 +21,26 @@
                   unit:
                     value: 10*6/uL
                     range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004319
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00218989
+        associated_visit:
+          value: MESA EPIGENOMICS
+          range: string
+        observation_type:
+          value: OMOP:4030871
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004319
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00218990
+                  unit:
+                    value: 10*6/uL
+                    range: string
