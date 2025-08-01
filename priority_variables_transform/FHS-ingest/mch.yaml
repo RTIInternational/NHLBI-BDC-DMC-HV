@@ -69,26 +69,3 @@
                   unit:
                     value: pg/{cell}
                     range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000031
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00008379
-        associated_visit:
-          value: FHS OFFSPRING EXAM 2
-          range: string
-        observation_type:
-          value: OBA:2045301
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000031
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00008114} / 10'
-                  unit:
-                    value: pg/{cell}
-                    range: string
