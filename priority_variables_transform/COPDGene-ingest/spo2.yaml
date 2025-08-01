@@ -1,0 +1,18 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: COPDGene
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00159568
+        observation_type:
+          expr: '''OBA:2045443'''
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: COPDGene
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00159589} * 100 if {phv00159589} <= 1 else {phv00159589}'
+                  unit:
+                    expr: '''%'''

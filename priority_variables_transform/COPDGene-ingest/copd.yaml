@@ -1,0 +1,20 @@
+- class_derivations:
+    Condition:
+      populated_from: COPDGene
+      slot_derivations:
+        condition_concept:
+          expr: '''MONDO:0005002'''
+        condition_status:
+          expr: case( ({phv00159731} == 0, 'ABSENT'), ({phv00159731} == 1, case( ({phv00159734}
+            == 0, 'HISTORICAL'), ({phv00159734} == 1, 'PRESENT'), ({phv00159734} ==
+            3, 'HISTORICAL') )), ({phv00159731} == 3, case( ({phv00159734} == 0, case(
+            ({phv00159732} == 0, 'ABSENT'), ({phv00159732} == 1, 'HISTORICAL'), ({phv00159732}
+            == 3, 'ABSENT') )), ({phv00159734} == 1, 'PRESENT'), ({phv00159734} == 3,
+            case( ({phv00159732} == 1, 'UNKNOWN'), (True, 'UNKNOWN') )) )) )
+        condition_provenance:
+          expr: case( ({phv00159732} == 0, 'PATIENT_SELF-REPORTED_CONDITION'), ({phv00159732}
+            == 1, 'CLINICAL_DIAGNOSIS'), (True, 'PATIENT_SELF-REPORTED_CONDITION') )
+        relationship_to_participant:
+          expr: '''SELF'''
+        age_at_condition_start:
+          expr: '{phv00159733} * 365'

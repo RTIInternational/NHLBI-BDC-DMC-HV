@@ -1,0 +1,18 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: COPDGene
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00159568
+        observation_type:
+          expr: '''OBA:VT0001253'''
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: COPDGene
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00159592
+                  unit:
+                    expr: '''cm'''
