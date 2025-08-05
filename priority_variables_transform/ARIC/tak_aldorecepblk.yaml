@@ -1,1 +1,12 @@
-
+- class_derivations:
+    DrugExposure:
+      populated_from: pht004063
+      slot_derivations:
+        associated_participant:
+          populated_from:  phv00204812.v3.p2
+        associated_visit:
+          expr: '''ARIC EXAM 1'''
+        drug_concept:
+          expr: case((phv00204712 == 1, '''RxCUI:C09A'''))
+        expsoure_provenance:
+          expr: '''PATIENT SELF-REPORTED MEDICATION'''
