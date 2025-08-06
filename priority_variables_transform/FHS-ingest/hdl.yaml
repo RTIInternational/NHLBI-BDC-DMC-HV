@@ -488,8 +488,10 @@
                 populated_from: pht002889
                 slot_derivations:
                   value_decimal:
-                    expr: case(({phv00172176} > 16.0, {phv00172176}),({phv00172201}
-                      == 1, "'LLOD'"))
+                    expr: 'case(
+                             ({phv00172176} > 16.0, {phv00172176}),
+                             ({phv00172201} == 1, "LLOD")
+                          )'
                   unit:
                     value: mg/dL
                     range: string
@@ -1596,7 +1598,11 @@
           value: FHS ORIGINAL EXAM 11
           range: string
         observation_type:
-          expr: case(({phv00001585 == 1, OMOP:4041557), ({phv00001585 == 2, OMOP:4041720), OBA:VT0000184)
+          expr: 'case(
+                   ({phv00001585} == 1, "OMOP:4041557"),
+                   ({phv00001585} == 2, "OMOP:4041720"),
+                   (True, "OBA:VT0000184")
+                )'
         method_type:
           value: fasted for minimum 12 hrs
           range: string          
@@ -1621,7 +1627,7 @@
           value: FHS ORIGINAL EXAM 11
           range: string
         observation_type:
-          expr: case(({phv00001592 == 1, OMOP:4041557), ({phv00001592 == 2, OMOP:4041720), OBA:VT0000184)
+          expr: case(({phv00001592} == 1, "OMOP:4041557"), ({phv00001592} == 2, "OMOP:4041720"), (True, "OBA:VT0000184"))
         method_type:
           value: fasted for minimum 12 hrs
           range: string          

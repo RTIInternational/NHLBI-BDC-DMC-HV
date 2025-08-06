@@ -622,32 +622,33 @@
                   unit:
                     value: mg/dL
                     range: string
- - class_derivations:
-     MeasurementObservation:
-       populated_from: pht006027
-       slot_derivations:
-         associated_participant:
-           populated_from: phv00277066
-         associated_visit:
-           value: UNKNOWN
-           range: string
-         observation_type:
-           value: OBA:VT0000181
-           range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht006027
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00277066
+        associated_visit:
+          value: UNKNOWN
+          range: string
+        observation_type:
+          value: OBA:VT0000181
+          range: string
         method_type:
           value: fasted for minimum 12 hrs
           range: string           
-         value_quantity:
-           object_derivations:
-           - class_derivations:
-               Quantity:
-                 populated_from: pht006027
-                 slot_derivations:
-                   value_decimal:
-                     populated_from: phv00520292
-                   unit:
-                     value: mg/dL
-                     range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht006027
+                slot_derivations:
+# This phv isn't in pht006027 or any other pht I have
+#                  value_decimal:
+#                    populated_from: phv00520292
+                  unit:
+                    value: mg/dL
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000013
@@ -658,7 +659,11 @@
           value: FHS ORIGINAL EXAM 11
           range: string
         observation_type:
-          expr: case(({phv00001585} == 1, OMOP:4042061), case({phv00001585} == 2, OMOP:4041721), OBA:VT0000181)
+          expr: 'case(
+                  ({phv00001585} == 1, "OMOP:4042061"), 
+                  ({phv00001585} == 2, "OMOP:4041721"), 
+                  (True, "OBA:VT0000181")
+                )'
         method_type:
           value: fasted for minimum 12 hrs
           range: string          
@@ -683,7 +688,11 @@
           value: FHS ORIGINAL EXAM 11
           range: string
         observation_type:
-          expr: case(({phv00001592} == 1, OMOP:4042061), case({phv00001592} == 2, OMOP:4041721), OBA:VT0000181)
+          expr: 'case(
+                  ({phv00001592} == 1, "OMOP:4042061"), 
+                  ({phv00001592} == 2, "OMOP:4041721"),
+                  (True, "OBA:VT0000181")
+                )'
         method_type:
           value: fasted for minimum 12 hrs
           range: string          
@@ -698,29 +707,29 @@
                   unit:
                     value: mg/dL
                     range: string
- - class_derivations:
-     MeasurementObservation:
-       populated_from: pht000031
-       slot_derivations:
-         associated_participant:
-           populated_from: phv00008379
-         associated_visit:
-           value: FHS OFFSPRING EXAM 2
-           range: string
-         observation_type:
-           value: OBA:VT0000181
-           range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000031
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00008379
+        associated_visit:
+          value: FHS OFFSPRING EXAM 2
+          range: string
+        observation_type:
+          value: OBA:VT0000181
+          range: string
         method_type:
           value: fasted for minimum 12 hrs
           range: string           
-         value_quantity:
-           object_derivations:
-           - class_derivations:
-               Quantity:
-                 populated_from: pht000031
-                 slot_derivations:
-                   value_decimal:
-                     populated_from: phv00007975
-                   unit:
-                     value: mg/dL
-                     range: string                    
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000031
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00007975
+                  unit:
+                    value: mg/dL
+                    range: string                    

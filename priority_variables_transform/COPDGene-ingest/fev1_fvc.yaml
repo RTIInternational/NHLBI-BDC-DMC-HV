@@ -1,22 +1,18 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht004715
+      populated_from: COPDGene
       slot_derivations:
         associated_participant:
-          populated_from: phv00226250
-        associated_visit:
-          value: HCHS EXAM
-          range: string
+          populated_from: phv00159568
         observation_type:
-          value: OBA:VT0001586
-          range: string
+          expr: '''OMOP:3011505'''
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht004715
+                populated_from: COPDGene
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00226294
+                    populated_from: phv00159855
                   unit:
-                    value: 10*6/uL
+                    expr: '''{ratio}'''

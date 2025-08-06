@@ -1,0 +1,17 @@
+- class_derivations:
+    DrugExposure:
+      populated_from: COPDGene
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00159568
+        drug_concept:
+          expr: '''RXNORM:R03AL'''
+        expsoure_provenance:
+          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+        exposure_status:
+          populated_from: phv00159644
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        route_concept:
+          expr: '''RESPIRATORY TRACT'''

@@ -1,0 +1,8 @@
+- class_derivations:
+    Person:
+      populated_from: COPDGene
+      slot_derivations:
+        species:
+          expr: '''Homo Sapiens'''
+        identity:
+          populated_from: dbGaP_Subject_ID

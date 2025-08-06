@@ -39,7 +39,7 @@
               Quantity:
                 populated_from: pht000016
                 slot_derivations:
-                  value_category:
+                  value_concept:
                     populated_from: phv00002422
                     value_mappings:
                       'NEGATIVE' : 0
@@ -54,7 +54,8 @@
                   unit:
                     value: mg/L
                     range: string
-        method_type: dipstick
+        method_type: 
+          value: dipstick
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000031
@@ -73,7 +74,7 @@
               Quantity:
                 populated_from: pht000031
                 slot_derivations:
-                  value_category:
+                  value_concept:
                     populated_from: phv00007968
                     value_mappings:
                       '10': 100
@@ -89,7 +90,8 @@
                   unit:
                     value: mg/L
                     range: string
-        method_type: dipstick
+        method_type: 
+          value: dipstick
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000032
@@ -108,18 +110,19 @@
               Quantity:
                 populated_from: pht000032
                 slot_derivations:
-                  value_category:
+                  value_concept:
                     populated_from: phv00008722
                     value_mappings:
                       'TRACE': 100
                       'NEG' : 0
                       'SM': 300
                       'MOD': 1000
-                      '300-2000 LG': > 3000
+                      '300-2000 LG': '> 3000'
                   unit:
                     value: mg/L
                     range: string
-        method_type: dipstick           
+        method_type: 
+          value: dipstick
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000017
@@ -138,7 +141,7 @@
               Quantity:
                 populated_from: pht000017
                 slot_derivations:
-                  value_category:
+                  value_concept:
                     populated_from: phv00002662
                     value_mappings:
                       'NEGATIVE' : 0
@@ -153,7 +156,8 @@
                   unit:
                     value: mg/L
                     range: string
-        method_type: dipstick
+        method_type: 
+          value: dipstick
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
@@ -173,8 +177,11 @@
                 populated_from: pht002889
                 slot_derivations:
                   value_concept:
-                    expr: case(({phv00172161} > 3.0, {phv00172161}), case(({phv00227069}
-                      == 1, "'LLOD'"), {phv00172161})
+                    expr: 'case(
+                             ({phv00172161} > 3.0, {phv00172161}),
+                             ({phv00227069} == 1, "LLOD"),
+                             (True, {phv00172161})
+                          )'
                   unit:
                     value: mg/L
                     range: string
@@ -255,8 +262,11 @@
                 populated_from: pht004363
                 slot_derivations:
                   value_concept:
-                    expr: case(({phv00219547} > 3.0, {phv00219547}), case(({phv00219549}
-                      == 1, "'LLOD'"), {phv00219547})
+                    expr: 'case(
+                            ({phv00219547} > 3.0, {phv00219547}),
+                            ({phv00219549} == 1, "LLOD"),
+                            (True, {phv00219547})
+                          )'
                   unit:
                     value: mg/L
                     range: string
