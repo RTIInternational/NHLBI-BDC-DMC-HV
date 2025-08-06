@@ -602,13 +602,15 @@
                     range: string
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht000195
+      populated_from: pht000196
       slot_derivations:
         associated_participant:
-          populated_from: phv00024510
+          populated_from: phv00024536
         associated_visit:
-          value: FHS OFFSPRING EXAM 7
-          range: string
+          populated_from: phv00024511
+          value_mappings:
+            '1': FHS OFFSPRING 2002-2006
+            '7': FHS OMNI 1 2002-2006
         observation_type:
           value: OBA:1001087
           range: string
