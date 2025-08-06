@@ -10,6 +10,9 @@
         observation_type:
           value: OBA:1001085
           range: string
+        method_type:
+          value: measured from LightSpeed Ultra CT scan
+          range: string
         value_quantity_unit:
           value: cm
           range: string
@@ -23,15 +26,18 @@
                     expr: '{phv00023150} / 10'
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht000139
+      populated_from: pht000140
       slot_derivations:
         associated_participant:
-          populated_from: phv00023157
+          populated_from: phv00023166
         associated_visit:
-          value: FHS OFFSPRING EXAM 7
+          value: FHS GENERATION 3 EXAM 1
           range: string
         observation_type:
           value: OBA:1001085
+          range: string
+        method_type:
+          value: measured from LightSpeed Ultra CT scan
           range: string
         value_quantity_unit:
           value: cm
