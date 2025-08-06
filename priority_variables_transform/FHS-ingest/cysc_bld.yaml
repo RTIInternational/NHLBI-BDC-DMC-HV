@@ -10,6 +10,9 @@
         observation_type:
           value: OBA:2052375
           range: string
+        method_type:
+          value: Particle Enhanced Immunonephelometry
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -21,6 +24,30 @@
                   unit:
                     value: mg/L
                     range: string
+        range_low:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000146
+                slot_derivations:
+                  value_decimal:
+                    value: '0.29'
+                    range: string
+                  unit:
+                    value: mg/L
+                    range: string 
+        range_high:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000146
+                slot_derivations:
+                  value_decimal:
+                    value: '7.22'
+                    range: string
+                  unit:
+                    value: mg/L
+                    range: string                          
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006013
