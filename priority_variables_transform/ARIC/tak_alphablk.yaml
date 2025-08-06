@@ -3,12 +3,26 @@
       populated_from: pht004063
       slot_derivations:
         associated_participant:
-          populated_from: phv
+          populated_from: phv00204812.v3.p2
         associated_visit:
-          value: CHS BASELINE 2
+          value: ARIC EXAM 1
           range: string
         drug_concept:
-          expr: case(({phv} == 1, '''RxCUI:CV150'''))
+          expr: case(({phv00204712} == 1, '''RxCUI:CV150'''))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht004063
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00204812.v3.p2
+        associated_visit:
+          value: ARIC EXAM 1
+          range: string
+        drug_concept:
+          expr: case(({phv00204754} == 1, '''RxCUI:CV150'''))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
