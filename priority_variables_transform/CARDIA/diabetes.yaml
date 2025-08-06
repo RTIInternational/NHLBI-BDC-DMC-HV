@@ -16,7 +16,7 @@ class_derivations:
           '2': 'PRESENT'
           'M': 'UNKNOWN'
       condition_provenance:
-        expr: 'CLINICAL_DIAGNOSIS'
+        expr: 'PATIENT_SELF-REPORTED_CONDITION'
       relationship_to_participant:
         expr: 'ONESELF'
 class_derivations:
@@ -37,7 +37,7 @@ class_derivations:
           '3': 'PRESENT'
           'M': 'UNKNOWN'
       condition_provenance:
-        expr: 'CLINICAL_DIAGNOSIS'
+        expr: 'PATIENT_SELF-REPORTED_CONDITION'
       relationship_to_participant:
         expr: 'ONESELF'
 class_derivations:
@@ -58,7 +58,7 @@ class_derivations:
           '8': 'UNKNOWN'
           'M': 'UNKNOWN'
       condition_provenance:
-        expr: 'CLINICAL_DIAGNOSIS'
+        expr: 'PATIENT_SELF-REPORTED_CONDITION'
       relationship_to_participant:
         expr: 'ONESELF'
 class_derivations:
@@ -79,7 +79,7 @@ class_derivations:
           '5': 'ABSENT'
           'M': 'UNKNOWN'
       condition_provenance:
-        expr: 'CLINICAL_DIAGNOSIS'
+        expr: 'PATIENT_SELF-REPORTED_CONDITION'
       relationship_to_participant:
         expr: 'ONESELF'
 class_derivations:
@@ -100,7 +100,7 @@ class_derivations:
           '8': 'UNKNOWN'
           'M': 'UNKNOWN'
       condition_provenance:
-        expr: 'CLINICAL_DIAGNOSIS'
+        expr: 'PATIENT_SELF-REPORTED_CONDITION'
       relationship_to_participant:
         expr: 'ONESELF'
 class_derivations:
@@ -121,7 +121,7 @@ class_derivations:
           '8': 'UNKNOWN'
           'M': 'UNKNOWN'
       condition_provenance:
-        expr: 'CLINICAL_DIAGNOSIS'
+        expr: 'PATIENT_SELF-REPORTED_CONDITION'
       relationship_to_participant:
         expr: 'ONESELF'
 class_derivations:
@@ -141,7 +141,7 @@ class_derivations:
           '2': 'PRESENT'
           'M': 'UNKNOWN'
       condition_provenance:
-        expr: 'CLINICAL_DIAGNOSIS'
+        expr: 'PATIENT_SELF-REPORTED_CONDITION'
       relationship_to_participant:
         expr: 'ONESELF'
 class_derivations:
@@ -161,7 +161,7 @@ class_derivations:
           '2': 'PRESENT'
           'M': 'UNKNOWN'
       condition_provenance:
-        expr: 'CLINICAL_DIAGNOSIS'
+        expr: 'PATIENT_SELF-REPORTED_CONDITION'
       relationship_to_participant:
         expr: 'ONESELF'
 class_derivations:
@@ -181,7 +181,7 @@ class_derivations:
           '2': 'PRESENT'
           '8': 'UNKNOWN'
       condition_provenance:
-        expr: 'CLINICAL_DIAGNOSIS'
+        expr: 'PATIENT_SELF-REPORTED_CONDITION'
       relationship_to_participant:
         expr: 'ONESELF'
 class_derivations:
@@ -201,7 +201,7 @@ class_derivations:
           '2': 'PRESENT'
           '8': 'UNKNOWN'
       condition_provenance:
-        expr: 'CLINICAL_DIAGNOSIS'
+        expr: 'PATIENT_SELF-REPORTED_CONDITION'
       relationship_to_participant:
         expr: 'ONESELF'
 class_derivations:
@@ -222,7 +222,7 @@ class_derivations:
           '3': 'UNKNOWN'
           '8': 'UNKNOWN'
       condition_provenance:
-        expr: 'CLINICAL_DIAGNOSIS'
+        expr: 'PATIENT_SELF-REPORTED_CONDITION'
       relationship_to_participant:
         expr: 'ONESELF'
 class_derivations:
@@ -317,6 +317,25 @@ class_derivations:
         expr: 'ONESELF'
 class_derivations:
   Condition:
+    populated_from: pht001870
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00121454
+      associated_visit:
+        expr: 'CARDIA HOSPITALIZATIONS DIAGNOSIS'
+      condition_concept:
+        expr: 'OMOP:201820'
+      condition_status:
+        populated_from: phv00121467
+        value_mappings:
+          '1': 'ABSENT'
+          '2': 'PRESENT'
+      condition_provenance:
+        expr: 'CLINICAL_DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'  
+class_derivations:
+  Condition:
     populated_from: pht001871
     slot_derivations:
       associated_participant:
@@ -333,7 +352,7 @@ class_derivations:
           '3': 'UNKNOWN'
           '8': 'UNKNOWN'
       condition_provenance:
-        expr: 'CLINICAL_DIAGNOSIS'
+        expr: 'PATIENT_SELF-REPORTED_CONDITION'
       relationship_to_participant:
         expr: 'ONESELF'
 class_derivations:
