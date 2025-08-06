@@ -33,6 +33,9 @@
         observation_type:
           value: OBA:2050096
           range: string
+        method_type:
+          value: COLORIMETRIC; JAFFE REACTION
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -44,6 +47,30 @@
                   unit:
                     value: mg/dL
                     range: string
+        range_low:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000146
+                slot_derivations:
+                  value_decimal:
+                    value: '0.2'
+                    range: string
+                  unit:
+                    value: mg/dL
+                    range: string        
+        range_high:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000146
+                slot_derivations:
+                  value_decimal:
+                    value: '25'
+                    range: string
+                  unit:
+                    value: mg/dL
+                    range: string 
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000017
