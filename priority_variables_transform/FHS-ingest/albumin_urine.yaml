@@ -17,10 +17,22 @@
                 populated_from: pht000742
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00071895
+                    expr: 'case(({phv00071895} > 3.0, {phv00071895}), "LLOD")'
                   unit:
                     value: mg/L
                     range: string
+        range_low:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000742
+                slot_derivations:
+                  value_decimal:
+                    value: '3.0'
+                    range: string
+                  unit:
+                    value: mg/L
+                    range: string                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000016
