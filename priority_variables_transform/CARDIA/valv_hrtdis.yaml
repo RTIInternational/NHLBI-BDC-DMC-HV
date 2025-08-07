@@ -1,0 +1,42 @@
+class_derivations:
+  Condition:
+    populated_from: pht001570
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00113019
+      associated_visit:
+        expr: 'CARDIA YEAR 0'
+      condition_concept:
+        expr: 'MONDO:0002869'
+      condition_status:
+        populated_from: phv00113038
+        value_mappings:
+          '1': 'ABSENT'
+          '8': 'UNKNOWN'
+          '2': 'PRESENT'
+          'M': 'UNKNOWN'
+      condition_provenance:
+        expr: 'PATIENT_SELF-REPORTED_CONDITION'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht001607
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00114388
+      associated_visit:
+        expr: 'CARDIA YEAR 2'
+      condition_concept:
+        expr: 'MONDO:0002869'
+      condition_status:
+        populated_from: phv00114404
+        value_mappings:
+          '1': 'ABSENT'
+          '8': 'UNKNOWN'
+          '2': 'PRESENT'
+          'M': 'UNKNOWN'
+      condition_provenance:
+        expr: 'PATIENT_SELF-REPORTED_CONDITION'
+      relationship_to_participant:
+        expr: 'ONESELF'
