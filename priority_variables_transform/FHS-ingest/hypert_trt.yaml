@@ -90,8 +90,10 @@
         associated_participant:
           populated_from: phv00254010
         associated_visit:
-          value: FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4
-          range: string
+          populated_from: phv00254011
+            value_mappings:
+              '1': FHS OFFSPRING EXAM 9
+              '7': FHS OMNI 1 EXAM 4
         condition_concept:
           value: HP:0000822
           range: string
@@ -113,8 +115,10 @@
         associated_participant:
           populated_from: phv00254010
         associated_visit:
-          value: FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4
-          range: string
+          populated_from: phv00254011
+            value_mappings:
+              '1': FHS OFFSPRING EXAM 9
+              '7': FHS OMNI 1 EXAM 4
         drug_concept:
           expr: case(({phv00254024} == 1, '''RxCUI:C02'''))
         expsoure_provenance:
