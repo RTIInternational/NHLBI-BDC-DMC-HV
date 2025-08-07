@@ -4,7 +4,7 @@
 /* Program: DMCYAML_03_CleanData													*/
 /* Programmer: Sabrina McCutchan (CDMS)												*/
 /* Date Created: 2025/06/20															*/
-/* Date Last Updated: 2025/07/25													*/
+/* Date Last Updated: 2025/08/07													*/
 /* Description:	This program imports key spreadsheets with metadata.				*/
 /*		1. Append & clean data														*/
 /*		2. Correct BDCHM variable mappings											*/
@@ -67,8 +67,8 @@ replace bdchm_label="copd" if bdchm_label=="copd status"
 replace bdchm_label="sleep apnea" if bdchm_label=="sleep apnea status"
 replace bdchm_label="history of heart failure" if bdchm_label=="heart failure"
 
-	* Albumin *;
-	replace bdchm_label="" if bdchm_label=="albumin in blood" & phv=="phv00507051" /* dbgap says no data collection for this variable */
+	* dbGap says "no data was collected for this variable" *;
+	replace bdchm_label="" if inlist(phv,"phv00507051","phv00507200")
 
 	* BUN *;
 	replace bdchm_label="bun" if bdchm_label=="bun creatinine ratio" & inlist(phv,"phv00175987","phv00203866")
@@ -110,12 +110,30 @@ replace bdchm_label="history of heart failure" if bdchm_label=="heart failure"
 	replace bdchm_label=lower("AHI Apnea-Hypopnea Index") if bdchm_label=="sleep apnea" & regexm(var_desc,"apnea/hypopnea index")
 	replace bdchm_label="" if bdchm_label=="sleep apnea" & regexm(var_desc," rdi |obstructive|central") /* rdi=respiratory disturbance index */
 	
+	* White blood cells *;
+	replace bdchm_label="" if inlist(phv,"phv00507187")
+	
+	* Neutrophils percent *;
+	/*gen test=0*/
+	foreach word in neutrophil lymphocyte {
+		/*replace test=1 if regexm(var_desc,"`word'") & regexm(var_desc," % |percent")*/
+		replace bdchm_label="`word's percent" if regexm(var_desc,"`word'") & regexm(var_desc," %|percent")
+		}
+		replace bdchm_label="lymphocytes percent" if phv=="phv00127622"
+		replace bdchm_label="neutrophils percent" if inlist(phv,"phv00112694","phv00112697")
+		replace bdchm_label="" if inlist(phv,"phv00112695")
+
+	
 	* Redact BDCHV mappings if it's a time measurement that got mapped to a non-time measurement BDCHV *;
-	gen time_indic_var=1 if regexm(var_desc,"^days |days since| date$|^date of|visit year|^age|age at|\(days\)|follow up days|\(years\)")
-	/*gen test=1 if regexm(var_desc,"^days ")
+	gen time_indic_var=1 if regexm(var_desc,"^days |days since| date$|^date |visit year|^age|age at|\(days\)|follow up days|\(years\)")
+	/*gen test=1 if regexm(var_desc,"^date ")
 	browse bdchm_label var_desc if test==1*/
 	replace bdchm_label="" if time_indic_var==1 & !inlist(bdchm_label,"death","age at follow-up")
 	replace bdchm_label="" if var_desc=="visit type"
+	
+	* Misc other problems *;
+	replace bdchm_label="" if phv=="phv00206893" & bdchm_label=="mean arterial pressure" /*var in dbgap appears to actually be a measure of % coronary stenosis */
+	replace bdchm_label="" if phv=="phv00156409" /*the same dataset has another variable that maps directly to alcohol servings/week, so mapping this var to the target BDCHV is unnecessary duplication */
 
 gen merge_bdchm_label=subinstr(bdchm_label," ","",.)
 
@@ -130,14 +148,17 @@ replace var_units="[IU]/L" if phv=="phv00007567" & bdchm_label=="ast sgot"
 replace var_units="mL" if inlist(phv,"phv00083475","phv00083710","phv00087701")
 replace var_units="{beats}/min" if phv=="phv00066705"
 replace var_units="L" if inlist(phv,"phv00022586","phv00022598","phv00022611","phv00022624","phv00022637","phv00022652")
-replace var_units="mmol/L" if phv=="phv00204734"
-replace var_units="mmol/L" if phv=="phv00204735"
-replace var_units="mmol/L" if phv=="phv00204738"
+replace var_units="mmol/L" if inlist(phv,"phv00204734","phv00204735","phv00204738","phv00204765","phv00204766","phv00204767")
 replace var_units="pmol/L" if phv=="phv00204739"
-replace var_units="mmol/L" if phv=="phv00204765"
-replace var_units="mmol/L" if phv=="phv00204766"
-replace var_units="mmol/L" if phv=="phv00204767"
 replace var_units="%{WBCs}" if inlist(phv,"phv00112694","phv00207259","phv00226284","phv00207274","phv00207261","phv00207276","phv00226285")
+replace var_units="mg/d" if inlist(phv,"phv00203258","phv00208361","phv00208588")
+replace var_units="pg/{cell}" if inlist(phv,"phv00294960")
+replace var_units="g/d" if phv=="phv00156409"
+replace var_units="mg/d" if phv=="phv00401150"
+replace var_units="{servings}/d" if phv=="phv00112963"
+replace var_units="g/mo" if inlist(phv,"phv00113830","phv00113924","phv00117620","phv00117734") /*The dietary history referenced intake for the previous month. */
+replace var_units="g/d" if phv=="phv00401149"
+
 
 
 gen servday=regexm(var_desc,"serv/day|daily|per day")
@@ -161,7 +182,7 @@ drop left right time_indic_var servday servweek hrs kgm2
 duplicates drop /*n=280 dropped*/
 drop if bdchm_label==""
 drop if phv==""
-save "$temp\alldata_$today.dta", replace /*n=42899*/
+save "$temp\alldata_$today.dta", replace /*n=42890*/
 
 
 
@@ -204,14 +225,18 @@ save "$der\alldata_$today.dta", replace
 /* ----- 5. Output unit mismatches for improvements to units.do ----- */
 /* output mismatched unit rows to manually review for conversion rules */
 use "$der\alldata_$today.dta", clear
-keep bdchm_label phv var_desc var_units bdchm_unit conversion_rule equivalent_units
+keep if bdchm_entity=="MeasurementObservation" /*n=27928*/
+keep bdchm_label phv var_desc var_units bdchm_unit conversion_rule equivalent_units cohort
 sort var_units bdchm_unit phv
-duplicates drop /*n=11,311*/
-drop if var_units=="" /*n=2911*/
-drop if var_units==bdchm_unit /*n=776*/
-drop if conversion_rule!="" /*n=420*/
-drop if equivalent_units==1 /*n=364*/
+duplicates drop /*n=6220*/
+drop if var_units=="" /*n=2804*/
+drop if var_units==bdchm_unit /*n=800*/
+drop if conversion_rule!="" /*n=451*/
+drop if equivalent_units==1 /*n=233*/
 tab var_units
+/* isolate cohorts we're working on */
+keep if inlist(cohort,"aric","cardia","jhs") /*n=57*/
+sort bdchm_label var_units
 export excel using "$doc\units_toreview_$today.xlsx", sheet("unit_key") first(var) nolabel keepcellfmt replace
 
 /* Manual step: 
@@ -242,6 +267,16 @@ C. some unit representations cannot be converted to the standard unit. these cas
 /* ----- 6. Prepare for YAML code generation ----- */
 use "$der\alldata_$today.dta", clear
 
+* Update units matches requiring more sophisticated rules *;
+replace equivalent_units=1 if bdchm_label=="sodium in blood" & var_units=="meq/L" & bdchm_unit=="mmol/L"
+replace conversion_rule="* 18" if var_units=="mmol/L" & bdchm_unit=="mg/dL" & bdchm_label=="glucose in blood"
+replace conversion_rule="* 38.67" if var_units=="mmol/L" & bdchm_unit=="mg/dL" & bdchm_label=="hdl"
+replace conversion_rule="* 38.67" if var_units=="mmol/L" & bdchm_unit=="mg/dL" & bdchm_label=="total cholesterol in blood"
+replace conversion_rule="* 88.57" if var_units=="mmol/L" & bdchm_unit=="mg/dL" & bdchm_label=="triglycerides in blood"
+replace conversion_rule="* 0.3945" if phv=="phv00112974" /*note: goes from ml/day to g/day by multiplying by 0.789, then go from g/day to serving/day dividing by 14, then from serving/day to serving/week by multiplying by 7*/
+replace conversion_rule="* 0.016420361" if var_units=="g/mo" & bdchm_unit=="{#}/wk" & bdchm_label=="alcohol" /* divide by 4.35 to get g/wk, then divide by 14 to get servings/week */
+
+
 * Create flags for if-then rules*;
 gen has_pht=1 if merge_pht==3
 gen has_onto=1 if onto_id!=""
@@ -259,7 +294,7 @@ keep bdchm_entity bdchm_label bdchm_varname pht phv phs onto_id var_desc cohort 
 duplicates drop
 duplicates list phv 
 		/*browse if inlist(phv,"phv00083163")*/	
-save "$der\shortdata_$today.dta", replace /*n=11311*/
+save "$der\shortdata_$today.dta", replace /*n=11312*/
 
 
 

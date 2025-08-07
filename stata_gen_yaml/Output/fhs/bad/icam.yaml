@@ -20,26 +20,6 @@
                     value: ng/mL #CHECK
 - class_derivations:
     MeasurementObservation:
-      populated from: pht012880
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00520362 #CHECK
-        associated_visit: 
-          value: GENERATION 3 EXAM 1, NEW OFFSPRING SPOUSE EXAM 1, AND OMNI 2 EXAM 1
-        observation_type: 
-          value: OMOP:4284103
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht012880
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00520367 #CHECK
-                  unit: 
-                    value: ng/mL #CHECK
-- class_derivations:
-    MeasurementObservation:
       populated from: pht010727
       slot_derivations:
         associated_participant: 
@@ -116,5 +96,25 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00520383 #CHECK
+                  unit: 
+                    value: ng/mL #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012880
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00520362 #CHECK
+        associated_visit: 
+          value: GENERATION 3 EXAM 1, NEW OFFSPRING SPOUSE EXAM 1, AND OMNI 2 EXAM 1
+        observation_type: 
+          value: OMOP:4284103
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht012880
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00520367 #CHECK
                   unit: 
                     value: ng/mL #CHECK

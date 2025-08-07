@@ -1,0 +1,40 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht004108
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00207283 #CHECK
+        associated_visit: 
+          value: ARIC EXAM 2
+        observation_type: 
+          value: OBA:VT0002607
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht004108
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00207279 #CHECK
+                  unit: 
+                    value: 10*3/uL #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht004107
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00207267 #CHECK
+        associated_visit: 
+          value: ARIC EXAM 1
+        observation_type: 
+          value: OBA:VT0002607
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht004107
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00207264 #CHECK
+                  unit: 
+                    value: 10*3/uL #CHECK

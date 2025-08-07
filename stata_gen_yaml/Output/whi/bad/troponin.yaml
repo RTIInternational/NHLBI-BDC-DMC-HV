@@ -1,5 +1,25 @@
 - class_derivations:
     MeasurementObservation:
+      populated from: pht003405
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00192992 #CHECK
+        associated_visit: 
+          value: WHI CAD 121
+        observation_type: 
+          value: OMOP:4021291
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht003405
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00193016 #CHECK
+                  unit: 
+                    value: ng/mL #CHECK
+- class_derivations:
+    MeasurementObservation:
       populated from: pht003406
       slot_derivations:
         associated_participant: 
@@ -16,6 +36,26 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00193075 #CHECK
+                  unit: 
+                    value: ng/mL #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006223
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00283451 #CHECK
+        associated_visit: 
+          value: WHI UNC HEART FAILURE DETAILS
+        observation_type: 
+          value: OMOP:4021291
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006223
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00283652 #CHECK
                   unit: 
                     value: ng/mL #CHECK
 - class_derivations:
@@ -40,22 +80,22 @@
                     value: ng/mL #CHECK
 - class_derivations:
     MeasurementObservation:
-      populated from: pht003405
+      populated from: pht006223
       slot_derivations:
         associated_participant: 
-          populated_from: phv00192992 #CHECK
+          populated_from: phv00283451 #CHECK
         associated_visit: 
-          value: WHI CAD 121
+          value: WHI UNC HEART FAILURE DETAILS
         observation_type: 
           value: OMOP:4021291
         value_quantity:
           object_derivations:
           - class derivations:
               Quantity:
-                populated_from: pht003405
+                populated_from: pht006223
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00193016 #CHECK
+                    populated_from: phv00283653 #CHECK
                   unit: 
                     value: ng/mL #CHECK
 - class_derivations:
@@ -115,47 +155,7 @@
                 populated_from: pht006223
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00283653 #CHECK
-                  unit: 
-                    value: ng/mL #CHECK
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht006223
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00283451 #CHECK
-        associated_visit: 
-          value: WHI UNC HEART FAILURE DETAILS
-        observation_type: 
-          value: OMOP:4021291
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht006223
-                slot_derivations:
-                  value_decimal:
                     populated_from: phv00283654 #CHECK
-                  unit: 
-                    value: ng/mL #CHECK
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht006223
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00283451 #CHECK
-        associated_visit: 
-          value: WHI UNC HEART FAILURE DETAILS
-        observation_type: 
-          value: OMOP:4021291
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht006223
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00283652 #CHECK
                   unit: 
                     value: ng/mL #CHECK
 - class_derivations:

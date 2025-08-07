@@ -1,25 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht005144
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00255349 #CHECK
-        associated_visit: 
-          value: FHS GENERATION 3 EXAM 1
-        observation_type: 
-          value: OMOP:4230543
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht005144
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00255363 #CHECK
-                  unit: 
-                    value: mg/dL #CHECK
-- class_derivations:
-    MeasurementObservation:
       populated from: pht000031
       slot_derivations:
         associated_participant: 
@@ -40,22 +20,22 @@
                     value: mg/dL #CHECK
 - class_derivations:
     MeasurementObservation:
-      populated from: pht012889
+      populated from: pht005144
       slot_derivations:
         associated_participant: 
-          populated_from:  #CHECK
+          populated_from: phv00255349 #CHECK
         associated_visit: 
-          value: 
+          value: FHS GENERATION 3 EXAM 1
         observation_type: 
           value: OMOP:4230543
         value_quantity:
           object_derivations:
           - class derivations:
               Quantity:
-                populated_from: pht012889
+                populated_from: pht005144
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00521148 #CHECK
+                    populated_from: phv00255363 #CHECK
                   unit: 
                     value: mg/dL #CHECK
 - class_derivations:
@@ -76,5 +56,25 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00521385 #CHECK
+                  unit: 
+                    value: mg/dL #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012889
+      slot_derivations:
+        associated_participant: 
+          populated_from:  #CHECK
+        associated_visit: 
+          value: 
+        observation_type: 
+          value: OMOP:4230543
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht012889
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00521148 #CHECK
                   unit: 
                     value: mg/dL #CHECK

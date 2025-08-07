@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001847
+      slot_derivations:
+        associated_participant: 
+          populated_from:  #CHECK
+        associated_visit: 
+          value: 
+        observation_type: 
+          value: OMOP:3011888
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001847
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00120666 #CHECK
+                  unit: 
+                    value: pg/mL #CHECK

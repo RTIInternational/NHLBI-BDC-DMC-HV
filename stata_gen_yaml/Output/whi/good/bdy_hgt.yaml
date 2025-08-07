@@ -18,30 +18,10 @@
                     populated_from: phv00283311
                     unit_conversion:
                       source_unit: "[in_us]"
-                      target_unit: cm
+                      target_unit: "cm"
                   unit: 
                     value: cm
                     range: string
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht001019
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00079849
-        associated_visit: 
-          value: WHI PM 80
-        observation_type: 
-          value: OBA:VT0001253
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht001019
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00079858
-                  unit: 
-                    value: cm
 - class_derivations:
     MeasurementObservation:
       populated from: pht006223
@@ -60,5 +40,25 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00283539
+                  unit: 
+                    value: cm
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001019
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00079849
+        associated_visit: 
+          value: WHI PM 80
+        observation_type: 
+          value: OBA:VT0001253
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001019
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00079858
                   unit: 
                     value: cm

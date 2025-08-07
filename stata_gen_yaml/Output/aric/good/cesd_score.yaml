@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012504
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00507300
+        associated_visit: 
+          value: ARIC EXAM 7
+        observation_type: 
+          value: OMOP:36303297
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht012504
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00507380
+                  unit: 
+                    value: {score}

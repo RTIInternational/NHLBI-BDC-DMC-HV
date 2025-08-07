@@ -1,0 +1,40 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht008742
+      slot_derivations:
+        associated_participant: 
+          populated_from:  #CHECK
+        associated_visit: 
+          value: 
+        observation_type: 
+          value: OBA:2052701
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht008742
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00401746 #CHECK
+                  unit: 
+                    value: ng/mL #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht008731
+      slot_derivations:
+        associated_participant: 
+          populated_from:  #CHECK
+        associated_visit: 
+          value: 
+        observation_type: 
+          value: OBA:2052701
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht008731
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00401433 #CHECK
+                  unit: 
+                    value: ng/mL #CHECK

@@ -1,53 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000014
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00002020
-        associated_visit: 
-          value: FHS ORIGINAL EXAM 12
-        observation_type: 
-          value: OMOP:4273023
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht000014
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00001979
-                    unit_conversion:
-                      source_unit: "cs"
-                      target_unit: ms
-                  unit: 
-                    value: ms
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000015
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00002204
-        associated_visit: 
-          value: FHS ORIGINAL EXAM 13
-        observation_type: 
-          value: OMOP:4273023
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht000015
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00002159
-                    unit_conversion:
-                      source_unit: "cs"
-                      target_unit: ms
-                  unit: 
-                    value: ms
-                    range: string
-- class_derivations:
-    MeasurementObservation:
       populated from: pht000016
       slot_derivations:
         associated_participant: 
@@ -66,31 +18,7 @@
                     populated_from: phv00002354
                     unit_conversion:
                       source_unit: "cs"
-                      target_unit: ms
-                  unit: 
-                    value: ms
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000031
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00008379
-        associated_visit: 
-          value: FHS OFFSPRING EXAM 2
-        observation_type: 
-          value: OMOP:4273023
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht000031
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00007890
-                    unit_conversion:
-                      source_unit: "cs"
-                      target_unit: ms
+                      target_unit: "ms"
                   unit: 
                     value: ms
                     range: string
@@ -114,7 +42,7 @@
                     populated_from: phv00002594
                     unit_conversion:
                       source_unit: "cs"
-                      target_unit: ms
+                      target_unit: "ms"
                   unit: 
                     value: ms
                     range: string
@@ -138,7 +66,7 @@
                     populated_from: phv00003596
                     unit_conversion:
                       source_unit: "cs"
-                      target_unit: ms
+                      target_unit: "ms"
                   unit: 
                     value: ms
                     range: string
@@ -162,7 +90,79 @@
                     populated_from: phv00007650
                     unit_conversion:
                       source_unit: "cs"
-                      target_unit: ms
+                      target_unit: "ms"
+                  unit: 
+                    value: ms
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht000014
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00002020
+        associated_visit: 
+          value: FHS ORIGINAL EXAM 12
+        observation_type: 
+          value: OMOP:4273023
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000014
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00001979
+                    unit_conversion:
+                      source_unit: "cs"
+                      target_unit: "ms"
+                  unit: 
+                    value: ms
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht000015
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00002204
+        associated_visit: 
+          value: FHS ORIGINAL EXAM 13
+        observation_type: 
+          value: OMOP:4273023
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000015
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00002159
+                    unit_conversion:
+                      source_unit: "cs"
+                      target_unit: "ms"
+                  unit: 
+                    value: ms
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht000031
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00008379
+        associated_visit: 
+          value: FHS OFFSPRING EXAM 2
+        observation_type: 
+          value: OMOP:4273023
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000031
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00007890
+                    unit_conversion:
+                      source_unit: "cs"
+                      target_unit: "ms"
                   unit: 
                     value: ms
                     range: string
@@ -203,26 +203,6 @@
                 populated_from: pht000299
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00036355
-                  unit: 
-                    value: ms
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000299
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00036379
-        associated_visit: 
-          value: FHS ORIGINAL EXAM 11, OFFSPRING EXAM 1, GENERATION 3 EXAM 1
-        observation_type: 
-          value: OMOP:4273023
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht000299
-                slot_derivations:
-                  value_decimal:
                     populated_from: phv00036354
                   unit: 
                     value: ms
@@ -244,5 +224,25 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00036356
+                  unit: 
+                    value: ms
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht000299
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00036379
+        associated_visit: 
+          value: FHS ORIGINAL EXAM 11, OFFSPRING EXAM 1, GENERATION 3 EXAM 1
+        observation_type: 
+          value: OMOP:4273023
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht000299
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00036355
                   unit: 
                     value: ms

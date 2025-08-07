@@ -15,7 +15,7 @@
                 populated_from: pht006013
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00422395 #CHECK
+                    populated_from: phv00423119 #CHECK
                   unit: 
                     value: pg/mL #CHECK
 - class_derivations:
@@ -35,27 +35,7 @@
                 populated_from: pht006013
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00423119 #CHECK
-                  unit: 
-                    value: pg/mL #CHECK
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht010728
-      slot_derivations:
-        associated_participant: 
-          populated_from:  #CHECK
-        associated_visit: 
-          value: 
-        observation_type: 
-          value: OBA:2051979
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht010728
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00463142 #CHECK
+                    populated_from: phv00422395 #CHECK
                   unit: 
                     value: pg/mL #CHECK
 - class_derivations:
@@ -76,6 +56,26 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00462168 #CHECK
+                  unit: 
+                    value: pg/mL #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht010728
+      slot_derivations:
+        associated_participant: 
+          populated_from:  #CHECK
+        associated_visit: 
+          value: 
+        observation_type: 
+          value: OBA:2051979
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht010728
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00463142 #CHECK
                   unit: 
                     value: pg/mL #CHECK
 - class_derivations:

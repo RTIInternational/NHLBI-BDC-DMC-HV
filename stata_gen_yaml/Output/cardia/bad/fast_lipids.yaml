@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001563
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00112654 #CHECK
+        associated_visit: 
+          value: CARDIA YEAR 0
+        observation_type: 
+          value: OMOP:4150326
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001563
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00112661 #CHECK
+                  unit: 
+                    value: mg/dL #CHECK

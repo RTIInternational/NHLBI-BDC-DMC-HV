@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012503
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00506928 #CHECK
+        associated_visit: 
+          value: ARIC CHEM2
+        observation_type: 
+          value: OBA:VT0002871
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht012503
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00506960 #CHECK
+                  unit: 
+                    value: mg/L #CHECK

@@ -4,7 +4,7 @@
 /* Program: DMCYAML_02_ImportDocs													*/
 /* Programmer: Sabrina McCutchan (CDMS)												*/
 /* Date Created: 2025/06/20															*/
-/* Date Last Updated: 2025/07/25													*/
+/* Date Last Updated: 2025/07/30													*/
 /* Description:	This program imports key documentation used to enrich data files.	*/
 /*		0. Read in data																*/
 /*		1. Unit documentation														*/
@@ -82,6 +82,7 @@ save "$doc\ucum.dta", replace
 * Unit conversion key *;
 use "$temp\\conversions.dta", clear
 gen unit_merge_key=this_unit+"_"+that_unit
+drop if conversion_condition!=""
 sort unit_merge_key
 sort this_unit
 merge m:1 this_unit using "$doc\ucum.dta", keepusing(valid_ucum)
@@ -116,7 +117,7 @@ save "$doc\equivalencies.dta", replace
 
 /* ----- 2. BDCHM priority variables ----- */
 use "$temp\\BDCHMHarmonizedVariablesV1.dta", clear
-keep bdchmelementattribute variablelabel variablemachinereadablename standardizeddatatype standardizedunit omopstandardconceptid obacurie
+keep bdchmelementattribute variablelabel variablemachinereadablename standardizeddatatype standardizedunit omopstandardconceptid obacurie ucumunit
 drop if bdchmelementattribute==""
 
 * Rename vars *;
@@ -136,6 +137,7 @@ rename standardizeddatatype bdchm_vartype
 label var bdchm_vartype "BDCHM Variable Type, from key"
 
 * Units *;
+replace standardizedunit=ucumunit if ucumunit!=""
 rename standardizedunit bdchm_unit
 do "$prog\\units.do" bdchm_unit
 
@@ -161,11 +163,14 @@ save "$doc\bdchm_key.dta", replace
 /* ----- 3. dbGAP datasets: phts, participants, visits ----- */
 use "$temp\contextualvariablesv2.dta", clear
 rename datatablepht pht
+drop if pht==""
+sort pht
+split participantidphv, p(".")
+drop participantidphv participantidphv2 participantidphv3
+rename participantidphv1 participantidphv
 replace associatedvisit=upper(associatedvisit)
 drop datatablename notes
-drop if pht==""
 duplicates drop
-sort pht
 save "$doc\pht_visit.dta", replace
 
 

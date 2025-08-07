@@ -1,45 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht003396
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00192304 #CHECK
-        associated_visit: 
-          value: WHI ADL 151
-        observation_type: 
-          value: OMOP:4056965
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht003396
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00192330 #CHECK
-                  unit: 
-                    value:  #CHECK
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht006214
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00282977 #CHECK
-        associated_visit: 
-          value: WHI LQ 155
-        observation_type: 
-          value: OMOP:4056965
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht006214
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00283017 #CHECK
-                  unit: 
-                    value:  #CHECK
-- class_derivations:
-    MeasurementObservation:
       populated from: pht006212
       slot_derivations:
         associated_participant: 
@@ -76,5 +36,45 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00282969 #CHECK
+                  unit: 
+                    value:  #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht003396
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00192304 #CHECK
+        associated_visit: 
+          value: WHI ADL 151
+        observation_type: 
+          value: OMOP:4056965
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht003396
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00192330 #CHECK
+                  unit: 
+                    value:  #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006214
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00282977 #CHECK
+        associated_visit: 
+          value: WHI LQ 155
+        observation_type: 
+          value: OMOP:4056965
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006214
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00283017 #CHECK
                   unit: 
                     value:  #CHECK

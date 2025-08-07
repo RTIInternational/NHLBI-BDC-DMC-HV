@@ -1,5 +1,25 @@
 - class_derivations:
     MeasurementObservation:
+      populated from: pht010752
+      slot_derivations:
+        associated_participant: 
+          populated_from:  #CHECK
+        associated_visit: 
+          value: 
+        observation_type: 
+          value: OMOP:606729
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht010752
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00477732 #CHECK
+                  unit: 
+                    value: mg/d #CHECK
+- class_derivations:
+    MeasurementObservation:
       populated from: pht012909
       slot_derivations:
         associated_participant: 
@@ -36,26 +56,6 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00524306 #CHECK
-                  unit: 
-                    value: mg/d #CHECK
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht010754
-      slot_derivations:
-        associated_participant: 
-          populated_from:  #CHECK
-        associated_visit: 
-          value: 
-        observation_type: 
-          value: OMOP:606729
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht010754
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00478925 #CHECK
                   unit: 
                     value: mg/d #CHECK
 - class_derivations:
@@ -100,7 +100,7 @@
                     value: mg/d #CHECK
 - class_derivations:
     MeasurementObservation:
-      populated from: pht010752
+      populated from: pht010754
       slot_derivations:
         associated_participant: 
           populated_from:  #CHECK
@@ -112,10 +112,50 @@
           object_derivations:
           - class derivations:
               Quantity:
-                populated_from: pht010752
+                populated_from: pht010754
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00477732 #CHECK
+                    populated_from: phv00478925 #CHECK
+                  unit: 
+                    value: mg/d #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht002152
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00158091 #CHECK
+        associated_visit: 
+          value: FHS ORIGINAL EXAM 21
+        observation_type: 
+          value: OMOP:606729
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht002152
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00157809 #CHECK
+                  unit: 
+                    value: mg/d #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht002900
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00172393 #CHECK
+        associated_visit: 
+          value: FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2
+        observation_type: 
+          value: OMOP:606729
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht002900
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00172710 #CHECK
                   unit: 
                     value: mg/d #CHECK
 - class_derivations:
@@ -136,66 +176,6 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00157001 #CHECK
-                  unit: 
-                    value: mg/d #CHECK
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002153
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00158540 #CHECK
-        associated_visit: 
-          value: FHS ORIGINAL EXAM 22
-        observation_type: 
-          value: OMOP:606729
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht002153
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00158129 #CHECK
-                  unit: 
-                    value: mg/d #CHECK
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002151
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00157771 #CHECK
-        associated_visit: 
-          value: FHS ORIGINAL EXAM 20
-        observation_type: 
-          value: OMOP:606729
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht002151
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00157335 #CHECK
-                  unit: 
-                    value: mg/d #CHECK
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000681
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00068713 #CHECK
-        associated_visit: 
-          value: FHS OFFSPRING EXAM 6
-        observation_type: 
-          value: OMOP:606729
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht000681
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00068636 #CHECK
                   unit: 
                     value: mg/d #CHECK
 - class_derivations:
@@ -240,42 +220,42 @@
                     value: mg/d #CHECK
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002152
+      populated from: pht000681
       slot_derivations:
         associated_participant: 
-          populated_from:  #CHECK
+          populated_from: phv00068713 #CHECK
         associated_visit: 
-          value: 
+          value: FHS OFFSPRING EXAM 6
         observation_type: 
           value: OMOP:606729
         value_quantity:
           object_derivations:
           - class derivations:
               Quantity:
-                populated_from: pht002152
+                populated_from: pht000681
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00157809 #CHECK
+                    populated_from: phv00068636 #CHECK
                   unit: 
                     value: mg/d #CHECK
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002900
+      populated from: pht002151
       slot_derivations:
         associated_participant: 
-          populated_from: phv00172393 #CHECK
+          populated_from: phv00157771 #CHECK
         associated_visit: 
-          value: FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2
+          value: FHS ORIGINAL EXAM 20
         observation_type: 
           value: OMOP:606729
         value_quantity:
           object_derivations:
           - class derivations:
               Quantity:
-                populated_from: pht002900
+                populated_from: pht002151
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00172710 #CHECK
+                    populated_from: phv00157335 #CHECK
                   unit: 
                     value: mg/d #CHECK
 - class_derivations:
@@ -296,5 +276,25 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00162361 #CHECK
+                  unit: 
+                    value: mg/d #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht002153
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00158540 #CHECK
+        associated_visit: 
+          value: FHS ORIGINAL EXAM 22
+        observation_type: 
+          value: OMOP:606729
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht002153
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00158129 #CHECK
                   unit: 
                     value: mg/d #CHECK

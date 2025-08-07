@@ -4,7 +4,7 @@
 /* Program: DMCYAML_04_GenerateCode													*/
 /* Programmer: Sabrina McCutchan (CDMS)												*/
 /* Date Created: 2025/06/19															*/
-/* Date Last Updated: 2025/07/25													*/
+/* Date Last Updated: 2025/08/07													*/
 /* Description:	This program writes YAML code.										*/
 /*		0. Prepare 																	*/
 /* 		1. Split data rows into good/bad candidates for automation 					*/
@@ -34,6 +34,7 @@ gen macroname=bdchm_entity+"_"+cohort
 keep macroname bdchm_varname
 sort bdchm_varname
 duplicates drop
+/* note: drop medication adherence */
 
 gen count=_n
 summ count
@@ -74,7 +75,7 @@ foreach bdchm in $`macroname' {
 	keep if bdchm_varname=="`bdchm'"
 	keep if row_good!=1
 	count
-	save "$temp\\`cohort'\bad\\`bdchm'.dta", replace
+	save "$temp\\`cohort'\bad\\`bdchm'.dta", replace 
 }
 
 	
@@ -147,12 +148,35 @@ file write `bdchm'_good "- class_derivations:" _n ///
 										_column(21) "populated_from: " "`phv'" _n ///
 										_column(21)	"unit_conversion:" _n ///
 											_column(23)	"source_unit: " _char(34) "`source_unit'" _char(34) _n ///
-											_column(23) "target_unit: " "`target_unit'" _n ///
+											_column(23) "target_unit: " _char(34) "`target_unit'" _char(34) _n ///
 									_column(19) "unit: " _n ///
 										_column(21) "value: " "`unit'" _n ///
 										_column(21)	"range: string" _n
 	
 	}
+else if unit_expr[`i']==1 {
+file write `bdchm'_good "- class_derivations:" _n ///
+	_column(5) "`entity'" ":" _n ///
+			_column(7) "populated from: " "`pht'" _n ///
+			_column(7) "slot_derivations:" _n ///
+				_column(9) "associated_participant: " _n ///
+					_column(11) "populated_from: " "`participant'" _n ///
+				_column(9) "associated_visit: " _n ///		
+					_column(11) "value: " "`visit'" _n ///
+				_column(9) "observation_type: " _n ///
+					_column(11) "value: " "`onto'" _n ///
+				_column(9) "value_quantity:" _n ///
+					_column(11) "object_derivations:" _n ///
+					_column(11) "- class derivations:" _n ///
+							_column(15) "Quantity:" _n ///
+								_column(17) "populated_from: " "`pht'" _n ///
+								_column(17) "slot_derivations:" _n ///
+									_column(19) "value_decimal:" _n ///
+										_column(21) "expr: {" "`phv'" "} " "`convert'" _n ///
+									_column(19) "unit: " _n ///
+										_column(21) "value: " "`unit'" _n ///
+										_column(21)	"range: string" _n
+}
 }
 file close `bdchm'_good
 }

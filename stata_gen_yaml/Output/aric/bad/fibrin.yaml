@@ -1,0 +1,40 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht004099
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00206665 #CHECK
+        associated_visit: 
+          value: ARIC EXAM 3
+        observation_type: 
+          value: OBA:0000061
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht004099
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00206658 #CHECK
+                  unit: 
+                    value: mg/dL #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht004098
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00206655 #CHECK
+        associated_visit: 
+          value: ARIC EXAM 1
+        observation_type: 
+          value: OBA:0000061
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht004098
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00206650 #CHECK
+                  unit: 
+                    value: mg/dL #CHECK
