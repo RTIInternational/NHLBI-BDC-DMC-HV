@@ -149,7 +149,7 @@
           value: OBA:0000061
           range: string
         method_type:
-          value: FIBRINOGEN LEVELS WERE PERFORMED FROM CITRATED PLASMA ON AN ELECTRA 800 AUTOMATIC COAGULATION TIMER (MEDICAL LABORATORY AUTOMATION, INC., PLEASANTVILLE, N.Y.) USING COMMERCIAL REAGENTS.
+          value: Clauss Method
           range: string
         value_quantity:
           object_derivations:
@@ -159,32 +159,6 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00021747
-                  unit:
-                    value: mg/dL
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000086
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00021752
-        associated_visit:
-          value: FHS ORIGINAL EXAM 20-21
-          range: string
-        observation_type:
-          value: OBA:0000061
-          range: string
-        method_type:
-          value: QBC METHOD
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000086
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00021748
                   unit:
                     value: mg/dL
                     range: string
