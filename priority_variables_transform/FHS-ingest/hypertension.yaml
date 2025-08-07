@@ -11,7 +11,7 @@
             '3': FHS GENERATION 3 EXAM 2
             '72': FHS OMNI 2 EXAM 2  
         condition_concept:
-          value: NCIT:C160273
+          value: HP:0000822
           range: string
         condition_status:
           populated_from: phv00177249
@@ -26,15 +26,17 @@
           range: string
 - class_derivations:
     Condition:
-      populated_from: pht000015
+      populated_from: pht005140
       slot_derivations:
         associated_participant:
-          populated_from: phv00002204
+          populated_from: phv00254010
         associated_visit:
-          value: FHS ORIGINAL EXAM 13
-          range: string
+          populated_from: phv00254011
+            value_mappings:
+              '1': FHS OFFSPRING EXAM 9
+              '7': FHS OMNI 1 EXAM 4
         condition_concept:
-          value: NCIT:C160273
+          value: HP:0000822
           range: string
         condition_status:
           populated_from: phv00254023
@@ -54,10 +56,12 @@
         associated_participant:
           populated_from: phv00254010
         associated_visit:
-          value: FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4
-          range: string
+          populated_from: phv00254011
+            value_mappings:
+              '1': FHS OFFSPRING EXAM 9
+              '7': FHS OMNI 1 EXAM 4
         condition_concept:
-          value: NCIT:C160273
+          value: HP:0000822
           range: string
         condition_status:
           populated_from: phv00002180
@@ -81,7 +85,7 @@
           value: FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4
           range: string
         condition_concept:
-          value: NCIT:C160273
+          value: HP:0000822
           range: string
         condition_status:
           populated_from: phv00002375
@@ -125,7 +129,7 @@
         associated_participant:
           populated_from: phv00004083
         associated_visit:
-          value: NCIT:C160273
+          value: HP:0000822
           range: string
         condition_status:
           populated_from: phv00004044
@@ -146,7 +150,7 @@
         associated_participant:
           populated_from: phv00004083
         associated_visit:
-          value: NCIT:C160273
+          value: HP:0000822
           range: string
         condition_status:
           populated_from: phv00000487
@@ -172,7 +176,7 @@
           value: FHS OFFSPRING EXAM 1
           range: string
         condition_concept:
-          value: NCIT:C160273
+          value: HP:0000822
           range: string
         condition_status:
           populated_from: phv00007583
@@ -192,7 +196,7 @@
         associated_participant:
           populated_from: phv00008379
         associated_visit:
-          value: NCIT:C160273
+          value: HP:0000822
           range: string
         condition_status:
           populated_from: phv00007926
@@ -216,7 +220,7 @@
           value: FHS OFFSPRING EXAM 1
           range: string
         condition_concept:
-          value: NCIT:C160273
+          value: HP:0000822
           range: string
         condition_status:
           populated_from: phv00007991
@@ -236,7 +240,7 @@
         associated_participant:
           populated_from: phv00008379
         associated_visit:
-          value: NCIT:C160273
+          value: HP:0000822
           range: string
         condition_status:
           populated_from: phv00008676
