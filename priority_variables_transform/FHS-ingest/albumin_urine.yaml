@@ -17,7 +17,10 @@
                 populated_from: pht000742
                 slot_derivations:
                   value_decimal:
-                    expr: 'case(({phv00071895} > 3.0, {phv00071895}), "LLOD")'
+                    expr: 'case(
+                             ({phv00071895} > 3, {phv00071895}),
+                             (True, "LLOD")
+                          )'
                   unit:
                     value: mg/L
                     range: string
