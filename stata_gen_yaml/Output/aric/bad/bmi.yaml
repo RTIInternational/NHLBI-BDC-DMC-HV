@@ -1,25 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht012811
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00511637 #CHECK
-        associated_visit: 
-          value: ARIC COHORT
-        observation_type: 
-          value: OBA:2045455
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht012811
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00511714 #CHECK
-                  unit: 
-                    value: kg/m2 #CHECK
-- class_derivations:
-    MeasurementObservation:
       populated from: pht012502
       slot_derivations:
         associated_participant: 
@@ -36,5 +16,25 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00506861 #CHECK
+                  unit: 
+                    value: kg/m2 #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012811
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00511637 #CHECK
+        associated_visit: 
+          value: ARIC COHORT
+        observation_type: 
+          value: OBA:2045455
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht012811
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00511714 #CHECK
                   unit: 
                     value: kg/m2 #CHECK

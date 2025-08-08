@@ -1,25 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht006422
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00294953
-        associated_visit: 
-          value: ARIC EXAM 5
-        observation_type: 
-          value: OMOP:4267147
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht006422
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00294958
-                  unit: 
-                    value: 10*3/uL
-- class_derivations:
-    MeasurementObservation:
       populated from: pht004107
       slot_derivations:
         associated_participant: 
@@ -36,6 +16,26 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00207258
+                  unit: 
+                    value: 10*3/uL
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006422
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00294953
+        associated_visit: 
+          value: ARIC EXAM 5
+        observation_type: 
+          value: OMOP:4267147
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006422
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00294958
                   unit: 
                     value: 10*3/uL
 - class_derivations:

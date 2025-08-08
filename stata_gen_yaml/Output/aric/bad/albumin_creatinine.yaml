@@ -1,25 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht012811
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00511637 #CHECK
-        associated_visit: 
-          value: ARIC COHORT
-        observation_type: 
-          value: OMOP:4154347
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht012811
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00511708 #CHECK
-                  unit: 
-                    value: mg/g{creat} #CHECK
-- class_derivations:
-    MeasurementObservation:
       populated from: pht012502
       slot_derivations:
         associated_participant: 
@@ -36,6 +16,26 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00506875 #CHECK
+                  unit: 
+                    value: mg/g{creat} #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012811
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00511637 #CHECK
+        associated_visit: 
+          value: ARIC COHORT
+        observation_type: 
+          value: OMOP:4154347
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht012811
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00511708 #CHECK
                   unit: 
                     value: mg/g{creat} #CHECK
 - class_derivations:

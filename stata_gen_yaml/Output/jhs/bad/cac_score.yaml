@@ -1,31 +1,11 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht008730
-      slot_derivations:
-        associated_participant: 
-          populated_from:  #CHECK
-        associated_visit: 
-          value: 
-        observation_type: 
-          value: OMOP:42872742
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht008730
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401333 #CHECK
-                  unit: 
-                    value: {score} #CHECK
-- class_derivations:
-    MeasurementObservation:
       populated from: pht001948
       slot_derivations:
         associated_participant: 
-          populated_from:  #CHECK
+          populated_from: phv00126001 #CHECK
         associated_visit: 
-          value: 
+          value: JHS EXAM 2
         observation_type: 
           value: OMOP:42872742
         value_quantity:
@@ -36,5 +16,25 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00126002 #CHECK
+                  unit: 
+                    value: {score} #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht008730
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00401273 #CHECK
+        associated_visit: 
+          value: JHS EXAM 2
+        observation_type: 
+          value: OMOP:42872742
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht008730
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00401333 #CHECK
                   unit: 
                     value: {score} #CHECK

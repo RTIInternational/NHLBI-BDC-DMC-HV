@@ -1,5 +1,25 @@
 - class_derivations:
     MeasurementObservation:
+      populated from: pht004142
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00208835
+        associated_visit: 
+          value: ARIC EXAM 1
+        observation_type: 
+          value: OMOP:4176265
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht004142
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00208817
+                  unit: 
+                    value: L
+- class_derivations:
+    MeasurementObservation:
       populated from: pht012835
       slot_derivations:
         associated_participant: 
@@ -16,26 +36,6 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00516615
-                  unit: 
-                    value: L
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht012814
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00512039
-        associated_visit: 
-          value: ARIC EXAM 5
-        observation_type: 
-          value: OMOP:4176265
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht012814
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00512104
                   unit: 
                     value: L
 - class_derivations:
@@ -60,22 +60,22 @@
                     value: L
 - class_derivations:
     MeasurementObservation:
-      populated from: pht004142
+      populated from: pht012814
       slot_derivations:
         associated_participant: 
-          populated_from: phv00208835
+          populated_from: phv00512039
         associated_visit: 
-          value: ARIC EXAM 1
+          value: ARIC EXAM 5
         observation_type: 
           value: OMOP:4176265
         value_quantity:
           object_derivations:
           - class derivations:
               Quantity:
-                populated_from: pht004142
+                populated_from: pht012814
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00208817
+                    populated_from: phv00512104
                   unit: 
                     value: L
 - class_derivations:

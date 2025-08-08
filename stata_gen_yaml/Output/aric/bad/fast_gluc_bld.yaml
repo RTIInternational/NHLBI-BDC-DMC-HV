@@ -1,5 +1,25 @@
 - class_derivations:
     MeasurementObservation:
+      populated from: pht012815
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00512222 #CHECK
+        associated_visit: 
+          value: ARIC EXAM 6
+        observation_type: 
+          value: OMOP:4156660
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht012815
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00512301 #CHECK
+                  unit: 
+                    value: mg/dL #CHECK
+- class_derivations:
+    MeasurementObservation:
       populated from: pht006444
       slot_derivations:
         associated_participant: 
@@ -16,26 +36,6 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00510821 #CHECK
-                  unit: 
-                    value: mg/dL #CHECK
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht012504
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00507300 #CHECK
-        associated_visit: 
-          value: ARIC EXAM 7
-        observation_type: 
-          value: OMOP:4156660
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht012504
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00507387 #CHECK
                   unit: 
                     value: mg/dL #CHECK
 - class_derivations:
@@ -80,26 +80,6 @@
                     value: mg/dL #CHECK
 - class_derivations:
     MeasurementObservation:
-      populated from: pht012814
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00512039 #CHECK
-        associated_visit: 
-          value: ARIC EXAM 5
-        observation_type: 
-          value: OMOP:4156660
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht012814
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00512077 #CHECK
-                  unit: 
-                    value: mg/dL #CHECK
-- class_derivations:
-    MeasurementObservation:
       populated from: pht004124
       slot_derivations:
         associated_participant: 
@@ -116,6 +96,26 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00207678 #CHECK
+                  unit: 
+                    value: mg/dL #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012814
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00512039 #CHECK
+        associated_visit: 
+          value: ARIC EXAM 5
+        observation_type: 
+          value: OMOP:4156660
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht012814
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00512077 #CHECK
                   unit: 
                     value: mg/dL #CHECK
 - class_derivations:
@@ -140,21 +140,21 @@
                     value: mg/dL #CHECK
 - class_derivations:
     MeasurementObservation:
-      populated from: pht012815
+      populated from: pht012504
       slot_derivations:
         associated_participant: 
-          populated_from: phv00512222 #CHECK
+          populated_from: phv00507300 #CHECK
         associated_visit: 
-          value: ARIC EXAM 6
+          value: ARIC EXAM 7
         observation_type: 
           value: OMOP:4156660
         value_quantity:
           object_derivations:
           - class derivations:
               Quantity:
-                populated_from: pht012815
+                populated_from: pht012504
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00512301 #CHECK
+                    populated_from: phv00507387 #CHECK
                   unit: 
                     value: mg/dL #CHECK

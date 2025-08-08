@@ -35,7 +35,27 @@
                 populated_from: pht004102
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00206954
+                    populated_from: phv00206952
+                  unit: 
+                    value: ng/mL
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht004102
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00207055
+        associated_visit: 
+          value: ARIC HOSPITAL FORM
+        observation_type: 
+          value: OMOP:4021291
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht004102
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00206953
                   unit: 
                     value: ng/mL
 - class_derivations:
@@ -115,47 +135,7 @@
                 populated_from: pht004102
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00206953
-                  unit: 
-                    value: ng/mL
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht004102
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00207055
-        associated_visit: 
-          value: ARIC HOSPITAL FORM
-        observation_type: 
-          value: OMOP:4021291
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht004102
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00206952
-                  unit: 
-                    value: ng/mL
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht012853
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00519789
-        associated_visit: 
-          value: ARIC COHORT
-        observation_type: 
-          value: OMOP:4021291
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht012853
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00519841
+                    populated_from: phv00206954
                   unit: 
                     value: ng/mL
 - class_derivations:
@@ -176,5 +156,25 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00519842
+                  unit: 
+                    value: ng/mL
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012853
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00519789
+        associated_visit: 
+          value: ARIC COHORT
+        observation_type: 
+          value: OMOP:4021291
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht012853
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00519841
                   unit: 
                     value: ng/mL

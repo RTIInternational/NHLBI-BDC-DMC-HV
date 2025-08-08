@@ -1,25 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht004102
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00207055 #CHECK
-        associated_visit: 
-          value: ARIC HOSPITAL FORM
-        observation_type: 
-          value: OMOP:4056965
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht004102
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00207013 #CHECK
-                  unit: 
-                    value:  #CHECK
-- class_derivations:
-    MeasurementObservation:
       populated from: pht012814
       slot_derivations:
         associated_participant: 
@@ -36,6 +16,26 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00512094 #CHECK
+                  unit: 
+                    value:  #CHECK
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht004102
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00207055 #CHECK
+        associated_visit: 
+          value: ARIC HOSPITAL FORM
+        observation_type: 
+          value: OMOP:4056965
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht004102
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00207013 #CHECK
                   unit: 
                     value:  #CHECK
 - class_derivations:

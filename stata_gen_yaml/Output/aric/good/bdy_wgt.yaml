@@ -1,53 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht004033
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00203174
-        associated_visit: 
-          value: ARIC EXAM 2
-        observation_type: 
-          value: OBA:VT0001259
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht004033
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00203166
-                    unit_conversion:
-                      source_unit: "[lb_av]"
-                      target_unit: "kg"
-                  unit: 
-                    value: kg
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht004035
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00203194
-        associated_visit: 
-          value: ARIC EXAM 4
-        observation_type: 
-          value: OBA:VT0001259
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht004035
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00203187
-                    unit_conversion:
-                      source_unit: "[lb_av]"
-                      target_unit: "kg"
-                  unit: 
-                    value: kg
-                    range: string
-- class_derivations:
-    MeasurementObservation:
       populated from: pht004032
       slot_derivations:
         associated_participant: 
@@ -96,24 +48,52 @@
                     range: string
 - class_derivations:
     MeasurementObservation:
-      populated from: pht006468
+      populated from: pht004035
       slot_derivations:
         associated_participant: 
-          populated_from: phv00297599
+          populated_from: phv00203194
         associated_visit: 
-          value: ARIC EXAM 5
+          value: ARIC EXAM 4
         observation_type: 
           value: OBA:VT0001259
         value_quantity:
           object_derivations:
           - class derivations:
               Quantity:
-                populated_from: pht006468
+                populated_from: pht004035
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00511024
+                    populated_from: phv00203187
+                    unit_conversion:
+                      source_unit: "[lb_av]"
+                      target_unit: "kg"
                   unit: 
                     value: kg
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht004033
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00203174
+        associated_visit: 
+          value: ARIC EXAM 2
+        observation_type: 
+          value: OBA:VT0001259
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht004033
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00203166
+                    unit_conversion:
+                      source_unit: "[lb_av]"
+                      target_unit: "kg"
+                  unit: 
+                    value: kg
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht006467
@@ -132,5 +112,25 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00297563
+                  unit: 
+                    value: kg
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006468
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00297599
+        associated_visit: 
+          value: ARIC EXAM 5
+        observation_type: 
+          value: OBA:VT0001259
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006468
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00511024
                   unit: 
                     value: kg
