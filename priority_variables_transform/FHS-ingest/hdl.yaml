@@ -553,6 +553,18 @@
                   unit:
                     value: mg/dL
                     range: string
+        range_low:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004802
+                slot_derivations:
+                  value_decimal:
+                    value: '16'
+                    range: string
+                  unit:
+                    value: mg/dL
+                    range: string                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht005143
