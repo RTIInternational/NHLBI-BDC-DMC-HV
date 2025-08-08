@@ -28,8 +28,10 @@
          associated_participant:
            populated_from: phv00201989
          associated_visit:
-           value: Offspring Exam 8 and Omni 1 Exam 3
-           range: string
+           populated_from: phv00201990
+           value_mappings:
+             '1': FHS OFFSPRING EXAM 8
+             '7': FHS OMNI 1 EXAM 3
          observation_type:
            value: OBA:OBA_2060174
            range: string
@@ -40,7 +42,10 @@
                  populated_from: pht003901
                  slot_derivations:
                    value_decimal:
-                     populated_from: phv00201991
+                     expr: 'case(
+                           ({phv00201991} > 1.39, {phv00201991}),
+                           (True, "LLOD")
+                          )'
                    unit:
                      value: pmol/L
                      range: string
