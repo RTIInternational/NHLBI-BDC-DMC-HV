@@ -81,7 +81,7 @@
         associated_participant:
           populated_from: phv00001036
         associated_visit:
-          value: FHS ORIGINAL EXAM 1-7
+          value: FHS ORIGINAL EXAM 1
           range: string
         condition_concept:
           value: MONDO:0004979
@@ -1753,8 +1753,10 @@
         associated_participant:
           populated_from: phv00254010
         associated_visit:
-          value: FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4
-          range: string
+          populated_from: phv00254011
+            value_mappings:
+              '1': FHS OFFSPRING EXAM 9
+              '7': FHS OMNI 1 EXAM 4
         condition_concept:
           value: MONDO:0004979
           range: string
@@ -1777,8 +1779,10 @@
         associated_participant:
           populated_from: phv00254010
         associated_visit:
-          value: FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4
-          range: string
+          populated_from: phv00254011
+            value_mappings:
+              '1': FHS OFFSPRING EXAM 9
+              '7': FHS OMNI 1 EXAM 4
         condition_concept:
           value: MONDO:0004979
           range: string

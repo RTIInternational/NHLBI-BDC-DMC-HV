@@ -144,8 +144,15 @@
                     expr: '{phv00251540} * 2.54'
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht004814
+      populated_from: pht005140
       slot_derivations:
+        associated_participant:
+          populated_from: phv00254010
+        associated_visit:
+          populated_from: phv00254011
+            value_mappings:
+              '1': FHS OFFSPRING EXAM 9
+              '7': FHS OMNI 1 EXAM 4
         observation_type:
           value: OBA:1001085
           range: string
