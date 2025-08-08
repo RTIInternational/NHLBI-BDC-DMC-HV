@@ -234,10 +234,25 @@
                 populated_from: pht006011
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00275418
+                    expr: 'case(
+                             ({phv00071895} > 3, {phv00071895}),
+                             (True, "LLOD")
+                          )'
                   unit:
                     value: mg/L
                     range: string
+        range_low:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht006011
+                slot_derivations:
+                  value_decimal:
+                    value: '3.0'
+                    range: string
+                  unit:
+                    value: mg/L
+                    range: string                       
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
@@ -245,8 +260,10 @@
         associated_participant:
           populated_from: phv00227023
         associated_visit:
-          value: FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4
-          range: string
+          populated_from: phv00227024
+          value_mappings:
+            '1': FHS OFFSPRING EXAM 9
+            '7': FHS OMNI 1 EXAM 4
         observation_type:
           value: OBA:VT0002871
           range: string
@@ -257,7 +274,11 @@
                 populated_from: pht004802
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00227045
+                    expr: 'case(
+                            ({phv00227045} > 3.0, {phv00227045}),
+                            ({phv00227069} == 1, "LLOD"),
+                            (True, {phv00227045})
+                          )'                  
                   unit:
                     value: mg/L
                     range: string
@@ -268,8 +289,10 @@
         associated_participant:
           populated_from: phv00219544
         associated_visit:
-          value: FHS OFFSPRING EXAM 7, OMNI 1 EXAM 2
-          range: string
+          populated_from: phv00219545
+          value_mappings:
+            '1': FHS OFFSPRING EXAM 7
+            '7': FHS OMNI 1 EXAM 2
         observation_type:
           value: OBA:VT0002871
           range: string

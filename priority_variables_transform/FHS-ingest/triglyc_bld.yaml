@@ -9,8 +9,11 @@
           value: mg/dL
           range: string
         associated_visit:
-          value: FHS ORIGINAL EXAM 10-12
-          range: string
+          populated_from: phv00423780
+          value_mappings:
+            '10': FHS ORIGINAL EXAM 10
+            '11': FHS ORIGINAL EXAM 11
+            '12': FHS ORIGINAL EXAM 12
         associated_participant:
           populated_from: phv00423778
         method_type:
@@ -612,8 +615,10 @@
           value: mg/dL
           range: string
         associated_visit:
-          value: FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4
-          range: string
+          populated_from: phv00227024
+          value_mappings:
+            '1': FHS OFFSPRING EXAM 9
+            '7': FHS OMNI 1 EXAM 4
         associated_participant:
           populated_from: phv00227023
         method_type:
@@ -664,8 +669,10 @@
           value: mg/dL
           range: string
         associated_visit:
-          value: FHS OFFSPRING BASELINE
-          range: string
+          populated_from: phv00056607
+          value_mappings:
+            '1': FHS OFFSPRING SHHS EXAM 1
+            '7': FHS OMNI 1 SHHS EXAM 1
         associated_participant:
           populated_from: phv00056635
         method_type:

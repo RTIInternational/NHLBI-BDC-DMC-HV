@@ -395,8 +395,10 @@
         associated_participant:
           populated_from: phv00056635
         associated_visit:
-          value: FHS OFFSPRING BASELINE
-          range: string
+          populated_from: phv00056607
+          value_mappings:
+            '1': FHS OFFSPRING SHHS EXAM 1
+            '7': FHS OMNI 1 SHHS EXAM 1
         observation_type:
           value: OMOP:4041720
           range: string
@@ -531,8 +533,10 @@
         associated_participant:
           populated_from: phv00227023
         associated_visit:
-          value: FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4
-          range: string
+          populated_from: phv00227024
+          value_mappings:
+            '1': FHS OFFSPRING EXAM 9
+            '7': FHS OMNI 1 EXAM 4
         observation_type:
           value: OMOP:4041720
           range: string
@@ -551,6 +555,18 @@
                   unit:
                     value: mg/dL
                     range: string
+        range_low:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004802
+                slot_derivations:
+                  value_decimal:
+                    value: '16'
+                    range: string
+                  unit:
+                    value: mg/dL
+                    range: string                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht005143
@@ -1158,8 +1174,11 @@
         associated_participant:
           populated_from: phv00423778
         associated_visit:
-          value: FHS ORIGINAL EXAM 10-12
-          range: string
+          populated_from: phv00423780
+          value_mappings:
+            '10': FHS ORIGINAL EXAM 10
+            '11': FHS ORIGINAL EXAM 11
+            '12': FHS ORIGINAL EXAM 12
         observation_type:
           value: OMOP:4041720
           range: string
