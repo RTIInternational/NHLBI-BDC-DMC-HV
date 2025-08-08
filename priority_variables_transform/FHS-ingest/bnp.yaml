@@ -21,6 +21,18 @@
                   unit:
                     value: pg/mL
                     range: string
+        range_low:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000393
+                slot_derivations:
+                  value_decimal:
+                    value: '4'
+                    range: string
+                  unit:
+                    value: pg/mL
+                    range: string                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006013
