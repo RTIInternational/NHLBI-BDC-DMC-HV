@@ -9,8 +9,11 @@
           value: mg/dL
           range: string
         associated_visit:
-          value: FHS ORIGINAL EXAM 10-12
-          range: string
+          populated_from: phv00423780
+          value_mappings:
+            '10': FHS ORIGINAL EXAM 10
+            '11': FHS ORIGINAL EXAM 11
+            '12': FHS ORIGINAL EXAM 12
         associated_participant:
           populated_from: phv00423778
         method_type:
