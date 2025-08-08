@@ -1,1 +1,12 @@
-
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001569
+      slot_derivations:
+        associated_participant:
+          populated_from:  phv00112975
+        associated_visit:
+          expr: '''CARDIA YEAR 0'''
+        drug_concept:
+          expr: case((phv00204712 == 1, '''RxCUI:C09A'''))
+        expsoure_provenance:
+          expr: '''PATIENT SELF-REPORTED MEDICATION'''
