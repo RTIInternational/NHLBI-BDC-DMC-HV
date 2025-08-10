@@ -1,0 +1,21 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht004098
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00206655
+        associated_visit: 
+          value: ARIC EXAM 1
+        observation_type: 
+          value: OBA:2041536
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht004098
+                slot_derivations:
+                  value_decimal:
+                    expr: {phv00206649} * 0.01
+                  unit: 
+                    value: [IU]/mL
+                    range: string
