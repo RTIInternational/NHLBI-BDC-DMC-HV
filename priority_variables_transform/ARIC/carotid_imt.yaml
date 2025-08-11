@@ -22,7 +22,7 @@
                     value: mm
                     range: string
         method_type:
-          value: Mean of the mean internal carotid IMT far wall both sides from optimal, anterior, and posterior angle
+          value: Mean of the average internal carotid IMT far wall both sides from optimal, anterior, and posterior angle
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004213
@@ -47,7 +47,7 @@
                     value: mm
                     range: string
         method_type:
-          value: Mean of the mean internal carotid IMT far wall both sides from optimal, anterior, and posterior angle
+          value: Mean of the average internal carotid IMT far wall both sides from optimal, anterior, and posterior angle
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004223
@@ -72,4 +72,104 @@
                     value: mm
                     range: string
         method_type:
-          value: Mean of the mean internal carotid IMT far wall both sides          
+          value: Mean of the average internal carotid IMT far wall both sides          
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004207
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00211150
+        associated_visit:
+          value: ARIC EXAM 1
+          range: string
+        observation_type:
+          value: OMOP:4138462
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004207
+                slot_derivations:
+                  value_decimal:
+                    expr: ({phv00211054} + {phv00211055} + {phv00211053} + {phv00211059} + {phv00211060} + {phv00211061} + {phv00211081} + {phv00211082} + {phv00211083} + {phv00211087} + {phv00211088} + {phv00211089})/12
+                  unit:
+                    value: mm
+                    range: string
+        method_type:
+          value: Mean of the maximum internal carotid IMT far and near walls both sides from optimal, posterior, and anterior angles
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004213
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00212653
+        associated_visit:
+          value: ARIC EXAM 2
+          range: string
+        observation_type:
+          value: OMOP:4138462
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004213
+                slot_derivations:
+                  value_decimal:
+                    expr: ({phv00212560} + {phv00212561} + {phv00212559} + {phv00212565} + {phv00212566} + {phv00212567})/6
+                  unit:
+                    value: mm
+                    range: string
+        method_type:
+          value: Mean of the maximum internal carotid IMT near wall both sides from optimal, posterior, and anterior angles          
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004223
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00213977
+        associated_visit:
+          value: ARIC EXAM 4
+          range: string
+        observation_type:
+          value: OMOP:4138462
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004223
+                slot_derivations:
+                  value_decimal:
+                    expr: ({phv00213911} + {phv00213912})/2
+                  unit:
+                    value: mm
+                    range: string
+        method_type:
+          value: Mean of the maximum internal carotid IMT near wall both sides 
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht012850
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00519695
+        associated_visit:
+          value: ARIC Lab Form
+          range: string
+        observation_type:
+          value: OMOP:4138462
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht012850
+                slot_derivations:
+                  value_decimal:
+                    expr: ({phv00519705} + {phv00519706})/2
+                  unit:
+                    value: mm
+                    range: string
+        method_type:
+          value: Mean of the maximum internal carotid IMT near wall both sides          
