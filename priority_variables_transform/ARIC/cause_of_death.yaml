@@ -37,8 +37,7 @@
           populated_from: phv00418163
         vital_status:
           expr: 'case(({phv00206667} = Y, OMOP:434489), 
-          ({phv00206678} = Y, OMOP:434489), 
-          True)'        
+          ({phv00206678} = Y, OMOP:434489))'        
 - class_derivations:
     Person:
       populated_from: pht004046
@@ -52,8 +51,7 @@
           populated_from: phv00420020
         vital_status:
           expr: 'case(({phv00203670} = Y, OMOP:434489), 
-          ({phv00203674} = Y, OMOP:434489), 
-          True)'
+          ({phv00203674} = Y, OMOP:434489))'
 - class_derivations:
     Person:
       populated_from: pht004049
@@ -82,8 +80,7 @@
           expr: 'case(({phv00516798} = Yes, OMOP:434489), 
           ({phv00516799} = Yes, OMOP:434489), 
           ({phv00516800} = Yes, OMOP:434489), 
-          ({phv00516801} = Yes, OMOP:434489), 
-          True)'             
+          ({phv00516801} = Yes, OMOP:434489))'             
 - class_derivations:
     Person:
       populated_from: pht004053
@@ -138,8 +135,7 @@
           ({phv00507822} = Yes, OMOP:434489), 
           ({phv00507823} = Yes, OMOP:434489), 
           ({phv00507824} = Yes, OMOP:434489), 
-          ({phv00507825} = Yes, OMOP:434489), 
-          True)'
+          ({phv00507825} = Yes, OMOP:434489))'
 - class_derivations:
     Person:
       populated_from: pht012840
@@ -154,5 +150,4 @@
           ({phv00516898} = Yes, OMOP:434489), 
           ({phv00516899} = Yes, OMOP:434489), 
           ({phv00516900} = Yes, OMOP:434489), 
-          ({phv00516901} = Yes, OMOP:434489), 
-          True)'          
+          ({phv00516901} = Yes, OMOP:434489))'          
