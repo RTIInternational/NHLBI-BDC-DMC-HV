@@ -110,18 +110,20 @@
             'Y': OMOP:45883458
 - class_derivations:
     Observation:
-      populated_from: pht004102
+      populated_from: pht004103
       slot_derivations:
         associated_participant:
-          populated_from: phv00207055
+          populated_from: phv00207155
         associated_visit:
-          value: ARIC Hospital Form
+          value: ARIC EXAM 2
           range: string
         observation_type:
           value: OMOP:4282779
           range: string
         value_enum:
-          expr: 'case((phv00207119 = Y, (phv00207120 = N, OMOP:45883458), (phv00207120 = Y, OMOP:40766945), True)'
+          expr: 'case((phv00207119 = N, OMOP:45883537),
+               (phv00207120 = N, OMOP:45883458), 
+               (True, OMOP:40766945))'
 - class_derivations:
     Observation:
       populated_from: pht004111
@@ -135,7 +137,9 @@
           value: OMOP:4282779
           range: string
         value_enum:
-          expr: 'case((phv00207368 = N, OMOP:45883537), (phv00207370 = Y, OMOP:40766945), True, OMOP:45883458)'   
+          expr: 'case((phv00207368 = N, OMOP:45883537), 
+                (phv00207370 = Y, OMOP:40766945), 
+                (True, OMOP:45883458))'   
  - class_derivations:
     Observation:
       populated_from: pht004145
@@ -149,7 +153,9 @@
           value: OMOP:4282779
           range: string
         value_enum:
-          expr: 'case((phv00208996 = N, OMOP:45883537), (phv00208998 = Y, OMOP:40766945), True, OMOP:45883458)'
+          expr: 'case((phv00208996 = N, OMOP:45883537), 
+            (phv00208998 = Y, OMOP:40766945), 
+            (True, OMOP:45883458))'
  - class_derivations:
     Observation:
       populated_from: pht004146
@@ -163,7 +169,9 @@
           value: OMOP:4282779
           range: string
         value_enum:
-          expr: 'case((phv00209072 = N, OMOP:45883537), (phv00209073 = Y, OMOP:40766945), True, OMOP:45883458)'
+          expr: 'case((phv00209072 = N, OMOP:45883537), 
+                 (phv00209073 = Y, OMOP:40766945), 
+                 (True, OMOP:45883458))'
 - class_derivations:
     Observation:
       populated_from: pht012504
