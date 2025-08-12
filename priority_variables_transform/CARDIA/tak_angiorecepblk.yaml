@@ -1,14 +1,14 @@
 - class_derivations:
     DrugExposure:
-      populated_from: pht001450
+      populated_from: pht001569
       slot_derivations:
         associated_participant:
-          populated_from: phv00098771
+          populated_from: phv00112975
         associated_visit:
-          value: CHS BASELINE 2
+          value: CARDIA YEAR 0
           range: string
         drug_concept:
-          expr: case(({phv00099574} == 1, '''RxCUI:C09C'''))
+          expr: case(({phv00113012} == 1, '''RxCUI:C09C'''))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
