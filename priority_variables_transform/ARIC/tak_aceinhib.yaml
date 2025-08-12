@@ -1,120 +1,96 @@
 - class_derivations:
     DrugExposure:
-      populated_from: pht004063
+      populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from:  phv00204812.v3.p2
+          populated_from:  phv00207055
         associated_visit:
-          expr: '''ARIC EXAM 1'''
+          value: ARIC Hospital Form
         drug_concept:
-          expr: case((phv00204712 == 1, '''RxCUI:C09A'''))
+          expr: case(({phv00206919} == 1, "RxCUI:C09A"))
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
-- class_derivations:
-    DrugExposure:
-      populated_from: pht004063
-      slot_derivations:
-        associated_participant:
-          populated_from:  phv00204812.v3.p2
-        associated_visit:
-          expr: '''ARIC EXAM 1'''
-        drug_concept:
-          expr: case((phv00204754 == 1, '''RxCUI:C09A'''))
-        expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from:  phv00207055.v6.p2
+          populated_from:  phv00207055
         associated_visit:
-          expr: '''ARIC Hospital Form'''
+          value: ARIC Hospital Form
         drug_concept:
-          expr: case((phv00206919 == 1, '''RxCUI:C09A'''))
+          expr: case(({phv00206920} == 1, "RxCUI:C09A"))
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
-- class_derivations:
-    DrugExposure:
-      populated_from: pht004102
-      slot_derivations:
-        associated_participant:
-          populated_from:  phv00207055.v6.p2
-        associated_visit:
-          expr: '''ARIC Hospital Form'''
-        drug_concept:
-          expr: case((phv00206920== 1, '''RxCUI:C09A'''))
-        expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht012504
       slot_derivations:
         associated_participant:
-          populated_from:  phv00507300.v1.p2
+          populated_from:  phv00507300
         associated_visit:
-          expr: '''ARIC EXAM 7'''
+          value: ARIC EXAM 7
         drug_concept:
-          expr: case((phv00507366== 1, '''RxCUI:C09A'''))
+          expr: case(({phv00507366} == 1, "RxCUI:C09A"))
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht012504
       slot_derivations:
         associated_participant:
-          populated_from:  phv00507300.v1.p2
+          populated_from:  phv00507300
         associated_visit:
-          expr: '''ARIC EXAM 7'''
+          value: ARIC EXAM 7
         drug_concept:
-          expr: case((phv00507367== 1, '''RxCUI:C09A'''))
+          expr: case(({phv00507367} == 1, "RxCUI:C09A"))
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht012814
       slot_derivations:
         associated_participant:
-          populated_from:  phv00512039.v1.p2
+          populated_from:  phv00512039
         associated_visit:
-          expr: '''ARIC EXAM 5'''
+          value: ARIC EXAM 5
         drug_concept:
-          expr: case((phv00512210== 1, '''RxCUI:C09A'''))
+          expr: case(({phv00512210} == 1, "RxCUI:C09A"))
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht012814
       slot_derivations:
         associated_participant:
-          populated_from:  phv00512039.v1.p2
+          populated_from:  phv00512039
         associated_visit:
-          expr: '''ARIC EXAM 5'''
+          value: ARIC EXAM 5
         drug_concept:
-          expr: case((phv00512211== 1, '''RxCUI:C09A'''))
+          expr: case(({phv00512211 == 1, "RxCUI:C09A"))
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht012815
       slot_derivations:
         associated_participant:
-          populated_from:  phv00512222.v1.p2
+          populated_from:  phv00512222
         associated_visit:
-          expr: '''ARIC EXAM 6'''
+          value: ARIC EXAM 6
         drug_concept:
-          expr: case((phv00512275== 1, '''RxCUI:C09A'''))
+          expr: case(({phv00512275 == 1, "RxCUI:C09A"))
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht012815
       slot_derivations:
         associated_participant:
-          populated_from:  phv00512222.v1.p2
+          populated_from:  phv00512222
         associated_visit:
-          expr: '''ARIC EXAM 6'''
+          value: ARIC EXAM 6
         drug_concept:
-          expr: case((phv00512276== 1, '''RxCUI:C09A'''))
+          expr: case(({phv00512276 == 1, "RxCUI:C09A"))
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          value: PATIENT SELF-REPORTED MEDICATION
