@@ -1,0 +1,42 @@
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001715
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00116953
+        associated_visit:
+          value: CARDIA YEAR 7
+          range: string
+        drug_concept:
+          expr: case(({phv00117068} == 2, 'RxCUI:1191'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001761
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00118426
+        associated_visit:
+          value: CARDIA YEAR 10
+          range: string
+        drug_concept:
+          expr: case(({phv00118548} == 2, 'RxCUI:1191'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001811
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00119801
+        associated_visit:
+          value: CARDIA YEAR 15
+          range: string
+        drug_concept:
+          expr: case(({phv00119943} == 2, 'RxCUI:1191'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string          
