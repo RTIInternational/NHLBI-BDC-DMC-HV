@@ -1,0 +1,28 @@
+- class_derivations:
+    Procedure:
+      populated_from: pht001869
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00121257	
+        associated_visit:
+          value: CARDIA MEDICAL HISTORY
+          range: string
+        procedure_concept:
+          expr: case((phv00121381 == 2, OMOP:4336464))
+        procedure_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+- class_derivations:
+    Procedure:
+      populated_from: pht001871
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00121473	
+        associated_visit:
+          value: CARDIA MEDICAL HISTORY
+          range: string
+        procedure_concept:
+          expr: case((phv00121601 == 2, OMOP:4336464))
+        procedure_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
