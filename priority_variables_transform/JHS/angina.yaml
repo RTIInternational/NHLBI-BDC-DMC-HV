@@ -1,0 +1,67 @@
+- class_derivations:
+    Condition:
+      populated_from: pht008725
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00400849
+        associated_visit:
+          value: JHS AFU
+        condition_concept:
+          value: HP:0001681
+          range: string
+        condition_status:
+          expr: 'case(({phv00400917} == N, ABSENT), case({phv00400917} == U, UNKNOWN),
+                ({phv00400918} == Y, PRESENT), case({phv00400918} == N, HISTORICAL), 
+                ({phv00400918} == U, HISTORICAL))
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht008768
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00403315
+        associated_visit:
+          value: JHS Exam 2
+        condition_concept:
+          value: HP:0001681
+          range: string
+        condition_status:
+          populated_from: phv00403322
+          value_mappings:
+            '1': HISTORICAL
+            '2': ABSENT
+            '7': UNKNOWN
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string 
+- class_derivations:
+    Condition:
+      populated_from: pht008769
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00403369
+        associated_visit:
+          value: JHS Exam 3
+        condition_concept:
+          value: HP:0001681
+          range: string
+        condition_status:
+          populated_from: phv00403376
+          value_mappings:
+            '1': HISTORICAL
+            '2': ABSENT
+            '7': UNKNOWN
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string            
