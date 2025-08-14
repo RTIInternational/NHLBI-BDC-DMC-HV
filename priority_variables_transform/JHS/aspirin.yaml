@@ -1,0 +1,56 @@
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001964
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00127753
+        associated_visit:
+          value: JHS Exam 1
+          range: string
+        drug_concept:
+          expr: case(({phv00127944} == Y, 'RxCUI:1191'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht008725
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00400849
+        associated_visit:
+          value: JHS AFU
+          range: string
+        drug_concept:
+          expr: case(({phv00400887} == Y, 'RxCUI:1191'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string 
+- class_derivations:
+    DrugExposure:
+      populated_from: pht008768
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00403315
+        associated_visit:
+          value: JHS Exam 2
+          range: string
+        drug_concept:
+          expr: case(({phv00403340} == 1, 'RxCUI:1191'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht008769
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00403369
+        associated_visit:
+          value: JHS Exam 3
+          range: string
+        drug_concept:
+          expr: case(({phv00403394} == 1, 'RxCUI:1191'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string            
