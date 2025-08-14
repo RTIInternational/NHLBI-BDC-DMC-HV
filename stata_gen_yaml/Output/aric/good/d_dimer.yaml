@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012826
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00515956
+        associated_visit: 
+          value: ARIC LAB FORM
+        observation_type: 
+          value: OMOP:37393605
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht012826
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00515959
+                  unit: 
+                    value: ug/mL

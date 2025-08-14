@@ -1,0 +1,68 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012814
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00512039
+        associated_visit: 
+          value: ARIC EXAM 5
+        observation_type: 
+          value: OMOP:4241837
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht012814
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00512105
+                  unit: 
+                    value: L
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006467
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00297546
+        associated_visit: 
+          value: ARIC EXAM 5
+        observation_type: 
+          value: OMOP:4241837
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006467
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00297572
+                    unit_conversion:
+                      source_unit: "mL"
+                      target_unit: "L"
+                  unit: 
+                    value: L
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006468
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00297599
+        associated_visit: 
+          value: ARIC EXAM 5
+        observation_type: 
+          value: OMOP:4241837
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht006468
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00297618
+                    unit_conversion:
+                      source_unit: "mL"
+                      target_unit: "L"
+                  unit: 
+                    value: L
+                    range: string
