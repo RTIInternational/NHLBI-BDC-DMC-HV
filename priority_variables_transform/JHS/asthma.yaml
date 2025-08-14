@@ -1,0 +1,137 @@
+- class_derivations:
+    Condition:
+      populated_from: pht001967
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00128084
+        associated_visit:
+          value: JHS Exam 1
+          range: string
+        condition_concept:
+          value: MONDO:0004979
+          range: string
+        condition_status:
+          populated_from: phv00128103
+          value_mappings:
+            'No': ABSENT
+            'Yes': PRESENT
+            'Dont know': UNKNOWN
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001973
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00128330
+        associated_visit:
+          value: JHS Exam 1
+          range: string
+        condition_concept:
+          value: MONDO:0004979
+          range: string
+        condition_status:
+          expr: case(({phv00128344} == No, ABSENT), ({phv00128346} == Yes, PRESENT), (True, HISTORICAL))
+        condition_provenance:
+          populated_from: phv00128345
+          value_mappings:
+            'Yes': CLINICAL_DIAGNOSIS
+            'No': PATIENT_SELF-REPORTED_CONDITION
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht008725
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00400849
+        associated_visit:
+          value: JHS AFU
+          range: string
+        condition_concept:
+          value: MONDO:0004979
+          range: string
+        condition_status:
+          expr: 'case(({phv00400910} == N, ABSENT), 
+                 case({phv00400910} == U, UNKNOWN), 
+                 ({phv00400911} == Y, PRESENT), ({phv00400911} == U, UNKNOWN), 
+                 (True, HISTORICAL))
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht008729
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00401078
+        associated_visit:
+          value: JHS Exam 1
+          range: string
+        condition_concept:
+          value: MONDO:0004979
+          range: string
+        condition_status: 
+          populated_from: phv00401161
+          value_mappings:
+            '0': ABSENT
+            '1': HISTORICAL
+            '2': PRESENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht008753
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00402777
+        associated_visit:
+          value: JHS Exam 2
+          range: string
+        condition_concept:
+          value: MONDO:0004979
+          range: string
+        condition_status: 
+          populated_from: phv00401161
+          value_mappings:
+            '1': PRESENT
+            '2': ABSENT
+            '7': UNKNOWN
+            '9': None
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht008778
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00403624
+        associated_visit:
+          value: JHS Exam 9
+          range: string
+        condition_concept:
+          value: MONDO:0004979
+          range: string
+        condition_status: 
+          populated_from: phv00403643
+          value_mappings:
+            'Yes': PRESENT
+            'No': ABSENT
+            'Don't know': UNKNOWN
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+        relationship_to_participant:
+          value: ONESELF
+          range: string            
