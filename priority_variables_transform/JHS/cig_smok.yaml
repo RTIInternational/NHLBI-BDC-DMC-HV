@@ -1,0 +1,33 @@
+- class_derivations:
+    Observation:
+      populated_from: pht001977
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00128494
+        associated_visit:
+          value: JHS Exam 1
+          range: string
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          populated_from: phv00128498
+          value_mappings:
+            'Yes': OMOP:40766945
+- class_derivations:
+    Observation:
+      populated_from: pht001977
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00128494
+        associated_visit:
+          value: JHS Exam 1
+          range: string
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          expr: 'case(({phv00401092} == No, 'OMOP:45883537'), 
+                 ({phv00401091} == Yes, OMOP:40766945), 
+                 (True, OMOP:45883458))'
+           
