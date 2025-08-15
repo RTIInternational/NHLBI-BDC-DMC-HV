@@ -1,0 +1,40 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001565
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00112709
+        associated_visit: 
+          value: CARDIA YEAR 0
+        observation_type: 
+          value: OMOP:4042886
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001565
+                slot_derivations:
+                  value_decimal:
+                    expr: ({phv00112717} + {phv00112718} + {phv00112721} + {phv00112725} + {phv00112723} + {phv00112722} + {phv00112724} + {phv00112719} + {phv00112726} + {phv00112727} + {phv00112720}) * 7
+                  unit: 
+                    value: '{servings}/wk' 
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001712
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00116761 
+        associated_visit: 
+          value: CARDIA YEAR 7
+        observation_type: 
+          value: OMOP:4042886
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001712
+                slot_derivations:
+                  value_decimal:
+                    expr: ({phv00116769} + {phv00116770} + {phv00116773} + {phv00116777} + {phv00116775} + {phv00116774} + {phv00116776} + {phv00116771} + {phv00116778} + {phv00116779} + {phv00116772}) * 7
+                  unit: 
+                    value: '{servings}/wk'
