@@ -1,0 +1,23 @@
+- class_derivations:
+    Condition:
+      populated_from: pht008725
+      slot_derivations:
+        associated_participiant:
+          populated_from: phv00400849
+        associated_visit:
+          value: JHS AFU
+        condition_concept:
+          value: MONDO:0005279
+          range: string
+        condition_status:
+          populated_from: phv00400923
+          value_mappings:
+            'N': ABSENT
+            'U': UNKNOWN
+            
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
