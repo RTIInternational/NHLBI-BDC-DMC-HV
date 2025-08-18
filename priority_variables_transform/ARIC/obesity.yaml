@@ -1,0 +1,15 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht006415
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00294559
+      associated_visit:
+        expr: 'ARIC EXAM 5'
+      value_enum:
+        populated_from: phv002946319
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      observation_type:
+        expr: 'OMOP:433736'  #obesity
