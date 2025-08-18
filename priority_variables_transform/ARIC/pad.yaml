@@ -1,19 +1,325 @@
 class_derivations:
   Condition:
-    populated_from: pht001869
+    populated_from: pht004027
     slot_derivations:
       associated_participant:
-        populated_from: phv00121257
+        populated_from: phv00202851
       associated_visit:
-        expr: 'CARDIA MEDICAL HISTORY'
+        expr: 'ARIC EXAM 1'
       condition_concept:
-        expr: 'MONDO:0005386'
+        expr: 'OMOP:45772840' #Implantable cardiac pacemaker
       condition_status:
-        populated_from: phv00121269
+        populated_from: phv00202847
         value_mappings:
-          '1': 'ABSENT'
-          '2': 'PRESENT'
+          '0': 'ABSENT'
+          '1': 'PRESENT'
       condition_provenance:
-        expr: 'PATIENT_SELF-REPORTED_CONDITION'
+        expr: 'CLINICAL DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht004027
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00202851
+      associated_visit:
+        expr: 'ARIC EXAM 1'
+      condition_concept:
+        expr: 'OMOP:45772840' #Implantable cardiac pacemaker
+      condition_status:
+        populated_from: phv00202848
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: 'CLINICAL DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht004028
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00202861
+      associated_visit:
+        expr: 'ARIC EXAM 3'
+      condition_concept:
+        expr: 'OMOP:45772840' #Implantable cardiac pacemaker
+      condition_status:
+        populated_from: phv00202856
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: 'CLINICAL DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht004028
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00202861
+      associated_visit:
+        expr: 'ARIC EXAM 3'
+      condition_concept:
+        expr: 'OMOP:45772840' #Implantable cardiac pacemaker
+      condition_status:
+        populated_from: phv00202857
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: 'CLINICAL DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht004028
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00202861
+      associated_visit:
+        expr: 'ARIC EXAM 3'
+      condition_concept:
+        expr: 'OMOP:45772840' #Implantable cardiac pacemaker
+      condition_status:
+        populated_from: phv00202860
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: 'CLINICAL DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht004029
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00202873
+      associated_visit:
+        expr: 'ARIC EXAM 4'
+      condition_concept:
+        expr: 'OMOP:45772840' #Implantable cardiac pacemaker
+      condition_status:
+        populated_from: phv00202866
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: 'CLINICAL DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht004029
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00202873
+      associated_visit:
+        expr: 'ARIC EXAM 4'
+      condition_concept:
+        expr: 'OMOP:45772840' #Implantable cardiac pacemaker
+      condition_status:
+        populated_from: phv00202867
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: 'CLINICAL DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht004029
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00202873
+      associated_visit:
+        expr: 'ARIC EXAM 4'
+      condition_concept:
+        expr: 'OMOP:45772840' #Implantable cardiac pacemaker
+      condition_status:
+        populated_from: phv00202871
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          'S': 'ABSENT'
+      condition_provenance:
+        expr: 'CLINICAL DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht004063
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00204812
+      associated_visit:
+        expr: 'ARIC EXAM 1'
+      condition_concept:
+        expr: 'OMOP:45772840' #Implantable cardiac pacemaker
+      condition_status:
+        populated_from: phv00204795
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: 'CLINICAL DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht004063
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00204812
+      associated_visit:
+        expr: 'ARIC EXAM 1'
+      condition_concept:
+        expr: 'OMOP:45772840' #Implantable cardiac pacemaker
+      condition_status:
+        populated_from: phv00204796
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: 'CLINICAL DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht004064
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00204919
+      associated_visit:
+        expr: 'ARIC EXAM 3'
+      condition_concept:
+        expr: 'OMOP:45772840' #Implantable cardiac pacemaker
+      condition_status:
+        populated_from: phv00204906
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: 'CLINICAL DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht004064
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00204919
+      associated_visit:
+        expr: 'ARIC EXAM 3'
+      condition_concept:
+        expr: 'OMOP:45772840' #Implantable cardiac pacemaker
+      condition_status:
+        populated_from: phv00204907
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: 'CLINICAL DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht004064
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00204919
+      associated_visit:
+        expr: 'ARIC EXAM 3'
+      condition_concept:
+        expr: 'OMOP:45772840' #Implantable cardiac pacemaker
+      condition_status:
+        populated_from: phv00204910
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: 'CLINICAL DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht012813
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00511942
+      associated_visit:
+        expr: 'ARIC EXAM 4'
+      condition_concept:
+        expr: 'OMOP:45772840' #Implantable cardiac pacemaker
+      condition_status:
+        populated_from: phv00512021
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: 'CLINICAL DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht012813
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00511942
+      associated_visit:
+        expr: 'ARIC EXAM 4'
+      condition_concept:
+        expr: 'OMOP:45772840' #Implantable cardiac pacemaker
+      condition_status:
+        populated_from: phv00512022
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: 'CLINICAL DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht012813
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00511942
+      associated_visit:
+        expr: 'ARIC EXAM 4'
+      condition_concept:
+        expr: 'OMOP:45772840' #Implantable cardiac pacemaker
+      condition_status:
+        populated_from: phv00512026
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: 'CLINICAL DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht012813
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00511942
+      associated_visit:
+        expr: 'ARIC EXAM 4'
+      condition_concept:
+        expr: 'OMOP:45772840' #Implantable cardiac pacemaker
+      condition_status:
+        populated_from: phv00512027
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          'S': 'ABSENT'
+      condition_provenance:
+        expr: 'CLINICAL DIAGNOSIS'
       relationship_to_participant:
         expr: 'ONESELF'
