@@ -30,10 +30,9 @@ class_derivations:
       condition_concept:
         expr: 'MONDO:0005015'	#diabetes mellitus
       condition_status:
-        populated_from: phv00203808
+        populated_from: phv00203797
         value_mappings:
           '0': 'ABSENT'
-          '8': 'UNKNOWN'
           '1': 'PRESENT'
           'U': 'UNKNOWN'
       condition_provenance:
@@ -54,7 +53,6 @@ class_derivations:
         populated_from: phv00203983
         value_mappings:
           '0': 'ABSENT'
-          '8': 'UNKNOWN'
           '1': 'PRESENT'
           'U': 'UNKNOWN'
       condition_provenance:
@@ -75,7 +73,6 @@ class_derivations:
         populated_from: phv00204313
         value_mappings:
           '0': 'ABSENT'
-          '8': 'UNKNOWN'
           '1': 'PRESENT'
           'U': 'UNKNOWN'
       condition_provenance:
@@ -276,7 +273,6 @@ class_derivations:
         value_mappings:
           '0': 'ABSENT'
           '1': 'PRESENT'
-          'U': 'UNKNOWN'
       condition_provenance:
         expr: 'PATIENT_SELF-REPORTED_CONDITION'
       relationship_to_participant:
@@ -343,6 +339,104 @@ class_derivations:
         expr: 'ONESELF'
 class_derivations:
   Condition:
+    populated_from: pht012502
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00506823
+      associated_visit:
+        expr: 'ARIC Cohort'
+      condition_concept:
+        expr: 'MONDO:0005015'	#diabetes mellitus
+      condition_status:
+        populated_from: phv00506870
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: 'CLINICAL_DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht012504
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00507300
+      associated_visit:
+        expr: 'ARIC EXAM 7'
+      condition_concept:
+        expr: 'MONDO:0005015'	#diabetes mellitus
+      condition_status:
+        populated_from: phv00507394
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          'T': 'UNKNOWN'
+      condition_provenance:
+        expr: 'CLINICAL_DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht012504
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00507300
+      associated_visit:
+        expr: 'ARIC EXAM 7'
+      condition_concept:
+        expr: 'MONDO:0005015'	#diabetes mellitus
+      condition_status:
+        populated_from: phv00507395
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          'T': 'UNKNOWN'
+      condition_provenance:
+        expr: 'CLINICAL_DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht012504
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00507300
+      associated_visit:
+        expr: 'ARIC EXAM 7'
+      condition_concept:
+        expr: 'MONDO:0005015'	#diabetes mellitus
+      condition_status:
+        populated_from: phv00507396
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          'T': 'UNKNOWN'
+      condition_provenance:
+        expr: 'CLINICAL_DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht012504
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00507300
+      associated_visit:
+        expr: 'ARIC EXAM 7'
+      condition_concept:
+        expr: 'MONDO:0005015'	#diabetes mellitus
+      condition_status:
+        populated_from: phv00507398
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: 'CLINICAL_DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
     populated_from: pht012518
     slot_derivations:
       associated_participant:
@@ -353,6 +447,224 @@ class_derivations:
         expr: 'MONDO:0005015'	#diabetes mellitus
       condition_status:
         populated_from: phv00507813
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: 'PATIENT_SELF-REPORTED_CONDITION'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht012811
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00511637
+      associated_visit:
+        expr: 'ARIC Cohort'
+      condition_concept:
+        expr: 'MONDO:0005015'	#diabetes mellitus
+      condition_status:
+        populated_from: phv00511685
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      condition_provenance:
+        expr: 'CLINICAL_DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht012813
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00511942
+      associated_visit:
+        expr: 'ARIC EXAM 4'
+      condition_concept:
+        expr: 'MONDO:0005015'	#diabetes mellitus
+      condition_status:
+        populated_from: phv00511978
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          'T': 'UNKNOWN'
+      condition_provenance:
+        expr: 'CLINICAL_DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht012813
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00511942
+      associated_visit:
+        expr: 'ARIC EXAM 4'
+      condition_concept:
+        expr: 'MONDO:0005015'	#diabetes mellitus
+      condition_status:
+        populated_from: phv00511979
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          'T': 'UNKNOWN'
+      condition_provenance:
+        expr: 'CLINICAL_DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht012814
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00512039
+      associated_visit:
+        expr: 'ARIC EXAM 5'
+      condition_concept:
+        expr: 'MONDO:0005015'	#diabetes mellitus
+      condition_status:
+        populated_from: phv00512060
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          'T': 'UNKNOWN'
+      condition_provenance:
+        expr: 'CLINICAL_DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht012814
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00512039
+      associated_visit:
+        expr: 'ARIC EXAM 5'
+      condition_concept:
+        expr: 'MONDO:0005015'	#diabetes mellitus
+      condition_status:
+        populated_from: phv00512061
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          'T': 'UNKNOWN'
+      condition_provenance:
+        expr: 'CLINICAL_DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht012814
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00512039
+      associated_visit:
+        expr: 'ARIC EXAM 5'
+      condition_concept:
+        expr: 'MONDO:0005015'	#diabetes mellitus
+      condition_status:
+        populated_from: phv00512062
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          'T': 'UNKNOWN'
+      condition_provenance:
+        expr: 'CLINICAL_DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht012814
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00512039
+      associated_visit:
+        expr: 'ARIC EXAM 5'
+      condition_concept:
+        expr: 'MONDO:0005015'	#diabetes mellitus
+      condition_status:
+        populated_from: phv00512095
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          'T': 'UNKNOWN'
+      condition_provenance:
+        expr: 'PATIENT_SELF-REPORTED_CONDITION'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht012815
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00512222
+      associated_visit:
+        expr: 'ARIC EXAM 6'
+      condition_concept:
+        expr: 'MONDO:0005015'	#diabetes mellitus
+      condition_status:
+        populated_from: phv00512375
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          'T': 'UNKNOWN'
+      condition_provenance:
+        expr: 'CLINICAL_DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht012815
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00512222
+      associated_visit:
+        expr: 'ARIC EXAM 6'
+      condition_concept:
+        expr: 'MONDO:0005015'	#diabetes mellitus
+      condition_status:
+        populated_from: phv00512376
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          'T': 'UNKNOWN'
+      condition_provenance:
+        expr: 'CLINICAL_DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht012815
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00512222
+      associated_visit:
+        expr: 'ARIC EXAM 6'
+      condition_concept:
+        expr: 'MONDO:0005015'	#diabetes mellitus
+      condition_status:
+        populated_from: phv00512377
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          'T': 'UNKNOWN'
+      condition_provenance:
+        expr: 'CLINICAL_DIAGNOSIS'
+      relationship_to_participant:
+        expr: 'ONESELF'
+class_derivations:
+  Condition:
+    populated_from: pht012815
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00512222
+      associated_visit:
+        expr: 'ARIC EXAM 6'
+      condition_concept:
+        expr: 'MONDO:0005015'	#diabetes mellitus
+      condition_status:
+        populated_from: phv00512379
         value_mappings:
           '0': 'ABSENT'
           '1': 'PRESENT'
