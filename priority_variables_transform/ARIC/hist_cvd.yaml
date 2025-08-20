@@ -233,3 +233,141 @@ class_derivations:
         value: 'CLINICAL_DIAGNOSIS'
       relationship_to_participant:
         value: 'ONESELF'
+- class_derivations:
+    Condition:
+      populated_from: pht004102
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00207055
+        associated_visit:
+          value: ARIC Hospital Form
+          range: string
+        condition_concept:
+          value: MONDO:0005010
+          range: string  
+        condition_status:
+          populated_from: phv00206801
+          value_mappings:
+            'N': 'ABSENT'
+            'Y': 'PRESENT'
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: 'ONESELF'
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht004102
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00207055
+        associated_visit:
+          value: ARIC Hospital Form
+          range: string
+        condition_concept:
+          value: MONDO:0005010
+          range: string  
+        condition_status:
+          populated_from: phv00206802
+          value_mappings:
+            'N': 'ABSENT'
+            'Y': 'PRESENT'
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: 'ONESELF'
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht004102
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00207055
+        associated_visit:
+          value: ARIC Hospital Form
+          range: string
+        condition_concept:
+          value: MONDO:0005294
+          range: string  
+        condition_status:
+          populated_from: phv00206807
+          value_mappings:
+            'N': 'ABSENT'
+            'Y': 'PRESENT'
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: 'ONESELF'
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht012813
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00511942
+        associated_visit:
+          value: ARIC EXAM 4
+          range: string
+        condition_concept:
+          value: MONDO:0005010
+          range: string  
+        condition_status:
+          populated_from: phv00512028
+          value_mappings:
+            '0': 'ABSENT'
+            '1': 'PRESENT'
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: 'ONESELF'
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht012814
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00512039
+        associated_visit:
+          value: ARIC EXAM 5
+          range: string
+        condition_concept:
+          value: MONDO:0005010
+          range: string  
+        condition_status:
+          populated_from: phv00512123
+          value_mappings:
+            '0': 'ABSENT'
+            '1': 'PRESENT'
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: 'ONESELF'
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht012815
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00512222
+        associated_visit:
+          value: ARIC EXAM 6
+          range: string
+        condition_concept:
+          value: MONDO:0005010
+          range: string  
+        condition_status:
+          populated_from: phv00512297
+          value_mappings:
+            '0': 'ABSENT'
+            '1': 'PRESENT'
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: 'ONESELF'
+          range: string 
