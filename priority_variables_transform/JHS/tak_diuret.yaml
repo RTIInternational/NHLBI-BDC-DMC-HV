@@ -40,3 +40,45 @@
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht008729
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00401078.v1.p2
+        associated_visit:
+          value: JHS Exam 1
+          range: string
+        drug_concept:
+          expr: case(({phv00401102} == 1, '''RxCUI:C03'''))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht008730
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00401273.v1.p2
+        associated_visit:
+          value: JHS Exam 2
+          range: string
+        drug_concept:
+          expr: case(({phv00401294} == 1, '''RxCUI:C03'''))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht008734
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00401565.v1.p2
+        associated_visit:
+          value: JHS Exam 3
+          range: string
+        drug_concept:
+          expr: case(({phv00401574} == 1, '''RxCUI:C03'''))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
