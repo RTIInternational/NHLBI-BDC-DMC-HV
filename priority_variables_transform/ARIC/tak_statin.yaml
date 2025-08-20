@@ -1,1 +1,48 @@
-
+- class_derivations:
+    DrugExposure:
+      populated_from: pht004053
+      slot_derivations:
+        associated_participant:
+          populated_from:  phv00204295
+        associated_visit:
+          value: 'ARIC Hospital Form'
+        drug_concept:
+          expr: case(({phv00204156} == 1, "RxCUI:N0000175589"))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+- class_derivations:
+    DrugExposure:
+      populated_from: pht004063
+      slot_derivations:
+        associated_participant:
+          populated_from:  phv00204812
+        associated_visit:
+          value: 'ARIC EXAM 1'
+        drug_concept:
+          expr: case(({phv00204695} == 1, "RxCUI:N0000175589"))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+- class_derivations:
+    DrugExposure:
+      populated_from: pht004063
+      slot_derivations:
+        associated_participant:
+          populated_from:  phv00204812
+        associated_visit:
+          value: 'ARIC EXAM 1'
+        drug_concept:
+          expr: case(({phv00204802} == 1, "RxCUI:N0000175589"))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+- class_derivations:
+    DrugExposure:
+      populated_from: pht004064
+      slot_derivations:
+        associated_participant:
+          populated_from:  phv00204919
+        associated_visit:
+          value: 'ARIC EXAM 3'
+        drug_concept:
+          expr: case(({phv00204826} == 1, "RxCUI:N0000175589"))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
