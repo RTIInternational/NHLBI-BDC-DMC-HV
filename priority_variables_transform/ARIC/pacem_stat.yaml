@@ -1,1 +1,46 @@
-
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht004067
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00205057
+      associated_visit:
+        expr: 'ARIC EXAM 4'
+      value_enum:
+        populated_from: phv00205047
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+          'U': 'UNKNOWN'
+      observation_type:
+        expr: 'OMOP:45772840' #Implantable cardiac pacemaker
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht004102
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00207055
+      associated_visit:
+        expr: 'ARIC EXAM 4'
+      value_enum:
+        populated_from: phv00206911
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      observation_type:
+        expr: 'OMOP:45772840' #Implantable cardiac pacemaker
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht004128
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00207836
+      associated_visit:
+        expr: 'ARIC EXAM 3'
+      value_enum:
+        populated_from: phv00207815
+        value_mappings:
+          '0': 'ABSENT'
+          '1': 'PRESENT'
+      observation_type:
+        expr: 'OMOP:45772840' #Implantable cardiac pacemaker
