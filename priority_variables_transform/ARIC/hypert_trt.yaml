@@ -1,28 +1,252 @@
 - class_derivations:
     DrugExposure:
-      populated_from: pht001569
+      populated_from: pht004063
       slot_derivations:
         associated_participant:
-          populated_from: phv00112975
+          populated_from: phv00204812
         associated_visit:
-          value: CARDIA YEAR 0
+          value: 'ARIC EXAM 1'
           range: string
         drug_concept:
-          expr: case(({phv00113012} == 2, 'RxCUI:C02'))
+          expr: case(({phv00204798} == 1, 'RxCUI:C02'))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht001571
+      populated_from: pht004064
       slot_derivations:
         associated_participant:
-          populated_from: phv00113153
+          populated_from: phv00204919
         associated_visit:
-          value: CARDIA YEAR 0
+          value: 'ARIC EXAM 3'
           range: string
         drug_concept:
-          expr: case(({phv00113154} == HBP, 'RxCUI:C02'))
+          expr: case(({phv00204913} == 1, 'RxCUI:C02'))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string          
+- class_derivations:
+    DrugExposure:
+      populated_from: pht004129
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00207923
+        associated_visit:
+          value: 'ARIC EXAM 1'
+          range: string
+        drug_concept:
+          expr: case(({phv00207913} == 1, 'RxCUI:C02'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht004130
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00208012
+        associated_visit:
+          value: 'ARIC EXAM 2'
+          range: string
+        drug_concept:
+          expr: case(({phv00208001} == 1, 'RxCUI:C02'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht004131
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00208084
+        associated_visit:
+          value: 'ARIC EXAM 3'
+          range: string
+        drug_concept:
+          expr: case(({phv00208067} == 1, 'RxCUI:C02'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht004136
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00208322
+        associated_visit:
+          value: 'ARIC EXAM 4'
+          range: string
+        drug_concept:
+          expr: case(({phv00208296} == 1, 'RxCUI:C02'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht004146
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00209097
+        associated_visit:
+          value: 'ARIC EXAM 4'
+          range: string
+        drug_concept:
+          expr: case(({phv00209061} == 1, 'RxCUI:C02'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht006453
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00296935
+        associated_visit:
+          value: 'ARIC EXAM 5'
+          range: string
+        drug_concept:
+          expr: case(({phv00506313} == 1, 'RxCUI:C02'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht012504
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00507300
+        associated_visit:
+          value: 'ARIC EXAM 7'
+          range: string
+        drug_concept:
+          expr: case(({phv00507343} == 1, 'RxCUI:C02'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht012504
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00507300
+        associated_visit:
+          value: 'ARIC EXAM 7'
+          range: string
+        drug_concept:
+          expr: case(({phv00507345} == 1, 'RxCUI:C02'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht012813
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00511942
+        associated_visit:
+          value: 'ARIC EXAM 4'
+          range: string
+        drug_concept:
+          expr: case(({phv00511981} == 1, 'RxCUI:C02'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht012813
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00511942
+        associated_visit:
+          value: 'ARIC EXAM 4'
+          range: string
+        drug_concept:
+          expr: case(({phv00512030} == 1, 'RxCUI:C02'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht012814
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00512039
+        associated_visit:
+          value: 'ARIC EXAM 5'
+          range: string
+        drug_concept:
+          expr: case(({phv00512187} == 1, 'RxCUI:C02'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht012814
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00512039
+        associated_visit:
+          value: 'ARIC EXAM 5'
+          range: string
+        drug_concept:
+          expr: case(({phv00512189} == 1, 'RxCUI:C02'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht012815
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00512222
+        associated_visit:
+          value: 'ARIC EXAM 6'
+          range: string
+        drug_concept:
+          expr: case(({phv00512252} == 1, 'RxCUI:C02'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht012815
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00512222
+        associated_visit:
+          value: 'ARIC EXAM 6'
+          range: string
+        drug_concept:
+          expr: case(({phv00512253} == 1, 'RxCUI:C02'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht012815
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00512222
+        associated_visit:
+          value: 'ARIC EXAM 6'
+          range: string
+        drug_concept:
+          expr: case(({phv00512254} == 1, 'RxCUI:C02'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht004063
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00204812
+        associated_visit:
+          value: 'ARIC EXAM 1'
+          range: string
+        drug_concept:
+          expr: case(({phv00204754} == 1, 'RxCUI:C02'))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
