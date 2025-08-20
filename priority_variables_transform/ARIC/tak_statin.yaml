@@ -27,22 +27,106 @@
       populated_from: pht004063
       slot_derivations:
         associated_participant:
-          populated_from:  phv00204812
+          populated_from:  phv00204919
         associated_visit:
-          value: 'ARIC EXAM 1'
+          value: 'ARIC EXAM 3'
         drug_concept:
           expr: case(({phv00204802} == 1, "RxCUI:N0000175589"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
-      populated_from: pht004064
+      populated_from: pht012504
       slot_derivations:
         associated_participant:
-          populated_from:  phv00204919
+          populated_from:  phv00507300
         associated_visit:
-          value: 'ARIC EXAM 3'
+          value: 'ARIC EXAM 7'
         drug_concept:
-          expr: case(({phv00204826} == 1, "RxCUI:N0000175589"))
+          expr: case(({phv00507346} == 1, "RxCUI:N0000175589"))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+- class_derivations:
+    DrugExposure:
+      populated_from: pht012504
+      slot_derivations:
+        associated_participant:
+          populated_from:  phv00507300
+        associated_visit:
+          value: 'ARIC EXAM 7'
+        drug_concept:
+          expr: case(({phv00507347} == 1, "RxCUI:N0000175589"))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+- class_derivations:
+    DrugExposure:
+      populated_from: pht012813
+      slot_derivations:
+        associated_participant:
+          populated_from:  phv00511942
+        associated_visit:
+          value: 'ARIC EXAM 7'
+        drug_concept:
+          expr: case(({phv00511951} == 1, "RxCUI:N0000175589"))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+- class_derivations:
+    DrugExposure:
+      populated_from: pht012814
+      slot_derivations:
+        associated_participant:
+          populated_from:  phv00512039
+        associated_visit:
+          value: 'ARIC EXAM 5'
+        drug_concept:
+          expr: case(({phv00512190} == 1, "RxCUI:N0000175589"))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+- class_derivations:
+    DrugExposure:
+      populated_from: pht012814
+      slot_derivations:
+        associated_participant:
+          populated_from:  phv00512039
+        associated_visit:
+          value: 'ARIC EXAM 5'
+        drug_concept:
+          expr: case(({phv00512191} == 1, "RxCUI:N0000175589"))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+- class_derivations:
+    DrugExposure:
+      populated_from: pht012815
+      slot_derivations:
+        associated_participant:
+          populated_from:  phv00512222
+        associated_visit:
+          value: 'ARIC EXAM 6'
+        drug_concept:
+          expr: case(({phv00512255} == 1, "RxCUI:N0000175589"))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+- class_derivations:
+    DrugExposure:
+      populated_from: pht012815
+      slot_derivations:
+        associated_participant:
+          populated_from:  phv00512222
+        associated_visit:
+          value: 'ARIC EXAM 6'
+        drug_concept:
+          expr: case(({phv00512256} == 1, "RxCUI:N0000175589"))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+- class_derivations:
+    DrugExposure:
+      populated_from: pht004063
+      slot_derivations:
+        associated_participant:
+          populated_from:  phv00204812
+        associated_visit:
+          value: 'ARIC EXAM 1'
+        drug_concept:
+          expr: case(({phv00204695} == 1, "RxCUI:N0000175589"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
