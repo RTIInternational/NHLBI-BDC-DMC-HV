@@ -1,0 +1,20 @@
+class_derivations:
+  Condition:
+    populated_from: pht001570
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00113019
+      associated_visit:
+        expr: 'CARDIA YEAR 0'
+      condition_concept:
+        expr: 'MONDO:0005068'
+      condition_status:
+        populated_from: phv00113025
+        value_mappings:
+          '1': 'ABSENT'
+          '2': 'HISTORICAL'
+          'M': 'UNKNOWN'
+      condition_provenance:
+        expr: 'PATIENT_SELF-REPORTED_CONDITION'
+      relationship_to_participant:
+        expr: 'SELF'
