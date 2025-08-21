@@ -1,0 +1,53 @@
+# pht008720
+# human readable transform logic
+# phv00400743 : number of days per some unit of time that any alcohol was consumed
+# phv00400744 : specifies the unit of time in phv00400743
+# phv00400745 : average drinks per day
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht008720
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00400740 
+        associated_visit: 
+          value: JHS EXAM 9
+        observation_type: 
+          value: OMOP:35609491
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht008720
+                slot_derivations:
+                  value_decimal:
+                    expr: "case(
+                      (phv00400744 = 1, {phv00400745} * {phv00400743}),
+                      (phv00400744 = 2, {phv00400745} * {phv00400743} / 4),
+                      (phv00400744 = 3, {phv00400745} * {phv00400743} / 52)
+                      )"
+                  unit: 
+                    value: '{#}/wk'
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001926
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00124667
+        associated_visit: 
+          value: JHS EXAM 9
+        observation_type: 
+          value: OMOP:35609491
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001926
+                slot_derivations:
+                  value_decimal:
+                    expr: "case(
+                      (phv00124671 = W, {phv00124670} * {phv00124672}),
+                      (phv00124671 = M, {phv00124670} * {phv00124672} / 4),
+                      (phv00124671 = Y, {phv00124670} * {phv00124672} / 52)
+                      )"
+                  unit: 
+                    value: '{#}/wk'
