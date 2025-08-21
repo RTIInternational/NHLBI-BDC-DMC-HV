@@ -8,7 +8,7 @@
           value: CARDIA MEDICAL HISTORY
           range: string
         procedure_concept:
-          expr: case((phv00121381 == 2, OMOP:4336464))
+          expr: case(({phv00121381} == 2, "OMOP:4336464"))
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -22,7 +22,7 @@
           value: CARDIA MEDICAL HISTORY
           range: string
         procedure_concept:
-          expr: case((phv00121601 == 2, OMOP:4336464))
+          expr: case(({phv00121601} == 2, "OMOP:4336464"))
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
