@@ -1,52 +1,32 @@
-class_derivations:
-  Condition:
-    populated_from: pht008725
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00400849
-      associated_visit:
-        value: 'JHS AFU'
-      condition_concept:
-        value: MONDO:0005267 #heart disorder
-      condition_status:
-        populated_from: phv00400917
-        value_mappings:
-          'N': 'ABSENT'
-          'Y': 'PRESENT'
-          'U': 'UNKNOWN'
-      condition_provenance:
-        value: 'PATIENT_SELF-REPORTED_CONDITION'
-      relationship_to_participant:
-        value: 'ONESELF'
-class_derivations:
-  Condition:
-    populated_from: pht008729
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00401078.v1.p2
-      associated_visit:
-        value: 'JHS Exam 1'
-      condition_concept:
-        value: MONDO:0005267 #heart disorder
-      condition_status:
-        populated_from: phv00401212
-        value_mappings:
-          'No': 'ABSENT'
-          'Yes': 'PRESENT'
-      condition_provenance:
-        value: 'PATIENT_SELF-REPORTED_CONDITION'
-      relationship_to_participant:
-        value: 'ONESELF'
+- class_derivations:
+    Condition:
+      populated_from: pht008729
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00401078
+        associated_visit:
+          value: 'JHS Exam 1'
+        condition_concept:
+          value: MONDO:0005267
+        condition_status:
+          populated_from: phv00401212
+          value_mappings:
+            'No': 'ABSENT'
+            'Yes': 'PRESENT'
+        condition_provenance:
+          value: 'PATIENT_SELF-REPORTED_CONDITION'
+        relationship_to_participant:
+          value: 'ONESELF'
 class_derivations:
   Condition:
     populated_from: pht008730
     slot_derivations:
       associated_participant:
-        populated_from: phv00401273.v1.p2
+        populated_from: phv00401273
       associated_visit:
         value: 'JHS Exam 2'
       condition_concept:
-        value: MONDO:0005267 #heart disorder
+        value: MONDO:0005267
       condition_status:
         populated_from: phv00401349
         value_mappings:
@@ -56,23 +36,22 @@ class_derivations:
         value: 'PATIENT_SELF-REPORTED_CONDITION'
       relationship_to_participant:
         value: 'ONESELF'
-class_derivations:
-  Condition:
-    populated_from: pht008731
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00401370.v1.p2
-      associated_visit:
-        value: 'JHS Exam 3'
-      condition_concept:
-        value: MONDO:0005267 #heart disorder
-      condition_status:
-        populated_from: phv00401477
-        value_mappings:
-          'No': 'ABSENT'
-          'Yes': 'PRESENT'
-      condition_provenance:
-        value: 'PATIENT_SELF-REPORTED_CONDITION'
-      relationship_to_participant:
-        value: 'ONESELF'
-
+- class_derivations:
+    Condition:
+      populated_from: pht008731
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00401370
+        associated_visit:
+          value: 'JHS Exam 3'
+        condition_concept:
+          value: MONDO:0005267
+        condition_status:
+          populated_from: phv00401477
+          value_mappings:
+            'No': 'ABSENT'
+            'Yes': 'PRESENT'
+        condition_provenance:
+          value: 'PATIENT_SELF-REPORTED_CONDITION'
+        relationship_to_participant:
+          value: 'ONESELF'
