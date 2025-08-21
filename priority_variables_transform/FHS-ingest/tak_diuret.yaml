@@ -977,8 +977,10 @@
         associated_participant:
           populated_from: phv00057982
         associated_visit:
-          value: FHS OFFSPRING EXAM 2
-          range: string
+          populated_from: phv00057968
+          value_mappings:
+            '1': FHS OFFSPRING SHHS 2
+            '7': FHS OMNI 1 SHHS 2
         drug_concept:
           expr: case(({phv00056959} == 1, '''RxCUI:N0000175419'''))
         expsoure_provenance:
@@ -991,8 +993,10 @@
         associated_participant:
           populated_from: phv00057982
         associated_visit:
-          value: FHS OFFSPRING EXAM 2
-          range: string
+          populated_from: phv00057968
+          value_mappings:
+            '1': FHS OFFSPRING SHHS 2
+            '7': FHS OMNI 1 SHHS 2
         drug_concept:
           expr: case(({phv00056968} == 1, '''RxCUI:CV702'''))
         expsoure_provenance:
@@ -1005,8 +1009,10 @@
         associated_participant:
           populated_from: phv00057982
         associated_visit:
-          value: FHS OFFSPRING EXAM 2
-          range: string
+          populated_from: phv00057968
+          value_mappings:
+            '1': FHS OFFSPRING SHHS 2
+            '7': FHS OMNI 1 SHHS 2
         drug_concept:
           expr: case(({phv00057004} == 1, '''RxCUI:C03'''))
         expsoure_provenance:
