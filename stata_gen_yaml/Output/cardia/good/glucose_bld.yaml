@@ -1,0 +1,44 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001557
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00112401
+        associated_visit: 
+          value: CARDIA EXAM 0
+        observation_type: 
+          value: OBA:VT0000188
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001557
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00112414
+                  unit: 
+                    value: mg/dL
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001737
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00117551
+        associated_visit: 
+          value: CARDIA YEAR 7
+        observation_type: 
+          value: OBA:VT0000188
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001737
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00117552
+                    unit_conversion:
+                      source_unit: "ug/dL"
+                      target_unit: "mg/dL"
+                  unit: 
+                    value: mg/dL
+                    range: string

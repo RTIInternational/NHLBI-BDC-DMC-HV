@@ -1,0 +1,42 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001694
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00116360
+        associated_visit: 
+          value: CARDIA YEAR 5
+        observation_type: 
+          value: OBA:2041536
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001694
+                slot_derivations:
+                  value_decimal:
+                    expr: {phv00116362} * 0.01
+                  unit: 
+                    value: [IU]/mL
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001739
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00117555
+        associated_visit: 
+          value: CARDIA YEAR 7
+        observation_type: 
+          value: OBA:2041536
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001739
+                slot_derivations:
+                  value_decimal:
+                    expr: {phv00117557} * 0.01
+                  unit: 
+                    value: [IU]/mL
+                    range: string
