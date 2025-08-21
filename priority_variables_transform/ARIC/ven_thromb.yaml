@@ -1,133 +1,114 @@
-class_derivations:
-  Condition:
-    populated_from: pht004053
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00204295
-      associated_visit:
-        expr: 'ARIC Hospital Form'
-      condition_concept:
-        expr: 'MONDO:0005399' #venous thromboembolism
-      condition_status:
-        populated_from: phv00203940
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-      condition_provenance:
-        expr: 'PATIENT_SELF-REPORTED_CONDITION'
-      relationship_to_participant:
-        expr: 'ONESELF'
-class_derivations:
-  Condition:
-    populated_from: pht004102
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00207055
-      associated_visit:
-        expr: 'ARIC Hospital Form'
-      condition_concept:
-        expr: 'MONDO:0005399' #venous thromboembolism
-      condition_status:
-        populated_from: phv00206786
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-      condition_provenance:
-        expr: 'PATIENT_SELF-REPORTED_CONDITION'
-      relationship_to_participant:
-        expr: 'ONESELF'
-class_derivations:
-  Condition:
-    populated_from: pht004102
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00207055
-      associated_visit:
-        expr: 'ARIC Hospital Form'
-      condition_concept:
-        expr: 'MONDO:0005399' #venous thromboembolism
-      condition_status:
-        populated_from: phv00207017
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-      condition_provenance:
-        expr: 'PATIENT_SELF-REPORTED_CONDITION'
-      relationship_to_participant:
-        expr: 'ONESELF'
-class_derivations:
-  Condition:
-    populated_from: pht004125
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00207055
-      associated_visit:
-        expr: 'ARIC Hospital Form'
-      condition_concept:
-        expr: 'MONDO:0005399' #venous thromboembolism
-      condition_status:
-        populated_from: phv00207017
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-      condition_provenance:
-        expr: 'PATIENT_SELF-REPORTED_CONDITION'
-      relationship_to_participant:
-        expr: 'ONESELF'
-        class_derivations:
-  Condition:
-    populated_from: pht004125
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00207742
-      associated_visit:
-        expr: 'ARIC EXAM 4'
-      condition_concept:
-        expr: 'MONDO:0005399' #venous thromboembolism
-      condition_status:
-        populated_from: phv00207698
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-      condition_provenance:
-        expr: 'PATIENT_SELF-REPORTED_CONDITION'
-      relationship_to_participant:
-        expr: 'ONESELF'
-class_derivations:
-  Condition:
-    populated_from: pht004125
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00207742
-      associated_visit:
-        expr: 'ARIC EXAM 4'
-      condition_concept:
-        expr: 'MONDO:0005399' #venous thromboembolism
-      condition_status:
-        populated_from: phv00207699
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-      condition_provenance:
-        expr: 'PATIENT_SELF-REPORTED_CONDITION'
-      relationship_to_participant:
-        expr: 'ONESELF'
-class_derivations:
-  Condition:
-    populated_from: pht006416
-    slot_derivations:
-      associated_participant:
-        populated_from: phv00294620
-      associated_visit:
-        expr: 'Annual Follow-Up Questionnaire Form'
-      condition_concept:
-        expr: 'MONDO:0005399' #venous thromboembolism
-      condition_status:
-        populated_from: phv00294793
-        value_mappings:
-          '0': 'ABSENT'
-          '1': 'PRESENT'
-      condition_provenance:
-        expr: 'PATIENT_SELF-REPORTED_CONDITION'
-      relationship_to_participant:
-        expr: 'ONESELF'
+- class_derivations:
+    Condition:
+      populated_from: pht004053
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00204295
+        associated_visit:
+          value: 'ARIC Hospital Form'
+        condition_concept:
+          value: MONDO:0005279
+        condition_status:
+          populated_from: phv00203940
+          value_mappings:
+            '0': 'ABSENT'
+            '1': 'PRESENT'
+        condition_provenance:
+          value: 'PATIENT_SELF-REPORTED_CONDITION'
+        relationship_to_participant:
+          value: 'ONESELF'
+- class_derivations:
+    Condition:
+      populated_from: pht004102
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00207055
+        associated_visit:
+          value: 'ARIC Hospital Form'
+        condition_concept:
+          value: MONDO:0005279
+        condition_status:
+          populated_from: phv00206786
+          value_mappings:
+            '0': 'ABSENT'
+            '1': 'PRESENT'
+        condition_provenance:
+          value: 'PATIENT_SELF-REPORTED_CONDITION'
+        relationship_to_participant:
+          value: 'ONESELF'
+- class_derivations:
+    Condition:
+      populated_from: pht004102
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00207055
+        associated_visit:
+          value: 'ARIC Hospital Form'
+        condition_concept:
+          value: MONDO:0005279
+        condition_status:
+          populated_from: phv00207017
+          value_mappings:
+            '0': 'ABSENT'
+            '1': 'PRESENT'
+        condition_provenance:
+          value: 'PATIENT_SELF-REPORTED_CONDITION'
+        relationship_to_participant:
+          value: 'ONESELF'
+- class_derivations:
+    Condition:
+      populated_from: pht004125
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00207742
+        associated_visit:
+          value: 'ARIC EXAM 4'
+        condition_concept:
+          value: HP:0002625
+        condition_status:
+          populated_from: phv00207698
+          value_mappings:
+            '0': 'ABSENT'
+            '1': 'PRESENT'
+        condition_provenance:
+          value: 'PATIENT_SELF-REPORTED_CONDITION'
+        relationship_to_participant:
+          value: 'ONESELF'
+- class_derivations:
+    Condition:
+      populated_from: pht004125
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00207742
+        associated_visit:
+          value: 'ARIC EXAM 4'
+        condition_concept:
+          value: MONDO:0005279
+        condition_status:
+          populated_from: phv00207699
+          value_mappings:
+            '0': 'ABSENT'
+            '1': 'PRESENT'
+        condition_provenance:
+          value: 'PATIENT_SELF-REPORTED_CONDITION'
+        relationship_to_participant:
+          value: 'ONESELF'
+- class_derivations:
+    Condition:
+      populated_from: pht006416
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00294620
+        associated_visit:
+          value: 'Annual Follow-Up Questionnaire Form'
+        condition_concept:
+          value: MONDO:0005279
+        condition_status:
+          populated_from: phv00294793
+          value_mappings:
+            '0': 'ABSENT'
+            '1': 'PRESENT'
+        condition_provenance:
+          value: 'PATIENT_SELF-REPORTED_CONDITION'
+        relationship_to_participant:
+          value: 'ONESELF'
