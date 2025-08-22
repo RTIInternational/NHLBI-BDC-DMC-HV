@@ -12,6 +12,18 @@
           expr: '''PATIENT SELF-REPORTED MEDICATION'''
 - class_derivations:
     DrugExposure:
+      populated_from: pht008725
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00400849
+        associated_visit:
+          expr: '''JHS AFU'''
+        drug_concept:
+          expr: case((phv00400884 == 1, '''RxCUI:C02'''))
+        expsoure_provenance:
+          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+- class_derivations:
+    DrugExposure:
       populated_from: pht008782
       slot_derivations:
         associated_participant:
