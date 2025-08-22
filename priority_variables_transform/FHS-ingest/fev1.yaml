@@ -186,13 +186,15 @@
                     range: string
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht003632
+      populated_from: pht005169
       slot_derivations:
         associated_participant:
-          populated_from: phv00196546
+          populated_from: phv00257829
         associated_visit:
-          value: FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2
-          range: string
+          populated_from: phv00257830
+          value_mappings:
+            '1': FHS OFFSPRING EXAM 9
+            '7': FHS OMNI 1 EXAM 4
         observation_type:
           value: OMOP:4241837
           range: string
