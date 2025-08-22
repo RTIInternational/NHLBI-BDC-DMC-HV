@@ -335,6 +335,8 @@
         observation_type:
           value: OBA:VT0002871
           range: string
+        method_type:
+          value: immunoturbidometric
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -343,6 +345,18 @@
                 slot_derivations:
                   value_concept:
                     populated_from: phv00036493
+                  unit:
+                    value: mg/L
+                    range: string
+        range_low:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004363
+                slot_derivations:
+                  value_decimal:
+                    value: '3.0'
+                    range: string
                   unit:
                     value: mg/L
                     range: string
