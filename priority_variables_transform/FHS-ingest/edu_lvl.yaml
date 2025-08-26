@@ -31,9 +31,14 @@
         associated_participant:
           populated_from: phv00220821
         associated_visit:
-          value: FHS NEURO ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE,
-            OMNI 1, OMNI 2
-          range: string
+          populated_from: phv00220822
+          value_mappings:
+            '0': FHS ORIGINAL NTS
+            '1': FHS OFFSPRING NTS
+            '2': FHS NEW OFFSPRING SPOUSE NTS
+            '3': FHS GENERATION 3 NTS
+            '7': FHS OMNI 1 NTS
+            '72': FHS OMNI 2 NTS
         category:
           value: EDUCATIONAL_ATTAINMENT
           range: string
