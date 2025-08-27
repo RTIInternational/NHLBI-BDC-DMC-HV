@@ -63,9 +63,14 @@
         associated_participant:
           populated_from: phv00369587
         associated_visit:
-          value: FHS EVENT REVIEW ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING
-            SPOUSE, OMNI 1, OMNI 2
-          range: string
+          populated_from: phv00369637
+          value_mappings:
+            '0': FHS ORIGINAL CHF
+            '1': FHS OFFSPRING CHF
+            '2': FHS NEW OFFSPRING SPOUSE CHF
+            '3': FHS GENERATION 3 CHF
+            '7': FHS OMNI 1 CHF
+            '72': FHS OMNI 2 CHF
         observation_type:
           value: OBA:2045303
           range: string
