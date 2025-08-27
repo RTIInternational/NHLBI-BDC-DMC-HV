@@ -5,11 +5,11 @@
         associated_participant:
           populated_from: phv00127753
         associated_visit:
-          expr: '''JHS Exam 1'''
+          value: JHS Exam 1
         drug_concept:
-          expr: case((phv00127922 == 1, '''RxCUI:C02'''))
+          value: case(({phv00127922} == 1, 'RxCUI:C02'))
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht008725
@@ -17,11 +17,11 @@
         associated_participant:
           populated_from: phv00400849
         associated_visit:
-          expr: '''JHS AFU'''
+          value: JHS AFU
         drug_concept:
-          expr: case((phv00400884 == 1, '''RxCUI:C02'''))
+          value: case(({phv00400884} == 1, 'RxCUI:C02'))
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht008782
@@ -29,11 +29,11 @@
         associated_participant:
           populated_from: phv00403792
         associated_visit:
-          expr: '''JHS Exam 6'''
+          value: JHS Exam 6
         drug_concept:
-          expr: case((phv00403802 == 1, '''RxCUI:C02'''))
+          value: case(({phv00403802} == 1, 'RxCUI:C02'))
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht008783
@@ -41,8 +41,8 @@
         associated_participant:
           populated_from: phv00403830
         associated_visit:
-          expr: '''JHS Exam 1'''
+          value: JHS Exam 1
         drug_concept:
-          expr: case((phv00403802 == 1, '''RxCUI:C02'''))
+          value: case(({phv00403802} == 1, 'RxCUI:C02'))
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          value: PATIENT SELF-REPORTED MEDICATION
