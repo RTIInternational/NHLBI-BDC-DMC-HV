@@ -1685,8 +1685,10 @@
         associated_participant:
           populated_from: phv00423868
         associated_visit:
-          value: FHS OMNI 1 EXAM 1
-          range: string
+          populated_from: phv00423869
+          value_mappings:
+            '1': FHS OFFSPRING EXAM 1
+            '7': FHS OMNI 1 EXAM 1
         condition_concept:
           value: HP:0001712
           range: string
@@ -1709,8 +1711,10 @@
         associated_participant:
           populated_from: phv00423868
         associated_visit:
-          value: FHS OMNI 1 EXAM 2
-          range: string
+          populated_from: phv00423869
+          value_mappings:
+            '1': FHS OFFSPRING EXAM 2
+            '7': FHS OMNI 1 EXAM 2
         condition_concept:
           value: HP:0001712
           range: string
@@ -1733,8 +1737,10 @@
         associated_participant:
           populated_from: phv00423868
         associated_visit:
-          value: FHS OMNI 1 EXAM 2
-          range: string
+          populated_from: phv00423869
+          value_mappings:
+            '1': FHS OFFSPRING EXAM 3
+            '7': FHS OMNI 1 EXAM 3
         condition_concept:
           value: HP:0001712
           range: string
@@ -1757,32 +1763,10 @@
         associated_participant:
           populated_from: phv00423868
         associated_visit:
-          value: FHS OMNI 1 EXAM 3
-          range: string
-        condition_concept:
-          value: HP:0001712
-          range: string
-        condition_status:
-          populated_from: phv00423908
+          populated_from: phv00423869
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '2': UNKNOWN
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht009761
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00423868
-        associated_visit:
-          value: FHS OMNI 1 EXAM 4
-          range: string
+            '1': FHS OFFSPRING EXAM 4
+            '7': FHS OMNI 1 EXAM 4
         condition_concept:
           value: HP:0001712
           range: string
