@@ -13,9 +13,9 @@
         value_enum:
           populated_from: phv00203798
           value_mappings:
-            'U': OMOP:45885135
-            'N': OMOP:45883537
-            'Y': OMOP:40766945
+            U: OMOP:45885135
+            N: OMOP:45883537
+            Y: OMOP:40766945
 - class_derivations:
     Observation:
       populated_from: pht004053
@@ -31,11 +31,11 @@
         value_enum:
           populated_from: phv00203911
           value_mappings:
-            'U': OMOP:45885135
-            'N': OMOP:45883537
-            'C': OMOP:40766945  
-            'P': OMOP:45883458
-            'S': OMOP:40766945
+            U: OMOP:45885135
+            N: OMOP:45883537
+            C: OMOP:40766945
+            P: OMOP:45883458
+            S: OMOP:40766945
 - class_derivations:
     Observation:
       populated_from: pht004054
@@ -51,9 +51,9 @@
         value_enum:
           populated_from: phv00204312
           value_mappings:
-            'U': OMOP:45885135
-            'N': OMOP:45883537
-            'Y': OMOP:40766945
+            U: OMOP:45885135
+            N: OMOP:45883537
+            Y: OMOP:40766945
 - class_derivations:
     Observation:
       populated_from: pht004063
@@ -71,7 +71,7 @@
           value_mappings:
             '4': OMOP:45885135
             '3': OMOP:45883537
-            '1': OMOP:40766945 
+            '1': OMOP:40766945
             '2': OMOP:45883458
 - class_derivations:
     Observation:
@@ -90,7 +90,7 @@
           value_mappings:
             '4': OMOP:45885135
             '3': OMOP:45883537
-            '1': OMOP:40766945 
+            '1': OMOP:40766945
             '2': OMOP:45883458
 - class_derivations:
     Observation:
@@ -106,8 +106,8 @@
           range: string
         value_enum:
           populated_from: phv00206780
-          value_mappings: 
-            'Y': OMOP:45883458
+          value_mappings:
+            Y: OMOP:45883458
 - class_derivations:
     Observation:
       populated_from: pht004103
@@ -121,9 +121,8 @@
           value: OMOP:4282779
           range: string
         value_enum:
-          expr: 'case(({phv00207119} == N, "OMOP:45883537"),
-               ({phv00207120} == N, "OMOP:45883458"), 
-               (True, "OMOP:40766945"))'
+          expr: 'case(({phv00207119} == N, ""OMOP:45883537""),({phv00207120} == N,
+            "OMOP: 45883458"),(True, "OMOP: 40766945"))'
 - class_derivations:
     Observation:
       populated_from: pht004111
@@ -137,11 +136,8 @@
           value: OMOP:4282779
           range: string
         value_enum:
-          expr: 'case(
-                   ({phv00207368} == N, "OMOP:45883537"), 
-                   ({phv00207370 == Y, "OMOP:40766945"), 
-                   (True, "OMOP:45883458")
-                )'   
+          expr: 'case(({phv00207368} == N, "OMOP: 45883537"),({phv00207370} == Y,
+            "OMOP: 40766945"),(True, "OMOP: 45883458"))'
 - class_derivations:
     Observation:
       populated_from: pht004145
@@ -155,9 +151,8 @@
           value: OMOP:4282779
           range: string
         value_enum:
-          expr: 'case(({phv00208996 == N, "OMOP:45883537"), 
-            ({phv00208998 == Y, "OMOP:40766945"), 
-            (True, "OMOP:45883458"))'
+          expr: 'case(({phv00208996} == N, ""OMOP:45883537""),({phv00208998} == Y,
+            "OMOP: 40766945"),(True, "OMOP: 45883458"))'
 - class_derivations:
     Observation:
       populated_from: pht004146
@@ -171,9 +166,8 @@
           value: OMOP:4282779
           range: string
         value_enum:
-          expr: 'case(({phv00209072} == N, "OMOP:45883537"), 
-                 ({phv00209073} == Y, "OMOP:40766945"), 
-                 (True, "OMOP:45883458"))'
+          expr: 'case(({phv00209072} == N, ""OMOP:45883537""),({phv00209073} == Y,
+            "OMOP: 40766945"),(True, "OMOP: 45883458"))'
 - class_derivations:
     Observation:
       populated_from: pht012504
@@ -191,8 +185,8 @@
           value_mappings:
             '4': OMOP:45885135
             '3': OMOP:45883537
-            '1': OMOP:40766945 
-            '2': OMOP:45883458          
+            '1': OMOP:40766945
+            '2': OMOP:45883458
 - class_derivations:
     Observation:
       populated_from: pht012813
@@ -210,7 +204,7 @@
           value_mappings:
             '4': OMOP:45885135
             '3': OMOP:45883537
-            '1': OMOP:40766945 
+            '1': OMOP:40766945
             '2': OMOP:45883458
 - class_derivations:
     Observation:
@@ -229,7 +223,7 @@
           value_mappings:
             '4': OMOP:45885135
             '3': OMOP:45883537
-            '1': OMOP:40766945 
+            '1': OMOP:40766945
             '2': OMOP:45883458
 - class_derivations:
     Observation:
@@ -248,5 +242,5 @@
           value_mappings:
             '4': OMOP:45885135
             '3': OMOP:45883537
-            '1': OMOP:40766945 
-            '2': OMOP:45883458             
+            '1': OMOP:40766945
+            '2': OMOP:45883458
