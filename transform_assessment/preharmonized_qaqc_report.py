@@ -50,21 +50,21 @@ def parse_stats_column(stats_str):
         return 0
     
     try:
-        # Try to parse as literal (dict/list structure)
-        stats = ast.literal_eval(str(stats_str))
-        
-        # Navigate the nested structure: var_report.variable.total.stats.stat.n
-        if isinstance(stats, dict):
-            variable = stats.get('variable', {})
-            total = variable.get('total', {})
-            stats_section = total.get('stats', {})
-            stat = stats_section.get('stat', {})
-            n_value = stat.get('n', 0)
-            return int(n_value) if n_value else 0
+        # First try direct conversion to number
+        return int(float(str(stats_str)))
     except:
-        # If parsing fails, try to extract number directly
         try:
-            return int(float(str(stats_str)))
+            # Try to parse as literal (dict/list structure) if direct conversion fails
+            stats = ast.literal_eval(str(stats_str))
+            
+            # Navigate the nested structure: var_report.variable.total.stats.stat.n
+            if isinstance(stats, dict):
+                variable = stats.get('variable', {})
+                total = variable.get('total', {})
+                stats_section = total.get('stats', {})
+                stat = stats_section.get('stat', {})
+                n_value = stat.get('n', 0)
+                return int(n_value) if n_value else 0
         except:
             return 0
     
@@ -125,8 +125,8 @@ def generate_report():
             
         cohorts_in_data.add(cohort)
         
-        # Skip if cohort doesn't have valid PHV list or PHV not in valid list
-        if cohort not in valid_phvs or phv not in valid_phvs[cohort]:
+        # Skip only if cohort has valid PHV list and PHV not in that list
+        if cohort in valid_phvs and phv not in valid_phvs[cohort]:
             continue
         
         # Parse n value
@@ -172,7 +172,7 @@ def generate_report():
     df = pd.DataFrame(csv_rows)
     
     # Save CSV
-    output_file = Path(__file__).parent / "preharmonized_data_report.csv"
+    output_file = Path(__file__).parent / "preharmonized_qaqc_report.csv"
     df.to_csv(output_file, index=False)
     
     print(f"\nReport saved to: {output_file}")

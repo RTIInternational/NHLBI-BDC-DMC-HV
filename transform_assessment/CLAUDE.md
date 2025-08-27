@@ -26,4 +26,5 @@
   - For e.g. CHS, you would filter out any PHVs where Cohort is CHS that don't appear
     in valid-phvs/chs-ingest.tsv. The file for Cohort HCHS/SOL is hchs-ingest.tsv
   - If there is no valid-phvs file for a cohort, report that in the README
+    but count all rows for that cohort.
   - If there is a valid-phvs file for a cohor that doesn't appear in the input, also report that
