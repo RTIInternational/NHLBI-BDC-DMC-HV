@@ -8,12 +8,19 @@
           value: CHS SUMMARY
           range: string
         cause_of_death:
-          populated_from: phv00100775
-          value_mappings:
-            '1': ICD10CM:I50.9
-            '2': ICD10CM:I60-I69
-            '3': ICD10CM:I70
-            '4': ICD10CM:I00-I99
+          object_derivations:
+          - class_derivations:
+              CauseOfDeath:
+                populated_from: pht001464
+                slot_derivations:
+                  populated_from: phv00100775
+                  value_mappings:
+                    '1': ICD10CM:I50.9
+                    '2': ICD10CM:I60-I69
+                    '3': ICD10CM:I70
+                    '4': ICD10CM:I00-I99
+                  order:
+                    value: 1
         vital_status:
           populated_from: phv00100774
           value_mappings:
