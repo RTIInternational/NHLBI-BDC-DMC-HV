@@ -8,7 +8,7 @@
           value: JHS Exam 1
           range: string
         drug_concept:
-          expr: case(({phv00401102} == 1, 'RxCUI:D007328'))
+          expr: case(({phv00401106} == 1, "RxCUI:C07A"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -22,7 +22,7 @@
           value: JHS Exam 2
           range: string
         drug_concept:
-          expr: case(({phv00401273} == 1, 'RxCUI:D007328'))
+          expr: case(({phv00401298} == 1, "RxCUI:C07A"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -36,21 +36,7 @@
           value: JHS Exam 3
           range: string
         drug_concept:
-          expr: case(({phv00401395} == 1, 'RxCUI:D007328'))
-        expsoure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-          range: string
-- class_derivations:
-    DrugExposure:
-      populated_from: pht008734
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00401565
-        associated_visit:
-          value: JHS Exam 3
-          range: string
-        drug_concept:
-          expr: case(({phv00401574} == 1, 'RxCUI:D007328'))
+          expr: case(({phv00401399} == 1, "RxCUI:C07A"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
