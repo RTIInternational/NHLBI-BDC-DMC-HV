@@ -8,14 +8,17 @@
           value: MESA CLASSIC CVE
           range: string
         cause_of_death:
-          populated_from: phv00087883
-          value_mappings:
-            '1': '''ATHEROSCLEROTIC CORONARY HEART DISEASE'''
-            '2': '''STROKE'''
-            '3': '''ATHEROSCLEROTIC DISEASE OTHER THAN CORONARY DISEASE- STROKE'''
-            '4': '''OTHER CARDIOVASCULAR DISEASE'''
-            '5': '''NON-CARDIOVASCULAR  SPC'''
-            '6': None
-            '7': None
-            '8': None
-            '999': None
+          object_derivations:
+          - class_derivations:
+              CauseOfDeath:
+                populated_from: pht001123
+                slot_derivations:
+                  populated_from: phv00087883
+                  value_mappings:
+                    '1': ICD10CM:V00-X58
+                    '1': ICD10CM:I20-I25
+                    '2': ICD10CM:I63.9
+                    '3': '''ATHEROSCLEROTIC DISEASE OTHER THAN CORONARY DISEASE- STROKE'''
+                    '4': ICD10CM:V00-X58                 
+                  order:
+                    value: 1
