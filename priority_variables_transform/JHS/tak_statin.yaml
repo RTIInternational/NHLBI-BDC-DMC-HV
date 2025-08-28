@@ -1,14 +1,42 @@
 - class_derivations:
     DrugExposure:
-      populated_from: pht001452
+      populated_from: pht008729
       slot_derivations:
         associated_participant:
-          populated_from: phv00100285
+          populated_from: phv00401078
         associated_visit:
-          value: CHS BASELINE BOTH
+          value: JHS Exam 1
           range: string
         drug_concept:
-          expr: case(({phv00100594} == 1, '''RxCUI:C10A'''))
+          expr: case(({phv00401114} == 1, '''RxCUI:C10A'''))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht008730
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00401273
+        associated_visit:
+          value: JHS Exam 2
+          range: string
+        drug_concept:
+          expr: case(({phv00401296} == 1, '''RxCUI:C10A'''))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht008731
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00401370
+        associated_visit:
+          value: JHS Exam 3
+          range: string
+        drug_concept:
+          expr: case(({phv00401397} == 1, '''RxCUI:C10A'''))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
