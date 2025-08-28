@@ -1,14 +1,14 @@
 - class_derivations:
     DrugExposure:
-      populated_from: pht001452
+      populated_from: pht008729
       slot_derivations:
         associated_participant:
-          populated_from: phv00100285
+          populated_from: phv00401078
         associated_visit:
-          value: CHS BASELINE BOTH
+          value: JHS Exam 1
           range: string
         drug_concept:
-          expr: case(({phv00100594} == 1, '''RxCUI:C10A'''))
+          expr: case(({phv00401104} == 1, '''RxCUI:C10A'''))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
