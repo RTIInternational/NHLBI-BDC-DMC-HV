@@ -1,0 +1,14 @@
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001452
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00100285
+        associated_visit:
+          value: CHS BASELINE BOTH
+          range: string
+        drug_concept:
+          expr: case(({phv00100594} == 1, '''RxCUI:C10A'''))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
