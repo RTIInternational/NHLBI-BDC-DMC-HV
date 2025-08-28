@@ -7,7 +7,7 @@
         associated_visit:
           value: ARIC Death Event
         drug_concept:
-          expr: case(({phv00203800} == Y, ""RxCUI:C08""))
+          expr: case(({phv00203800} == Y, "RxCUI:C08"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
@@ -19,7 +19,7 @@
         associated_visit:
           value: ARIC Hospital Form
         drug_concept:
-          expr: case(({phv00203967} == Y, ""RxCUI:C08""))
+          expr: case(({phv00203967} == Y, "RxCUI:C08"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
@@ -31,7 +31,7 @@
         associated_visit:
           value: ARIC Hospital Form
         drug_concept:
-          expr: case(({phv00206979} == Y, ""RxCUI:C08""))
+          expr: case(({phv00206979} == Y, "RxCUI:C08"))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
@@ -43,6 +43,6 @@
         associated_visit:
           value: ARIC Hospital Form
         drug_concept:
-          expr: case(({phv00206980} == Y, ""RxCUI:C08""))
+          expr: case(({phv00206980} == Y, "RxCUI:C08"))
         expsoure_provenance:
           value: PRESCRIPTION WRITTEN
