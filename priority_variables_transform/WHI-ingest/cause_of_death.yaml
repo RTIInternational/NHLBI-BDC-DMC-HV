@@ -8,18 +8,24 @@
           value: WHI CAD
           range: string
         cause_of_death:
-          populated_from: phv00192817
-          value_mappings:
-            '1': '''BREAST CANCER'''
-            '4': '''COLON CANCER'''
-            '32': '''COPD'''
-            '37': '''PANCREAS'''
-            '18': '''OTHER CARDIOVASCULAR'''
-            '11': '''CORONARY HEART DISEASE'''
-            '14': None
-            '88': None
-            '12': '''CEREBROVASCULAR'''
-            '10': '''LUNG CANCER'''
+          object_derivations:
+          - class_derivations:
+              CauseOfDeath:
+                populated_from: pht003402
+                slot_derivations:
+                  cause:
+                    populated_from: phv00192817
+                    value_mappings:
+                      '1': ICD10CM:C50
+                      '4': ICD10CM:C18
+                      '32': ICD10CM:J44
+                      '37': ICD10CM:K86.9
+                      '18': ICD10CM:I00-I99
+                      '11': ICD10CM:I20-I25
+                      '12': ICD10CM:I60-I69
+                      '10': ICD10CM:C34
+                  order:
+                    value: 1
         vital_status:
           populated_from: phv00192816
           value_mappings:
@@ -35,18 +41,23 @@
           value: WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED
           range: string
         cause_of_death:
-          populated_from: phv00193497
-          value_mappings:
-            '1': '''BREAST CANCER'''
-            '31': '''ALZHEIMERS'''
-            '32': '''COPD'''
-            '18': '''OTHER CARDIOVASCULAR'''
-            '11': '''CORONARY HEART DISEASE'''
-            '14': None
-            '88': None
-            '99': None
-            '12': '''CEREBROVASCULAR'''
-            '10': '''LUNG CANCER'''
+          object_derivations:
+          - class_derivations:
+              CauseOfDeath:
+                populated_from: pht003407
+                slot_derivations:
+                  cause:
+                    populated_from: phv00193497
+                    value_mappings:
+                      '1': ICD10CM:C50
+                      '31': ICD10CM:G30
+                      '32': ICD10CM:J44
+                      '18': ICD10CM:I00-I99
+                      '11': ICD10CM:I20-I25
+                      '12': ICD10CM:I60-I69
+                      '10': ICD10CM:C34
+                  order:
+                    value: 1
         vital_status:
           populated_from: phv00193496
           value_mappings:
@@ -62,18 +73,23 @@
           value: WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED
           range: string
         cause_of_death:
-          populated_from: phv00193497
-          value_mappings:
-            '1': '''BREAST CANCER'''
-            '31': '''ALZHEIMERS'''
-            '32': '''COPD'''
-            '18': '''OTHER CARDIOVASCULAR'''
-            '11': '''CORONARY HEART DISEASE'''
-            '14': None
-            '88': None
-            '99': None
-            '12': '''CEREBROVASCULAR'''
-            '10': '''LUNG CANCER'''
+          object_derivations:
+          - class_derivations:
+              CauseOfDeath:
+                populated_from: pht003409
+                slot_derivations:
+                  cause:
+                    populated_from: phv00193497
+                    value_mappings:
+                      '1': ICD10CM:C50
+                      '31': ICD10CM:G30
+                      '32': ICD10CM:J44
+                      '18': ICD10CM:I00-I99
+                      '11': ICD10CM:I20-I25
+                      '12': ICD10CM:I60-I69
+                      '10': ICD10CM:C34
+                  order:
+                    value: 1
         vital_status:
           populated_from: phv00193531
           value_mappings:
@@ -89,10 +105,17 @@
           value: WHI SCAD
           range: string
         cause_of_death:
-          populated_from: phv00193813
-          value_mappings:
-            '0': None
-            '1': '''STROKE'''
+          object_derivations:
+          - class_derivations:
+              CauseOfDeath:
+                populated_from: pht003415
+                slot_derivations:
+                  cause:
+                    populated_from: phv00193813
+                    value_mappings:
+                      '1': ICD10CM:I63.9
+                  order:
+                    value: 1
 - class_derivations:
     Person:
       populated_from: pht003416
@@ -103,10 +126,17 @@
           value: WHI SCAD 4
           range: string
         cause_of_death:
-          populated_from: phv00193834
-          value_mappings:
-            '0': None
-            '1': '''STROKE'''
+          object_derivations:
+          - class_derivations:
+              CauseOfDeath:
+                populated_from: pht003416
+                slot_derivations:
+                  cause:
+                    populated_from: phv00193834
+                    value_mappings:
+                      '1': ICD10CM:I63.9
+                  order:
+                    value: 1        
 - class_derivations:
     Person:
       populated_from: pht006220
@@ -117,18 +147,23 @@
           value: WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED
           range: string
         cause_of_death:
-          populated_from: phv00283416
-          value_mappings:
-            '31': '''ALZHEIMERS'''
-            '32': '''COPD'''
-            '18': '''OTHER CARDIOVASCULAR'''
-            '11': '''CORONARY HEART DISEASE'''
-            '14': None
-            '88': None
-            '99': None
-            '12': '''CEREBROVASCULAR'''
-            '10': '''LUNG CANCER'''
-            '42': '''DEMENTIA NOS'''
+          object_derivations:
+          - class_derivations:
+              CauseOfDeath:
+                populated_from: pht006220
+                slot_derivations:
+                  cause:
+                    populated_from: phv00283416
+                    value_mappings:
+                      '42': ICD10CM:F02
+                      '31': ICD10CM:G30
+                      '32': ICD10CM:J44
+                      '18': ICD10CM:I00-I99
+                      '11': ICD10CM:I20-I25
+                      '12': ICD10CM:I60-I69
+                      '10': ICD10CM:C34
+                  order:
+                    value: 1        
         vital_status:
           populated_from: phv00283413
           value_mappings:

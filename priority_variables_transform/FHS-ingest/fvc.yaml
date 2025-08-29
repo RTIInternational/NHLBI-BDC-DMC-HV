@@ -191,8 +191,11 @@
         associated_participant:
           populated_from: phv00196546
         associated_visit:
-          value: FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2
-          range: string
+          populated_from: phv00196547
+          value_mappings:
+            '2': FHS NEW OFFSPRING SPOUSE EXAM 2
+            '3': FHS GENERATION 3 EXAM 2
+            '72': FHS OMNI 2 EXAM 2
         observation_type:
           value: OMOP:4176265
           range: string
@@ -239,8 +242,10 @@
         associated_participant:
           populated_from: phv00257846
         associated_visit:
-          value: FHS NEW OFFSPRING SPOUSE, OMNI 2 EXAM 1
-          range: string
+          populated_from: phv00257848
+          value_mappings:
+            '2': FHS NEW OFFSPRING SPOUSE EXAM 1
+            '72': FHS OMNI 2 EXAM 1
         observation_type:
           value: OMOP:4176265
           range: string

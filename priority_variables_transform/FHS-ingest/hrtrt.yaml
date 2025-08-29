@@ -659,12 +659,11 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00024802
-# This phv doesn't exist it table pht000209
-#        associated_visit:
-#          populated_from: phv00437615
-#          value_mappings:
-#            '2': FHS OMNI 1 EXAM 2
-#            '7': FHS OFFSPRING EXAM 7
+        associated_visit:
+          populated_from: phv00024759
+          value_mappings:
+            '1': FHS OFFSPRING EXAM 7
+            '7': FHS OMNI 1 EXAM 2
         observation_type:
           value: OBA:1001087
           range: string
@@ -689,10 +688,10 @@
         associated_participant:
           populated_from: phv00024802
         associated_visit:
-          populated_from: phv00024765
+          populated_from: phv00024759
           value_mappings:
-            '2': FHS OMNI 1 EXAM 2
-            '7': FHS OFFSPRING EXAM 7
+            '1': FHS OFFSPRING EXAM 7
+            '7': FHS OMNI 1 EXAM 2
         observation_type:
           value: OBA:1001087
           range: string
@@ -714,12 +713,11 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00024802
-# This phv doesn't exist it table pht000209
-#         associated_visit:
-#           populated_from: phv00437615
-#           value_mappings:
-#             '2': FHS OMNI 1 EXAM 2
-#             '7': FHS OFFSPRING EXAM 7
+         associated_visit:
+           populated_from: phv00024759
+           value_mappings:
+            '1': FHS OFFSPRING EXAM 7
+            '7': FHS OMNI 1 EXAM 2
         observation_type:
           value: OBA:1001087
           range: string
@@ -740,12 +738,11 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00024802
-# This phv doesn't exist it table pht000209
-#         associated_visit:
-#           populated_from: phv00437615
-#           value_mappings:
-#             '2': FHS OMNI 1 EXAM 2
-#             '7': FHS OFFSPRING EXAM 7
+         associated_visit:
+           populated_from: phv00024759
+           value_mappings:
+            '1': FHS OFFSPRING EXAM 7
+            '7': FHS OMNI 1 EXAM 2
         observation_type:
           value: OBA:1001087
           range: string
@@ -770,8 +767,11 @@
         associated_participant:
           populated_from: phv00024846
         associated_visit:
-          value: FHS GENERATION 3 EXAM 1
-          range: string
+          populated_from: phv00024803
+          value_mappings:
+            '2': FHS NEW OFFSPRING SPOUSE EXAM 1
+            '3': FHS GENERATION 3 EXAM 1
+            '72': FHS OMNI 2 EXAM 1
         observation_type:
           value: OBA:1001087
           range: string
@@ -793,8 +793,11 @@
         associated_participant:
           populated_from: phv00024846
         associated_visit:
-          value: FHS GENERATION 3 EXAM 1
-          range: string
+          populated_from: phv00024803
+          value_mappings:
+            '2': FHS NEW OFFSPRING SPOUSE EXAM 1
+            '3': FHS GENERATION 3 EXAM 1
+            '72': FHS OMNI 2 EXAM 1
         observation_type:
           value: OBA:1001087
           range: string
@@ -819,8 +822,11 @@
         associated_participant:
           populated_from: phv00024846
         associated_visit:
-          value: FHS GENERATION 3 EXAM 1
-          range: string
+          populated_from: phv00024803
+          value_mappings:
+            '2': FHS NEW OFFSPRING SPOUSE EXAM 1
+            '3': FHS GENERATION 3 EXAM 1
+            '72': FHS OMNI 2 EXAM 1
         observation_type:
           value: OBA:1001087
           range: string
@@ -845,8 +851,11 @@
         associated_participant:
           populated_from: phv00024846
         associated_visit:
-          value: FHS GENERATION 3 EXAM 1
-          range: string
+          populated_from: phv00024803
+          value_mappings:
+            '2': FHS NEW OFFSPRING SPOUSE EXAM 1
+            '3': FHS GENERATION 3 EXAM 1
+            '72': FHS OMNI 2 EXAM 1
         observation_type:
           value: OBA:1001087
           range: string
@@ -1265,9 +1274,14 @@
         associated_participant:
           populated_from: phv00276803
         associated_visit:
-          value: FHS ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE, OMNI
-            1, OMNI 2 CASE REVIEW
-          range: string
+          populated_from: phv00276845
+          value_mappings:
+            '0': FHS ORIGINAL CHF
+            '1': FHS OFFSPRING CHF
+            '2': FHS NEW OFFSPRING CHF
+            '3': FHS GENERATION 3 CHF
+            '7': FHS OMNI 1 CHF
+            '72': FHS OMNI 2 CHF
         observation_type:
           value: OBA:1001087
           range: string

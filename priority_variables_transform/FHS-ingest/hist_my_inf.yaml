@@ -2504,9 +2504,14 @@
         associated_participant:
           populated_from: phv00276975
         associated_visit:
-          value: FHS DVT REVIEW ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE,
-            OMNI 1, OMNI 2
-          range: string
+          populated_from: phv00276976
+          value_mappings:
+            '0': FHS ORIGINAL VTR
+            '1': FHS OFFSPRING VTR
+            '2': FHS NEW OFFSPRING SPOUSE VTR
+            '3': FHS GENERATION 3 VTR
+            '7': FHS OMNI 1 VTR
+            '72': FHS OMNI 2 VTR
         condition_concept:
           value: MONDO:0005068
           range: string

@@ -1,0 +1,249 @@
+- class_derivations:
+    Observation:
+      populated_from: pht004047
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00203808
+        associated_visit:
+          value: ARIC Death Event
+          range: string
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          populated_from: phv00203798
+          value_mappings:
+            U: OMOP:45885135
+            N: OMOP:45883537
+            Y: OMOP:40766945
+- class_derivations:
+    Observation:
+      populated_from: pht004053
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00204295
+        associated_visit:
+          value: ARIC Hospital Form
+          range: string
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          populated_from: phv00203911
+          value_mappings:
+            U: OMOP:45885135
+            N: OMOP:45883537
+            C: OMOP:40766945
+            P: OMOP:45883458
+            S: OMOP:40766945
+- class_derivations:
+    Observation:
+      populated_from: pht004054
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00204350
+        associated_visit:
+          value: ARIC Death Event
+          range: string
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          populated_from: phv00204312
+          value_mappings:
+            U: OMOP:45885135
+            N: OMOP:45883537
+            Y: OMOP:40766945
+- class_derivations:
+    Observation:
+      populated_from: pht004063
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00204812
+        associated_visit:
+          value: ARIC EXAM 1
+          range: string
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          populated_from: phv00204713
+          value_mappings:
+            '4': OMOP:45885135
+            '3': OMOP:45883537
+            '1': OMOP:40766945
+            '2': OMOP:45883458
+- class_derivations:
+    Observation:
+      populated_from: pht004064
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00204919
+        associated_visit:
+          value: ARIC EXAM 3
+          range: string
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          populated_from: phv00204859
+          value_mappings:
+            '4': OMOP:45885135
+            '3': OMOP:45883537
+            '1': OMOP:40766945
+            '2': OMOP:45883458
+- class_derivations:
+    Observation:
+      populated_from: pht004102
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00207055
+        associated_visit:
+          value: ARIC Hospital Form
+          range: string
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          populated_from: phv00206780
+          value_mappings:
+            Y: OMOP:45883458
+- class_derivations:
+    Observation:
+      populated_from: pht004103
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00207155
+        associated_visit:
+          value: ARIC EXAM 2
+          range: string
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          expr: 'case(
+                  ({phv00207119} == N, "OMOP:45883537"),
+                  ({phv00207120} == N, "OMOP:45883458"),
+                  (True, "OMOP: 40766945")
+                )'
+- class_derivations:
+    Observation:
+      populated_from: pht004111
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00207407
+        associated_visit:
+          value: ARIC EXAM 1
+          range: string
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          expr: 'case(({phv00207368} == N, "OMOP:45883537"),({phv00207370} == Y,
+            "OMOP: 40766945"),(True, "OMOP: 45883458"))'
+- class_derivations:
+    Observation:
+      populated_from: pht004145
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00209045
+        associated_visit:
+          value: ARIC EXAM 3
+          range: string
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          expr: 'case(({phv00208996} == N, "OMOP:45883537"),({phv00208998} == Y,
+            "OMOP: 40766945"),(True, "OMOP: 45883458"))'
+- class_derivations:
+    Observation:
+      populated_from: pht004146
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00209097
+        associated_visit:
+          value: ARIC EXAM 4
+          range: string
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          expr: 'case(({phv00209072} == N, "OMOP:45883537"),({phv00209073} == Y,
+            "OMOP: 40766945"),(True, "OMOP: 45883458"))'
+- class_derivations:
+    Observation:
+      populated_from: pht012504
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00507300
+        associated_visit:
+          value: ARIC EXAM 7
+          range: string
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          populated_from: phv00507404
+          value_mappings:
+            '4': OMOP:45885135
+            '3': OMOP:45883537
+            '1': OMOP:40766945
+            '2': OMOP:45883458
+- class_derivations:
+    Observation:
+      populated_from: pht012813
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00511942
+        associated_visit:
+          value: ARIC EXAM 4
+          range: string
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          populated_from: phv00511992
+          value_mappings:
+            '4': OMOP:45885135
+            '3': OMOP:45883537
+            '1': OMOP:40766945
+            '2': OMOP:45883458
+- class_derivations:
+    Observation:
+      populated_from: pht012814
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00512039
+        associated_visit:
+          value: ARIC EXAM 5
+          range: string
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          populated_from: phv00512115
+          value_mappings:
+            '4': OMOP:45885135
+            '3': OMOP:45883537
+            '1': OMOP:40766945
+            '2': OMOP:45883458
+- class_derivations:
+    Observation:
+      populated_from: pht012815
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00512222
+        associated_visit:
+          value: ARIC EXAM 6
+          range: string
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          populated_from: phv00512398
+          value_mappings:
+            '4': OMOP:45885135
+            '3': OMOP:45883537
+            '1': OMOP:40766945
+            '2': OMOP:45883458

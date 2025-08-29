@@ -137,10 +137,12 @@
           value: OMOP:4282779
           range: string
         value_enum:
-          expr: 'case(({phv00207368} == N, "OMOP:45883537"), 
-                ({phv00207370 == Y, "OMOP:40766945"), 
-                (True, "OMOP:45883458"))'   
- - class_derivations:
+          expr: 'case(
+                   ({phv00207368} == N, "OMOP:45883537"), 
+                   ({phv00207370 == Y, "OMOP:40766945"), 
+                   (True, "OMOP:45883458")
+                )'   
+- class_derivations:
     Observation:
       populated_from: pht004145
       slot_derivations:
@@ -156,7 +158,7 @@
           expr: 'case(({phv00208996 == N, "OMOP:45883537"), 
             ({phv00208998 == Y, "OMOP:40766945"), 
             (True, "OMOP:45883458"))'
- - class_derivations:
+- class_derivations:
     Observation:
       populated_from: pht004146
       slot_derivations:
