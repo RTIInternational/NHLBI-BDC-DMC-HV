@@ -1,0 +1,40 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001845
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00120660
+        associated_visit:
+          value: CARDIA YEAR 15
+        observation_type:
+          value: OMOP:4156660
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001845
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00120661
+                  unit:
+                    value: mg/dL
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001799
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00119597
+        associated_visit:
+          value: CARDIA YEAR 10
+        observation_type:
+          value: OMOP:4156660
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001799
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00119598
+                  unit:
+                    value: mg/dL

@@ -1,0 +1,28 @@
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001569
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00112975
+        associated_visit:
+          value: CARDIA YEAR 0
+          range: string
+        drug_concept:
+          expr: case(({phv00113012} == 2, "RxCUI:C02"))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001571
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00113153
+        associated_visit:
+          value: CARDIA YEAR 0
+          range: string
+        drug_concept:
+          expr: case(({phv00113154} == HBP, "RxCUI:C02"))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string

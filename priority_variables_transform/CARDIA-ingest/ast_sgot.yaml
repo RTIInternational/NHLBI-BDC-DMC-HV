@@ -1,0 +1,20 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001557
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00112401
+        associated_visit:
+          value: CARDIA EXAM 0
+        observation_type:
+          value: OMOP:4263457
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001557
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00112406
+                  unit:
+                    value: '[IU]/L'
