@@ -1,25 +1,5 @@
 - class_derivations:
     Condition:
-      populated_from: pht001963
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00127670
-        associated_visit:
-          value: JHS Exam 1
-        condition_concept:
-          value: MONDO:0005068
-        condition_status:
-          populated_from: phv00127708
-          value_mappings:
-            'No': ABSENT
-            'Yes': HISTORICAL
-            'Dont know': UNKNOWN
-        condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        relationship_to_participant:
-          value: ONESELF
-- class_derivations:
-    Condition:
       populated_from: pht001967
       slot_derivations:
         associated_participant:
@@ -27,17 +7,20 @@
         associated_visit:
           value: JHS Exam 1
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0005015
+          range: string
         condition_status:
-          populated_from: phv00128091
+          populated_from: phv00128095
           value_mappings:
+            'Yes': PRESENT
             'No': ABSENT
-            'Yes': HISTORICAL
-            'Dont know': UNKNOWN
+            Dont know: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
           value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht008725
@@ -47,57 +30,20 @@
         associated_visit:
           value: JHS AFU
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0005015
+          range: string
         condition_status:
-          populated_from: phv00400914
+          populated_from: phv00400921
           value_mappings:
-            'N': ABSENT
-            'Y': HISTORICAL
-            'U': UNKNOWN
+            Y: PRESENT
+            N: ABSENT
+            U: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
           value: ONESELF
-- class_derivations:
-    Condition:
-      populated_from: pht008725
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00400849
-        associated_visit:
-          value: JHS AFU
-        condition_concept:
-          value: MONDO:0005068
-        condition_status:
-          populated_from: phv00400915
-          value_mappings:
-            'N': ABSENT
-            'Y': HISTORICAL
-            'U': UNKNOWN
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        relationship_to_participant:
-          value: ONESELF
-- class_derivations:
-    Condition:
-      populated_from: pht008725
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00400849
-        associated_visit:
-          value: JHS AFU
-        condition_concept:
-          value: MONDO:0005068
-        condition_status:
-          populated_from: phv00400916
-          value_mappings:
-            'N': ABSENT
-            'Y': HISTORICAL
-            'U': UNKNOWN
-        condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        relationship_to_participant:
-          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht008729
@@ -107,16 +53,45 @@
         associated_visit:
           value: JHS Exam 1
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0005015
+          range: string
         condition_status:
-          populated_from: phv00401208
+          populated_from: phv00401130
           value_mappings:
+            'Yes': PRESENT
             'No': ABSENT
-            'Yes': HISTORICAL
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
           value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht008729
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00401078
+        associated_visit:
+          value: JHS Exam 1
+        condition_concept:
+          populated_from: phv00401131
+          value_mappings:
+            '0': MONDO:0005015
+            '1': MONDO:0006920
+            '2': MONDO:0005015
+        condition_status:
+          populated_from: phv00401131
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht008730
@@ -126,16 +101,45 @@
         associated_visit:
           value: JHS Exam 2
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0005015
+          range: string
         condition_status:
-          populated_from: phv00401346
+          populated_from: phv00401318
           value_mappings:
+            'Yes': PRESENT
             'No': ABSENT
-            'Yes': HISTORICAL
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
           value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht008730
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00401273
+        associated_visit:
+          value: JHS Exam 2
+        condition_concept:
+          populated_from: phv00401131
+          value_mappings:
+            '0': MONDO:0005015
+            '1': MONDO:0006920
+            '2': MONDO:0005015
+        condition_status:
+          populated_from: phv00401319
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht008731
@@ -145,16 +149,45 @@
         associated_visit:
           value: JHS Exam 3
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0005015
+          range: string
         condition_status:
-          populated_from: phv00401473
+          populated_from: phv00401421
           value_mappings:
+            'Yes': PRESENT
             'No': ABSENT
-            'Yes': HISTORICAL
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
           value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht008731
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00401370
+        associated_visit:
+          value: JHS Exam 3
+        condition_concept:
+          populated_from: phv00401131
+          value_mappings:
+            '0': MONDO:0005015
+            '1': MONDO:0006920
+            '2': MONDO:0005015
+        condition_status:
+          populated_from: phv00401422
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht008753
@@ -164,59 +197,66 @@
         associated_visit:
           value: JHS Exam 2
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0005015
+          range: string
         condition_status:
-          populated_from: phv00402799
+          populated_from: phv00402803
           value_mappings:
+            '1': PRESENT
             '2': ABSENT
-            '1': HISTORICAL
             '7': UNKNOWN
-            '9': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
           value: ONESELF
+          range: string
 - class_derivations:
     Condition:
-      populated_from: pht008764
+      populated_from: pht008768
       slot_derivations:
         associated_participant:
-          populated_from: phv00403058
+          populated_from: phv00403315
         associated_visit:
-          value: JHS Exam 6
+          value: JHS Exam 2
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0005015
+          range: string
         condition_status:
-          populated_from: phv00403095
+          populated_from: phv00403326
           value_mappings:
-            'No': ABSENT
-            'Yes': HISTORICAL
-            "Don't Know": UNKNOWN
+            '1': PRESENT
+            '2': ABSENT
+            '7': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
           value: ONESELF
+          range: string
 - class_derivations:
     Condition:
-      populated_from: pht008765
+      populated_from: pht008769
       slot_derivations:
         associated_participant:
-          populated_from: phv00403140
+          populated_from: phv00403369
         associated_visit:
-          value: JHS Exam 9
+          value: JHS Exam 3
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0005015
+          range: string
         condition_status:
-          populated_from: phv00403170
+          populated_from: phv00403380
           value_mappings:
-            'No': ABSENT
-            'Yes': HISTORICAL
-            "Don't Know": UNKNOWN
-            'Missing': UNKNOWN
+            '1': PRESENT
+            '2': ABSENT
+            '7': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
         relationship_to_participant:
           value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht008778
@@ -226,14 +266,17 @@
         associated_visit:
           value: JHS Exam 9
         condition_concept:
-          value: MONDO:0005068
+          value: MONDO:0005015
+          range: string
         condition_status:
-          populated_from: phv00403632
+          populated_from: phv00403636
           value_mappings:
+            'Yes': PRESENT
             'No': ABSENT
-            'Yes': HISTORICAL
-            "Don't Know": UNKNOWN
+            Don't know: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+          range: string
         relationship_to_participant:
           value: ONESELF
+          range: string

@@ -1,0 +1,24 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht008791
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00404188
+        associated_visit:
+          value: JHS Lab Data
+          range: string
+        observation_type:
+          value: OMOP:4138462
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht008791
+                slot_derivations:
+                  value_decimal:
+                    expr: ({phv00404195} + {phv00404196} + {phv00404197} + {phv00404198}
+                      + {phv00404199} + {phv00404200})/6
+                  unit:
+                    value: mm
+                    range: string

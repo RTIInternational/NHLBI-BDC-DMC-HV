@@ -10,13 +10,8 @@
           value: HP:0001681
           range: string
         condition_status:
-          expr: 'case(
-                   ({phv00400917} == N, ABSENT),
-                   ({phv00400917} == U, UNKNOWN),
-                   ({phv00400918} == Y, PRESENT),
-                   ({phv00400918} == N, HISTORICAL), 
-                   ({phv00400918} == U, HISTORICAL)
-                )'
+          expr: case(({phv00400917} == N, ABSENT),({phv00400917} == U, UNKNOWN),({phv00400918}
+            == Y, PRESENT),({phv00400918} == N, HISTORICAL),({phv00400918} == U, HISTORICAL))
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
@@ -45,7 +40,7 @@
           range: string
         relationship_to_participant:
           value: ONESELF
-          range: string 
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht008769
@@ -68,4 +63,4 @@
           range: string
         relationship_to_participant:
           value: ONESELF
-          range: string            
+          range: string

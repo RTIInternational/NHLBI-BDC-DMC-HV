@@ -1,56 +1,48 @@
 - class_derivations:
     DrugExposure:
-      populated_from: pht008729
+      populated_from: pht001964
       slot_derivations:
         associated_participant:
-          populated_from: phv00401078
+          populated_from: phv00127753
         associated_visit:
           value: JHS Exam 1
-          range: string
         drug_concept:
-          expr: case(({phv00401102} == 1, 'RxCUI:D007328'))
+          value: case(({phv00127922} == 1, 'RxCUI:C02'))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
-          range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht008730
+      populated_from: pht008725
       slot_derivations:
         associated_participant:
-          populated_from: phv00401078
+          populated_from: phv00400849
         associated_visit:
-          value: JHS Exam 2
-          range: string
+          value: JHS AFU
         drug_concept:
-          expr: case(({phv00401273} == 1, 'RxCUI:D007328'))
+          value: case(({phv00400884} == 1, 'RxCUI:C02'))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
-          range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht008731
+      populated_from: pht008782
       slot_derivations:
         associated_participant:
-          populated_from: phv00401370
+          populated_from: phv00403792
         associated_visit:
-          value: JHS Exam 3
-          range: string
+          value: JHS Exam 6
         drug_concept:
-          expr: case(({phv00401395} == 1, 'RxCUI:D007328'))
+          value: case(({phv00403802} == 1, 'RxCUI:C02'))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
-          range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht008734
+      populated_from: pht008783
       slot_derivations:
         associated_participant:
-          populated_from: phv00401565
+          populated_from: phv00403830
         associated_visit:
-          value: JHS Exam 3
-          range: string
+          value: JHS Exam 1
         drug_concept:
-          expr: case(({phv00401574} == 1, 'RxCUI:D007328'))
+          value: case(({phv00403802} == 1, 'RxCUI:C02'))
         expsoure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
-          range: string

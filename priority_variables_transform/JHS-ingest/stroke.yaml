@@ -15,7 +15,7 @@
           value_mappings:
             'No': ABSENT
             'Yes': HISTORICAL
-            'Dont know': UNKNOWN
+            Dont know: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
@@ -60,9 +60,9 @@
         condition_status:
           populated_from: phv00400912
           value_mappings:
-            'N': ABSENT
-            'Y': HISTORICAL
-            'U': UNKNOWN
+            N: ABSENT
+            Y: HISTORICAL
+            U: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
@@ -344,7 +344,7 @@
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
         relationship_to_participant:
-          value: ONESELF          
+          value: ONESELF
           range: string
 - class_derivations:
     Condition:
@@ -363,12 +363,12 @@
           value_mappings:
             'Yes': HISTORICAL
             'No': ABSENT
-            "Don't know": UNKNOWN
+            Don't know: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
         relationship_to_participant:
-          value: ONESELF          
+          value: ONESELF
           range: string
 - class_derivations:
     Condition:
@@ -387,12 +387,12 @@
           value_mappings:
             'Yes': HISTORICAL
             'No': ABSENT
-            "Don't know": UNKNOWN
+            Don't know: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
         relationship_to_participant:
-          value: ONESELF          
+          value: ONESELF
           range: string
 - class_derivations:
     Condition:
@@ -411,10 +411,10 @@
           value_mappings:
             'Yes': HISTORICAL
             'No': ABSENT
-            "Don't know": UNKNOWN
+            Don't know: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
         relationship_to_participant:
-          value: ONESELF          
-          range: string           
+          value: ONESELF
+          range: string
