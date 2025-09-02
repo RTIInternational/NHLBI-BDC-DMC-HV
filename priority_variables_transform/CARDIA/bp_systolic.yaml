@@ -1,0 +1,40 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001650
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00115203
+        associated_visit: 
+          value: CARDIA YEAR 5
+        observation_type: 
+          value: OMOP:4152194
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001650
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00115205
+                  unit: 
+                    value: mm[Hg]
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001560
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00112462
+        associated_visit: 
+          value: CARDIA YEAR 0
+        observation_type: 
+          value: OMOP:4152194
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001560
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00112494
+                  unit: 
+                    value: mm[Hg]
