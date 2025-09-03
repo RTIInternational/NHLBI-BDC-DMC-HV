@@ -5,7 +5,6 @@ Creates a CSV report compatible with the Data Harmonization Supplementary Data t
 """
 
 import pandas as pd
-import ast
 from pathlib import Path
 from variable_documentation.generate_variable_documentation import load_gsheet_as_df
 
@@ -45,30 +44,90 @@ def load_valid_phvs():
 
 
 def parse_stats_column(stats_str):
-    """Parse the var_report.variable.total.stats.stat.n value from column U."""
+    """Parse the n value from the stats column."""
     if pd.isna(stats_str) or not stats_str:
         return 0
     
     try:
-        # First try direct conversion to number
         return int(float(str(stats_str)))
     except:
-        try:
-            # Try to parse as literal (dict/list structure) if direct conversion fails
-            stats = ast.literal_eval(str(stats_str))
-            
-            # Navigate the nested structure: var_report.variable.total.stats.stat.n
-            if isinstance(stats, dict):
-                variable = stats.get('variable', {})
-                total = variable.get('total', {})
-                stats_section = total.get('stats', {})
-                stat = stats_section.get('stat', {})
-                n_value = stat.get('n', 0)
-                return int(n_value) if n_value else 0
-        except:
-            return 0
+        return 0
+
+
+def load_from_bdchm_sheet():
+    """Load data from the BDCHM Google Sheet and return normalized DataFrame."""
+    try:
+        sheet = load_gsheet_as_df("Export_BDCHM_noFHS-noCOPDGene_phv_mappings", 
+                                 "Export_BDCHM_noFHS-noCOPDGene_p")
+    except Exception as e:
+        print(f"Error loading BDCHM Google Sheet: {e}")
+        return None
     
-    return 0
+    print(f"Loaded BDCHM sheet with {len(sheet)} rows and columns: {list(sheet.columns)}")
+
+    phv = sheet['First[data_table.variable.id]'] # Col C
+    bdch_label = sheet['BDCHM Label'] # Col D
+    cohort = sheet['Cohort'] # Col F
+    n_stats = sheet['var_report.variable.total.stats.stat.n'].apply(parse_stats_column) # Col U
+
+    normalized_df = pd.DataFrame({'phv': phv, 'bdchm_label': bdch_label, 'cohort': cohort, 'n_stats': n_stats})
+
+    return normalized_df
+
+def load_from_fhs_sheet():
+    """Load data from the FHS Google Sheet and return normalized DataFrame."""
+    try:
+        sheet = load_gsheet_as_df("FHS_VariableProperties",
+                                  "right_join_full")
+    except Exception as e:
+        print(f"Error loading FHS Google Sheet: {e}")
+        return None
+
+    print(f"Loaded FHS sheet with {len(sheet)} rows and columns: {list(sheet.columns)}")
+
+    phv = sheet['Variable accession'] # Col H
+    phv = phv.str.replace('\..*', '', regex=True)
+    bdch_label = sheet['BDCHM Label'] # Col J
+    cohort = 'FHS'
+    n_stats = sheet['data_table.variable.total.stats.stat.n'].apply(parse_stats_column) # Col U
+
+    normalized_df = pd.DataFrame({'phv': phv, 'bdchm_label': bdch_label, 'cohort': cohort, 'n_stats': n_stats})
+    return normalized_df
+
+
+def load_from_copdgene_sheet():
+    """Load data from the COPDGene Google Sheet and return normalized DataFrame."""
+    try:
+        sheet = load_gsheet_as_df(
+            "COPDGene_FullMatchWithManuals_Join_Dedup_XML_BDC Mapped Variables V1",
+            "COPDGene_FullMatchWithManuals_J")
+    except Exception as e:
+        print(f"Error loading FHS Google Sheet: {e}")
+        return None
+
+    print(f"Loaded COPDGene sheet with {len(sheet)} rows and columns: {list(sheet.columns)}")
+
+    phv = sheet['First[Variable accession]'] # Col C
+    bdch_label = sheet['BDCHM Label'] # Col F
+    cohort = sheet['Cohort'] # Col H
+    n_stats = sheet['var_report.variable.total.stats.stat.n'].apply(parse_stats_column) # Col AO
+
+    normalized_df = pd.DataFrame({'phv': phv, 'bdchm_label': bdch_label, 'cohort': cohort, 'n_stats': n_stats})
+    return normalized_df
+
+
+def load_source_data():
+    """Load and merge data from all source sheets."""
+    print("Loading data from Google Sheets...")
+    
+    # Load from BDCHM sheet
+    bdchm_df = load_from_bdchm_sheet()
+    fhs_df = load_from_fhs_sheet()
+    copdgene_df = load_from_copdgene_sheet()
+
+    combined_df = pd.concat([bdchm_df, fhs_df, copdgene_df], ignore_index=True)
+
+    return combined_df
 
 
 def generate_report():
@@ -76,37 +135,14 @@ def generate_report():
     print("Loading PHV lists...")
     valid_phvs = load_valid_phvs()
     
-    print("Loading data from Google Sheets...")
-    try:
-        sheet = load_gsheet_as_df("Export_BDCHM_noFHS-noCOPDGene_phv_mappings", 
-                                 "Export_BDCHM_noFHS-noCOPDGene_p")
-    except Exception as e:
-        print(f"Error loading Google Sheet: {e}")
+    # Load source data
+    sheet = load_source_data()
+    if sheet is None:
         return None
-    
-    print(f"Loaded sheet with {len(sheet)} rows and columns: {list(sheet.columns)}")
-    
-    # Expected columns based on CLAUDE.md description:
-    # Col C: PHV
-    # Col D: BDCHM Label (variable name)
-    # Col F: Study/Cohort
-    # Col U: var_report.variable.total.stats.stat.n
-    
-    # Map column indices to names (0-based)
-    col_mapping = {
-        'phv': sheet.columns[2],  # Column C
-        'bdchm_label': sheet.columns[3],  # Column D  
-        'cohort': sheet.columns[5],  # Column F
-        'n_stats': sheet.columns[20] if len(sheet.columns) > 20 else None  # Column U
-    }
-    
-    print("Column mapping:")
-    for key, col in col_mapping.items():
-        print(f"  {key}: {col}")
     
     # Get unique variables from the template/priority list
     # For now, we'll use all unique BDCHM labels in the data
-    priority_variables = sheet[col_mapping['bdchm_label']].dropna().unique()
+    priority_variables = sheet['bdchm_label'].dropna().unique()
     print(f"Found {len(priority_variables)} priority variables")
     
     # Initialize result structure
@@ -116,9 +152,10 @@ def generate_report():
     
     # Process each row
     for idx, row in sheet.iterrows():
-        variable = row[col_mapping['bdchm_label']]
-        phv = row[col_mapping['phv']]
-        cohort = row[col_mapping['cohort']]
+        variable = row['bdchm_label']
+        phv = row['phv']
+        cohort = row['cohort']
+        n_value = row['n_stats']
         
         if pd.isna(variable) or pd.isna(phv) or pd.isna(cohort):
             continue
@@ -128,11 +165,6 @@ def generate_report():
         # Skip only if cohort has valid PHV list and PHV not in that list
         if cohort in valid_phvs and phv not in valid_phvs[cohort]:
             continue
-        
-        # Parse n value
-        n_value = 0
-        if col_mapping['n_stats'] and col_mapping['n_stats'] in row:
-            n_value = parse_stats_column(row[col_mapping['n_stats']])
         
         # Initialize variable entry
         if variable not in results:

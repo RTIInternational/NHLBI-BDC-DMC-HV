@@ -12,8 +12,12 @@ This directory contains scripts and files for generating pre-harmonized data cou
 ## Data Sources
 
 ### Input Data
-- **Source**: [Export_BDCHM_noFHS-noCOPDGene_phv_mappings: Export_BDCHM_noFHS-noCOPDGene_p](https://docs.google.com/spreadsheets/d/1Fg6YFMldjDJWXTjFLJc4eVyXpOWeGoHJyg68i7u0LC4/edit?gid=1528582058#gid=1528582058)
 - **Description**: Contains pre-harmonized variable mappings with PHV identifiers, cohort assignments, and observation counts
+- **Sources**: 
+  - [Export_BDCHM_noFHS-noCOPDGene_phv_mappings: Export_BDCHM_noFHS-noCOPDGene_p](https://docs.google.com/spreadsheets/d/1Fg6YFMldjDJWXTjFLJc4eVyXpOWeGoHJyg68i7u0LC4/edit?gid=1528582058#gid=1528582058)
+  - [FHS_VariableProperties](https://docs.google.com/spreadsheets/d/1a1JgdRlhdcPfy7uETJiU7GhdB9cDK4ZbeBIIii8os1Q/edit?gid=1781777648#gid=1781777648)
+  - [COPDGene_FullMatchWithManuals_Join_Dedup_XML_BDC Mapped Variables V1](https://docs.google.com/spreadsheets/d/1bpRKs73p5nQqFoJECrCGFy7GEkxOZ4nP/edit?gid=308728753#gid=308728753)
+
 
 ### Output Template Reference
 - **Template**: [Data Harmonization Supplementary Data - Table S4](https://docs.google.com/spreadsheets/d/1PDaX266_H0haa0aabMYQ6UNtEKT5-ClMarP0FvNntN8/edit?gid=1605543644#gid=1605543644)
