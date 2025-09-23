@@ -1,16 +1,16 @@
-- class_derivations:
-    Demography:
-      populated_from: pht001109
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00082629
-        associated_visit:
-          value: MESA PEDIGREE
-        sex:
-          populated_from: phv00082632
-          value_mappings:
-            '1': '''OMOP:8507'''
-            '2': '''OMOP:8532'''
+# - class_derivations:
+#     Demography:
+#       populated_from: pht001109
+#       slot_derivations:
+#         associated_participant:
+#           populated_from: phv00082629
+#         associated_visit:
+#           value: MESA PEDIGREE
+#         sex:
+#           populated_from: phv00082632
+#           value_mappings:
+#             '1': '''OMOP:8507'''
+#             '2': '''OMOP:8532'''
 - class_derivations:
     Demography:
       populated_from: pht001111
@@ -119,8 +119,13 @@
             '1': '''OMOP:8507'''
             '0': '''OMOP:8532'''
         ethnicity:
-          expr: case(({phv00086729} == 4 or {phv00086730} == 1 or {phv00086731} ==
-            1 or {phv00086732} == 1 or {phv00086733} == 1 or {phv00086734} == 1, '''"OMOP:38003563"'''))
+          expr: 'case(({phv00086729} == 4, "OMOP:38003563"),
+                      ({phv00086730} == 1, "OMOP:38003563"),
+                      ({phv00086731} == 1, "OMOP:38003563"),
+                      ({phv00086732} == 1, "OMOP:38003563"),
+                      ({phv00086733} == 1, "OMOP:38003563"),
+                      ({phv00086734} == 1, "OMOP:38003563")
+                )'
         race:
           populated_from: phv00086729
           value_mappings:
@@ -141,7 +146,7 @@
             '1': '''OMOP:8507'''
             '0': '''OMOP:8532'''
         ethnicity:
-          expr: case(({phv00087074} == 4 or {phv00087659} == 1, '''"OMOP:38003563"'''))
+          expr: 'case(({phv00087074} == 4, "OMOP:38003563"), ({phv00087659} == 1, "OMOP:38003563"))'
         race:
           populated_from: phv00087074
           value_mappings:
@@ -180,15 +185,23 @@
         associated_visit:
           value: MESA LUNG CT
         sex:
-          expr: case(({phv00175856} == 1 or {phv00175877} == 1 or {phv00175940} ==
-            1, '''"OMOP:8507"'''), case({phv00175856} == 0 or {phv00175877} == 0 or
-            {phv00175940} == 0, '''"OMOP:8532"'''))
+          expr: 'case(({phv00175856} == 1, "OMOP:8507"),
+                      ({phv00175877} == 1, "OMOP:8507"),
+                      ({phv00175940} == 1, "OMOP:8507"),
+                      ({phv00175856} == 0, "OMOP:8532"),
+                      ({phv00175877} == 0, "OMOP:8532"),
+                      ({phv00175940} == 0, "OMOP:8532")
+                )'
         ethnicity:
-          expr: case(({phv00175941} == 4 or {phv00175855} == 4 or {phv00175876} ==
-            4 or {phv00175941} == 4, '''"OMOP:38003563"'''))
+          expr: 'case(({phv00175941} == 4, "OMOP:38003563"),
+                      ({phv00175855} == 4, "OMOP:38003563"),
+                      ({phv00175876} == 4, "OMOP:38003563"),
+                      ({phv00175941} == 4, "OMOP:38003563"))'
         race:
-          expr: case(({phv00175941} == 3 or {phv00175855} == 3 or {phv00175876} ==
-            3 or {phv00175941} == 3, '''"OMOP:8516"'''))
+          expr: 'case(({phv00175941} == 3, "OMOP:8516"),
+                      ({phv00175855} == 3, "OMOP:8516"),
+                      ({phv00175876} == 3, "OMOP:8516"),
+                      ({phv00175941} == 3, "OMOP:8516"))'
           populated_from: phv00174585
           value_mappings:
             '1': '''OMOP:8527'''
