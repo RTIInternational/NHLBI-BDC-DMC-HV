@@ -21,7 +21,9 @@
                     value_mappings:
                       '0': '''< 50'''
                       '1': '''>50'''
-                  unit: '''/h'''
+                  unit:
+                    value: /h
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003700
@@ -46,7 +48,9 @@
                       '0': '''< 50'''
                       '1': '''>50'''
                       '8': None
-                  unit: '''/h'''
+                  unit:
+                    value: /h
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003699
