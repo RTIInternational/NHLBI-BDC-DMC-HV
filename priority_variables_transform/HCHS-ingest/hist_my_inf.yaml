@@ -14,7 +14,7 @@
           populated_from: phv00226366
           value_mappings:
             '0': '''ABSENT'''
-            '1': '''PRESENT'''
+            '1': '''HISTORICAL'''
         condition_provenance:
           value: CLILNICAL_DIAGNOSIS
           range: string
@@ -30,6 +30,8 @@
         associated_visit:
           value: HCHS EXAM
           range: string
+        age_at_condition_start:
+          expr: case(phv00258068 == 1, {phv00526602} * 365)
         condition_concept:
           value: MONDO:0005068
           range: string
@@ -37,7 +39,7 @@
           populated_from: phv00258068
           value_mappings:
             '0': '''ABSENT'''
-            '1': '''PRESENT'''
+            '1': '''HISTORICAL'''
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
