@@ -60,6 +60,8 @@
         condition_concept:
           value: MONDO:0005015
           range: string
+        age_at_condition_start:
+          expr: case(phv00226357 == 0, {phv00226358} * 365)
         condition_status:
           populated_from: phv00226357
           value_mappings:
