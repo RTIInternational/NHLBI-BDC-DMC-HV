@@ -18,3 +18,13 @@
           expr: {phv00104783} * 365
         age_at_visit_end:
           expr: {phv00104783} * 365
+- class_derivations:
+    Visit:
+      populated_from: pht001491
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00106520
+        age_at_visit_start:
+          expr: {phv00106844} * 365
+        age_at_visit_end:
+          expr: {phv00106844} * 365
