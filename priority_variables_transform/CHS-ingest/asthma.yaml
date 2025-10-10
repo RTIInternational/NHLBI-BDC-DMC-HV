@@ -476,6 +476,29 @@
           range: string
 - class_derivations:
     Condition:
+      populated_from: pht001490
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00105099
+        associated_visit:
+          value: CHS YEAR 5 NEW
+          range: string
+        age_at_condition_start:
+          expr: case(phv00106022 == 1, {phv00106025} * 365)
+        age_at_condition_end:
+          expr: case(phv00106022 == 1, (phv00106023 == 0, {phv00106026} * 365))
+        condition_concept:
+          value: MONDO:0004979
+          range: string
+        condition_status:
+          expr: case((phv00106022 == 0, ABSENT), (phv00106023 == 0, HISTORICAL), (True, PRESENT))
+        condition_provenance:
+          expr: case(({phv00106024} == 1, "CLINICAL_DIAGNOSIS"), (True, "PATIENT_SELF-REPORTED_CONDITION"))
+        relationship_to_participant:
+          value: ONESELF
+          range: string          
+- class_derivations:
+    Condition:
       populated_from: pht001492
       slot_derivations:
         associated_participant:
