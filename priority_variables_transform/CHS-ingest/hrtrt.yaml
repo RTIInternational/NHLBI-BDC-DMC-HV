@@ -638,6 +638,8 @@
         associated_visit:
           value: CHS YEAR 4
           range: string
+        age_at_observation:
+          expr: {phv00104783} * 365          
         observation_type:
           value: OBA:1001087
           range: string
@@ -657,13 +659,15 @@
           range: string
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001488
+      populated_from: pht001489
       slot_derivations:
         associated_participant:
           populated_from: phv00104468
         associated_visit:
           value: CHS YEAR 4
           range: string
+        age_at_observation:
+          expr: {phv00104783} * 365          
         observation_type:
           value: OBA:1001087
           range: string
@@ -671,7 +675,7 @@
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht001488
+                populated_from: pht001489
                 slot_derivations:
                   value_decimal:
                     expr: '{expr: {phv00104740} * 2}'
@@ -683,13 +687,15 @@
           range: string
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001488
+      populated_from: pht001489
       slot_derivations:
         associated_participant:
           populated_from: phv00104468
         associated_visit:
           value: CHS YEAR 4
           range: string
+        age_at_observation:
+          expr: {phv00104783} * 365          
         observation_type:
           value: OBA:1001087
           range: string
@@ -697,7 +703,7 @@
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht001488
+                populated_from: pht001489
                 slot_derivations:
                   value_decimal:
                     expr: '{expr: {phv00104742} * 2}'
@@ -709,13 +715,15 @@
           range: string
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001488
+      populated_from: pht001489
       slot_derivations:
         associated_participant:
           populated_from: phv00104468
         associated_visit:
           value: CHS YEAR 4
           range: string
+        age_at_observation:
+          expr: {phv00104783} * 365          
         observation_type:
           value: OBA:1001087
           range: string
@@ -723,7 +731,7 @@
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht001488
+                populated_from: pht001489
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00104964
@@ -735,13 +743,15 @@
           range: string
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001488
+      populated_from: pht001489
       slot_derivations:
         associated_participant:
           populated_from: phv00104468
         associated_visit:
           value: CHS YEAR 4
           range: string
+        age_at_observation:
+          expr: {phv00104783} * 365          
         observation_type:
           value: OBA:1001087
           range: string
@@ -749,7 +759,7 @@
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht001488
+                populated_from: pht001489
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00104980
