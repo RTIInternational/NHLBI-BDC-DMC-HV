@@ -152,6 +152,32 @@
                     range: string
 - class_derivations:
     MeasurementObservation:
+      populated_from: pht001490
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00105099
+        associated_visit:
+          value: CHS YEAR 5 NEW
+          range: string
+        age_at_observation:
+          value: 18250
+          range: integer      
+        observation_type:
+          value: OBA:VT0001259
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001490
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00106140} * 0.453592'
+                  unit:
+                    value: kg
+                    range: string                    
+- class_derivations:
+    MeasurementObservation:
       populated_from: pht001491
       slot_derivations:
         associated_participant:
