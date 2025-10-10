@@ -22,6 +22,8 @@
                       '4': ICD10CM:I00-I99
                   order:
                     value: 1
+        age_at_death:
+          expr: case({phv00100774} == 1, ({pht001452.phv00100487} * 365) + {phv00100776})
         vital_status:
           populated_from: phv00100774
           value_mappings:
