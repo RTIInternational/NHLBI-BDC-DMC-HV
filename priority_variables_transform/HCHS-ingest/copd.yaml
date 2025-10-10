@@ -44,3 +44,29 @@
         relationship_to_participant:
           value: ONESELF
           range: string
+- class_derivations:
+    Condition:
+      populated_from: pht004715
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00226250
+        associated_visit:
+          value: HCHS EXAM
+          range: string
+        age_at_condition_start:
+          expr: case(phv00526886 == 1, {phv00526887} * 365
+        condition_concept:
+          value: MONDO:0005002
+          range: string
+        condition_status:
+          populated_from: phv00526886
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
