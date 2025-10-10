@@ -1,12 +1,14 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001451
+      populated_from: pht001450
       slot_derivations:
         associated_participant:
           populated_from: phv00098771
         associated_visit:
           value: CHS BASELINE 2
           range: string
+        age_at_observation:
+          expr: {phv00098799} * 365
         observation_type:
           value: OBA:VT0001259
           range: string
@@ -14,7 +16,7 @@
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht001451
+                populated_from: pht001450
                 slot_derivations:
                   value_decimal:
                     expr: '{phv00099349} * 0.453592'
