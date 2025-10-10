@@ -122,6 +122,9 @@
         associated_visit:
           value: ATRIAL FIBRILLATION DATA
           range: string
+        age_at_condition_start:
+          expr: {pht001452.phv00100487} * 365
+          lookup_key: phv00100677
         condition_concept:
           value: MONDO:0004981
           range: string
