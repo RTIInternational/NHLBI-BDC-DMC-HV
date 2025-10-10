@@ -460,6 +460,8 @@
         associated_visit:
           value: CHS YEAR 5 NEW
           range: string
+        age_at_condition_start:
+          expr: case(phv00105909 == 1, {phv00105910} * 365)
         condition_concept:
           value: HP:0000822
           range: string
