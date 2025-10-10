@@ -7,14 +7,15 @@
         associated_visit:
           value: CHS BASELINE 2
           range: string
+        age_at_condition_start:
+          expr: case(phv00099087 == 1, {phv00099090} * 365)
+        age_at_condition_end:
+          expr: case(phv00099087 == 1, (phv00099088 == 0, {phv00099091} * 365))
         condition_concept:
           value: MONDO:0004979
           range: string
         condition_status:
-          populated_from: phv00099087
-          value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
+          expr: case((phv00099087 == 0, ABSENT), (phv00099088 == 0, HISTORICAL), (True, PRESENT))
         condition_provenance:
           expr: case(({phv00099466} == 1, "CLINICAL_DIAGNOSIS"), (True, "PATIENT_SELF-REPORTED_CONDITION"))
         relationship_to_participant:
