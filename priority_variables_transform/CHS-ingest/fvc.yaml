@@ -30,6 +30,8 @@
         associated_visit:
           value: CHS YEAR 6
           range: string
+        age_at_observation:
+          expr: {phv00107780} * 365           
         observation_type:
           value: OMOP:4176265
           range: string
@@ -53,6 +55,8 @@
         associated_visit:
           value: CHS YEAR 9
           range: string
+        age_at_observation:
+          expr: {phv00109855} * 365           
         observation_type:
           value: OMOP:4176265
           range: string
@@ -60,7 +64,7 @@
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht001492
+                populated_from: pht001495
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00110364
