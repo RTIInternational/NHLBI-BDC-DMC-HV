@@ -30,6 +30,8 @@
         associated_visit:
           value: MESA AIR SPIROMETRY
           range: string
+        age_at_condition_start:
+          expr: case(phv00083530 == 1, {phv00083531} * 365)
         condition_concept:
           value: MONDO:0004979
           range: string
