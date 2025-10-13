@@ -401,6 +401,8 @@
         associated_visit:
           value: MESA TTD
           range: string
+        age_at_condition_start:
+          expr: case(phv00197119 == 1, {phv00197115} * 365)
         condition_concept:
           value: MONDO:0005015
           range: string
