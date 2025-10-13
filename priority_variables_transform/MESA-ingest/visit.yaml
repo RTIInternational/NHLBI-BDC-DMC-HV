@@ -13,8 +13,18 @@
       populated_from: pht001112
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          populated_from: phv00083440
         age_at_visit_start:
           expr: {phv00083452} * 365
         age_at_visit_end:
           expr: {phv00083452} * 365
+- class_derivations:
+    Visit:
+      populated_from: pht001114
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00083675
+        age_at_visit_start:
+          expr: {phv00083687} * 365
+        age_at_visit_end:
+          expr: {phv00083687} * 365
