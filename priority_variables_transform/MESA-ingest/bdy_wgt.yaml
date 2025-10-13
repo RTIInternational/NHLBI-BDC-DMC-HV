@@ -177,6 +177,58 @@
                     range: string
 - class_derivations:
     MeasurementObservation:
+      populated_from: pht001121
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087070
+        associated_visit:
+          value: MESA_FamilyExamMain
+          range: string
+        age_at_observation:
+          value: 7300
+          range: integer
+        observation_type:
+          value: OMOP:4099154
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001121
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00087166} * 0.453592'
+                  unit:
+                    value: kg
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001121
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087070
+        associated_visit:
+          value: MESA_FamilyExamMain
+          range: string
+        age_at_observation:
+          value: 14600
+          range: integer
+        observation_type:
+          value: OMOP:4099154
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001121
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00087167} * 0.453592'
+                  unit:
+                    value: kg
+                    range: string                    
+- class_derivations:
+    MeasurementObservation:
       populated_from: pht003086
       slot_derivations:
         associated_participant:
