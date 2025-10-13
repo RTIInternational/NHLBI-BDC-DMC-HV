@@ -23,6 +23,8 @@
         associated_visit:
           value: MESA CLASSIC EXAM 1
           range: string
+        age_at_exposure_start:
+          expr: case({phv00085234} == 1, {phv00085244} * 365)
         drug_concept:
           expr: case(({phv00085234} == 1, '''RxCUI:A10'''))
         expsoure_provenance:
