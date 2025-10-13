@@ -220,13 +220,15 @@
           range: string
 - class_derivations:
     Condition:
-      populated_from: pht001121
+      populated_from: pht001122
       slot_derivations:
         associated_participant:
           populated_from: phv00087666
         associated_visit:
           value: MESA FAMILY SPIROMETRY
           range: string
+        age_at_condition_start:
+          expr: case(phv00087756 == 1, {phv00087757} * 365)
         condition_concept:
           value: MONDO:0004979
           range: string
@@ -240,7 +242,7 @@
           range: string
         relationship_to_participant:
           value: ONESELF
-          range: string
+          range: string         
 - class_derivations:
     Condition:
       populated_from: pht003086
