@@ -7,6 +7,8 @@
         associated_visit:
           value: MESA AIR EXAM
           range: string
+        age_at_observation:
+          expr: {phv00082639} * 365
         observation_type:
           expr: case(({phv00083303} >= 12, '''OBA:VT0000180'''), (True, '''OBA:VT0000180'''))
         value_quantity:
