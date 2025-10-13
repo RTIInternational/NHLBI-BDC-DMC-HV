@@ -7,6 +7,8 @@
         associated_visit:
           value: MESA AIR EXAM
           range: string
+        age_at_exposure_start:
+          expr: case({phv00083006} == 1, {phv00083008} * 365)
         drug_concept:
           expr: case(({phv00083006} == 1, '''RxCUI:A10'''))
         expsoure_provenance:
