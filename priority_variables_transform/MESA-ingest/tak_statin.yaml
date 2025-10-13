@@ -14,6 +14,22 @@
           range: string
 - class_derivations:
     DrugExposure:
+      populated_from: pht001111
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00082638
+        associated_visit:
+          value: MESA AIR EXAM
+          range: string
+        age_at_exposure_start:
+          expr: case({phv00083002} == 1, {phv00083003} * 365)
+        drug_concept:
+          expr: case(({phv00083002} == 1, '''RxCUI:C10A'''))
+        expsoure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string          
+- class_derivations:
+    DrugExposure:
       populated_from: pht001116
       slot_derivations:
         associated_participant:
