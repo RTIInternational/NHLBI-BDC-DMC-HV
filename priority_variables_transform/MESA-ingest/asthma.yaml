@@ -48,13 +48,15 @@
           range: string
 - class_derivations:
     Condition:
-      populated_from: pht001112
+      populated_from: pht001114
       slot_derivations:
         associated_participant:
           populated_from: phv00083675
         associated_visit:
           value: MESA LUNG SPIROMETRY
           range: string
+        age_at_condition_start:
+          expr: case(phv00083765 == 1, {phv00083766} * 365)
         condition_concept:
           value: MONDO:0004979
           range: string
