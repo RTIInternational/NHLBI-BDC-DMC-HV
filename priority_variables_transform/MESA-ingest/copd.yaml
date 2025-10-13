@@ -249,6 +249,8 @@
         associated_visit:
           value: MESA LUNG SPIROMETRY
           range: string
+        age_at_condition_start:
+          expr: case(phv00083780 == 1, {phv00083781} * 365)
         condition_concept:
           value: MONDO:0005002
           range: string
