@@ -134,6 +134,8 @@
         associated_visit:
           value: MESA FAMILY
           range: string
+        age_at_observation:
+          expr: {phv00087071} * 365          
         observation_type:
           expr: case(({phv00087524} >= 12, '''OBA:VT0000180'''), (True, '''OBA:VT0000180'''))
         value_quantity:
