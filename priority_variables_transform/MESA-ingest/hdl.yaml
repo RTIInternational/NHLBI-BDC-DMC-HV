@@ -330,6 +330,31 @@
                     range: string
 - class_derivations:
     MeasurementObservation:
+      populated_from: pht001120
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00086726
+        associated_visit:
+          value: MESA CLASSIC EXAM 4
+          range: string
+        age_at_observation:
+          expr: {phv00086727} * 365
+        observation_type:
+          value: OBA:VT0000184
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001120
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00086833
+                  unit:
+                    value: mg/dL
+                    range: string                    
+- class_derivations:
+    MeasurementObservation:
       populated_from: pht001121
       slot_derivations:
         associated_participant:
