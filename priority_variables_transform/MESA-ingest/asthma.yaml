@@ -346,6 +346,8 @@
         associated_visit:
           value: MESA CLASSIC EXAM 5
           range: string
+        age_at_condition_start:
+          expr: case(phv00176718 == 1, {phv00176719} * 365)
         condition_concept:
           value: MONDO:0004979
           range: string
