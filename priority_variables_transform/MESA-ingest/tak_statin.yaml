@@ -51,6 +51,8 @@
         associated_visit:
           value: MESA FAMILY
           range: string
+        age_at_exposure_start:
+          expr: case({phv00087104} == 1, {phv00087157} * 365)
         drug_concept:
           expr: case(({phv00087104} == 1, '''RxCUI:C10A'''))
         expsoure_provenance:
