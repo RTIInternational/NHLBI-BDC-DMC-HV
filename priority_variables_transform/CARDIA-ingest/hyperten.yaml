@@ -1,0 +1,22 @@
+- class_derivations:
+    Condition:
+      populated_from: pht001570
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00113019
+        age_at_condition_start:
+          expr: case(phv00113020 == 2, {phv00113021} * 365)
+        associated_visit:
+          value: CARDIA YEAR 0
+          range: string
+        condition_concept:
+          value: HP:0000822
+          range: string
+        condition_status:
+          expr: case((phv00113020 == 2, PRESENT), case(phv00113022 == 1, HISTORICAL))
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
