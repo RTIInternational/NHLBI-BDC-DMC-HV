@@ -181,6 +181,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00116953
+        age_at_condition_start:
+          expr: case(phv00116964 == 2, {phv00116965} * 365)
         associated_visit:
           value: CARDIA YEAR 7
         condition_concept:
@@ -200,6 +202,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00116953
+        age_at_condition_start:
+          expr: case(phv00116968 == 2, {phv00116969} * 365)
         associated_visit:
           value: CARDIA YEAR 7
         condition_concept:
