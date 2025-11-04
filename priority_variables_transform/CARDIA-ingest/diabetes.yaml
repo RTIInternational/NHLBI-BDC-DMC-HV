@@ -106,6 +106,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00114376
+        age_at_condition_start:
+          expr: case(phv00115439 == 2, {phv00115440} * 365)
         associated_visit:
           value: CARDIA YEAR 5
           range: string
