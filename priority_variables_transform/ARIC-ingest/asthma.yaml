@@ -103,55 +103,18 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00209758
+        age_at_condition_start:
+          expr: case({phv00209714} == 1, {phv00209716} * 365)
+        age_at_condition_end:
+          expr: case({phv00209717} == 0, {phv00209717} * 365)
         associated_visit:
           value: ARIC EXAM 1
         condition_concept:
           value: MONDO:0004979
         condition_status:
-          populated_from: phv00209714
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+          expr: case(({phv00209714} == 0, ABSENT), case({phv00209717} == 0, HISTORICAL)), (True, PRESENT)
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        relationship_to_participant:
-          value: ONESELF
-- class_derivations:
-    Condition:
-      populated_from: pht004161
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00209758
-        associated_visit:
-          value: ARIC EXAM 1
-        condition_concept:
-          value: MONDO:0004979
-        condition_status:
-          populated_from: phv00209715
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        relationship_to_participant:
-          value: ONESELF
-- class_derivations:
-    Condition:
-      populated_from: pht004161
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00209758
-        associated_visit:
-          value: ARIC EXAM 1
-        condition_concept:
-          value: MONDO:0004979
-        condition_status:
-          populated_from: phv00209717
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          expr: case(({phv00209715} == 0, PATIENT_SELF-REPORTED_CONDITION), (True, CLINICAL_DIAGNOSIS)
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
