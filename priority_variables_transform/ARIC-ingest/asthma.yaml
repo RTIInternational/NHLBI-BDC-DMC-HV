@@ -123,55 +123,18 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00297979
+        age_at_condition_start:
+          expr: case({phv00298007} == 1, {phv00298009} * 365)
+        age_at_condition_end:
+          expr: case({phv00298010} == 0, {phv00298011} * 365)          
         associated_visit:
           value: ARIC EXAM 5
         condition_concept:
           value: MONDO:0004979
         condition_status:
-          populated_from: phv00298007
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+          expr: case(({phv00298007} == 0, ABSENT), case({phv00298010} == 0, HISTORICAL)), (True, PRESENT)
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        relationship_to_participant:
-          value: ONESELF
-- class_derivations:
-    Condition:
-      populated_from: pht006479
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00297979
-        associated_visit:
-          value: ARIC EXAM 5
-        condition_concept:
-          value: MONDO:0004979
-        condition_status:
-          populated_from: phv00298008
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        relationship_to_participant:
-          value: ONESELF
-- class_derivations:
-    Condition:
-      populated_from: pht006479
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00297979
-        associated_visit:
-          value: ARIC EXAM 5
-        condition_concept:
-          value: MONDO:0004979
-        condition_status:
-          populated_from: phv00298010
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          expr: case(({phv00298008} == 0, PATIENT_SELF-REPORTED_CONDITION), (True, CLINICAL_DIAGNOSIS)
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
