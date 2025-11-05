@@ -371,3 +371,25 @@
           value: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
           value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht001715
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00116953
+        age_at_condition_start:
+          expr: case(phv00117001 == 2, {phv00117002} * 365)
+        associated_visit:
+          value: CARDIA YEAR 15
+        condition_concept:
+          value: MONDO:0005386
+        condition_status:
+          populated_from: phv00117001
+          value_mappings:
+            '2': PRESENT
+            '1': ABSENT
+            '8': UNKNOWN
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+        relationship_to_participant:
+          value: ONESELF
