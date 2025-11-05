@@ -265,6 +265,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00119801
+        age_at_condition_start:
+          expr: case(phv00119811 == 2, {phv00119816} * 365)
         associated_visit:
           value: CARDIA YEAR 15
         condition_concept:
@@ -272,7 +274,9 @@
         condition_status:
           populated_from: phv00119811
           value_mappings:
-            '2': HISTORICAL
+            '2': PRESENT
+            '1': ABSENT
+            '8': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
@@ -283,6 +287,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00119801
+        age_at_condition_start:
+          expr: case(phv00119813 == 2, {phv00119818} * 365)
         associated_visit:
           value: CARDIA YEAR 15
         condition_concept:
@@ -290,7 +296,9 @@
         condition_status:
           populated_from: phv00119813
           value_mappings:
-            '2': HISTORICAL
+            '2': PRESENT
+            '1': ABSENT
+            '8': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
