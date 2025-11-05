@@ -120,3 +120,29 @@
         relationship_to_participant:
           value: ONESELF
           range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001761
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00118426
+        age_at_condition_start:
+          expr: case(phv00118428 == 2, {phv00118430} * 365)
+        associated_visit:
+          value: CARDIA YEAR 10
+          range: string
+        condition_concept:
+          value: HP:0000822
+          range: string
+        condition_status:
+          populated_from: phv00118428
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT
+            '8': UNKNOWN
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
