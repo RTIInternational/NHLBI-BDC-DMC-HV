@@ -151,6 +151,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00119801
+        age_at_condition_start:
+          expr: case(phv00119809 == 2, {phv00119814} * 365)
         associated_visit:
           value: CARDIA YEAR 15
         condition_concept:
@@ -159,6 +161,8 @@
           populated_from: phv00119809
           value_mappings:
             '2': HISTORICAL
+            '1': ABSENT
+            '8': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
