@@ -8,7 +8,7 @@
           value: CARDIA YEAR 0
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00112995
@@ -33,7 +33,7 @@
           value: CARDIA YEAR 0
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00113060
@@ -58,7 +58,7 @@
           value: CARDIA YEAR 2
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00114343
@@ -85,7 +85,7 @@
           value: CARDIA YEAR 2
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00114378
@@ -112,7 +112,7 @@
           value: CARDIA YEAR 5
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00115439
@@ -139,7 +139,7 @@
           value: CARDIA YEAR 7
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00116970
@@ -166,7 +166,7 @@
           value: CARDIA YEAR 7
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00117939
@@ -190,7 +190,7 @@
           value: CARDIA YEAR 7
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00117969
@@ -210,11 +210,13 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00118426
+        age_at_condtion_start:
+          expr: case(phv00118444) == 2, {phv00118446} * 365)
         associated_visit:
           value: CARDIA YEAR 10
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00118444
@@ -238,7 +240,7 @@
           value: CARDIA YEAR 15
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00119805
@@ -262,7 +264,7 @@
           value: CARDIA MEDICAL HISTORY
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00121354
@@ -287,7 +289,7 @@
           value: CARDIA MEDICAL HISTORY
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00121355
@@ -309,7 +311,7 @@
           value: CARDIA MEDICAL HISTORY
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00121356
@@ -331,7 +333,7 @@
           value: CARDIA MEDICAL HISTORY
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00121357
@@ -353,7 +355,7 @@
           value: CARDIA MEDICAL HISTORY
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00121359
@@ -375,7 +377,7 @@
           value: CARDIA MEDICAL HISTORY
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00121360
@@ -397,7 +399,7 @@
           value: CARDIA HOSPITALIZATIONS DIAGNOSIS
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00121467
@@ -420,7 +422,7 @@
           value: CARDIA MEDICAL HISTORY
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00121573
@@ -445,7 +447,7 @@
           value: CARDIA MEDICAL HISTORY
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00121360
@@ -467,7 +469,7 @@
           value: CARDIA MEDICAL HISTORY
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00121360
@@ -489,7 +491,7 @@
           value: CARDIA MEDICAL HISTORY
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00121360
@@ -511,7 +513,7 @@
           value: CARDIA MEDICAL HISTORY
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00121360
@@ -533,7 +535,7 @@
           value: CARDIA MEDICAL HISTORY
           range: string
         condition_concept:
-          value: OMOP:201820
+          value: MONDO:0005015
           range: string
         condition_status:
           populated_from: phv00121360
