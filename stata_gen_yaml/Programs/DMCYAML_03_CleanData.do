@@ -8,59 +8,32 @@
 /* Description:	This program imports key spreadsheets with metadata.				*/
 /*		1. Append & clean data														*/
 /*		2. Correct BDCHM variable mappings											*/
-/*		3. Save clean data															*/
-/*		4. Merge in documentation 													*/
-/*		5. Output unit mismatches for improvements to units.do						*/
-/*		6. Prepare for YAML code generation											*/
+/*		3. Correct units															*/
+/*		4. Save clean data															*/
+
+/*		6. Merge in documentation 													*/
+/* 		8. Correct fields from documentation files									*/
+/*		9. Prepare for YAML code generation											*/
 /*																					*/
 /* Notes:  																			*/
-/*	- 2025/07/14 Step 1 appends FHS and noFHSnoCOPD data							*/
+/*	- This program applies general cleaning rules. The next program performs single */
+/*	  cell value overrides enabled by manual curation reviews.						*/
 /*	  																				*/
 /* -------------------------------------------------------------------------------- */
 
 
-/* ----- 1. Append & clean data ----- */
-
-* Append *;
-clear
-foreach dtaset in fhs_$today Export_BDCHM_noFHS-noCOPDGene_phv_mappings_$today {
-	append using "$temp\\`dtaset'_drop.dta"
-	}
-duplicates drop 
-
-* Variables *;
-drop bdchm_variable
-
-foreach var in var_id study_id data_table_id {
-	split `var', p(".")
-	}
-rename var_id1 phv
-rename study_id1 phs
-rename data_table_id1 pht
-drop var_id2 var_id3 study_id2 data_table_id2
-
-* Values *; 
-foreach var of varlist cohort var_units var_desc {
-	replace `var'=lower(`var')
-	}
-
-* Cohort *;
-replace cohort="hchs_sol" if cohort=="hchs/sol"
-	
-* Units *;
-do "$prog\\units.do" var_units
-	
-* Type *;
-replace var_type="categorical" if (enum_!="" | example_code!="")
+use "$temp\alldata.dta", clear
 
 
 
+/* ----- 1. Exclude rows/variables ----- */
+drop if bdchm_label=="medication adherence"
 
 
 
 /* ----- 2. Correct BDCHM variable mappings ----- */
 /* Note: bad BDCHM mappings occurred during a manual process run by curators, and should ideally be fixed in the source data files read in at the top of program 1. They are handled for this processing pipeline by code below*/
-replace bdchm_label=lower(bdchm_label) 
+
 replace bdchm_label="stroke" if bdchm_label=="stroke status"
 replace bdchm_label="red blood cell count" if bdchm_label=="red blood cell count volume"
 replace bdchm_label="copd" if bdchm_label=="copd status"
@@ -81,15 +54,6 @@ replace bdchm_label="history of heart failure" if bdchm_label=="heart failure"
 	replace bdchm_label="carotid stenosis left" if bdchm_label=="carotid stenosis" & left==1
 	replace bdchm_label="carotid stenosis right" if bdchm_label=="carotid stenosis" & right==1
 	replace bdchm_label="" if bdchm_label=="carotid stenosis" & inlist(var_desc,"age","cohort","calculated age at baseline")
-	
-	* Fasting lipids *;
-	replace bdchm_label="" if bdchm_label=="fasting lipids" & inlist(phv,"phv00253225","phv00083303","phv00084980","phv00087524")
-	
-	* Height *;
-	replace bdchm_label="" if bdchm_label=="height" & phv=="phv00206817"
-	
-	* Lactate *;
-	replace bdchm_label="lactate in blood" if inlist(phv,"phv00166732","phv00172259","phv00255391","phv00521044","phv00521118")
 		
 	* Medication use - reassign to a more specific med use priority var *;
 	foreach x in "ace inhibitor" "aldosterone receptor blocker" "alpha blocker" "angiotensin receptor blocker" "beta blocker" "calcium channel blocker" "centrally acting agent" "diuretic" "oral hypoglycemic agent" "systemic steroid" "vasodilator" {
@@ -175,12 +139,11 @@ replace var_units="kg/m2" if kgm2==1 & var_units==""
 
 
 
-/* ----- 3. Save clean data ----- */
+/* ----- 4. Save clean data ----- */
 order cohort bdchm_label phv phs pht var_name var_desc var_units var_type enum* example* 
-sort merge_bdchm_label phv enum_code
-drop left right time_indic_var servday servweek hrs kgm2
-duplicates drop /*n=280 dropped*/
-drop if bdchm_label==""
+sort bdchm_label phv enum_code
+drop left right time_indic_var servday servweek hrs kgm2 
+duplicates drop /*n=279 dropped*/
 drop if phv==""
 save "$temp\alldata_$today.dta", replace /*n=42890*/
 
