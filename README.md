@@ -9,6 +9,10 @@ Please read the [Collaboration Guide](CONTRIBUTING.md) before contributing.
 
 In the priority_variables_transform folder there are two folders for each data set, one with the manually derived transforms and one (followed by -ingest) with the versions that were successfully put through the LinkML ingest pipeline.
 
+## Integrated Testing
+
+In order to improve our data quality we have implemented some integration testing that will check if the transformation specifications in certain directories are valid.
+
 ## FAQ
 
 ### How can I contribute?
