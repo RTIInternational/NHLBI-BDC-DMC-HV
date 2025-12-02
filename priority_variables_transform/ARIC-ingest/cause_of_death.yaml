@@ -8,7 +8,7 @@
           value: ARIC Death Event
           range: string
         age_at_death:
-          populated_from: {phv00203832} * 365
+          expr: {phv00203832} * 365
         cause_of_death:
           object_derivations:
           - class_derivations:
