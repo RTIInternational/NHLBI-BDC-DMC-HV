@@ -10,7 +10,7 @@
         age_at_condition_start:
           expr: case(phv00099087 == 1, {phv00099090} * 365)
         age_at_condition_end:
-          expr: case(phv00099087 == 1, (phv00099088 == 0, {phv00099091} * 365))
+          expr: case((phv00099087 == 1, case((phv00099088 == 0, {phv00099091} * 365))))
         condition_concept:
           value: MONDO:0004979
           range: string
@@ -486,7 +486,7 @@
         age_at_condition_start:
           expr: case(phv00106022 == 1, {phv00106025} * 365)
         age_at_condition_end:
-          expr: case(phv00106022 == 1, (phv00106023 == 0, {phv00106026} * 365))
+          expr: case((phv00106022 == 1, case((phv00106023 == 0, {phv00106026} * 365))))
         condition_concept:
           value: MONDO:0004979
           range: string
@@ -507,7 +507,7 @@
           value: CHS YEAR 6
           range: string
         age_at_condition_end:
-          expr: case(phv00107849 == 1, (phv00107850 == 0, {phv00107853} * 365))
+          expr: case((phv00106022 == 1, case((phv00106023 == 0, {phv00106026} * 365))))
         condition_concept:
           value: MONDO:0004979
           range: string
