@@ -7,7 +7,7 @@
         associated_participant:
           populated_from: phv00159568
         age_at_condition_start:
-          expr: case(phv00159736 == 1, {phv00159738} * 365)
+          expr: case((phv00159736 == 1, {phv00159738} * 365))
         condition_concept:
           expr: '''HP:0010535'''
         condition_status:
