@@ -10,7 +10,7 @@
             '3': MESA CLASSIC EXAM 3
             '4': MESA CLASSIC EXAM 4
         age_at_observation:
-          expr: case((phv00191192 == 4, {phv00086727} * 365), phv00191192 == 3, {phv00086259} * 365)
+          expr: case(({phv00191192} == 4, {phv00086727} * 365), ({phv00191192} == 3, {phv00086259} * 365))
         observation_type:
           value: OBA:VT0002668
           range: string
