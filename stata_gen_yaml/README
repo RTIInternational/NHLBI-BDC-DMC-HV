@@ -1,0 +1,15 @@
+/stata_gen_yaml contains the Stata program tree that turns spreadsheet data into YAML files. 
+
+See /Documentation/DMC YAML Generation Pipeline for a visualization of the data pipeline.
+
+/Derived/ contains the file produced by the Stata tree that is used as the input for auto-generated YAML code
+
+/Documentation/ contains critical input files
+
+/Output/ contains YAML code produced by the tree. It has subfolders for each cohort, which in turn each contain subfolders titled "good", "bad", & "fixed"
+
+/Programs/ contains the Stata programs
+
+/Raw/ contains spreadsheets of metadata exported from dbGAP
+
+/temp/ is a directory for intermediate files produced when the Stata program tree runs. These are not necessary to retain, but can aid in troubleshooting if the program tree breaks.
