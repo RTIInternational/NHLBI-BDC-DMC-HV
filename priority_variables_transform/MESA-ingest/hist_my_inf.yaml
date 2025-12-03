@@ -75,9 +75,9 @@
           value: MESA CLASSIC EXAM 2
           range: string
         age_at_condition_start:
-          expr: case(phv00085756 == 1, {phv00085757} * 365)
+          expr: case(({phv00085756} == 1, {phv00085757} * 365))
         age_at_condition_end:
-          expr: case(phv00085756 == 1, {phv00085757} * 365)          
+          expr: case(({phv00085756} == 1, {phv00085757} * 365))        
         condition_concept:
           value: MONDO:0005068
           range: string
