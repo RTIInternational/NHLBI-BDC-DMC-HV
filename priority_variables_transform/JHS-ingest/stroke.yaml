@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00128084
         age_at_condition_start:
-          expr: case(phv00128093 == 'Yes', {phv00128094} * 365)
+          expr: case(({phv00128093} == 'Yes', {phv00128094} * 365))
         associated_visit:
           value: JHS Exam 1
           range: string
