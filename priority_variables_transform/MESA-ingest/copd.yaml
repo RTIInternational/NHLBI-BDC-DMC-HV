@@ -77,7 +77,7 @@
           value: MESA AIR SPIROMETRY
           range: string
         age_at_condition_start:
-          expr: case(phv00083545 == 1, {phv00083546} * 365)
+          expr: case(({phv00083545} == 1, {phv00083546} * 365))
         condition_concept:
           value: MONDO:0005002
           range: string
@@ -250,7 +250,7 @@
           value: MESA LUNG SPIROMETRY
           range: string
         age_at_condition_start:
-          expr: case(phv00083780 == 1, {phv00083781} * 365)
+          expr: case(({phv00083780} == 1, {phv00083781} * 365))
         condition_concept:
           value: MONDO:0005002
           range: string
