@@ -6,11 +6,13 @@
           populated_from: phv00283284
         associated_visit: 
           value: WHI LLS
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OBA:1001085
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht006217
                 slot_derivations:
@@ -20,7 +22,7 @@
                       source_unit: "[in_us]"
                       target_unit: "cm"
                   unit: 
-                    value: cm
+                    value: "cm"
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -30,15 +32,17 @@
           populated_from: phv00079849
         associated_visit: 
           value: WHI PM 80
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OBA:1001085
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht001019
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00079860
                   unit: 
-                    value: cm
+                    value: "cm"

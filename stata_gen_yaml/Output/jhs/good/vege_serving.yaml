@@ -6,11 +6,13 @@
           populated_from: phv00401078
         associated_visit: 
           value: JHS EXAM 1
+        age_at_observation: 
+          expr: {phv00401085} * 365
         observation_type: 
           value: OMOP:4042886
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht008729
                 slot_derivations:
@@ -20,5 +22,5 @@
                       source_unit: "{servings}/d"
                       target_unit: "{servings}/wk"
                   unit: 
-                    value: {servings}/wk
+                    value: "{servings}/wk"
                     range: string
