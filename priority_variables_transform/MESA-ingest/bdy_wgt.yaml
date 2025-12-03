@@ -45,10 +45,13 @@
                 populated_from: pht001111
                 slot_derivations:
                   value_decimal:
-                    expr: '{phv00083013} * 0.453592'
-                  unit:
-                    value: kg
-                    range: string
+                    populated_from: phv00083013
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: "cm"
+                  unit: 
+                    value: cm
+                    range: string                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001111
