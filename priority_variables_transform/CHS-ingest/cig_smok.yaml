@@ -8,7 +8,7 @@
           value: CHS BASELINE 2
           range: string
         age_at_observation:
-          expr: {phv00098799} * 365          
+          expr: '{phv00098799} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -28,7 +28,7 @@
           value: CHS BASELINE BOTH
           range: string
         age_at_observation:
-          expr: {phv00100487} * 365          
+          expr: '{phv00100487} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -48,7 +48,7 @@
           value: CHS YEAR 10
           range: string
         age_at_observation:
-          expr: {phv00102006} * 365         
+          expr: '{phv00102006} * 365'
         observation_type:
           value: OMOP:4282779
           range: string
@@ -69,7 +69,7 @@
           value: CHS YEAR 11
           range: string
         age_at_observation:
-          expr: {phv00102583} * 365          
+          expr: '{phv00102583} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -89,9 +89,6 @@
         associated_visit:
           value: CHS YEAR 3
           range: string
-        age_at_observation:
-          expr: ({pht001452.phv00100487} * 365) + 1095
-          lookup_key: phv00100285
         observation_type:
           value: OMOP:4282779
           range: string
@@ -111,7 +108,7 @@
           value: CHS YEAR 4
           range: string
         age_at_observation:
-          expr: {phv00104783} * 365          
+          expr: '{phv00104783} * 365'     
         observation_type:
           value: OMOP:4282779
           range: string
@@ -131,7 +128,7 @@
           value: CHS YEAR 5 NEW
           range: string
         age_at_observation:
-          expr: ({phv00105116} * 365) + 1825          
+          expr: '({phv00105116} * 365) + 1825'  
         observation_type:
           value: OMOP:4282779
           range: string
@@ -151,7 +148,7 @@
           value: CHS YEAR 5 OLD
           range: string
         age_at_observation:
-          expr: {phv00106844} * 365          
+          expr: '{phv00106844} * 365'
         observation_type:
           value: OMOP:4282779
           range: string
@@ -172,7 +169,7 @@
           value: CHS YEAR 6
           range: string
         age_at_observation:
-          expr: {phv00107780} * 365          
+          expr: '{phv00107780} * 365'
         observation_type:
           value: OMOP:4282779
           range: string
@@ -193,7 +190,7 @@
           value: CHS YEAR 7
           range: string
         age_at_observation:
-          expr: {phv00108813} * 365          
+          expr: '{phv00108813} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -214,7 +211,7 @@
           value: CHS YEAR 8
           range: string
         age_at_observation:
-          expr: {phv00109604} * 365            
+          expr: '{phv00109604} * 365'   
         observation_type:
           value: OMOP:4282779
           range: string
@@ -235,7 +232,7 @@
           value: CHS YEAR 9
           range: string
         age_at_observation:
-          expr: {phv00109855} * 365           
+          expr: '{phv00109855} * 365'
         observation_type:
           value: OMOP:4282779
           range: string
@@ -259,8 +256,7 @@
           value: OMOP:4282779
           range: string
         value_enum:
-          expr: case(({phv00197474} == 0, "OMOP:45883537"), ({phv00197478} == 0, "OMOP:45883458"),
-            (True, "OMOP:40766945"))
+          expr: case(({phv00197474} == 0, "OMOP:45883537"), ({phv00197478} == 0, "OMOP:45883458"), (True, "OMOP:40766945"))
 - class_derivations:
     Observation:
       populated_from: pht003700
