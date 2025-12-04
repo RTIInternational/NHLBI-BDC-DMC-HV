@@ -9,7 +9,6 @@
         age_at_observation:
           expr: {phv00159836} * 365
         observation_type:
-          expr: '''OMOP:4282779'''
+          value: OMOP:4282779
         value_enum:
-          expr: '''OMOP:40766945'' if {phv00159749} == 1 else ''OMOP:45883458'' if {phv00159747}
-            == 1 else ''OMOP:45883537'''
+          expr: case(({phv00159749} == 1, OMOP:40766945), case({phv00159747} == 1, OMOP:45883458), (True, OMOP:45883537))
