@@ -7,9 +7,6 @@
         associated_visit:
           value: CHS YEAR 5
           range: string
-        age_at_observation:
-          expr: ({pht001452.phv00100487} * 365) + 1825
-          lookup_key: phv00100285
         observation_type:
           value: OBA:2052375
           range: string
@@ -34,7 +31,7 @@
           value: CHS YEAR 5 NEW
           range: string
         age_at_observation:
-          expr: ({phv00105116} * 365) + 1825          
+          expr: '({phv00105116} * 365) + 1825'
         observation_type:
           value: OBA:2052375
           range: string
@@ -59,7 +56,7 @@
           value: CHS YEAR 5 OLD
           range: string
         age_at_observation:
-          expr: {phv00106844} * 365          
+          expr: '{phv00106844} * 365'     
         observation_type:
           value: OBA:2052375
           range: string
