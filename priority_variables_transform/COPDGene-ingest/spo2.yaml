@@ -9,7 +9,7 @@
         age_at_observation:
           expr: {phv00159836} * 365
         observation_type:
-          expr: '''OBA:2045443'''
+          value: OBA:2045443
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -17,6 +17,6 @@
                 populated_from: COPDGene
                 slot_derivations:
                   value_decimal:
-                    expr: '{phv00159589} * 100 if {phv00159589} <= 1 else {phv00159589}'
+                    expr: case(({phv00159589} <= 1, {phv00159589} * 100), {phv00159589}))
                   unit:
-                    expr: '''%'''
+                    value: %
