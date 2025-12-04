@@ -21,10 +21,10 @@
                   value_decimal:
                     populated_from: phv00082685
                     unit_conversion:
-                      source_unit: "[in_us]"
-                      target_unit: "cm"
+                      source_unit: "lbm"
+                      target_unit: "kg"
                   unit: 
-                    value: cm
+                    value: kg
                     range: string                     
 - class_derivations:
     MeasurementObservation:
@@ -50,10 +50,10 @@
                   value_decimal:
                     populated_from: phv00083013
                     unit_conversion:
-                      source_unit: "[in_us]"
-                      target_unit: "cm"
+                      source_unit: "lbm"
+                      target_unit: "kg"
                   unit: 
-                    value: cm
+                    value: kg
                     range: string                    
 - class_derivations:
     MeasurementObservation:
@@ -79,10 +79,10 @@
                   value_decimal:
                     populated_from: phv00083014
                     unit_conversion:
-                      source_unit: "[in_us]"
-                      target_unit: "cm"
+                      source_unit: "lbm"
+                      target_unit: "kg"
                   unit: 
-                    value: cm
+                    value: kg
                     range: string                                       
 - class_derivations:
     MeasurementObservation:
@@ -105,10 +105,10 @@
                   value_decimal:
                     populated_from: phv00084484
                     unit_conversion:
-                      source_unit: "[in_us]"
-                      target_unit: "cm"
+                      source_unit: "lbm"
+                      target_unit: "kg"
                   unit: 
-                    value: cm
+                    value: kg
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -134,10 +134,10 @@
                   value_decimal:
                     populated_from: phv00085249
                     unit_conversion:
-                      source_unit: "[in_us]"
-                      target_unit: "cm"
+                      source_unit: "lbm"
+                      target_unit: "kg"
                   unit: 
-                    value: cm
+                    value: kg
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -163,10 +163,10 @@
                   value_decimal:
                     populated_from: phv00085250
                     unit_conversion:
-                      source_unit: "[in_us]"
-                      target_unit: "cm"
+                      source_unit: "lbm"
+                      target_unit: "kg"
                   unit: 
-                    value: cm
+                    value: kg
                     range: string                  
 - class_derivations:
     MeasurementObservation:
@@ -191,10 +191,10 @@
                   value_decimal:
                     populated_from: phv00087079
                     unit_conversion:
-                      source_unit: "[in_us]"
-                      target_unit: "cm"
+                      source_unit: "lbm"
+                      target_unit: "kg"
                   unit: 
-                    value: cm
+                    value: kg
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -218,7 +218,10 @@
                 populated_from: pht001121
                 slot_derivations:
                   value_decimal:
-                    expr: '{phv00087166} * 0.453592'
+                    populated_from: phv00087166
+                    unit_conversion:
+                      source_unit: "lbm"
+                      target_unit: "kg"                  
                   unit:
                     value: kg
                     range: string
@@ -244,7 +247,10 @@
                 populated_from: pht001121
                 slot_derivations:
                   value_decimal:
-                    expr: '{phv00087167} * 0.453592'
+                    populated_from: phv00087167
+                    unit_conversion:
+                      source_unit: "lbm"
+                      target_unit: "kg"                    
                   unit:
                     value: kg
                     range: string                    
