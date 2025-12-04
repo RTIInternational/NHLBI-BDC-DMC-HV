@@ -8,7 +8,7 @@
           value: CHS BASELINE 2
           range: string
         age_at_observation:
-          expr: {phv00098799} * 365
+          expr: '{phv00098799} * 365'
         observation_type:
           value: OBA:VT0001259
           range: string
@@ -20,6 +20,8 @@
                 slot_derivations:
                   value_decimal:
                     expr: '{phv00099349} * 0.453592'
+                    populated_from: phv00099349
+                      
                   unit:
                     value: kg
                     range: string
