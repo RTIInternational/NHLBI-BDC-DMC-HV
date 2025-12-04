@@ -76,6 +76,8 @@
         associated_visit:
           value: MESA AIR SPIROMETRY
           range: string
+        age_at_condition_start:
+          expr: case(({phv00083545} == 1, {phv00083546} * 365))
         condition_concept:
           value: MONDO:0005002
           range: string
@@ -247,6 +249,8 @@
         associated_visit:
           value: MESA LUNG SPIROMETRY
           range: string
+        age_at_condition_start:
+          expr: case(({phv00083780} == 1, {phv00083781} * 365))
         condition_concept:
           value: MONDO:0005002
           range: string
@@ -337,6 +341,31 @@
         relationship_to_participant:
           value: ONESELF
           range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001122
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087666
+        associated_visit:
+          value: MESA FAMILY SPIROMETRY
+          range: string
+        age_at_condition_start:
+          expr: case(phv00087771 == 1, {phv00087772} * 365)
+        condition_concept:
+          value: MONDO:0005002
+          range: string
+        condition_status:
+          populated_from: phv00087771
+          value_mappings:
+            '0': '''ABSENT'''
+            '1': '''PRESENT'''
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string          
 - class_derivations:
     Condition:
       populated_from: pht001122

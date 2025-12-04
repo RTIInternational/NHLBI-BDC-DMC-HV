@@ -733,6 +733,8 @@ class_derivations:
     slot_derivations:
       associated_participant:
         populated_from: phv00203858
+      age_at_condition_start:
+        expr: case(phv00295237 == 2, {phv00203852} * 365
       associated_visit:
         expr: 'ARIC Cohort'
       condition_concept:
@@ -752,6 +754,8 @@ class_derivations:
     slot_derivations:
       associated_participant:
         populated_from: phv00203858
+      age_at_condition_start:
+        expr: case(phv00295238 == 2, {phv00203852} * 365
       associated_visit:
         expr: 'ARIC Cohort'
       condition_concept:

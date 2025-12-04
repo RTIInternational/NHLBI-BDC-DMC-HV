@@ -1,0 +1,26 @@
+- class_derivations:
+    Condition:
+      populated_from: pht001967
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00128084
+        age_at_condition_start:
+          expr: case(({phv00128087} == 'Yes', {phv00128088} * 365))
+        associated_visit:
+          value: JHS Exam 1
+          range: string
+        condition_concept:
+          value: HP:0000822
+          range: string
+        condition_status:
+          populated_from: phv00128087
+          value_mappings:
+            'Yes': PRESENT
+            'No': ABSENT
+            'Dont know': UNKNOWN
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string

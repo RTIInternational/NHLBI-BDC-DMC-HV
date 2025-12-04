@@ -7,6 +7,8 @@
         associated_visit:
           value: ARIC Death Event
           range: string
+        age_at_death:
+          expr: '{phv00203832} * 365'
         cause_of_death:
           object_derivations:
           - class_derivations:
@@ -26,6 +28,8 @@
         associated_visit:
           value: ARIC Death Event
           range: string
+        age_at_death:
+          expr: '{phv00203832} * 365'
         cause_of_death:
           object_derivations:
           - class_derivations:
@@ -45,6 +49,8 @@
         associated_visit:
           value: ARIC Death Event
           range: string
+        age_at_death:
+          expr: '{phv00203832} * 365'
         cause_of_death:
           object_derivations:
           - class_derivations:
@@ -64,6 +70,8 @@
         associated_visit:
           value: ARIC Death Event
           range: string
+        age_at_death:
+          expr: '{phv00203832} * 365'
         cause_of_death:
           object_derivations:
           - class_derivations:
@@ -83,6 +91,8 @@
         associated_visit:
           value: ARIC Death Event
           range: string
+        age_at_death:
+          expr: '{phv00203832} * 365'
         cause_of_death:
           object_derivations:
           - class_derivations:
@@ -102,6 +112,8 @@
         associated_visit:
           value: ARIC Death Event
           range: string
+        age_at_death:
+          expr: '{phv00203832} * 365'
         cause_of_death:
           object_derivations:
           - class_derivations:
@@ -121,6 +133,8 @@
         associated_visit:
           value: ARIC Death Event
           range: string
+        age_at_death:
+          expr: '{phv00203832} * 365'
         cause_of_death:
           object_derivations:
           - class_derivations:
@@ -140,6 +154,8 @@
         associated_visit:
           value: ARIC Death Event
           range: string
+        age_at_death:
+          expr: '{phv00203832} * 365'
         cause_of_death:
           object_derivations:
           - class_derivations:
@@ -159,6 +175,8 @@
         associated_visit:
           value: ARIC Death Event
           range: string
+        age_at_death:
+          expr: '{phv00203832} * 365'
         cause_of_death:
           object_derivations:
           - class_derivations:
@@ -178,6 +196,8 @@
         associated_visit:
           value: ARIC Death Event
           range: string
+        age_at_death:
+          expr: '{phv00203832} * 365'
         cause_of_death:
           object_derivations:
           - class_derivations:
@@ -262,6 +282,8 @@
         associated_visit:
           value: ARIC Death Event
           range: string
+        age_at_death:
+          expr: '{phv00203832} * 365'
         cause_of_death:
           object_derivations:
           - class_derivations:
@@ -272,6 +294,17 @@
                     expr: '"ICD10CM:" + str({phv00420047})'
                   order:
                     value: 1
+- class_derivations:
+    Person:
+      populated_from: pht004050
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00203858
+        associated_visit:
+          value: ARIC Cohort
+          range: string
+        age_at_death:
+          expr: '{phv00203853} * 365'               
 - class_derivations:
     Person:
       populated_from: pht012839

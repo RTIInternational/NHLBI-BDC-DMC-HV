@@ -6,6 +6,8 @@ class_derivations:
         populated_from: phv00203148
       associated_visit:
         value: 'ARIC EXAM 3'
+      age_at_condition_start:
+        expr: case({phv00203040} == 1, {phv00203105} * 365)
       condition_concept:
         value: 'MONDO:0005015'
       condition_status:

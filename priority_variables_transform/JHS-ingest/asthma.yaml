@@ -4,6 +4,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00128084
+        age_at_condition_start:
+          expr: case(({phv00128103} == 'Yes', {phv00128104} * 365))
         associated_visit:
           value: JHS Exam 1
           range: string
@@ -27,6 +29,10 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00128330
+        age_at_condition_start:
+          expr: case(({phv00128344} == Yes, {phv00128353} * 365))
+        age_at_condition_end:
+          expr: case(({phv00128346} == No, {phv00128354} * 365))
         associated_visit:
           value: JHS Exam 1
           range: string

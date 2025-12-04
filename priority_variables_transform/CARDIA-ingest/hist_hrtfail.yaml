@@ -36,3 +36,25 @@
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:
           value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht001607
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00114388
+        age_at_condition_start:
+          expr: case(phv00114418 == 2, {phv00114419} * 365)
+        associated_visit:
+          value: CARDIA YEAR 2
+        condition_concept:
+          value: MONDO:0005009
+        condition_status:
+          populated_from: phv00114418
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT
+            '8': UNKNOWN
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+        relationship_to_participant:
+          value: ONESELF

@@ -4,6 +4,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00113019
+        age_at_condition_start:
+          expr: case(phv00113035 == 2, {phv00113036} * 365)
         associated_visit:
           value: CARDIA YEAR 0
         condition_concept:
@@ -25,6 +27,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00113019
+        age_at_condition_start:
+          expr: case(phv00113038 == 2, {phv00113039} * 365)
         associated_visit:
           value: CARDIA YEAR 0
         condition_concept:
@@ -67,6 +71,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00114388
+        age_at_condition_start:
+          expr: case(phv00114401 == 2, {phv00114402} * 365)
         associated_visit:
           value: CARDIA YEAR 2
         condition_concept:
@@ -87,6 +93,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00114388
+        age_at_condition_start:
+          expr: case(phv00114404 == 2, {phv00114406} * 365)
         associated_visit:
           value: CARDIA YEAR 2
         condition_concept:
@@ -129,6 +137,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00115423
+        age_at_condition_start:
+          expr: case(phv00115433 == 2, {phv00115434} * 365)
         associated_visit:
           value: CARDIA YEAR 5
         condition_concept:
@@ -149,6 +159,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00115423
+        age_at_condition_start:
+          expr: case(phv00115437 == 2, {phv00115438} * 365)
         associated_visit:
           value: CARDIA YEAR 5
         condition_concept:
@@ -169,6 +181,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00116953
+        age_at_condition_start:
+          expr: case(phv00116964 == 2, {phv00116965} * 365)
         associated_visit:
           value: CARDIA YEAR 7
         condition_concept:
@@ -188,6 +202,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00116953
+        age_at_condition_start:
+          expr: case(phv00116968 == 2, {phv00116969} * 365)
         associated_visit:
           value: CARDIA YEAR 7
         condition_concept:
@@ -207,6 +223,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00118426
+        age_at_condition_start:
+          expr: case(phv00118438 == 2, {phv00118439} * 365)
         associated_visit:
           value: CARDIA YEAR 10
         condition_concept:
@@ -226,6 +244,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00118426
+        age_at_condtion_start:
+          expr: case(phv00118442 == 2, {phv00118443} * 365)
         associated_visit:
           value: CARDIA YEAR 10
         condition_concept:
@@ -245,6 +265,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00119801
+        age_at_condition_start:
+          expr: case(phv00119811 == 2, {phv00119816} * 365)
         associated_visit:
           value: CARDIA YEAR 15
         condition_concept:
@@ -252,7 +274,9 @@
         condition_status:
           populated_from: phv00119811
           value_mappings:
-            '2': HISTORICAL
+            '2': PRESENT
+            '1': ABSENT
+            '8': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
@@ -263,6 +287,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00119801
+        age_at_condition_start:
+          expr: case(phv00119813 == 2, {phv00119818} * 365)
         associated_visit:
           value: CARDIA YEAR 15
         condition_concept:
@@ -270,7 +296,9 @@
         condition_status:
           populated_from: phv00119813
           value_mappings:
-            '2': HISTORICAL
+            '2': PRESENT
+            '1': ABSENT
+            '8': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:

@@ -7,8 +7,10 @@
         associated_visit:
           value: MESA AIR EXAM
           range: string
+        age_at_observation:
+          expr: '{phv00082639} * 365'
         observation_type:
-          expr: case(({phv00083303} >= 12, '''"OMOP:4041720"'''), (True, '''OBA:VT0000184'''))
+          expr: case(({phv00083303} >= 12, 'OMOP:4041720'), (True, 'OBA:VT0000184'))
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -21,7 +23,7 @@
                     value: mg/dL
                     range: string
         method_type:
-          expr: case(({phv00083303} >= 12, '''Fasted minimum 12 hours'''))
+          expr: case(({phv00083303} >= 12, 'Fasted minimum 12 hours'))
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
@@ -31,8 +33,10 @@
         associated_visit:
           value: MESA CLASSIC EXAM 1
           range: string
+        age_at_observation:
+          expr: '{phv00084442} * 365'
         observation_type:
-          expr: case(({phv00084980} >= 12, '''"OMOP:4041720"'''), (True, '''OBA:VT0000184'''))
+          expr: case(({phv00084980} >= 12, 'OMOP:4041720'), (True, 'OBA:VT0000184'))
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -45,7 +49,7 @@
                     value: mg/dL
                     range: string
         method_type:
-          expr: case(({phv00084980} >= 12, '''Fasted minimum 12 hours'''))
+          expr: case(({phv00084980} >= 12, 'Fasted minimum 12 hours'))
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
@@ -55,6 +59,8 @@
         associated_visit:
           value: MESA CLASSIC EXAM 1
           range: string
+        age_at_observation:
+          expr: '{phv00084442} * 365'
         observation_type:
           value: OBA:VT0000184
           range: string
@@ -78,6 +84,8 @@
         associated_visit:
           value: MESA CLASSIC EXAM 1
           range: string
+        age_at_observation:
+          expr: '{phv00084442} * 365'
         observation_type:
           value: OBA:VT0000184
           range: string
@@ -101,6 +109,8 @@
         associated_visit:
           value: MESA CLASSIC EXAM 1
           range: string
+        age_at_observation:
+          expr: '{phv00084442} * 365'
         observation_type:
           value: OBA:VT0000184
           range: string
@@ -124,6 +134,8 @@
         associated_visit:
           value: MESA CLASSIC EXAM 1
           range: string
+        age_at_observation:
+          expr: '{phv00084442} * 365'
         observation_type:
           value: OBA:VT0000184
           range: string
@@ -147,6 +159,8 @@
         associated_visit:
           value: MESA CLASSIC EXAM 1
           range: string
+        age_at_observation:
+          expr: '{phv00084442} * 365'
         observation_type:
           value: OBA:VT0000184
           range: string
@@ -170,6 +184,8 @@
         associated_visit:
           value: MESA CLASSIC EXAM 1
           range: string
+        age_at_observation:
+          expr: '{phv00084442} * 365'
         observation_type:
           value: OBA:VT0000184
           range: string
@@ -193,6 +209,8 @@
         associated_visit:
           value: MESA CLASSIC EXAM 1
           range: string
+        age_at_observation:
+          expr: '{phv00084442} * 365'
         observation_type:
           value: OBA:VT0000184
           range: string
@@ -216,6 +234,8 @@
         associated_visit:
           value: MESA CLASSIC EXAM 1
           range: string
+        age_at_observation:
+          expr: '{phv00084442} * 365'
         observation_type:
           value: OBA:VT0000184
           range: string
@@ -239,12 +259,14 @@
         associated_visit:
           value: MESA CLASSIC EXAM 1
           range: string
+        age_at_observation:
+          expr: '{phv00084442} * 365'
         observation_type:
-          expr: case(({phv00084980} >= 12, '''"OMOP:4041720"'''), (True, '''OBA:VT0000184'''))
+          expr: case(({phv00084980} >= 12, 'OMOP:4041720'), (True, 'OBA:VT0000184'))
         method_type:
-          expr: case(({phv00084980} >= 12, '''Fasted minimum 12 hours-CALCULATED FROM
-            NMR LIPOPROFILE-3 SPECTRAL ANALYSIS'''), (True, '''CALCULATED FROM NMR
-            LIPOPROFILE-3 SPECTRAL ANALYSIS'''))
+          expr: "case(({phv00084980} >= 12, 'Fasted minimum 12 hours-CALCULATED FROM
+            NMR LIPOPROFILE-3 SPECTRAL ANALYSIS'), (True, 'CALCULATED FROM NMR
+            LIPOPROFILE-3 SPECTRAL ANALYSIS'))"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -265,6 +287,8 @@
         associated_visit:
           value: MESA CLASSIC EXAM 2
           range: string
+        age_at_observation:
+          expr: '{phv00085773} * 365'
         observation_type:
           value: OBA:VT0000184
           range: string
@@ -288,6 +312,8 @@
         associated_visit:
           value: MESA CLASSIC EXAM 3
           range: string
+        age_at_observation:
+          expr: '{phv00086259} * 365'
         observation_type:
           value: OBA:VT0000184
           range: string
@@ -304,6 +330,31 @@
                     range: string
 - class_derivations:
     MeasurementObservation:
+      populated_from: pht001120
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00086726
+        associated_visit:
+          value: MESA CLASSIC EXAM 4
+          range: string
+        age_at_observation:
+          expr: '{phv00086727} * 365'
+        observation_type:
+          value: OBA:VT0000184
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001120
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00086833
+                  unit:
+                    value: mg/dL
+                    range: string                    
+- class_derivations:
+    MeasurementObservation:
       populated_from: pht001121
       slot_derivations:
         associated_participant:
@@ -311,8 +362,10 @@
         associated_visit:
           value: MESA FAMILY
           range: string
+        age_at_observation:
+          expr: '{phv00087071} * 365'    
         observation_type:
-          expr: case(({phv00087524} >= 12, '''"OMOP:4041720"'''), (True, '''OBA:VT0000184'''))
+          expr: case(({phv00087524} >= 12, 'OMOP:4041720'), (True, 'OBA:VT0000184'))
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -325,7 +378,7 @@
                     value: mg/dL
                     range: string
         method_type:
-          expr: case(({phv00087524} >= 12, '''Fasted minimum 12 hours'''))
+          expr: case(({phv00087524} >= 12, 'Fasted minimum 12 hours'))
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003086
@@ -335,6 +388,8 @@
         associated_visit:
           value: MESA AIR EXAM 5
           range: string
+        age_at_observation:
+          expr: '{phv00174588} * 365'
         observation_type:
           value: OBA:VT0000184
           range: string
@@ -358,6 +413,8 @@
         associated_visit:
           value: MESA CLASSIC EXAM 5
           range: string
+        age_at_observation:
+          expr: '{phv00176011} * 365'
         observation_type:
           value: OBA:VT0000184
           range: string

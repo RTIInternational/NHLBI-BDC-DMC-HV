@@ -1,0 +1,174 @@
+- class_derivations:
+    Condition:
+      populated_from: pht001570
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00113019
+        age_at_condition_start:
+          expr: case(phv00113020 == 2, {phv00113021} * 365)
+        associated_visit:
+          value: CARDIA YEAR 0
+          range: string
+        condition_concept:
+          value: HP:0000822
+          range: string
+        condition_status:
+          expr: case((phv00113020 == 2, PRESENT), case(phv00113022 == 1, HISTORICAL))
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001606
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00114384
+        age_at_condition_start:
+          expr: case(phv00114385 == 2, {phv00114386} * 365)
+        associated_visit:
+          value: CARDIA YEAR 0
+          range: string
+        condition_concept:
+          value: HP:0000822
+          range: string
+        condition_status:
+          expr: case((phv00114385 == 2, PRESENT), case(phv00114387 == 1, HISTORICAL))
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001656
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00115423
+        age_at_condition_start:
+          expr: case(phv00115424 == 2, {phv00115425} * 365)
+        associated_visit:
+          value: CARDIA YEAR 5
+          range: string
+        condition_concept:
+          value: HP:0000822
+          range: string
+        condition_status:
+          populated_from: phv00115424
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT
+            'M': UNKNOWN
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001715
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00116953
+        age_at_condition_start:
+          expr: case(phv00115424 == 2, {phv00116956} * 365)
+        associated_visit:
+          value: CARDIA YEAR 7
+          range: string
+        condition_concept:
+          value: HP:0000822
+          range: string
+        condition_status:
+          populated_from: phv00116954
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT
+            '8': UNKNOWN
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001749
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00117898
+        age_at_condition_start:
+          expr: case(phv00117935 == 2, {phv00117936} * 365)
+        associated_visit:
+          value: CARDIA YEAR 7
+          range: string
+        condition_concept:
+          value: HP:0000822
+          range: string
+        condition_status:
+          populated_from: phv00117935
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT
+            '8': UNKNOWN
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001761
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00118426
+        age_at_condition_start:
+          expr: case(phv00118428 == 2, {phv00118430} * 365)
+        associated_visit:
+          value: CARDIA YEAR 10
+          range: string
+        condition_concept:
+          value: HP:0000822
+          range: string
+        condition_status:
+          populated_from: phv00118428
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT
+            '8': UNKNOWN
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001811
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00119801
+        age_at_condition_start:
+          expr: case(phv00119802 == 2, {phv00119807} * 365)
+        associated_visit:
+          value: CARDIA YEAR 15
+          range: string
+        condition_concept:
+          value: HP:0000822
+          range: string
+        condition_status:
+          populated_from: phv00119802
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT
+            '8': UNKNOWN
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string

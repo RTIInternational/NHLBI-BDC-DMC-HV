@@ -7,14 +7,15 @@
         associated_visit:
           value: CHS BASELINE 2
           range: string
+        age_at_condition_start:
+          expr: case(({phv00099087} == 1, {phv00099090} * 365))
+        age_at_condition_end:
+          expr: case(({phv00099087} == 1, case(({phv00099088} == 0, {phv00099091} * 365))))
         condition_concept:
           value: MONDO:0004979
           range: string
         condition_status:
-          populated_from: phv00099087
-          value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
+          expr: case(({phv00099087} == 0, ABSENT), ({phv00099088} == 0, HISTORICAL), (True, PRESENT))
         condition_provenance:
           expr: case(({phv00099466} == 1, "CLINICAL_DIAGNOSIS"), (True, "PATIENT_SELF-REPORTED_CONDITION"))
         relationship_to_participant:
@@ -475,6 +476,29 @@
           range: string
 - class_derivations:
     Condition:
+      populated_from: pht001490
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00105099
+        associated_visit:
+          value: CHS YEAR 5 NEW
+          range: string
+        age_at_condition_start:
+          expr: case(({phv00106022} == 1, {phv00106025} * 365))
+        age_at_condition_end:
+          expr: case(({phv00106022} == 1, case(({phv00106023} == 0, {phv00106026} * 365))))
+        condition_concept:
+          value: MONDO:0004979
+          range: string
+        condition_status:
+          expr: case(({phv00106022} == 0, ABSENT), ({phv00106023} == 0, HISTORICAL), (True, PRESENT))
+        condition_provenance:
+          expr: case(({phv00106024} == 1, "CLINICAL_DIAGNOSIS"), (True, "PATIENT_SELF-REPORTED_CONDITION"))
+        relationship_to_participant:
+          value: ONESELF
+          range: string          
+- class_derivations:
+    Condition:
       populated_from: pht001492
       slot_derivations:
         associated_participant:
@@ -482,6 +506,8 @@
         associated_visit:
           value: CHS YEAR 6
           range: string
+        age_at_condition_end:
+          expr: case(({phv00106022} == 1, case(({phv00106023} == 0, {phv00106026} * 365))))
         condition_concept:
           value: MONDO:0004979
           range: string

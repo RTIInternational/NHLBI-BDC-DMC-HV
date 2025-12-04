@@ -7,6 +7,8 @@
         associated_visit:
           value: MESA CLASSIC EXAM 1
           range: string
+        age_at_observation:
+          expr: '{phv00084442} * 365'
         observation_type:
           value: OBA:2060174
           range: string
@@ -46,13 +48,15 @@
                     range: string
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001116
+      populated_from: pht003086
       slot_derivations:
         associated_participant:
           populated_from: phv00174584
         associated_visit:
           value: MESA AIR EXAM 5
           range: string
+        age_at_observation:
+          expr: '{phv00174588} * 365'
         observation_type:
           value: OBA:2060174
           range: string
@@ -60,7 +64,7 @@
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht001116
+                populated_from: pht003086
                 slot_derivations:
                   value_decimal:
                     expr: '{phv00175251} * 5.975'
@@ -76,6 +80,8 @@
         associated_visit:
           value: MESA CLASSIC EXAM 5
           range: string
+        age_at_observation:
+          expr: '{phv00176011} * 365'
         observation_type:
           value: OBA:2060174
           range: string
@@ -86,7 +92,7 @@
                 populated_from: pht001116
                 slot_derivations:
                   value_decimal:
-                    expr: '{phv00176674}*5.975'
+                    expr: '{phv00176674} * 5.975'
                   unit:
                     value: pmol/L
                     range: string

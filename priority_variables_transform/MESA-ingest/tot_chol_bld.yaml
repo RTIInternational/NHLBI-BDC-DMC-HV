@@ -7,6 +7,8 @@
         associated_visit:
           value: MESA AIR EXAM
           range: string
+        age_at_observation:
+          expr: '{phv00082639} * 365'
         observation_type:
           expr: case(({phv00083303} >= 12, '''OBA:VT0000180'''), (True, '''OBA:VT0000180'''))
         value_quantity:
@@ -31,6 +33,8 @@
         associated_visit:
           value: MESA CLASSIC EXAM 1
           range: string
+        age_at_observation:
+          expr: '{phv00084442} * 365'
         observation_type:
           expr: case(({phv00084980} >= 12, '''OBA:VT0000180'''), (True, '''OBA:VT0000180'''))
         value_quantity:
@@ -55,6 +59,8 @@
         associated_visit:
           value: MESA CLASSIC EXAM 2
           range: string
+        age_at_observation:
+          expr: '{phv00085773} * 365'
         observation_type:
           value: OBA:VT0000180
           range: string
@@ -78,6 +84,8 @@
         associated_visit:
           value: MESA CLASSIC EXAM 3
           range: string
+        age_at_observation:
+          expr: '{phv00086259} * 365'
         observation_type:
           value: OBA:VT0000180
           range: string
@@ -101,6 +109,8 @@
         associated_visit:
           value: MESA CLASSIC EXAM 4
           range: string
+        age_at_observation:
+          expr: '{phv00086727} * 365'
         observation_type:
           value: OBA:VT0000180
           range: string
@@ -124,6 +134,8 @@
         associated_visit:
           value: MESA FAMILY
           range: string
+        age_at_observation:
+          expr: '{phv00087071} * 365'       
         observation_type:
           expr: case(({phv00087524} >= 12, '''OBA:VT0000180'''), (True, '''OBA:VT0000180'''))
         value_quantity:
@@ -148,6 +160,8 @@
         associated_visit:
           value: MESA CLASSIC EXAM 5
           range: string
+        age_at_observation:
+          expr: '{phv00174588} * 365'
         observation_type:
           value: OBA:VT0000180
           range: string
@@ -171,6 +185,8 @@
         associated_visit:
           value: MESA LUNG CT
           range: string
+        age_at_observation:
+          expr: '{phv00175854} * 365'
         observation_type:
           value: OBA:VT0000180
           range: string
@@ -194,6 +210,8 @@
         associated_visit:
           value: MESA CLASSIC EXAM 5
           range: string
+        age_at_observation:
+          expr: '{phv00176011} * 365'
         observation_type:
           value: OBA:VT0000180
           range: string

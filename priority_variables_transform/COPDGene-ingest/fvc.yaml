@@ -1,9 +1,13 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: COPDGene
+      populated_from: pht002239
       slot_derivations:
+        associated_visit:
+          value: COPDGene
         associated_participant:
           populated_from: phv00159568
+        age_at_observation:
+          expr: '{phv00159836} * 365'
         observation_type:
           expr: '''OMOP:4176265'''
         value_quantity:
