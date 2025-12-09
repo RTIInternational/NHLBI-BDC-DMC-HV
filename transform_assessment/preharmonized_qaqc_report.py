@@ -54,16 +54,31 @@ def parse_stats_column(stats_str):
         return 0
 
 
+def find_transform_comment_column(df):
+    """Find the Transform Comment column (case-insensitive)."""
+    for col in df.columns:
+        if col.lower() == 'transform comment':
+            return col
+    return None
+
+
 def load_from_bdchm_sheet():
     """Load data from the BDCHM Google Sheet and return normalized DataFrame."""
     try:
-        sheet = load_gsheet_as_df("Export_BDCHM_noFHS-noCOPDGene_phv_mappings", 
+        sheet = load_gsheet_as_df("Export_BDCHM_noFHS-noCOPDGene_phv_mappings",
                                  "Export_BDCHM_noFHS-noCOPDGene_p")
     except Exception as e:
         print(f"Error loading BDCHM Google Sheet: {e}")
         return None
-    
+
     print(f"Loaded BDCHM sheet with {len(sheet)} rows and columns: {list(sheet.columns)}")
+
+    # Filter out rows where Transform Comment is "out of scope"
+    transform_comment_col = find_transform_comment_column(sheet)
+    if transform_comment_col:
+        before_count = len(sheet)
+        sheet = sheet[sheet[transform_comment_col].str.lower() != 'out of scope']
+        print(f"Filtered out {before_count - len(sheet)} 'out of scope' rows from BDCHM")
 
     phv = sheet['First[data_table.variable.id]'] # Col C
     bdch_label = sheet['BDCHM Label'] # Col D
@@ -84,6 +99,13 @@ def load_from_fhs_sheet():
         return None
 
     print(f"Loaded FHS sheet with {len(sheet)} rows and columns: {list(sheet.columns)}")
+
+    # Filter out rows where Transform Comment is "out of scope"
+    transform_comment_col = find_transform_comment_column(sheet)
+    if transform_comment_col:
+        before_count = len(sheet)
+        sheet = sheet[sheet[transform_comment_col].str.lower() != 'out of scope']
+        print(f"Filtered out {before_count - len(sheet)} 'out of scope' rows from FHS")
 
     phv = sheet['Variable accession'] # Col H
     phv = phv.str.replace('\..*', '', regex=True)
