@@ -6,18 +6,20 @@
           populated_from: phv00128197
         associated_visit: 
           value: JHS PULMONARY
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OMOP:4241837
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht001969
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00128220
+                    populated_from: phv00128210
                   unit: 
-                    value: L
+                    value: "L"
 - class_derivations:
     MeasurementObservation:
       populated from: pht001969
@@ -26,18 +28,20 @@
           populated_from: phv00128197
         associated_visit: 
           value: JHS PULMONARY
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OMOP:4241837
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht001969
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00128230
                   unit: 
-                    value: L
+                    value: "L"
 - class_derivations:
     MeasurementObservation:
       populated from: pht008729
@@ -46,18 +50,20 @@
           populated_from: phv00401078
         associated_visit: 
           value: JHS EXAM 1
+        age_at_observation: 
+          expr: {phv00401085} * 365
         observation_type: 
           value: OMOP:4241837
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht008729
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00401163
                   unit: 
-                    value: L
+                    value: "L"
 - class_derivations:
     MeasurementObservation:
       populated from: pht001969
@@ -66,15 +72,17 @@
           populated_from: phv00128197
         associated_visit: 
           value: JHS PULMONARY
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OMOP:4241837
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht001969
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00128210
+                    populated_from: phv00128220
                   unit: 
-                    value: L
+                    value: "L"

@@ -6,11 +6,13 @@
           populated_from: phv00114583
         associated_visit: 
           value: CARDIA YEAR 2
+        age_at_observation: 
+          expr: {phv00114610} * 365
         observation_type: 
           value: OBA:VT0001253
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht001626
                 slot_derivations:
@@ -20,55 +22,7 @@
                       source_unit: "[in_us]"
                       target_unit: "cm"
                   unit: 
-                    value: cm
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht001667
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00115618
-        associated_visit: 
-          value: CARDIA YEAR 5
-        observation_type: 
-          value: OBA:VT0001253
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht001667
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00115704
-                    unit_conversion:
-                      source_unit: "[in_us]"
-                      target_unit: "cm"
-                  unit: 
-                    value: cm
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht001795
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00119471
-        associated_visit: 
-          value: CARDIA YEAR 10
-        observation_type: 
-          value: OBA:VT0001253
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht001795
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00119506
-                    unit_conversion:
-                      source_unit: "[in_us]"
-                      target_unit: "cm"
-                  unit: 
-                    value: cm
+                    value: "cm"
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -78,11 +32,13 @@
           populated_from: phv00118837
         associated_visit: 
           value: CARDIA YEAR 10
+        age_at_observation: 
+          expr: {phv00118959} * 365
         observation_type: 
           value: OBA:VT0001253
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht001781
                 slot_derivations:
@@ -92,68 +48,60 @@
                       source_unit: "[in_us]"
                       target_unit: "cm"
                   unit: 
-                    value: cm
+                    value: "cm"
                     range: string
 - class_derivations:
     MeasurementObservation:
-      populated from: pht001756
+      populated from: pht001667
       slot_derivations:
         associated_participant: 
-          populated_from: phv00118153
+          populated_from: phv00115618
         associated_visit: 
-          value: CARDIA YEAR 10
+          value: CARDIA YEAR 5
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OBA:VT0001253
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
-                populated_from: pht001756
+                populated_from: pht001667
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00118250
+                    populated_from: phv00115704
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: "cm"
                   unit: 
-                    value: cm
+                    value: "cm"
+                    range: string
 - class_derivations:
     MeasurementObservation:
-      populated from: pht001785
+      populated from: pht001795
       slot_derivations:
         associated_participant: 
-          populated_from: phv00119092
+          populated_from: phv00119471
         associated_visit: 
           value: CARDIA YEAR 10
+        age_at_observation: 
+          expr: {phv00119507} * 365
         observation_type: 
           value: OBA:VT0001253
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
-                populated_from: pht001785
+                populated_from: pht001795
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00119093
+                    populated_from: phv00119506
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: "cm"
                   unit: 
-                    value: cm
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht001583
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00113633
-        associated_visit: 
-          value: CARDIA YEAR 2
-        observation_type: 
-          value: OBA:VT0001253
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht001583
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00113634
-                  unit: 
-                    value: cm
+                    value: "cm"
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht001706
@@ -162,18 +110,20 @@
           populated_from: phv00116476
         associated_visit: 
           value: CARDIA YEAR 7
+        age_at_observation: 
+          expr: {phv00116478} * 365
         observation_type: 
           value: OBA:VT0001253
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht001706
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00116480
                   unit: 
-                    value: cm
+                    value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated from: pht001632
@@ -182,58 +132,64 @@
           populated_from: phv00114828
         associated_visit: 
           value: CARDIA YEAR 2
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OBA:VT0001253
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht001632
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00114829
                   unit: 
-                    value: cm
+                    value: "cm"
 - class_derivations:
     MeasurementObservation:
-      populated from: pht001671
+      populated from: pht001583
       slot_derivations:
         associated_participant: 
-          populated_from: phv00115849
+          populated_from: phv00113633
         associated_visit: 
-          value: CARDIA YEAR 5
+          value: CARDIA YEAR 2
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OBA:VT0001253
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
-                populated_from: pht001671
+                populated_from: pht001583
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00115856
+                    populated_from: phv00113634
                   unit: 
-                    value: cm
+                    value: "cm"
 - class_derivations:
     MeasurementObservation:
-      populated from: pht001857
+      populated from: pht001756
       slot_derivations:
         associated_participant: 
-          populated_from: phv00120993
+          populated_from: phv00118153
         associated_visit: 
-          value: CARDIA YEAR 15
+          value: CARDIA YEAR 10
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OBA:VT0001253
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
-                populated_from: pht001857
+                populated_from: pht001756
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00120994
+                    populated_from: phv00118250
                   unit: 
-                    value: cm
+                    value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated from: pht001755
@@ -242,18 +198,20 @@
           populated_from: phv00118039
         associated_visit: 
           value: CARDIA YEAR 10
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OBA:VT0001253
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht001755
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00118136
                   unit: 
-                    value: cm
+                    value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated from: pht001720
@@ -262,15 +220,83 @@
           populated_from: phv00117221
         associated_visit: 
           value: CARDIA YEAR 7
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OBA:VT0001253
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht001720
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00117230
                   unit: 
-                    value: cm
+                    value: "cm"
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001857
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00120993
+        associated_visit: 
+          value: CARDIA YEAR 15
+        age_at_observation: 
+          expr: {} * 365
+        observation_type: 
+          value: OBA:VT0001253
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001857
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00120994
+                  unit: 
+                    value: "cm"
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001785
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00119092
+        associated_visit: 
+          value: CARDIA YEAR 10
+        age_at_observation: 
+          expr: {} * 365
+        observation_type: 
+          value: OBA:VT0001253
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001785
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00119093
+                  unit: 
+                    value: "cm"
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001671
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00115849
+        associated_visit: 
+          value: CARDIA YEAR 5
+        age_at_observation: 
+          expr: {} * 365
+        observation_type: 
+          value: OBA:VT0001253
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001671
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00115856
+                  unit: 
+                    value: "cm"

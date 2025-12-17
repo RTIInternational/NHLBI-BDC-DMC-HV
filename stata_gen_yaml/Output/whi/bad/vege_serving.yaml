@@ -6,18 +6,20 @@
           populated_from: phv00283348 #CHECK
         associated_visit: 
           value: WHI BASELINE
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OMOP:4042886
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht006218
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00283395 #CHECK
                   unit: 
-                    value: {servings}/wk #CHECK
+                    value: "{servings}/wk" #CHECK
 - class_derivations:
     MeasurementObservation:
       populated from: pht006218
@@ -26,15 +28,17 @@
           populated_from: phv00283348 #CHECK
         associated_visit: 
           value: WHI BASELINE
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OMOP:4042886
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht006218
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00283396 #CHECK
                   unit: 
-                    value: {servings}/wk #CHECK
+                    value: "{servings}/wk" #CHECK

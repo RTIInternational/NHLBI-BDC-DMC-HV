@@ -1,184 +1,18 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht001720
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00117221
-        associated_visit: 
-          value: CARDIA YEAR 7
-        observation_type: 
-          value: OBA:VT0001259
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht001720
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00117231
-                    unit_conversion:
-                      source_unit: "[lb_av]"
-                      target_unit: "kg"
-                  unit: 
-                    value: kg
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht001632
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00114828
-        associated_visit: 
-          value: CARDIA YEAR 2
-        observation_type: 
-          value: OBA:VT0001259
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht001632
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00114831
-                    unit_conversion:
-                      source_unit: "[lb_av]"
-                      target_unit: "kg"
-                  unit: 
-                    value: kg
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht001795
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00119471
-        associated_visit: 
-          value: CARDIA YEAR 10
-        observation_type: 
-          value: OBA:VT0001259
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht001795
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00119573
-                    unit_conversion:
-                      source_unit: "[lb_av]"
-                      target_unit: "kg"
-                  unit: 
-                    value: kg
-                    range: string
-- class_derivations:
-    MeasurementObservation:
       populated from: pht001790
       slot_derivations:
         associated_participant: 
           populated_from: phv00119258
         associated_visit: 
           value: CARDIA YEAR 10
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OBA:VT0001259
         value_quantity:
           object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht001790
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00119261
-                    unit_conversion:
-                      source_unit: "[lb_av]"
-                      target_unit: "kg"
-                  unit: 
-                    value: kg
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht001749
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00117898
-        associated_visit: 
-          value: CARDIA YEAR 7
-        observation_type: 
-          value: OBA:VT0001259
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht001749
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00117926
-                    unit_conversion:
-                      source_unit: "[lb_av]"
-                      target_unit: "kg"
-                  unit: 
-                    value: kg
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht001671
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00115849
-        associated_visit: 
-          value: CARDIA YEAR 5
-        observation_type: 
-          value: OBA:VT0001259
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht001671
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00115857
-                    unit_conversion:
-                      source_unit: "[lb_av]"
-                      target_unit: "kg"
-                  unit: 
-                    value: kg
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht001725
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00117441
-        associated_visit: 
-          value: CARDIA YEAR 7
-        observation_type: 
-          value: OBA:VT0001259
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht001725
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00117442
-                    unit_conversion:
-                      source_unit: "[lb_av]"
-                      target_unit: "kg"
-                  unit: 
-                    value: kg
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht001790
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00119258
-        associated_visit: 
-          value: CARDIA YEAR 10
-        observation_type: 
-          value: OBA:VT0001259
-        value_quantity:
-          object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht001790
                 slot_derivations:
@@ -188,31 +22,33 @@
                       source_unit: "[lb_av]"
                       target_unit: "kg"
                   unit: 
-                    value: kg
+                    value: "kg"
                     range: string
 - class_derivations:
     MeasurementObservation:
-      populated from: pht001857
+      populated from: pht001790
       slot_derivations:
         associated_participant: 
-          populated_from: phv00120993
+          populated_from: phv00119258
         associated_visit: 
-          value: CARDIA YEAR 15
+          value: CARDIA YEAR 10
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OBA:VT0001259
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
-                populated_from: pht001857
+                populated_from: pht001790
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00120996
+                    populated_from: phv00119261
                     unit_conversion:
                       source_unit: "[lb_av]"
                       target_unit: "kg"
                   unit: 
-                    value: kg
+                    value: "kg"
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -222,11 +58,13 @@
           populated_from: phv00119092
         associated_visit: 
           value: CARDIA YEAR 10
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OBA:VT0001259
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht001785
                 slot_derivations:
@@ -236,7 +74,111 @@
                       source_unit: "[lb_av]"
                       target_unit: "kg"
                   unit: 
-                    value: kg
+                    value: "kg"
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001569
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00112975
+        associated_visit: 
+          value: CARDIA YEAR 0
+        age_at_observation: 
+          expr: {} * 365
+        observation_type: 
+          value: OBA:VT0001259
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001569
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00112976
+                    unit_conversion:
+                      source_unit: "[lb_av]"
+                      target_unit: "kg"
+                  unit: 
+                    value: "kg"
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001632
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00114828
+        associated_visit: 
+          value: CARDIA YEAR 2
+        age_at_observation: 
+          expr: {} * 365
+        observation_type: 
+          value: OBA:VT0001259
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001632
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00114831
+                    unit_conversion:
+                      source_unit: "[lb_av]"
+                      target_unit: "kg"
+                  unit: 
+                    value: "kg"
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001749
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00117898
+        associated_visit: 
+          value: CARDIA YEAR 7
+        age_at_observation: 
+          expr: {} * 365
+        observation_type: 
+          value: OBA:VT0001259
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001749
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00117926
+                    unit_conversion:
+                      source_unit: "[lb_av]"
+                      target_unit: "kg"
+                  unit: 
+                    value: "kg"
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001857
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00120993
+        associated_visit: 
+          value: CARDIA YEAR 15
+        age_at_observation: 
+          expr: {} * 365
+        observation_type: 
+          value: OBA:VT0001259
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001857
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00120996
+                    unit_conversion:
+                      source_unit: "[lb_av]"
+                      target_unit: "kg"
+                  unit: 
+                    value: "kg"
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -246,21 +188,49 @@
           populated_from: phv00117441
         associated_visit: 
           value: CARDIA YEAR 7
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OBA:VT0001259
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht001725
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00117443
+                    populated_from: phv00117442
                     unit_conversion:
                       source_unit: "[lb_av]"
                       target_unit: "kg"
                   unit: 
-                    value: kg
+                    value: "kg"
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001671
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00115849
+        associated_visit: 
+          value: CARDIA YEAR 5
+        age_at_observation: 
+          expr: {} * 365
+        observation_type: 
+          value: OBA:VT0001259
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001671
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00115857
+                    unit_conversion:
+                      source_unit: "[lb_av]"
+                      target_unit: "kg"
+                  unit: 
+                    value: "kg"
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -270,11 +240,13 @@
           populated_from: phv00113633
         associated_visit: 
           value: CARDIA YEAR 2
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OBA:VT0001259
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht001583
                 slot_derivations:
@@ -284,7 +256,137 @@
                       source_unit: "[lb_av]"
                       target_unit: "kg"
                   unit: 
-                    value: kg
+                    value: "kg"
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001725
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00117441
+        associated_visit: 
+          value: CARDIA YEAR 7
+        age_at_observation: 
+          expr: {} * 365
+        observation_type: 
+          value: OBA:VT0001259
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001725
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00117443
+                    unit_conversion:
+                      source_unit: "[lb_av]"
+                      target_unit: "kg"
+                  unit: 
+                    value: "kg"
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001795
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00119471
+        associated_visit: 
+          value: CARDIA YEAR 10
+        age_at_observation: 
+          expr: {phv00119507} * 365
+        observation_type: 
+          value: OBA:VT0001259
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001795
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00119573
+                    unit_conversion:
+                      source_unit: "[lb_av]"
+                      target_unit: "kg"
+                  unit: 
+                    value: "kg"
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001601
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00114324
+        associated_visit: 
+          value: CARDIA YEAR 2
+        age_at_observation: 
+          expr: {} * 365
+        observation_type: 
+          value: OBA:VT0001259
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001601
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00114325
+                    unit_conversion:
+                      source_unit: "[lb_av]"
+                      target_unit: "kg"
+                  unit: 
+                    value: "kg"
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001720
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00117221
+        associated_visit: 
+          value: CARDIA YEAR 7
+        age_at_observation: 
+          expr: {} * 365
+        observation_type: 
+          value: OBA:VT0001259
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001720
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00117231
+                    unit_conversion:
+                      source_unit: "[lb_av]"
+                      target_unit: "kg"
+                  unit: 
+                    value: "kg"
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001715
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00116953
+        associated_visit: 
+          value: CARDIA YEAR 7
+        age_at_observation: 
+          expr: {} * 365
+        observation_type: 
+          value: OBA:VT0001259
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001715
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00117077
+                    unit_conversion:
+                      source_unit: "[lb_av]"
+                      target_unit: "kg"
+                  unit: 
+                    value: "kg"
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -294,15 +396,17 @@
           populated_from: phv00116476
         associated_visit: 
           value: CARDIA YEAR 7
+        age_at_observation: 
+          expr: {phv00116478} * 365
         observation_type: 
           value: OBA:VT0001259
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht001706
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00116479
                   unit: 
-                    value: kg
+                    value: "kg"
