@@ -6,18 +6,20 @@
           populated_from:  #CHECK
         associated_visit: 
           value: 
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OMOP:4241837
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht010742
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00465060 #CHECK
                   unit: 
-                    value: L #CHECK
+                    value: "L" #CHECK
 - class_derivations:
     MeasurementObservation:
       populated from: pht010741
@@ -26,18 +28,20 @@
           populated_from:  #CHECK
         associated_visit: 
           value: 
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OMOP:4241837
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht010741
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00465047 #CHECK
                   unit: 
-                    value: L #CHECK
+                    value: "L" #CHECK
 - class_derivations:
     MeasurementObservation:
       populated from: pht010740
@@ -46,15 +50,17 @@
           populated_from:  #CHECK
         associated_visit: 
           value: 
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OMOP:4241837
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht010740
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00465033 #CHECK
                   unit: 
-                    value: L #CHECK
+                    value: "L" #CHECK

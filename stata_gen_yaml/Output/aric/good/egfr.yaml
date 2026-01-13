@@ -1,43 +1,25 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht012814
+      populated from: pht012504
       slot_derivations:
         associated_participant: 
-          populated_from: phv00512039
+          populated_from: phv00507300
         associated_visit: 
-          value: ARIC EXAM 5
+          value: ARIC EXAM 7
+        age_at_observation: 
+          expr: {phv00507307} * 365
         observation_type: 
           value: OMOP:37208635
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
-                populated_from: pht012814
+                populated_from: pht012504
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00512178
+                    populated_from: phv00507388
                   unit: 
-                    value: mL/min/{1.73_m2}
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht012814
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00512039
-        associated_visit: 
-          value: ARIC EXAM 5
-        observation_type: 
-          value: OMOP:37208635
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht012814
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00512179
-                  unit: 
-                    value: mL/min/{1.73_m2}
+                    value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated from: pht012853
@@ -46,18 +28,108 @@
           populated_from: phv00519789
         associated_visit: 
           value: ARIC COHORT
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OMOP:37208635
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht012853
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00519851
+                    populated_from: phv00519853
                   unit: 
-                    value: mL/min/{1.73_m2}
+                    value: "mL/min/{1.73_m2}"
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012814
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00512039
+        associated_visit: 
+          value: ARIC EXAM 5
+        age_at_observation: 
+          expr: {phv00512050} * 365
+        observation_type: 
+          value: OMOP:37208635
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht012814
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00512177
+                  unit: 
+                    value: "mL/min/{1.73_m2}"
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012853
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00519789
+        associated_visit: 
+          value: ARIC COHORT
+        age_at_observation: 
+          expr: {} * 365
+        observation_type: 
+          value: OMOP:37208635
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht012853
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00519855
+                  unit: 
+                    value: "mL/min/{1.73_m2}"
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012853
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00519789
+        associated_visit: 
+          value: ARIC COHORT
+        age_at_observation: 
+          expr: {} * 365
+        observation_type: 
+          value: OMOP:37208635
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht012853
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00519854
+                  unit: 
+                    value: "mL/min/{1.73_m2}"
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012853
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00519789
+        associated_visit: 
+          value: ARIC COHORT
+        age_at_observation: 
+          expr: {} * 365
+        observation_type: 
+          value: OMOP:37208635
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht012853
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00519847
+                  unit: 
+                    value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated from: pht012502
@@ -66,38 +138,42 @@
           populated_from: phv00506823
         associated_visit: 
           value: ARIC COHORT
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OMOP:37208635
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht012502
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00506868
                   unit: 
-                    value: mL/min/{1.73_m2}
+                    value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
-      populated from: pht012853
+      populated from: pht012504
       slot_derivations:
         associated_participant: 
-          populated_from: phv00519789
+          populated_from: phv00507300
         associated_visit: 
-          value: ARIC COHORT
+          value: ARIC EXAM 7
+        age_at_observation: 
+          expr: {phv00507307} * 365
         observation_type: 
           value: OMOP:37208635
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
-                populated_from: pht012853
+                populated_from: pht012504
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00519847
+                    populated_from: phv00507389
                   unit: 
-                    value: mL/min/{1.73_m2}
+                    value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated from: pht012814
@@ -106,18 +182,64 @@
           populated_from: phv00512039
         associated_visit: 
           value: ARIC EXAM 5
+        age_at_observation: 
+          expr: {phv00512050} * 365
         observation_type: 
           value: OMOP:37208635
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht012814
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00512177
+                    populated_from: phv00512179
                   unit: 
-                    value: mL/min/{1.73_m2}
+                    value: "mL/min/{1.73_m2}"
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012853
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00519789
+        associated_visit: 
+          value: ARIC COHORT
+        age_at_observation: 
+          expr: {} * 365
+        observation_type: 
+          value: OMOP:37208635
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht012853
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00519851
+                  unit: 
+                    value: "mL/min/{1.73_m2}"
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012853
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00519789
+        associated_visit: 
+          value: ARIC COHORT
+        age_at_observation: 
+          expr: {} * 365
+        observation_type: 
+          value: OMOP:37208635
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht012853
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00519846
+                  unit: 
+                    value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated from: pht012815
@@ -126,18 +248,20 @@
           populated_from: phv00512222
         associated_visit: 
           value: ARIC EXAM 6
+        age_at_observation: 
+          expr: {phv00512229} * 365
         observation_type: 
           value: OMOP:37208635
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht012815
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00512298
+                    populated_from: phv00512302
                   unit: 
-                    value: mL/min/{1.73_m2}
+                    value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated from: pht012504
@@ -146,138 +270,20 @@
           populated_from: phv00507300
         associated_visit: 
           value: ARIC EXAM 7
+        age_at_observation: 
+          expr: {phv00507307} * 365
         observation_type: 
           value: OMOP:37208635
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht012504
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00507388
+                    populated_from: phv00507312
                   unit: 
-                    value: mL/min/{1.73_m2}
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht012853
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00519789
-        associated_visit: 
-          value: ARIC COHORT
-        observation_type: 
-          value: OMOP:37208635
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht012853
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00519852
-                  unit: 
-                    value: mL/min/{1.73_m2}
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht012853
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00519789
-        associated_visit: 
-          value: ARIC COHORT
-        observation_type: 
-          value: OMOP:37208635
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht012853
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00519848
-                  unit: 
-                    value: mL/min/{1.73_m2}
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht012853
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00519789
-        associated_visit: 
-          value: ARIC COHORT
-        observation_type: 
-          value: OMOP:37208635
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht012853
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00519850
-                  unit: 
-                    value: mL/min/{1.73_m2}
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht012815
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00512222
-        associated_visit: 
-          value: ARIC EXAM 6
-        observation_type: 
-          value: OMOP:37208635
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht012815
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00512303
-                  unit: 
-                    value: mL/min/{1.73_m2}
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht012853
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00519789
-        associated_visit: 
-          value: ARIC COHORT
-        observation_type: 
-          value: OMOP:37208635
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht012853
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00519849
-                  unit: 
-                    value: mL/min/{1.73_m2}
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht012815
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00512222
-        associated_visit: 
-          value: ARIC EXAM 6
-        observation_type: 
-          value: OMOP:37208635
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht012815
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00512302
-                  unit: 
-                    value: mL/min/{1.73_m2}
+                    value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated from: pht012505
@@ -286,18 +292,42 @@
           populated_from: phv00507453
         associated_visit: 
           value: ARIC LAB FORM
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OMOP:37208635
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht012505
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00507454
                   unit: 
-                    value: mL/min/{1.73_m2}
+                    value: "mL/min/{1.73_m2}"
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012814
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00512039
+        associated_visit: 
+          value: ARIC EXAM 5
+        age_at_observation: 
+          expr: {phv00512050} * 365
+        observation_type: 
+          value: OMOP:37208635
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht012814
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00512178
+                  unit: 
+                    value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated from: pht012853
@@ -306,18 +336,42 @@
           populated_from: phv00519789
         associated_visit: 
           value: ARIC COHORT
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OMOP:37208635
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht012853
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00519854
+                    populated_from: phv00519852
                   unit: 
-                    value: mL/min/{1.73_m2}
+                    value: "mL/min/{1.73_m2}"
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012815
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00512222
+        associated_visit: 
+          value: ARIC EXAM 6
+        age_at_observation: 
+          expr: {phv00512229} * 365
+        observation_type: 
+          value: OMOP:37208635
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht012815
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00512303
+                  unit: 
+                    value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated from: pht012853
@@ -326,18 +380,20 @@
           populated_from: phv00519789
         associated_visit: 
           value: ARIC COHORT
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OMOP:37208635
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht012853
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00519853
+                    populated_from: phv00519849
                   unit: 
-                    value: mL/min/{1.73_m2}
+                    value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated from: pht012853
@@ -346,18 +402,20 @@
           populated_from: phv00519789
         associated_visit: 
           value: ARIC COHORT
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OMOP:37208635
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht012853
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00519846
+                    populated_from: phv00519850
                   unit: 
-                    value: mL/min/{1.73_m2}
+                    value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated from: pht012853
@@ -366,55 +424,39 @@
           populated_from: phv00519789
         associated_visit: 
           value: ARIC COHORT
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OMOP:37208635
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht012853
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00519855
+                    populated_from: phv00519848
                   unit: 
-                    value: mL/min/{1.73_m2}
+                    value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
-      populated from: pht012504
+      populated from: pht012815
       slot_derivations:
         associated_participant: 
-          populated_from: phv00507300
+          populated_from: phv00512222
         associated_visit: 
-          value: ARIC EXAM 7
+          value: ARIC EXAM 6
+        age_at_observation: 
+          expr: {phv00512229} * 365
         observation_type: 
           value: OMOP:37208635
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
-                populated_from: pht012504
+                populated_from: pht012815
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00507389
+                    populated_from: phv00512298
                   unit: 
-                    value: mL/min/{1.73_m2}
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht012504
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00507300
-        associated_visit: 
-          value: ARIC EXAM 7
-        observation_type: 
-          value: OMOP:37208635
-        value_quantity:
-          object_derivations:
-          - class derivations:
-              Quantity:
-                populated_from: pht012504
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00507312
-                  unit: 
-                    value: mL/min/{1.73_m2}
+                    value: "mL/min/{1.73_m2}"

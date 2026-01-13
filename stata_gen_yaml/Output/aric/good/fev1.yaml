@@ -6,18 +6,20 @@
           populated_from: phv00512039
         associated_visit: 
           value: ARIC EXAM 5
+        age_at_observation: 
+          expr: {phv00512050} * 365
         observation_type: 
           value: OMOP:4241837
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht012814
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00512105
                   unit: 
-                    value: L
+                    value: "L"
 - class_derivations:
     MeasurementObservation:
       populated from: pht006467
@@ -26,11 +28,13 @@
           populated_from: phv00297546
         associated_visit: 
           value: ARIC EXAM 5
+        age_at_observation: 
+          expr: {phv00297561} * 365
         observation_type: 
           value: OMOP:4241837
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht006467
                 slot_derivations:
@@ -40,7 +44,7 @@
                       source_unit: "mL"
                       target_unit: "L"
                   unit: 
-                    value: L
+                    value: "L"
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -50,11 +54,13 @@
           populated_from: phv00297599
         associated_visit: 
           value: ARIC EXAM 5
+        age_at_observation: 
+          expr: {phv00511022} * 365
         observation_type: 
           value: OMOP:4241837
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht006468
                 slot_derivations:
@@ -64,5 +70,5 @@
                       source_unit: "mL"
                       target_unit: "L"
                   unit: 
-                    value: L
+                    value: "L"
                     range: string

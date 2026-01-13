@@ -6,15 +6,17 @@
           populated_from: phv00077360
         associated_visit: 
           value: WHI CBC
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OMOP:4267147
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht000986
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00077367
                   unit: 
-                    value: 10*3/uL
+                    value: "10*3/uL"

@@ -6,11 +6,13 @@
           populated_from: phv00119617
         associated_visit: 
           value: CARDIA YEAR 10
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OBA:VT0002871
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht001803
                 slot_derivations:
@@ -20,7 +22,7 @@
                       source_unit: "mg/dL"
                       target_unit: "mg/L"
                   unit: 
-                    value: mg/L
+                    value: "mg/L"
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -30,11 +32,13 @@
           populated_from: phv00120674
         associated_visit: 
           value: CARDIA YEAR 15
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OBA:VT0002871
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht001849
                 slot_derivations:
@@ -44,5 +48,5 @@
                       source_unit: "mg/dL"
                       target_unit: "mg/L"
                   unit: 
-                    value: mg/L
+                    value: "mg/L"
                     range: string

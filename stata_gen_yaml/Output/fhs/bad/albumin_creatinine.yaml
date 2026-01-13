@@ -6,15 +6,17 @@
           populated_from: phv00462160 #CHECK
         associated_visit: 
           value: OFFSPRING EXAMS 5, 6, 7 AND OMNI 1 EXAMS 1, 2
+        age_at_observation: 
+          expr: {} * 365
         observation_type: 
           value: OMOP:4154347
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht010725
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00462179 #CHECK
                   unit: 
-                    value: mg/g{creat} #CHECK
+                    value: "mg/g{creat}" #CHECK
