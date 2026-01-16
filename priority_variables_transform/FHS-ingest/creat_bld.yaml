@@ -7,6 +7,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 14
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177956} * 365
         observation_type:
           value: OBA:2050096
           range: string
@@ -30,6 +32,8 @@
         associated_visit:
           value: FHS OFFSPRING EXAM 7
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177942} * 365          
         observation_type:
           value: OBA:2050096
           range: string
@@ -80,6 +84,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 15
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177958} * 365          
         observation_type:
           value: OBA:2050096
           range: string
@@ -103,6 +109,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 24
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177976} * 365          
         observation_type:
           value: OBA:2050096
           range: string
@@ -126,6 +134,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 25
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177978} * 365          
         observation_type:
           value: OBA:2050096
           range: string
@@ -149,6 +159,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 26
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177980} * 365          
         observation_type:
           value: OBA:2050096
           range: string
@@ -172,6 +184,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 27
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177982} * 365          
         observation_type:
           value: OBA:2050096
           range: string
@@ -195,6 +209,8 @@
         associated_visit:
           value: FHS GENERATION 3 EXAM 1
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177930} * 365          
         observation_type:
           value: OBA:2050096
           range: string
@@ -218,6 +234,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 28
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177984} * 365          
         observation_type:
           value: OBA:2050096
           range: string
@@ -241,6 +259,8 @@
         associated_visit:
           value: FHS OFFSPRING EXAM 8
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177944} * 365          
         observation_type:
           value: OBA:2050096
           range: string
@@ -267,6 +287,8 @@
             '1': FHS OMNI 1 EXAM 1
             '5': FHS OFFSPRING EXAM 5
             '6': FHS OFFSPRING EXAM 6
+        age_at_observation:
+          expr: case(({phv00080751} == 1, {pht003099.phv00177930} * 365, case({phv00080751} == 5, {pht003099.phv00177938} * 365), case({phv00080751} == 6, {pht003099.phv00177940} * 365))
         observation_type:
           value: OBA:2050096
           range: string
@@ -292,6 +314,8 @@
           value_mappings:
             '20': FHS ORIGINAL EXAM 20
             '21': FHS ORIGINAL EXAM 21
+        age_at_observation:
+          expr: case(({phv00081047} == 20, {pht003099.phv00177968} * 365, case({phv00081047} == 21, {pht003099.phv00177970} * 365))            
         observation_type:
           value: OBA:2050096
           range: string
@@ -315,6 +339,8 @@
         associated_visit:
           value: FHS OFFSPRING EXAM 5
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177938} * 365            
         observation_type:
           value: OBA:2050096
           range: string
@@ -338,6 +364,8 @@
         associated_visit:
           value: FHS OFFSPRING EXAM 5
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177938} * 365           
         observation_type:
           value: OBA:2050096
           range: string
@@ -364,6 +392,8 @@
             '2': FHS NEW OFFSPRING SPOUSE EXAM 2
             '3': FHS GENERATION 3 EXAM 2
             '72': FHS OMNI 2 EXAM 2
+        age_at_observation:
+          expr: {pht003099.phv00177932} * 365             
         observation_type:
           value: OBA:2050096
           range: string
@@ -387,6 +417,8 @@
         associated_visit:
           value: FHS OFFSPRING EXAM 5
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177938} * 365           
         observation_type:
           value: OBA:2050096
           range: string
@@ -412,6 +444,8 @@
           value_mappings:
             '1': FHS OFFSPRING EXAM 9
             '7': FHS OMNI 1 EXAM 4
+        age_at_observation:
+          expr: case(({phv00227024} == 1, {pht003099.phv00177946} * 365, case({phv00227024} == 7, {pht003099.phv00177936} * 365))             
         observation_type:
           value: OBA:2050096
           range: string
@@ -437,6 +471,8 @@
           value_mappings:
             '2': FHS NEW OFFSPRING SPOUSE EXAM 1
             '72': FHS OMNI 2 EXAM 1
+        age_at_observation:
+          expr: {pht003099.phv00177930} * 365            
         observation_type:
           value: OBA:2050096
           range: string
@@ -460,6 +496,8 @@
         associated_visit:
           value: FHS OMNI 1 EXAM 2
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177932} * 365          
         observation_type:
           value: OBA:2050096
           range: string
@@ -483,6 +521,8 @@
         associated_visit:
           value: FHS OMNI 1 EXAM 3
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177934} * 365          
         observation_type:
           value: OBA:2050096
           range: string
@@ -538,6 +578,8 @@
             '2': FHS NEW OFFSPRING SPOUSE EXAM 1
             '3': FHS GENERATION 3 EXAM 1
             '72': FHS OMNI 2 EXAM 1
+        age_at_observation:
+          expr: {pht003099.phv00177930} * 365            
         observation_type:
           value: OBA:2050096
           range: string
@@ -564,6 +606,8 @@
             '2': FHS NEW OFFSPRING SPOUSE EXAM 2
             '3': FHS GENERATION 3 EXAM 2
             '72': FHS OMNI 2 EXAM 2
+        age_at_observation:
+          expr: {pht003099.phv00177932} * 365            
         observation_type:
           value: OBA:2050096
           range: string
@@ -725,6 +769,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 14
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177956} * 365          
         observation_type:
           value: OBA:2050096
           range: string
@@ -748,6 +794,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 15
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177958} * 365          
         observation_type:
           value: OBA:2050096
           range: string
@@ -771,6 +819,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 20
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177968} * 365          
         observation_type:
           value: OBA:2050096
           range: string
@@ -794,6 +844,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 24
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177976} * 365          
         observation_type:
           value: OBA:2050096
           range: string
@@ -817,6 +869,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 25
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177978} * 365          
         observation_type:
           value: OBA:2050096
           range: string
@@ -840,6 +894,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 26
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177980} * 365          
         observation_type:
           value: OBA:2050096
           range: string
@@ -863,6 +919,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 27
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177982} * 365          
         observation_type:
           value: OBA:2050096
           range: string
@@ -886,6 +944,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 28
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177984} * 365          
         observation_type:
           value: OBA:2050096
           range: string
@@ -911,6 +971,8 @@
           value_mappings:
             '1': FHS OFFSPRING EXAM 2
             '7': FHS OMNI 1 EXAM 2
+        age_at_observation:
+          expr: {pht003099.phv00177932} * 365            
         observation_type:
           value: OBA:2050096
           range: string
@@ -936,6 +998,8 @@
           value_mappings:
             '1': FHS OFFSPRING EXAM 3
             '7': FHS OMNI 1 EXAM 3
+        age_at_observation:
+          expr: {pht003099.phv00177934} * 365            
         observation_type:
           value: OBA:2050096
           range: string
@@ -961,6 +1025,8 @@
           value_mappings:
             '1': FHS OFFSPRING EXAM 4
             '7': FHS OMNI 1 EXAM 4
+        age_at_observation:
+          expr: {pht003099.phv00177936} * 365            
         observation_type:
           value: OBA:2050096
           range: string
