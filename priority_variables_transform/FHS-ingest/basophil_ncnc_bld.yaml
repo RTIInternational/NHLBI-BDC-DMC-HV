@@ -7,6 +7,8 @@
         associated_visit:
           value: FHS OFFSPRING EXAM 2
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177932} * 365
         observation_type:
           value: OBA:VT0002607
           range: string
@@ -33,6 +35,8 @@
             '2': FHS NEW OFFSPRING SPOUSE EXAM 2
             '3': FHS GENERATION 3 EXAM 2
             '72': FHS OMNI 2 EXAM 2
+        age_at_observation:
+          expr: {pht003099.phv00177932} * 365
         observation_type:
           value: OBA:VT0002607
           range: string
@@ -58,6 +62,8 @@
           value_mappings:
             '1': FHS OFFSPRING EXAM 9
             '7': FHS OMNI 1 EXAM 4
+        age_at_observation:
+          expr: case({phv00227024}, == 1, {pht003099.phv00177946} * 365), {phv00227024}, == 7, {pht003099.phv00177936} * 365)
         observation_type:
           value: OBA:VT0002607
           range: string
