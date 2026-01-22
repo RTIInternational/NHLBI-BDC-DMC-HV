@@ -8,7 +8,7 @@
           value: FHS ORIGINAL EXAM 1
           range: string
         age_at_observation:
-          expr: {phv00177930} * 365          
+          expr: {pht003099.phv00177930} * 365          
         observation_type:
           value: OBA:2060175
           range: string
@@ -33,7 +33,7 @@
           value: FHS ORIGINAL EXAM 2
           range: string
         age_at_observation:
-          expr: {phv00177932} * 365          
+          expr: {pht003099.phv00177932} * 365          
         observation_type:
           value: OBA:2060175
           range: string
@@ -58,7 +58,7 @@
           value: FHS ORIGINAL EXAM 3
           range: string
         age_at_observation:
-          expr: {phv00177934} * 365          
+          expr: {pht003099.phv00177934} * 365          
         observation_type:
           value: OBA:2060175
           range: string
@@ -83,7 +83,7 @@
           value: FHS ORIGINAL EXAM 4
           range: string
         age_at_observation:
-          expr: {phv00177936} * 365          
+          expr: {pht003099.phv00177936} * 365          
         observation_type:
           value: OBA:2060175
           range: string
@@ -108,7 +108,7 @@
           value: FHS ORIGINAL EXAM 5
           range: string
         age_at_observation:
-          expr: {phv00177938} * 365          
+          expr: {pht003099.phv00177938} * 365          
         observation_type:
           value: OBA:2060175
           range: string
@@ -133,7 +133,7 @@
           value: FHS ORIGINAL EXAM 6
           range: string
         age_at_observation:
-          expr: {phv00177940} * 365          
+          expr: {pht003099.phv00177940} * 365          
         observation_type:
           value: OBA:2060175
           range: string
@@ -160,7 +160,7 @@
             '20': FHS ORIGINAL EXAM 20
             '21': FHS ORIGINAL EXAM 21
         age_at_observation:
-          expr: case(({phv00081047} == 20, {phv00177968} * 365), case({phv00081047} == 21, {phv00177970} * 365))
+          expr: case(({phv00081047} == 20, {pht003099.phv00177968} * 365), case({phv00081047} == 21, {pht003099.phv00177970} * 365))
         observation_type:
           value: OBA:2060175
           range: string
@@ -188,7 +188,7 @@
             '3': FHS GENERATION 3 EXAM 2
             '72': FHS OMNI 2 EXAM 2
         age_at_observation:
-          expr: {phv00177932} * 365            
+          expr: {pht003099.phv00177932} * 365            
         observation_type:
           value: OBA:2060175
           range: string
@@ -215,7 +215,7 @@
             '1': FHS OFFSPRING EXAM 9
             '7': FHS OMNI 1 EXAM 4
         age_at_observation:
-          expr: case(({phv00227024} == 1, {phv00177946} * 365), case({phv00227024} == 7, {phv00177936} * 365))            
+          expr: case(({phv00227024} == 1, {pht003099.phv00177946} * 365), case({phv00227024} == 7, {pht003099.phv00177936} * 365))            
         observation_type:
           value: OBA:2060175
           range: string
