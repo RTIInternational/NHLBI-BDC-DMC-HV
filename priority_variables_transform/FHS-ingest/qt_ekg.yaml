@@ -11,6 +11,8 @@
             '16': FHS ORIGINAL EXAM 16
             '17': FHS ORIGINAL EXAM 17
             '18': FHS ORIGINAL EXAM 18
+        age_at_observation:
+          expr: case(({phv00023254} == 2, {pht003099.phv00177932} * 365), case({phv00023254} == 16, {pht003099.phv00177960} * 365), case({phv00023254} == 17, {pht003099.phv00177962} * 365), case({phv00023254} == 18, {pht003099.phv00177964} * 365))
         observation_type:
           value: OMOP:4273023
           range: string
@@ -34,6 +36,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 12
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177952} * 365
         observation_type:
           value: OMOP:4273023
           range: string
@@ -57,6 +61,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 13
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177954} * 365          
         observation_type:
           value: OMOP:4273023
           range: string
@@ -80,6 +86,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 14
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177956} * 365          
         observation_type:
           value: OMOP:4273023
           range: string
@@ -103,6 +111,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 15
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177958} * 365          
         observation_type:
           value: OMOP:4273023
           range: string
@@ -126,6 +136,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 17
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177962} * 365          
         observation_type:
           value: OMOP:4273023
           range: string
@@ -149,6 +161,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 18
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177964} * 365          
         observation_type:
           value: OMOP:4273023
           range: string
@@ -172,6 +186,8 @@
         associated_visit:
           value: FHS OFFSPRING EXAM 1
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177930} * 365          
         observation_type:
           value: OMOP:4273023
           range: string
@@ -195,6 +211,8 @@
         associated_visit:
           value: FHS OFFSPRING EXAM 2
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177932} * 365          
         observation_type:
           value: OMOP:4273023
           range: string
@@ -218,6 +236,8 @@
         associated_visit:
           value: FHS OFFSPRING EXAM 3
           range: string
+        age_at_observation:
+          expr: {pht003099.phv00177934} * 365          
         observation_type:
           value: OMOP:4273023
           range: string
