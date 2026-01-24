@@ -10,16 +10,18 @@
             '0': FHS ORIGINAL EXAM 11
             '1': FHS OFFSPRING EXAM 1
             '3': FHS GENERATION 3 EXAM 1
-        method_type: '''CYCLE 1 LEAD II'''
+        age_at_observation:
+          expr: case(({phv00036348} == 0, {pht003099.phv00177950} * 365), case({phv00036348} == 1, {pht003099.phv00177930} * 365), case({phv00036348} == 3, {pht003099.phv00177930} * 365))
+        method_type: 'CYCLE 1 LEAD II'
         observations:
           MeasurementObservation:
             slot_derivations:
               value_decimal:
                 populated_from: phv00036353
               observation_type:
-                expr: '''OMOP:4273023'''
+                expr: 'OMOP:4273023'
               value_quantity.unit:
-                expr: '''ms'''
+                expr: 'ms'
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht000299
@@ -32,16 +34,18 @@
             '0': FHS ORIGINAL EXAM 11
             '1': FHS OFFSPRING EXAM 1
             '3': FHS GENERATION 3 EXAM 1
-        method_type: '''CYCLE 2 LEAD II'''
+        age_at_observation:
+          expr: case(({phv00036348} == 0, {pht003099.phv00177950} * 365), case({phv00036348} == 1, {pht003099.phv00177930} * 365), case({phv00036348} == 3, {pht003099.phv00177930} * 365))            
+        method_type: 'CYCLE 2 LEAD II'
         observations:
           MeasurementObservation:
             slot_derivations:
               value_decimal:
                 populated_from: phv00036354
               observation_type:
-                expr: '''OMOP:4273023'''
+                expr: 'OMOP:4273023'
               value_quantity.unit:
-                expr: '''ms'''
+                expr: 'ms'
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht000299
@@ -54,16 +58,18 @@
             '0': FHS ORIGINAL EXAM 11
             '1': FHS OFFSPRING EXAM 1
             '3': FHS GENERATION 3 EXAM 1
-        method_type: '''CYCLE 1 LEAD V2'''
+        age_at_observation:
+          expr: case(({phv00036348} == 0, {pht003099.phv00177950} * 365), case({phv00036348} == 1, {pht003099.phv00177930} * 365), case({phv00036348} == 3, {pht003099.phv00177930} * 365))            
+        method_type: 'CYCLE 1 LEAD V2'
         observations:
           MeasurementObservation:
             slot_derivations:
               value_decimal:
                 populated_from: phv00036363
               observation_type:
-                expr: '''OMOP:4273023'''
+                expr: 'OMOP:4273023'
               value_quantity.unit:
-                expr: '''ms'''
+                expr: 'ms'
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht000299
@@ -76,16 +82,18 @@
             '0': FHS ORIGINAL EXAM 11
             '1': FHS OFFSPRING EXAM 1
             '3': FHS GENERATION 3 EXAM 1
-        method_type: '''CYCLE 1 LEAD V2'''
+        age_at_observation:
+          expr: case(({phv00036348} == 0, {pht003099.phv00177950} * 365), case({phv00036348} == 1, {pht003099.phv00177930} * 365), case({phv00036348} == 3, {pht003099.phv00177930} * 365))            
+        method_type: 'CYCLE 1 LEAD V2'
         observations:
           MeasurementObservation:
             slot_derivations:
               value_decimal:
                 populated_from: phv00036355
               observation_type:
-                expr: '''OMOP:4273023'''
+                expr: 'OMOP:4273023'
               value_quantity.unit:
-                expr: '''ms'''
+                expr: 'ms'
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht000299
@@ -98,13 +106,15 @@
             '0': FHS ORIGINAL EXAM 11
             '1': FHS OFFSPRING EXAM 1
             '3': FHS GENERATION 3 EXAM 1
-        method_type: '''CYCLE 1 LEAD V5'''
+        age_at_observation:
+          expr: case(({phv00036348} == 0, {pht003099.phv00177950} * 365), case({phv00036348} == 1, {pht003099.phv00177930} * 365), case({phv00036348} == 3, {pht003099.phv00177930} * 365))            
+        method_type: 'CYCLE 1 LEAD V5'
         observations:
           MeasurementObservation:
             slot_derivations:
               value_decimal:
                 populated_from: phv00036356
               observation_type:
-                expr: '''OMOP:4273023'''
+                expr: 'OMOP:4273023'
               value_quantity.unit:
-                expr: '''ms'''
+                expr: 'ms'
