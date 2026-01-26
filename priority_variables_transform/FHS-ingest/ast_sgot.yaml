@@ -8,7 +8,7 @@
           value: FHS OFFSPRING EXAM 1
           range: string
         age_at_observation:
-          expr: {pht003099.phv00177930} * 365
+          expr: '{pht003099.phv00177930} * 365'
         observation_type:
           value: OMOP:4263457
           range: string
@@ -33,7 +33,7 @@
           value: FHS OFFSPRING EXAM 2
           range: string
         age_at_observation:
-          expr: {pht003099.phv00177932} * 365          
+          expr: '{pht003099.phv00177932} * 365'
         observation_type:
           value: OMOP:4263457
           range: string
@@ -60,7 +60,7 @@
             '20': FHS ORIGINAL EXAM 20
             '21': FHS ORIGINAL EXAM 21
         age_at_observation:
-          expr: case(({phv00081047} == 20, {pht003099.phv00177968} * 365), ({phv00081047} == 21, {pht003099.phv00177970} * 365))
+          expr: case(({phv00081047} == 20, {pht003099.phv00177968} * 365), case({phv00081047} == 21, {pht003099.phv00177970} * 365))
         observation_type:
           value: OMOP:4263457
           range: string
@@ -88,7 +88,7 @@
             '3': FHS GENERATION 3 EXAM 2
             '72': OMNI 2 EXAM 2
         age_at_observation:
-          expr: {pht003099.phv00177932} * 365            
+          expr: '{pht003099.phv00177932} * 365'
         observation_type:
           value: OMOP:4263457
           range: string
@@ -115,7 +115,7 @@
             '1': FHS OFFSPRING EXAM 9
             '7': FHS OMNI 1 EXAM 4
         age_at_observation:
-          expr: case(({phv00227024} == 1, {pht003099.phv00177946} * 365), ({phv00081047} == 7, {pht003099.phv00177936} * 365))            
+          expr: case(({phv00227024} == 1, {pht003099.phv00177946} * 365), case({phv00081047} == 7, {pht003099.phv00177936} * 365))            
         observation_type:
           value: OMOP:4263457
           range: string
@@ -140,7 +140,7 @@
           value: FHS OFFSPRING EXAM 5
           range: string
         age_at_observation:
-          expr: {pht003099.phv00177938} * 365          
+          expr: '{pht003099.phv00177938} * 365'
         observation_type:
           value: OMOP:4263457
           range: string
