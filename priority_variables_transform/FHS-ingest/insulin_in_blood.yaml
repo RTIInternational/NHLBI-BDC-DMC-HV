@@ -24,35 +24,35 @@
                     value: pmol/L
                     range: string
 - class_derivations:
-     MeasurementObservation:
-       populated_from: pht003901
-       slot_derivations:
-         associated_participant:
-           populated_from: phv00201989
-         associated_visit:
-           populated_from: phv00201990
-           value_mappings:
-             '1': FHS OFFSPRING EXAM 8
-             '7': FHS OMNI 1 EXAM 3
+    MeasurementObservation:
+      populated_from: pht003901
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00201989
+        associated_visit:
+          populated_from: phv00201990
+          value_mappings:
+            '1': FHS OFFSPRING EXAM 8
+            '7': FHS OMNI 1 EXAM 3
         age_at_observation:
           expr: case(({phv00201990} == 1, {pht003099.phv00177944} * 365), case({phv00201990} == 7, {pht003099.phv00177934} * 365))
-         observation_type:
-           value: OBA:2060174
-           range: string
-         value_quantity:
-           object_derivations:
-           - class_derivations:
-               Quantity:
-                 populated_from: pht003901
-                 slot_derivations:
-                   value_decimal:
-                     expr: 'case(
-                           ({phv00201991} > 1.39, {phv00201991}),
-                           (True, "LLOD")
-                          )'
-                   unit:
-                     value: pmol/L
-                     range: string
+        observation_type:
+          value: OBA:2060174
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003901
+                slot_derivations:
+                  value_decimal:
+                    expr: 'case(
+                          ({phv00201991} > 1.39, {phv00201991}),
+                          (True, "LLOD")
+                         )'
+                    unit:
+                      value: pmol/L
+                      range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003902
