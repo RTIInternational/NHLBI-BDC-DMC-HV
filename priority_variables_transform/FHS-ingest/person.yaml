@@ -1,0 +1,32 @@
+- class_derivations:
+  ResearchStudy:
+    slot_derivations:
+      name:
+        value: 'Framingham Heart Study'
+      name_shortened:
+        value: FHS
+      assession_number:
+        value: phs000007
+      assession_authority:
+        value: dbGAP
+      version:
+        value: 33
+      url:
+        value: https://www.framinghamheartstudy.org/
+- class_derivations:
+    Participant:
+      populated_from: pht003099
+      slot_derivations:
+        member_of_research_study:
+          name: 'Framingham Heart Study'
+        associated_person:
+          populated_from: phv00177926
+- class_derivations:
+    Person:
+      populated_from: pht003099.phv00177926
+      slot_derivations:
+        vital_status:
+          populated_from: pht006018.phv00276841
+          value_mappings:
+            '0': OMOP:4230556
+            '1': OMOP:434489
