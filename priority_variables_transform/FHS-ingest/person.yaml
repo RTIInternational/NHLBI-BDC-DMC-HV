@@ -72,13 +72,17 @@
       populated_from: pht003099
       slot_derivations:
         member_of_research_study:
-          name: case(({phv00177928} == 'Framingham Heart Study'
+          name: case(({phv00177928} == 0, 'Framingham Hearth Study Original Cohort'), case({phv00177928} == 1, 'Framingham Hearth Study Offspring Cohort'), 
+            case({phv00177928} == 2, 'Framingham Hearth Study New Offspring Spouse Cohort'), case({phv00177928} == 3, 'Framingham Hearth Study Generation 3 Cohort'), 
+            case({phv00177928} == 7, 'Framingham Hearth Study OMNI 1 Cohort'), case({phv00177928} == 72, 'Framingham Hearth Study OMNI 2 Cohort'))
         associated_person:
           object_derivations:
           - class_derivations:
               Person:
-                populated_from: pht003099.phv00177926
+                populated_from: pht003099
                 slot_derivations:
+                  identity:
+                    populated_from: phv00177926
                   species:
                     value: NCBITaxon:9606
                   vital_status:
