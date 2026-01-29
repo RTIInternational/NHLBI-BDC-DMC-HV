@@ -72,9 +72,13 @@
       populated_from: pht003099
       slot_derivations:
         member_of_research_study:
-          name: case(({phv00177928} == 0, 'Framingham Heart Study Original Cohort'), case({phv00177928} == 1, 'Framingham Heart Study Offspring Cohort'), 
-            case({phv00177928} == 2, 'Framingham Heart Study New Offspring Spouse Cohort'), case({phv00177928} == 3, 'Framingham Heart Study Generation 3 Cohort'), 
-            case({phv00177928} == 7, 'Framingham Heart Study OMNI 1 Cohort'), case({phv00177928} == 72, 'Framingham Heart Study OMNI 2 Cohort'))
+          name: >
+            case(({phv00177928} == 0, 'Framingham Heart Study Original Cohort'), 
+            case({phv00177928} == 1, 'Framingham Heart Study Offspring Cohort'), 
+            case({phv00177928} == 2, 'Framingham Heart Study New Offspring Spouse Cohort'), 
+            case({phv00177928} == 3, 'Framingham Heart Study Generation 3 Cohort'), 
+            case({phv00177928} == 7, 'Framingham Heart Study OMNI 1 Cohort'), 
+            case({phv00177928} == 72, 'Framingham Heart Study OMNI 2 Cohort'))
         associated_person:
           object_derivations:
           - class_derivations:
@@ -149,7 +153,7 @@
                           slot_derivations:
                             cause:
                               populated_from: phv00021948
-                           order:
+                            order:
                               value: 8
                         CauseOfDeath:
                           populated_from: pht000094
