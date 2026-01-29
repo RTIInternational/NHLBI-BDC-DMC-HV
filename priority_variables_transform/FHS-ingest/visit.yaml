@@ -392,409 +392,93 @@
           expr: '{phv00177984} * 365'
 - class_derivations:
     Visit:
-      populated_from: pht007777
+      populated_from: pht003099
       slot_derivations:
         name:
-          value: 'FHS ORIGINAL EXAM 1'
+          expr: 'case(({phv00177928} == 0, 'FHS ORIGINAL'), case({phv00177928} == 1, 'FHS OFFSPRING'), 
+            case({phv00177928} == 2, 'FHS NEW OFFSPRING SPOUSE'), case({phv00177928} == 3, 'FHS GENERATION 3'), 
+            case({phv00177928} == 7, 'FHS OMNI 1'), case({phv00177928} == 72, 'FHS OMNI 2')) + ' EXAM 29'))'
         associated_participant:
-          populated_from: phv00369651
+          populated_from: phv00177926
         age_at_visit_start:
-          expr: '{phv00369654} * 365'
+          expr: '{phv00226999} * 365'
         age_at_visit_end:
-          expr: '{phv00369654} * 365'
+          expr: '{phv00226999} * 365'
 - class_derivations:
     Visit:
-      populated_from: pht007777
+      populated_from: pht003099
       slot_derivations:
         name:
-          value: 'FHS ORIGINAL EXAM 2'
+          expr: 'case(({phv00177928} == 0, 'FHS ORIGINAL'), case({phv00177928} == 1, 'FHS OFFSPRING'), 
+            case({phv00177928} == 2, 'FHS NEW OFFSPRING SPOUSE'), case({phv00177928} == 3, 'FHS GENERATION 3'), 
+            case({phv00177928} == 7, 'FHS OMNI 1'), case({phv00177928} == 72, 'FHS OMNI 2')) + ' EXAM 30'))'
         associated_participant:
-          populated_from: phv00369651
+          populated_from: phv00177926
         age_at_visit_start:
-          expr: '{phv00369655} * 365'
+          expr: '{phv00227002} * 365'
         age_at_visit_end:
-          expr: '{phv00369655} * 365'
+          expr: '{phv00227002} * 365'
 - class_derivations:
     Visit:
-      populated_from: pht007777
+      populated_from: pht003099
       slot_derivations:
         name:
-          value: 'FHS ORIGINAL EXAM 3'
+          expr: 'case(({phv00177928} == 0, 'FHS ORIGINAL'), case({phv00177928} == 1, 'FHS OFFSPRING'), 
+            case({phv00177928} == 2, 'FHS NEW OFFSPRING SPOUSE'), case({phv00177928} == 3, 'FHS GENERATION 3'), 
+            case({phv00177928} == 7, 'FHS OMNI 1'), case({phv00177928} == 72, 'FHS OMNI 2')) + ' EXAM 31'))'
         associated_participant:
-          populated_from: phv00369651
+          populated_from: phv00177926
         age_at_visit_start:
-          expr: '{phv00369656} * 365'
+          expr: '{phv00227005} * 365'
         age_at_visit_end:
-          expr: '{phv00369656} * 365'
+          expr: '{phv00227005} * 365'
 - class_derivations:
     Visit:
-      populated_from: pht007777
+      populated_from: pht003099
       slot_derivations:
         name:
-          value: 'FHS ORIGINAL EXAM 4'
+          expr: 'case(({phv00177928} == 0, 'FHS ORIGINAL'), case({phv00177928} == 1, 'FHS OFFSPRING'), 
+            case({phv00177928} == 2, 'FHS NEW OFFSPRING SPOUSE'), case({phv00177928} == 3, 'FHS GENERATION 3'), 
+            case({phv00177928} == 7, 'FHS OMNI 1'), case({phv00177928} == 72, 'FHS OMNI 2')) + ' EXAM 32'))'
         associated_participant:
-          populated_from: phv00369651
+          populated_from: phv00177926
         age_at_visit_start:
-          expr: '{phv00369657} * 365'
+          expr: '{phv00227008} * 365'
         age_at_visit_end:
-          expr: '{phv00369657} * 365'
+          expr: '{phv00227008} * 365'
 - class_derivations:
     Visit:
-      populated_from: pht007777
+      populated_from: pht000395
       slot_derivations:
         name:
-          value: 'FHS ORIGINAL EXAM 5'
+          expr: case(({phv00056607} == 1, 'FHS OFFSPRING SHHS'), case({phv00177928} == 7, 'FHS OMNI 1 SHHS')) + ' BASELINE'))
         associated_participant:
-          populated_from: phv00369651
+          populated_from: phv00056635
         age_at_visit_start:
-          expr: '{phv00369658} * 365'
+          expr: '{phv00056587} * 365'
         age_at_visit_end:
-          expr: '{phv00369658} * 365'
+          expr: '{phv00056587} * 365'
 - class_derivations:
     Visit:
-      populated_from: pht007777
+      populated_from: pht000396
       slot_derivations:
         name:
-          value: 'FHS ORIGINAL EXAM 6'
+          expr: case(({phv00056716} == 1, 'FHS OFFSPRING SHHS'), case({phv00056716} == 7, 'FHS OMNI 1 SHHS')) + ' FIRST FOLLOW UP'))
         associated_participant:
-          populated_from: phv00369651
+          populated_from: phv00056722
         age_at_visit_start:
-          expr: '{phv00369659} * 365'
+          expr: '({phv00056587} * 365) + {phv00056720}'
         age_at_visit_end:
-          expr: '{phv00369659} * 365'
+          expr: '({phv00056587} * 365) + {phv00056720}'
 - class_derivations:
     Visit:
-      populated_from: pht007777
+      populated_from: pht000397
       slot_derivations:
         name:
-          value: 'FHS ORIGINAL EXAM 7'
+          expr: case(({phv00057968} == 1, 'FHS OFFSPRING SHHS'), case({phv00057968} == 7, 'FHS OMNI 1 SHHS')) + ' SECOND FOLLOW UP'))
         associated_participant:
-          populated_from: phv00369651
+          populated_from: phv00057982
         age_at_visit_start:
-          expr: '{phv00369660} * 365'
+          expr: '{phv00056723} * 365'
         age_at_visit_end:
-          expr: '{phv00369660} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 8'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369661} * 365'
-        age_at_visit_end:
-          expr: '{phv00369661} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 9'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369662} * 365'
-        age_at_visit_end:
-          expr: '{phv00369662} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 10'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369663} * 365'
-        age_at_visit_end:
-          expr: '{phv00369663} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 11'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369664} * 365'
-        age_at_visit_end:
-          expr: '{phv00369664} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 12'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369665} * 365'
-        age_at_visit_end:
-          expr: '{phv00369665} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 13'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369666} * 365'
-        age_at_visit_end:
-          expr: '{phv00369666} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 14'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369667} * 365'
-        age_at_visit_end:
-          expr: '{phv00369667} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 15'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369668} * 365'
-        age_at_visit_end:
-          expr: '{phv00369668} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 16'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369669} * 365'
-        age_at_visit_end:
-          expr: '{phv00369669} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 17'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369670} * 365'
-        age_at_visit_end:
-          expr: '{phv00369670} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 18'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369671} * 365'
-        age_at_visit_end:
-          expr: '{phv00369671} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 19'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369672} * 365'
-        age_at_visit_end:
-          expr: '{phv00369672} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 20'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369673} * 365'
-        age_at_visit_end:
-          expr: '{phv00369673} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 21'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369674} * 365'
-        age_at_visit_end:
-          expr: '{phv00369674} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 22'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369675} * 365'
-        age_at_visit_end:
-          expr: '{phv00369675} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 23'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369676} * 365'
-        age_at_visit_end:
-          expr: '{phv00369676} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 24'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369677} * 365'
-        age_at_visit_end:
-          expr: '{phv00369677} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 25'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369678} * 365'
-        age_at_visit_end:
-          expr: '{phv00369678} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 26'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369679} * 365'
-        age_at_visit_end:
-          expr: '{phv00369679} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 27'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369680} * 365'
-        age_at_visit_end:
-          expr: '{phv00369680} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 28'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369681} * 365'
-        age_at_visit_end:
-          expr: '{phv00369681} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 29'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369682} * 365'
-        age_at_visit_end:
-          expr: '{phv00369682} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 30'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369683} * 365'
-        age_at_visit_end:
-          expr: '{phv00369683} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 31'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369684} * 365'
-        age_at_visit_end:
-          expr: '{phv00369684} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht007777
-      slot_derivations:
-        name:
-          value: 'FHS ORIGINAL EXAM 32'
-        associated_participant:
-          populated_from: phv00369651
-        age_at_visit_start:
-          expr: '{phv00369685} * 365'
-        age_at_visit_end:
-          expr: '{phv00369685} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht006026
-      slot_derivations:
-        name:
-          expr: case(({phv00277016} == 2, 'FHS NEW OFFSPRING SPOUSE EXAM 1'), case({phv00277016} == 3, 'FHS GENERATION 3 EXAM 1'), case({phv00277016} == 72, 'FHS OMNI 2 EXAM 1'))
-        associated_participant:
-          populated_from: phv00277015
-        age_at_visit_start:
-          expr: '{phv00277020} * 365'
-        age_at_visit_end:
-          expr: '{phv00277020} * 365'
-- class_derivations:
-    Visit:
-      populated_from: pht006026
-      slot_derivations:
-        name:
-          expr: case(({phv00277016} == 2, 'FHS NEW OFFSPRING SPOUSE EXAM 2'), case({phv00277016} == 3, 'FHS GENERATION 3 EXAM 2'), case({phv00277016} == 72, 'FHS OMNI 2 EXAM 2'))
-        associated_participant:
-          populated_from: phv00277015
-        age_at_visit_start:
-          expr: '{phv00277021} * 365'
-        age_at_visit_end:
-          expr: '{phv00277021} * 365'
+          expr: '{phv00056723} * 365'
