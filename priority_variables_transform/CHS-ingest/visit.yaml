@@ -87,7 +87,7 @@
       populated_from: pht001450
       slot_derivations:
         id:
-          value: CHS BASELINE 2
+          value: CHS BASELINE
         associated_participant:
           populated_from: phv00098771
         age_at_visit_start:
@@ -96,16 +96,40 @@
           expr: '{phv00098799} * 365'
 - class_derivations:
     Visit:
+      populated_from: pht001449
+      slot_derivations:
+        id:
+          value: CHS BASELINE
+        associated_participant:
+          populated_from: {phv00098763}
+        age_at_visit_start:
+          expr: '{pht001450.phv00098799} * 365'
+        age_at_visit_end:
+          expr: '{pht001450.phv00098799} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht001451
+      slot_derivations:
+        id:
+          value: CHS BASELINE
+        associated_participant:
+          populated_from: phv00100283
+        age_at_visit_start:
+          expr: '({pht001450.phv00098799} * 365) + ({phv00100283} * 365)'
+        age_at_visit_end:
+          expr: '({pht001450.phv00098799} * 365) + ({phv00100283} * 365)'          
+- class_derivations:
+    Visit:
       populated_from: pht001452
       slot_derivations:
         id:
-          value: CHS BASELINE BOTH
+          value: CHS BASELINE
         associated_participant:
           populated_from: phv00100285
         age_at_visit_start:
-          expr: '{phv00100487} * 365'
+          expr: '({pht001450.phv00098799} * 365) + ({phv00100487} * 365)'
         age_at_visit_end:
-          expr: '{phv00100487} * 365'
+          expr: '({pht001450.phv00098799} * 365) + ({phv00100487} * 365)'
 - class_derivations:
     Visit:
       populated_from: pht001460
