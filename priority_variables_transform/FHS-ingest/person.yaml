@@ -1,0 +1,171 @@
+- class_derivations:
+    ResearchStudy:
+      slot_derivations:
+        name:
+          value: 'Framingham Heart Study'
+        name_shortened:
+          value: FHS
+        assession_number:
+          value: phs000007
+        assession_authority:
+          value: dbGAP
+        version:
+          value: 33
+        url:
+          value: https://www.framinghamheartstudy.org/
+- class_derivations:
+    ResearchStudy:
+      slot_derivations:
+        name:
+          value: 'Framingham Heart Study Original Cohort'
+        name_shortened:
+          value: 'FHS Original'
+        part_of:
+          value: 'Framingham Heart Study'
+- class_derivations:
+    ResearchStudy:
+      slot_derivations:
+        name:
+          value: 'Framingham Heart Study Offspring Cohort'
+        name_shortened:
+          value: 'FHS Offspring'
+        part_of:
+          value: 'Framingham Heart Study'
+- class_derivations:
+    ResearchStudy:
+      slot_derivations:
+        name:
+          value: 'Framingham Heart Study Generation 3 Cohort'
+        name_shortened:
+          value: 'FHS Generation 3'
+        part_of:
+          value: 'Framingham Heart Study'
+- class_derivations:
+    ResearchStudy:
+      slot_derivations:
+        name:
+          value: 'Framingham Heart Study New Offspring Spouse Cohort'
+        name_shortened:
+          value: 'FHS New Offspring Spouse'
+        part_of:
+          value: 'Framingham Heart Study'
+- class_derivations:
+    ResearchStudy:
+      slot_derivations:
+        name:
+          value: 'Framingham Heart Study Omni 1 Cohort'
+        name_shortened:
+          value: 'FHS Omni 1'
+        part_of:
+          value: 'Framingham Heart Study'
+- class_derivations:
+    ResearchStudy:
+      slot_derivations:
+        name:
+          value: 'Framingham Heart Study Omni 2 Cohort'
+        name_shortened:
+          value: 'FHS Omni 2'
+        part_of:
+          value: 'Framingham Heart Study'
+- class_derivations:
+    Participant:
+      populated_from: pht003099
+      slot_derivations:
+        member_of_research_study:
+          name: >
+            case(({phv00177928} == 0, 'Framingham Heart Study Original Cohort'), 
+            case({phv00177928} == 1, 'Framingham Heart Study Offspring Cohort'), 
+            case({phv00177928} == 2, 'Framingham Heart Study New Offspring Spouse Cohort'), 
+            case({phv00177928} == 3, 'Framingham Heart Study Generation 3 Cohort'), 
+            case({phv00177928} == 7, 'Framingham Heart Study OMNI 1 Cohort'), 
+            case({phv00177928} == 72, 'Framingham Heart Study OMNI 2 Cohort'))
+        associated_person:
+          object_derivations:
+          - class_derivations:
+              Person:
+                populated_from: pht003099
+                slot_derivations:
+                  identity:
+                    populated_from: phv00177926
+                  species:
+                    value: NCBITaxon:9606
+                  vital_status:
+                    populated_from: pht006018.phv00276841
+                    value_mappings:
+                      '0': OMOP:4230556
+                      '1': OMOP:434489
+                  age_at_death:
+                    expr: '{pht002075.phv00141916} * 365'
+                  cause_of_death:
+                    object_derivations:
+                    - class_derivations:
+                        CauseOfDeath:
+                          populated_from: pht000094
+                          slot_derivations:
+                            cause:
+                              populated_from: phv00021941
+                            order:
+                              value: 1        
+                        CauseOfDeath:
+                          populated_from: pht000094
+                          slot_derivations:
+                            cause:
+                              populated_from: phv00021942
+                            order:
+                              value: 2
+                        CauseOfDeath:
+                          populated_from: pht000094
+                          slot_derivations:
+                            cause:
+                              populated_from: phv00021943
+                            order:
+                              value: 3
+                        CauseOfDeath:
+                          populated_from: pht000094
+                          slot_derivations:
+                            cause:
+                              populated_from: phv00021944
+                            order:
+                              value: 4 
+                        CauseOfDeath:
+                          populated_from: pht000094
+                          slot_derivations:
+                            cause:
+                              populated_from: phv00021945
+                            order:
+                              value: 5
+                        CauseOfDeath:
+                          populated_from: pht000094
+                          slot_derivations:
+                            cause:
+                              populated_from: phv00021946
+                            order:
+                              value: 6
+                        CauseOfDeath:
+                          populated_from: pht000094
+                          slot_derivations:
+                            cause:
+                              populated_from: phv00021947
+                            order:
+                              value: 7
+                        CauseOfDeath:
+                          populated_from: pht000094
+                          slot_derivations:
+                            cause:
+                              populated_from: phv00021948
+                            order:
+                              value: 8
+                        CauseOfDeath:
+                          populated_from: pht000094
+                          slot_derivations:
+                            cause:
+                              populated_from: phv00021949
+                            order:
+                              value: 9
+                        CauseOfDeath:
+                          populated_from: pht000094
+                          slot_derivations:
+                            cause:
+                              populated_from: phv00021950
+                            order:
+                              value: 10

@@ -7,6 +7,8 @@
         associated_visit:
           value: FHS OFFSPRING EXAM 2
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177932} * 365'
         observation_type:
           value: OBA:VT0003018
           range: string
@@ -28,8 +30,12 @@
         associated_participant:
           populated_from: phv00081012
         associated_visit:
-          value: FHS ORIGINAL EXAM 20 AND EXAM 21
-          range: string
+          populated_from: phv00081047
+          value_mappings:
+            '20': FHS ORIGINAL EXAM 20
+            '21': FHS ORIGINAL EXAM 21
+        age_at_observation:
+          expr: case(({phv00081047} == 20, {pht003099.phv00177968} * 365), case({phv00081047} == 21, {pht003099.phv00177970} * 365))
         observation_type:
           value: OBA:VT0003018
           range: string

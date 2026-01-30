@@ -7,6 +7,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 1
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177930} * 365'
         observation_type:
           value: OMOP:4282779
           range: string
@@ -14,7 +16,7 @@
           populated_from: phv00000543
           value_mappings:
             '0': None
-            '1': '''OMOP:40766945 #CURRENT_SMOKER'''
+            '1': OMOP:40766945
 - class_derivations:
     Observation:
       populated_from: pht003094
@@ -27,6 +29,8 @@
             '2': FHS NEW OFFSPRING SPOUSE EXAM 2
             '3': FHS GENERATION 3 EXAM 2
             '72': FHS OMNI 2 EXAM 2
+        age_at_observation:
+          expr: '{pht003099.phv00177932} * 365'  
         observation_type:
           value: OMOP:4282779
           range: string
@@ -34,7 +38,7 @@
           populated_from: phv00177303
           value_mappings:
             '0': None
-            '1': '''OMOP:40766945 #CURRENT_SMOKER'''
+            '1': OMOP:40766945
 - class_derivations:
     Observation:
       populated_from: pht006005
@@ -44,6 +48,8 @@
         associated_visit:
           value: FHS NEW OFFSPRING SPOUSE EXAM 1
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177930} * 365'
         observation_type:
           value: OMOP:4282779
           range: string
@@ -51,7 +57,7 @@
           populated_from: phv00273761
           value_mappings:
             '0': None
-            '1': '''OMOP:40766945 #CURRENT_SMOKER'''
+            '1': OMOP:40766945
 - class_derivations:
     Observation:
       populated_from: pht004814
@@ -61,6 +67,8 @@
         associated_visit:
           value: FHS OMNI 1 EXAM 2
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177932} * 365'
         observation_type:
           value: OMOP:4282779
           range: string
@@ -68,7 +76,7 @@
           populated_from: phv00251239
           value_mappings:
             '0': None
-            '1': '''OMOP:40766945 #CURRENT_SMOKER'''
+            '1': OMOP:40766945
 - class_derivations:
     Observation:
       populated_from: pht004815
@@ -78,6 +86,8 @@
         associated_visit:
           value: FHS OMNI 1 EXAM 3
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177934} * 365'
         observation_type:
           value: OMOP:4282779
           range: string
@@ -85,7 +95,7 @@
           populated_from: phv00251297
           value_mappings:
             '0': None
-            '1': '''OMOP:40766945 #CURRENT_SMOKER'''
+            '1': OMOP:40766945
 - class_derivations:
     Observation:
       populated_from: pht005141
@@ -95,6 +105,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 29
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00226999} * 365'
         observation_type:
           value: OMOP:4282779
           range: string
@@ -102,7 +114,7 @@
           populated_from: phv00254617
           value_mappings:
             '0': None
-            '1': '''OMOP:40766945 #CURRENT_SMOKER'''
+            '1': OMOP:40766945
 - class_derivations:
     Observation:
       populated_from: pht005140
@@ -114,6 +126,8 @@
           value_mappings:
             '1': FHS OFFSPRING EXAM 9
             '7': FHS OMNI 1 EXAM 4
+        age_at_observation:
+          expr: case(({phv00254011} == 1, {pht003099.phv00177946} * 365), case({phv00254011} == 7, {pht003099.phv00177936} * 365))
         observation_type:
           value: OMOP:4282779
           range: string
@@ -121,7 +135,7 @@
           populated_from: phv00254043
           value_mappings:
             '0': None
-            '1': '''OMOP:40766945 #CURRENT_SMOKER'''
+            '1': OMOP:40766945
 - class_derivations:
     Observation:
       populated_from: pht000012
@@ -131,6 +145,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 10
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177948} * 365'
         observation_type:
           value: OMOP:4282779
           range: string
@@ -138,7 +154,7 @@
           populated_from: phv00001452
           value_mappings:
             '0': None
-            '1': '''OMOP:40766945 #CURRENT_SMOKER'''
+            '1': OMOP:40766945
 - class_derivations:
     Observation:
       populated_from: pht000013
@@ -148,6 +164,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 11
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177950} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -155,7 +173,7 @@
           populated_from: phv00001636
           value_mappings:
             '0': None
-            '1': '''OMOP:40766945 #CURRENT_SMOKER'''
+            '1': OMOP:40766945
 - class_derivations:
     Observation:
       populated_from: pht000014
@@ -165,6 +183,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 12
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177952} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -184,6 +204,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 13
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177954} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -199,6 +221,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 17
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177962} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -214,6 +238,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 28
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177984} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -252,6 +278,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 5
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177938} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -270,6 +298,8 @@
         associated_visit:
           value: FHS OFFSPRING EXAM 2
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177932} * 365'
         observation_type:
           value: OMOP:4282779
           range: string
@@ -291,6 +321,8 @@
         associated_visit:
           value: FHS OFFSPRING EXAM 1
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177930} * 365'
         observation_type:
           value: OMOP:4282779
           range: string
@@ -309,6 +341,8 @@
         associated_visit:
           value: FHS OFFSPRING EXAM 8
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177944} * 365'
         observation_type:
           value: OMOP:4282779
           range: string
@@ -326,6 +360,8 @@
         associated_visit:
           value: FHS GENERATION 3 EXAM 1
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177930} * 365'
         observation_type:
           value: OMOP:4282779
           range: string
@@ -343,6 +379,8 @@
           value_mappings:
             '1': FHS OFFSPRING SHHS EXAM 1
             '7': FHS OMNI 1 SHHS EXAM 1
+        age_at_observation:
+          expr: '{phv00056587} * 365'  
         observation_type:
           value: OMOP:4282779
           range: string
@@ -363,6 +401,8 @@
           value_mappings:
             '1': FHS OFFSPRING SHHS 2
             '7': FHS OMNI 1 SHHS 2
+        age_at_observation:
+          expr: '{phv00056723} * 365'   
         observation_type:
           value: OMOP:4282779
           range: string
@@ -384,6 +424,8 @@
             '2': FHS NEW OFFSPRING SPOUSE EXAM 1
             '3': FHS GENERATION 3 EXAM 1
             '72': FHS OMNI 2 EXAM 1
+        age_at_observation:
+          expr: '{pht003099.phv00177930} * 365'   
         observation_type:
           value: OMOP:4282779
           range: string
@@ -404,6 +446,8 @@
             '2': FHS NEW OFFSPRING SPOUSE EXAM 2
             '3': FHS GENERATION 3 EXAM 2
             '72': FHS OMNI 2 EXAM 2
+        age_at_observation:
+          expr: '{pht003099.phv00177932} * 365'   
         observation_type:
           value: OMOP:4282779
           range: string
@@ -423,6 +467,8 @@
           value_mappings:
             '1': FHS OFFSPRING EXAM 1
             '7': FHS OMNI 1 EXAM 1
+        age_at_observation:
+          expr: '{pht003099.phv00177930} * 365'   
         observation_type:
           value: OMOP:4282779
           range: string
@@ -442,6 +488,8 @@
           value_mappings:
             '1': FHS OFFSPRING EXAM 2
             '7': FHS OMNI 1 EXAM 2
+        age_at_observation:
+          expr: '{pht003099.phv00177932} * 365'   
         observation_type:
           value: OMOP:4282779
           range: string
@@ -461,6 +509,8 @@
           value_mappings:
             '1': FHS OFFSPRING EXAM 3
             '7': FHS OMNI 1 EXAM 3
+        age_at_observation:
+          expr: '{pht003099.phv00177934} * 365'   
         observation_type:
           value: OMOP:4282779
           range: string
@@ -480,6 +530,8 @@
           value_mappings:
             '1': FHS OFFSPRING EXAM 4
             '7': FHS OMNI 1 EXAM 4
+        age_at_observation:
+          expr: '{pht003099.phv00177936} * 365'   
         observation_type:
           value: OMOP:4282779
           range: string
@@ -659,6 +711,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 1
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177930} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -676,6 +730,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 2
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177932} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -693,6 +749,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 3
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177934} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -710,6 +768,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 4
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177936} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -727,6 +787,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 5
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177938} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -744,6 +806,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 7
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177942} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -761,6 +825,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 8
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177944} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -778,6 +844,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 9
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177946} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -795,6 +863,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 10
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177948} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -812,6 +882,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 11
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177950} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -829,6 +901,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 12
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177952} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -846,6 +920,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 13
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177954} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -863,6 +939,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 14
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177956} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -880,6 +958,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 15
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177958} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -897,6 +977,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 17
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177962} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -914,6 +996,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 18
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177964} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -931,6 +1015,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 19
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177966} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -948,6 +1034,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 20
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177968} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -965,6 +1053,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 21
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177970} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -982,6 +1072,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 22
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177972} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -999,6 +1091,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 23
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177974} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -1016,6 +1110,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 24
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177976} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -1033,6 +1129,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 25
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177978} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -1050,6 +1148,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 26
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177980} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -1067,6 +1167,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 27
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177982} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -1084,6 +1186,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 28
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00177984} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -1101,6 +1205,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 29
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00226999} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -1118,6 +1224,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 30
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00227002} * 365'
         observation_type:
           value: OMOP:4282779
           range: string
@@ -1135,6 +1243,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 31
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00227005} * 365' 
         observation_type:
           value: OMOP:4282779
           range: string
@@ -1152,6 +1262,8 @@
         associated_visit:
           value: FHS ORIGINAL EXAM 32
           range: string
+        age_at_observation:
+          expr: '{pht003099.phv00227008} * 365'
         observation_type:
           value: OMOP:4282779
           range: string
