@@ -234,41 +234,21 @@ for bdchm in vars_list:
 # ----- 2B. WRITE GOOD YAML CODELINES the JINJA way -----
 from jinja2 import Environment, FileSystemLoader
 
-environment = Environment(loader=FileSystemLoader(templates_dir))
-template = environment.get_template("yaml_measob.txt")
-
-# Define context dictionary
-context = {
-    "phv": phv,
-    "entity_val": bdchm_entity,
-    "pht": pht,
-    "onto": onto_id,
-    "unit": bdchm_unit,
-    "visit": associatedvisit,
-    "participant": participantidphv,
-    "age": ageinyearsphv,
-    "convert": conversion_rule,
-    "source_unit": source_unit,
-    "target_unit": target_unit,
-    "unit_match": unit_match,
-    "unit_convert": unit_convert,
-    "unit_expr": unit_expr
-    }
+environment = Environment(loader=FileSystemLoader(templates_dir), trim_blocks=True, lstrip_blocks=True)
+template = environment.get_template("yaml_measobs.j2")
 
 for bdchm in vars_list:
     good_file = os.path.join(temp_dir, cohort, "good", f"{bdchm}.csv")
     good_data = pd.read_csv(good_file)
-    
+
     if len(good_data) > 0:
         # Create output directory
         out_good_dir = os.path.join(out_dir, cohort, "good")
         os.makedirs(out_good_dir, exist_ok=True)
-        
+
         yaml_file = os.path.join(out_good_dir, f"{bdchm}.yaml")
 
-
-
-        
-        with open(yaml_file, 'w', encoding="utf-8") as yaml:
-            yaml.write(context)
+        with open(yaml_file, 'w', encoding="utf-8") as f:
+            for idx, row in good_data.iterrows():
+                f.write(template.render(**row.to_dict()))
             print(f"... wrote {yaml_file}")
