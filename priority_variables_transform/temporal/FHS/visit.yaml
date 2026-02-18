@@ -2,6 +2,11 @@
     Visit:
       populated_from: pht003099
       slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":EXAM 1")'
+        name:
+          value: EXAM 1
+          range: string
         associated_participant:
           populated_from: phv00177926
         age_at_visit_start:
@@ -11,6 +16,11 @@
     Visit:
       populated_from: pht003099
       slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":EXAM 2")'
+        name:
+          value: EXAM 2
+          range: string
         associated_participant:
           populated_from: phv00177926
         age_at_visit_start:
@@ -20,8 +30,13 @@
     Visit:
       populated_from: pht003099
       slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":EXAM 3")'
+        name:
+          value: EXAM 3
+          range: string
         associated_participant:
           populated_from: phv00177926
         age_at_visit_start:
           #age at exam 3
-          populated_from: phv00177934          
+          populated_from: phv00177934
