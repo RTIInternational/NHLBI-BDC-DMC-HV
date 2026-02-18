@@ -1,4 +1,4 @@
-# - class_derivations:
+# - class_derivations: # REVIEW - is this needed? Should this be removed?
 #     Demography:
 #       populated_from: pht001109
 #       slot_derivations:
@@ -90,7 +90,7 @@
         associated_visit:
           value: MESA CLASSIC EXAM 3
         sex:
-          populated_from: phv00085782
+          populated_from: phv00086268
           value_mappings:
             '1': '''OMOP:8507'''
             '0': '''OMOP:8532'''
@@ -202,11 +202,6 @@
                       ({phv00175855} == 3, "OMOP:8516"),
                       ({phv00175876} == 3, "OMOP:8516"),
                       ({phv00175941} == 3, "OMOP:8516"))'
-          populated_from: phv00174585
-          value_mappings:
-            '1': '''OMOP:8527'''
-            '2': '''OMOP:8515'''
-            '3': '''OMOP:8516'''
 - class_derivations:
     Demography:
       populated_from: pht003088
