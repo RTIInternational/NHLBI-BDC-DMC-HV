@@ -1,10 +1,10 @@
 - class_derivations:
     Participant:
-      populated_from: COPDGene
+      populated_from: COPDGene # REVIEW - shouldn't this be a pht reference? Maybe pht002239?
       slot_derivations:
         associated_participant:
           populated_from: phv00159568
         identity:
-          populated_from: dbGaP_Subject_ID
+          populated_from: dbGaP_Subject_ID # REVIEW - is this right? phv reference?
         member_of_research_study:
-          value: COPDGene
+          value: COPDGene # REVIEW - confirm this too?
