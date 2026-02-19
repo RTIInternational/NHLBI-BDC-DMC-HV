@@ -43,13 +43,13 @@
       populated_from: pht000992
       slot_derivations:
         associated_participant:
-          populated_from: phv00077873
+          populated_from: phv00077797
         associated_visit:
           value: WHI YEAR 5
         condition_concept:
           value: MONDO:0004981
         condition_status:
-          populated_from: phv00077638 # REVIEW - this phv is not withing pht000992, but pht000990. Please confirm this is correct.
+          populated_from: phv00077873 # REVIEW - this phv is not withing pht000992, but pht000990. Please confirm this is correct.
           value_mappings:
             '0': ABSENT
             '1': PRESENT
@@ -172,7 +172,7 @@
           value: ONESELF
 - class_derivations:
     Condition:
-      populated_from: pht003406 # REVIEW - this is a duplicate of the previous derivation, some overlap, some differences. Please confirm.
+      populated_from: pht003406
       slot_derivations:
         associated_participant:
           populated_from: phv00193046
@@ -184,8 +184,8 @@
           populated_from: phv00193129
           value_mappings:
             '1': PRESENT
-            '0': PRESENT
-            '9': PRESENT
+            '0': ABSENT
+            '9': UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:
