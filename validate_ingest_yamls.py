@@ -14,8 +14,6 @@ from linkml_runtime.utils.introspection import package_schemaview
 KNOWN_ISSUES = {
     "priority_variables_transform/CHS-ingest/afib.yaml": "uses lookup_key (not in linkml-map schema)",
     "priority_variables_transform/CHS-ingest/cac_score.yaml": "uses lookup_key (not in linkml-map schema)",
-    "priority_variables_transform/CHS-ingest/carotid_sten_left.yaml": "uses value_mapping instead of value_mappings",
-    "priority_variables_transform/CHS-ingest/carotid_sten_right.yaml": "uses value_mapping instead of value_mappings",
     "priority_variables_transform/COPDGene-ingest/visit.yaml": "bare string values in slot_derivations",
     "priority_variables_transform/FHS-ingest/il18.yaml": "empty file (entirely commented out)",
     "priority_variables_transform/FHS-ingest/insulin_in_blood.yaml": "unit field uses dict instead of string",
