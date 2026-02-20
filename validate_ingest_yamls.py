@@ -12,8 +12,6 @@ from linkml_runtime.utils.introspection import package_schemaview
 # validation failures so CI stays green while issues are tracked separately.
 # Remove entries as they are fixed.
 KNOWN_ISSUES = {
-    "priority_variables_transform/CHS-ingest/afib.yaml": "uses lookup_key (not in linkml-map schema)",
-    "priority_variables_transform/CHS-ingest/cac_score.yaml": "uses lookup_key (not in linkml-map schema)",
     "priority_variables_transform/FHS-ingest/il18.yaml": "empty file (entirely commented out)",
     "priority_variables_transform/FHS-ingest/pr_qrs_qt.yaml": "observations nesting inside MeasurementObservationSet not in linkml-map schema",
 }
