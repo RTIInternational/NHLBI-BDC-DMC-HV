@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00069685
         associated_visit:
-          name: FHS GENERATION 3 EXAM 1
+          value: FHS GENERATION 3 EXAM 1
           range: string
         age_at_observation:
           expr: '{pht003099.phv00177930} * 365'
@@ -50,9 +50,9 @@
                           ({phv00201991} > 1.39, {phv00201991}),
                           (True, "LLOD")
                          )'
-                    unit:
-                      value: pmol/L
-                      range: string
+                  unit:
+                    value: pmol/L
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003902
@@ -66,7 +66,7 @@
             '3': FHS GENERATION 3 EXAM 2
             '72': FHS OMNI 2 EXAM 2
         age_at_observation:
-          expr: '{pht003099.phv00177932} * 365'    
+          expr: '{pht003099.phv00177932} * 365'
         observation_type:
           value: OBA:2060174
           range: string
@@ -77,10 +77,10 @@
                 populated_from: pht003902
                 slot_derivations:
                   value_decimal:
-                     expr: 'case(
-                           ({phv00201995} > 1.39, {phv00201995}),
-                           (True, "LLOD")
-                          )'                  
+                    expr: 'case(
+                          ({phv00201995} > 1.39, {phv00201995}),
+                          (True, "LLOD")
+                         )'
                   unit:
                     value: pmol/L
                     range: string
@@ -91,7 +91,7 @@
         associated_participant:
           populated_from: phv00227079
         associated_visit:
-          name: FHS OMNI 2 EXAM 1
+          value: FHS OMNI 2 EXAM 1
           range: string
         age_at_observation:
           expr: '{pht003099.phv00177930} * 365'
@@ -121,7 +121,7 @@
             '1': FHS OFFSPRING EXAM 9
             '7': FHS OMNI 1 EXAM 4
         age_at_observation:
-          expr: case(({phv00227083} == 1, {pht003099.phv00177946} * 365), case({phv00227083} == 7, {pht003099.phv00177936} * 365))            
+          expr: case(({phv00227083} == 1, {pht003099.phv00177946} * 365), case({phv00227083} == 7, {pht003099.phv00177936} * 365))
         observation_type:
           value: OBA:2060174
           range: string
@@ -132,10 +132,10 @@
                 populated_from: pht004805
                 slot_derivations:
                   value_decimal:
-                     expr: 'case(
-                           ({phv00227085} > 1.39, {phv00227085}),
-                           (True, "LLOD")
-                          )'                  
+                    expr: 'case(
+                          ({phv00227085} > 1.39, {phv00227085}),
+                          (True, "LLOD")
+                         )'
                   unit:
                     value: pmol/L
                     range: string
@@ -146,7 +146,7 @@
         associated_participant:
           populated_from: phv00275427
         associated_visit:
-          name: FHS OFFSPRING EXAM 5
+          value: FHS OFFSPRING EXAM 5
           range: string
         age_at_observation:
           expr: '{pht003099.phv00177938} * 365'
