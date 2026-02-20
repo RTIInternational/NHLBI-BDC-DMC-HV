@@ -32,7 +32,7 @@ def validate_block(
     try:
         normalized = normalizer.normalize(block)
         TransformationSpecification(**normalized)
-    except Exception as e:
+    except (TypeError, ValueError) as e:
         errors.append(f"  block {block_index}: {e}")
     return errors
 
@@ -57,14 +57,18 @@ def main() -> int:
 
     for file_path in yaml_files:
         total_files += 1
-        rel_path = str(file_path)
+        rel_path = file_path.as_posix()
 
         if rel_path in KNOWN_ISSUES:
             skipped_files.append((file_path, KNOWN_ISSUES[rel_path]))
             continue
 
-        with file_path.open() as f:
-            data = yaml.safe_load(f)
+        try:
+            with file_path.open(encoding="utf-8") as f:
+                data = yaml.safe_load(f)
+        except (OSError, yaml.YAMLError) as e:
+            failed_files.append((file_path, [f"  failed to read/parse YAML: {e}"]))
+            continue
 
         if data is None:
             failed_files.append((file_path, ["  empty file"]))
