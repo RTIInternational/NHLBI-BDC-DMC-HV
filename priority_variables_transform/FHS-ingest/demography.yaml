@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00021427
         associated_visit:
-          name: FHS GENERATION 3 EXAM 1
+          value: FHS GENERATION 3 EXAM 1
         sex:
           populated_from: phv00021228
           value_mappings:
@@ -71,9 +71,9 @@
       populated_from: pht000747
       slot_derivations:
         associated_participant:
-          populated_from: phv00072580
+          populated_from: phv00072044
         associated_visit:
-          name: FHS OFFSPRING EXAM 8
+          value: FHS OFFSPRING EXAM 8
         ethnicity:
           expr: 'case(({phv00072538} == 1, "OMOP:38003563"), ({phv00072539} == 1, "OMOP:38003564"))'
         race:
@@ -186,7 +186,7 @@
         associated_participant:
           populated_from: phv00251262
         associated_visit:
-          name: FHS OMNI 1 EXAM 3
+          value: FHS OMNI 1 EXAM 3
         ethnicity:
           expr: 'case(({phv00251746} == 1, "OMOP:38003563"), ({phv00251747} == 1, "OMOP:38003564"))'
         race:
@@ -216,7 +216,7 @@
       populated_from: pht005140
       slot_derivations:
         associated_participant:
-          populated_from: phv00254010
+          populated_from: phv00254011
         associated_visit:
           populated_from: phv00254011
           value_mappings:
@@ -229,7 +229,7 @@
       populated_from: pht006026
       slot_derivations:
         associated_participant:
-          populated_from: phv00277015
+          populated_from: phv00277016
         associated_visit:
           populated_from: phv00277016
           value_mappings:
@@ -243,13 +243,13 @@
             '2': OMOP:8532
 - class_derivations:
     Demography:
-      populated_from: pht006027
+      populated_from: pht000074
       slot_derivations:
         associated_participant:
           value: UNKNOWN
           range: string
         sex:
-          populated_from: phv00277067
+          populated_from: phv00021228
           value_mappings:
             '1': OMOP:8507
             '2': OMOP:8532
@@ -258,9 +258,9 @@
       populated_from: pht007777
       slot_derivations:
         associated_participant:
-          populated_from: phv00369651
+          populated_from: phv00369652
         associated_visit:
-          name: FHS ORIGINAL EXAM 1-32
+          value: FHS ORIGINAL EXAM 1-32
         sex:
           populated_from: phv00369653
           value_mappings:
@@ -361,7 +361,7 @@
       populated_from: pht009761
       slot_derivations:
         associated_participant:
-          populated_from: phv00423868
+          populated_from: phv00423869
         associated_visit:
           populated_from: phv00423869
           value_mappings:
