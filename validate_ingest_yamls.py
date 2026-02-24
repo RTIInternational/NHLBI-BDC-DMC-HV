@@ -14,6 +14,7 @@ from linkml_runtime.utils.introspection import package_schemaview
 KNOWN_ISSUES = {
     "priority_variables_transform/FHS-ingest/il18.yaml": "empty file (entirely commented out)",
     "priority_variables_transform/FHS-ingest/pr_qrs_qt.yaml": "observations nesting inside MeasurementObservationSet not in linkml-map schema",
+    "priority_variables_transform/FHS-ingest/_manifest-fhs.yaml": "version tracking manifest, not a transformation spec",
 }
 
 
