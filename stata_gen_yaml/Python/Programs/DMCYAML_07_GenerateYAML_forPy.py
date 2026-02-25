@@ -1,8 +1,9 @@
 """
-Date Last Updated: 2025/12/16
+Date Last Updated: 2026/02/11
 Description: Python translation of DMCYAML_07_GenerateYAML_forPy.do
 This script generates YAML files from filtered/reshaped metadata.
 MVP version of script tested in local directory on 12/16/2025 - output appears correct.
+Ref: GitHub pull request #349
 """
 
 import pandas as pd
@@ -14,10 +15,11 @@ from pathlib import Path
 # ----- SET PATHS -----
 
 # Today's date in YYYY-MM-DD format
-today = datetime.now().strftime("%Y-%m-%d")
+#today = datetime.now().strftime("%Y-%m-%d")
+today = "2026-01-30"  # hardcoding for testing purposes - update as needed
 
 # Filepaths
-base_dir = r"C:\\Users\smccutchan\\OneDrive - Research Triangle Institute\Documents\DMC\\YAMLTransforms"
+base_dir = r"C:\\Users\smccutchan\Documents\DMC\\NHLBI-BDC-DMC-HV\stata_gen_yaml"
 raw_dir = os.path.join(base_dir, "Raw")
 der_dir = os.path.join(base_dir, "Derived")
 prog_dir = os.path.join(base_dir, "Python\\Programs")
@@ -92,6 +94,7 @@ if len(duplicates) > 0:
 # check the resulting duplicates dataframe is empty. must be empty for following code to produce expected results
 duplicates.head()
 
+
 # ----- 1. SPLIT DATA ROWS INTO GOOD/BAD CANDIDATES -----
 #this writes blank files for any bdchm_varname that has no candidates. 
 for bdchm in vars_list:
@@ -119,119 +122,6 @@ for bdchm in vars_list:
 
 # ----- 2. WRITE GOOD YAML CODELINES -----
 #the if condition ensures that no yaml file is written if there are no candidates for that bdchm_varname
-for bdchm in vars_list:
-    good_file = os.path.join(temp_dir, cohort, "good", f"{bdchm}.csv")
-    good_data = pd.read_csv(good_file)
-    
-    if len(good_data) > 0:
-        # Create output directory
-        out_good_dir = os.path.join(out_dir, cohort, "good")
-        os.makedirs(out_good_dir, exist_ok=True)
-        
-        yaml_file = os.path.join(out_good_dir, f"{bdchm}.yaml")
-        
-        with open(yaml_file, 'w') as f:
-            for idx, row in good_data.iterrows():
-                phv = row['phv']
-                entity_val = row['bdchm_entity']
-                pht = row['pht']
-                onto = row['onto_id']
-                unit = row['bdchm_unit']
-                visit = row['associatedvisit']
-                participant = row['participantidphv']
-                age = row['ageinyearsphv']
-                convert = row['conversion_rule']
-                source_unit = row.get('source_unit', '')
-                target_unit = row.get('target_unit', '')
-                unit_match = row['unit_match']
-                unit_convert = row.get('unit_convert', 0)
-                unit_expr = row.get('unit_expr', 0)
-                
-                if unit_match == 1:
-                    # Write unit match YAML
-                    f.write("- class_derivations:\n")
-                    f.write(f"     {entity_val}:\n")
-                    f.write(f"       populated from: {pht}\n")
-                    f.write(f"       slot_derivations:\n")
-                    f.write(f"         associated_participant:\n")
-                    f.write(f"           populated_from: {participant}\n")
-                    f.write(f"         associated_visit:\n")
-                    f.write(f"           value: {visit}\n")
-                    f.write(f"         age_at_observation:\n")
-                    f.write(f"           expr: {{{age}}} * 365\n")
-                    f.write(f"         observation_type:\n")
-                    f.write(f"           value: {onto}\n")
-                    f.write(f"         value_quantity:\n")
-                    f.write(f"           object_derivations:\n")
-                    f.write(f"           - class_derivations:\n")
-                    f.write(f"               Quantity:\n")
-                    f.write(f"                 populated_from: {pht}\n")
-                    f.write(f"                 slot_derivations:\n")
-                    f.write(f"                   value_decimal:\n")
-                    f.write(f"                     populated_from: {phv}\n")
-                    f.write(f"                   unit:\n")
-                    f.write(f"                     value: \"{unit}\"\n")
-                
-                elif unit_convert == 1:
-                    # Write unit conversion YAML
-                    f.write("- class_derivations:\n")
-                    f.write(f"     {entity_val}:\n")
-                    f.write(f"       populated from: {pht}\n")
-                    f.write(f"       slot_derivations:\n")
-                    f.write(f"         associated_participant:\n")
-                    f.write(f"           populated_from: {participant}\n")
-                    f.write(f"         associated_visit:\n")
-                    f.write(f"           value: {visit}\n")
-                    f.write(f"         age_at_observation:\n")
-                    f.write(f"           expr: {{{age}}} * 365\n")
-                    f.write(f"         observation_type:\n")
-                    f.write(f"           value: {onto}\n")
-                    f.write(f"         value_quantity:\n")
-                    f.write(f"           object_derivations:\n")
-                    f.write(f"           - class_derivations:\n")
-                    f.write(f"               Quantity:\n")
-                    f.write(f"                 populated_from: {pht}\n")
-                    f.write(f"                 slot_derivations:\n")
-                    f.write(f"                   value_decimal:\n")
-                    f.write(f"                     populated_from: {phv}\n")
-                    f.write(f"                     unit_conversion:\n")
-                    f.write(f"                       source_unit: \"{source_unit}\"\n")
-                    f.write(f"                       target_unit: \"{target_unit}\"\n")
-                    f.write(f"                   unit:\n")
-                    f.write(f"                     value: \"{unit}\"\n")
-                    f.write(f"                     range: string\n")
-                
-                elif unit_expr == 1:
-                    # Write unit expression YAML
-                    f.write("- class_derivations:\n")
-                    f.write(f"     {entity_val}:\n")
-                    f.write(f"       populated from: {pht}\n")
-                    f.write(f"       slot_derivations:\n")
-                    f.write(f"         associated_participant:\n")
-                    f.write(f"           populated_from: {participant}\n")
-                    f.write(f"         associated_visit:\n")
-                    f.write(f"           value: {visit}\n")
-                    f.write(f"         age_at_observation:\n")
-                    f.write(f"           expr: {{{age}}} * 365\n")
-                    f.write(f"         observation_type:\n")
-                    f.write(f"           value: {onto}\n")
-                    f.write(f"         value_quantity:\n")
-                    f.write(f"           object_derivations:\n")
-                    f.write(f"           - class_derivations:\n")
-                    f.write(f"               Quantity:\n")
-                    f.write(f"                 populated_from: {pht}\n")
-                    f.write(f"                 slot_derivations:\n")
-                    f.write(f"                   value_decimal:\n")
-                    f.write(f"                     expr: {{{phv}}} {convert}\n")
-                    f.write(f"                   unit:\n")
-                    f.write(f"                     value: \"{unit}\"\n")
-                    f.write(f"                     range: string\n")
-
-
-
-
-# Note: Corey, below is first attempt at calling a JINJA template to write the YAML files.
-# ----- 2B. WRITE GOOD YAML CODELINES the JINJA way -----
 from jinja2 import Environment, FileSystemLoader
 
 environment = Environment(loader=FileSystemLoader(templates_dir), trim_blocks=True, lstrip_blocks=True)
@@ -250,5 +140,27 @@ for bdchm in vars_list:
 
         with open(yaml_file, 'w', encoding="utf-8") as f:
             for idx, row in good_data.iterrows():
+                f.write(template.render(**row.to_dict()))
+            print(f"... wrote {yaml_file}")
+
+
+
+
+
+# ----- 3. WRITE BAD YAML CODELINES -----
+#the if condition ensures that no yaml file is written if there are no candidates for that bdchm_varname
+for bdchm in vars_list:
+    bad_file = os.path.join(temp_dir, cohort, "bad", f"{bdchm}.csv")
+    bad_data = pd.read_csv(bad_file)
+
+    if len(bad_data) > 0:
+        # Create output directory
+        out_bad_dir = os.path.join(out_dir, cohort, "bad")
+        os.makedirs(out_bad_dir, exist_ok=True)
+
+        yaml_file = os.path.join(out_bad_dir, f"{bdchm}.yaml")
+
+        with open(yaml_file, 'w', encoding="utf-8") as f:
+            for idx, row in bad_data.iterrows():
                 f.write(template.render(**row.to_dict()))
             print(f"... wrote {yaml_file}")
