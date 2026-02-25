@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00008378
         associated_visit:
-          value: FHS OFFSPRING EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008378}) + ":FHS OFFSPRING EXAM 2")'
         condition_concept:
           value: MONDO:0002869
           range: string
@@ -27,14 +27,7 @@
         associated_participant:
           populated_from: phv00369587
         associated_visit:
-          populated_from: phv00369637
-          value_mappings:
-            '0': FHS ORIGINAL CHF
-            '1': FHS OFFSPRING CHF
-            '2': FHS NEW OFFSPRING SPOUSE CHF
-            '3': FHS GENERATION 3 CHF
-            '7': FHS OMNI 1 CHF
-            '72': FHS OMNI 2 CHF
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369587}) + ":" + case(({phv00369637} == ''0'', ''FHS ORIGINAL CHF''), ({phv00369637} == ''1'', ''FHS OFFSPRING CHF''), ({phv00369637} == ''2'', ''FHS NEW OFFSPRING SPOUSE CHF''), ({phv00369637} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00369637} == ''7'', ''FHS OMNI 1 CHF''), ({phv00369637} == ''72'', ''FHS OMNI 2 CHF'')))'
         condition_concept:
           value: MONDO:0002869
           range: string
@@ -59,14 +52,7 @@
         associated_participant:
           populated_from: phv00276845
         associated_visit:
-          populated_from: phv00276845
-          value_mappings:
-            '0': FHS ORIGINAL CHF
-            '1': FHS OFFSPRING CHF
-            '2': FHS NEW OFFSPRING CHF
-            '3': FHS GENERATION 3 CHF
-            '7': FHS OMNI 1 CHF
-            '72': FHS OMNI 2 CHF         
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276845}) + ":" + case(({phv00276845} == ''0'', ''FHS ORIGINAL CHF''), ({phv00276845} == ''1'', ''FHS OFFSPRING CHF''), ({phv00276845} == ''2'', ''FHS NEW OFFSPRING CHF''), ({phv00276845} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00276845} == ''7'', ''FHS OMNI 1 CHF''), ({phv00276845} == ''72'', ''FHS OMNI 2 CHF'')))'
         condition_concept:
           value: MONDO:0042981
           range: string
@@ -90,14 +76,7 @@
         associated_participant:
           populated_from: phv00369587
         associated_visit:
-          populated_from: phv00369637
-          value_mappings:
-            '0': FHS ORIGINAL CHF
-            '1': FHS OFFSPRING CHF
-            '2': FHS NEW OFFSPRING SPOUSE CHF
-            '3': FHS GENERATION 3 CHF
-            '7': FHS OMNI 1 CHF
-            '72': FHS OMNI 2 CHF      
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369587}) + ":" + case(({phv00369637} == ''0'', ''FHS ORIGINAL CHF''), ({phv00369637} == ''1'', ''FHS OFFSPRING CHF''), ({phv00369637} == ''2'', ''FHS NEW OFFSPRING SPOUSE CHF''), ({phv00369637} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00369637} == ''7'', ''FHS OMNI 1 CHF''), ({phv00369637} == ''72'', ''FHS OMNI 2 CHF'')))'
         condition_concept:
           value: MONDO:0042981
           range: string
@@ -122,14 +101,7 @@
         associated_participant:
           populated_from: phv00276845
         associated_visit:
-          populated_from: phv00276845
-          value_mappings:
-            '0': FHS ORIGINAL CHF
-            '1': FHS OFFSPRING CHF
-            '2': FHS NEW OFFSPRING CHF
-            '3': FHS GENERATION 3 CHF
-            '7': FHS OMNI 1 CHF
-            '72': FHS OMNI 2 CHF         
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276845}) + ":" + case(({phv00276845} == ''0'', ''FHS ORIGINAL CHF''), ({phv00276845} == ''1'', ''FHS OFFSPRING CHF''), ({phv00276845} == ''2'', ''FHS NEW OFFSPRING CHF''), ({phv00276845} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00276845} == ''7'', ''FHS OMNI 1 CHF''), ({phv00276845} == ''72'', ''FHS OMNI 2 CHF'')))'
         condition_concept:
           value: MONDO:0005648
           range: string
@@ -153,14 +125,7 @@
         associated_participant:
           populated_from: phv00369587
         associated_visit:
-          populated_from: phv00369637
-          value_mappings:
-            '0': FHS ORIGINAL CHF
-            '1': FHS OFFSPRING CHF
-            '2': FHS NEW OFFSPRING SPOUSE CHF
-            '3': FHS GENERATION 3 CHF
-            '7': FHS OMNI 1 CHF
-            '72': FHS OMNI 2 CHF      
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369587}) + ":" + case(({phv00369637} == ''0'', ''FHS ORIGINAL CHF''), ({phv00369637} == ''1'', ''FHS OFFSPRING CHF''), ({phv00369637} == ''2'', ''FHS NEW OFFSPRING SPOUSE CHF''), ({phv00369637} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00369637} == ''7'', ''FHS OMNI 1 CHF''), ({phv00369637} == ''72'', ''FHS OMNI 2 CHF'')))'
         condition_concept:
           value: MONDO:0005648
           range: string
@@ -185,14 +150,7 @@
         associated_participant:
           populated_from: phv00276845
         associated_visit:
-          populated_from: phv00276845
-          value_mappings:
-            '0': FHS ORIGINAL CHF
-            '1': FHS OFFSPRING CHF
-            '2': FHS NEW OFFSPRING CHF
-            '3': FHS GENERATION 3 CHF
-            '7': FHS OMNI 1 CHF
-            '72': FHS OMNI 2 CHF      
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276845}) + ":" + case(({phv00276845} == ''0'', ''FHS ORIGINAL CHF''), ({phv00276845} == ''1'', ''FHS OFFSPRING CHF''), ({phv00276845} == ''2'', ''FHS NEW OFFSPRING CHF''), ({phv00276845} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00276845} == ''7'', ''FHS OMNI 1 CHF''), ({phv00276845} == ''72'', ''FHS OMNI 2 CHF'')))'
         condition_concept:
           value: HP:0001653
           range: string
@@ -216,14 +174,7 @@
         associated_participant:
           populated_from: phv00369587
         associated_visit:
-          populated_from: phv00369637
-          value_mappings:
-            '0': FHS ORIGINAL CHF
-            '1': FHS OFFSPRING CHF
-            '2': FHS NEW OFFSPRING SPOUSE CHF
-            '3': FHS GENERATION 3 CHF
-            '7': FHS OMNI 1 CHF
-            '72': FHS OMNI 2 CHF      
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369587}) + ":" + case(({phv00369637} == ''0'', ''FHS ORIGINAL CHF''), ({phv00369637} == ''1'', ''FHS OFFSPRING CHF''), ({phv00369637} == ''2'', ''FHS NEW OFFSPRING SPOUSE CHF''), ({phv00369637} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00369637} == ''7'', ''FHS OMNI 1 CHF''), ({phv00369637} == ''72'', ''FHS OMNI 2 CHF'')))'
         condition_concept:
           value: HP:0001653
           range: string
@@ -248,14 +199,7 @@
         associated_participant:
           populated_from: phv00276845
         associated_visit:
-          populated_from: phv00276845
-          value_mappings:
-            '0': FHS ORIGINAL CHF
-            '1': FHS OFFSPRING CHF
-            '2': FHS NEW OFFSPRING CHF
-            '3': FHS GENERATION 3 CHF
-            '7': FHS OMNI 1 CHF
-            '72': FHS OMNI 2 CHF      
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276845}) + ":" + case(({phv00276845} == ''0'', ''FHS ORIGINAL CHF''), ({phv00276845} == ''1'', ''FHS OFFSPRING CHF''), ({phv00276845} == ''2'', ''FHS NEW OFFSPRING CHF''), ({phv00276845} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00276845} == ''7'', ''FHS OMNI 1 CHF''), ({phv00276845} == ''72'', ''FHS OMNI 2 CHF'')))'
         condition_concept:
           value: HP:0001718
           range: string
@@ -279,14 +223,7 @@
         associated_participant:
           populated_from: phv00369587
         associated_visit:
-          populated_from: phv00369637
-          value_mappings:
-            '0': FHS ORIGINAL CHF
-            '1': FHS OFFSPRING CHF
-            '2': FHS NEW OFFSPRING SPOUSE CHF
-            '3': FHS GENERATION 3 CHF
-            '7': FHS OMNI 1 CHF
-            '72': FHS OMNI 2 CHF      
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369587}) + ":" + case(({phv00369637} == ''0'', ''FHS ORIGINAL CHF''), ({phv00369637} == ''1'', ''FHS OFFSPRING CHF''), ({phv00369637} == ''2'', ''FHS NEW OFFSPRING SPOUSE CHF''), ({phv00369637} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00369637} == ''7'', ''FHS OMNI 1 CHF''), ({phv00369637} == ''72'', ''FHS OMNI 2 CHF'')))'
         condition_concept:
           value: HP:0001718
           range: string

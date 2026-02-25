@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00072044
         associated_visit:
-          value: FHS OFFSPRING EXAM 8
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00072044}) + ":FHS OFFSPRING EXAM 8")'
         condition_concept:
           value: MONDO:0005386
           range: string

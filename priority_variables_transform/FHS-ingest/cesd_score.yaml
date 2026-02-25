@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00023794
         associated_visit:
-          value: FHS PSIP ORIGINAL, OFFSPRING
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023794}) + ":FHS PSIP ORIGINAL, OFFSPRING")'
         observation_type:
           value: OMOP:36303297
           range: string
@@ -28,8 +27,7 @@
         associated_participant:
           populated_from: phv00023901
         associated_visit:
-          value: FHS PSIP ORIGINAL, OFFSPRING
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023901}) + ":FHS PSIP ORIGINAL, OFFSPRING")'
         observation_type:
           value: OMOP:36303297
           range: string

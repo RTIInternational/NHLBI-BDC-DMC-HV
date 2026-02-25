@@ -59,14 +59,7 @@
         associated_participant:
           populated_from: phv00071949
         associated_visit:
-          populated_from: phv00071908
-          value_mappings:
-            '0': FHS ORIGINAL SOE
-            '1': FHS OFFSPRING SOE
-            '2': FHS OFFSPRING NEW SPOUSE SOE
-            '3': FHS GENERATION 3 SOE
-            '7': FHS OMNI 1 SOE
-            '72': FHS OMNI 2 SOE
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE'')))'
         condition_concept:
           value: MONDO:0005279
           range: string
@@ -84,14 +77,7 @@
         associated_participant:
           populated_from: phv00071949
         associated_visit:
-          populated_from: phv00071908
-          value_mappings:
-            '0': FHS ORIGINAL SOE
-            '1': FHS OFFSPRING SOE
-            '2': FHS OFFSPRING NEW SPOUSE SOE
-            '3': FHS GENERATION 3 SOE
-            '7': FHS OMNI 1 SOE
-            '72': FHS OMNI 2 SOE      
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE'')))'
         condition_concept:
           value: MONDO:0005279
           range: string
@@ -109,14 +95,7 @@
         associated_participant:
           populated_from: phv00071949
         associated_visit:
-          populated_from: phv00071908
-          value_mappings:
-            '0': FHS ORIGINAL SOE
-            '1': FHS OFFSPRING SOE
-            '2': FHS OFFSPRING NEW SPOUSE SOE
-            '3': FHS GENERATION 3 SOE
-            '7': FHS OMNI 1 SOE
-            '72': FHS OMNI 2 SOE      
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE'')))'
         condition_concept:
           value: MONDO:0005279
           range: string
@@ -134,14 +113,7 @@
         associated_participant:
           populated_from: phv00071949
         associated_visit:
-          populated_from: phv00071908
-          value_mappings:
-            '0': FHS ORIGINAL SOE
-            '1': FHS OFFSPRING SOE
-            '2': FHS OFFSPRING NEW SPOUSE SOE
-            '3': FHS GENERATION 3 SOE
-            '7': FHS OMNI 1 SOE
-            '72': FHS OMNI 2 SOE      
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE'')))'
         condition_concept:
           value: MONDO:0005279
           range: string
@@ -159,14 +131,7 @@
         associated_participant:
           populated_from: phv00071949
         associated_visit:
-          populated_from: phv00071908
-          value_mappings:
-            '0': FHS ORIGINAL SOE
-            '1': FHS OFFSPRING SOE
-            '2': FHS OFFSPRING NEW SPOUSE SOE
-            '3': FHS GENERATION 3 SOE
-            '7': FHS OMNI 1 SOE
-            '72': FHS OMNI 2 SOE      
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE'')))'
         condition_concept:
           value: MONDO:0005279
           range: string
@@ -184,14 +149,7 @@
         associated_participant:
           populated_from: phv00071949
         associated_visit:
-          populated_from: phv00071908
-          value_mappings:
-            '0': FHS ORIGINAL SOE
-            '1': FHS OFFSPRING SOE
-            '2': FHS OFFSPRING NEW SPOUSE SOE
-            '3': FHS GENERATION 3 SOE
-            '7': FHS OMNI 1 SOE
-            '72': FHS OMNI 2 SOE      
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE'')))'
         condition_concept:
           value: MONDO:0005279
           range: string
