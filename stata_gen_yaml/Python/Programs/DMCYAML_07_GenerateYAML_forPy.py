@@ -6,6 +6,7 @@ MVP version of script tested in local directory on 12/16/2025 - output appears c
 """
 
 import pandas as pd
+import jinja2
 import os
 from datetime import datetime
 from pathlib import Path
@@ -16,13 +17,14 @@ from pathlib import Path
 today = datetime.now().strftime("%Y-%m-%d")
 
 # Filepaths
-base_dir = r"C:\Users\smccutchan\OneDrive - Research Triangle Institute\Documents\DMC\YAMLTransforms"
+base_dir = r"C:\\Users\smccutchan\\OneDrive - Research Triangle Institute\Documents\DMC\\YAMLTransforms"
 raw_dir = os.path.join(base_dir, "Raw")
 der_dir = os.path.join(base_dir, "Derived")
-prog_dir = os.path.join(base_dir, "Python\Programs")
+prog_dir = os.path.join(base_dir, "Python\\Programs")
+templates_dir = os.path.join(base_dir, "Python\\templates")
 doc_dir = os.path.join(base_dir, "Documentation")
 temp_dir = os.path.join(base_dir, "Python\\temp")
-out_dir = os.path.join(base_dir, "Python\Output")
+out_dir = os.path.join(base_dir, "Python\\Output")
 
 # ----- VARIABLE GROUPS -----
 
@@ -45,21 +47,39 @@ measurement_observation_aric = [
 entity = "MeasurementObservation"
 cohort = "aric"
 macroname = f"{entity}_{cohort}"
+print(macroname)
 
 # Load Stata file
 # The input file can be formatted as .csv instead of .dta
-input_file = os.path.join(der_dir, f"shortdata_{today}.dta")
-df = pd.read_stata(input_file)
+input_file = os.path.join(der_dir, f"shortdata_{today}.csv")
+df = pd.read_csv(input_file)
+
+# check data loaded correctly 
+df.head()
 
 # ----- 0. PREPARE -----
+# Note that all this splitting into subfiles may not be needed. The overall logic is:
+# if cohort = aric and entity = MeasurementObservation
+#   then for each bdchm_varname that exists in that cohort/entity (i.e. >=1 phv numbers associated with the bdchm_varname)
+#       if row_good == 1 then write to good subfile by cohort/bdchm_varname
+#       else write to bad subfile by cohort/bdchm_varname
+# code could also be looped over all cohort, and potentially in future over all entities
 
 # Filter for entity and cohort
 df_filtered = df[(df['bdchm_entity'] == entity) & (df['cohort'] == cohort)].copy()
 
-# Generate macro variable names
+# check data filtered correctly 
+df_filtered.head()
+
+# Create list of HVs present in entity/cohort
 df_macro = df_filtered[['bdchm_varname']].drop_duplicates().sort_values('bdchm_varname').reset_index(drop=True)
+df_macro.head()
 df_macro['macroname'] = macroname
 vars_list = df_macro['bdchm_varname'].tolist()
+
+# check which vars are selected for inclusion in the entity_cohort macro
+print(vars_list)
+
 
 # Check uniqueness of (phv, bdchm_entity, bdchm_varname) pairs
 df_sorted = df_filtered.sort_values(['phv', 'bdchm_entity', 'bdchm_varname'])
@@ -69,8 +89,11 @@ if len(duplicates) > 0:
     print("WARNING: Duplicate (phv, bdchm_varname) pairs found:")
     print(duplicates[['phv', 'bdchm_varname']])
 
-# ----- 1. SPLIT DATA ROWS INTO GOOD/BAD CANDIDATES -----
+# check the resulting duplicates dataframe is empty. must be empty for following code to produce expected results
+duplicates.head()
 
+# ----- 1. SPLIT DATA ROWS INTO GOOD/BAD CANDIDATES -----
+#this writes blank files for any bdchm_varname that has no candidates. 
 for bdchm in vars_list:
     # Good candidates (row_good == 1)
     good_data = df_filtered[(df_filtered['bdchm_varname'] == bdchm) & 
@@ -93,8 +116,9 @@ for bdchm in vars_list:
     bad_data.to_csv(bad_file, index=False)
 
 
-# ----- 2. WRITE GOOD YAML CODELINES -----
 
+# ----- 2. WRITE GOOD YAML CODELINES -----
+#the if condition ensures that no yaml file is written if there are no candidates for that bdchm_varname
 for bdchm in vars_list:
     good_file = os.path.join(temp_dir, cohort, "good", f"{bdchm}.csv")
     good_data = pd.read_csv(good_file)
@@ -204,52 +228,27 @@ for bdchm in vars_list:
                     f.write(f"                     range: string\n")
 
 
-# ----- 3. WRITE BAD YAML CODELINES -----
+
+
+# Note: Corey, below is first attempt at calling a JINJA template to write the YAML files.
+# ----- 2B. WRITE GOOD YAML CODELINES the JINJA way -----
+from jinja2 import Environment, FileSystemLoader
+
+environment = Environment(loader=FileSystemLoader(templates_dir), trim_blocks=True, lstrip_blocks=True)
+template = environment.get_template("yaml_measobs.j2")
 
 for bdchm in vars_list:
-    bad_file = os.path.join(temp_dir, cohort, "bad", f"{bdchm}.csv")
-    bad_data = pd.read_csv(bad_file)
-    
-    if len(bad_data) > 0:
-        # Create output directory
-        out_bad_dir = os.path.join(out_dir, cohort, "bad")
-        os.makedirs(out_bad_dir, exist_ok=True)
-        
-        yaml_file = os.path.join(out_bad_dir, f"{bdchm}.yaml")
-        
-        with open(yaml_file, 'w') as f:
-            for idx, row in bad_data.iterrows():
-                phv = row['phv']
-                entity_val = row['bdchm_entity']
-                pht = row['pht']
-                onto = row['onto_id']
-                unit = row['bdchm_unit']
-                visit = row['associatedvisit']
-                participant = row['participantidphv']
-                age = row['ageinyearsphv']
-                
-                f.write("- class_derivations:\n")
-                f.write(f"     {entity_val}:\n")
-                f.write(f"       populated from: {pht}\n")
-                f.write(f"       slot_derivations:\n")
-                f.write(f"         associated_participant:\n")
-                f.write(f"           populated_from: {participant} #CHECK\n")
-                f.write(f"         associated_visit:\n")
-                f.write(f"           value: {visit}\n")
-                f.write(f"         age_at_observation:\n")
-                f.write(f"           expr: {{{age}}} * 365\n")
-                f.write(f"         observation_type:\n")
-                f.write(f"           value: {onto}\n")
-                f.write(f"         value_quantity:\n")
-                f.write(f"           object_derivations:\n")
-                f.write(f"           - class_derivations:\n")
-                f.write(f"               Quantity:\n")
-                f.write(f"                 populated_from: {pht}\n")
-                f.write(f"                 slot_derivations:\n")
-                f.write(f"                   value_decimal:\n")
-                f.write(f"                     populated_from: {phv} #CHECK\n")
-                f.write(f"                   unit:\n")
-                f.write(f"                     value: \"{unit}\" #CHECK\n")
+    good_file = os.path.join(temp_dir, cohort, "good", f"{bdchm}.csv")
+    good_data = pd.read_csv(good_file)
 
-print("Script completed successfully!")
-print(f"Output files written to: {out_dir}/{cohort}/")
+    if len(good_data) > 0:
+        # Create output directory
+        out_good_dir = os.path.join(out_dir, cohort, "good")
+        os.makedirs(out_good_dir, exist_ok=True)
+
+        yaml_file = os.path.join(out_good_dir, f"{bdchm}.yaml")
+
+        with open(yaml_file, 'w', encoding="utf-8") as f:
+            for idx, row in good_data.iterrows():
+                f.write(template.render(**row.to_dict()))
+            print(f"... wrote {yaml_file}")
