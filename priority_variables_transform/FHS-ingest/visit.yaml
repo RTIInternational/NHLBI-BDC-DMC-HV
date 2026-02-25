@@ -518,11 +518,11 @@
       populated_from: pht000395
       slot_derivations:
         id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056607}) + ":" + case(({phv00056607} == 1, ''FHS OFFSPRING SHHS''), case({phv00177928} == 7, ''FHS OMNI 1 SHHS'')) + '' BASELINE'')'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":" + case(({phv00056607} == 1, ''FHS OFFSPRING SHHS''), case({phv00177928} == 7, ''FHS OMNI 1 SHHS'')) + '' BASELINE'')'
         name:
           expr: 'case(({phv00056607} == 1, ''FHS OFFSPRING SHHS''), case({phv00177928} == 7, ''FHS OMNI 1 SHHS'')) + '' BASELINE'''
         associated_participant:
-          populated_from: phv00056607
+          populated_from: phv00056635
         age_at_visit_start:
           expr: '{phv00056587} * 365'
         age_at_visit_end:
