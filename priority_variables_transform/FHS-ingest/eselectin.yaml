@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00163426
         associated_visit:
-          value: FHS OFFSPRING EXAM 8
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00163426}) + ":FHS OFFSPRING EXAM 8")'
         age_at_observation:
           expr: '{pht003099.phv00177944} * 365'
         observation_type:

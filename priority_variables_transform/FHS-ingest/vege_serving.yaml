@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00157771
         associated_visit:
-          value: FHS ORIGINAL EXAM 20
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00157771}) + ":FHS ORIGINAL EXAM 20")'
         age_at_observation:
           expr: '{pht003099.phv00177968} * 365'
         observation_type:
@@ -36,8 +35,7 @@
         associated_participant:
           populated_from: phv00158540
         associated_visit:
-          value: FHS ORIGINAL EXAM 22
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00158540}) + ":FHS ORIGINAL EXAM 22")'
         age_at_observation:
           expr: '{pht003099.phv00177972} * 365'
         observation_type:
@@ -67,8 +65,7 @@
         associated_participant:
           populated_from: phv00068241
         associated_visit:
-          value: FHS OFFSPRING EXAM 5
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00068241}) + ":FHS OFFSPRING EXAM 5")'
         age_at_observation:
           expr: '{pht003099.phv00177938} * 365'
         observation_type:
@@ -98,8 +95,7 @@
         associated_participant:
           populated_from: phv00068713
         associated_visit:
-          value: FHS OFFSPRING EXAM 6
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00068713}) + ":FHS OFFSPRING EXAM 6")'
         age_at_observation:
           expr: '{pht003099.phv00177940} * 365'
         observation_type:
@@ -129,8 +125,7 @@
         associated_participant:
           populated_from: phv00069162
         associated_visit:
-          value: FHS OFFSPRING EXAM 7
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00069162}) + ":FHS OFFSPRING EXAM 7")'
         age_at_observation:
           expr: '{pht003099.phv00177942} * 365'
         observation_type:
@@ -160,8 +155,7 @@
         associated_participant:
           populated_from: phv00157296
         associated_visit:
-          value: FHS GENERATION 3 EXAM 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00157296}) + ":FHS GENERATION 3 EXAM 1")'
         age_at_observation:
           expr: '{pht003099.phv00177930} * 365'
         observation_type:
@@ -191,11 +185,7 @@
         associated_participant:
           populated_from: phv00172393
         associated_visit:
-          populated_from: phv00173095
-          value_mappings:
-            '2': FHS NEW OFFSPRING SPOUSE EXAM 2
-            '3': FHS GENERATION 3 EXAM 2
-            '72': FHS OMNI 2 EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172393}) + ":" + case(({phv00173095} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00173095} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00173095} == ''72'', ''FHS OMNI 2 EXAM 2'')))'
         age_at_observation:
           expr: '{pht003099.phv00177932} * 365'
         observation_type:
@@ -225,8 +215,7 @@
         associated_participant:
           populated_from: phv00162112
         associated_visit:
-          value: FHS OFFSPRING EXAM 8
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00162112}) + ":FHS OFFSPRING EXAM 8")'
         age_at_observation:
           expr: '{pht003099.phv00177944} * 365'
         observation_type:

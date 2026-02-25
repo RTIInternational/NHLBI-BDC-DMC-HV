@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00001803
         associated_visit:
-          value: FHS ORIGINAL EXAM 11
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001803}) + ":FHS ORIGINAL EXAM 11")'
         age_at_observation:
           expr: '{pht003099.phv00177950} * 365'
         observation_type:
