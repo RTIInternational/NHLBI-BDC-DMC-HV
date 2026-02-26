@@ -77,9 +77,9 @@
       populated_from: pht005140
       slot_derivations:
         associated_participant:
-          populated_from: phv00254011
+          populated_from: phv00254010
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254011}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4'')))'
         condition_concept:
           value: HP:0000822
           range: string
@@ -99,9 +99,9 @@
       populated_from: pht005140
       slot_derivations:
         associated_participant:
-          populated_from: phv00254011
+          populated_from: phv00254010
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254011}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4'')))'
         drug_concept:
           expr: case(({phv00254024} == 1, '''RxCUI:C02'''))
         expsoure_provenance:
@@ -681,9 +681,9 @@
       populated_from: pht000395
       slot_derivations:
         associated_participant:
-          populated_from: phv00056607
+          populated_from: phv00056635
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056607}) + ":" + case(({phv00056607} == ''1'', ''FHS OFFSPRING SHHS EXAM 1''), ({phv00056607} == ''7'', ''FHS OMNI 1 SHHS EXAM 1'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":" + case(({phv00056607} == ''1'', ''FHS OFFSPRING SHHS EXAM 1''), ({phv00056607} == ''7'', ''FHS OMNI 1 SHHS EXAM 1'')))'
         drug_concept:
           expr: case(({phv00055253} == 1, '''RxCUI:C02'''))
         expsoure_provenance:
@@ -694,9 +694,9 @@
       populated_from: pht000395
       slot_derivations:
         associated_participant:
-          populated_from: phv00056607
+          populated_from: phv00056635
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056607}) + ":" + case(({phv00056607} == ''1'', ''FHS OFFSPRING SHHS EXAM 1''), ({phv00056607} == ''7'', ''FHS OMNI 1 SHHS EXAM 1'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":" + case(({phv00056607} == ''1'', ''FHS OFFSPRING SHHS EXAM 1''), ({phv00056607} == ''7'', ''FHS OMNI 1 SHHS EXAM 1'')))'
         drug_concept:
           expr: case(({phv00055341} == 1, '''RxCUI:C02'''))
         expsoure_provenance:

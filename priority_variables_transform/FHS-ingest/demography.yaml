@@ -198,9 +198,9 @@
       populated_from: pht005140
       slot_derivations:
         associated_participant:
-          populated_from: phv00254011
+          populated_from: phv00254010
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254011}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4'')))'
         sex:
           expr: 'case(({phv00254030} == 1, "OMOP:8507"), (True, "OMOP:8532"))'
 - class_derivations:
@@ -208,9 +208,9 @@
       populated_from: pht006026
       slot_derivations:
         associated_participant:
-          populated_from: phv00277016
+          populated_from: phv00277015
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00277016}) + ":" + case(({phv00277016} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 1-3''), ({phv00277016} == ''3'', ''FHS GENERATION 3 EXAM 1-3''), ({phv00277016} == ''72'', ''FHS OMNI 2 EXAM 1-3'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00277015}) + ":" + case(({phv00277016} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 1-3''), ({phv00277016} == ''3'', ''FHS GENERATION 3 EXAM 1-3''), ({phv00277016} == ''72'', ''FHS OMNI 2 EXAM 1-3'')))'
         sex:
           populated_from: phv00277017
           value_mappings:
@@ -322,9 +322,9 @@
       populated_from: pht009761
       slot_derivations:
         associated_participant:
-          populated_from: phv00423869
+          populated_from: phv00423868
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423869}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING EXAM 1-10''), ({phv00423869} == ''7'', ''FHS OMNI 1 EXAM 1-5'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING EXAM 1-10''), ({phv00423869} == ''7'', ''FHS OMNI 1 EXAM 1-5'')))'
         sex:
           populated_from: phv00423870
           value_mappings:

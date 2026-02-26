@@ -360,9 +360,9 @@
       populated_from: pht005140
       slot_derivations:
         associated_participant:
-          populated_from: phv00254011
+          populated_from: phv00254010
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254011}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4'')))'
         condition_concept:
           value: MONDO:0005252
           range: string
