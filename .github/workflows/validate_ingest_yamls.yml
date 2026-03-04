@@ -32,3 +32,6 @@ jobs:
       - name: Validate */*-ingest*/*.yaml files.
         run: |
           poetry run python validate_ingest_yamls.py
+
+      - name: Check PHV deduplication
+        run: poetry run python check_phv_dedup.py
