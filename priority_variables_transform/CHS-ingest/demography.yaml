@@ -39,7 +39,7 @@
         associated_visit:
           value: CHS BASELINE BOTH
         sex:
-          populated_from: phv00098797
+          populated_from: phv00100302
           value_mappings:
             '1': '''OMOP:8507'''
             '0': '''OMOP:8532'''
@@ -60,7 +60,7 @@
         associated_visit:
           value: CHS EVENTS
         sex:
-          populated_from: phv00098797
+          populated_from: phv00100810
           value_mappings:
             '1': '''OMOP:8507'''
             '0': '''OMOP:8532'''
@@ -72,23 +72,10 @@
             '3': '''OMOP:8552'''
 - class_derivations:
     Demography:
-      populated_from: pht001466
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00100808
-        associated_visit:
-          value: CHS EVENTS
-        sex:
-          populated_from: phv00098797
-          value_mappings:
-            '1': '''OMOP:8507'''
-            '0': '''OMOP:8532'''
-- class_derivations:
-    Demography:
       populated_from: pht001490
       slot_derivations:
         associated_participant:
-          populated_from: phv00098771
+          populated_from: phv00105099
         associated_visit:
           value: CHS YEAR 5 NEW
         sex:

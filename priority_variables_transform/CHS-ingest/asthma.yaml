@@ -241,7 +241,7 @@
       populated_from: pht001481
       slot_derivations:
         associated_participant:
-          populated_from: phv00103365
+          populated_from: phv00103417
         associated_visit:
           value: CHS YEAR 14
           range: string
@@ -433,7 +433,7 @@
       populated_from: pht001487
       slot_derivations:
         associated_participant:
-          populated_from: phv00103781
+          populated_from: phv00103730
         associated_visit:
           value: CHS YEAR 3
           range: string
@@ -441,7 +441,7 @@
           value: MONDO:0004979
           range: string
         condition_status:
-          populated_from: phv00104144
+          populated_from: phv00103740
           value_mappings:
             '0': '''ABSENT'''
             '1': '''PRESENT'''
@@ -453,7 +453,7 @@
           range: string
 - class_derivations:
     Condition:
-      populated_from: pht001487
+      populated_from: pht001490
       slot_derivations:
         associated_participant:
           populated_from: phv00105099
@@ -507,7 +507,7 @@
           value: CHS YEAR 6
           range: string
         age_at_condition_end:
-          expr: case(({phv00106022} == 1, case(({phv00106023} == 0, {phv00106026} * 365))))
+          expr: case(({phv00107849} == 1, case(({phv00107850} == 0, {phv00107853} * 365))))
         condition_concept:
           value: MONDO:0004979
           range: string
