@@ -401,19 +401,19 @@
           range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht000033
+      populated_from: pht000034
       slot_derivations:
         associated_participant:
-          populated_from: phv00009127
+          populated_from: phv00009579
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00009127}) + ":FHS OFFSPRING EXAM 4")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00009579}) + ":FHS OFFSPRING EXAM 5")'
         drug_concept:
           expr: 'case(({phv00009180} == 1, "RxCUI:8787"), ({phv00009180}
             == 2, "RxCUI:10600"), ({phv00009180} == 3, "RxCUI:7226"),
             ({phv00009180} == 4, "RxCUI:1202"), ({phv00009180} ==
             5, "RxCUI: 6918"), ({phv00009180} == 6, "RxCUI:8332"),
             ({phv00009180} == 7, "RxCUI:149"), ({phv00009180} ==
-            8, "RxCUI:6185"), ({phv00009180} == 9, "RxCUI: C07A"))'
+            8, "RxCUI:6185"), ({phv00009180} == 9, "RxCUI:C07A"))'
 #         dosage:
 #           populated_from: phv00009181
         exposure_provenance:
