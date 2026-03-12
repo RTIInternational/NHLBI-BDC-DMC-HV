@@ -1,49 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht012814
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00512039
-        associated_visit:
-          value: ARIC EXAM 5
-        age_at_observation:
-          expr: {phv00512050} * 365
-        observation_type:
-          value: OMOP:36303297
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012814
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00512128
-                  unit:
-                    value: "{score}"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht012855
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00519876
-        associated_visit:
-          value: ARIC EXAM 5
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:36303297
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012855
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00519890
-                  unit:
-                    value: "{score}"
-- class_derivations:
-    MeasurementObservation:
       populated from: pht012504
       slot_derivations:
         associated_participant:
@@ -84,5 +40,49 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00512381
+                  unit:
+                    value: "{score}"
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012855
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00519876
+        associated_visit:
+          value: ARIC EXAM 5
+        age_at_observation:
+          expr: {nan} * 365
+        observation_type:
+          value: OMOP:36303297
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht012855
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00519890
+                  unit:
+                    value: "{score}"
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012814
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00512039
+        associated_visit:
+          value: ARIC EXAM 5
+        age_at_observation:
+          expr: {phv00512050} * 365
+        observation_type:
+          value: OMOP:36303297
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht012814
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00512128
                   unit:
                     value: "{score}"

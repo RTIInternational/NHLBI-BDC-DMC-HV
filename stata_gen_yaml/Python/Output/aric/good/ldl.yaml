@@ -1,5 +1,27 @@
 - class_derivations:
     MeasurementObservation:
+      populated from: pht012511
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00507546
+        associated_visit:
+          value: ARIC EXAM 1
+        age_at_observation:
+          expr: {nan} * 365
+        observation_type:
+          value: OBA:VT0000181
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht012511
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00507552
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
       populated from: pht012853
       slot_derivations:
         associated_participant:
@@ -22,24 +44,46 @@
                     value: "mg/dL"
 - class_derivations:
     MeasurementObservation:
-      populated from: pht012815
+      populated from: pht012814
       slot_derivations:
         associated_participant:
-          populated_from: phv00512222
+          populated_from: phv00512039
         associated_visit:
-          value: ARIC EXAM 6
+          value: ARIC EXAM 5
         age_at_observation:
-          expr: {phv00512229} * 365
+          expr: {phv00512050} * 365
         observation_type:
           value: OBA:VT0000181
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht012815
+                populated_from: pht012814
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00512247
+                    populated_from: phv00512071
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012853
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00519789
+        associated_visit:
+          value: ARIC COHORT
+        age_at_observation:
+          expr: {nan} * 365
+        observation_type:
+          value: OBA:VT0000181
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht012853
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00519837
                   unit:
                     value: "mg/dL"
 - class_derivations:
@@ -88,12 +132,12 @@
                     value: "mg/dL"
 - class_derivations:
     MeasurementObservation:
-      populated from: pht012511
+      populated from: pht006444
       slot_derivations:
         associated_participant:
-          populated_from: phv00507546
+          populated_from: phv00296690
         associated_visit:
-          value: ARIC EXAM 1
+          value: ARIC EXAM 5
         age_at_observation:
           expr: {nan} * 365
         observation_type:
@@ -102,10 +146,54 @@
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht012511
+                populated_from: pht006444
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00507552
+                    populated_from: phv00296694
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht004123
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00207667
+        associated_visit:
+          value: ARIC EXAM 3
+        age_at_observation:
+          expr: {nan} * 365
+        observation_type:
+          value: OBA:VT0000181
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004123
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00207664
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012815
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00512222
+        associated_visit:
+          value: ARIC EXAM 6
+        age_at_observation:
+          expr: {phv00512229} * 365
+        observation_type:
+          value: OBA:VT0000181
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht012815
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00512247
                   unit:
                     value: "mg/dL"
 - class_derivations:
@@ -149,29 +237,7 @@
                 populated_from: pht012853
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00519837
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht006444
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00296690
-        associated_visit:
-          value: ARIC EXAM 5
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000181
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006444
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00296694
+                    populated_from: phv00519838
                   unit:
                     value: "mg/dL"
 - class_derivations:
@@ -194,71 +260,5 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00519836
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht004123
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00207667
-        associated_visit:
-          value: ARIC EXAM 3
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000181
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004123
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00207664
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht012853
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00519789
-        associated_visit:
-          value: ARIC COHORT
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000181
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012853
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00519838
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht012814
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00512039
-        associated_visit:
-          value: ARIC EXAM 5
-        age_at_observation:
-          expr: {phv00512050} * 365
-        observation_type:
-          value: OBA:VT0000181
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012814
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00512071
                   unit:
                     value: "mg/dL"

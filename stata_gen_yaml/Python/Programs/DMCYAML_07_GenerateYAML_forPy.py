@@ -1,5 +1,5 @@
 """
-Date Last Updated: 2026/02/11
+Date Last Updated: 2026/03/12
 Description: Python translation of DMCYAML_07_GenerateYAML_forPy.do
 This script generates YAML files from filtered/reshaped metadata.
 MVP version of script tested in local directory on 12/16/2025 - output appears correct.
@@ -16,12 +16,12 @@ from pathlib import Path
 
 # Today's date in YYYY-MM-DD format
 #today = datetime.now().strftime("%Y-%m-%d")
-today = "2026-01-30"  # hardcoding for testing purposes - update as needed
+today = "2026-03-12"  # hardcoding for testing purposes - update as needed
 
 # Filepaths
 base_dir = r"C:\\Users\smccutchan\Documents\DMC\\NHLBI-BDC-DMC-HV\stata_gen_yaml"
 raw_dir = os.path.join(base_dir, "Raw")
-der_dir = os.path.join(base_dir, "Derived")
+der_dir = os.path.join(base_dir, "Python\\Derived")
 prog_dir = os.path.join(base_dir, "Python\\Programs")
 templates_dir = os.path.join(base_dir, "Python\\templates")
 doc_dir = os.path.join(base_dir, "Documentation")
@@ -33,7 +33,8 @@ out_dir = os.path.join(base_dir, "Python\\Output")
 # ARIC MeasObs variable list
 measurement_observation_aric = [
     "albumin_bld", "albumin_urine", "basophil_ncnc_bld", "bdy_hgt", "bdy_wgt", 
-    "bmi", "bnp", "bp_diastolic", "bp_systolic", "bun", "cesd_score", "chloride_bld", 
+    "bmi", "bnp", "bp_diastolic", "bp_systolic", "bun", "bun_creatinine", 
+    "carotid_imt", "carotid_sten_left", "carotid_sten_right", "cesd_score", "chloride_bld", 
     "creat_bld", "creat_urin", "crp", "cysc_bld", "d_dimer", "egfr", 
     "eosinophil_ncnc_bld", "factor_7", "factor_8", "fast_gluc_bld", "fev1", "fibrin", 
     "fruit_serving", "fvc", "glucose_bld", "hdl", "hemat", "hemo", "hemo_a1c", 
@@ -41,7 +42,7 @@ measurement_observation_aric = [
     "mchc", "mcv", "mn_art_pres", "monocyte_ncnc_bld", "neutro_ct", "neutro_pct", 
     "nt_bnp", "platelet_ct", "pmv", "potassium", "pr_ekg", "qrs_ekg", "qt_ekg", 
     "rdbld_ct", "rdw", "sleep_duration_daily", "sodium_blood", "sodium_intak", 
-    "tot_chol_bld", "triglyc_bld", "vege_serving", "waist_circ", "waist_hip", 
+    "tot_chol_bld", "triglyc_bld", "troponin", "vege_serving", "waist_circ", "waist_hip", 
     "whtbld_ct", "willeb_fac"
 ]
 

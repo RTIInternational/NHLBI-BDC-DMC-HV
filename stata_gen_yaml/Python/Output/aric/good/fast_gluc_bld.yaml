@@ -44,29 +44,6 @@
                     value: "mg/dL"
 - class_derivations:
     MeasurementObservation:
-      populated from: pht012813
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00511942
-        associated_visit:
-          value: ARIC EXAM 4
-        age_at_observation:
-          expr: {phv00511996} * 365
-        observation_type:
-          value: OMOP:4156660
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012813
-                slot_derivations:
-                  value_decimal:
-                    expr: {phv00511990} * 18
-                  unit:
-                    value: "mg/dL"
-                    range: string
-- class_derivations:
-    MeasurementObservation:
       populated from: pht012814
       slot_derivations:
         associated_participant:
@@ -85,9 +62,26 @@
                 slot_derivations:
                   value_decimal:
                     expr: {phv00512077} * 18
-                  unit:
-                    value: "mg/dL"
-                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012813
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00511942
+        associated_visit:
+          value: ARIC EXAM 4
+        age_at_observation:
+          expr: {phv00511996} * 365
+        observation_type:
+          value: OMOP:4156660
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht012813
+                slot_derivations:
+                  value_decimal:
+                    expr: {phv00511990} * 18
 - class_derivations:
     MeasurementObservation:
       populated from: pht012504
@@ -108,9 +102,6 @@
                 slot_derivations:
                   value_decimal:
                     expr: {phv00507387} * 18
-                  unit:
-                    value: "mg/dL"
-                    range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht012815
@@ -131,6 +122,3 @@
                 slot_derivations:
                   value_decimal:
                     expr: {phv00512301} * 18
-                  unit:
-                    value: "mg/dL"
-                    range: string
