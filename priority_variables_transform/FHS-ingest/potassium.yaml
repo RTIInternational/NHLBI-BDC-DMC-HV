@@ -1,0 +1,24 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000017
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00002668
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002668}) + ":FHS ORIGINAL EXAM 15")'
+        age_at_observation:
+          expr: '{pht003099.phvxxxxxxx} * 365'
+        observation_type:
+          value: OBA:VT0002668
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000017
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00002665
+                  unit:
+                    value: xxxxxx
+                    range: string
