@@ -68,7 +68,7 @@
         associated_participant:
           populated_from: phv00071949
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005279
           range: string
@@ -90,7 +90,7 @@
         associated_participant:
           populated_from: phv00071949
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005279
           range: string
@@ -112,7 +112,7 @@
         associated_participant:
           populated_from: phv00071949
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005279
           range: string
@@ -134,7 +134,7 @@
         associated_participant:
           populated_from: phv00071949
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005279
           range: string
@@ -156,7 +156,7 @@
         associated_participant:
           populated_from: phv00071949
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005279
           range: string
@@ -178,7 +178,7 @@
         associated_participant:
           populated_from: phv00071949
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005279
           range: string
@@ -205,9 +205,9 @@
 #           value: PATIENT_SELF-REPORTED_CONDITION
 #           range: string
 #         associated_evidence:
-          value: Final Diagnostic Summary
-          range: string
-        relationship_to_participant:
+#           value: Final Diagnostic Summary
+#           range: string
+#         relationship_to_participant:
 #           value: ONESELF
 #           range: string
 # - class_derivations:
@@ -574,9 +574,9 @@
 #           value: PATIENT_SELF-REPORTED_CONDITION
 #           range: string
 #         associated_evidence:
-          value: Final Diagnostic Summary
-          range: string
-        relationship_to_participant:
+#           value: Final Diagnostic Summary
+#           range: string
+#         relationship_to_participant:
 #           value: ONESELF
 #           range: string
 # - class_derivations:
