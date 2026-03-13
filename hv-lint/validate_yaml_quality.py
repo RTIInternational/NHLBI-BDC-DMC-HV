@@ -343,7 +343,13 @@ def validate_class_derivations(
 
         # -- Check 1.7: PHT accession format --
         pht = class_def.get("populated_from")
-        if isinstance(pht, str) and pht.startswith("pht"):
+        if pht is not None and not isinstance(pht, str):
+            findings.append(Finding(
+                rel_path, block_idx, "1.7", "ERROR",
+                f"populated_from on {path_prefix}{class_name} is not a string "
+                f"(got {type(pht).__name__})"
+            ))
+        elif isinstance(pht, str) and pht.startswith("pht"):
             if not re.match(r"^pht\d{6}$", pht):
                 findings.append(Finding(
                     rel_path, block_idx, "1.7", "ERROR",
@@ -360,7 +366,8 @@ def validate_class_derivations(
                     rel_path, block_idx, "1.4", "WARNING",
                     f"{path_prefix}{class_name} has no slot_derivations"
                 ))
-            continue
+            # Still check required/recommended slots (all will be missing)
+            slot_derivs = {}
 
         present_slots = set(slot_derivs.keys())
 
@@ -403,7 +410,13 @@ def validate_class_derivations(
 
             # -- Check 1.7: PHV accession format on populated_from --
             pf = slot_def.get("populated_from")
-            if isinstance(pf, str) and pf.startswith("phv"):
+            if pf is not None and not isinstance(pf, str):
+                findings.append(Finding(
+                    rel_path, block_idx, "1.7", "ERROR",
+                    f"populated_from on {path_prefix}{class_name}.{slot_name} "
+                    f"is not a string (got {type(pf).__name__})"
+                ))
+            elif isinstance(pf, str) and pf.startswith("phv"):
                 if not re.match(r"^phv\d{8}$", pf):
                     findings.append(Finding(
                         rel_path, block_idx, "1.7", "ERROR",
