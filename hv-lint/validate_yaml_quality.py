@@ -798,7 +798,7 @@ def _write_summary(path: str, phase: str, files: int, blocks: int,
             lines.append(f"| {sev} | {counts[sev]} |")
     lines.append("")
     if findings:
-        sorted_findings = sorted(findings, key=lambda f: SEVERITY_RANK.get(f.severity, 0), reverse=True)
+        sorted_findings = sorted(findings, key=lambda f: (-SEVERITY_RANK.get(f.severity, 0), f.file, f.block, f.check))
         shown = sorted_findings[:limit]
         lines.append(f"### Findings (showing {len(shown)} of {len(findings)})\n")
         lines.append("| Severity | File | Block | Check | Message |")

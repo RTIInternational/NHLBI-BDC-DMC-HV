@@ -272,7 +272,14 @@ def check_block(
 
         raw_pht = class_def.get("populated_from", "")
         class_pht = raw_pht if isinstance(raw_pht, str) and PHT_RE.fullmatch(raw_pht) else ""
-        has_joins = isinstance(class_def.get("joins"), list)
+        raw_joins = class_def.get("joins")
+        has_joins = isinstance(raw_joins, list)
+        if raw_joins is not None and not has_joins:
+            findings.append(Finding(
+                rel_path, block_idx, "2.0", "ERROR",
+                f"{class_name} joins is "
+                f"{type(raw_joins).__name__}, expected list"
+            ))
         slot_derivs = class_def.get("slot_derivations")
         if not isinstance(slot_derivs, dict):
             if slot_derivs is not None:
@@ -554,7 +561,7 @@ def _write_summary(path: str, phase: str, files: int, blocks: int,
             lines.append(f"| {sev} | {counts[sev]} |")
     lines.append("")
     if findings:
-        sorted_findings = sorted(findings, key=lambda f: SEVERITY_RANK.get(f.severity, 0), reverse=True)
+        sorted_findings = sorted(findings, key=lambda f: (-SEVERITY_RANK.get(f.severity, 0), f.file, f.block, f.check))
         shown = sorted_findings[:limit]
         lines.append(f"### Findings (showing {len(shown)} of {len(findings)})\n")
         lines.append("| Severity | File | Block | Check | Message |")
