@@ -209,7 +209,10 @@ def extract_slot_refs(
         # Recurse into object_derivations
         for od in (slot_def.get("object_derivations") or []):
             if isinstance(od, dict) and "class_derivations" in od:
-                for nested_cls, nested_def in od["class_derivations"].items():
+                nested_cd = od["class_derivations"]
+                if not isinstance(nested_cd, dict):
+                    continue
+                for nested_cls, nested_def in nested_cd.items():
                     if isinstance(nested_def, dict):
                         nested_slots = nested_def.get("slot_derivations", {})
                         nested_phvs, nested_joins = extract_slot_refs(nested_slots, nested_cls)
@@ -364,9 +367,15 @@ def main() -> int:
         print("Run build_phv_index.py first to generate the indexes.", file=sys.stderr)
         return 1
 
-    # Load indexes for all available cohorts
+    # Load indexes (only the needed cohort when filtering)
     indexes: dict[str, DbGaPIndex] = {}
-    for cohort_name, cache_key in COHORT_TO_CACHE_KEY.items():
+    cohort_upper = args.cohort.upper()
+    needed = (
+        {k: v for k, v in COHORT_TO_CACHE_KEY.items() if k.upper() == cohort_upper}
+        if cohort_upper != "ALL"
+        else COHORT_TO_CACHE_KEY
+    )
+    for cohort_name, cache_key in needed.items():
         try:
             indexes[cohort_name] = load_dbgap_index(cache_dir, cache_key)
             count = len(indexes[cohort_name].phv_to_pht)

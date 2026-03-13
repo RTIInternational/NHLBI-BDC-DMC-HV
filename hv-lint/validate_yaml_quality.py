@@ -263,7 +263,7 @@ def check_curies_in_expr(
     """Check 1.6: Extract and validate CURIEs embedded in expressions."""
     findings = []
     # Match quoted CURIE-like values in expressions: 'PREFIX:ID' or "PREFIX:ID"
-    for match in re.finditer(r"['\"]([A-Za-z]+:\S+?)['\"]", expr):
+    for match in re.finditer(r"['\"]([A-Za-z][A-Za-z0-9_]*:\S+?)['\"]", expr):
         curie = match.group(1)
         findings.extend(check_curie_value(
             curie, class_name, slot_name, block_idx, rel_path
@@ -484,6 +484,8 @@ def get_block_identity(block: dict) -> list[tuple]:
     where distinguishing_phv captures the data-bearing variable that makes
     blocks with the same class/pht/visit/concept actually distinct.
     """
+    if not isinstance(block, dict):
+        return []
     identities = []
     class_derivs = block.get("class_derivations")
     if not isinstance(class_derivs, dict):
