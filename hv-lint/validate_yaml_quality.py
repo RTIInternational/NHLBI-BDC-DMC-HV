@@ -95,7 +95,7 @@ KNOWN_ISSUES: dict[str, str] = {
 }
 
 # Severity ranking for --fail-on filtering
-SEVERITY_RANK = {"CRITICAL": 4, "ERROR": 3, "HIGH": 2, "WARNING": 2, "INFO": 1}
+SEVERITY_RANK = {"CRITICAL": 5, "ERROR": 4, "HIGH": 3, "WARNING": 2, "INFO": 1}
 
 # ---------------------------------------------------------------------------
 # Data structures
@@ -591,7 +591,7 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument(
         "--fail-on", default="error",
-        choices=["critical", "error", "warning", "info"],
+        choices=["critical", "error", "high", "warning", "info"],
         help="Minimum severity to cause non-zero exit (default: error)"
     )
     p.add_argument(
@@ -759,7 +759,8 @@ def _write_summary(path: str, phase: str, files: int, blocks: int,
             lines.append(f"| {sev} | {counts[sev]} |")
     lines.append("")
     if findings:
-        shown = findings[:limit]
+        sorted_findings = sorted(findings, key=lambda f: SEVERITY_RANK.get(f.severity, 0), reverse=True)
+        shown = sorted_findings[:limit]
         lines.append(f"### Findings (showing {len(shown)} of {len(findings)})\n")
         lines.append("| Severity | File | Block | Check | Message |")
         lines.append("|----------|------|-------|-------|---------|")

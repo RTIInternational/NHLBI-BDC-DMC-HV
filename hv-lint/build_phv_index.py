@@ -131,7 +131,7 @@ def main() -> int:
 
         # Write compressed JSON
         json_bytes = json.dumps(mapping, separators=(",", ":")).encode("utf-8")
-        gz_path = output / f"{cohort_dir.name}.json.gz"
+        gz_path = output / f"{cohort_dir.name.lower()}.json.gz"
         with gzip.open(gz_path, "wb") as f:
             f.write(json_bytes)
 
