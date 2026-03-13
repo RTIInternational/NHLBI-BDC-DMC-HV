@@ -1,31 +1,13 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001739
+      populated from: pht001739
       slot_derivations:
         associated_participant:
           populated_from: phv00117555
         associated_visit:
           value: CARDIA YEAR 7
-        observation_type:
-          value: OBA:2041535
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001739
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00117563
-                  unit:
-                    value: '%{normal}'
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001739
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00117555
-        associated_visit:
-          value: CARDIA YEAR 7
+        age_at_observation:
+          expr: {nan} * 365
         observation_type:
           value: OBA:2041535
         value_quantity:
@@ -37,15 +19,17 @@
                   value_decimal:
                     populated_from: phv00117556
                   unit:
-                    value: '%{normal}'
+                    value: "%{normal}"
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001694
+      populated from: pht001694
       slot_derivations:
         associated_participant:
           populated_from: phv00116360
         associated_visit:
           value: CARDIA YEAR 5
+        age_at_observation:
+          expr: {nan} * 365
         observation_type:
           value: OBA:2041535
         value_quantity:
@@ -57,15 +41,39 @@
                   value_decimal:
                     populated_from: phv00116361
                   unit:
-                    value: '%{normal}'
+                    value: "%{normal}"
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001642
+      populated from: pht001739
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00117555
+        associated_visit:
+          value: CARDIA YEAR 7
+        age_at_observation:
+          expr: {nan} * 365
+        observation_type:
+          value: OBA:2041535
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001739
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00117563
+                  unit:
+                    value: "%{normal}"
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001642
       slot_derivations:
         associated_participant:
           populated_from: phv00115089
         associated_visit:
           value: CARDIA YEAR 2
+        age_at_observation:
+          expr: {nan} * 365
         observation_type:
           value: OBA:2041535
         value_quantity:
@@ -77,4 +85,4 @@
                   value_decimal:
                     populated_from: phv00115090
                   unit:
-                    value: '%{normal}'
+                    value: "%{normal}"

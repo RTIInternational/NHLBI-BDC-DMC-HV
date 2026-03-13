@@ -1,11 +1,13 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001849
+      populated from: pht001849
       slot_derivations:
         associated_participant:
           populated_from: phv00120674
         associated_visit:
           value: CARDIA YEAR 15
+        age_at_observation:
+          expr: {nan} * 365
         observation_type:
           value: OMOP:4154347
         value_quantity:
@@ -17,15 +19,17 @@
                   value_decimal:
                     populated_from: phv00120679
                   unit:
-                    value: mg/g{creat}
+                    value: "mg/g"
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001803
+      populated from: pht001803
       slot_derivations:
         associated_participant:
           populated_from: phv00119617
         associated_visit:
           value: CARDIA YEAR 10
+        age_at_observation:
+          expr: {nan} * 365
         observation_type:
           value: OMOP:4154347
         value_quantity:
@@ -37,4 +41,4 @@
                   value_decimal:
                     populated_from: phv00119620
                   unit:
-                    value: mg/g{creat}
+                    value: "mg/g"
