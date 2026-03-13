@@ -509,31 +509,35 @@ def get_block_identity(block: dict) -> list[tuple]:
         slots = cls_def.get("slot_derivations")
         slots = slots if isinstance(slots, dict) else {}
 
-        visit = (slots.get("associated_visit") or {}).get("value", "")
+        def _d(val) -> dict:
+            """Return val if it's a dict, else empty dict (guard non-dict truthy values)."""
+            return val if isinstance(val, dict) else {}
+
+        visit = _d(slots.get("associated_visit")).get("value", "")
 
         concept = ""
         distinguishing_phv = ""
 
         if cls_name == "Condition":
-            concept = (slots.get("condition_concept") or {}).get("value", "")
-            cs = slots.get("condition_status") or {}
+            concept = _d(slots.get("condition_concept")).get("value", "")
+            cs = _d(slots.get("condition_status"))
             distinguishing_phv = cs.get("populated_from", "") or cs.get("expr", "")[:60]
         elif cls_name in ("MeasurementObservation", "Observation", "SdohObservation"):
-            concept = (slots.get("observation_type") or {}).get("value", "")
+            concept = _d(slots.get("observation_type")).get("value", "")
             # Use the value_quantity PHV as distinguishing
-            vq = slots.get("value_quantity") or {}
+            vq = _d(slots.get("value_quantity"))
             for od in (vq.get("object_derivations") or []):
                 if isinstance(od, dict):
-                    qty = (od.get("class_derivations") or {}).get("Quantity", {})
-                    qty_slots = qty.get("slot_derivations") or {}
-                    vd = qty_slots.get("value_decimal") or qty_slots.get("value_integer") or {}
+                    qty = _d(_d(od.get("class_derivations")).get("Quantity"))
+                    qty_slots = _d(qty.get("slot_derivations"))
+                    vd = _d(qty_slots.get("value_decimal") or qty_slots.get("value_integer"))
                     distinguishing_phv = vd.get("populated_from", "") or vd.get("expr", "")[:60]
                     break
         elif cls_name == "DrugExposure":
-            dc = slots.get("drug_concept") or {}
+            dc = _d(slots.get("drug_concept"))
             concept = dc.get("value", "") or dc.get("expr", "")[:80]
         elif cls_name == "Visit":
-            concept = (slots.get("id") or {}).get("expr", "")[:80]
+            concept = _d(slots.get("id")).get("expr", "")[:80]
         elif cls_name == "Demography":
             # All slots together distinguish Demography blocks
             distinguishing_phv = str(sorted(slots.keys()))
