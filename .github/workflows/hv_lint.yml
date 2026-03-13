@@ -15,6 +15,10 @@ on:
         description: "Minimum severity to fail (critical/error/warning/info)"
         required: false
         default: "error"
+      summary_limit:
+        description: "Max findings shown in the run summary (default: 50)"
+        required: false
+        default: "50"
 
 jobs:
   hv-lint:
@@ -39,11 +43,35 @@ jobs:
           poetry run python hv-lint/validate_yaml_quality.py \
             --bdchm-ref "${{ github.event.inputs.bdchm_ref || 'main' }}" \
             --cohort "${{ github.event.inputs.cohort || 'all' }}" \
-            --fail-on "${{ github.event.inputs.fail_on || 'error' }}"
+            --fail-on "${{ github.event.inputs.fail_on || 'error' }}" \
+            --summary-file phase1-summary.md \
+            --summary-limit "${{ github.event.inputs.summary_limit || '50' }}"
 
       - name: "Phase 2: dbGaP cross-reference checks"
         if: always()
         run: |
           poetry run python hv-lint/validate_phv_cross_reference.py \
             --cohort "${{ github.event.inputs.cohort || 'all' }}" \
-            --fail-on "${{ github.event.inputs.fail_on || 'error' }}"
+            --fail-on "${{ github.event.inputs.fail_on || 'error' }}" \
+            --summary-file phase2-summary.md \
+            --summary-limit "${{ github.event.inputs.summary_limit || '50' }}"
+
+      - name: Publish step summary
+        if: always()
+        run: |
+          for f in phase1-summary.md phase2-summary.md; do
+            if [ -f "$f" ]; then
+              cat "$f" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          done
+
+      - name: Upload full findings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hv-lint-findings
+          path: |
+            phase1-summary.md
+            phase2-summary.md
+          if-no-files-found: ignore
