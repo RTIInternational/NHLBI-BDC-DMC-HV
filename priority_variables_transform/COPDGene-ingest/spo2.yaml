@@ -14,9 +14,9 @@
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: COPDGene
+                populated_from: pht002239
                 slot_derivations:
                   value_decimal:
-                    expr: case(({phv00159589} <= 1, {phv00159589} * 100), {phv00159589}))
+                    expr: case(({phv00159589} <= 1, {phv00159589} * 100), (True, {phv00159589}))
                   unit:
                     value: '%'

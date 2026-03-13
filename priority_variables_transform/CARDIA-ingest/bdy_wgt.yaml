@@ -1,27 +1,29 @@
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001720
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00117221
-        associated_visit:
-          value: CARDIA YEAR 7
-        observation_type:
-          value: OBA:VT0001259
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001720
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00117231
-                    unit_conversion:
-                      source_unit: '[lb_av]'
-                      target_unit: kg
-                  unit:
-                    value: kg
-                    range: string
+# COMMENTED OUT: phv00117231 has non-numeric values causing TypeError in unit
+# conversion. Needs data investigation — see #413.
+# - class_derivations:
+#     MeasurementObservation:
+#       populated_from: pht001720
+#       slot_derivations:
+#         associated_participant:
+#           populated_from: phv00117221
+#         associated_visit:
+#           value: CARDIA YEAR 7
+#         observation_type:
+#           value: OBA:VT0001259
+#         value_quantity:
+#           object_derivations:
+#           - class_derivations:
+#               Quantity:
+#                 populated_from: pht001720
+#                 slot_derivations:
+#                   value_decimal:
+#                     populated_from: phv00117231
+#                     unit_conversion:
+#                       source_unit: '[lb_av]'
+#                       target_unit: kg
+#                   unit:
+#                     value: kg
+#                     range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001632
@@ -94,30 +96,32 @@
                   unit:
                     value: kg
                     range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001749
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00117898
-        associated_visit:
-          value: CARDIA YEAR 7
-        observation_type:
-          value: OBA:VT0001259
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001749
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00117926
-                    unit_conversion:
-                      source_unit: '[lb_av]'
-                      target_unit: kg
-                  unit:
-                    value: kg
-                    range: string
+# COMMENTED OUT: phv00117926 has non-numeric values causing TypeError in unit
+# conversion. Needs data investigation — see #413.
+# - class_derivations:
+#     MeasurementObservation:
+#       populated_from: pht001749
+#       slot_derivations:
+#         associated_participant:
+#           populated_from: phv00117898
+#         associated_visit:
+#           value: CARDIA YEAR 7
+#         observation_type:
+#           value: OBA:VT0001259
+#         value_quantity:
+#           object_derivations:
+#           - class_derivations:
+#               Quantity:
+#                 populated_from: pht001749
+#                 slot_derivations:
+#                   value_decimal:
+#                     populated_from: phv00117926
+#                     unit_conversion:
+#                       source_unit: '[lb_av]'
+#                       target_unit: kg
+#                   unit:
+#                     value: kg
+#                     range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001671
