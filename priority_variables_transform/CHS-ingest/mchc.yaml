@@ -1,23 +1,25 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001451
+      populated_from: pht001452
       slot_derivations:
         associated_participant:
-          populated_from: phv00099663
+          populated_from: phv00100285
         associated_visit:
           value: CHS BASELINE 2
           range: string
+        age_at_observation:
+          populated_from: phv00100487
         observation_type:
-          value: OBA:2045301
+          value: OMOP:37393850
           range: string
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht001451
+                populated_from: pht001452
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00100046
+                    populated_from: phv00100412
                   unit:
-                    value: pg/{cell}
+                    value: g/dL
                     range: string
