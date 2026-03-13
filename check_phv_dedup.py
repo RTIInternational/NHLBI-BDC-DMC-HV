@@ -6,6 +6,18 @@ from pathlib import Path
 
 import yaml
 
+# Known duplicates tracked in #373. Remove entries as they are fixed.
+KNOWN_ISSUES = {
+    "phv00001581",  # FHS tot_chol_bld.yaml — missing observation_type in block 60
+    "phv00001586",  # FHS fast_lipids.yaml / tot_chol_bld.yaml
+    "phv00079854",  # WHI bp_diastolic / bp_systolic
+    "phv00079855",  # WHI bp_diastolic / bp_systolic
+    "phv00079856",  # WHI bp_diastolic / bp_systolic
+    "phv00079857",  # WHI bp_diastolic / bp_systolic
+    "phv00100046",  # CHS albumin_bld / mch
+    "phv00112688",  # CARDIA hemo / mchc
+}
+
 
 def extract_value_phvs(block, block_index):
     """Yield (phv, concept, block_index) for value-bearing populated_from fields."""
@@ -54,12 +66,14 @@ def main() -> int:
 
     # phv -> [(concept, file, block_index), ...]
     phv_hits = defaultdict(list)
+    parse_errors = []
 
     for file_path in yaml_files:
         try:
             with file_path.open(encoding="utf-8") as f:
                 data = yaml.safe_load(f)
-        except (OSError, yaml.YAMLError):
+        except (OSError, yaml.YAMLError) as exc:
+            parse_errors.append((file_path.as_posix(), str(exc)))
             continue
         if data is None:
             continue
@@ -77,16 +91,37 @@ def main() -> int:
 
     print("PHV Deduplication Report")
     print("========================")
-    print(f"Found {len(phv_hits)} value-PHVs across {len(yaml_files)} files")
+    print(f"Found {len(phv_hits)} unique value-PHVs across {len(yaml_files)} files")
 
-    if duplicates:
-        print(f"\nPOTENTIAL DUPLICATES ({len(duplicates)}):")
-        for phv, hits in duplicates.items():
+    if parse_errors:
+        print(f"\nPARSE ERRORS ({len(parse_errors)}):")
+        for path, err in parse_errors:
+            print(f"  {path}: {err}")
+
+    known = {phv: hits for phv, hits in duplicates.items() if phv in KNOWN_ISSUES}
+    new = {phv: hits for phv, hits in duplicates.items() if phv not in KNOWN_ISSUES}
+
+    if known:
+        print(f"\nKNOWN ISSUES ({len(known)} PHVs, see #373):")
+        for phv, hits in known.items():
             concepts = {c for c, _, _ in hits}
             print(f"\n  {phv} mapped to {len(concepts)} concepts:")
             for concept, file, block_index in hits:
                 print(f"    {concept} in {file} (block {block_index})")
-    else:
+
+    if new:
+        print(f"\nNEW DUPLICATES ({len(new)}):")
+        for phv, hits in new.items():
+            concepts = {c for c, _, _ in hits}
+            print(f"\n  {phv} mapped to {len(concepts)} concepts:")
+            for concept, file, block_index in hits:
+                print(f"    {concept} in {file} (block {block_index})")
+        return 1
+
+    if parse_errors:
+        return 1
+
+    if not duplicates:
         print("\nNo duplicates found.")
 
     return 0
