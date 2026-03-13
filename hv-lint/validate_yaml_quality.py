@@ -589,6 +589,14 @@ def parse_args() -> argparse.Namespace:
         choices=["critical", "error", "warning", "info"],
         help="Minimum severity to cause non-zero exit (default: error)"
     )
+    p.add_argument(
+        "--summary-file", default=None,
+        help="Write a Markdown summary table to this file (for GITHUB_STEP_SUMMARY)"
+    )
+    p.add_argument(
+        "--summary-limit", type=int, default=50,
+        help="Max findings to include in the Markdown summary (default: 50)"
+    )
     return p.parse_args()
 
 
@@ -710,6 +718,11 @@ def main() -> int:
                 if in_ci:
                     print(f.gh_annotation())
 
+    # Write Markdown summary
+    if args.summary_file:
+        _write_summary(args.summary_file, "Phase 1", files_checked, blocks_checked,
+                       counts, all_findings, args.summary_limit)
+
     # Determine exit code
     blocking = [
         f for f in all_findings
@@ -724,6 +737,36 @@ def main() -> int:
             print(f"\n{'='*70}")
             print(f"PASSED (with {len(all_findings)} advisory findings below fail threshold)")
         return 0
+
+
+def _write_summary(path: str, phase: str, files: int, blocks: int,
+                   counts: dict[str, int], findings: list[Finding],
+                   limit: int) -> None:
+    """Write a Markdown summary table for GITHUB_STEP_SUMMARY."""
+    lines: list[str] = []
+    lines.append(f"## HV-Lint {phase} Results\n")
+    lines.append(f"| Metric | Value |")
+    lines.append(f"|--------|-------|")
+    lines.append(f"| Files checked | {files} |")
+    lines.append(f"| Blocks checked | {blocks} |")
+    for sev in ("CRITICAL", "ERROR", "HIGH", "WARNING", "INFO"):
+        if counts.get(sev, 0) > 0:
+            lines.append(f"| {sev} | {counts[sev]} |")
+    lines.append("")
+    if findings:
+        shown = findings[:limit]
+        lines.append(f"### Findings (showing {len(shown)} of {len(findings)})\n")
+        lines.append("| Severity | File | Block | Check | Message |")
+        lines.append("|----------|------|-------|-------|---------|")
+        for f in shown:
+            short = f.file.replace("priority_variables_transform/", "")
+            lines.append(f"| {f.severity} | {short} | {f.block} | {f.check} | {f.message} |")
+        if len(findings) > limit:
+            lines.append(f"\n> **{len(findings) - limit} additional findings omitted.** "
+                         f"Re-run with a higher `summary_limit` or check the raw log.")
+    else:
+        lines.append("All checks passed!\n")
+    Path(path).write_text("\n".join(lines), encoding="utf-8")
 
 
 if __name__ == "__main__":
