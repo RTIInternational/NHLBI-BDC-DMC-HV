@@ -41,7 +41,7 @@ BDCHM_URL_TEMPLATE = (
     "NHLBI-BDC-DMC-HM/{ref}/src/bdchm/schema/bdchm.yaml"
 )
 
-# Valid keys for each linkml-map model level, derived at import time
+# Valid keys for each linkml-map model level, derived at runtime
 # from the installed linkml_map.datamodel.transformer_model Pydantic classes.
 # HV-specific extensions (not in the base model) are added explicitly.
 def _derive_valid_keys():
@@ -58,7 +58,10 @@ def _derive_valid_keys():
     return ts_keys, cd_keys, sd_keys
 
 
-VALID_TRANSFORMATION_SPEC_KEYS, VALID_CLASS_DERIVATION_KEYS, VALID_SLOT_DERIVATION_KEYS = _derive_valid_keys()
+# Populated lazily in main() so --help works without linkml_map installed.
+VALID_TRANSFORMATION_SPEC_KEYS: frozenset = frozenset()
+VALID_CLASS_DERIVATION_KEYS: frozenset = frozenset()
+VALID_SLOT_DERIVATION_KEYS: frozenset = frozenset()
 
 # CURIE prefix → (regex for identifier part, human description)
 CURIE_RULES: dict[str, tuple[str, str]] = {
@@ -436,13 +439,8 @@ def validate_class_derivations(
                             ))
                             continue
                         # Validate keys in the object_derivation item
-                        for od_key in od:
-                            if od_key not in VALID_TRANSFORMATION_SPEC_KEYS:
-                                findings.append(Finding(
-                                    rel_path, block_idx, "1.1", "CRITICAL",
-                                    f"Unknown key '{od_key}' in object_derivation "
-                                    f"on {path_prefix}{class_name}.{slot_name}"
-                                ))
+                        # (Only check for class_derivations — OD items don't
+                        #  have a formal key set in the linkml-map model.)
                         # Recurse
                         nested_path = f"{path_prefix}{class_name}.{slot_name}."
                         findings.extend(validate_class_derivations(
@@ -588,8 +586,17 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> int:
+    global VALID_TRANSFORMATION_SPEC_KEYS, VALID_CLASS_DERIVATION_KEYS, VALID_SLOT_DERIVATION_KEYS
     args = parse_args()
     in_ci = os.environ.get("GITHUB_ACTIONS") == "true"
+
+    # Derive valid linkml-map keys (deferred so --help works without linkml_map)
+    try:
+        VALID_TRANSFORMATION_SPEC_KEYS, VALID_CLASS_DERIVATION_KEYS, VALID_SLOT_DERIVATION_KEYS = _derive_valid_keys()
+    except ImportError as e:
+        print(f"ERROR: linkml_map is not installed: {e}", file=sys.stderr)
+        print("Install with: pip install linkml-map", file=sys.stderr)
+        return 1
 
     # Load BDCHM schema
     try:
@@ -748,7 +755,8 @@ def _write_summary(path: str, phase: str, files: int, blocks: int,
         lines.append("|----------|------|-------|-------|---------|")
         for f in shown:
             short = f.file.replace("priority_variables_transform/", "")
-            lines.append(f"| {f.severity} | {short} | {f.block} | {f.check} | {f.message} |")
+            msg = f.message.replace("|", "\\|")
+            lines.append(f"| {f.severity} | {short} | {f.block} | {f.check} | {msg} |")
         if len(findings) > limit:
             lines.append(f"\n> **{len(findings) - limit} additional findings omitted.** "
                          f"Re-run with a higher `summary_limit` or check the raw log.")

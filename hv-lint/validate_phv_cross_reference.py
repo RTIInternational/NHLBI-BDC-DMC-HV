@@ -514,7 +514,8 @@ def _write_summary(path: str, phase: str, files: int, blocks: int,
         lines.append("|----------|------|-------|-------|---------|")
         for f in shown:
             short = f.file.replace("priority_variables_transform/", "")
-            lines.append(f"| {f.severity} | {short} | {f.block} | {f.check} | {f.message} |")
+            msg = f.message.replace("|", "\\|")
+            lines.append(f"| {f.severity} | {short} | {f.block} | {f.check} | {msg} |")
         if len(findings) > limit:
             lines.append(f"\n> **{len(findings) - limit} additional findings omitted.** "
                          f"Re-run with a higher `summary_limit` or check the raw log.")
