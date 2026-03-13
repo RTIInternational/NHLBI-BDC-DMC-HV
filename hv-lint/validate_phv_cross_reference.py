@@ -89,7 +89,8 @@ class Finding:
     @staticmethod
     def _esc(text: str) -> str:
         """Percent-encode characters that break GitHub Actions workflow commands."""
-        return text.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+        return (text.replace("%", "%25").replace("\r", "%0D")
+                .replace("\n", "%0A").replace(":", "%3A").replace(",", "%2C"))
 
     def gh_annotation(self) -> str:
         level = {
@@ -229,7 +230,10 @@ def extract_slot_refs(
                         nested_slots = nested_def.get("slot_derivations")
                         nested_slots = nested_slots if isinstance(nested_slots, dict) else {}
                         nested_phvs, nested_joins = extract_slot_refs(nested_slots, nested_cls)
-                        phv_refs.extend(nested_phvs)
+                        for ref in nested_phvs:
+                            if ref not in phv_refs_seen:
+                                phv_refs_seen.add(ref)
+                                phv_refs.append(ref)
                         join_phts.update(nested_joins)
 
                         # Nested class populated_from PHT

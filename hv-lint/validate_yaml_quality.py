@@ -109,7 +109,8 @@ class Finding:
     @staticmethod
     def _esc(text: str) -> str:
         """Percent-encode characters that break GitHub Actions workflow commands."""
-        return text.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+        return (text.replace("%", "%25").replace("\r", "%0D")
+                .replace("\n", "%0A").replace(":", "%3A").replace(",", "%2C"))
 
     def gh_annotation(self) -> str:
         level = {
