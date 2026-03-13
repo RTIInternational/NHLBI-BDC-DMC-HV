@@ -2,135 +2,88 @@
     MeasurementObservation:
       populated from: pht008742
       slot_derivations:
-        associated_participant:
+        associated_participant: 
           populated_from: phv00401725
-        associated_visit:
+        associated_visit: 
           value: JHS EXAM 1
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
+        observation_type: 
           value: OBA:VT0002871
         value_quantity:
           object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008742
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401742
-                  unit:
-                    value: "mg/L"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht008742
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00401725
-        associated_visit:
-          value: JHS EXAM 1
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0002871
-        value_quantity:
-          object_derivations:
-          - class_derivations:
+          - class derivations:
               Quantity:
                 populated_from: pht008742
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00401741
-                  unit:
-                    value: "mg/L"
+                  unit: 
+                    value: mg/L
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht008742
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00401725
+        associated_visit: 
+          value: JHS EXAM 1
+        observation_type: 
+          value: OBA:VT0002871
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht008742
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00401742
+                  unit: 
+                    value: mg/L
 - class_derivations:
     MeasurementObservation:
       populated from: pht008741
       slot_derivations:
-        associated_participant:
+        associated_participant: 
           populated_from: phv00401710
-        associated_visit:
+        associated_visit: 
           value: JHS EXAM 6
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
+        observation_type: 
           value: OBA:VT0002871
         value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht008741
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00401722
+                  unit: 
+                    value: mg/L
+# phv00401723 indicates if the continuous measurement recorded in phv00401722 fell below 2, the lower limit of detection
+        range_low:
           object_derivations:
           - class_derivations:
               Quantity:
                 populated_from: pht008741
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00401722
-                  unit:
-                    value: "mg/L"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht001960
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00127641
-        associated_visit:
-          value: JHS URINE
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0002871
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001960
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00127646
-                    unit_conversion:
-                      source_unit: "mg/dL"
-                      target_unit: "mg/L"
-                  unit:
-                    value: "mg/L"
+                    value: '2'
                     range: string
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht008731
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00401370
-        associated_visit:
-          value: JHS EXAM 3
-        age_at_observation:
-          expr: {phv00401379} * 365
-        observation_type:
-          value: OBA:VT0002871
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008731
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401436
-                    unit_conversion:
-                      source_unit: "mg/dL"
-                      target_unit: "mg/L"
                   unit:
-                    value: "mg/L"
-                    range: string
+                    value: mg/L
+                    range: string    
 - class_derivations:
     MeasurementObservation:
       populated from: pht008730
       slot_derivations:
-        associated_participant:
+        associated_participant: 
           populated_from: phv00401273
-        associated_visit:
+        associated_visit: 
           value: JHS EXAM 2
-        age_at_observation:
-          expr: {phv00401282} * 365
-        observation_type:
+        observation_type: 
           value: OBA:VT0002871
         value_quantity:
           object_derivations:
-          - class_derivations:
+          - class derivations:
               Quantity:
                 populated_from: pht008730
                 slot_derivations:
@@ -139,24 +92,46 @@
                     unit_conversion:
                       source_unit: "mg/dL"
                       target_unit: "mg/L"
-                  unit:
-                    value: "mg/L"
+                  unit: 
+                    value: mg/L
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht001960
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00127641
+        associated_visit: 
+          value: JHS URINE
+        observation_type: 
+          value: OBA:VT0002871
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht001960
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00127646
+                    unit_conversion:
+                      source_unit: "mg/dL"
+                      target_unit: "mg/L"
+                  unit: 
+                    value: mg/L
                     range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht008729
       slot_derivations:
-        associated_participant:
+        associated_participant: 
           populated_from: phv00401078
-        associated_visit:
+        associated_visit: 
           value: JHS EXAM 1
-        age_at_observation:
-          expr: {phv00401085} * 365
-        observation_type:
+        observation_type: 
           value: OBA:VT0002871
         value_quantity:
           object_derivations:
-          - class_derivations:
+          - class derivations:
               Quantity:
                 populated_from: pht008729
                 slot_derivations:
@@ -165,26 +140,51 @@
                     unit_conversion:
                       source_unit: "mg/dL"
                       target_unit: "mg/L"
-                  unit:
-                    value: "mg/L"
+                  unit: 
+                    value: mg/L
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht008731
+      slot_derivations:
+        associated_participant: 
+          populated_from: phv00401370
+        associated_visit: 
+          value: JHS EXAM 3
+        observation_type: 
+          value: OBA:VT0002871
+        value_quantity:
+          object_derivations:
+          - class derivations:
+              Quantity:
+                populated_from: pht008731
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00401436
+                    unit_conversion:
+                      source_unit: "mg/dL"
+                      target_unit: "mg/L"
+                  unit: 
+                    value: mg/L
                     range: string
 - class_derivations:
     MeasurementObservation:
       populated from: pht008759
       slot_derivations:
-        associated_participant:
+        associated_participant: 
           populated_from: phv00403002
-        associated_visit:
+        associated_visit: 
           value: JHS URINE
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
+        observation_type: 
           value: OBA:VT0002871
         value_quantity:
           object_derivations:
-          - class_derivations:
+          - class derivations:
               Quantity:
                 populated_from: pht008759
                 slot_derivations:
                   value_decimal:
                     expr: {phv00403004} / {phv00403006} * 1000
+                  unit: 
+                    value: mg/L
+                    range: string
