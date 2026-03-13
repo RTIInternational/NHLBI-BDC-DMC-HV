@@ -533,7 +533,7 @@ def get_block_identity(block: dict) -> list[tuple]:
 
     def _s(val, maxlen: int = 0) -> str:
         """Coerce val to str, optionally truncate (guard non-string YAML values)."""
-        t = val if isinstance(val, str) else str(val) if val else ""
+        t = val if isinstance(val, str) else str(val) if val is not None else ""
         return t[:maxlen] if maxlen else t
 
     for cls_name, cls_def in class_derivs.items():

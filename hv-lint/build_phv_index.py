@@ -66,6 +66,7 @@ def parse_variable_html(path: Path) -> dict[str, str]:
     """Parse HTML variable list and return {base_phv: base_pht} mapping."""
     parser = VariableTableParser()
     parser.feed(path.read_text(encoding="utf-8", errors="replace"))
+    parser.close()
 
     mapping: dict[str, str] = {}
     for row in parser.rows:
