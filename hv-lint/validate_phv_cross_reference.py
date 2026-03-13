@@ -225,7 +225,10 @@ def extract_slot_refs(
                         _add_ref(m.group(), f"expression_to_value_mappings in {slot_name} on {class_name}")
 
         # Recurse into object_derivations
-        for od in (slot_def.get("object_derivations") or []):
+        od_list = slot_def.get("object_derivations") or []
+        if not isinstance(od_list, list):
+            od_list = []
+        for od in od_list:
             if isinstance(od, dict) and "class_derivations" in od:
                 nested_cd = od["class_derivations"]
                 if not isinstance(nested_cd, dict):
