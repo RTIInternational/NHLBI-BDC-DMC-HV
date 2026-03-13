@@ -592,8 +592,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001035}) + ":FHS ORIGINAL EXAM 6")'
         drug_concept:
-          expr: 'case(({phv00000868} == 1, "RxCUI:C10A"), ({phv00000868} =='
-            3, "RxCUI:C10A"))
+          expr: 'case(({phv00000868} == 1, "RxCUI:C10A"), ({phv00000868} == 3, "RxCUI:C10A"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
