@@ -5,9 +5,9 @@
         associated_participant:
           populated_from: phv00111654
         associated_visit:
-          expr: '''WHI FG 60 1'''
+          expr: WHI FG 60 1
         observation_type:
-          expr: '''OMOP:4042886''' #vegetable servings per week
+          expr: OMOP:4042886 #vegetable servings per week
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -17,7 +17,7 @@
                   value_decimal:
                     expr: {phv00111871} * 7
                   unit:
-                    expr: '''{#}/wk'''
+                    expr: '{#}/wk'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006218
@@ -25,9 +25,9 @@
         associated_participant:
           populated_from: phv00283348
         associated_visit:
-          expr: '''WHI BASELINE'''
+          expr: WHI BASELINE
         observation_type:
-          expr: '''OMOP:4042886''' #vegetable servings per week
+          expr: OMOP:4042886 #vegetable servings per week
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -37,4 +37,4 @@
                   value_decimal:
                     expr: {phv00283395} * 7
                   unit:
-                    expr: '''{#}/wk'''                    
+                    expr: '{#}/wk'                    

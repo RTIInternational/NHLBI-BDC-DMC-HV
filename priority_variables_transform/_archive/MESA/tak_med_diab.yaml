@@ -5,11 +5,12 @@
         associated_participant:
           populated_from:  phv00082638
         associated_visit:
-          expr: '''MESA AIR EXAM'''
+          expr: MESA AIR EXAM
         drug_concept:
-          expr: case((phv00083006 == 1, '''RxCUI:A10'''))
+          expr: 'case((phv00083006 == 1, "RxCUI:A10"))'
+
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          expr: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht001116
@@ -17,11 +18,12 @@
         associated_participant:
           populated_from:  phv00084441
         associated_visit:
-          expr: '''MESA CLASSIC EXAM 1'''
+          expr: MESA CLASSIC EXAM 1
         drug_concept:
-          expr: case((phv00085234 == 1, '''RxCUI:A10'''))
+          expr: 'case((phv00085234 == 1, "RxCUI:A10"))'
+
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''          
+          expr: PATIENT SELF-REPORTED MEDICATION          
 - class_derivations:
     DrugExposure:
       populated_from: pht001121
@@ -29,11 +31,12 @@
         associated_participant:
           populated_from:  phv00087070
         associated_visit:
-          expr: '''MESA FAMILY'''
+          expr: MESA FAMILY
         drug_concept:
-          expr: case((phv00087115 == 1, '''RxCUI:A10'''))
+          expr: 'case((phv00087115 == 1, "RxCUI:A10"))'
+
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''          
+          expr: PATIENT SELF-REPORTED MEDICATION          
 - class_derivations:
     DrugExposure:
       populated_from: pht003086
@@ -41,11 +44,12 @@
         associated_participant:
           populated_from:  phv00174584
         associated_visit:
-          expr: '''MESA AIR EXAM 5'''
+          expr: MESA AIR EXAM 5
         drug_concept:
-          expr: case((phv00175292 == 1, '''RxCUI:A10'''))
+          expr: 'case((phv00175292 == 1, "RxCUI:A10"))'
+
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''          
+          expr: PATIENT SELF-REPORTED MEDICATION          
 - class_derivations:
     DrugExposure:
       populated_from: pht003087
@@ -53,11 +57,12 @@
         associated_participant:
           populated_from:  phv00175794
         associated_visit:
-          expr: '''MESA LUNG CT'''
+          expr: MESA LUNG CT
         drug_concept:
-          expr: case((phv00175870 == 1, '''RxCUI:A10'''))
+          expr: 'case((phv00175870 == 1, "RxCUI:A10"))'
+
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''          
+          expr: PATIENT SELF-REPORTED MEDICATION          
 - class_derivations:
     DrugExposure:
       populated_from: pht003091
@@ -65,8 +70,9 @@
         associated_participant:
           populated_from:  phv00176007
         associated_visit:
-          expr: '''MESA CLASSIC EXAM 5'''
+          expr: MESA CLASSIC EXAM 5
         drug_concept:
-          expr: case((phv00176715 == 1, '''RxCUI:A10'''))
+          expr: 'case((phv00176715 == 1, "RxCUI:A10"))'
+
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''          
+          expr: PATIENT SELF-REPORTED MEDICATION          

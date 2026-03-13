@@ -7,9 +7,10 @@ class_derivations:
       associated_visit:
         expr: "'FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'"
       drug_concept:
-        expr: case((phv00177254 == 1, '''RxCUI:A10'''), None)
+        expr: 'case((phv00177254 == 1, "RxCUI:A10"), None)'
+
       expsoure_provenance:
-        expr: '''PATIENT SELF-REPORTED MEDICATION'''
+        expr: PATIENT SELF-REPORTED MEDICATION
 class_derivations:
   DrugExposure:
     populated_from: pht006005
@@ -19,9 +20,10 @@ class_derivations:
       associated_visit:
         expr: "'FHS NEW OFFSPRING SPOUSE EXAM 1'"
       drug_concept:
-        expr: case((phv00273715 == 1, '''RxCUI:A10'''), None)
+        expr: 'case((phv00273715 == 1, "RxCUI:A10"), None)'
+
       expsoure_provenance:
-        expr: '''PATIENT SELF-REPORTED MEDICATION'''
+        expr: PATIENT SELF-REPORTED MEDICATION
 class_derivations:
   DrugExposure:
     populated_from: pht005140
@@ -31,9 +33,10 @@ class_derivations:
       associated_visit:
         expr: "'FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4'"
       drug_concept:
-        expr: case((phv00254028 == 1, '''RxCUI:A10'''), None)
+        expr: 'case((phv00254028 == 1, "RxCUI:A10"), None)'
+
       expsoure_provenance:
-        expr: '''PATIENT SELF-REPORTED MEDICATION'''
+        expr: PATIENT SELF-REPORTED MEDICATION
 class_derivations:
   DrugExposure:
     populated_from: pht006008
@@ -43,9 +46,10 @@ class_derivations:
       associated_visit:
         expr: "'FHS ORIGINAL EXAM 32'"
       drug_concept:
-        expr: case((phv00275073 == 1, '''RxCUI:A10'''), None)
+        expr: 'case((phv00275073 == 1, "RxCUI:A10"), None)'
+
       expsoure_provenance:
-        expr: '''PATIENT SELF-REPORTED MEDICATION'''
+        expr: PATIENT SELF-REPORTED MEDICATION
 class_derivations:
   DrugExposure:
     populated_from: pht000074
@@ -55,7 +59,8 @@ class_derivations:
       associated_visit:
         expr: "'FHS GENERATION 3 EXAM 1'"
       drug_concept:
-        expr: case((phv00020881 == 1, '''RxCUI:A10'''), None)
+        expr: 'case((phv00020881 == 1, "RxCUI:A10"), None)'
+
       expsoure_provenance:
-        expr: '''PATIENT SELF-REPORTED MEDICATION'''
+        expr: PATIENT SELF-REPORTED MEDICATION
    

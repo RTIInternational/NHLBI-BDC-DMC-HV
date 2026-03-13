@@ -5,9 +5,10 @@
         associated_participant:
           populated_from: phv00082638
         associated_visit:
-          expr: '''MESA AIR EXAM'''
+          expr: MESA AIR EXAM
         observation_type:
-          expr: case((phv00083303 >= 12, '''OMOP:4041721'''), (True, '''OBA:VT0000181'''))        
+          expr: 'case((phv00083303 >= 12, "OMOP:4041721"), (True, "OBA:VT0000181"))'        
+
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -17,9 +18,10 @@
                   value_decimal:
                     populated_from: phv00082951
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
         method_type:
-          expr: case((phv00083303 >= 12, '''Fasted minimum 12 hours'''))                     
+          expr: 'case((phv00083303 >= 12, "Fasted minimum 12 hours"))'                     
+
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
@@ -27,9 +29,10 @@
         associated_participant:
           populated_from: phv00084441
         associated_visit:
-          expr: '''MESA CLASSIC EXAM 1'''
+          expr: MESA CLASSIC EXAM 1
         observation_type:
-          expr: case((phv00084980 >= 12, '''OMOP:4041721'''), (True, '''OBA:VT0000181'''))        
+          expr: 'case((phv00084980 >= 12, "OMOP:4041721"), (True, "OBA:VT0000181"))'        
+
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -39,9 +42,10 @@
                   value_decimal:
                     populated_from: phv00084971
                   unit:
-                    expr: '''mg/dL'''  
+                    expr: mg/dL  
         method_type:
-          expr: case((phv00084980 >= 12, '''Fasted minimum 12 hours'''))                      
+          expr: 'case((phv00084980 >= 12, "Fasted minimum 12 hours"))'                      
+
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001118
@@ -49,9 +53,9 @@
         associated_participant:
           populated_from: phv00085772
         associated_visit:
-          expr: '''MESA CLASSIC EXAM 2'''
+          expr: MESA CLASSIC EXAM 2
         observation_type:
-          expr: '''OBA:VT0000181''' #LDL
+          expr: OBA:VT0000181 #LDL
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -61,7 +65,7 @@
                   value_decimal:
                     populated_from: phv00085919
                   unit:
-                    expr: '''mg/dL'''                     
+                    expr: mg/dL                     
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001119
@@ -69,9 +73,9 @@
         associated_participant:
           populated_from: phv00086258
         associated_visit:
-          expr: '''MESA CLASSIC EXAM 3'''
+          expr: MESA CLASSIC EXAM 3
         observation_type:
-          expr: '''OBA:VT0000181''' #LDL
+          expr: OBA:VT0000181 #LDL
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -81,7 +85,7 @@
                   value_decimal:
                     populated_from: phv00086401
                   unit:
-                    expr: '''mg/dL'''                    
+                    expr: mg/dL                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001120
@@ -89,9 +93,9 @@
         associated_participant:
           populated_from: phv00086726
         associated_visit:
-          expr: '''MESA CLASSIC EXAM 4'''
+          expr: MESA CLASSIC EXAM 4
         observation_type:
-          expr: '''OBA:VT0000181''' #LDL
+          expr: OBA:VT0000181 #LDL
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -101,7 +105,7 @@
                   value_decimal:
                     populated_from: phv00086832
                   unit:
-                    expr: '''mg/dL'''                    
+                    expr: mg/dL                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001121
@@ -109,10 +113,11 @@
         associated_participant:
           populated_from: phv00087070
         associated_visit:
-          expr: '''MESA FAMILY'''
+          expr: MESA FAMILY
         observation_type:
-          expr: case((phv00087524 >= 12, '''OMOP:4041721'''), (True, '''OBA:VT0000181'''))        
-          expr: '''OBA:VT0000181''' #LDL
+          expr: 'case((phv00087524 >= 12, "OMOP:4041721"), (True, "OBA:VT0000181"))'        
+
+          expr: OBA:VT0000181 #LDL
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -122,9 +127,10 @@
                   value_decimal:
                     populated_from: phv00087098
                   unit:
-                    expr: '''mg/dL'''        
+                    expr: mg/dL        
         method_type:
-          expr: case((phv00087524 >= 12, '''Fasted minimum 12 hours'''))                    
+          expr: 'case((phv00087524 >= 12, "Fasted minimum 12 hours"))'                    
+
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003086
@@ -132,9 +138,9 @@
         associated_participant:
           populated_from: phv00174584
         associated_visit:
-          expr: '''MESA AIR EXAM 5'''
+          expr: MESA AIR EXAM 5
         observation_type:
-          expr: '''OBA:VT0000181''' #LDL
+          expr: OBA:VT0000181 #LDL
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -144,7 +150,7 @@
                   value_decimal:
                     populated_from: phv00175238
                   unit:
-                    expr: '''mg/dL'''                 
+                    expr: mg/dL                 
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003087
@@ -152,9 +158,9 @@
         associated_participant:
           populated_from: phv00175794
         associated_visit:
-          expr: '''MESA LUNG CT'''
+          expr: MESA LUNG CT
         observation_type:
-          expr: '''OBA:VT0000181''' #LDL
+          expr: OBA:VT0000181 #LDL
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -164,7 +170,7 @@
                   value_decimal:
                     populated_from: phv00175866
                   unit:
-                    expr: '''mg/dL'''                    
+                    expr: mg/dL                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003087
@@ -172,9 +178,9 @@
         associated_participant:
           populated_from: phv00175794
         associated_visit:
-          expr: '''MESA LUNG CT'''
+          expr: MESA LUNG CT
         observation_type:
-          expr: '''OBA:VT0000181''' #LDL
+          expr: OBA:VT0000181 #LDL
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -184,7 +190,7 @@
                   value_decimal:
                     populated_from: phv00175885
                   unit:
-                    expr: '''mg/dL'''                    
+                    expr: mg/dL                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003087
@@ -192,9 +198,9 @@
         associated_participant:
           populated_from: phv00175794
         associated_visit:
-          expr: '''MESA LUNG CT'''
+          expr: MESA LUNG CT
         observation_type:
-          expr: '''OBA:VT0000181''' #LDL
+          expr: OBA:VT0000181 #LDL
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -204,7 +210,7 @@
                   value_decimal:
                     populated_from: phv00175950
                   unit:
-                    expr: '''mg/dL'''                    
+                    expr: mg/dL                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003091
@@ -212,9 +218,9 @@
         associated_participant:
           populated_from: phv00176007
         associated_visit:
-          expr: '''MESA CLASSIC EXAM 5'''
+          expr: MESA CLASSIC EXAM 5
         observation_type:
-          expr: '''OBA:VT0000181''' #LDL
+          expr: OBA:VT0000181 #LDL
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -224,4 +230,4 @@
                   value_decimal:
                     populated_from: phv00176661
                   unit:
-                    expr: '''mg/dL'''                    
+                    expr: mg/dL                    

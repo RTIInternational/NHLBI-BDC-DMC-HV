@@ -5,9 +5,9 @@
         associated_participant:
           populated_from: phv00077450
         associated_visit:
-          expr: '''WHI YEAR 3'''
+          expr: WHI YEAR 3
         observation_type:
-          expr: '''OMOP:35609491''' #alcohol servings per week
+          expr: OMOP:35609491 #alcohol servings per week
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -26,7 +26,7 @@
                       '7': 70-77
                       '8': '>84'
                   unit:
-                    expr: '''{#}/wk'''
+                    expr: '{#}/wk'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000993
@@ -34,9 +34,9 @@
         associated_participant:
           populated_from: phv00077907
         associated_visit:
-          expr: '''WHI YEAR 6'''
+          expr: WHI YEAR 6
         observation_type:
-          expr: '''OMOP:35609491''' #alcohol servings per week
+          expr: OMOP:35609491 #alcohol servings per week
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -55,7 +55,7 @@
                       '7': 70-77
                       '8': '>84'
                   unit:
-                    expr: '''{#}/wk'''                    
+                    expr: '{#}/wk'                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001003
@@ -63,9 +63,9 @@
         associated_participant:
           populated_from: phv00078772
         associated_visit:
-          expr: '''WHI PH 34'''
+          expr: WHI PH 34
         observation_type:
-          expr: '''OMOP:35609491''' #alcohol servings per week
+          expr: OMOP:35609491 #alcohol servings per week
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -75,7 +75,7 @@
                   value_decimal:
                     populated_from: phv00078826
                   unit:
-                    expr: '''{#}/wk'''                     
+                    expr: '{#}/wk'                     
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001004
@@ -83,9 +83,9 @@
         associated_participant:
           populated_from: phv00078828
         associated_visit:
-          expr: '''WHI PH 35'''
+          expr: WHI PH 35
         observation_type:
-          expr: '''OMOP:35609491''' #alcohol servings per week
+          expr: OMOP:35609491 #alcohol servings per week
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -95,7 +95,7 @@
                   value_decimal:
                     populated_from: phv00078866
                   unit:
-                    expr: '''{#}/wk'''                     
+                    expr: '{#}/wk'                     
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001517
@@ -103,9 +103,9 @@
         associated_participant:
           populated_from: phv00111654
         associated_visit:
-          expr: '''WHI FG 60 1'''
+          expr: WHI FG 60 1
         observation_type:
-          expr: '''OMOP:35609491''' #alcohol servings per week
+          expr: OMOP:35609491 #alcohol servings per week
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -115,7 +115,7 @@
                   value_decimal:
                     expr: ({phv00111860} + {phv00111861} + {phv00111862}) * 7
                   unit:
-                    expr: '''{#}/wk'''                     
+                    expr: '{#}/wk'                     
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002125
@@ -123,9 +123,9 @@
         associated_participant:
           populated_from: phv00156379
         associated_visit:
-          expr: '''WHI FG 60 2'''
+          expr: WHI FG 60 2
         observation_type:
-          expr: '''OMOP:35609491''' #alcohol servings per week
+          expr: OMOP:35609491 #alcohol servings per week
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -135,4 +135,4 @@
                   value_decimal:
                     populated_from: phv00156410
                   unit:
-                    expr: '''{#}/wk'''                    
+                    expr: '{#}/wk'                    

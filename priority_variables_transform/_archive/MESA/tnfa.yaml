@@ -5,9 +5,9 @@
         associated_participant:
           populated_from: phv00150369
         associated_visit:
-          expr: '''MESA STRESS'''
+          expr: MESA STRESS
         observation_type:
-          expr: '''OBA:2051979''' #tnfa
+          expr: OBA:2051979 #tnfa
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -17,7 +17,7 @@
                   value_decimal:
                     populated_from: phv00160520
                   unit:
-                    expr: '''pg/mL'''
+                    expr: pg/mL
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002198
@@ -27,10 +27,10 @@
         associated_visit:
           populated_from: phv00160529
           value_mappings:
-            '2': '''MESA CLASSIC EXAM 2'''
-            '3': '''MESA CLASSIC EXAM 3'''
+            '2': MESA CLASSIC EXAM 2
+            '3': MESA CLASSIC EXAM 3
         observation_type:
-          expr: '''OBA:2051979''' #tnfa
+          expr: OBA:2051979 #tnfa
         range_low:
           object_derivations:
           - class_derivations:
@@ -41,7 +41,7 @@
                     value: 0.16
                     range: string
                   unit:
-                    expr: '''pg/mL'''                    
+                    expr: pg/mL                    
         range_high:
           object_derivations:
           - class_derivations:
@@ -52,7 +52,7 @@
                     value: 12.0
                     range: string
                   unit:
-                    expr: '''pg/mL''' 
+                    expr: pg/mL 
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -60,9 +60,10 @@
                 populated_from: pht002198
                 slot_derivations:
                   value_decimal:
-                    expr: case((phv00160541 == -333, '''LLOD'''), (phv00160541 == -555, '''ULOD'''), (True, phv00160540))
+                    expr: 'case((phv00160541 == -333, "LLOD"), (phv00160541 == -555, "ULOD"), (True, phv00160540))'
+
                   unit:
-                    expr: '''pg/mL'''                    
+                    expr: pg/mL                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004326
@@ -70,9 +71,9 @@
         associated_participant:
           populated_from: phv00219018
         associated_visit:
-          expr: '''MESA STRESS'''
+          expr: MESA STRESS
         observation_type:
-          expr: '''OBA:2051979''' #tnfa
+          expr: OBA:2051979 #tnfa
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -82,4 +83,4 @@
                   value_decimal:
                     populated_from: phv00219028
                   unit:
-                    expr: '''pg/mL'''                    
+                    expr: pg/mL                    

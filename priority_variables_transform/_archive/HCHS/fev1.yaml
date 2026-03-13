@@ -5,9 +5,9 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          expr: '''HCHS EXAM'''
+          expr: HCHS EXAM
         observation_type:
-          expr: '''OMOP:4241837''' #FEV1
+          expr: OMOP:4241837 #FEV1
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -17,4 +17,4 @@
                   value_decimal:
                     expr: {phv00226384} / 1000
                   unit:
-                    expr: '''L'''
+                    expr: L

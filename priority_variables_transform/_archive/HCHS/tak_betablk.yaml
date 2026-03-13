@@ -5,11 +5,12 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          expr: '''HCHS EXAM'''
+          expr: HCHS EXAM
         drug_concept:
-          expr: case((phv00226330 == 1, '''RxCUI:C07A'''))
+          expr: 'case((phv00226330 == 1, "RxCUI:C07A"))'
+
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          expr: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht004715
@@ -17,11 +18,12 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          expr: '''HCHS EXAM'''
+          expr: HCHS EXAM
         drug_concept:
-          expr: case((phv00226330 == 1, '''RxCUI:OP101'''))
+          expr: 'case((phv00226330 == 1, "RxCUI:OP101"))'
+
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''          
+          expr: PATIENT SELF-REPORTED MEDICATION          
 - class_derivations:
     DrugExposure:
       populated_from: pht004715
@@ -29,10 +31,11 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          expr: '''HCHS EXAM'''
+          expr: HCHS EXAM
         drug_concept:
-          expr: case((phv00226330 == 1, '''RxCUI:C07A'''))
+          expr: 'case((phv00226330 == 1, "RxCUI:C07A"))'
+
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          expr: PATIENT SELF-REPORTED MEDICATION
         route_concept:
-          expr: '''OMOP:4132161''' #oral
+          expr: OMOP:4132161 #oral

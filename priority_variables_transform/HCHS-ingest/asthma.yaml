@@ -13,9 +13,9 @@
         condition_status:
           populated_from: phv00226252
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
-            '9': '''UNKNOWN'''
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -41,9 +41,9 @@
         condition_status:
           expr: case(((({phv00226387} == 0, 'ABSENT'), case((({phv00526887} == 1, case(({phv00526889} == 1, 'PRESENT'), ({phv00526889} == 0, 'HISTORICAL'), (True, 'UNKNOWN')), (True, 'UNKNOWN')))), (True, 'UNKNOWN'))))
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
-            '9': '''UNKNOWN'''
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN
         condition_provenance:
           populated_from: phv00226388
           value_mappings:
