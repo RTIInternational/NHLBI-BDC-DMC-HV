@@ -506,7 +506,8 @@ def get_block_identity(block: dict) -> list[tuple]:
         if not isinstance(cls_def, dict):
             continue
         pht = cls_def.get("populated_from", "")
-        slots = cls_def.get("slot_derivations") or {}
+        slots = cls_def.get("slot_derivations")
+        slots = slots if isinstance(slots, dict) else {}
 
         visit = (slots.get("associated_visit") or {}).get("value", "")
 

@@ -169,8 +169,15 @@ def extract_slot_refs(
         phv_refs: list of (phv, "slot_name on ClassName")
         join_phts: set of PHTs declared via joins
     """
+    phv_refs_seen: set[tuple[str, str]] = set()
     phv_refs: list[tuple[str, str]] = []
     join_phts: set[str] = set()
+
+    def _add_ref(phv: str, context: str) -> None:
+        key = (phv, context)
+        if key not in phv_refs_seen:
+            phv_refs_seen.add(key)
+            phv_refs.append(key)
 
     if not isinstance(slot_derivs, dict):
         return phv_refs, join_phts
@@ -182,13 +189,13 @@ def extract_slot_refs(
         # Direct populated_from
         pf = slot_def.get("populated_from")
         if isinstance(pf, str) and PHV_RE.fullmatch(pf):
-            phv_refs.append((pf, f"{slot_name} on {class_name}"))
+            _add_ref(pf, f"{slot_name} on {class_name}")
 
         # PHVs in expr (within {phv...} or plain references)
         expr = slot_def.get("expr")
         if isinstance(expr, str):
             for m in PHV_RE.finditer(expr):
-                phv_refs.append((m.group(), f"expr in {slot_name} on {class_name}"))
+                _add_ref(m.group(), f"expr in {slot_name} on {class_name}")
 
         # PHVs in value_mappings keys
         vm = slot_def.get("value_mappings")
@@ -196,7 +203,7 @@ def extract_slot_refs(
             for k in vm:
                 if isinstance(k, str):
                     for m in PHV_RE.finditer(k):
-                        phv_refs.append((m.group(), f"value_mappings key in {slot_name} on {class_name}"))
+                        _add_ref(m.group(), f"value_mappings key in {slot_name} on {class_name}")
 
         # PHVs in expression_to_value_mappings keys
         evm = slot_def.get("expression_to_value_mappings")
@@ -204,7 +211,7 @@ def extract_slot_refs(
             for k in evm:
                 if isinstance(k, str):
                     for m in PHV_RE.finditer(k):
-                        phv_refs.append((m.group(), f"expression_to_value_mappings in {slot_name} on {class_name}"))
+                        _add_ref(m.group(), f"expression_to_value_mappings in {slot_name} on {class_name}")
 
         # Recurse into object_derivations
         for od in (slot_def.get("object_derivations") or []):
@@ -245,9 +252,11 @@ def check_block(
         if not isinstance(class_def, dict):
             continue
 
-        class_pht = class_def.get("populated_from", "")
+        raw_pht = class_def.get("populated_from", "")
+        class_pht = raw_pht if isinstance(raw_pht, str) and PHT_RE.fullmatch(raw_pht) else ""
         has_joins = isinstance(class_def.get("joins"), list)
-        slot_derivs = class_def.get("slot_derivations") or {}
+        slot_derivs = class_def.get("slot_derivations")
+        slot_derivs = slot_derivs if isinstance(slot_derivs, dict) else {}
 
         # Collect join PHTs for cross-table detection
         join_phts: set[str] = set()
@@ -259,20 +268,19 @@ def check_block(
                         join_phts.add(jpht)
 
         # -- Check 2.2: PHT existence --
-        if isinstance(class_pht, str) and PHT_RE.fullmatch(class_pht):
-            if class_pht not in dbgap.valid_phts:
-                findings.append(Finding(
-                    rel_path, block_idx, "2.2", "ERROR",
-                    f"PHT '{class_pht}' on {class_name} not found in "
-                    f"dbGaP variable index"
-                ))
+        if class_pht and class_pht not in dbgap.valid_phts:
+            findings.append(Finding(
+                rel_path, block_idx, "2.2", "ERROR",
+                f"PHT '{class_pht}' on {class_name} not found in "
+                f"dbGaP variable index"
+            ))
 
         # Extract PHV references from slot derivations
         phv_refs, nested_join_phts = extract_slot_refs(slot_derivs, class_name)
         join_phts.update(nested_join_phts)
 
         # Track which non-class PHTs are reachable via joins
-        all_reachable_phts = {class_pht} | join_phts
+        all_reachable_phts = ({class_pht} if class_pht else set()) | join_phts
 
         for phv, context in phv_refs:
             # -- Check 2.1: PHV existence --
@@ -286,7 +294,7 @@ def check_block(
             actual_pht = dbgap.phv_to_pht[phv]
 
             # -- Check 2.3 / 2.5: PHV-to-PHT membership --
-            if not (isinstance(class_pht, str) and PHT_RE.fullmatch(class_pht)):
+            if not class_pht:
                 continue
             if actual_pht != class_pht:
                 # Determine the slot name from context string
