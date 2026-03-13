@@ -65,7 +65,7 @@ VALID_SLOT_DERIVATION_KEYS: frozenset = frozenset()
 
 # CURIE prefix → (compiled regex for identifier part, human description)
 CURIE_RULES: dict[str, tuple[re.Pattern, str]] = {
-    "OMOP":  (re.compile(r"^\d{4,9}$"), "numeric, 4-9 digits"),
+    "OMOP":  (re.compile(r"^\d{5,9}$"), "numeric, 5-9 digits"),
     "OBA":   (re.compile(r"^\d{7}$"),   "exactly 7 digits"),
     "MONDO": (re.compile(r"^\d{7}$"),   "exactly 7 digits"),
     "HP":    (re.compile(r"^\d{7}$"),   "exactly 7 digits"),
@@ -106,12 +106,17 @@ class Finding:
     severity: str    # CRITICAL, ERROR, WARNING, INFO
     message: str
 
+    @staticmethod
+    def _esc(text: str) -> str:
+        """Percent-encode characters that break GitHub Actions workflow commands."""
+        return text.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+
     def gh_annotation(self) -> str:
         level = {
             "CRITICAL": "error", "ERROR": "error", "HIGH": "warning",
             "WARNING": "warning", "INFO": "notice",
         }.get(self.severity, "notice")
-        return f"::{level} file={self.file}::HV-Lint [{self.check}] {self.message} (block {self.block})"
+        return f"::{level} file={self._esc(self.file)}::HV-Lint [{self.check}] {self._esc(self.message)} (block {self.block})"
 
     def terminal_line(self) -> str:
         sev = self.severity[:5].ljust(5)
@@ -241,7 +246,7 @@ def check_curie_value(
     parts = value.split(":", 1)
     prefix, identifier = parts[0].strip(), parts[1].strip()
 
-    # Check for space after colon (common bug: "OMOP: 38003563")
+    # Check for any whitespace issues in the CURIE
     if parts[1] != parts[1].strip():
         findings.append(Finding(
             rel_path, block_idx, "1.6", "HIGH",
@@ -249,7 +254,7 @@ def check_curie_value(
         ))
         return findings  # Don't double-report format issues
 
-    if value != value.strip() or "  " in value:
+    if value != value.strip() or " " in identifier:
         findings.append(Finding(
             rel_path, block_idx, "1.6", "HIGH",
             f"CURIE has extra whitespace: '{value}' on {class_name}.{slot_name}"

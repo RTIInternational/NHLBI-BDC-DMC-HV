@@ -86,12 +86,17 @@ class Finding:
     severity: str    # CRITICAL, ERROR, WARNING, INFO
     message: str
 
+    @staticmethod
+    def _esc(text: str) -> str:
+        """Percent-encode characters that break GitHub Actions workflow commands."""
+        return text.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+
     def gh_annotation(self) -> str:
         level = {
             "CRITICAL": "error", "ERROR": "error",
             "WARNING": "warning", "HIGH": "warning", "INFO": "notice",
         }.get(self.severity, "notice")
-        return f"::{level} file={self.file}::HV-Lint [{self.check}] {self.message} (block {self.block})"
+        return f"::{level} file={self._esc(self.file)}::HV-Lint [{self.check}] {self._esc(self.message)} (block {self.block})"
 
     def terminal_line(self) -> str:
         sev = self.severity[:5].ljust(5)
@@ -265,7 +270,7 @@ def check_block(
             for j in class_def["joins"]:
                 if isinstance(j, dict):
                     jpht = j.get("populated_from", "")
-                    if PHT_RE.fullmatch(jpht):
+                    if isinstance(jpht, str) and PHT_RE.fullmatch(jpht):
                         join_phts.add(jpht)
 
         # -- Check 2.2: PHT existence --
