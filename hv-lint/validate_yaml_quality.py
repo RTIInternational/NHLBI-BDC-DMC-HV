@@ -227,8 +227,8 @@ def check_curie_value(
         return findings
 
     # Only validate strings that look like CURIEs: PREFIX:identifier
-    # This skips plain enum tokens (FEMALE), free-text expressions, etc.
-    if not re.match(r'^[A-Za-z][A-Za-z0-9_]*:\S', value):
+    # Allow space after colon so the whitespace check below can catch it.
+    if not re.match(r'^[A-Za-z][A-Za-z0-9_]*:', value):
         return findings
 
     parts = value.split(":", 1)
@@ -593,9 +593,9 @@ def main() -> int:
     # Derive valid linkml-map keys (deferred so --help works without linkml_map)
     try:
         VALID_TRANSFORMATION_SPEC_KEYS, VALID_CLASS_DERIVATION_KEYS, VALID_SLOT_DERIVATION_KEYS = _derive_valid_keys()
-    except ImportError as e:
-        print(f"ERROR: linkml_map is not installed: {e}", file=sys.stderr)
-        print("Install with: pip install linkml-map", file=sys.stderr)
+    except (ImportError, AttributeError) as e:
+        print(f"ERROR: linkml_map is not installed or incompatible: {e}", file=sys.stderr)
+        print("Install/upgrade with: pip install linkml-map", file=sys.stderr)
         return 1
 
     # Load BDCHM schema
