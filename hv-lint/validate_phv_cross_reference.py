@@ -434,8 +434,13 @@ def main() -> int:
         try:
             with file_path.open(encoding="utf-8") as f:
                 data = yaml.safe_load(f)
-        except (OSError, yaml.YAMLError):
-            continue  # Phase 1 catches parse errors
+        except (OSError, yaml.YAMLError) as exc:
+            all_findings.append(Finding(
+                check="2.0", severity="ERROR",
+                file=rel_path, block=0,
+                message=f"Cannot parse YAML: {exc}",
+            ))
+            continue
 
         if data is None:
             continue
