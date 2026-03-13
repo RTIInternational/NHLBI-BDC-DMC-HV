@@ -378,8 +378,15 @@ def validate_class_derivations(
         # -- Slot derivations --
         slot_derivs = class_def.get("slot_derivations")
         if not isinstance(slot_derivs, dict):
-            # Check 1.4: Missing slot_derivations entirely
-            if class_name in ctx.class_slots:
+            if slot_derivs is not None:
+                # Key exists but wrong type — structural error
+                findings.append(Finding(
+                    rel_path, block_idx, "1.4", "ERROR",
+                    f"{path_prefix}{class_name} slot_derivations is "
+                    f"{type(slot_derivs).__name__}, expected mapping"
+                ))
+            elif class_name in ctx.class_slots:
+                # Check 1.4: Missing slot_derivations entirely
                 findings.append(Finding(
                     rel_path, block_idx, "1.4", "WARNING",
                     f"{path_prefix}{class_name} has no slot_derivations"

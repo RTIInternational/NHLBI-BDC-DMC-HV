@@ -274,7 +274,14 @@ def check_block(
         class_pht = raw_pht if isinstance(raw_pht, str) and PHT_RE.fullmatch(raw_pht) else ""
         has_joins = isinstance(class_def.get("joins"), list)
         slot_derivs = class_def.get("slot_derivations")
-        slot_derivs = slot_derivs if isinstance(slot_derivs, dict) else {}
+        if not isinstance(slot_derivs, dict):
+            if slot_derivs is not None:
+                findings.append(Finding(
+                    rel_path, block_idx, "2.0", "ERROR",
+                    f"{class_name} slot_derivations is "
+                    f"{type(slot_derivs).__name__}, expected mapping"
+                ))
+            slot_derivs = {}
 
         # Collect join PHTs for cross-table detection
         join_phts: set[str] = set()
