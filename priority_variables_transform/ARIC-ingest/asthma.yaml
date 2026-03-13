@@ -112,9 +112,9 @@
         condition_concept:
           value: MONDO:0004979
         condition_status:
-          expr: case(({phv00209714} == 0, ABSENT), case({phv00209717} == 0, HISTORICAL), (True, PRESENT))
+          expr: case(({phv00209714} == 0, 'ABSENT'), ({phv00209717} == 0, 'HISTORICAL'), (True, 'PRESENT'))
         condition_provenance:
-          expr: case(({phv00209715} == 0, PATIENT_SELF-REPORTED_CONDITION), (True, CLINICAL_DIAGNOSIS))
+          expr: case(({phv00209715} == 0, 'PATIENT_SELF-REPORTED_CONDITION'), (True, 'CLINICAL_DIAGNOSIS'))
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -132,9 +132,9 @@
         condition_concept:
           value: MONDO:0004979
         condition_status:
-          expr: case(({phv00298007} == 0, ABSENT), case({phv00298010} == 0, HISTORICAL), (True, PRESENT))
+          expr: case(({phv00298007} == 0, 'ABSENT'), ({phv00298010} == 0, 'HISTORICAL'), (True, 'PRESENT'))
         condition_provenance:
-          expr: case(({phv00298008} == 0, PATIENT_SELF-REPORTED_CONDITION), (True, CLINICAL_DIAGNOSIS))
+          expr: case(({phv00298008} == 0, 'PATIENT_SELF-REPORTED_CONDITION'), (True, 'CLINICAL_DIAGNOSIS'))
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
