@@ -107,17 +107,22 @@ class Finding:
     message: str
 
     @staticmethod
-    def _esc(text: str) -> str:
-        """Percent-encode characters that break GitHub Actions workflow commands."""
+    def _esc_prop(text: str) -> str:
+        """Escape a workflow-command *property* value (file=, line=, …)."""
         return (text.replace("%", "%25").replace("\r", "%0D")
                 .replace("\n", "%0A").replace(":", "%3A").replace(",", "%2C"))
+
+    @staticmethod
+    def _esc_msg(text: str) -> str:
+        """Escape a workflow-command *message* (colons/commas stay readable)."""
+        return text.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
 
     def gh_annotation(self) -> str:
         level = {
             "CRITICAL": "error", "ERROR": "error", "HIGH": "warning",
             "WARNING": "warning", "INFO": "notice",
         }.get(self.severity, "notice")
-        return f"::{level} file={self._esc(self.file)}::HV-Lint [{self.check}] {self._esc(self.message)} (block {self.block})"
+        return f"::{level} file={self._esc_prop(self.file)}::HV-Lint [{self.check}] {self._esc_msg(self.message)} (block {self.block})"
 
     def terminal_line(self) -> str:
         sev = self.severity[:5].ljust(5)
@@ -247,8 +252,8 @@ def check_curie_value(
     parts = value.split(":", 1)
     prefix, identifier = parts[0].strip(), parts[1].strip()
 
-    # Check for any whitespace issues in the CURIE
-    if parts[1] != parts[1].strip():
+    # Check for leading whitespace after the colon (e.g. "OMOP: 1234")
+    if parts[1] != parts[1].lstrip():
         findings.append(Finding(
             rel_path, block_idx, "1.6", "HIGH",
             f"CURIE has space after colon: '{value}' on {class_name}.{slot_name}"

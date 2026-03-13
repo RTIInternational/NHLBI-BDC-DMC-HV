@@ -87,17 +87,22 @@ class Finding:
     message: str
 
     @staticmethod
-    def _esc(text: str) -> str:
-        """Percent-encode characters that break GitHub Actions workflow commands."""
+    def _esc_prop(text: str) -> str:
+        """Escape a workflow-command *property* value (file=, line=, …)."""
         return (text.replace("%", "%25").replace("\r", "%0D")
                 .replace("\n", "%0A").replace(":", "%3A").replace(",", "%2C"))
+
+    @staticmethod
+    def _esc_msg(text: str) -> str:
+        """Escape a workflow-command *message* (colons/commas stay readable)."""
+        return text.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
 
     def gh_annotation(self) -> str:
         level = {
             "CRITICAL": "error", "ERROR": "error",
             "WARNING": "warning", "HIGH": "warning", "INFO": "notice",
         }.get(self.severity, "notice")
-        return f"::{level} file={self._esc(self.file)}::HV-Lint [{self.check}] {self._esc(self.message)} (block {self.block})"
+        return f"::{level} file={self._esc_prop(self.file)}::HV-Lint [{self.check}] {self._esc_msg(self.message)} (block {self.block})"
 
     def terminal_line(self) -> str:
         sev = self.severity[:5].ljust(5)
