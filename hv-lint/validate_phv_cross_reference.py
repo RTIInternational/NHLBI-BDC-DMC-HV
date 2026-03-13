@@ -480,6 +480,16 @@ def main() -> int:
     print(f"Blocks checked: {blocks_checked}")
     if skipped_no_index:
         print(f"Files skipped (no index): {len(skipped_no_index)}")
+        for skipped_file in skipped_no_index:
+            all_findings.append(Finding(
+                check="2.0", severity="ERROR",
+                file=skipped_file, block=0,
+                message=f"No dbGaP index available for cohort — file not validated",
+            ))
+        # Recount after adding skip findings
+        counts.clear()
+        for f in all_findings:
+            counts[f.severity] = counts.get(f.severity, 0) + 1
 
     parts = []
     for sev in ("CRITICAL", "ERROR", "HIGH", "WARNING", "INFO"):
@@ -542,7 +552,7 @@ def _write_summary(path: str, phase: str, files: int, blocks: int,
         lines.append("|----------|------|-------|-------|---------|")
         for f in shown:
             short = f.file.replace("priority_variables_transform/", "")
-            msg = f.message.replace("|", "\\|")
+            msg = f.message.replace("\r", " ").replace("\n", " ").replace("|", "\\|")
             lines.append(f"| {f.severity} | {short} | {f.block} | {f.check} | {msg} |")
         if len(findings) > limit:
             lines.append(f"\n> **{len(findings) - limit} additional findings omitted.** "

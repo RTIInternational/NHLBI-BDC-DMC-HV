@@ -531,13 +531,15 @@ def get_block_identity(block: dict) -> list[tuple]:
         slots = cls_def.get("slot_derivations")
         slots = slots if isinstance(slots, dict) else {}
 
-        visit = _d(slots.get("associated_visit")).get("value", "")
+        av = _d(slots.get("associated_visit"))
+        visit = av.get("value", "") or av.get("populated_from", "") or av.get("expr", "")[:60]
 
         concept = ""
         distinguishing_phv = ""
 
         if cls_name == "Condition":
-            concept = _d(slots.get("condition_concept")).get("value", "")
+            cc = _d(slots.get("condition_concept"))
+            concept = cc.get("value", "") or cc.get("populated_from", "") or cc.get("expr", "")[:60]
             cs = _d(slots.get("condition_status"))
             distinguishing_phv = cs.get("populated_from", "") or cs.get("expr", "")[:60]
         elif cls_name in ("MeasurementObservation", "Observation", "SdohObservation"):
@@ -791,7 +793,7 @@ def _write_summary(path: str, phase: str, files: int, blocks: int,
         lines.append("|----------|------|-------|-------|---------|")
         for f in shown:
             short = f.file.replace("priority_variables_transform/", "")
-            msg = f.message.replace("|", "\\|")
+            msg = f.message.replace("\r", " ").replace("\n", " ").replace("|", "\\|")
             lines.append(f"| {f.severity} | {short} | {f.block} | {f.check} | {msg} |")
         if len(findings) > limit:
             lines.append(f"\n> **{len(findings) - limit} additional findings omitted.** "
