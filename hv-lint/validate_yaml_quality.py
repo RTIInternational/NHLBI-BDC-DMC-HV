@@ -95,7 +95,7 @@ KNOWN_ISSUES: dict[str, str] = {
 }
 
 # Severity ranking for --fail-on filtering
-SEVERITY_RANK = {"CRITICAL": 4, "ERROR": 3, "WARNING": 2, "INFO": 1}
+SEVERITY_RANK = {"CRITICAL": 4, "ERROR": 3, "HIGH": 2, "WARNING": 2, "INFO": 1}
 
 # ---------------------------------------------------------------------------
 # Data structures
@@ -239,26 +239,31 @@ def check_curie_value(
     if ":" not in value:
         return findings
 
-    # Skip URLs, plain strings, and enum-like values (ABSENT, PRESENT, etc.)
-    if value.startswith("http") or value.isupper() or " " in value:
+    # Skip URLs
+    if value.startswith("http"):
+        return findings
+
+    # Only validate strings that look like CURIEs: PREFIX:identifier
+    # This skips plain enum tokens (FEMALE), free-text expressions, etc.
+    if not re.match(r'^[A-Za-z][A-Za-z0-9_]*:\S', value):
         return findings
 
     parts = value.split(":", 1)
     prefix, identifier = parts[0].strip(), parts[1].strip()
 
     # Check for space after colon (common bug: "OMOP: 38003563")
-    if value != value.strip() or "  " in value:
-        findings.append(Finding(
-            rel_path, block_idx, "1.6", "HIGH",
-            f"CURIE has extra whitespace: '{value}' on {class_name}.{slot_name}"
-        ))
-
     if parts[1] != parts[1].strip():
         findings.append(Finding(
             rel_path, block_idx, "1.6", "HIGH",
             f"CURIE has space after colon: '{value}' on {class_name}.{slot_name}"
         ))
         return findings  # Don't double-report format issues
+
+    if value != value.strip() or "  " in value:
+        findings.append(Finding(
+            rel_path, block_idx, "1.6", "HIGH",
+            f"CURIE has extra whitespace: '{value}' on {class_name}.{slot_name}"
+        ))
 
     if prefix in CURIE_RULES:
         pattern, desc = CURIE_RULES[prefix]
@@ -548,7 +553,7 @@ def check_duplicates(
 ) -> list[Finding]:
     """Check 1.10: Detect duplicate blocks within a single file."""
     findings: list[Finding] = []
-    seen: dict[tuple[str, str, str], int] = {}
+    seen: dict[tuple[str, str, str, str, str], int] = {}
 
     for idx, block in enumerate(blocks):
         for identity in get_block_identity(block):
