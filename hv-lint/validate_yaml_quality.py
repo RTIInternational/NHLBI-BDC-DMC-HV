@@ -111,7 +111,7 @@ class Finding:
 
     def gh_annotation(self) -> str:
         level = {
-            "CRITICAL": "error", "ERROR": "error",
+            "CRITICAL": "error", "ERROR": "error", "HIGH": "warning",
             "WARNING": "warning", "INFO": "notice",
         }[self.severity]
         return f"::{level} file={self.file}::HV-Lint [{self.check}] {self.message} (block {self.block})"
