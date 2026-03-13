@@ -63,6 +63,17 @@ KNOWN_ISSUES: dict[str, str] = {
 
 SEVERITY_RANK = {"CRITICAL": 5, "ERROR": 4, "HIGH": 3, "WARNING": 2, "INFO": 1}
 
+# Slots that routinely reference a different table (e.g.,
+# associated_participant always comes from the subject table,
+# age_at_* slots reference the visit/age table).
+EXPECTED_CROSS_TABLE_SLOTS = {
+    "associated_participant", "associated_visit",
+}
+# Slot name prefixes where cross-table references are normal
+EXPECTED_CROSS_TABLE_PREFIXES = (
+    "age_at_", "age_of_",
+)
+
 # ---------------------------------------------------------------------------
 # Data structures
 # ---------------------------------------------------------------------------
@@ -259,17 +270,6 @@ def check_block(
 
         # Track which non-class PHTs are reachable via joins
         all_reachable_phts = {class_pht} | join_phts
-
-        # Slots that routinely reference a different table (e.g.,
-        # associated_participant always comes from the subject table,
-        # age_at_* slots reference the visit/age table).
-        EXPECTED_CROSS_TABLE_SLOTS = {
-            "associated_participant", "associated_visit",
-        }
-        # Slot name prefixes where cross-table references are normal
-        EXPECTED_CROSS_TABLE_PREFIXES = (
-            "age_at_", "age_of_",
-        )
 
         for phv, context in phv_refs:
             # -- Check 2.1: PHV existence --

@@ -41,37 +41,24 @@ BDCHM_URL_TEMPLATE = (
     "NHLBI-BDC-DMC-HM/{ref}/src/bdchm/schema/bdchm.yaml"
 )
 
-# Valid keys for each linkml-map model level.
-# Derived from linkml_map.datamodel.transformer_model.
-VALID_TRANSFORMATION_SPEC_KEYS = frozenset({
-    "description", "implements", "comments", "id", "title",
-    "prefixes", "source_schema", "target_schema",
-    "class_derivations", "enum_derivations", "slot_derivations",
-})
+# Valid keys for each linkml-map model level, derived at import time
+# from the installed linkml_map.datamodel.transformer_model Pydantic classes.
+# HV-specific extensions (not in the base model) are added explicitly.
+def _derive_valid_keys():
+    from linkml_map.datamodel.transformer_model import (
+        TransformationSpecification, ClassDerivation, SlotDerivation,
+    )
+    ts_keys = frozenset(TransformationSpecification.model_fields.keys())
+    cd_keys = frozenset(ClassDerivation.model_fields.keys())
+    sd_keys = frozenset(SlotDerivation.model_fields.keys()) | {
+        # Extensions used in HV YAML files (not in base linkml-map model):
+        "value",               # Static value assignment
+        "object_derivations",  # Nested object structure (e.g., Quantity)
+    }
+    return ts_keys, cd_keys, sd_keys
 
-VALID_CLASS_DERIVATION_KEYS = frozenset({
-    "description", "implements", "comments", "name",
-    "copy_directives", "overrides", "is_a", "mixins",
-    "value_mappings", "expression_to_value_mappings",
-    "expression_to_expression_mappings", "mirror_source",
-    "populated_from", "sources", "joins",
-    "slot_derivations", "target_definition",
-})
 
-VALID_SLOT_DERIVATION_KEYS = frozenset({
-    "description", "implements", "comments", "name",
-    "copy_directives", "overrides", "is_a", "mixins",
-    "value_mappings", "expression_to_value_mappings",
-    "expression_to_expression_mappings", "mirror_source",
-    "populated_from", "sources", "derived_from", "expr",
-    "range", "unit_conversion", "inverse_of", "hide",
-    "type_designator", "target_definition",
-    "cast_collection_as", "dictionary_key",
-    "stringification", "aggregation_operation",
-    # Extensions used in HV YAML files (not in base linkml-map model):
-    "value",               # Static value assignment
-    "object_derivations",  # Nested object structure (e.g., Quantity)
-})
+VALID_TRANSFORMATION_SPEC_KEYS, VALID_CLASS_DERIVATION_KEYS, VALID_SLOT_DERIVATION_KEYS = _derive_valid_keys()
 
 # CURIE prefix → (regex for identifier part, human description)
 CURIE_RULES: dict[str, tuple[str, str]] = {
