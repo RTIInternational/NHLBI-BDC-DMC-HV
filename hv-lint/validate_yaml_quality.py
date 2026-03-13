@@ -63,16 +63,23 @@ VALID_TRANSFORMATION_SPEC_KEYS: frozenset = frozenset()
 VALID_CLASS_DERIVATION_KEYS: frozenset = frozenset()
 VALID_SLOT_DERIVATION_KEYS: frozenset = frozenset()
 
-# CURIE prefix → (regex for identifier part, human description)
-CURIE_RULES: dict[str, tuple[str, str]] = {
-    "OMOP":  (r"^\d{4,9}$", "numeric, 4-9 digits"),
-    "OBA":   (r"^\d{7}$",   "exactly 7 digits"),
-    "MONDO": (r"^\d{7}$",   "exactly 7 digits"),
-    "HP":    (r"^\d{7}$",   "exactly 7 digits"),
-    "NCIT":  (r"^C\d+$",    "C followed by digits"),
-    "LOINC": (r"^\d+-\d$",  "digits-dash-digit"),
-    "RxCUI": (r"^\d+$",     "numeric only"),
+# CURIE prefix → (compiled regex for identifier part, human description)
+CURIE_RULES: dict[str, tuple[re.Pattern, str]] = {
+    "OMOP":  (re.compile(r"^\d{4,9}$"), "numeric, 4-9 digits"),
+    "OBA":   (re.compile(r"^\d{7}$"),   "exactly 7 digits"),
+    "MONDO": (re.compile(r"^\d{7}$"),   "exactly 7 digits"),
+    "HP":    (re.compile(r"^\d{7}$"),   "exactly 7 digits"),
+    "NCIT":  (re.compile(r"^C\d+$"),    "C followed by digits"),
+    "LOINC": (re.compile(r"^\d+-\d$"),  "digits-dash-digit"),
+    "RxCUI": (re.compile(r"^\d+$"),     "numeric only"),
 }
+
+# Precompiled regexes used in CURIE / expression checks
+_CURIE_PREFIX_RE = re.compile(r'^[A-Za-z][A-Za-z0-9_]*:')
+_CURIE_IN_EXPR_RE = re.compile(r"['\"]([A-Za-z][A-Za-z0-9_]*:\S+?)['\"]")
+_EMPTY_VAR_REF_RE = re.compile(r"\{\{\s*\}\}")
+_PHT_FORMAT_RE = re.compile(r"^pht\d{6}$")
+_PHV_FORMAT_RE = re.compile(r"^phv\d{8}$")
 
 # Files to skip entirely (same pattern as validate_ingest_yamls.py).
 KNOWN_ISSUES: dict[str, str] = {
@@ -228,7 +235,7 @@ def check_curie_value(
 
     # Only validate strings that look like CURIEs: PREFIX:identifier
     # Allow space after colon so the whitespace check below can catch it.
-    if not re.match(r'^[A-Za-z][A-Za-z0-9_]*:', value):
+    if not _CURIE_PREFIX_RE.match(value):
         return findings
 
     parts = value.split(":", 1)
@@ -249,8 +256,8 @@ def check_curie_value(
         ))
 
     if prefix in CURIE_RULES:
-        pattern, desc = CURIE_RULES[prefix]
-        if not re.match(pattern, identifier):
+        pat, desc = CURIE_RULES[prefix]
+        if not pat.match(identifier):
             findings.append(Finding(
                 rel_path, block_idx, "1.6", "HIGH",
                 f"Invalid {prefix} identifier '{identifier}' "
@@ -266,7 +273,7 @@ def check_curies_in_expr(
     """Check 1.6: Extract and validate CURIEs embedded in expressions."""
     findings = []
     # Match quoted CURIE-like values in expressions: 'PREFIX:ID' or "PREFIX:ID"
-    for match in re.finditer(r"['\"]([A-Za-z][A-Za-z0-9_]*:\S+?)['\"]", expr):
+    for match in _CURIE_IN_EXPR_RE.finditer(expr):
         curie = match.group(1)
         findings.extend(check_curie_value(
             curie, class_name, slot_name, block_idx, rel_path
@@ -301,7 +308,7 @@ def check_expression_syntax(
         ))
 
     # Empty variable references: {{ }}
-    if re.search(r"\{\{\s*\}\}", expr):
+    if _EMPTY_VAR_REF_RE.search(expr):
         findings.append(Finding(
             rel_path, block_idx, "1.9", "WARNING",
             f"Empty variable reference '{{{{ }}}}' in expr on {class_name}.{slot_name}"
@@ -350,7 +357,7 @@ def validate_class_derivations(
                 f"(got {type(pht).__name__})"
             ))
         elif isinstance(pht, str) and pht.startswith("pht"):
-            if not re.match(r"^pht\d{6}$", pht):
+            if not _PHT_FORMAT_RE.match(pht):
                 findings.append(Finding(
                     rel_path, block_idx, "1.7", "ERROR",
                     f"Invalid PHT format '{pht}' on {path_prefix}{class_name} "
@@ -417,7 +424,7 @@ def validate_class_derivations(
                     f"is not a string (got {type(pf).__name__})"
                 ))
             elif isinstance(pf, str) and pf.startswith("phv"):
-                if not re.match(r"^phv\d{8}$", pf):
+                if not _PHV_FORMAT_RE.match(pf):
                     findings.append(Finding(
                         rel_path, block_idx, "1.7", "ERROR",
                         f"Invalid PHV format '{pf}' on "
@@ -502,16 +509,16 @@ def get_block_identity(block: dict) -> list[tuple]:
     if not isinstance(class_derivs, dict):
         return identities
 
+    def _d(val) -> dict:
+        """Return val if it's a dict, else empty dict (guard non-dict truthy values)."""
+        return val if isinstance(val, dict) else {}
+
     for cls_name, cls_def in class_derivs.items():
         if not isinstance(cls_def, dict):
             continue
         pht = cls_def.get("populated_from", "")
         slots = cls_def.get("slot_derivations")
         slots = slots if isinstance(slots, dict) else {}
-
-        def _d(val) -> dict:
-            """Return val if it's a dict, else empty dict (guard non-dict truthy values)."""
-            return val if isinstance(val, dict) else {}
 
         visit = _d(slots.get("associated_visit")).get("value", "")
 

@@ -221,7 +221,8 @@ def extract_slot_refs(
                     continue
                 for nested_cls, nested_def in nested_cd.items():
                     if isinstance(nested_def, dict):
-                        nested_slots = nested_def.get("slot_derivations", {})
+                        nested_slots = nested_def.get("slot_derivations")
+                        nested_slots = nested_slots if isinstance(nested_slots, dict) else {}
                         nested_phvs, nested_joins = extract_slot_refs(nested_slots, nested_cls)
                         phv_refs.extend(nested_phvs)
                         join_phts.update(nested_joins)
