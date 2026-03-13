@@ -39,7 +39,7 @@
           value: MONDO:0004979
           range: string
         condition_status:
-          expr: case(((({phv00226387} == 0, 'ABSENT'), case((({phv00526887} == 1, case(({phv00526889} == 1, 'PRESENT'), ({phv00526889} == 0, 'HISTORICAL'), (True, 'UNKNOWN')), (True, 'UNKNOWN')))), (True, 'UNKNOWN'))))
+          expr: case((({phv00226387} == 0, 'ABSENT'), case(({phv00526887} == 1, case(({phv00526889} == 1, 'PRESENT'), ({phv00526889} == 0, 'HISTORICAL'), (True, 'UNKNOWN')), (True, 'UNKNOWN'))), (True, 'UNKNOWN')))
           value_mappings:
             '0': '''ABSENT'''
             '1': '''PRESENT'''
@@ -73,7 +73,7 @@
           expr: "case(({phv00526179} == 0, 'ABSENT'), ({phv00526180} == 0, 'HISTORICAL'),
             (True, 'PRESENT'))"
         condition_provenance:
-          expr: case(({phv00526179} == 1, case({phv00526181} == 1, 'CLINICAL_DIAGNOSIS'), (True, 'PATIENT_SELF-REPORTED_CONDITION')))
+          expr: case(({phv00526179} == 1, case(({phv00526181} == 1, 'CLINICAL_DIAGNOSIS')), (True, 'PATIENT_SELF-REPORTED_CONDITION')))
         relationship_to_participant:
           value: ONESELF
           range: string
