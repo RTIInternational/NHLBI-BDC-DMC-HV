@@ -1,27 +1,29 @@
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001626
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00114583
-        associated_visit:
-          value: CARDIA YEAR 2
-        observation_type:
-          value: OBA:VT0001253
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001626
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00114609
-                    unit_conversion:
-                      source_unit: '[in_us]'
-                      target_unit: cm
-                  unit:
-                    value: cm
-                    range: string
+# COMMENTED OUT: phv00114609 has non-numeric values causing TypeError in unit
+# conversion. Needs data investigation — see #413.
+# - class_derivations:
+#     MeasurementObservation:
+#       populated_from: pht001626
+#       slot_derivations:
+#         associated_participant:
+#           populated_from: phv00114583
+#         associated_visit:
+#           value: CARDIA YEAR 2
+#         observation_type:
+#           value: OBA:VT0001253
+#         value_quantity:
+#           object_derivations:
+#           - class_derivations:
+#               Quantity:
+#                 populated_from: pht001626
+#                 slot_derivations:
+#                   value_decimal:
+#                     populated_from: phv00114609
+#                     unit_conversion:
+#                       source_unit: '[in_us]'
+#                       target_unit: cm
+#                   unit:
+#                     value: cm
+#                     range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001667

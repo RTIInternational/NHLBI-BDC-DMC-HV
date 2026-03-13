@@ -13,7 +13,7 @@
           value: HP:0000822
           range: string
         condition_status:
-          expr: case((phv00113020 == 2, PRESENT), case(phv00113022 == 1, HISTORICAL))
+          expr: case(({phv00113020} == 2, 'PRESENT'), ({phv00113022} == 1, 'HISTORICAL'))
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -35,7 +35,7 @@
           value: HP:0000822
           range: string
         condition_status:
-          expr: case((phv00114385 == 2, PRESENT), case(phv00114387 == 1, HISTORICAL))
+          expr: case(({phv00114385} == 2, 'PRESENT'), ({phv00114387} == 1, 'HISTORICAL'))
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
