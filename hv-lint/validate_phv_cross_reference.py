@@ -463,6 +463,15 @@ def main() -> int:
     # -----------------------------------------------------------------------
     # Report
     # -----------------------------------------------------------------------
+    # Surface missing-index skips as ERROR findings before building report
+    if skipped_no_index:
+        for skipped_file in skipped_no_index:
+            all_findings.append(Finding(
+                check="2.0", severity="ERROR",
+                file=skipped_file, block=0,
+                message="No dbGaP index available for cohort — file not validated",
+            ))
+
     fail_rank = SEVERITY_RANK[args.fail_on.upper()]
 
     counts: dict[str, int] = {}
@@ -480,16 +489,6 @@ def main() -> int:
     print(f"Blocks checked: {blocks_checked}")
     if skipped_no_index:
         print(f"Files skipped (no index): {len(skipped_no_index)}")
-        for skipped_file in skipped_no_index:
-            all_findings.append(Finding(
-                check="2.0", severity="ERROR",
-                file=skipped_file, block=0,
-                message=f"No dbGaP index available for cohort — file not validated",
-            ))
-        # Recount after adding skip findings
-        counts.clear()
-        for f in all_findings:
-            counts[f.severity] = counts.get(f.severity, 0) + 1
 
     parts = []
     for sev in ("CRITICAL", "ERROR", "HIGH", "WARNING", "INFO"):
