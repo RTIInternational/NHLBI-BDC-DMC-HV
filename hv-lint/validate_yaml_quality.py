@@ -42,7 +42,7 @@ BDCHM_URL_TEMPLATE = (
 )
 
 # Valid keys for each linkml-map model level.
-# Derived from linkml_map.datamodel.transformer_model v0.3.8.
+# Derived from linkml_map.datamodel.transformer_model.
 VALID_TRANSFORMATION_SPEC_KEYS = frozenset({
     "description", "implements", "comments", "id", "title",
     "prefixes", "source_schema", "target_schema",
@@ -113,7 +113,7 @@ class Finding:
         level = {
             "CRITICAL": "error", "ERROR": "error", "HIGH": "warning",
             "WARNING": "warning", "INFO": "notice",
-        }[self.severity]
+        }.get(self.severity, "notice")
         return f"::{level} file={self.file}::HV-Lint [{self.check}] {self.message} (block {self.block})"
 
     def terminal_line(self) -> str:
@@ -172,13 +172,6 @@ def find_yaml_files(base_dir: Path, cohort: str) -> list[Path]:
         files = [f for f in files if pattern in str(f).lower()]
     return files
 
-
-def detect_cohort(file_path: Path) -> str:
-    """Extract cohort name from file path."""
-    for part in file_path.parts:
-        if part.endswith("-ingest"):
-            return part.replace("-ingest", "")
-    return "UNKNOWN"
 
 # ---------------------------------------------------------------------------
 # Check 1.1: LinkML-Map key validation
