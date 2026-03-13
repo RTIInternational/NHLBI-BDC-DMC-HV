@@ -351,7 +351,7 @@
           value: MESA FAMILY SPIROMETRY
           range: string
         age_at_condition_start:
-          expr: case(phv00087771 == 1, {phv00087772} * 365)
+          expr: case((phv00087771 == 1, {phv00087772} * 365))
         condition_concept:
           value: MONDO:0005002
           range: string
