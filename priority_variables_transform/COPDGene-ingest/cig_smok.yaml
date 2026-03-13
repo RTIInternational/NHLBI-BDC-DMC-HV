@@ -11,4 +11,4 @@
         observation_type:
           value: OMOP:4282779
         value_enum:
-          expr: case(({phv00159749} == 1, 'OMOP:40766945'), case({phv00159747} == 1, 'OMOP:45883458'), (True, 'OMOP:45883537'))
+          expr: case(({phv00159749} == 1, 'OMOP:40766945'), ({phv00159747} == 1, 'OMOP:45883458'), (True, 'OMOP:45883537'))
