@@ -555,7 +555,7 @@ def get_block_identity(block: dict) -> list[tuple]:
             cs = _d(slots.get("condition_status"))
             distinguishing_phv = _s(cs.get("populated_from", "")) or _s(cs.get("expr", ""), 60)
         elif cls_name in ("MeasurementObservation", "Observation", "SdohObservation"):
-            concept = _d(slots.get("observation_type")).get("value", "")
+            concept = _s(_d(slots.get("observation_type")).get("value", ""))
             # Use the value_quantity PHV as distinguishing
             vq = _d(slots.get("value_quantity"))
             for od in (vq.get("object_derivations") or []):
@@ -574,7 +574,7 @@ def get_block_identity(block: dict) -> list[tuple]:
             # All slots together distinguish Demography blocks
             distinguishing_phv = str(sorted(slots.keys()))
 
-        identities.append((cls_name, str(pht), visit, concept, distinguishing_phv))
+        identities.append((cls_name, _s(pht), _s(visit), _s(concept), _s(distinguishing_phv)))
     return identities
 
 
