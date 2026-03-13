@@ -43,7 +43,7 @@
         associated_participant:
           populated_from: phv00114388
         age_at_condition_start:
-          expr: case(phv00114418 == 2, {phv00114419} * 365)
+          expr: case((phv00114418 == 2, {phv00114419} * 365))
         associated_visit:
           value: CARDIA YEAR 2
         condition_concept:
