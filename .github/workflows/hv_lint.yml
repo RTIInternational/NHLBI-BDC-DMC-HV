@@ -41,20 +41,20 @@ jobs:
       - name: "Phase 1: Schema-driven structural checks"
         run: |
           poetry run python hv-lint/validate_yaml_quality.py \
-            --bdchm-ref "${{ inputs.bdchm_ref }}" \
-            --cohort "${{ inputs.cohort }}" \
-            --fail-on "${{ inputs.fail_on }}" \
+            --bdchm-ref "${{ github.event.inputs.bdchm_ref || 'main' }}" \
+            --cohort "${{ github.event.inputs.cohort || 'all' }}" \
+            --fail-on "${{ github.event.inputs.fail_on || 'error' }}" \
             --summary-file phase1-summary.md \
-            --summary-limit "${{ inputs.summary_limit }}"
+            --summary-limit "${{ github.event.inputs.summary_limit || '50' }}"
 
       - name: "Phase 2: dbGaP cross-reference checks"
         if: always()
         run: |
           poetry run python hv-lint/validate_phv_cross_reference.py \
-            --cohort "${{ inputs.cohort }}" \
-            --fail-on "${{ inputs.fail_on }}" \
+            --cohort "${{ github.event.inputs.cohort || 'all' }}" \
+            --fail-on "${{ github.event.inputs.fail_on || 'error' }}" \
             --summary-file phase2-summary.md \
-            --summary-limit "${{ inputs.summary_limit }}"
+            --summary-limit "${{ github.event.inputs.summary_limit || '50' }}"
 
       - name: Publish step summary
         if: always()
