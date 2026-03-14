@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00078435
         age_at_condition_start:
-          expr: case(phv00078464 == 1, {phv00078465} * 365)
+          expr: case((phv00078464 == 1, {phv00078465} * 365))
         associated_visit:
           value: WHI ELIGIBILITY
           range: string
