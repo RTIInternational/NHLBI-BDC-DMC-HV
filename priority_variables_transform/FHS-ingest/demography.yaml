@@ -249,11 +249,11 @@
           populated_from: phv00423847
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423847}) + ":" + case(({phv00423848} == ''0'', ''FHS ORIGINAL''), ({phv00423848} == ''1'', ''FHS OFFSPRING''), ({phv00423848} == ''2'', ''FHS NEW OFFSPRING SPOUSE''), ({phv00423848} == ''3'', ''FHS GENERATION 3''), ({phv00423848} == ''7'', ''FHS OMNI 1''), ({phv00423848} == ''72'', ''FHS OMNI 2'')))'
-#         sex:
-#           populated_from: phv00024071
-#           value_mappings:
-#             '1': OMOP:8507
-#             '2': OMOP:8532
+                #         sex:
+                #           populated_from: phv00024071
+                #           value_mappings:
+                #             '1': OMOP:8507
+                #             '2': OMOP:8532
         ethnicity:
           expr: 'case(({phv00423856} == 1, "OMOP:38003563"), ({phv00423857} == 1, "OMOP:38003564"))'
         race:
@@ -286,11 +286,11 @@
           populated_from: phv00423847
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423847}) + ":" + case(({phv00423848} == ''0'', ''FHS ORIGINAL''), ({phv00423848} == ''1'', ''FHS OFFSPRING''), ({phv00423848} == ''2'', ''FHS NEW OFFSPRING SPOUSE''), ({phv00423848} == ''3'', ''FHS GENERATION 3''), ({phv00423848} == ''7'', ''FHS OMNI 1''), ({phv00423848} == ''72'', ''FHS OMNI 2'')))'
-#         sex:
-#           populated_from: phv00024071
-#           value_mappings:
-#             '1': OMOP:8507
-#             '2': OMOP:8532
+                #         sex:
+                #           populated_from: phv00024071
+                #           value_mappings:
+                #             '1': OMOP:8507
+                #             '2': OMOP:8532
         ethnicity:
           expr: 'case(({phv00423859} == 1, "OMOP:38003563"), (True, "OMOP:38003564"))'
         race:
