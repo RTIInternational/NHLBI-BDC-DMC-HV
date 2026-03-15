@@ -4,15 +4,15 @@
 Reads the full HTML variable index files (variables.xml) from a dbGaP
 cache directory and produces compressed JSON files mapping base PHV
 accessions to base PHT accessions. These compact indexes are used by
-validate_phv_cross_reference.py.
+Phase 3 (validate_dbgap_crossref.py).
 
-Usage:
-    python hv-lint/build_phv_index.py
-    python hv-lint/build_phv_index.py --source-cache /path/to/dbgap-cache
-    python hv-lint/build_phv_index.py --output-dir /path/to/output
+Usage (from control center repo root):
+    python QC/hv-lint/build_phv_index.py
+    python QC/hv-lint/build_phv_index.py --source-cache data/dbgap-cache
+    python QC/hv-lint/build_phv_index.py --output-dir QC/hv-lint/dbgap-cache
 
-The default source cache is ../BDC-DMC-Harmonization-Virtual-Team/data/dbgap-cache
-(the parent workspace). Override with --source-cache.
+The default source cache is data/dbgap-cache (this repo).
+Override with --source-cache.
 """
 
 from __future__ import annotations
@@ -81,15 +81,25 @@ def parse_variable_html(path: Path) -> dict[str, str]:
 
 
 def main() -> int:
+    # Auto-detect repo root — works from control center (QC/hv-lint/)
+    # or HV repo (hv-lint/). The dbGaP cache is in the control center.
+    hvlint_dir = Path(__file__).resolve().parent
+    for candidate in [hvlint_dir.parent.parent, hvlint_dir.parent]:
+        if (candidate / "data" / "dbgap-cache").is_dir():
+            repo_root = candidate
+            break
+    else:
+        repo_root = hvlint_dir.parent  # fallback; --source-cache required
+
     p = argparse.ArgumentParser(description="Build compact PHV-to-PHT indexes")
     p.add_argument(
         "--source-cache",
         default=None,
-        help="Path to dbGaP HTML cache (default: auto-detect)"
+        help="Path to dbGaP HTML cache (default: data/dbgap-cache in repo root)"
     )
     p.add_argument(
         "--output-dir",
-        default=str(Path(__file__).parent / "dbgap-cache"),
+        default=str(hvlint_dir / "dbgap-cache"),
         help="Output directory for compressed JSON (default: hv-lint/dbgap-cache/)"
     )
     args = p.parse_args()
@@ -98,19 +108,10 @@ def main() -> int:
     if args.source_cache:
         source = Path(args.source_cache)
     else:
-        # Try common locations
-        candidates = [
-            Path(__file__).resolve().parent.parent.parent
-            / "BDC-DMC-Harmonization-Virtual-Team" / "data" / "dbgap-cache",
-            Path(__file__).resolve().parent.parent / "data" / "dbgap-cache",
-        ]
-        source = None
-        for c in candidates:
-            if c.is_dir():
-                source = c
-                break
-        if source is None:
-            print("ERROR: Cannot find dbGaP cache. Use --source-cache.", file=sys.stderr)
+        source = repo_root / "data" / "dbgap-cache"
+        if not source.is_dir():
+            print(f"ERROR: Cannot find dbGaP cache at {source}. Use --source-cache.",
+                  file=sys.stderr)
             return 1
 
     output = Path(args.output_dir)
@@ -122,6 +123,8 @@ def main() -> int:
 
     total_phvs = 0
     for cohort_dir in sorted(source.iterdir()):
+        if not cohort_dir.is_dir():
+            continue
         vf = cohort_dir / "variables.xml"
         if not vf.exists():
             continue
