@@ -31,6 +31,8 @@
                     range: string
                   {% elif unit_expr == 1 %}
                     expr: {{ '{' }}{{phv}}{{ '}' }} {{conversion_rule}}
+                  {% elif unit_casestmt == 1 %}
+                    {{case_stmt}}
                   unit:
                     value: "{{bdchm_unit}}"
                     range: string

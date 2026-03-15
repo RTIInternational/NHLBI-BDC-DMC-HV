@@ -1,27 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht004107
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00207267
-        associated_visit:
-          value: ARIC EXAM 1
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000217
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004107
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00207257
-                  unit:
-                    value: "10*3/uL"
-- class_derivations:
-    MeasurementObservation:
       populated from: pht004108
       slot_derivations:
         associated_participant:
@@ -66,6 +44,28 @@
                     value: "10*3/uL"
 - class_derivations:
     MeasurementObservation:
+      populated from: pht004107
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00207267
+        associated_visit:
+          value: ARIC EXAM 1
+        age_at_observation:
+          expr: {nan} * 365
+        observation_type:
+          value: OBA:VT0000217
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004107
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00207257
+                  unit:
+                    value: "10*3/uL"
+- class_derivations:
+    MeasurementObservation:
       populated from: pht004110
       slot_derivations:
         associated_participant:
@@ -88,28 +88,6 @@
                     value: "10*3/uL"
 - class_derivations:
     MeasurementObservation:
-      populated from: pht012503
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00506928
-        associated_visit:
-          value: ARIC CHEM 2
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000217
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012503
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00507184
-                  unit:
-                    value: "10*3/uL"
-- class_derivations:
-    MeasurementObservation:
       populated from: pht004109
       slot_derivations:
         associated_participant:
@@ -128,5 +106,27 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00207286
+                  unit:
+                    value: "10*3/uL"
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht012503
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00506928
+        associated_visit:
+          value: ARIC CHEM 2
+        age_at_observation:
+          expr: {nan} * 365
+        observation_type:
+          value: OBA:VT0000217
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht012503
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00507184
                   unit:
                     value: "10*3/uL"

@@ -1,27 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht006419
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00294834
-        associated_visit:
-          value: ARIC EXAM 5
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:1001085
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006419
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00294845
-                  unit:
-                    value: "cm"
-- class_derivations:
-    MeasurementObservation:
       populated from: pht004034
       slot_derivations:
         associated_participant:
@@ -40,28 +18,6 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00203177
-                  unit:
-                    value: "cm"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht004032
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00203163
-        associated_visit:
-          value: ARIC EXAM 1
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:1001085
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004032
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00203159
                   unit:
                     value: "cm"
 - class_derivations:
@@ -106,5 +62,49 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00203188
+                  unit:
+                    value: "cm"
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht004032
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00203163
+        associated_visit:
+          value: ARIC EXAM 1
+        age_at_observation:
+          expr: {nan} * 365
+        observation_type:
+          value: OBA:1001085
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004032
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00203159
+                  unit:
+                    value: "cm"
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht006419
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00294834
+        associated_visit:
+          value: ARIC EXAM 5
+        age_at_observation:
+          expr: {nan} * 365
+        observation_type:
+          value: OBA:1001085
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht006419
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00294845
                   unit:
                     value: "cm"

@@ -22,28 +22,6 @@
                     value: "mmol/L"
 - class_derivations:
     MeasurementObservation:
-      populated from: pht004052
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00203886
-        associated_visit:
-          value: ARIC EXAM 2
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0002668
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004052
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00203881
-                  unit:
-                    value: "mmol/L"
-- class_derivations:
-    MeasurementObservation:
       populated from: pht012851
       slot_derivations:
         associated_participant:
@@ -84,5 +62,27 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00507115
+                  unit:
+                    value: "mmol/L"
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht004052
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00203886
+        associated_visit:
+          value: ARIC EXAM 2
+        age_at_observation:
+          expr: {nan} * 365
+        observation_type:
+          value: OBA:VT0002668
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004052
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00203881
                   unit:
                     value: "mmol/L"

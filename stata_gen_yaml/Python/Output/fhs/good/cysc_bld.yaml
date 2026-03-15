@@ -1,0 +1,22 @@
+- class_derivations:
+    MeasurementObservation:
+      populated from: pht000146
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00023209
+        associated_visit:
+          value: FHS OFFSPRING EXAM 7
+        age_at_observation:
+          expr: {nan} * 365
+        observation_type:
+          value: OBA:2052375
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000146
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00023208
+                  unit:
+                    value: "mg/L"
