@@ -80,7 +80,7 @@
         associated_participant:
           populated_from: phv00114376
         age_at_condition_start:
-          expr: case((phv00114378 == 3 OR phv00114378 == 4, {phv00114377} * 365))
+          expr: case(({phv00114378} == 3 or {phv00114378} == 4, {phv00114377} * 365))
         associated_visit:
           value: CARDIA YEAR 2
           range: string
@@ -107,7 +107,7 @@
         associated_participant:
           populated_from: phv00115423
         age_at_condition_start:
-          expr: case((phv00115439 == 2, {phv00115440} * 365))
+          expr: case(({phv00115439} == 2, {phv00115440} * 365))
         associated_visit:
           value: CARDIA YEAR 5
           range: string
@@ -134,7 +134,7 @@
         associated_participant:
           populated_from: phv00116953
         age_at_condition_start:
-          expr: case((phv00116970 == 2, {phv00116972} * 365))
+          expr: case(({phv00116970} == 2, {phv00116972} * 365))
         associated_visit:
           value: CARDIA YEAR 7
           range: string
@@ -161,7 +161,7 @@
         associated_participant:
           populated_from: phv00117898
         age_at_condition_start:
-          expr: case((phv00117939 == 2, {phv00117940} * 365))
+          expr: case(({phv00117939} == 2, {phv00117940} * 365))
         associated_visit:
           value: CARDIA YEAR 7
           range: string
@@ -211,7 +211,7 @@
         associated_participant:
           populated_from: phv00118426
         age_at_condition_start:
-          expr: case((phv00118444 == 2, {phv00118446} * 365))
+          expr: case(({phv00118444} == 2, {phv00118446} * 365))
         associated_visit:
           value: CARDIA YEAR 10
           range: string
@@ -237,7 +237,7 @@
         associated_participant:
           populated_from: phv00119801
         age_at_condition_start:
-          expr: case((phv00119805 == 2, {phv00119819} * 365))
+          expr: case(({phv00119805} == 2, {phv00119819} * 365))
         associated_visit:
           value: CARDIA YEAR 15
           range: string

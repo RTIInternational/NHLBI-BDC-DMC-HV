@@ -24,13 +24,13 @@
         associated_participant:
           populated_from: phv00297979
         age_at_condition_start:
-          expr: case((phv00298000 == 1, {phv00298001} * 365))
+          expr: case(({phv00298000} == 1, {phv00298001} * 365))
         associated_visit:
           value: ARIC EXAM 5
         condition_concept:
           value: MONDO:0005002
         condition_status:
-          expr: case((phv00298000 == 0, ABSENT), case(phv00298002 == 0, HISTORICAL), (True, PRESENT))
+          expr: case(({phv00298000} == 0, 'ABSENT'), ({phv00298002} == 0, 'HISTORICAL'), (True, 'PRESENT'))
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:

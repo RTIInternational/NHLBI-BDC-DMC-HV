@@ -34,16 +34,12 @@
         age_at_condition_start:
           expr: case(({phv00226387} == 1, {phv00258081} * 365))
         age_at_condition_end:
-          expr: case(({phv00226387} == 1, (({phv00526878} == 0, {phv00526878} * 365))))
+          expr: case(({phv00226387} == 1, case(({phv00526878} == 0, {phv00526878} * 365))))
         condition_concept:
           value: MONDO:0004979
           range: string
         condition_status:
-          expr: case(((({phv00226387} == 0, 'ABSENT'), case((({phv00526887} == 1, case(({phv00526889} == 1, 'PRESENT'), ({phv00526889} == 0, 'HISTORICAL'), (True, 'UNKNOWN')), (True, 'UNKNOWN')))), (True, 'UNKNOWN'))))
-          value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
-            '9': '''UNKNOWN'''
+          expr: case(({phv00226387} == 0, 'ABSENT'), ({phv00526887} == 1 and {phv00526889} == 1, 'PRESENT'), ({phv00526887} == 1 and {phv00526889} == 0, 'HISTORICAL'), (True, 'UNKNOWN'))
         condition_provenance:
           populated_from: phv00226388
           value_mappings:
@@ -65,7 +61,7 @@
         age_at_condition_start:
           expr: case(({phv00226387} == 1, {phv00258081} * 365))
         age_at_condition_end:
-          expr: case(({phv00226387} == 1, (({phv00526878} == 0, {phv00526878} * 365))))
+          expr: case(({phv00226387} == 1, case(({phv00526878} == 0, {phv00526878} * 365))))
         condition_concept:
           value: MONDO:0004979
           range: string
@@ -73,7 +69,7 @@
           expr: "case(({phv00526179} == 0, 'ABSENT'), ({phv00526180} == 0, 'HISTORICAL'),
             (True, 'PRESENT'))"
         condition_provenance:
-          expr: case(({phv00526179} == 1, case({phv00526181} == 1, 'CLINICAL_DIAGNOSIS'), (True, 'PATIENT_SELF-REPORTED_CONDITION')))
+          expr: case(({phv00526179} == 1 and {phv00526181} == 1, 'CLINICAL_DIAGNOSIS'), (True, 'PATIENT_SELF-REPORTED_CONDITION'))
         relationship_to_participant:
           value: ONESELF
           range: string
