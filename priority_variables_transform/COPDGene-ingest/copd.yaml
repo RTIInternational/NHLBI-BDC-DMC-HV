@@ -21,6 +21,4 @@
           expr: case( ({phv00159732} == 0, 'PATIENT_SELF-REPORTED_CONDITION'), ({phv00159732}
             == 1, 'CLINICAL_DIAGNOSIS'), (True, 'PATIENT_SELF-REPORTED_CONDITION') )
         relationship_to_participant:
-          expr: '''SELF'''
-        age_at_condition_start:
-          expr: '{phv00159733} * 365'
+          expr: ONESELF
