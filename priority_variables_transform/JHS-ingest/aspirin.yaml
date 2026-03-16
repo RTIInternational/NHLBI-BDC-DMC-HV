@@ -8,7 +8,7 @@
           value: JHS Exam 1
           range: string
         drug_concept:
-          expr: case(({phv00127944} == Y, "RxCUI:1191"))
+          expr: case(({phv00127944} == "Y", "RxCUI:1191"))
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -22,7 +22,7 @@
           value: JHS AFU
           range: string
         drug_concept:
-          expr: case(({phv00400887} == Y, "RxCUI:1191"))
+          expr: case(({phv00400887} == "Y", "RxCUI:1191"))
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
