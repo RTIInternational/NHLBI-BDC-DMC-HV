@@ -32,7 +32,7 @@
         associated_participant:
           populated_from: phv00220821
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00220821}) + ":" + case(({phv00220822} == ''0'', ''FHS ORIGINAL NTS''), ({phv00220822} == ''1'', ''FHS OFFSPRING NTS''), ({phv00220822} == ''2'', ''FHS NEW OFFSPRING SPOUSE NTS''), ({phv00220822} == ''3'', ''FHS GENERATION 3 NTS''), ({phv00220822} == ''7'', ''FHS OMNI 1 NTS''), ({phv00220822} == ''72'', ''FHS OMNI 2 NTS'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00220821}) + ":" + case(({phv00220822} == ''0'', ''FHS ORIGINAL NTS''), ({phv00220822} == ''1'', ''FHS OFFSPRING NTS''), ({phv00220822} == ''2'', ''FHS NEW OFFSPRING SPOUSE NTS''), ({phv00220822} == ''3'', ''FHS GENERATION 3 NTS''), ({phv00220822} == ''7'', ''FHS OMNI 1 NTS''), ({phv00220822} == ''72'', ''FHS OMNI 2 NTS''), (True, ''FHS UNKNOWN VISIT'')))'
         category:
           value: EDUCATIONAL_ATTAINMENT
           range: string

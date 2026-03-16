@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00036379
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036379}) + ":" + case(({phv00036348} == ''0'', ''FHS ORIGINAL EXAM 11''), ({phv00036348} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00036348} == ''3'', ''FHS GENERATION 3 EXAM 1'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036379}) + ":" + case(({phv00036348} == ''0'', ''FHS ORIGINAL EXAM 11''), ({phv00036348} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00036348} == ''3'', ''FHS GENERATION 3 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
           expr: case(({phv00036348} == 0, {pht003099.phv00177950} * 365), case({phv00036348} == 1, {pht003099.phv00177930} * 365), case({phv00036348} == 3, {pht003099.phv00177930} * 365))
         method_type:
@@ -27,7 +27,7 @@
         associated_participant:
           populated_from: phv00036379
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036379}) + ":" + case(({phv00036348} == ''0'', ''FHS ORIGINAL EXAM 11''), ({phv00036348} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00036348} == ''3'', ''FHS GENERATION 3 EXAM 1'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036379}) + ":" + case(({phv00036348} == ''0'', ''FHS ORIGINAL EXAM 11''), ({phv00036348} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00036348} == ''3'', ''FHS GENERATION 3 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
           expr: case(({phv00036348} == 0, {pht003099.phv00177950} * 365), case({phv00036348} == 1, {pht003099.phv00177930} * 365), case({phv00036348} == 3, {pht003099.phv00177930} * 365))
         method_type:
@@ -49,7 +49,7 @@
         associated_participant:
           populated_from: phv00036379
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036379}) + ":" + case(({phv00036348} == ''0'', ''FHS ORIGINAL EXAM 11''), ({phv00036348} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00036348} == ''3'', ''FHS GENERATION 3 EXAM 1'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036379}) + ":" + case(({phv00036348} == ''0'', ''FHS ORIGINAL EXAM 11''), ({phv00036348} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00036348} == ''3'', ''FHS GENERATION 3 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
           expr: case(({phv00036348} == 0, {pht003099.phv00177950} * 365), case({phv00036348} == 1, {pht003099.phv00177930} * 365), case({phv00036348} == 3, {pht003099.phv00177930} * 365))
         method_type:
@@ -71,7 +71,7 @@
         associated_participant:
           populated_from: phv00036379
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036379}) + ":" + case(({phv00036348} == ''0'', ''FHS ORIGINAL EXAM 11''), ({phv00036348} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00036348} == ''3'', ''FHS GENERATION 3 EXAM 1'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036379}) + ":" + case(({phv00036348} == ''0'', ''FHS ORIGINAL EXAM 11''), ({phv00036348} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00036348} == ''3'', ''FHS GENERATION 3 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
           expr: case(({phv00036348} == 0, {pht003099.phv00177950} * 365), case({phv00036348} == 1, {pht003099.phv00177930} * 365), case({phv00036348} == 3, {pht003099.phv00177930} * 365))
         method_type:
@@ -93,7 +93,7 @@
         associated_participant:
           populated_from: phv00036379
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036379}) + ":" + case(({phv00036348} == ''0'', ''FHS ORIGINAL EXAM 11''), ({phv00036348} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00036348} == ''3'', ''FHS GENERATION 3 EXAM 1'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036379}) + ":" + case(({phv00036348} == ''0'', ''FHS ORIGINAL EXAM 11''), ({phv00036348} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00036348} == ''3'', ''FHS GENERATION 3 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
           expr: case(({phv00036348} == 0, {pht003099.phv00177950} * 365), case({phv00036348} == 1, {pht003099.phv00177930} * 365), case({phv00036348} == 3, {pht003099.phv00177930} * 365))
         method_type:

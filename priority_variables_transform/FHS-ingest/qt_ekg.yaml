@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00023253
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023253}) + ":" + case(({phv00023254} == ''2'', ''FHS OFFSPRING EXAM 2''), ({phv00023254} == ''16'', ''FHS ORIGINAL EXAM 16''), ({phv00023254} == ''17'', ''FHS ORIGINAL EXAM 17''), ({phv00023254} == ''18'', ''FHS ORIGINAL EXAM 18'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023253}) + ":" + case(({phv00023254} == ''2'', ''FHS OFFSPRING EXAM 2''), ({phv00023254} == ''16'', ''FHS ORIGINAL EXAM 16''), ({phv00023254} == ''17'', ''FHS ORIGINAL EXAM 17''), ({phv00023254} == ''18'', ''FHS ORIGINAL EXAM 18''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
           expr: case(({phv00023254} == 2, {pht003099.phv00177932} * 365), case({phv00023254} == 16, {pht003099.phv00177960} * 365), case({phv00023254} == 17, {pht003099.phv00177962} * 365), case({phv00023254} == 18, {pht003099.phv00177964} * 365))
         observation_type:

@@ -57,7 +57,7 @@
         associated_participant:
           populated_from: phv00057982
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00057982}) + ":" + case(({phv00057968} == ''1'', ''FHS OFFSPRING SHHS 2''), ({phv00057968} == ''7'', ''FHS OMNI 1 SHHS 2'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00057982}) + ":" + case(({phv00057968} == ''1'', ''FHS OFFSPRING SHHS 2''), ({phv00057968} == ''7'', ''FHS OMNI 1 SHHS 2''), (True, ''FHS UNKNOWN VISIT'')))'
         drug_concept:
           expr: 'case(({phv00056924} == 1, "RxCUI:C09C"))'
         exposure_provenance:
@@ -70,7 +70,7 @@
         associated_participant:
           populated_from: phv00057982
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00057982}) + ":" + case(({phv00057968} == ''1'', ''FHS OFFSPRING SHHS 2''), ({phv00057968} == ''7'', ''FHS OMNI 1 SHHS 2'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00057982}) + ":" + case(({phv00057968} == ''1'', ''FHS OFFSPRING SHHS 2''), ({phv00057968} == ''7'', ''FHS OMNI 1 SHHS 2''), (True, ''FHS UNKNOWN VISIT'')))'
         drug_concept:
           expr: 'case(({phv00056925} == 1, "RxCUI:C09DA"))'
         exposure_provenance:
@@ -83,7 +83,7 @@
         associated_participant:
           populated_from: phv00276803
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276803}) + ":" + case(({phv00276845} == ''0'', ''FHS ORIGINAL CHF''), ({phv00276845} == ''1'', ''FHS OFFSPRING CHF''), ({phv00276845} == ''2'', ''FHS NEW OFFSPRING CHF''), ({phv00276845} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00276845} == ''7'', ''FHS OMNI 1 CHF''), ({phv00276845} == ''72'', ''FHS OMNI 2 CHF'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276803}) + ":" + case(({phv00276845} == ''0'', ''FHS ORIGINAL CHF''), ({phv00276845} == ''1'', ''FHS OFFSPRING CHF''), ({phv00276845} == ''2'', ''FHS NEW OFFSPRING CHF''), ({phv00276845} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00276845} == ''7'', ''FHS OMNI 1 CHF''), ({phv00276845} == ''72'', ''FHS OMNI 2 CHF''), (True, ''FHS UNKNOWN VISIT'')))'
         drug_concept:
           expr: 'case(({phv00276809} == 1, "RxCUI:C09C"))'
         exposure_provenance:
@@ -96,7 +96,7 @@
         associated_participant:
           populated_from: phv00276803
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276803}) + ":" + case(({phv00276845} == ''0'', ''FHS ORIGINAL CHF''), ({phv00276845} == ''1'', ''FHS OFFSPRING CHF''), ({phv00276845} == ''2'', ''FHS NEW OFFSPRING CHF''), ({phv00276845} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00276845} == ''7'', ''FHS OMNI 1 CHF''), ({phv00276845} == ''72'', ''FHS OMNI 2 CHF'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276803}) + ":" + case(({phv00276845} == ''0'', ''FHS ORIGINAL CHF''), ({phv00276845} == ''1'', ''FHS OFFSPRING CHF''), ({phv00276845} == ''2'', ''FHS NEW OFFSPRING CHF''), ({phv00276845} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00276845} == ''7'', ''FHS OMNI 1 CHF''), ({phv00276845} == ''72'', ''FHS OMNI 2 CHF''), (True, ''FHS UNKNOWN VISIT'')))'
         drug_concept:
           expr: 'case(({phv00276809} == 1, "RxCUI:C09C"))'
         exposure_provenance:
