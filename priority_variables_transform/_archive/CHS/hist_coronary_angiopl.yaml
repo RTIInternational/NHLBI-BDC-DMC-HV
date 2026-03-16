@@ -5,11 +5,12 @@
         associated_participant:
           populated_from: phv00098771		
         associated_visit:
-          expr: '''CHS BASELINE 2'''
+          expr: CHS BASELINE 2
         procedure_concept:
-          expr: case((phv00099038 == 1, '''OMOP:4184832'''))
+          expr: 'case((phv00099038 == 1, "OMOP:4184832"))'
+
         procedure_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          expr: PATIENT_SELF-REPORTED_CONDITION
 - class_derivations:
     Procedure:
       populated_from: pht001452
@@ -17,11 +18,12 @@
         associated_participant:
           populated_from: phv00100285	
         associated_visit:
-          expr: '''CHS BASELINE BOTH'''
+          expr: CHS BASELINE BOTH
         procedure_concept:
-          expr: case((phv00100322 == 1, '''OMOP:4184832'''))
+          expr: 'case((phv00100322 == 1, "OMOP:4184832"))'
+
         procedure_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          expr: PATIENT_SELF-REPORTED_CONDITION
 - class_derivations:
     Procedure:
       populated_from: pht001464
@@ -29,11 +31,12 @@
         associated_participant:
           populated_from: phv00100773
         associated_visit:
-          expr: '''CHS SUMMARY'''
+          expr: CHS SUMMARY
         procedure_concept:
-          expr: case((phv00100782 == 1, '''OMOP:4184832'''))
+          expr: 'case((phv00100782 == 1, "OMOP:4184832"))'
+
         procedure_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          expr: PATIENT_SELF-REPORTED_CONDITION
 - class_derivations:
     Procedure:
       populated_from: pht001490
@@ -41,11 +44,12 @@
         associated_participant:
           populated_from: phv00105099	
         associated_visit:
-          expr: '''CHS YEAR 5 NEW'''
+          expr: CHS YEAR 5 NEW
         procedure_concept:
-          expr: case((phv00105981 == 1, '''OMOP:4184832'''))
+          expr: 'case((phv00105981 == 1, "OMOP:4184832"))'
+
         procedure_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          expr: PATIENT_SELF-REPORTED_CONDITION
 - class_derivations:
     Procedure:
       populated_from: pht003699
@@ -53,8 +57,9 @@
         associated_participant:
           populated_from: phv00197394
         associated_visit:
-          expr: '''CHS PSG 1'''
+          expr: CHS PSG 1
         procedure_concept:
-          expr: case((phv00197455 == 1, '''OMOP:4184832'''))
+          expr: 'case((phv00197455 == 1, "OMOP:4184832"))'
+
         procedure_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          expr: PATIENT_SELF-REPORTED_CONDITION

@@ -5,9 +5,9 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          expr: '''HCHS EXAM'''
+          expr: HCHS EXAM
         observation_type:
-          expr: '''OBA:VT0001586''' #red blood cell count count
+          expr: OBA:VT0001586 #red blood cell count count
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -17,4 +17,4 @@
                   value_decimal:
                     expr: {phv00226294} / 1000000
                   unit:
-                    expr: '''10*6/uL'''
+                    expr: 10*6/uL

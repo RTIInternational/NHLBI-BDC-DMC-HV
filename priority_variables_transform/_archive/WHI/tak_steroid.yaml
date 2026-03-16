@@ -5,8 +5,9 @@
         associated_participant:
           populated_from:  phv00169602
         associated_visit:
-          expr: '''WHI MAIN 44'''
+          expr: WHI MAIN 44
         drug_concept:
-          expr: case((phv00169610 == 1, '''RxCUI:HS051'''))
+          expr: 'case((phv00169610 == 1, "RxCUI:HS051"))'
+
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''  
+          expr: PATIENT SELF-REPORTED MEDICATION  

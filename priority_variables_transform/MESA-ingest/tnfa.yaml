@@ -30,8 +30,8 @@
         associated_visit:
           populated_from: phv00160529
           value_mappings:
-            '2': '''MESA CLASSIC EXAM 2'''
-            '3': '''MESA CLASSIC EXAM 3'''
+            '2': MESA CLASSIC EXAM 2
+            '3': MESA CLASSIC EXAM 3
         observation_type:
           value: OBA:2051979
           range: string
@@ -66,8 +66,7 @@
                 populated_from: pht002198
                 slot_derivations:
                   value_decimal:
-                    expr: case(({phv00160541} == -333, '''LLOD'''), ({phv00160541}
-                      == -555, '''ULOD'''), (True, {phv00160540}))
+                    expr: 'case(({phv00160541} == -333, "LLOD"), ({phv00160541} == -555, "ULOD"), (True, {phv00160540}))'
                   unit:
                     value: pg/mL
                     range: string

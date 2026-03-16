@@ -10,7 +10,7 @@
         age_at_observation:
           expr: '{phv00082639} * 365'
         observation_type:
-          expr: case(({phv00083303} >= 12, '''OBA:VT0000180'''), (True, '''OBA:VT0000180'''))
+          expr: 'case(({phv00083303} >= 12, "OBA:VT0000180"), (True, "OBA:VT0000180"))'
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -23,7 +23,7 @@
                     value: mg/dL
                     range: string
         method_type:
-          expr: case(({phv00083303} >= 12, '''Fasted minimum 12 hours'''))
+          expr: 'case(({phv00083303} >= 12, "Fasted minimum 12 hours"))'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
@@ -36,7 +36,7 @@
         age_at_observation:
           expr: '{phv00084442} * 365'
         observation_type:
-          expr: case(({phv00084980} >= 12, '''OBA:VT0000180'''), (True, '''OBA:VT0000180'''))
+          expr: 'case(({phv00084980} >= 12, "OBA:VT0000180"), (True, "OBA:VT0000180"))'
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -49,7 +49,7 @@
                     value: mg/dL
                     range: string
         method_type:
-          expr: case(({phv00084980} >= 12, '''Fasted minimum 12 hours'''))
+          expr: 'case(({phv00084980} >= 12, "Fasted minimum 12 hours"))'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001118
@@ -137,7 +137,7 @@
         age_at_observation:
           expr: '{phv00087071} * 365'       
         observation_type:
-          expr: case(({phv00087524} >= 12, '''OBA:VT0000180'''), (True, '''OBA:VT0000180'''))
+          expr: 'case(({phv00087524} >= 12, "OBA:VT0000180"), (True, "OBA:VT0000180"))'
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -150,7 +150,7 @@
                     value: mg/dL
                     range: string
         method_type:
-          expr: case(({phv00087524} >= 12, '''Fasted minimum 12 hours'''))
+          expr: 'case(({phv00087524} >= 12, "Fasted minimum 12 hours"))'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003086
