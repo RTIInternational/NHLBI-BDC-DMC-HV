@@ -1,25 +1,26 @@
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001004
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00082638
-        associated_visit:
-          value: WHI PH 35
-        # age_at_observation:
-          # expr: "{nan} * 365"
-        observation_type:
-          value: OMOP:35609491
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001004
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00078866
-                  unit:
-                    value: "{#}/wk"
+# Block commented out: phv00082638 is a MESA variable, not WHI (copy-paste error, #439)
+#- class_derivations:
+#    MeasurementObservation:
+#      populated_from: pht001004
+#      slot_derivations:
+#        associated_participant:
+#          populated_from: phv00082638
+#        associated_visit:
+#          value: WHI PH 35
+#        # age_at_observation:
+#          # expr: "{nan} * 365"
+#        observation_type:
+#          value: OMOP:35609491
+#        value_quantity:
+#          object_derivations:
+#          - class_derivations:
+#              Quantity:
+#                populated_from: pht001004
+#                slot_derivations:
+#                  value_decimal:
+#                    populated_from: phv00078866
+#                  unit:
+#                    value: "{#}/wk"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001003
