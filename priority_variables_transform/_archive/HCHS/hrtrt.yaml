@@ -5,10 +5,10 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          expr: '''HCHS EXAM'''
+          expr: HCHS EXAM
         observation_type:
-          expr: '''OBA:1001087''' #heart rate
-        method_type: '''atrial'''
+          expr: OBA:1001087 #heart rate
+        method_type: atrial
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -18,7 +18,7 @@
                   value_decimal:
                     populated_from: phv00226274
                   unit:
-                    expr: '''{beats}/min'''
+                    expr: '{beats}/min'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004715
@@ -26,10 +26,10 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          expr: '''HCHS EXAM'''
+          expr: HCHS EXAM
         observation_type:
-          expr: '''OBA:1001087''' #heart rate
-        method_type: '''ventricular'''
+          expr: OBA:1001087 #heart rate
+        method_type: ventricular
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -39,4 +39,4 @@
                   value_decimal:
                     populated_from: phv00258056
                   unit:
-                    expr: '''{beats}/min'''                    
+                    expr: '{beats}/min'                    

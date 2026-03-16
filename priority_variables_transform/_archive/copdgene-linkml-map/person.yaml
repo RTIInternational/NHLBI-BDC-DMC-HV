@@ -3,7 +3,7 @@ class_derivations:
     populated_from: COPDGene
     slot_derivations:
       species:
-        expr: '''Homo Sapiens'''
+        expr: Homo Sapiens
       identity:
         populated_from: dbGaP_Subject_ID
       participants:
@@ -17,7 +17,7 @@ class_derivations:
                 identity:
                   populated_from: dbGaP_Subject_ID
                 member_of_research_study:
-                  expr: '''COPDGene'''
+                  expr: COPDGene
                 conditions:
                   object_derivations:
                   - class_derivations:
@@ -27,11 +27,11 @@ class_derivations:
                           associated_participant:
                             populated_from: phv00159568
                           condition_concept:
-                            expr: '''HP:0001681'''
+                            expr: HP:0001681
                           condition_provenance:
-                            expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+                            expr: PATIENT_SELF-REPORTED_CONDITION
                           relationship_to_participant:
-                            expr: '''SELF'''
+                            expr: SELF
                           condition_status:
                             populated_from: phv00159608
                             value_mappings:
@@ -44,7 +44,7 @@ class_derivations:
                           associated_participant:
                             populated_from: phv00159568
                           condition_concept:
-                            expr: '''MONDO:0004979'''
+                            expr: MONDO:0004979
                           condition_status:
                             expr: case( ({phv00159701} == 0, 'ABSENT'), ({phv00159701}
                               == 1, case( ({phv00159705} == 0, 'HISTORICAL'), ({phv00159705}
@@ -55,10 +55,9 @@ class_derivations:
                               == 1, 'PRESENT'), ({phv00159705} == 3, case( ({phv00159704}
                               == 1, 'ABSENT'), (True, 'UNKNOWN') )) )) )
                           condition_provenance:
-                            expr: '''PATIENT_SELF-REPORTED_CONDITION'' if {phv00159701}
-                              == 0 else ''CLINICAL_DIAGNOSIS'''
+                            expr: '"PATIENT_SELF-REPORTED_CONDITION" if {phv00159701} == 0 else "CLINICAL_DIAGNOSIS"'
                           relationship_to_participant:
-                            expr: '''SELF'''
+                            expr: SELF
                           age_at_condition_start:
                             expr: '{phv00159702} * 365'
                   - class_derivations:
@@ -66,7 +65,7 @@ class_derivations:
                         populated_from: COPDGene
                         slot_derivations:
                           condition_concept:
-                            expr: '''MONDO:0005002'''
+                            expr: MONDO:0005002
                           condition_status:
                             expr: case( ({phv00159731} == 0, 'ABSENT'), ({phv00159731}
                               == 1, case( ({phv00159734} == 0, 'HISTORICAL'), ({phv00159734}
@@ -82,7 +81,7 @@ class_derivations:
                               ({phv00159732} == 1, 'CLINICAL_DIAGNOSIS'), (True, 'PATIENT_SELF-REPORTED_CONDITION')
                               )
                           relationship_to_participant:
-                            expr: '''SELF'''
+                            expr: SELF
                           age_at_condition_start:
                             expr: '{phv00159733} * 365'
                   - class_derivations:
@@ -90,82 +89,82 @@ class_derivations:
                         populated_from: COPDGene
                         slot_derivations:
                           condition_concept:
-                            expr: '''MONDO:0005015'''
+                            expr: MONDO:0005015
                           condition_status:
                             populated_from: phv00159611
                             value_mappings:
                               '0': ABSENT
                               '1': PRESENT
                           condition_provenance:
-                            expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+                            expr: PATIENT_SELF-REPORTED_CONDITION
                           relationship_to_participant:
-                            expr: '''SELF'''
+                            expr: SELF
                   - class_derivations:
                       Condition:
                         populated_from: COPDGene
                         slot_derivations:
                           condition_concept:
-                            expr: '''MONDO:0005009'''
+                            expr: MONDO:0005009
                           condition_status:
                             populated_from: phv00159609
                             value_mappings:
                               '0': ABSENT
                               '1': PRESENT
                           condition_provenance:
-                            expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+                            expr: PATIENT_SELF-REPORTED_CONDITION
                           relationship_to_participant:
-                            expr: '''SELF'''
+                            expr: SELF
                   - class_derivations:
                       Condition:
                         populated_from: COPDGene
                         slot_derivations:
                           condition_concept:
-                            expr: '''MONDO:0005068'''
+                            expr: MONDO:0005068
                           condition_status:
                             populated_from: phv00159615
                             value_mappings:
                               '0': ABSENT
                               '1': HISTORY
                           condition_provenance:
-                            expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+                            expr: PATIENT_SELF-REPORTED_CONDITION
                           relationship_to_participant:
-                            expr: '''SELF'''
+                            expr: SELF
                   - class_derivations:
                       Condition:
                         populated_from: COPDGene
                         slot_derivations:
                           condition_concept:
-                            expr: '''HP:0000822'''
+                            expr: HP:0000822
                           condition_status:
                             populated_from: phv00159612
                             value_mappings:
                               '0': ABSENT
                               '1': PRESENT
                           condition_provenance:
-                            expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+                            expr: PATIENT_SELF-REPORTED_CONDITION
                           relationship_to_participant:
-                            expr: '''SELF'''
+                            expr: SELF
                   - class_derivations:
                       Condition:
                         populated_from: COPDGene
                         slot_derivations:
                           condition_concept:
-                            expr: '''MONDO:0005294'''
+                            expr: MONDO:0005294
                           condition_status:
                             populated_from: phv00159618
                             value_mappings:
                               '0': ABSENT
                               '1': PRESENT
                           condition_provenance:
-                            expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+                            expr: PATIENT_SELF-REPORTED_CONDITION
                           relationship_to_participant:
-                            expr: '''SELF'''
+                            expr: SELF
                   - class_derivations:
                       Condition:
                         populated_from: COPDGene
                         slot_derivations:
                           condition_concept:
-                            expr: '''HP:0010535'''
+                            expr: HP:0010535
                           condition_status:
                             expr: case( ({phv00159736} == 0, 'ABSENT'), ({phv00159736}
                               == 1, case( ({phv00159737} == 0, case( ({phv00159739}
@@ -184,7 +183,7 @@ class_derivations:
                               ({phv00159737} == 1, 'CLINICAL_DIAGNOSIS'), (True, 'PATIENT_SELF-REPORTED_CONDITION')
                               )
                           relationship_to_participant:
-                            expr: '''SELF'''
+                            expr: SELF
                           age_at_condition_start:
                             expr: None
                           age_at_condition_end:
@@ -194,31 +193,31 @@ class_derivations:
                         populated_from: COPDGene
                         slot_derivations:
                           condition_concept:
-                            expr: '''HP:0001297'''
+                            expr: HP:0001297
                           condition_status:
                             populated_from: phv00159619
                             value_mappings:
                               '0': ABSENT
                               '1': PRESENT
                           condition_provenance:
-                            expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+                            expr: PATIENT_SELF-REPORTED_CONDITION
                           relationship_to_participant:
-                            expr: '''SELF'''
+                            expr: SELF
                   - class_derivations:
                       Condition:
                         populated_from: COPDGene
                         slot_derivations:
                           condition_concept:
-                            expr: '''MONDO:0005264'''
+                            expr: MONDO:0005264
                           condition_status:
                             populated_from: phv00159620
                             value_mappings:
                               '0': ABSENT
                               '1': PRESENT
                           condition_provenance:
-                            expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+                            expr: PATIENT_SELF-REPORTED_CONDITION
                           relationship_to_participant:
-                            expr: '''SELF'''
+                            expr: SELF
                 demography:
                   object_derivations:
                   - class_derivations:
@@ -256,16 +255,16 @@ class_derivations:
                           associated_participant:
                             populated_from: phv00159568
                           drug_concept:
-                            expr: '''RXNORM:C07A'''
+                            expr: RXNORM:C07A
                           expsoure_provenance:
-                            expr: '''PATIENT SELF-REPORTED MEDICATION'''
+                            expr: PATIENT SELF-REPORTED MEDICATION
                           exposure_status:
                             populated_from: phv00159642
                             value_mappings:
                               '0': ABSENT
                               '1': PRESENT
                           route_concept:
-                            expr: '''RESPIRATORY TRACT'''
+                            expr: RESPIRATORY TRACT
                   - class_derivations:
                       DrugExposure:
                         populated_from: COPDGene
@@ -273,9 +272,9 @@ class_derivations:
                           associated_participant:
                             populated_from: phv00159568
                           drug_concept:
-                            expr: '''RXNORM:C07A'''
+                            expr: RXNORM:C07A
                           expsoure_provenance:
-                            expr: '''PATIENT SELF-REPORTED MEDICATION'''
+                            expr: PATIENT SELF-REPORTED MEDICATION
                           exposure_status:
                             populated_from: phv00159643
                             value_mappings:
@@ -288,16 +287,16 @@ class_derivations:
                           associated_participant:
                             populated_from: phv00159568
                           drug_concept:
-                            expr: '''RXNORM:R03AL'''
+                            expr: RXNORM:R03AL
                           expsoure_provenance:
-                            expr: '''PATIENT SELF-REPORTED MEDICATION'''
+                            expr: PATIENT SELF-REPORTED MEDICATION
                           exposure_status:
                             populated_from: phv00159644
                             value_mappings:
                               '0': ABSENT
                               '1': PRESENT
                           route_concept:
-                            expr: '''RESPIRATORY TRACT'''
+                            expr: RESPIRATORY TRACT
                   - class_derivations:
                       DrugExposure:
                         populated_from: COPDGene
@@ -305,16 +304,16 @@ class_derivations:
                           associated_participant:
                             populated_from: phv00159568
                           drug_concept:
-                            expr: '''RXNORM:H02A'''
+                            expr: RXNORM:H02A
                           expsoure_provenance:
-                            expr: '''PATIENT SELF-REPORTED MEDICATION'''
+                            expr: PATIENT SELF-REPORTED MEDICATION
                           exposure_status:
                             populated_from: phv00159646
                             value_mappings:
                               '0': ABSENT
                               '1': PRESENT
                           route_concept:
-                            expr: '''RESPIRATORY TRACT'''
+                            expr: RESPIRATORY TRACT
                   - class_derivations:
                       DrugExposure:
                         populated_from: COPDGene
@@ -322,16 +321,16 @@ class_derivations:
                           associated_participant:
                             populated_from: phv00159568
                           drug_concept:
-                            expr: '''RXNORM:H02A'''
+                            expr: RXNORM:H02A
                           expsoure_provenance:
-                            expr: '''PATIENT SELF-REPORTED MEDICATION'''
+                            expr: PATIENT SELF-REPORTED MEDICATION
                           exposure_status:
                             populated_from: phv00159647
                             value_mappings:
                               '0': ABSENT
                               '1': PRESENT
                           route_concept:
-                            expr: '''OMOP:4132161'''
+                            expr: OMOP:4132161
                   - class_derivations:
                       DrugExposure:
                         populated_from: COPDGene
@@ -339,9 +338,9 @@ class_derivations:
                           associated_participant:
                             populated_from: phv00159568
                           drug_concept:
-                            expr: '''RXNORM:A14A'''
+                            expr: RXNORM:A14A
                           expsoure_provenance:
-                            expr: '''PATIENT SELF-REPORTED MEDICATION'''
+                            expr: PATIENT SELF-REPORTED MEDICATION
                           exposure_status:
                             populated_from: phv00159647
                             value_mappings:
@@ -356,7 +355,7 @@ class_derivations:
                           associated_participant:
                             populated_from: phv00159568
                           observation_type:
-                            expr: '''OBA:VT0001253'''
+                            expr: OBA:VT0001253
                           value_quantity:
                             object_derivations:
                             - class_derivations:
@@ -366,7 +365,7 @@ class_derivations:
                                     value_decimal:
                                       populated_from: phv00159592
                                     unit:
-                                      expr: '''cm'''
+                                      expr: cm
                   - class_derivations:
                       MeasurementObservation:
                         populated_from: COPDGene
@@ -374,7 +373,7 @@ class_derivations:
                           associated_participant:
                             populated_from: phv00159568
                           observation_type:
-                            expr: '''OBA:VT0001259'''
+                            expr: OBA:VT0001259
                           value_quantity:
                             object_derivations:
                             - class_derivations:
@@ -384,7 +383,7 @@ class_derivations:
                                     value_decimal:
                                       populated_from: phv00159591
                                     unit:
-                                      expr: '''kg'''
+                                      expr: kg
                   - class_derivations:
                       MeasurementObservation:
                         populated_from: COPDGene
@@ -392,7 +391,7 @@ class_derivations:
                           associated_participant:
                             populated_from: phv00159568
                           observation_type:
-                            expr: '''OBA:2045455'''
+                            expr: OBA:2045455
                           value_quantity:
                             object_derivations:
                             - class_derivations:
@@ -402,7 +401,7 @@ class_derivations:
                                     value_decimal:
                                       populated_from: phv00159593
                                     unit:
-                                      expr: '''kg/m2'''
+                                      expr: kg/m2
                   - class_derivations:
                       MeasurementObservation:
                         populated_from: COPDGene
@@ -410,7 +409,7 @@ class_derivations:
                           associated_participant:
                             populated_from: phv00159568
                           observation_type:
-                            expr: '''OMOP:4154790'''
+                            expr: OMOP:4154790
                           value_quantity:
                             object_derivations:
                             - class_derivations:
@@ -420,7 +419,7 @@ class_derivations:
                                     value_decimal:
                                       populated_from: phv00159583
                                     unit:
-                                      expr: '''mm[Hg]'''
+                                      expr: mm[Hg]
                   - class_derivations:
                       MeasurementObservation:
                         populated_from: COPDGene
@@ -428,7 +427,7 @@ class_derivations:
                           associated_participant:
                             populated_from: phv00159568
                           observation_type:
-                            expr: '''OMOP:4152194'''
+                            expr: OMOP:4152194
                           value_quantity:
                             object_derivations:
                             - class_derivations:
@@ -438,7 +437,7 @@ class_derivations:
                                     value_decimal:
                                       populated_from: phv00159590
                                     unit:
-                                      expr: '''mm[Hg]'''
+                                      expr: mm[Hg]
                   - class_derivations:
                       MeasurementObservation:
                         populated_from: COPDGene
@@ -446,7 +445,7 @@ class_derivations:
                           associated_participant:
                             populated_from: phv00159568
                           observation_type:
-                            expr: '''OMOP:42418379'''
+                            expr: OMOP:42418379
                           value_quantity:
                             object_derivations:
                             - class_derivations:
@@ -456,7 +455,7 @@ class_derivations:
                                     value_decimal:
                                       populated_from: phv00159853
                                     unit:
-                                      expr: '''L'''
+                                      expr: L
                   - class_derivations:
                       MeasurementObservation:
                         populated_from: COPDGene
@@ -464,7 +463,7 @@ class_derivations:
                           associated_participant:
                             populated_from: phv00159568
                           observation_type:
-                            expr: '''OMOP:3011505'''
+                            expr: OMOP:3011505
                           value_quantity:
                             object_derivations:
                             - class_derivations:
@@ -474,7 +473,7 @@ class_derivations:
                                     value_decimal:
                                       populated_from: phv00159855
                                     unit:
-                                      expr: '''{ratio}'''
+                                      expr: '{ratio}'
                   - class_derivations:
                       MeasurementObservation:
                         populated_from: COPDGene
@@ -482,7 +481,7 @@ class_derivations:
                           associated_participant:
                             populated_from: phv00159568
                           observation_type:
-                            expr: '''OMOP:4176265'''
+                            expr: OMOP:4176265
                           value_quantity:
                             object_derivations:
                             - class_derivations:
@@ -492,7 +491,7 @@ class_derivations:
                                     value_decimal:
                                       populated_from: phv00159854
                                     unit:
-                                      expr: '''L'''
+                                      expr: L
                   - class_derivations:
                       MeasurementObservation:
                         populated_from: COPDGene
@@ -500,7 +499,7 @@ class_derivations:
                           associated_participant:
                             populated_from: phv00159568
                           observation_type:
-                            expr: '''OBA:1001087'''
+                            expr: OBA:1001087
                           value_quantity:
                             object_derivations:
                             - class_derivations:
@@ -510,7 +509,7 @@ class_derivations:
                                     value_decimal:
                                       populated_from: phv00159584
                                     unit:
-                                      expr: '''{beats}/min'''
+                                      expr: '{beats}/min'
                   - class_derivations:
                       MeasurementObservation:
                         populated_from: COPDGene
@@ -518,7 +517,7 @@ class_derivations:
                           associated_participant:
                             populated_from: phv00159568
                           observation_type:
-                            expr: '''OBA:2045443'''
+                            expr: OBA:2045443
                           value_quantity:
                             object_derivations:
                             - class_derivations:
@@ -529,7 +528,7 @@ class_derivations:
                                       expr: '{phv00159589} * 100 if {phv00159589}
                                         <= 1 else {phv00159589}'
                                     unit:
-                                      expr: '''%'''
+                                      expr: %
                 observations:
                   object_derivations:
                   - class_derivations:
@@ -539,10 +538,9 @@ class_derivations:
                           associated_participant:
                             populated_from: phv00159568
                           observation_type:
-                            expr: '''OMOP:4282779'''
+                            expr: OMOP:4282779
                           value_enum:
-                            expr: '''OMOP:40766945'' if {phv00159749} == 1 else ''OMOP:45883458''
-                              if {phv00159747} == 1 else ''OMOP:45883537'''
+                            expr: '"OMOP:40766945" if {phv00159749} == 1 else "OMOP:45883458" if {phv00159747} == 1 else "OMOP:45883537"'
                 procedures:
                   object_derivations:
                   - class_derivations:
@@ -552,7 +550,7 @@ class_derivations:
                           associated_participant:
                             populated_from: phv00159568
                           procedure_concept:
-                            expr: '''OMOP:4184832'''
+                            expr: OMOP:4184832
                           procedure_status:
                             populated_from: phv00159632
                             value_mappings:
@@ -565,7 +563,7 @@ class_derivations:
                           associated_participant:
                             populated_from: phv00159568
                           procedure_concept:
-                            expr: '''OMOP:4336464'''
+                            expr: OMOP:4336464
                           procedure_status:
                             populated_from: phv00159631
                             value_mappings:
@@ -580,7 +578,7 @@ class_derivations:
                           associated_participant:
                             populated_from: phv00159568
                           category:
-                            expr: '''EDUCATIONAL_ATTAINMENT'''
+                            expr: EDUCATIONAL_ATTAINMENT
                           value_enum:
                             populated_from: phv00159773
                             value_mappings:

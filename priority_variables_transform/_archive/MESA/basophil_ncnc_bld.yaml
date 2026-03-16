@@ -5,9 +5,9 @@
         associated_participant:
           populated_from: phv00128699
         associated_visit:
-          expr: '''MESA_AncilMesaInflammation'''
+          expr: MESA_AncilMesaInflammation
         observation_type:
-          expr: '''OMOP:3006315''' #basophils count
+          expr: OMOP:3006315 #basophils count
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -17,7 +17,7 @@
                   value_decimal:
                     populated_from: phv00128700
                   unit:
-                    expr: '''10*3/uL''' #reported_units: x10^3/ul
+                    expr: 10*3/uL #reported_units: x10^3/ul
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004319
@@ -25,9 +25,9 @@
         associated_participant:
           populated_from: phv00218989
         associated_visit:
-          expr: '''MESA_AncilMesaEpigenomicCBC'''
+          expr: MESA_AncilMesaEpigenomicCBC
         observation_type:
-          expr: '''OMOP:3006315''' #basophils count
+          expr: OMOP:3006315 #basophils count
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -37,4 +37,4 @@
                   value_decimal:
                     populated_from: phv00219002
                   unit:
-                    expr: '''10*3/uL''' #reported_units: x10E3/uL
+                    expr: 10*3/uL #reported_units: x10E3/uL

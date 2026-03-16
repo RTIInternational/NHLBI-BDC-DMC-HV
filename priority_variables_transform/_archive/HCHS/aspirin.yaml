@@ -5,8 +5,9 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          expr: '''HCHS EXAM'''
+          expr: HCHS EXAM
         drug_concept:
-          expr: case((phv00226329 == 1, '''RxCUI:1191'''))
+          expr: 'case((phv00226329 == 1, "RxCUI:1191"))'
+
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          expr: PATIENT SELF-REPORTED MEDICATION

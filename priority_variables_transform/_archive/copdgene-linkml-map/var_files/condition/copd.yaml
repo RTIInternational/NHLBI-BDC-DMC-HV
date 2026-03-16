@@ -3,7 +3,7 @@ class_derivations:
     populated_from: COPDGene
     slot_derivations:
       condition_concept:
-        expr: '''MONDO:0005002'''
+        expr: MONDO:0005002
       condition_status:
         expr: case( ({phv00159731} == 0, 'ABSENT'), ({phv00159731} == 1, case( ({phv00159734}
           == 0, 'HISTORICAL'), ({phv00159734} == 1, 'PRESENT'), ({phv00159734} ==
@@ -15,6 +15,6 @@ class_derivations:
         expr: case( ({phv00159732} == 0, 'PATIENT_SELF-REPORTED_CONDITION'), ({phv00159732}
           == 1, 'CLINICAL_DIAGNOSIS'), (True, 'PATIENT_SELF-REPORTED_CONDITION') )
       relationship_to_participant:
-        expr: '''SELF'''
+        expr: SELF
       age_at_condition_start:
         expr: '{phv00159733} * 365'

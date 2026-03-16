@@ -10,7 +10,7 @@
         age_at_observation:
           populated_from: phv00226251          
         observation_type:
-          expr: case(({phv00253225} >= 12, '''"OMOP:44791053"'''), (True, '''OBA:VT0000180'''))
+          expr: 'case(({phv00253225} >= 12, "OMOP:44791053"), (True, "OBA:VT0000180"))'
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -23,4 +23,4 @@
                     value: mg/dL
                     range: string
         method_type:
-          expr: case(({phv00253225} >= 12, '''Fasted minimum 12 hours'''))
+          expr: 'case(({phv00253225} >= 12, "Fasted minimum 12 hours"))'

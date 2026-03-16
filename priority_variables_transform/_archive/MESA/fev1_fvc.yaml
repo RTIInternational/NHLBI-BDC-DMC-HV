@@ -5,9 +5,9 @@
         associated_participant:
           populated_from: phv00087666
         associated_visit:
-          expr: '''MESA_FamilySpirometry'''
+          expr: MESA_FamilySpirometry
         observation_type:
-          expr: '''OMOP:3011505''' #FEV1 FVC
+          expr: OMOP:3011505 #FEV1 FVC
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -17,7 +17,7 @@
                   value_decimal:
                     expr: {phv00087687} * 0.01
                   unit:
-                    expr: '''{ratio}''' #reported_units: "percentage"
+                    expr: '{ratio}' #reported_units: "percentage"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001122
@@ -25,9 +25,9 @@
         associated_participant:
           populated_from: phv00087666
         associated_visit:
-          expr: '''MESA_FamilySpirometry'''
+          expr: MESA_FamilySpirometry
         observation_type:
-          expr: '''OMOP:3011505''' #FEV1 FVC
+          expr: OMOP:3011505 #FEV1 FVC
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -37,7 +37,7 @@
                   value_decimal:
                     populated_from: phv00087708
                   unit:
-                    expr: '''{ratio}''' #reported_units: "ratio"
+                    expr: '{ratio}' #reported_units: "ratio"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001122
@@ -45,9 +45,9 @@
         associated_participant:
           populated_from: phv00087666
         associated_visit:
-          expr: '''MESA_FamilySpirometry'''
+          expr: MESA_FamilySpirometry
         observation_type:
-          expr: '''OMOP:3011505''' #FEV1 FVC
+          expr: OMOP:3011505 #FEV1 FVC
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -57,4 +57,4 @@
                   value_decimal:
                     expr: {phv00087833} * 0.01
                   unit:
-                    expr: '''{ratio}''' #reported_units: "percentage"
+                    expr: '{ratio}' #reported_units: "percentage"

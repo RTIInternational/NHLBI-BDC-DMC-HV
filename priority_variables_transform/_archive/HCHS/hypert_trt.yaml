@@ -5,11 +5,12 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          expr: '''HCHS EXAM'''
+          expr: HCHS EXAM
         drug_concept:
-          expr: case((phv00226324 == 1, '''RxCUI:C02'''))
+          expr: 'case((phv00226324 == 1, "RxCUI:C02"))'
+
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''
+          expr: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht004715
@@ -17,8 +18,9 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          expr: '''HCHS EXAM'''
+          expr: HCHS EXAM
         drug_concept:
-          expr: case((phv00258039 == 1, '''RxCUI:C02'''))
+          expr: 'case((phv00258039 == 1, "RxCUI:C02"))'
+
         expsoure_provenance:
-          expr: '''PATIENT SELF-REPORTED MEDICATION'''          
+          expr: PATIENT SELF-REPORTED MEDICATION          

@@ -1,31 +1,13 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001803
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00119617
-        associated_visit:
-          value: CARDIA YEAR 10
-        observation_type:
-          value: OBA:VT0010540
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001803
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00119619
-                  unit:
-                    value: mg/dL
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht001849
       slot_derivations:
         associated_participant:
           populated_from: phv00120674
         associated_visit:
           value: CARDIA YEAR 15
+        # age_at_observation:
+          # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0010540
         value_quantity:
@@ -37,7 +19,29 @@
                   value_decimal:
                     populated_from: phv00120675
                   unit:
-                    value: mg/dL
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001803
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00119617
+        associated_visit:
+          value: CARDIA YEAR 10
+        # age_at_observation:
+          # expr: "{nan} * 365"
+        observation_type:
+          value: OBA:VT0010540
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001803
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00119619
+                  unit:
+                    value: "mg/dL"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001852
@@ -46,6 +50,8 @@
           populated_from: phv00120749
         associated_visit:
           value: CARDIA YEAR 15
+        # age_at_observation:
+          # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0010540
         value_quantity:
@@ -57,8 +63,8 @@
                   value_decimal:
                     populated_from: phv00120751
                     unit_conversion:
-                      source_unit: mg/mL
-                      target_unit: mg/dL
+                      source_unit: "mg/mL"
+                      target_unit: "mg/dL"
                   unit:
-                    value: mg/dL
+                    value: "mg/dL"
                     range: string

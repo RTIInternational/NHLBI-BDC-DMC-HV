@@ -8,8 +8,8 @@
           value: MESA AIR EXAM
           range: string
         drug_concept:
-          expr: case(({phv00083162} == 1, '''RxCUI:C10A'''))
-        expsoure_provenance:
+          expr: 'case(({phv00083162} == 1, "RxCUI:C10A"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -24,8 +24,8 @@
         age_at_exposure_start:
           expr: case(({phv00083002} == 1, {phv00083003} * 365))
         drug_concept:
-          expr: case(({phv00083002} == 1, '''RxCUI:C10A'''))
-        expsoure_provenance:
+          expr: 'case(({phv00083002} == 1, "RxCUI:C10A"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string          
 - class_derivations:
@@ -38,8 +38,8 @@
           value: MESA CLASSIC EXAM 1
           range: string
         drug_concept:
-          expr: case(({phv00085407} == 1, '''RxCUI:C10A'''))
-        expsoure_provenance:
+          expr: 'case(({phv00085407} == 1, "RxCUI:C10A"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -54,8 +54,8 @@
         age_at_exposure_start:
           expr: case(({phv00087104} == 1, {phv00087157} * 365))
         drug_concept:
-          expr: case(({phv00087104} == 1, '''RxCUI:C10A'''))
-        expsoure_provenance:
+          expr: 'case(({phv00087104} == 1, "RxCUI:C10A"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
@@ -69,7 +69,7 @@
         age_at_exposure_start:
           expr: case(({phv00085235} == 1, {phv00085237} * 365))
         drug_concept:
-          expr: case(({phv00085235} == 1, '''RxCUI:C10A'''))
-        expsoure_provenance:
+          expr: 'case(({phv00085235} == 1, "RxCUI:C10A"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION          
           range: string

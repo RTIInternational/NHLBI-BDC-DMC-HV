@@ -5,9 +5,9 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          expr: '''HCHS EXAM'''
+          expr: HCHS EXAM
         observation_type:
-          expr: '''OMOP:44777566''' #CESD Score
+          expr: OMOP:44777566 #CESD Score
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -17,4 +17,4 @@
                   value_integer:
                     populated_from: phv00258051
                   unit:
-                    expr: '''{score}'''
+                    expr: '{score}'

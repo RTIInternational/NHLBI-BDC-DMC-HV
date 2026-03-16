@@ -8,8 +8,8 @@
           value: HCHS EXAM
           range: string
         drug_concept:
-          expr: case(({phv00226345} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00226345} == 1, "RxCUI:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -22,8 +22,8 @@
           value: HCHS EXAM
           range: string
         drug_concept:
-          expr: case(({phv00226360} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00226360} == 1, "RxCUI:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -36,7 +36,7 @@
           value: HCHS EXAM
           range: string
         drug_concept:
-          expr: case(({phv00226361} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00226361} == 1, "RxCUI:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string

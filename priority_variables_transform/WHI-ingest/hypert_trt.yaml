@@ -8,8 +8,8 @@
           value: WHI FORM 30 - MEDICAL HISTORY QUESTIONNAIRE
           range: string
         drug_concept:
-          expr: case(({phv00078559} == 1, '''"RxCUI:C02"'''))
-        expsoure_provenance:
+          expr: 'case(({phv00078559} == 1, "RxCUI:C02"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -22,8 +22,8 @@
           value: WHI CAD
           range: string
         drug_concept:
-          expr: case(({phv00170607} == 1, '''"RxCUI:C02"'''))
-        expsoure_provenance:
+          expr: 'case(({phv00170607} == 1, "RxCUI:C02"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -36,8 +36,8 @@
           value: WHI CTOS
           range: string
         drug_concept:
-          expr: case(({phv00170689} == 1, '''"RxCUI:C02"'''))
-        expsoure_provenance:
+          expr: 'case(({phv00170689} == 1, "RxCUI:C02"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -50,8 +50,8 @@
           value: WHI EXTENSION STUDY 2 MRC
           range: string
         drug_concept:
-          expr: case(({phv00193667} == 1, '''"RxCUI:C02"'''))
-        expsoure_provenance:
+          expr: 'case(({phv00193667} == 1, "RxCUI:C02"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -64,8 +64,8 @@
           value: WHI EXTENSION STUDY 2 SRC
           range: string
         drug_concept:
-          expr: case(({phv00193779} == 1, '''"RxCUI:C02"'''))
-        expsoure_provenance:
+          expr: 'case(({phv00193779} == 1, "RxCUI:C02"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -78,7 +78,7 @@
           value: WHI EXTENSION STUDY 2 SRC
           range: string
         drug_concept:
-          expr: case(({phv00193779} == 1, '''"RxCUI:C02"'''))
-        expsoure_provenance:
+          expr: 'case(({phv00193779} == 1, "RxCUI:C02"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string

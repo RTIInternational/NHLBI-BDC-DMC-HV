@@ -6,126 +6,8 @@
           populated_from: phv00114613
         associated_visit:
           value: CARDIA YEAR 2
-        observation_type:
-          value: OMOP:4241837
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001627
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00114664
-                  unit:
-                    value: L
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001667
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00115618
-        associated_visit:
-          value: CARDIA YEAR 5
-        observation_type:
-          value: OMOP:4241837
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001667
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00115633
-                  unit:
-                    value: L
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001781
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00118837
-        associated_visit:
-          value: CARDIA YEAR 10
-        observation_type:
-          value: OMOP:4241837
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001781
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00118864
-                  unit:
-                    value: L
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001667
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00115618
-        associated_visit:
-          value: CARDIA YEAR 5
-        observation_type:
-          value: OMOP:4241837
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001667
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00115621
-                  unit:
-                    value: L
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001627
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00114613
-        associated_visit:
-          value: CARDIA YEAR 2
-        observation_type:
-          value: OMOP:4241837
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001627
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00114652
-                  unit:
-                    value: L
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001781
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00118837
-        associated_visit:
-          value: CARDIA YEAR 10
-        observation_type:
-          value: OMOP:4241837
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001781
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00118942
-                  unit:
-                    value: L
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001627
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00114613
-        associated_visit:
-          value: CARDIA YEAR 2
+        # age_at_observation:
+          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4241837
         value_quantity:
@@ -137,7 +19,7 @@
                   value_decimal:
                     populated_from: phv00114628
                   unit:
-                    value: L
+                    value: "L"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001667
@@ -146,6 +28,8 @@
           populated_from: phv00115618
         associated_visit:
           value: CARDIA YEAR 5
+        # age_at_observation:
+          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4241837
         value_quantity:
@@ -155,49 +39,9 @@
                 populated_from: pht001667
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00115657
+                    populated_from: phv00115621
                   unit:
-                    value: L
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001782
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00118962
-        associated_visit:
-          value: CARDIA YEAR 10
-        observation_type:
-          value: OMOP:4241837
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001782
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00118971
-                  unit:
-                    value: L
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001667
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00115618
-        associated_visit:
-          value: CARDIA YEAR 5
-        observation_type:
-          value: OMOP:4241837
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001667
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00115669
-                  unit:
-                    value: L
+                    value: "L"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001781
@@ -206,6 +50,8 @@
           populated_from: phv00118837
         associated_visit:
           value: CARDIA YEAR 10
+        age_at_observation:
+          expr: "{phv00118959} * 365"
         observation_type:
           value: OMOP:4241837
         value_quantity:
@@ -217,7 +63,7 @@
                   value_decimal:
                     populated_from: phv00118924
                   unit:
-                    value: L
+                    value: "L"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001781
@@ -226,6 +72,8 @@
           populated_from: phv00118837
         associated_visit:
           value: CARDIA YEAR 10
+        age_at_observation:
+          expr: "{phv00118959} * 365"
         observation_type:
           value: OMOP:4241837
         value_quantity:
@@ -237,7 +85,7 @@
                   value_decimal:
                     populated_from: phv00118876
                   unit:
-                    value: L
+                    value: "L"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001781
@@ -246,6 +94,8 @@
           populated_from: phv00118837
         associated_visit:
           value: CARDIA YEAR 10
+        age_at_observation:
+          expr: "{phv00118959} * 365"
         observation_type:
           value: OMOP:4241837
         value_quantity:
@@ -255,29 +105,9 @@
                 populated_from: pht001781
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00118852
+                    populated_from: phv00118864
                   unit:
-                    value: L
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001667
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00115618
-        associated_visit:
-          value: CARDIA YEAR 5
-        observation_type:
-          value: OMOP:4241837
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001667
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00115645
-                  unit:
-                    value: L
+                    value: "L"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001781
@@ -286,6 +116,8 @@
           populated_from: phv00118837
         associated_visit:
           value: CARDIA YEAR 10
+        age_at_observation:
+          expr: "{phv00118959} * 365"
         observation_type:
           value: OMOP:4241837
         value_quantity:
@@ -295,9 +127,9 @@
                 populated_from: pht001781
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00118888
+                    populated_from: phv00118942
                   unit:
-                    value: L
+                    value: "L"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001781
@@ -306,6 +138,8 @@
           populated_from: phv00118837
         associated_visit:
           value: CARDIA YEAR 10
+        age_at_observation:
+          expr: "{phv00118959} * 365"
         observation_type:
           value: OMOP:4241837
         value_quantity:
@@ -317,7 +151,29 @@
                   value_decimal:
                     populated_from: phv00118912
                   unit:
-                    value: L
+                    value: "L"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001667
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00115618
+        associated_visit:
+          value: CARDIA YEAR 5
+        # age_at_observation:
+          # expr: "{nan} * 365"
+        observation_type:
+          value: OMOP:4241837
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001667
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00115645
+                  unit:
+                    value: "L"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001627
@@ -326,86 +182,8 @@
           populated_from: phv00114613
         associated_visit:
           value: CARDIA YEAR 2
-        observation_type:
-          value: OMOP:4241837
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001627
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00114616
-                  unit:
-                    value: L
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001781
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00118837
-        associated_visit:
-          value: CARDIA YEAR 10
-        observation_type:
-          value: OMOP:4241837
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001781
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00118900
-                  unit:
-                    value: L
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001627
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00114613
-        associated_visit:
-          value: CARDIA YEAR 2
-        observation_type:
-          value: OMOP:4241837
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001627
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00114640
-                  unit:
-                    value: L
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001781
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00118837
-        associated_visit:
-          value: CARDIA YEAR 10
-        observation_type:
-          value: OMOP:4241837
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001781
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00118840
-                  unit:
-                    value: L
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001627
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00114613
-        associated_visit:
-          value: CARDIA YEAR 2
+        # age_at_observation:
+          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4241837
         value_quantity:
@@ -417,4 +195,268 @@
                   value_decimal:
                     populated_from: phv00114676
                   unit:
-                    value: L
+                    value: "L"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001781
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00118837
+        associated_visit:
+          value: CARDIA YEAR 10
+        age_at_observation:
+          expr: "{phv00118959} * 365"
+        observation_type:
+          value: OMOP:4241837
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001781
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00118900
+                  unit:
+                    value: "L"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001782
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00118962
+        associated_visit:
+          value: CARDIA YEAR 10
+        # age_at_observation:
+          # expr: "{nan} * 365"
+        observation_type:
+          value: OMOP:4241837
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001782
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00118971
+                  unit:
+                    value: "L"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001667
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00115618
+        associated_visit:
+          value: CARDIA YEAR 5
+        # age_at_observation:
+          # expr: "{nan} * 365"
+        observation_type:
+          value: OMOP:4241837
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001667
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00115657
+                  unit:
+                    value: "L"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001781
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00118837
+        associated_visit:
+          value: CARDIA YEAR 10
+        age_at_observation:
+          expr: "{phv00118959} * 365"
+        observation_type:
+          value: OMOP:4241837
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001781
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00118888
+                  unit:
+                    value: "L"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001667
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00115618
+        associated_visit:
+          value: CARDIA YEAR 5
+        # age_at_observation:
+          # expr: "{nan} * 365"
+        observation_type:
+          value: OMOP:4241837
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001667
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00115669
+                  unit:
+                    value: "L"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001781
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00118837
+        associated_visit:
+          value: CARDIA YEAR 10
+        age_at_observation:
+          expr: "{phv00118959} * 365"
+        observation_type:
+          value: OMOP:4241837
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001781
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00118840
+                  unit:
+                    value: "L"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001667
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00115618
+        associated_visit:
+          value: CARDIA YEAR 5
+        # age_at_observation:
+          # expr: "{nan} * 365"
+        observation_type:
+          value: OMOP:4241837
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001667
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00115633
+                  unit:
+                    value: "L"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001627
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00114613
+        associated_visit:
+          value: CARDIA YEAR 2
+        # age_at_observation:
+          # expr: "{nan} * 365"
+        observation_type:
+          value: OMOP:4241837
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001627
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00114616
+                  unit:
+                    value: "L"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001781
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00118837
+        associated_visit:
+          value: CARDIA YEAR 10
+        age_at_observation:
+          expr: "{phv00118959} * 365"
+        observation_type:
+          value: OMOP:4241837
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001781
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00118852
+                  unit:
+                    value: "L"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001627
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00114613
+        associated_visit:
+          value: CARDIA YEAR 2
+        # age_at_observation:
+          # expr: "{nan} * 365"
+        observation_type:
+          value: OMOP:4241837
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001627
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00114640
+                  unit:
+                    value: "L"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001627
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00114613
+        associated_visit:
+          value: CARDIA YEAR 2
+        # age_at_observation:
+          # expr: "{nan} * 365"
+        observation_type:
+          value: OMOP:4241837
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001627
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00114664
+                  unit:
+                    value: "L"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001627
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00114613
+        associated_visit:
+          value: CARDIA YEAR 2
+        # age_at_observation:
+          # expr: "{nan} * 365"
+        observation_type:
+          value: OMOP:4241837
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001627
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00114652
+                  unit:
+                    value: "L"

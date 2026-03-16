@@ -109,7 +109,7 @@ forv i = 1/`nobs' {
 if unit_match[`i']==1 {
 file write `bdchm'_good "- class_derivations:" _n ///
 	_column(5) "`entity'" ":" _n ///
-			_column(7) "populated from: " "`pht'" _n ///
+			_column(7) "populated_from: " "`pht'" _n ///
 			_column(7) "slot_derivations:" _n ///
 				_column(9) "associated_participant: " _n ///
 					_column(11) "populated_from: " "`participant'" _n ///
@@ -134,7 +134,7 @@ file write `bdchm'_good "- class_derivations:" _n ///
 else if unit_convert[`i']==1 {
 file write `bdchm'_good "- class_derivations:" _n ///
 	_column(5) "`entity'" ":" _n ///
-			_column(7) "populated from: " "`pht'" _n ///
+			_column(7) "populated_from: " "`pht'" _n ///
 			_column(7) "slot_derivations:" _n ///
 				_column(9) "associated_participant: " _n ///
 					_column(11) "populated_from: " "`participant'" _n ///
@@ -163,7 +163,7 @@ file write `bdchm'_good "- class_derivations:" _n ///
 else if unit_expr[`i']==1 {
 file write `bdchm'_good "- class_derivations:" _n ///
 	_column(5) "`entity'" ":" _n ///
-			_column(7) "populated from: " "`pht'" _n ///
+			_column(7) "populated_from: " "`pht'" _n ///
 			_column(7) "slot_derivations:" _n ///
 				_column(9) "associated_participant: " _n ///
 					_column(11) "populated_from: " "`participant'" _n ///
@@ -220,7 +220,7 @@ forv i = 1/`nobs' {
 
 file write `bdchm'_bad "- class_derivations:" _n ///
 	_column(5) "`entity'" ":" _n ///
-			_column(7) "populated from: " "`pht'" _n ///
+			_column(7) "populated_from: " "`pht'" _n ///
 			_column(7) "slot_derivations:" _n ///
 				_column(9) "associated_participant: " _n ///
 					_column(11) "populated_from: " "`participant'" " #CHECK" _n ///

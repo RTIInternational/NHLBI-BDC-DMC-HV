@@ -35,12 +35,12 @@
         condition_concept:
           populated_from: phv00003199
           value_mappings:
-            '0': '''MONDO:0005068'''
-            '1': '''MONDO:0005068'''
-            '2': '''MONDO:0006803'''
-            '3': '''MONDO:0005068'''
-            '4': '''MONDO:0005068'''
-            '7': '''MONDO:0005068'''
+            '0': MONDO:0005068
+            '1': MONDO:0005068
+            '2': MONDO:0006803
+            '3': MONDO:0005068
+            '4': MONDO:0005068
+            '7': MONDO:0005068
             '8': UNKNOWN
         condition_status:
           populated_from: phv00003199
@@ -72,12 +72,12 @@
         condition_concept:
           populated_from: phv00003614
           value_mappings:
-            '0': '''MONDO:0005068'''
-            '1': '''MONDO:0005068'''
-            '2': '''MONDO:0006803'''
-            '3': '''MONDO:0005068'''
-            '4': '''MONDO:0005068'''
-            '7': '''MONDO:0005068'''
+            '0': MONDO:0005068
+            '1': MONDO:0005068
+            '2': MONDO:0006803
+            '3': MONDO:0005068
+            '4': MONDO:0005068
+            '7': MONDO:0005068
             '8': UNKNOWN
         condition_status:
           populated_from: phv00003614
@@ -1822,7 +1822,7 @@
         associated_participant:
           populated_from: phv00177237
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177237}) + ":" + case(({phv00177238} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00177238} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00177238} == ''72'', ''FHS OMNI 2 EXAM 2'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177237}) + ":" + case(({phv00177238} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00177238} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00177238} == ''72'', ''FHS OMNI 2 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005068
           range: string
@@ -1849,7 +1849,7 @@
         associated_participant:
           populated_from: phv00177237
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177237}) + ":" + case(({phv00177238} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00177238} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00177238} == ''72'', ''FHS OMNI 2 EXAM 2'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177237}) + ":" + case(({phv00177238} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00177238} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00177238} == ''72'', ''FHS OMNI 2 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0006803
           range: string
@@ -1876,7 +1876,7 @@
         associated_participant:
           populated_from: phv00177237
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177237}) + ":" + case(({phv00177238} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00177238} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00177238} == ''72'', ''FHS OMNI 2 EXAM 2'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177237}) + ":" + case(({phv00177238} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00177238} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00177238} == ''72'', ''FHS OMNI 2 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005068
           range: string
@@ -2065,7 +2065,7 @@
         associated_participant:
           populated_from: phv00254010
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005068
           range: string
@@ -2092,7 +2092,7 @@
         associated_participant:
           populated_from: phv00254010
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0006803
           range: string
@@ -2119,7 +2119,7 @@
         associated_participant:
           populated_from: phv00254010
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005068
           range: string
@@ -2683,7 +2683,7 @@
         associated_participant:
           populated_from: phv00276975
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276975}) + ":" + case(({phv00276976} == ''0'', ''FHS ORIGINAL VTR''), ({phv00276976} == ''1'', ''FHS OFFSPRING VTR''), ({phv00276976} == ''2'', ''FHS NEW OFFSPRING SPOUSE VTR''), ({phv00276976} == ''3'', ''FHS GENERATION 3 VTR''), ({phv00276976} == ''7'', ''FHS OMNI 1 VTR''), ({phv00276976} == ''72'', ''FHS OMNI 2 VTR'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276975}) + ":" + case(({phv00276976} == ''0'', ''FHS ORIGINAL VTR''), ({phv00276976} == ''1'', ''FHS OFFSPRING VTR''), ({phv00276976} == ''2'', ''FHS NEW OFFSPRING SPOUSE VTR''), ({phv00276976} == ''3'', ''FHS GENERATION 3 VTR''), ({phv00276976} == ''7'', ''FHS OMNI 1 VTR''), ({phv00276976} == ''72'', ''FHS OMNI 2 VTR''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005068
           range: string

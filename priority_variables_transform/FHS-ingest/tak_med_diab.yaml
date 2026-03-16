@@ -5,9 +5,9 @@
         associated_participant:
           populated_from: phv00177237
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177237}) + ":" + case(({phv00177238} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00177238} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00177238} == ''72'', ''FHS OMNI 2 EXAM 2'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177237}) + ":" + case(({phv00177238} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00177238} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00177238} == ''72'', ''FHS OMNI 2 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         drug_concept:
-          expr: case(({phv00177254} == 1, '''RxCUI:A10'''))
+          expr: 'case(({phv00177254} == 1, "RxCUI:A10"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -20,7 +20,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00273700}) + ":FHS NEW OFFSPRING SPOUSE EXAM 1")'
         drug_concept:
-          expr: case(({phv00273715} == 1, '''RxCUI:A10'''))
+          expr: 'case(({phv00273715} == 1, "RxCUI:A10"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -31,9 +31,9 @@
         associated_participant:
           populated_from: phv00254010
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         drug_concept:
-          expr: case(({phv00254028} == 1, '''RxCUI:A10'''))
+          expr: 'case(({phv00254028} == 1, "RxCUI:A10"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -46,7 +46,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275064}) + ":FHS ORIGINAL EXAM 32")'
         drug_concept:
-          expr: case(({phv00275073} == 1, '''RxCUI:A10'''))
+          expr: 'case(({phv00275073} == 1, "RxCUI:A10"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -59,7 +59,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00021427}) + ":FHS GENERATION 3 EXAM 1")'
         drug_concept:
-          expr: case(({phv00020881} == 1, '''RxCUI:A10'''))
+          expr: 'case(({phv00020881} == 1, "RxCUI:A10"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string

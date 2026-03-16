@@ -9,7 +9,7 @@
         age_at_condition_start:
           expr: case((phv00159736 == 1, {phv00159738} * 365))
         condition_concept:
-          expr: '''HP:0010535'''
+          expr: HP:0010535
         condition_status:
           expr: case( ({phv00159736} == 0, 'ABSENT'), ({phv00159736} == 1, case( ({phv00159737}
             == 0, case( ({phv00159739} == 0, 'HISTORICAL'), ({phv00159739} == 1, 'PRESENT'),
@@ -23,7 +23,7 @@
           expr: case( ({phv00159737} == 0, 'PATIENT_SELF-REPORTED_CONDITION'), ({phv00159737}
             == 1, 'CLINICAL_DIAGNOSIS'), (True, 'PATIENT_SELF-REPORTED_CONDITION') )
         relationship_to_participant:
-          expr: '''SELF'''
+          expr: SELF
         age_at_condition_start:
           expr: None
         age_at_condition_end:

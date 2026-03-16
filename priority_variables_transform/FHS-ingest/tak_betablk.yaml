@@ -57,7 +57,7 @@
         associated_participant:
           populated_from: phv00276803
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276803}) + ":" + case(({phv00276845} == ''0'', ''FHS ORIGINAL CHF''), ({phv00276845} == ''1'', ''FHS OFFSPRING CHF''), ({phv00276845} == ''2'', ''FHS NEW OFFSPRING CHF''), ({phv00276845} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00276845} == ''7'', ''FHS OMNI 1 CHF''), ({phv00276845} == ''72'', ''FHS OMNI 2 CHF'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276803}) + ":" + case(({phv00276845} == ''0'', ''FHS ORIGINAL CHF''), ({phv00276845} == ''1'', ''FHS OFFSPRING CHF''), ({phv00276845} == ''2'', ''FHS NEW OFFSPRING CHF''), ({phv00276845} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00276845} == ''7'', ''FHS OMNI 1 CHF''), ({phv00276845} == ''72'', ''FHS OMNI 2 CHF''), (True, ''FHS UNKNOWN VISIT'')))'
         drug_concept:
           expr: case(({phv00276806} == 1, "RxCUI:C07A"))
         exposure_provenance:
@@ -92,8 +92,8 @@
             '4': "RxCUI:1202"
             '5': "RxCUI:6918"
             '9': "RxCUI:C07A"
-#         dosage:
-#           populated_from: phv00250736
+                #         dosage:
+                #           populated_from: phv00250736
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -208,8 +208,8 @@
             == 4, "RxCUI: 1202"),({phv00004953} == 5, "RxCUI: 6918"),({phv00004953}
             == 6, "RxCUI: 8332"),({phv00004953} == 7, "RxCUI: 149"),({phv00004953}
             == 8, "RxCUI: 6185"),({phv00004953} == 9, "RxCUI: C07A"))'
-#         dosage:
-#           populated_from: phv00004954
+                #         dosage:
+                #           populated_from: phv00004954
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -241,8 +241,8 @@
             6918"), ({phv00005573} == 6, "RxCUI:8332"), ({phv00005573}
             == 7, "RxCUI:149"), ({phv00005573} == 8, "RxCUI:6185"),({phv00005573}
             == 9, "RxCUI: C07A"))'
-#         dosage:
-#           populated_from: phv00005574
+                #         dosage:
+                #           populated_from: phv00005574
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -278,8 +278,8 @@
                    ({phv00006125} == 7, "RxCUI:149"),
                    ({phv00006125} == 8, "RxCUI:6185"),
                    ({phv00006125} == 9, "RxCUI:C07A"))'
-#         dosage:
-#           populated_from: phv00006126
+                #         dosage:
+                #           populated_from: phv00006126
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -315,8 +315,8 @@
                    ({phv00006467} == 7, "RxCUI:149"),
                    ({phv00006467} == 8, "RxCUI:6185"),
                    ({phv00006467} == 9, "RxCUI: C07A"))'
-#         dosage:
-#           populated_from: phv00006468
+                #         dosage:
+                #           populated_from: phv00006468
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -348,8 +348,8 @@
             5, "RxCUI: 6918"), ({phv00006855} == 6, "RxCUI:8332"),
             ({phv00006855} == 7, "RxCUI:149"), ({phv00006855} ==
             8, "RxCUI:6185"),({phv00006855} == 9, "RxCUI: C07A"))'
-#         dosage:
-#           populated_from: phv00006856
+                #         dosage:
+                #           populated_from: phv00006856
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -381,8 +381,8 @@
             5, "RxCUI: 6918"), ({phv00007292} == 6, "RxCUI:8332"),
             ({phv00007292} == 7, "RxCUI:149"), ({phv00007292} ==
             8, "RxCUI:6185"),({phv00007292} == 9, "RxCUI: C07A"))'
-#         dosage:
-#           populated_from: phv00007293
+                #         dosage:
+                #           populated_from: phv00007293
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -414,8 +414,8 @@
             5, "RxCUI: 6918"), ({phv00009180} == 6, "RxCUI:8332"),
             ({phv00009180} == 7, "RxCUI:149"), ({phv00009180} ==
             8, "RxCUI:6185"), ({phv00009180} == 9, "RxCUI:C07A"))'
-#         dosage:
-#           populated_from: phv00009181
+                #         dosage:
+                #           populated_from: phv00009181
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -447,8 +447,8 @@
             5, "RxCUI: 6918"), ({phv00009681} == 6, "RxCUI:8332"),
             ({phv00009681} == 7, "RxCUI:149"), ({phv00009681} ==
             8, "RxCUI:6185"), ({phv00009681} == 9, "RxCUI: C07A"))'
-#         dosage:
-#           populated_from: phv00009682
+                #         dosage:
+                #           populated_from: phv00009682
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -480,8 +480,8 @@
             6918"), ({phv00010161} == 6, "RxCUI:8332"), ({phv00010161}
             == 7, "RxCUI:149"), ({phv00010161} == 8, "RxCUI:6185"),({phv00010161}
             == 9, "RxCUI: C07A"))'
-#         dosage:
-#           populated_from: phv00010162
+                #         dosage:
+                #           populated_from: phv00010162
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string

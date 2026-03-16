@@ -5,9 +5,10 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          expr: '''HCHS EXAM'''
+          expr: HCHS EXAM
         observation_type:
-          expr: case((phv00253225 >= 12, '''OMOP:4042061'''), (True, '''OBA:VT0000181''')) 
+          expr: 'case((phv00253225 >= 12, "OMOP:4042061"), (True, "OBA:VT0000181"))' 
+
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -17,6 +18,7 @@
                   value_decimal:
                     populated_from: phv00253241
                   unit:
-                    expr: '''mg/dL'''
+                    expr: mg/dL
         method_type:
-          expr: case((phv00253225 >= 12, '''Fasted minimum 12 hours'''))
+          expr: 'case((phv00253225 >= 12, "Fasted minimum 12 hours"))'
+

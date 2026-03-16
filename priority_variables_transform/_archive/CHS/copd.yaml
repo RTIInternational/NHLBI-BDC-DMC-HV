@@ -5,18 +5,18 @@
         associated_participant:
           populated_from: phv00100285
         associated_visit:
-          expr: '''CHS BASELINE BOTH'''
+          expr: CHS BASELINE BOTH
         condition_concept:
-          expr: '''MONDO:0005002''' #copd
+          expr: MONDO:0005002 #copd
         condition_status:
           populated_from: phv00100497
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
-          expr: '''PATIENT_SELF-REPORTED_CONDITION'''
+          expr: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
-          expr: '''ONESELF'''
+          expr: ONESELF
 - class_derivations:
     Condition:
       populated_from: pht003699
@@ -24,16 +24,16 @@
         associated_participant:
           populated_from: phv00197394
         associated_visit:
-          expr: '''CHS PSG 1'''
+          expr: CHS PSG 1
         condition_concept:
-          expr: '''MONDO:0005002''' #copd
+          expr: MONDO:0005002 #copd
         condition_status:
           populated_from: phv00197462
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
-            '8': '''UNKNOWN'''
+            '0': ABSENT
+            '1': PRESENT
+            '8': UNKNOWN
         condition_provenance:
-          expr: '''CLINICAL_DIAGNOSIS'''
+          expr: CLINICAL_DIAGNOSIS
         relationship_to_participant:
-          expr: '''ONESELF'''          
+          expr: ONESELF          

@@ -8,7 +8,7 @@
           value: CHS BASELINE BOTH
           range: string
         drug_concept:
-          expr: case(({phv00100594} == 1, '''RxCUI:C10A'''))
-        expsoure_provenance:
+          expr: 'case(({phv00100594} == 1, "RxCUI:C10A"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
