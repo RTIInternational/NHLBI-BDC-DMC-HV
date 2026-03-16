@@ -1,0 +1,19 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht008741
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00401710
+        associated_visit:
+          value: JHS EXAM 6
+        age_at_observation:
+          expr: "{nan} * 365"
+        observation_type:
+          value: OBA:VT0002871
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht008741
+                slot_derivations:
+                  value_decimal:
