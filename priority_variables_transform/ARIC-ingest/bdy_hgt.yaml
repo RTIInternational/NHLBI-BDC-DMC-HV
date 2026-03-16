@@ -43,7 +43,7 @@
                 populated_from: pht004102
                 slot_derivations:
                   value_decimal:
-                    case(({phv00206817} == "I", {phv00206855} * 2.54), ({phv00206817} == "C", {phv00206855}))
+                    expr: 'case(({phv00206817} == "I", {phv00206855} * 2.54), ({phv00206817} == "C", {phv00206855}))'
                   unit:
                     value: "cm"
                     range: string
