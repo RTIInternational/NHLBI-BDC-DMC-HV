@@ -6,13 +6,10 @@
           populated_from: phv00077369
         associated_visit:
           value: WHI CORE
-          range: string
+        # age_at_observation:
+          # expr: "{nan} * 365"
         observation_type:
           value: OBA:2060174
-          range: string
-        method_type:
-          value: RIA method
-          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -20,9 +17,12 @@
                 populated_from: pht000987
                 slot_derivations:
                   value_decimal:
-                    expr: '{phv00077389} * 6'
+                    populated_from: phv00077389
+                    unit_conversion:
+                      source_unit: "u[IU]/mL"
+                      target_unit: "pmol/L"
                   unit:
-                    value: pmol/l
+                    value: "pmol/L"
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -32,13 +32,10 @@
           populated_from: phv00077369
         associated_visit:
           value: WHI CORE
-          range: string
+        # age_at_observation:
+          # expr: "{nan} * 365"
         observation_type:
           value: OBA:2060174
-          range: string
-        method_type:
-          value: automated ES300 method
-          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -46,7 +43,10 @@
                 populated_from: pht000987
                 slot_derivations:
                   value_decimal:
-                    expr: '{phv00077390} * 6'
+                    populated_from: phv00077390
+                    unit_conversion:
+                      source_unit: "u[IU]/mL"
+                      target_unit: "pmol/L"
                   unit:
-                    value: pmol/l
+                    value: "pmol/L"
                     range: string

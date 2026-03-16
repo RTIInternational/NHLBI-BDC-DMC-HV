@@ -6,6 +6,8 @@
           populated_from: phv00115203
         associated_visit:
           value: CARDIA YEAR 5
+        # age_at_observation:
+          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
         value_quantity:
@@ -17,24 +19,4 @@
                   value_decimal:
                     populated_from: phv00115204
                   unit:
-                    value: mm[Hg]
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001655
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00115414
-        associated_visit:
-          value: CARDIA YEAR 5
-        observation_type:
-          value: OMOP:4154790
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001655
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00112495
-                  unit:
-                    value: mm[Hg]
+                    value: "mm[Hg]"
