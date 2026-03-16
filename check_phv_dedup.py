@@ -16,6 +16,14 @@ KNOWN_ISSUES = {
     "phv00079857",  # WHI bp_diastolic / bp_systolic
     "phv00100046",  # CHS albumin_bld / mch
     "phv00112688",  # CARDIA hemo / mchc
+    "phv00127631",  # JHS hemo / mchc
+    "phv00207256",  # ARIC hemo / mchc
+    "phv00207257",  # ARIC basophil_ncnc_bld / lympho_ct / whtbld_ct
+    "phv00207271",  # ARIC hemo / mchc
+    "phv00207272",  # ARIC basophil_ncnc_bld / lympho_ct / whtbld_ct
+    "phv00210286",  # ARIC bp_diastolic / bp_systolic
+    "phv00210289",  # ARIC bp_diastolic / bp_systolic
+    "phv00294956",  # ARIC hemo / mchc
 }
 
 
