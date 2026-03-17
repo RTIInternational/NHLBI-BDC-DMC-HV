@@ -25,31 +25,32 @@
             '8': MASTERS_OR_DOCTORAL_DEGREE
             '10': COLLEGE_OR_TECH_WITH_DEGREE
             '9999': UNKNOWN
-- class_derivations:
-    SdohObservation:
-      populated_from: pht004374
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00220821
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00220821}) + ":" + case(({phv00220822} == ''0'', ''FHS ORIGINAL NTS''), ({phv00220822} == ''1'', ''FHS OFFSPRING NTS''), ({phv00220822} == ''2'', ''FHS NEW OFFSPRING SPOUSE NTS''), ({phv00220822} == ''3'', ''FHS GENERATION 3 NTS''), ({phv00220822} == ''7'', ''FHS OMNI 1 NTS''), ({phv00220822} == ''72'', ''FHS OMNI 2 NTS''), (True, ''FHS UNKNOWN VISIT'')))'
-        category:
-          value: EDUCATIONAL_ATTAINMENT
-          range: string
-        value_enum:
-          populated_from: phv00220823
-          value_mappings:
-            '0': 8TH_GRADE_OR_LESS
-            '1': 8TH_GRADE_OR_LESS
-            '2': 8TH_GRADE_OR_LESS
-            '3': 8TH_GRADE_OR_LESS
-            '4': HIGH_SCHOOL_NO_DIPLOMA
-            '5': HIGH_SCHOOL_GRADUATE_GED
-            '6': SOME_COLLEGE_OR_TECH_NO_DEGREE
-            '7': COLLEGE_OR_TECH_WITH_DEGREE
-            '8': MASTERS_OR_DOCTORAL_DEGREE
-            '10': COLLEGE_OR_TECH_WITH_DEGREE
-            .: UNKNOWN
+# Block commented out: phv00220823 not in pht004374 (#447)
+#- class_derivations:
+#    SdohObservation:
+#      populated_from: pht004374
+#      slot_derivations:
+#        associated_participant:
+#          populated_from: phv00220821
+#        associated_visit:
+#          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00220821}) + ":" + case(({phv00220822} == ''0'', ''FHS ORIGINAL NTS''), ({phv00220822} == ''1'', ''FHS OFFSPRING NTS''), ({phv00220822} == ''2'', ''FHS NEW OFFSPRING SPOUSE NTS''), ({phv00220822} == ''3'', ''FHS GENERATION 3 NTS''), ({phv00220822} == ''7'', ''FHS OMNI 1 NTS''), ({phv00220822} == ''72'', ''FHS OMNI 2 NTS''), (True, ''FHS UNKNOWN VISIT'')))'
+#        category:
+#          value: EDUCATIONAL_ATTAINMENT
+#          range: string
+#        value_enum:
+#          populated_from: phv00220823
+#          value_mappings:
+#            '0': 8TH_GRADE_OR_LESS
+#            '1': 8TH_GRADE_OR_LESS
+#            '2': 8TH_GRADE_OR_LESS
+#            '3': 8TH_GRADE_OR_LESS
+#            '4': HIGH_SCHOOL_NO_DIPLOMA
+#            '5': HIGH_SCHOOL_GRADUATE_GED
+#            '6': SOME_COLLEGE_OR_TECH_NO_DEGREE
+#            '7': COLLEGE_OR_TECH_WITH_DEGREE
+#            '8': MASTERS_OR_DOCTORAL_DEGREE
+#            '10': COLLEGE_OR_TECH_WITH_DEGREE
+#            .: UNKNOWN
 - class_derivations:
     SdohObservation:
       populated_from: pht004374

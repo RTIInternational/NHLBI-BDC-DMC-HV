@@ -90,13 +90,14 @@
                     populated_from: phv00177926
                   species:
                     value: NCBITaxon:9606
-                  vital_status:
-                    populated_from: pht006018.phv00276841
-                    value_mappings:
-                      '0': OMOP:4230556
-                      '1': OMOP:434489
-                  age_at_death:
-                    expr: '{pht002075.phv00141916} * 365'
+# cross-table refs don't resolve against pht003099 (#447)
+#                  vital_status:
+#                    populated_from: pht006018.phv00276841
+#                    value_mappings:
+#                      '0': OMOP:4230556
+#                      '1': OMOP:434489
+#                  age_at_death:
+#                    expr: '{pht002075.phv00141916} * 365'
                   cause_of_death:
                     object_derivations:
                     - class_derivations:
