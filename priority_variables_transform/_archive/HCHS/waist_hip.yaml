@@ -5,9 +5,9 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          expr: '''HCHS EXAM'''
+          expr: HCHS EXAM
         observation_type:
-          expr: '''OMOP:4087501''' #waist-hip ratio
+          expr: OMOP:4087501 #waist-hip ratio
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -17,4 +17,4 @@
                   value_decimal:
                     populated_from: phv00226399
                   unit:
-                    expr: '''{ratio}'''
+                    expr: '{ratio}'

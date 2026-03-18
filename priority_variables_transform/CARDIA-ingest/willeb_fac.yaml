@@ -6,26 +6,8 @@
           populated_from: phv00116360
         associated_visit:
           value: CARDIA YEAR 5
-        observation_type:
-          value: OBA:2052741
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001694
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00116365
-                  unit:
-                    value: '%{normal}'
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001694
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00116360
-        associated_visit:
-          value: CARDIA YEAR 5
+        # age_at_observation:
+          # expr: "{nan} * 365"
         observation_type:
           value: OBA:2052741
         value_quantity:
@@ -37,7 +19,7 @@
                   value_decimal:
                     populated_from: phv00116364
                   unit:
-                    value: '%{normal}'
+                    value: "%{normal}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001739
@@ -46,26 +28,8 @@
           populated_from: phv00117555
         associated_visit:
           value: CARDIA YEAR 7
-        observation_type:
-          value: OBA:2052741
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001739
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00117559
-                  unit:
-                    value: '%{normal}'
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001739
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00117555
-        associated_visit:
-          value: CARDIA YEAR 7
+        # age_at_observation:
+          # expr: "{nan} * 365"
         observation_type:
           value: OBA:2052741
         value_quantity:
@@ -77,7 +41,29 @@
                   value_decimal:
                     populated_from: phv00117560
                   unit:
-                    value: '%{normal}'
+                    value: "%{normal}"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001739
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00117555
+        associated_visit:
+          value: CARDIA YEAR 7
+        # age_at_observation:
+          # expr: "{nan} * 365"
+        observation_type:
+          value: OBA:2052741
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001739
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00117559
+                  unit:
+                    value: "%{normal}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001642
@@ -86,6 +72,8 @@
           populated_from: phv00115089
         associated_visit:
           value: CARDIA YEAR 2
+        # age_at_observation:
+          # expr: "{nan} * 365"
         observation_type:
           value: OBA:2052741
         value_quantity:
@@ -97,4 +85,26 @@
                   value_decimal:
                     populated_from: phv00115092
                   unit:
-                    value: '%{normal}'
+                    value: "%{normal}"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001694
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00116360
+        associated_visit:
+          value: CARDIA YEAR 5
+        # age_at_observation:
+          # expr: "{nan} * 365"
+        observation_type:
+          value: OBA:2052741
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001694
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00116365
+                  unit:
+                    value: "%{normal}"

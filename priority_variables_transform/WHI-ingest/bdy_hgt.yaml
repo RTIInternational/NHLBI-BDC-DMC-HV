@@ -1,38 +1,15 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001019
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00079849
-        associated_visit:
-          value: WHI PM 80
-          range: string
-        observation_type:
-          value: OBA:VT0001253
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001019
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00079858
-                  unit:
-                    value: cm
-                    range: string
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht006217
       slot_derivations:
         associated_participant:
           populated_from: phv00283284
         associated_visit:
           value: WHI LLS
-          range: string
+        # age_at_observation:
+          # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0001253
-          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -40,9 +17,12 @@
                 populated_from: pht006217
                 slot_derivations:
                   value_decimal:
-                    expr: '{phv00283311} * 2.54'
+                    populated_from: phv00283311
+                    unit_conversion:
+                      source_unit: "[in_us]"
+                      target_unit: "cm"
                   unit:
-                    value: cm
+                    value: "cm"
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -52,10 +32,10 @@
           populated_from: phv00283451
         associated_visit:
           value: WHI UNC HEART FAILURE DETAILS
-          range: string
+        # age_at_observation:
+          # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0001253
-          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -65,5 +45,26 @@
                   value_decimal:
                     populated_from: phv00283539
                   unit:
-                    value: cm
-                    range: string
+                    value: "cm"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001019
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00079849
+        associated_visit:
+          value: WHI PM 80
+        # age_at_observation:
+          # expr: "{nan} * 365"
+        observation_type:
+          value: OBA:VT0001253
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001019
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00079858
+                  unit:
+                    value: "cm"

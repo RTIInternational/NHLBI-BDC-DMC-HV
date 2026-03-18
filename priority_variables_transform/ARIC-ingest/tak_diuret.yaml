@@ -7,8 +7,8 @@
         associated_visit:
           value: ARIC Hospital Form
         drug_concept:
-          expr: case(({phv00206983} == Y, "RxCUI:C03"))
-        expsoure_provenance:
+          expr: case(({phv00206983} == "Y", "RxCUI:C03"))
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
@@ -20,7 +20,7 @@
           value: ARIC Hospital Form
         drug_concept:
           expr: case(({phv00206984} == 1, "RxCUI:C03"))
-        expsoure_provenance:
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
@@ -31,8 +31,8 @@
         associated_visit:
           value: ARIC Hospital Form
         drug_concept:
-          expr: case(({phv00206996} == Y, "RxCUI:C03"))
-        expsoure_provenance:
+          expr: case(({phv00206996} == "Y", "RxCUI:C03"))
+        exposure_provenance:
           value: PRESCRIPTION WRITTEN
 - class_derivations:
     DrugExposure:
@@ -44,7 +44,7 @@
           value: ARIC EXAM 7
         drug_concept:
           expr: case(({phv00507372} == 1, "RxCUI:CV702"))
-        expsoure_provenance:
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
@@ -56,7 +56,7 @@
           value: ARIC EXAM 7
         drug_concept:
           expr: case(({phv00507373} == 1, "RxCUI:CV702"))
-        expsoure_provenance:
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
@@ -68,7 +68,7 @@
           value: ARIC EXAM 5
         drug_concept:
           expr: case(({phv00512216} == 1, "RxCUI:CV702"))
-        expsoure_provenance:
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
@@ -80,7 +80,7 @@
           value: ARIC EXAM 5
         drug_concept:
           expr: case(({phv00512217} == 1, "RxCUI:CV702"))
-        expsoure_provenance:
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
@@ -92,7 +92,7 @@
           value: ARIC EXAM 6
         drug_concept:
           expr: case(({phv00512281} == 1, "RxCUI:CV702"))
-        expsoure_provenance:
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
@@ -104,5 +104,5 @@
           value: ARIC EXAM 6
         drug_concept:
           expr: case(({phv00512282} == 1, "RxCUI:CV702"))
-        expsoure_provenance:
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION

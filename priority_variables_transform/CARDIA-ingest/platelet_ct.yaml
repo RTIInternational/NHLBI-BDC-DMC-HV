@@ -6,6 +6,8 @@
           populated_from: phv00112654
         associated_visit:
           value: CARDIA YEAR 0
+        # age_at_observation:
+          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4267147
         value_quantity:
@@ -15,7 +17,4 @@
                 populated_from: pht001563
                 slot_derivations:
                   value_decimal:
-                    expr: '{phv00112690} * 100'
-                  unit:
-                    value: 10*3/uL
-                    range: string
+                    expr: "{phv00112690} * 100"

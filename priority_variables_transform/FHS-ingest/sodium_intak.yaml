@@ -173,7 +173,7 @@
         associated_participant:
           populated_from: phv00172393
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172393}) + ":" + case(({phv00173095} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00173095} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00173095} == ''72'', ''FHS OMNI 2 EXAM 2'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172393}) + ":" + case(({phv00173095} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00173095} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00173095} == ''72'', ''FHS OMNI 2 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
           expr: '{pht003099.phv00177932} * 365'
         observation_type:
