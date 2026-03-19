@@ -607,9 +607,9 @@
       populated_from: pht000395
       slot_derivations:
         id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":" + case(({phv00056607} == 1, ''FHS OFFSPRING SHHS''), ({phv00177928} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' BASELINE'')'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":" + case(({phv00056607} == 1, ''FHS OFFSPRING SHHS''), ({phv00177928} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 1'')'
         name:
-          expr: 'case(({phv00056607} == 1, ''FHS OFFSPRING SHHS''), ({phv00177928} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' BASELINE'''
+          expr: 'case(({phv00056607} == 1, ''FHS OFFSPRING SHHS''), ({phv00177928} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 1'''
         associated_participant:
           populated_from: phv00056635
         age_at_visit_start:
@@ -621,9 +621,9 @@
       populated_from: pht000396
       slot_derivations:
         id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056722}) + ":" + case(({phv00056716} == 1, ''FHS OFFSPRING SHHS''), ({phv00056716} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' FIRST FOLLOW UP'')'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056722}) + ":" + case(({phv00056716} == 1, ''FHS OFFSPRING SHHS''), ({phv00056716} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' INTERIM FOLLOW UP'')'
         name:
-          expr: 'case(({phv00056716} == 1, ''FHS OFFSPRING SHHS''), ({phv00056716} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' FIRST FOLLOW UP'''
+          expr: 'case(({phv00056716} == 1, ''FHS OFFSPRING SHHS''), ({phv00056716} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' INTERIM FOLLOW UP'''
         associated_participant:
           populated_from: phv00056722
         age_at_visit_start:
@@ -635,9 +635,9 @@
       populated_from: pht000397
       slot_derivations:
         id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00057982}) + ":" + case(({phv00057968} == 1, ''FHS OFFSPRING SHHS''), ({phv00057968} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' SECOND FOLLOW UP'')'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00057982}) + ":" + case(({phv00057968} == 1, ''FHS OFFSPRING SHHS''), ({phv00057968} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 2'')'
         name:
-          expr: 'case(({phv00057968} == 1, ''FHS OFFSPRING SHHS''), ({phv00057968} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' SECOND FOLLOW UP'''
+          expr: 'case(({phv00057968} == 1, ''FHS OFFSPRING SHHS''), ({phv00057968} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 2'''
         associated_participant:
           populated_from: phv00057982
         age_at_visit_start:

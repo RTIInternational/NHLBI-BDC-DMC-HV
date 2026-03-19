@@ -902,7 +902,7 @@
         associated_participant:
           populated_from: phv00057982
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00057982}) + ":" + case(({phv00057968} == ''1'', ''FHS OFFSPRING SHHS 2''), ({phv00057968} == ''7'', ''FHS OMNI 1 SHHS 2''), (True, ''FHS UNKNOWN VISIT'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00057982}) + ":" + case(({phv00057968} == ''1'', ''FHS OFFSPRING SHHS EXAM 2''), ({phv00057968} == ''7'', ''FHS OMNI 1 SHHS EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         drug_concept:
           expr: 'case(({phv00056959} == 1, "NDFRT:N0000175419"))'
         exposure_provenance:
@@ -915,7 +915,7 @@
         associated_participant:
           populated_from: phv00057982
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00057982}) + ":" + case(({phv00057968} == ''1'', ''FHS OFFSPRING SHHS 2''), ({phv00057968} == ''7'', ''FHS OMNI 1 SHHS 2''), (True, ''FHS UNKNOWN VISIT'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00057982}) + ":" + case(({phv00057968} == ''1'', ''FHS OFFSPRING SHHS EXAM 2''), ({phv00057968} == ''7'', ''FHS OMNI 1 SHHS EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         drug_concept:
           expr: 'case(({phv00056968} == 1, "VANDF:CV702"))'
         exposure_provenance:
@@ -928,7 +928,7 @@
         associated_participant:
           populated_from: phv00057982
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00057982}) + ":" + case(({phv00057968} == ''1'', ''FHS OFFSPRING SHHS 2''), ({phv00057968} == ''7'', ''FHS OMNI 1 SHHS 2''), (True, ''FHS UNKNOWN VISIT'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00057982}) + ":" + case(({phv00057968} == ''1'', ''FHS OFFSPRING SHHS EXAM 2''), ({phv00057968} == ''7'', ''FHS OMNI 1 SHHS EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         drug_concept:
           expr: 'case(({phv00057004} == 1, "ATC:C03"))'
         exposure_provenance:
