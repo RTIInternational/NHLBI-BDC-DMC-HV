@@ -60,11 +60,8 @@
               Quantity:
                 populated_from: pht006427
                 slot_derivations:
-#                  value_decimal:
-#                    populated_from: phv00295248
-#                    unit_conversion:
-#                      source_unit: "mg/g"
-#                      target_unit: "mg/L"
+                  value_decimal:
+                    expr: "{phv00295248} * ({phv00295250} * 0.01)"
                   unit:
                     value: "mg/L"
                     range: string
