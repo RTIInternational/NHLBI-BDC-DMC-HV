@@ -8,7 +8,7 @@
           value: CARDIA YEAR 0
           range: string
         drug_concept:
-          expr: case(({phv00113012} == 2, "RxCUI:C02"))
+          expr: case(({phv00113012} == 2, "ATC:C02"))
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -22,7 +22,7 @@
           value: CARDIA YEAR 0
           range: string
         drug_concept:
-          expr: 'case(({phv00113154} == "HBP", "RxCUI:C02"))'
+          expr: 'case(({phv00113154} == "HBP", "ATC:C02"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
