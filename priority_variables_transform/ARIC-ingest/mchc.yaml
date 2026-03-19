@@ -22,28 +22,6 @@
                     value: "g/dL"
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht004107
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00207267
-        associated_visit:
-          value: ARIC EXAM 1
-        # age_at_observation:
-          # expr: "{nan} * 365"
-        observation_type:
-          value: OMOP:37393850
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004107
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00207256
-                  unit:
-                    value: "g/dL"
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht012503
       slot_derivations:
         associated_participant:
@@ -62,50 +40,6 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00507204
-                  unit:
-                    value: "g/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht004108
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00207283
-        associated_visit:
-          value: ARIC EXAM 2
-        # age_at_observation:
-          # expr: "{nan} * 365"
-        observation_type:
-          value: OMOP:37393850
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004108
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00207271
-                  unit:
-                    value: "g/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht006422
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00294953
-        associated_visit:
-          value: ARIC EXAM 5
-        # age_at_observation:
-          # expr: "{nan} * 365"
-        observation_type:
-          value: OMOP:37393850
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006422
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00294956
                   unit:
                     value: "g/dL"
 - class_derivations:
