@@ -549,9 +549,9 @@
       populated_from: pht000395
       slot_derivations:
         id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":" + case(({phv00056607} == 1, ''FHS OFFSPRING SHHS''), ({phv00177928} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 1'')'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":" + case(({phv00056607} == 1, ''FHS OFFSPRING SHHS''), ({phv00056607} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 1'')'
         name:
-          expr: 'case(({phv00056607} == 1, ''FHS OFFSPRING SHHS''), ({phv00177928} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 1'''
+          expr: 'case(({phv00056607} == 1, ''FHS OFFSPRING SHHS''), ({phv00056607} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 1'''
         associated_participant:
           populated_from: phv00056635
         age_at_visit_start:
