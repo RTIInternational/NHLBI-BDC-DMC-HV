@@ -8,6 +8,9 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001035}) + ":FHS ORIGINAL EXAM 1")'
         age_at_observation:
           expr: '{pht003099.phv00177930} * 365'
+        observation_type:
+          value: OMOP:4171617
+          range: string
         category:
           value: EDUCATIONAL_ATTAINMENT
           range: string
@@ -59,6 +62,9 @@
           populated_from: phv00220821
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00220821}) + ":FHS NEURO ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 1, OMNI 2")'
+        observation_type:
+          value: OMOP:4171617
+          range: string
         category:
           value: EDUCATIONAL_ATTAINMENT
           range: string
@@ -89,6 +95,9 @@
           populated_from: phv00220863
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00220863}) + ":FHS ORIGINAL EXAM 14-15")'
+        observation_type:
+          value: OMOP:4171617
+          range: string
         category:
           value: EDUCATIONAL_ATTAINMENT
           range: string
