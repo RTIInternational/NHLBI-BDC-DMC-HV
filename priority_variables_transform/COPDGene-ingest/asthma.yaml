@@ -7,21 +7,19 @@
         associated_participant:
           populated_from: phv00159568
         age_at_condition_start:
-          expr: case((phv00159701 == 1, {phv00159702} * 365))
+          expr: case(({phv00159701} == 1, {phv00159702} * 365))
         age_at_condition_end:
-          expr: case((phv00159705 == 0, {phv00159706} * 365))
+          expr: case(({phv00159705} == 0, {phv00159706} * 365))
         condition_concept:
           value: MONDO:0004979
         condition_status:
-          expr: case( ({phv00159701} == 0, 'ABSENT'), ({phv00159701} == 1, case( ({phv00159705}
-            == 0, 'HISTORICAL'), ({phv00159705} == 1, 'PRESENT'), ({phv00159705} ==
-            3, case( ({phv00159704} == 3, 'UNKNOWN'), (True, 'HISTORICAL') )) )), ({phv00159701}
-            == 3, case( ({phv00159705} == 0, case( ({phv00159704} == 1, 'HISTORICAL'),
-            (True, 'ABSENT') )), ({phv00159705} == 1, 'PRESENT'), ({phv00159705} ==
-            3, case( ({phv00159704} == 1, 'ABSENT'), (True, 'UNKNOWN') )) )) )
+          expr: 'case( ({phv00159701} == 0, "ABSENT"), ({phv00159701} == 1, case( ({phv00159705}
+            == 0, "HISTORICAL"), ({phv00159705} == 1, "PRESENT"), ({phv00159705} ==
+            3, case( ({phv00159704} == 3, "UNKNOWN"), (True, "HISTORICAL") )) )), ({phv00159701}
+            == 3, case( ({phv00159705} == 0, case( ({phv00159704} == 1, "HISTORICAL"),
+            (True, "ABSENT") )), ({phv00159705} == 1, "PRESENT"), ({phv00159705} ==
+            3, case( ({phv00159704} == 1, "ABSENT"), (True, "UNKNOWN") )) )) )'
         condition_provenance:
           expr: "'PATIENT_SELF-REPORTED_CONDITION' if {phv00159701} == 0 else 'CLINICAL_DIAGNOSIS'"
         relationship_to_participant:
-          value: SELF
-        age_at_condition_start:
-          expr: '{phv00159702} * 365'
+          value: ONESELF

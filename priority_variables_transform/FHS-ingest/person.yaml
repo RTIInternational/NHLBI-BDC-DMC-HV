@@ -91,6 +91,8 @@
                   species:
                     value: NCBITaxon:9606
 # cross-table refs don't resolve against pht003099 (#447)
+# NOTE: cause_of_death structure fixed (#428) — duplicate CauseOfDeath keys
+#   converted to separate object_derivations list items. Re-enable when #447 resolved.
 #                  vital_status:
 #                    populated_from: pht006018.phv00276841
 #                    value_mappings:
@@ -107,7 +109,8 @@
 #                            cause:
 #                              populated_from: phv00021941
 #                            order:
-#                              value: 1        
+#                              value: 1
+#                    - class_derivations:
 #                        CauseOfDeath:
 #                          populated_from: pht000094
 #                          slot_derivations:
@@ -115,6 +118,7 @@
 #                              populated_from: phv00021942
 #                            order:
 #                              value: 2
+#                    - class_derivations:
 #                        CauseOfDeath:
 #                          populated_from: pht000094
 #                          slot_derivations:
@@ -122,13 +126,15 @@
 #                              populated_from: phv00021943
 #                            order:
 #                              value: 3
+#                    - class_derivations:
 #                        CauseOfDeath:
 #                          populated_from: pht000094
 #                          slot_derivations:
 #                            cause:
 #                              populated_from: phv00021944
 #                            order:
-#                              value: 4 
+#                              value: 4
+#                    - class_derivations:
 #                        CauseOfDeath:
 #                          populated_from: pht000094
 #                          slot_derivations:
@@ -136,6 +142,7 @@
 #                              populated_from: phv00021945
 #                            order:
 #                              value: 5
+#                    - class_derivations:
 #                        CauseOfDeath:
 #                          populated_from: pht000094
 #                          slot_derivations:
@@ -143,6 +150,7 @@
 #                              populated_from: phv00021946
 #                            order:
 #                              value: 6
+#                    - class_derivations:
 #                        CauseOfDeath:
 #                          populated_from: pht000094
 #                          slot_derivations:
@@ -150,6 +158,7 @@
 #                              populated_from: phv00021947
 #                            order:
 #                              value: 7
+#                    - class_derivations:
 #                        CauseOfDeath:
 #                          populated_from: pht000094
 #                          slot_derivations:
@@ -157,6 +166,7 @@
 #                              populated_from: phv00021948
 #                            order:
 #                              value: 8
+#                    - class_derivations:
 #                        CauseOfDeath:
 #                          populated_from: pht000094
 #                          slot_derivations:
@@ -164,6 +174,7 @@
 #                              populated_from: phv00021949
 #                            order:
 #                              value: 9
+#                    - class_derivations:
 #                        CauseOfDeath:
 #                          populated_from: pht000094
 #                          slot_derivations:
