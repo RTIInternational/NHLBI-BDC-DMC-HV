@@ -6,24 +6,17 @@ from pathlib import Path
 
 import yaml
 
-# Known duplicates tracked in #373. Remove entries as they are fixed.
+# Known duplicates tracked in #455. Remove entries as they are fixed.
 KNOWN_ISSUES = {
     "phv00001581",  # FHS tot_chol_bld.yaml — missing observation_type in block 60
-    "phv00001586",  # FHS fast_lipids.yaml / tot_chol_bld.yaml
     "phv00079854",  # WHI bp_diastolic / bp_systolic
     "phv00079855",  # WHI bp_diastolic / bp_systolic
     "phv00079856",  # WHI bp_diastolic / bp_systolic
     "phv00079857",  # WHI bp_diastolic / bp_systolic
     "phv00100046",  # CHS albumin_bld / mch
     "phv00112688",  # CARDIA hemo / mchc
-    "phv00127631",  # JHS hemo / mchc
-    "phv00207256",  # ARIC hemo / mchc
-    "phv00207257",  # ARIC basophil_ncnc_bld / lympho_ct / whtbld_ct
-    "phv00207271",  # ARIC hemo / mchc
-    "phv00207272",  # ARIC basophil_ncnc_bld / lympho_ct / whtbld_ct
     "phv00210286",  # ARIC bp_diastolic / bp_systolic
     "phv00210289",  # ARIC bp_diastolic / bp_systolic
-    "phv00294956",  # ARIC hemo / mchc
 }
 
 
