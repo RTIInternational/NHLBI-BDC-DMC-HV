@@ -6,8 +6,9 @@
           populated_from: phv00520376
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00520376}) + ":" + case(({phv00520377} == ''1'', ''FHS OFFSPRING EXAM 7''), ({phv00520377} == ''7'', ''FHS OMNI 1 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
-        age_at_observation:
-          expr: 'case(({phv00520377} == ''1'', {pht003099.phv00177942} * 365), ({phv00520377} == ''7'', {pht003099.phv00177932} * 365))'
+# cross-table ref — re-enable when #452 is resolved
+#        age_at_observation:
+#          expr: 'case(({phv00520377} == ''1'', {pht003099.phv00177942} * 365), ({phv00520377} == ''7'', {pht003099.phv00177932} * 365))'
         observation_type:
           value: OMOP:3043144
           range: string
