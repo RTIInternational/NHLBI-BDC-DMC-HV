@@ -336,12 +336,14 @@
                     range: string
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht000039
+      populated_from: pht006026
       slot_derivations:
         associated_participant:
-          populated_from: phv00010767
+          populated_from: phv00277015
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010767}) + ":UNKNOWN")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00277015}) + ":" + case(({phv00277016} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 3''), ({phv00277016} == ''3'', ''FHS GENERATION 3 EXAM 3''), ({phv00277016} == ''72'', ''FHS OMNI 2 EXAM 3''), (True, ''FHS UNKNOWN VISIT'')))'
+        age_at_observation:
+          expr: '{pht003099.phv00177934} * 365'
         observation_type:
           value: OBA:1000032
           range: string
@@ -349,98 +351,10 @@
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000039
+                populated_from: pht006026
                 slot_derivations:
                   value_decimal:
-                    expr: '{phv00277180} * 2.54'
-                  unit:
-                    value: cm
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000039
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00010767
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010767}) + ":UNKNOWN")'
-        observation_type:
-          value: OBA:1000032
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000039
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00277181} * 2.54'
-                  unit:
-                    value: cm
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000039
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00010767
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010767}) + ":UNKNOWN")'
-        observation_type:
-          value: OBA:1000032
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000039
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00277182} * 2.54'
-                  unit:
-                    value: cm
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000039
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00010767
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010767}) + ":UNKNOWN")'
-        observation_type:
-          value: OBA:1000032
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000039
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00277183} * 2.54'
-                  unit:
-                    value: cm
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000039
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00010767
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010767}) + ":UNKNOWN")'
-        observation_type:
-          value: OBA:1000032
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000039
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00277184} * 2.54'
+                    expr: '{phv00520302} * 2.54'
                   unit:
                     value: cm
                     range: string

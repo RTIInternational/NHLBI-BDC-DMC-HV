@@ -11,9 +11,6 @@
         observation_type:
           value: OMOP:4284103
           range: string
-        value_quantity_unit:
-          value: ng/mL
-          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -22,3 +19,6 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00422578
+                  unit:
+                    value: ng/mL
+                    range: string
