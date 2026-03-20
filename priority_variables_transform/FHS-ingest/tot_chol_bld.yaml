@@ -668,20 +668,20 @@
 #                     populated_from: phv00520306
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht000039
+      populated_from: pht007777
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
           range: string
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010767}) + ":UNKNOWN")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 7")'
         associated_participant:
-          populated_from: phv00010767
+          populated_from: phv00369651
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000039
+                populated_from: pht007777
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00370069
@@ -696,14 +696,14 @@
           value: OBA:VT0000180
           range: string
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369652}) + ":UNKNOWN")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 7")'
         associated_participant:
-          populated_from: phv00369652
+          populated_from: phv00369651
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000039
+                populated_from: pht007777
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00370063
@@ -718,14 +718,14 @@
           value: OBA:VT0000180
           range: string
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369652}) + ":UNKNOWN")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 2")'
         associated_participant:
-          populated_from: phv00369652
+          populated_from: phv00369651
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000039
+                populated_from: pht007777
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00370064
@@ -734,133 +734,23 @@
                     range: string
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht007777
+      populated_from: pht009671
       slot_derivations:
         observation_type:
           value: OBA:VT0000180
           range: string
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369652}) + ":UNKNOWN")'
-        associated_participant:
-          populated_from: phv00369652
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000039
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00544854
-                  unit:
-                    value: mg/dl
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht009761
-      slot_derivations:
-        observation_type:
-          value: OBA:VT0000180
-          range: string
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":UNKNOWN")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00423869} == ''7'', ''FHS OMNI 1 EXAM 9''), (True, ''FHS UNKNOWN VISIT'')))'
         associated_participant:
           populated_from: phv00423868
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000039
+                populated_from: pht009671
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00370067
-                  unit:
-                    value: mg/dl
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht007777
-      slot_derivations:
-        observation_type:
-          value: OBA:VT0000180
-          range: string
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369652}) + ":UNKNOWN")'
-        associated_participant:
-          populated_from: phv00369652
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000039
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00370068
-                  unit:
-                    value: mg/dl
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht007777
-      slot_derivations:
-        observation_type:
-          value: OBA:VT0000180
-          range: string
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369652}) + ":UNKNOWN")'
-        associated_participant:
-          populated_from: phv00369652
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000039
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00370066
-                  unit:
-                    value: mg/dl
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht007777
-      slot_derivations:
-        observation_type:
-          value: OBA:VT0000180
-          range: string
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369652}) + ":UNKNOWN")'
-        associated_participant:
-          populated_from: phv00369652
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000039
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00370065
-                  unit:
-                    value: mg/dl
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht007777
-      slot_derivations:
-        observation_type:
-          value: OBA:VT0000180
-          range: string
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369652}) + ":UNKNOWN")'
-        associated_participant:
-          populated_from: phv00369652
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000039
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00370070
+                    populated_from: phv00544854
                   unit:
                     value: mg/dl
                     range: string
