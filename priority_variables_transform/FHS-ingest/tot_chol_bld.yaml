@@ -696,28 +696,6 @@
           value: OBA:VT0000180
           range: string
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 7")'
-        associated_participant:
-          populated_from: phv00369651
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht007777
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00370063
-                  unit:
-                    value: mg/dl
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht007777
-      slot_derivations:
-        observation_type:
-          value: OBA:VT0000180
-          range: string
-        associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 2")'
         associated_participant:
           populated_from: phv00369651
