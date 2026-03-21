@@ -671,33 +671,6 @@
           range: string
 - class_derivations:
     Condition:
-      populated_from: pht000021
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00004083
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004083}) + ":FHS ORIGINAL EXAM 19")'
-        condition_concept:
-          value: MONDO:0005068
-          range: string
-        condition_status:
-          populated_from: phv00004023
-          value_mappings:
-            '0': ABSENT
-            '1': HISTORICAL
-            '2': UNKNOWN
-            .: UNKNOWN
-        condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
-        associated_evidence:
-          value: Electrocardiogram
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
       populated_from: pht000022
       slot_derivations:
         associated_participant:
@@ -1222,33 +1195,6 @@
           range: string
         condition_status:
           populated_from: phv00007906
-          value_mappings:
-            '0': ABSENT
-            '1': HISTORICAL
-            '2': UNKNOWN
-            .: UNKNOWN
-        condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
-        associated_evidence:
-          value: Electrocardiogram
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht000032
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00008742
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008742}) + ":FHS OFFSPRING EXAM 3")'
-        condition_concept:
-          value: MONDO:0005068
-          range: string
-        condition_status:
-          populated_from: phv00008653
           value_mappings:
             '0': ABSENT
             '1': HISTORICAL
