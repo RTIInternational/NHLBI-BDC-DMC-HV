@@ -429,19 +429,6 @@
           range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht000025
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00005558
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005558}) + ":FHS ORIGINAL EXAM 23")'
-        drug_concept:
-          expr: 'case(({phv00005577} == 1, "NDFRT:N0000175419"))'
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-          range: string
-- class_derivations:
-    DrugExposure:
       populated_from: pht000026
       slot_derivations:
         associated_participant:
@@ -489,19 +476,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006663}) + ":FHS ORIGINAL EXAM 25")'
         drug_concept:
           expr: 'case(({phv00006471} == 1, "NDFRT:N0000175419"))'
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-          range: string
-- class_derivations:
-    DrugExposure:
-      populated_from: pht000028
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00007095
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007095}) + ":FHS ORIGINAL EXAM 26")'
-        drug_concept:
-          expr: 'case(({phv00006857} == 1, "VANDF:CV702"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string

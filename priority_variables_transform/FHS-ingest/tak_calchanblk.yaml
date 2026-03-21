@@ -320,19 +320,6 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010139}) + ":FHS OFFSPRING EXAM 7")'
         drug_concept:
-          expr: case(({phv00010156} == 1, "ATC:C08"))
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-          range: string
-- class_derivations:
-    DrugExposure:
-      populated_from: pht000036
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00010139
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010139}) + ":FHS OFFSPRING EXAM 7")'
-        drug_concept:
           expr: case(({phv00010157} == 1, "RxCUI:11170"),
                   ({phv00010157} == 2, "RxCUI:3443"),
                   ({phv00010157} == 3, "RxCUI:7417"),
