@@ -1,12 +1,397 @@
+# ==========================================================================
+# WHI Visit Structure (Option C: Canonical-Source-Only)
+# Issue: https://github.com/RTIInternational/NHLBI-BDC-DMC-HV/issues/485
+# Study: phs000200.v12.p3 (Women's Health Initiative)
+#
+# Architecture: Each visit-year has exactly ONE authoritative Visit block.
+# Measurement tables (f80, core, cbc, ecg) reference these canonical visits
+# via associated_visit in their measurement YAML files -- they do not
+# produce their own Visit entities for visit-years already covered here.
+#
+# Cross-table age formula: ({phv00078437} * 365) + {DAYS_phv}
+#   phv00078437 = AGE at screening in years (from pht000998 / f2_rel1)
+#   DAYS_phv = days since enrollment (table-specific)
+#
+# Tier 1: 10 blocks from dedicated per-visit questionnaire forms
+# Gap-fill: 5 blocks from Tier 2 tables for visit-years with no Tier 1 form
+# Extension 2: 7 blocks from f156 (pht006215)
+# Long Life Study: 1 block from f301 (pht006217)
+# Total: 23 blocks
+#
+# All PHV accessions verified against data_dict.xml (2026-03-20)
+# ==========================================================================
+
+# ------------------------------------------
+# TIER 1: SINGLE-TABLE VISITS
+# One dedicated questionnaire form per visit
+# ------------------------------------------
+
+# Block 1: WHI SCREENING
+# Source: f2_rel1 (pht000998) -- Eligibility/Screening form
+# AGE (phv00078437) is in this table; F2DAYS ~ 0 at screening
 - class_derivations:
     Visit:
       populated_from: pht000998
       slot_derivations:
         id:
-          value: WHI ELIGIBILITY
+          value: WHI SCREENING
         associated_participant:
           populated_from: phv00078435
         age_at_visit_start:
           expr: '{phv00078437} * 365'
         age_at_visit_end:
           expr: '{phv00078437} * 365'
+
+# Block 2: WHI YEAR 1
+# Source: f48_rel1 (pht001014) -- Year 1 Annual questionnaire
+# CT participants only (OS did not have Year 1 clinic visits)
+- class_derivations:
+    Visit:
+      populated_from: pht001014
+      slot_derivations:
+        id:
+          value: WHI YEAR 1
+        associated_participant:
+          populated_from: phv00079556
+        age_at_visit_start:
+          expr: '({phv00078437} * 365) + {phv00079557}'
+        age_at_visit_end:
+          expr: '({phv00078437} * 365) + {phv00079557}'
+
+# Block 3: WHI YEAR 3
+# Source: f143_rel1 (pht000990) -- Year 3 Annual questionnaire
+- class_derivations:
+    Visit:
+      populated_from: pht000990
+      slot_derivations:
+        id:
+          value: WHI YEAR 3
+        associated_participant:
+          populated_from: phv00077450
+        age_at_visit_start:
+          expr: '({phv00078437} * 365) + {phv00077451}'
+        age_at_visit_end:
+          expr: '({phv00078437} * 365) + {phv00077451}'
+
+# Block 4: WHI YEAR 4
+# Source: f144_rel1 (pht000991) -- Year 4 Annual questionnaire
+- class_derivations:
+    Visit:
+      populated_from: pht000991
+      slot_derivations:
+        id:
+          value: WHI YEAR 4
+        associated_participant:
+          populated_from: phv00077671
+        age_at_visit_start:
+          expr: '({phv00078437} * 365) + {phv00077672}'
+        age_at_visit_end:
+          expr: '({phv00078437} * 365) + {phv00077672}'
+
+# Block 5: WHI YEAR 5
+# Source: f145_rel1 (pht000992) -- Year 5 Annual questionnaire
+- class_derivations:
+    Visit:
+      populated_from: pht000992
+      slot_derivations:
+        id:
+          value: WHI YEAR 5
+        associated_participant:
+          populated_from: phv00077797
+        age_at_visit_start:
+          expr: '({phv00078437} * 365) + {phv00077798}'
+        age_at_visit_end:
+          expr: '({phv00078437} * 365) + {phv00077798}'
+
+# Block 6: WHI YEAR 6
+# Source: f146_rel1 (pht000993) -- Year 6 Annual questionnaire
+- class_derivations:
+    Visit:
+      populated_from: pht000993
+      slot_derivations:
+        id:
+          value: WHI YEAR 6
+        associated_participant:
+          populated_from: phv00077907
+        age_at_visit_start:
+          expr: '({phv00078437} * 365) + {phv00077908}'
+        age_at_visit_end:
+          expr: '({phv00078437} * 365) + {phv00077908}'
+
+# Block 7: WHI YEAR 7
+# Source: f147_rel1 (pht000994) -- Year 7 Annual questionnaire
+- class_derivations:
+    Visit:
+      populated_from: pht000994
+      slot_derivations:
+        id:
+          value: WHI YEAR 7
+        associated_participant:
+          populated_from: phv00078109
+        age_at_visit_start:
+          expr: '({phv00078437} * 365) + {phv00078110}'
+        age_at_visit_end:
+          expr: '({phv00078437} * 365) + {phv00078110}'
+
+# Block 8: WHI YEAR 8
+# Source: f148_rel1 (pht000995) -- Year 8 Annual questionnaire
+- class_derivations:
+    Visit:
+      populated_from: pht000995
+      slot_derivations:
+        id:
+          value: WHI YEAR 8
+        associated_participant:
+          populated_from: phv00078233
+        age_at_visit_start:
+          expr: '({phv00078437} * 365) + {phv00078234}'
+        age_at_visit_end:
+          expr: '({phv00078437} * 365) + {phv00078234}'
+
+# Block 9: WHI YEAR 9
+# Source: f149_rel1 (pht000996) -- Year 9 Annual questionnaire
+- class_derivations:
+    Visit:
+      populated_from: pht000996
+      slot_derivations:
+        id:
+          value: WHI YEAR 9
+        associated_participant:
+          populated_from: phv00078357
+        age_at_visit_start:
+          expr: '({phv00078437} * 365) + {phv00078358}'
+        age_at_visit_end:
+          expr: '({phv00078437} * 365) + {phv00078358}'
+
+# Block 10: WHI EXTENSION
+# Source: ext_rel2 (pht003395) -- Extension study data
+- class_derivations:
+    Visit:
+      populated_from: pht003395
+      slot_derivations:
+        id:
+          value: WHI EXTENSION
+        associated_participant:
+          populated_from: phv00192296
+        age_at_visit_start:
+          expr: '({phv00078437} * 365) + {phv00192298}'
+        age_at_visit_end:
+          expr: '({phv00078437} * 365) + {phv00192298}'
+
+# ------------------------------------------
+# GAP-FILL: Visit-years with no dedicated form
+# These are canonical Visit definitions sourced from
+# the best-available Tier 2 measurement table.
+# ------------------------------------------
+
+# Block 11: WHI YEAR 2
+# Source: f80_rel1 (pht001019) -- Physical Measurements
+# No dedicated Year 2 questionnaire form exists; f80 is broadest source.
+# VTYP=3 (Annual), VY=2; non-matching rows produce null id (dropped).
+- class_derivations:
+    Visit:
+      populated_from: pht001019
+      slot_derivations:
+        id:
+          expr: "case(({phv00079850} == 3 and {phv00079851} == 2, 'WHI YEAR 2'), (True, None))"
+        associated_participant:
+          populated_from: phv00079849
+        age_at_visit_start:
+          expr: '({phv00078437} * 365) + {phv00079852}'
+        age_at_visit_end:
+          expr: '({phv00078437} * 365) + {phv00079852}'
+
+# Block 12: WHI YEAR 10
+# Source: ecg_rel2 (pht002118) -- Electrocardiogram
+# No dedicated Year 10 questionnaire form exists; ECG is only source.
+# VTYP=3 (Annual), VY=10; non-matching rows produce null id (dropped).
+- class_derivations:
+    Visit:
+      populated_from: pht002118
+      slot_derivations:
+        id:
+          expr: "case(({phv00154926} == 3 and {phv00154927} == 10, 'WHI YEAR 10'), (True, None))"
+        associated_participant:
+          populated_from: phv00154925
+        age_at_visit_start:
+          expr: '({phv00078437} * 365) + {phv00154928}'
+        age_at_visit_end:
+          expr: '({phv00078437} * 365) + {phv00154928}'
+
+# Block 13: WHI YEAR 11
+# Source: ecg_rel2 (pht002118) -- Electrocardiogram
+# No dedicated Year 11 questionnaire form exists; ECG is only source.
+# VTYP=3 (Annual), VY=11; non-matching rows produce null id (dropped).
+- class_derivations:
+    Visit:
+      populated_from: pht002118
+      slot_derivations:
+        id:
+          expr: "case(({phv00154926} == 3 and {phv00154927} == 11, 'WHI YEAR 11'), (True, None))"
+        associated_participant:
+          populated_from: phv00154925
+        age_at_visit_start:
+          expr: '({phv00078437} * 365) + {phv00154928}'
+        age_at_visit_end:
+          expr: '({phv00078437} * 365) + {phv00154928}'
+
+# Block 14: WHI SEMI-ANNUAL VISIT YEAR 1
+# Source: ecg_rel2 (pht002118) -- Electrocardiogram
+# Unique visit type: only ECG table has semi-annual visits (VTYP=2).
+# 539 rows. Per policy: if we have data, we define the visit.
+- class_derivations:
+    Visit:
+      populated_from: pht002118
+      slot_derivations:
+        id:
+          expr: "case(({phv00154926} == 2 and {phv00154927} == 1, 'WHI SEMI-ANNUAL VISIT YEAR 1'), (True, None))"
+        associated_participant:
+          populated_from: phv00154925
+        age_at_visit_start:
+          expr: '({phv00078437} * 365) + {phv00154928}'
+        age_at_visit_end:
+          expr: '({phv00078437} * 365) + {phv00154928}'
+
+# Block 15: WHI NON-ROUTINE
+# Source: core_rel2 (pht000987) -- Core Lab Results
+# Unique visit type: only core table has non-routine draws (VTYP=4).
+# Event-triggered draws, not scheduled annual visits. VY is NULL.
+- class_derivations:
+    Visit:
+      populated_from: pht000987
+      slot_derivations:
+        id:
+          expr: "case(({phv00077370} == 4, 'WHI NON-ROUTINE'), (True, None))"
+        associated_participant:
+          populated_from: phv00077369
+        age_at_visit_start:
+          expr: '({phv00078437} * 365) + {phv00077372}'
+        age_at_visit_end:
+          expr: '({phv00078437} * 365) + {phv00077372}'
+
+# ------------------------------------------
+# EXTENSION 2: f156_rel1 (pht006215)
+# Annual follow-up during Extension 2 period (Years 15-21)
+# No other source table covers these visit-years.
+# All rows have F156VTYP=3 (Annual); discrimination by VY alone.
+# SUBJID=phv00283183, F156VY=phv00283185, F156DAYS=phv00283187
+# ------------------------------------------
+
+# Block 16: WHI EXTENSION 2 YEAR 15
+- class_derivations:
+    Visit:
+      populated_from: pht006215
+      slot_derivations:
+        id:
+          expr: "case(({phv00283185} == 15, 'WHI EXTENSION 2 YEAR 15'), (True, None))"
+        associated_participant:
+          populated_from: phv00283183
+        age_at_visit_start:
+          expr: '({phv00078437} * 365) + {phv00283187}'
+        age_at_visit_end:
+          expr: '({phv00078437} * 365) + {phv00283187}'
+
+# Block 17: WHI EXTENSION 2 YEAR 16
+- class_derivations:
+    Visit:
+      populated_from: pht006215
+      slot_derivations:
+        id:
+          expr: "case(({phv00283185} == 16, 'WHI EXTENSION 2 YEAR 16'), (True, None))"
+        associated_participant:
+          populated_from: phv00283183
+        age_at_visit_start:
+          expr: '({phv00078437} * 365) + {phv00283187}'
+        age_at_visit_end:
+          expr: '({phv00078437} * 365) + {phv00283187}'
+
+# Block 18: WHI EXTENSION 2 YEAR 17
+- class_derivations:
+    Visit:
+      populated_from: pht006215
+      slot_derivations:
+        id:
+          expr: "case(({phv00283185} == 17, 'WHI EXTENSION 2 YEAR 17'), (True, None))"
+        associated_participant:
+          populated_from: phv00283183
+        age_at_visit_start:
+          expr: '({phv00078437} * 365) + {phv00283187}'
+        age_at_visit_end:
+          expr: '({phv00078437} * 365) + {phv00283187}'
+
+# Block 19: WHI EXTENSION 2 YEAR 18
+- class_derivations:
+    Visit:
+      populated_from: pht006215
+      slot_derivations:
+        id:
+          expr: "case(({phv00283185} == 18, 'WHI EXTENSION 2 YEAR 18'), (True, None))"
+        associated_participant:
+          populated_from: phv00283183
+        age_at_visit_start:
+          expr: '({phv00078437} * 365) + {phv00283187}'
+        age_at_visit_end:
+          expr: '({phv00078437} * 365) + {phv00283187}'
+
+# Block 20: WHI EXTENSION 2 YEAR 19
+- class_derivations:
+    Visit:
+      populated_from: pht006215
+      slot_derivations:
+        id:
+          expr: "case(({phv00283185} == 19, 'WHI EXTENSION 2 YEAR 19'), (True, None))"
+        associated_participant:
+          populated_from: phv00283183
+        age_at_visit_start:
+          expr: '({phv00078437} * 365) + {phv00283187}'
+        age_at_visit_end:
+          expr: '({phv00078437} * 365) + {phv00283187}'
+
+# Block 21: WHI EXTENSION 2 YEAR 20
+- class_derivations:
+    Visit:
+      populated_from: pht006215
+      slot_derivations:
+        id:
+          expr: "case(({phv00283185} == 20, 'WHI EXTENSION 2 YEAR 20'), (True, None))"
+        associated_participant:
+          populated_from: phv00283183
+        age_at_visit_start:
+          expr: '({phv00078437} * 365) + {phv00283187}'
+        age_at_visit_end:
+          expr: '({phv00078437} * 365) + {phv00283187}'
+
+# Block 22: WHI EXTENSION 2 YEAR 21
+- class_derivations:
+    Visit:
+      populated_from: pht006215
+      slot_derivations:
+        id:
+          expr: "case(({phv00283185} == 21, 'WHI EXTENSION 2 YEAR 21'), (True, None))"
+        associated_participant:
+          populated_from: phv00283183
+        age_at_visit_start:
+          expr: '({phv00078437} * 365) + {phv00283187}'
+        age_at_visit_end:
+          expr: '({phv00078437} * 365) + {phv00283187}'
+
+# ------------------------------------------
+# LONG LIFE STUDY: f301_whills_rel1 (pht006217)
+# Single in-home visit per participant. All rows VTYP=4 (Non-Routine).
+# VY varies 14-19 based on enrollment timing; no row discrimination needed.
+# SUBJID=phv00283284, F301DY=phv00283286
+# ------------------------------------------
+
+# Block 23: WHI LONG LIFE STUDY
+- class_derivations:
+    Visit:
+      populated_from: pht006217
+      slot_derivations:
+        id:
+          value: WHI LONG LIFE STUDY
+        associated_participant:
+          populated_from: phv00283284
+        age_at_visit_start:
+          expr: '({phv00078437} * 365) + {phv00283286}'
+        age_at_visit_end:
+          expr: '({phv00078437} * 365) + {phv00283286}'
