@@ -81,7 +81,7 @@
         associated_participant:
           populated_from: phv00002425
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002425}) + ":FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002425}) + ":FHS ORIGINAL EXAM 14")'
         condition_concept:
           value: HP:0000822
           range: string
@@ -314,7 +314,7 @@
         associated_participant:
           populated_from: phv00056635
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":FHS OFFSPRING BASELINE")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":" + case(({phv00056607} == 1, ''FHS OFFSPRING SHHS EXAM 1''), ({phv00056607} == 7, ''FHS OMNI 1 SHHS EXAM 1''), (True, ''FHS UNKNOWN VISIT EXAM 1'')))'
         condition_concept:
           value: NCIT:C3117
           range: string
