@@ -675,6 +675,8 @@
           range: string
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00423869} == ''7'', ''FHS OMNI 1 EXAM 9''), (True, ''FHS UNKNOWN VISIT'')))'
+        age_at_observation:
+          expr: '{phv00544738} * 365'
         associated_participant:
           populated_from: phv00423868
         value_quantity:
