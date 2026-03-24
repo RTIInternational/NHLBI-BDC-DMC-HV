@@ -23,7 +23,7 @@
           value: OMOP:4282779
           range: string
         value_enum:
-          expr: "case(({phv00258106} == 0, \"OMOP:45883537\"), (True, None))"
+          expr: 'case(({phv00258106} == 0, "OMOP:45883537"), (True, None))'
 - class_derivations:
     Observation:
       populated_from: pht004715
@@ -39,7 +39,4 @@
           value: OMOP:4282779
           range: string
         value_enum:
-          expr: "case(({phv00258106} == 1 and {phv00258107} == 1, \"OMOP:40766945\"\
-            ), ({phv00258106} == 1 and {phv00258107} == 2, \"OMOP:40766945\"),\
-            \ ({phv00258106} == 1 and {phv00258107} == 3, \"OMOP:45883458\"),\
-            \ (True, None))"
+          expr: 'case(({phv00258106} == 1 and {phv00258107} == 1, "OMOP:40766945"), ({phv00258106} == 1 and {phv00258107} == 2, "OMOP:40766945"), ({phv00258106} == 1 and {phv00258107} == 3, "OMOP:45883458"), (True, None))'

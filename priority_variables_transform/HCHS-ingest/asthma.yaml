@@ -66,8 +66,7 @@
           value: MONDO:0004979
           range: string
         condition_status:
-          expr: "case(({phv00526179} == 0, 'ABSENT'), ({phv00526180} == 0, 'HISTORICAL'),
-            (True, 'PRESENT'))"
+          expr: 'case(({phv00526179} == 0, ''ABSENT''), ({phv00526180} == 0, ''HISTORICAL''), (True, ''PRESENT''))'
         condition_provenance:
           expr: case(({phv00526179} == 1 and {phv00526181} == 1, 'CLINICAL_DIAGNOSIS'), (True, 'PATIENT_SELF-REPORTED_CONDITION'))
         relationship_to_participant:
