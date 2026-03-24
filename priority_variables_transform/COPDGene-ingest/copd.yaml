@@ -22,5 +22,7 @@
         condition_provenance:
           expr: case( ({phv00159732} == 0, 'PATIENT_SELF-REPORTED_CONDITION'), ({phv00159732}
             == 1, 'CLINICAL_DIAGNOSIS'), (True, 'PATIENT_SELF-REPORTED_CONDITION') )
+        associated_evidence:
+          value: Medical History Questionnaire
         relationship_to_participant:
           value: ONESELF

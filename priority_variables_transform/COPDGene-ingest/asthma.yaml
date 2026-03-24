@@ -23,5 +23,7 @@
             3, case( ({phv00159704} == 1, "ABSENT"), (True, "UNKNOWN") )) )) )'
         condition_provenance:
           expr: "'PATIENT_SELF-REPORTED_CONDITION' if {phv00159701} == 0 else 'CLINICAL_DIAGNOSIS'"
+        associated_evidence:
+          value: Medical History Questionnaire
         relationship_to_participant:
           value: ONESELF

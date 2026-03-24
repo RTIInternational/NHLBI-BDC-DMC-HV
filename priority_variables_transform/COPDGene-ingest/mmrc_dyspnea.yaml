@@ -11,9 +11,7 @@
         age_at_observation:
           expr: '{phv00568808} * 365'
         observation_type:
-          value: OBA:2045443
-        method_type:
-          value: resting pulse oximetry
+          value: OMOP:3573953
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -21,6 +19,6 @@
                 populated_from: pht002239
                 slot_derivations:
                   value_decimal:
-                    expr: case(({phv00159589} <= 1, {phv00159589} * 100), (True, {phv00159589}))
+                    populated_from: phv00159797
                   unit:
-                    value: '%'
+                    value: '{score}'
