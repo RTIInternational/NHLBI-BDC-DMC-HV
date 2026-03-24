@@ -5,13 +5,14 @@
         associated_participant:
           populated_from: phv00078435
         associated_visit:
-          value: WHI ELIGIBILITY
+          value: WHI SCREENING
         sex:
           value: OMOP:8532
         ethnicity:
           populated_from: phv00078450
           value_mappings:
             '4': OMOP:38003563
+            '5': OMOP:38003564
         race:
           populated_from: phv00078450
           value_mappings:
@@ -30,6 +31,14 @@
           value: WHI PI 41
         sex:
           value: OMOP:8532
+        ethnicity:
+          populated_from: phv00079316
+          value_mappings:
+            '0': OMOP:38003564
+            '1': OMOP:38003563
+            '2': OMOP:38003563
+            '3': OMOP:38003563
+            '4': OMOP:38003563
         race:
           expr: >
             case(

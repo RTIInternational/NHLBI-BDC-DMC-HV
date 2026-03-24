@@ -718,37 +718,12 @@
                     range: string
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht000039
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00010767
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010767}) + ":UNKNOWN")'
-        observation_type:
-          value: OMOP:4041720
-          range: string
-        method_type:
-          value: fasted for minimum 12 hrs
-          range: string          
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000039
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00423914
-                  unit:
-                    value: mg/dL
-                    range: string
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht009761
       slot_derivations:
         associated_participant:
           populated_from: phv00423868
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":UNKNOWN")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING EXAM 5''), ({phv00423869} == ''7'', ''FHS OMNI 1 EXAM 5''), (True, ''FHS UNKNOWN VISIT'')))'
         observation_type:
           value: OMOP:4041720
           range: string
@@ -759,82 +734,7 @@
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000039
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00423915
-                  unit:
-                    value: mg/dL
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht009761
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00423868
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":UNKNOWN")'
-        observation_type:
-          value: OMOP:4041720
-          range: string
-        method_type:
-          value: fasted for minimum 12 hrs
-          range: string          
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000039
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00423916
-                  unit:
-                    value: mg/dL
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht009761
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00423868
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":UNKNOWN")'
-        observation_type:
-          value: OMOP:4041720
-          range: string
-        method_type:
-          value: fasted for minimum 12 hrs
-          range: string          
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000039
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00423917
-                  unit:
-                    value: mg/dL
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht009761
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00423868
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":UNKNOWN")'
-        observation_type:
-          value: OMOP:4041720
-          range: string
-        method_type:
-          value: fasted for minimum 12 hrs
-          range: string          
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000039
+                populated_from: pht009761
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00544810
@@ -848,7 +748,7 @@
         associated_participant:
           populated_from: phv00423868
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":UNKNOWN")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING EXAM 6''), ({phv00423869} == ''7'', ''FHS OMNI 1 EXAM 6''), (True, ''FHS UNKNOWN VISIT'')))'
         observation_type:
           value: OMOP:4041720
           range: string
@@ -859,7 +759,7 @@
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000039
+                populated_from: pht009761
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00544811
@@ -873,7 +773,7 @@
         associated_participant:
           populated_from: phv00423868
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":UNKNOWN")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING EXAM 7''), ({phv00423869} == ''7'', ''FHS OMNI 1 EXAM 7''), (True, ''FHS UNKNOWN VISIT'')))'
         observation_type:
           value: OMOP:4041720
           range: string
@@ -884,7 +784,7 @@
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000039
+                populated_from: pht009761
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00544812
@@ -898,7 +798,7 @@
         associated_participant:
           populated_from: phv00423868
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":UNKNOWN")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING EXAM 8''), ({phv00423869} == ''7'', ''FHS OMNI 1 EXAM 8''), (True, ''FHS UNKNOWN VISIT'')))'
         observation_type:
           value: OMOP:4041720
           range: string
@@ -909,7 +809,7 @@
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000039
+                populated_from: pht009761
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00544813
@@ -923,7 +823,7 @@
         associated_participant:
           populated_from: phv00423868
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":UNKNOWN")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00423869} == ''7'', ''FHS OMNI 1 EXAM 9''), (True, ''FHS UNKNOWN VISIT'')))'
         observation_type:
           value: OMOP:4041720
           range: string
@@ -934,7 +834,7 @@
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000039
+                populated_from: pht009761
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00544814
@@ -946,9 +846,9 @@
       populated_from: pht007777
       slot_derivations:
         associated_participant:
-          populated_from: phv00369652
+          populated_from: phv00369651
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369652}) + ":FHS ORIGINAL EXAM 15")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 15")'
         age_at_observation:
           expr: '{pht003099.phv00177958} * 365'
         observation_type:
@@ -973,9 +873,9 @@
       populated_from: pht007777
       slot_derivations:
         associated_participant:
-          populated_from: phv00369652
+          populated_from: phv00369651
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369652}) + ":FHS ORIGINAL EXAM 20")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 20")'
         age_at_observation:
           expr: '{pht003099.phv00177968} * 365'
         observation_type:
@@ -1000,9 +900,9 @@
       populated_from: pht007777
       slot_derivations:
         associated_participant:
-          populated_from: phv00369652
+          populated_from: phv00369651
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369652}) + ":FHS ORIGINAL EXAM 22")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 22")'
         age_at_observation:
           expr: '{pht003099.phv00177972} * 365'
         observation_type:
@@ -1027,9 +927,9 @@
       populated_from: pht007777
       slot_derivations:
         associated_participant:
-          populated_from: phv00369652
+          populated_from: phv00369651
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369652}) + ":FHS ORIGINAL EXAM 23")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 23")'
         age_at_observation:
           expr: '{pht003099.phv00177974} * 365'
         observation_type:
@@ -1054,9 +954,9 @@
       populated_from: pht007777
       slot_derivations:
         associated_participant:
-          populated_from: phv00369652
+          populated_from: phv00369651
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369652}) + ":FHS ORIGINAL EXAM 24")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 24")'
         age_at_observation:
           expr: '{pht003099.phv00177976} * 365'
         observation_type:
@@ -1081,9 +981,9 @@
       populated_from: pht007777
       slot_derivations:
         associated_participant:
-          populated_from: phv00369652
+          populated_from: phv00369651
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369652}) + ":FHS ORIGINAL EXAM 25")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 25")'
         age_at_observation:
           expr: '{pht003099.phv00177978} * 365'
         observation_type:
@@ -1108,9 +1008,9 @@
       populated_from: pht007777
       slot_derivations:
         associated_participant:
-          populated_from: phv00369652
+          populated_from: phv00369651
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369652}) + ":FHS ORIGINAL EXAM 26")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 26")'
         age_at_observation:
           expr: '{pht003099.phv00177980} * 365'
         observation_type:
@@ -1135,9 +1035,9 @@
       populated_from: pht007777
       slot_derivations:
         associated_participant:
-          populated_from: phv00369652
+          populated_from: phv00369651
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369652}) + ":FHS ORIGINAL EXAM 27")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 27")'
         age_at_observation:
           expr: '{pht003099.phv00177982} * 365'
         observation_type:
@@ -1162,9 +1062,9 @@
       populated_from: pht007777
       slot_derivations:
         associated_participant:
-          populated_from: phv00369652
+          populated_from: phv00369651
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369652}) + ":FHS ORIGINAL EXAM 28")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 28")'
         age_at_observation:
           expr: '{pht003099.phv00177984} * 365'
         observation_type:

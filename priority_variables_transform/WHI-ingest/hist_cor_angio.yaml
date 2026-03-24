@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00078506
         associated_visit:
-          value: WHI FORM 30 - MEDICAL HISTORY QUESTIONNAIRE
+          value: WHI SCREENING
         procedure_concept:
           expr: case(({phv00078536} == 1, "OMOP:4184832"))
         procedure_provenance:
@@ -17,7 +17,7 @@
         associated_participant:
           populated_from: phv00078506
         associated_visit:
-          value: WHI FORM 30 - MEDICAL HISTORY QUESTIONNAIRE
+          value: WHI SCREENING
         procedure_concept:
           expr: case(({phv00078537} == 1, "OMOP:1242799"))
         procedure_provenance:
@@ -32,5 +32,5 @@
           value: WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED
         procedure_concept:
           expr: case(({phv00193199} == 1, "OMOP:4006788"))
-        condition_provenance:
+        procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
