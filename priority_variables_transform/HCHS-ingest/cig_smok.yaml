@@ -1,8 +1,13 @@
-# Smoking status: single block using TBEA1 (100+ cigs lifetime) as primary screener
-# and TBEA3 (present smoking) for current/former classification.
+# Smoking status — split into two blocks to avoid linkml-map {variable}
+# null-propagation aborting the entire case() expression when TBEA3 is
+# NULL for never-smokers (skip-patterned: only asked if TBEA1=1).
+#
 # TBEA1 (phv00258106): 0=No → Never Smoked; 1=Yes → check TBEA3
 # TBEA3 (phv00258107): 1=Daily, 2=Some days → Current; 3=Not at all → Former
 # OMOP codes verified against Athena 2026-03-23.
+#
+# Block 1: Never smokers (TBEA1=0). TBEA3 not referenced — no NULL risk.
+# Block 2: Ever smokers (TBEA1=1). TBEA3 always populated for this group.
 - class_derivations:
     Observation:
       populated_from: pht004715
@@ -18,6 +23,23 @@
           value: OMOP:4282779
           range: string
         value_enum:
-          expr: case(({phv00258106} == 0, "OMOP:45883537"), ({phv00258107} == 1,
-            "OMOP:40766945"), ({phv00258107} == 2, "OMOP:40766945"), ({phv00258107}
-            == 3, "OMOP:45883458"), (True, "OMOP:45885135"))
+          expr: "case(({phv00258106} == 0, \"OMOP:45883537\"), (True, None))"
+- class_derivations:
+    Observation:
+      populated_from: pht004715
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00226250
+        associated_visit:
+          value: HCHS EXAM
+          range: string
+        age_at_observation:
+          expr: '{phv00226251} * 365'
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          expr: "case(({phv00258106} == 1 and {phv00258107} == 1, \"OMOP:40766945\"\
+            ), ({phv00258106} == 1 and {phv00258107} == 2, \"OMOP:40766945\"),\
+            \ ({phv00258106} == 1 and {phv00258107} == 3, \"OMOP:45883458\"),\
+            \ (True, None))"
