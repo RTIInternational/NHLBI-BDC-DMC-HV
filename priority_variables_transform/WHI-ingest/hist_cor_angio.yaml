@@ -12,18 +12,6 @@
           value: PATIENT_SELF-REPORTED_CONDITION
 - class_derivations:
     Procedure:
-      populated_from: pht000999
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00078506
-        associated_visit:
-          value: WHI SCREENING
-        procedure_concept:
-          expr: case(({phv00078537} == 1, "OMOP:1242799"))
-        procedure_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-- class_derivations:
-    Procedure:
       populated_from: pht003407
       slot_derivations:
         associated_participant:
