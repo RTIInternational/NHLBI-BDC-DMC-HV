@@ -1,0 +1,26 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht013308
+      slot_derivations:
+        associated_visit:
+          expr: case(({phv00528696} == 'VISIT_1', 'SPIROMICS Visit 1'), ({phv00528696}
+            == 'VISIT_2', 'SPIROMICS Visit 2'), ({phv00528696} == 'VISIT_3', 'SPIROMICS
+            Visit 3'), ({phv00528696} == 'VISIT_4', 'SPIROMICS Visit 4'))
+        associated_participant:
+          populated_from: phv00528692
+        age_at_observation:
+          expr: '{phv00528706} * 365'
+        observation_type:
+          value: OMOP:4176265
+        method_type:
+          value: post-bronchodilator spirometry
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht013308
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00528858
+                  unit:
+                    value: L

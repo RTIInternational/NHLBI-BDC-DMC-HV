@@ -1,0 +1,48 @@
+- class_derivations:
+    Visit:
+      populated_from: pht013308
+      slot_derivations:
+        id:
+          expr: case(({phv00528696} == 'VISIT_1', 'SPIROMICS Visit 1'))
+        associated_participant:
+          populated_from: phv00528692
+        age_at_visit_start:
+          expr: case(({phv00528696} == 'VISIT_1', '{phv00528706} * 365'))
+        age_at_visit_end:
+          expr: case(({phv00528696} == 'VISIT_1', '{phv00528706} * 365'))
+- class_derivations:
+    Visit:
+      populated_from: pht013308
+      slot_derivations:
+        id:
+          expr: case(({phv00528696} == 'VISIT_2', 'SPIROMICS Visit 2'))
+        associated_participant:
+          populated_from: phv00528692
+        age_at_visit_start:
+          expr: case(({phv00528696} == 'VISIT_2', '{phv00528706} * 365'))
+        age_at_visit_end:
+          expr: case(({phv00528696} == 'VISIT_2', '{phv00528706} * 365'))
+- class_derivations:
+    Visit:
+      populated_from: pht013308
+      slot_derivations:
+        id:
+          expr: case(({phv00528696} == 'VISIT_3', 'SPIROMICS Visit 3'))
+        associated_participant:
+          populated_from: phv00528692
+        age_at_visit_start:
+          expr: case(({phv00528696} == 'VISIT_3', '{phv00528706} * 365'))
+        age_at_visit_end:
+          expr: case(({phv00528696} == 'VISIT_3', '{phv00528706} * 365'))
+- class_derivations:
+    Visit:
+      populated_from: pht013308
+      slot_derivations:
+        id:
+          expr: case(({phv00528696} == 'VISIT_4', 'SPIROMICS Visit 4'))
+        associated_participant:
+          populated_from: phv00528692
+        age_at_visit_start:
+          expr: case(({phv00528696} == 'VISIT_4', '{phv00528706} * 365'))
+        age_at_visit_end:
+          expr: case(({phv00528696} == 'VISIT_4', '{phv00528706} * 365'))
