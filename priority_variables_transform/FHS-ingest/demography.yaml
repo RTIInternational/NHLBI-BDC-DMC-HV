@@ -107,7 +107,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177237}) + ":" + case(({phv00177238} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00177238} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00177238} == ''72'', ''FHS OMNI 2 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         sex:
-          expr: 'case (({phv00177257} == 1, "OMOP:8507"), (True, "OMOP:8532"))'
+          expr: 'case (({phv00177257} == 1, "OMOP:8507"), (True, "OMOP:0"))'
         ethnicity:
           populated_from: phv00177597
           value_mappings:
@@ -202,7 +202,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         sex:
-          expr: 'case(({phv00254030} == 1, "OMOP:8507"), (True, "OMOP:8532"))'
+          expr: 'case(({phv00254030} == 1, "OMOP:8507"), (True, "OMOP:0"))'
 - class_derivations:
     Demography:
       populated_from: pht006026

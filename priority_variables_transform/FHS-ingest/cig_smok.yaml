@@ -16,6 +16,10 @@
           value_mappings:
             '0': None
             '1': OMOP:40766945
+            '2': OMOP:45883458
+            '3': OMOP:40766945
+            '5': OMOP:45883537
+            '7': None
 - class_derivations:
     Observation:
       populated_from: pht003094
@@ -231,25 +235,6 @@
             '0': OMOP:45883537
             '1': OMOP:40766945
             '2': OMOP:45883458
-- class_derivations:
-    Observation:
-      populated_from: pht000009
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00001035
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001035}) + ":FHS ORIGINAL EXAM 1-7")'
-        observation_type:
-          value: OMOP:4282779
-          range: string
-        value_enum:
-          populated_from: phv00000543
-          value_mappings:
-            '1': OMOP:40766945
-            '2': OMOP:45883458
-            '3': OMOP:40766945
-            '5': OMOP:45883537
-            '7': None
 - class_derivations:
     Observation:
       populated_from: pht000009

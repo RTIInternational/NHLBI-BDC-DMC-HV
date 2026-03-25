@@ -122,9 +122,9 @@
       populated_from: pht003099
       slot_derivations:
         id:
-          expr: 'case(({phv00177928} in [0, 1], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 6'')), (True, None))'
+          expr: 'case(({phv00177928} in [0, 1, 7], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 6'')), (True, None))'
         name:
-          expr: 'case(({phv00177928} in [0, 1], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 6''), (True, None))'
+          expr: 'case(({phv00177928} in [0, 1, 7], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 6''), (True, None))'
         associated_participant:
           populated_from: phv00177926
         age_at_visit_start:
@@ -136,9 +136,9 @@
       populated_from: pht003099
       slot_derivations:
         id:
-          expr: 'case(({phv00177928} in [0, 1], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 7'')), (True, None))'
+          expr: 'case(({phv00177928} in [0, 1, 7], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 7'')), (True, None))'
         name:
-          expr: 'case(({phv00177928} in [0, 1], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 7''), (True, None))'
+          expr: 'case(({phv00177928} in [0, 1, 7], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 7''), (True, None))'
         associated_participant:
           populated_from: phv00177926
         age_at_visit_start:
@@ -150,9 +150,9 @@
       populated_from: pht003099
       slot_derivations:
         id:
-          expr: 'case(({phv00177928} in [0, 1], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 8'')), (True, None))'
+          expr: 'case(({phv00177928} in [0, 1, 7], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 8'')), (True, None))'
         name:
-          expr: 'case(({phv00177928} in [0, 1], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 8''), (True, None))'
+          expr: 'case(({phv00177928} in [0, 1, 7], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 8''), (True, None))'
         associated_participant:
           populated_from: phv00177926
         age_at_visit_start:
@@ -164,9 +164,9 @@
       populated_from: pht003099
       slot_derivations:
         id:
-          expr: 'case(({phv00177928} in [0, 1], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 9'')), (True, None))'
+          expr: 'case(({phv00177928} in [0, 1, 7], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 9'')), (True, None))'
         name:
-          expr: 'case(({phv00177928} in [0, 1], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 9''), (True, None))'
+          expr: 'case(({phv00177928} in [0, 1, 7], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 9''), (True, None))'
         associated_participant:
           populated_from: phv00177926
         age_at_visit_start:
@@ -186,9 +186,9 @@
       populated_from: pht003099
       slot_derivations:
         id:
-          expr: 'case(({phv00177928} in [0, 1], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 10'')), (True, None))'
+          expr: 'case(({phv00177928} in [0, 1, 7], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 10'')), (True, None))'
         name:
-          expr: 'case(({phv00177928} in [0, 1], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 10''), (True, None))'
+          expr: 'case(({phv00177928} in [0, 1, 7], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 10''), (True, None))'
         associated_participant:
           populated_from: phv00177926
         age_at_visit_start:
