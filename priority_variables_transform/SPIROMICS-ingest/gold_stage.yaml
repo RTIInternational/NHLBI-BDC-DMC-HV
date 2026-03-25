@@ -1,5 +1,5 @@
 - class_derivations:
-    Observation:
+    MeasurementObservation:
       populated_from: pht013308
       slot_derivations:
         associated_visit:
@@ -11,7 +11,13 @@
         age_at_observation:
           expr: '{phv00528706} * 365'
         observation_type:
-          value: OMOP:43054909
+          value: OMOP:36304836
         value_enum:
-          expr: case(({phv00528736} == 1, 'OMOP:40766945'), ({phv00528698} == 1,
-            'OMOP:45883537'), ({phv00528736} == 0, 'OMOP:45883458'))
+          populated_from: phv00528778
+          value_mappings:
+            '0': no airflow limitation
+            '1': mild airflow limitation
+            '2': moderate airflow limitation
+            '3': severe airflow limitation
+            '4': very severe airflow limitation
+            '.N': non-smoker stratum

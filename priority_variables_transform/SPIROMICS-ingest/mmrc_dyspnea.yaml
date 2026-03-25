@@ -11,14 +11,14 @@
         age_at_observation:
           expr: '{phv00528706} * 365'
         observation_type:
-          value: OMOP:4152194
+          value: OMOP:3573953
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
                 populated_from: pht013308
                 slot_derivations:
-                  value_decimal:
-                    populated_from: phv00528715
+                  value_integer:
+                    populated_from: phv00528810
                   unit:
-                    value: 'mm[Hg]'
+                    value: '{score}'

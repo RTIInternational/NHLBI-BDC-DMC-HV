@@ -1,5 +1,5 @@
 - class_derivations:
-    Observation:
+    MeasurementObservation:
       populated_from: pht013308
       slot_derivations:
         associated_visit:
@@ -11,7 +11,14 @@
         age_at_observation:
           expr: '{phv00528706} * 365'
         observation_type:
-          value: OMOP:43054909
-        value_enum:
-          expr: case(({phv00528736} == 1, 'OMOP:40766945'), ({phv00528698} == 1,
-            'OMOP:45883537'), ({phv00528736} == 0, 'OMOP:45883458'))
+          value: OMOP:3399585
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht013308
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00528937
+                  unit:
+                    value: m

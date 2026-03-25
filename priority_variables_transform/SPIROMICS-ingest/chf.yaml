@@ -1,5 +1,5 @@
 - class_derivations:
-    Observation:
+    Condition:
       populated_from: pht013308
       slot_derivations:
         associated_visit:
@@ -8,10 +8,14 @@
             Visit 3'), ({phv00528696} == 'VISIT_4', 'SPIROMICS Visit 4'))
         associated_participant:
           populated_from: phv00528692
-        age_at_observation:
-          expr: '{phv00528706} * 365'
-        observation_type:
-          value: OMOP:43054909
-        value_enum:
-          expr: case(({phv00528736} == 1, 'OMOP:40766945'), ({phv00528698} == 1,
-            'OMOP:45883537'), ({phv00528736} == 0, 'OMOP:45883458'))
+        condition_concept:
+          value: MONDO:0005252
+        condition_status:
+          populated_from: phv00528729
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+        relationship_to_participant:
+          value: ONESELF
