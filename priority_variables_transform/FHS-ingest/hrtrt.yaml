@@ -1109,7 +1109,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00066765}) + ":" + case(({phv00066749} == ''0'', ''FHS ORIGINAL EXAM 28''), ({phv00066749} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 1''), ({phv00066749} == ''3'', ''FHS GENERATION 3 EXAM 1''), ({phv00066749} == ''72'', ''FHS OMNI 2 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
-          expr: 'case(({phv00066749} == 0, {pht003099.phv00177984} * 365), (True, {pht003099.phv00177930} * 365))'
+          expr: 'case(({phv00066749} == ''0'', {pht003099.phv00177984} * 365), (True, {pht003099.phv00177930} * 365))'
         observation_type:
           value: OBA:1001087
           range: string
