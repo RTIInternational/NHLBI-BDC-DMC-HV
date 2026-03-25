@@ -24,3 +24,28 @@
         relationship_to_participant:
           value: ONESELF
           range: string
+- class_derivations:
+    Condition:
+      populated_from: pht003094
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00177237
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177237}) + ":" + case(({phv00177238} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00177238} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00177238} == ''72'', ''FHS OMNI 2 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
+        condition_concept:
+          value: HP:0001681
+          range: string
+        condition_status:
+          populated_from: phv00177357
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: SELF_REPORTED
+          range: string
+        associated_evidence:
+          value: Medical History
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
