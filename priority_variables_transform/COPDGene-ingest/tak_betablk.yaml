@@ -1,0 +1,17 @@
+- class_derivations:
+    DrugExposure:
+      populated_from: pht002239
+      slot_derivations:
+        associated_visit:
+          value: COPDGene
+        associated_participant:
+          populated_from: phv00159568
+        drug_concept:
+          value: RXNORM:C07A
+        exposure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+        exposure_status:
+          populated_from: phv00159643
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
