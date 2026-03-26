@@ -3,9 +3,10 @@
       populated_from: pht013308
       slot_derivations:
         associated_visit:
-          expr: case(({phv00528696} == 'VISIT_1', 'SPIROMICS Visit 1'), ({phv00528696}
-            == 'VISIT_2', 'SPIROMICS Visit 2'), ({phv00528696} == 'VISIT_3', 'SPIROMICS
-            Visit 3'), ({phv00528696} == 'VISIT_4', 'SPIROMICS Visit 4'))
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00528692}) + ":" + case(({phv00528696}
+            == ''VISIT_1'', ''SPIROMICS Visit 1''), ({phv00528696} == ''VISIT_2'', ''SPIROMICS
+            Visit 2''), ({phv00528696} == ''VISIT_3'', ''SPIROMICS Visit 3''), ({phv00528696}
+            == ''VISIT_4'', ''SPIROMICS Visit 4'')))'
         associated_participant:
           populated_from: phv00528692
         condition_concept:

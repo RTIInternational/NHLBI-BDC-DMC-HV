@@ -3,9 +3,11 @@
       populated_from: pht013308
       slot_derivations:
         id:
-          expr: case(({phv00528696} == 'VISIT_1', 'SPIROMICS Visit 1'))
+          expr: 'case(({phv00528696} == ''VISIT_1'', uuid5("https://w3id.org/bdchm/Visit", str({phv00528692}) + ":SPIROMICS Visit 1")))'
         associated_participant:
           populated_from: phv00528692
+        visit_category:
+          value: HEALTH_EXAMINATION
         age_at_visit_start:
           expr: case(({phv00528696} == 'VISIT_1', '{phv00528706} * 365'))
         age_at_visit_end:
@@ -15,9 +17,11 @@
       populated_from: pht013308
       slot_derivations:
         id:
-          expr: case(({phv00528696} == 'VISIT_2', 'SPIROMICS Visit 2'))
+          expr: 'case(({phv00528696} == ''VISIT_2'', uuid5("https://w3id.org/bdchm/Visit", str({phv00528692}) + ":SPIROMICS Visit 2")))'
         associated_participant:
           populated_from: phv00528692
+        visit_category:
+          value: HEALTH_EXAMINATION
         age_at_visit_start:
           expr: case(({phv00528696} == 'VISIT_2', '{phv00528706} * 365'))
         age_at_visit_end:
@@ -27,9 +31,11 @@
       populated_from: pht013308
       slot_derivations:
         id:
-          expr: case(({phv00528696} == 'VISIT_3', 'SPIROMICS Visit 3'))
+          expr: 'case(({phv00528696} == ''VISIT_3'', uuid5("https://w3id.org/bdchm/Visit", str({phv00528692}) + ":SPIROMICS Visit 3")))'
         associated_participant:
           populated_from: phv00528692
+        visit_category:
+          value: HEALTH_EXAMINATION
         age_at_visit_start:
           expr: case(({phv00528696} == 'VISIT_3', '{phv00528706} * 365'))
         age_at_visit_end:
@@ -39,9 +45,11 @@
       populated_from: pht013308
       slot_derivations:
         id:
-          expr: case(({phv00528696} == 'VISIT_4', 'SPIROMICS Visit 4'))
+          expr: 'case(({phv00528696} == ''VISIT_4'', uuid5("https://w3id.org/bdchm/Visit", str({phv00528692}) + ":SPIROMICS Visit 4")))'
         associated_participant:
           populated_from: phv00528692
+        visit_category:
+          value: HEALTH_EXAMINATION
         age_at_visit_start:
           expr: case(({phv00528696} == 'VISIT_4', '{phv00528706} * 365'))
         age_at_visit_end:

@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00528692
         associated_visit:
-          expr: case(({phv00528696} == 'VISIT_1', 'SPIROMICS Visit 1'))
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00528692}) + ":" + case(({phv00528696} == ''VISIT_1'', ''SPIROMICS Visit 1'')))'
         sex:
           populated_from: phv00528693
           value_mappings:
