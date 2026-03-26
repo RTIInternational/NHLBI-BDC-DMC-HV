@@ -292,3 +292,27 @@
                   unit:
                     value: mg/L
                     range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht012882
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00520395
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00520395}) + ":" + case(({phv00520396} == ''1'', ''FHS OFFSPRING EXAM 8''), ({phv00520396} == ''7'', ''FHS OMNI 1 EXAM 3''), (True, ''FHS UNKNOWN VISIT'')))'
+        age_at_observation:
+          expr: 'case(({phv00520396} == ''1'', {pht003099.phv00177944} * 365), ({phv00520396} == ''7'', {pht003099.phv00177934} * 365))'
+        observation_type:
+          value: OMOP:4208414
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht012882
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00520398
+                  unit:
+                    value: mg/L
+                    range: string
