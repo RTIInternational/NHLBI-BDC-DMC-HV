@@ -1,57 +1,13 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002889
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:2050062
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002889
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172166
-                  unit:
-                    value: "[IU]/L"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht004802
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:2050062
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004802
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00227050
-                  unit:
-                    value: "[IU]/L"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000031
+      populated_from: pht000031
       slot_derivations:
         associated_participant:
           populated_from: phv00008379
         associated_visit:
           value: FHS OFFSPRING EXAM 2
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177932} * 365'
         observation_type:
           value: OBA:2050062
         value_quantity:
@@ -63,14 +19,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht006013
+      populated_from: pht006013
       slot_derivations:
         associated_participant:
           populated_from: phv00275427
         associated_visit:
           value: FHS OFFSPRING EXAM 5
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177938} * 365'
         observation_type:
           value: OBA:2050062
         value_quantity:
@@ -82,14 +38,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002889
+      populated_from: pht002889
       slot_derivations:
         associated_participant:
-          populated_from: nan
+          populated_from: phv00172159
         associated_visit:
-          value: nan
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172159}) + ":" + FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177932} * 365'
         observation_type:
           value: OBA:2050062
         value_quantity:
@@ -101,14 +57,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht004802
+      populated_from: pht004802
       slot_derivations:
         associated_participant:
-          populated_from: nan
+          populated_from: phv00227023
         associated_visit:
-          value: nan
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00227023}) + ":" + FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4'
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{0} * 365'
         observation_type:
           value: OBA:2050062
         value_quantity:
@@ -118,25 +74,3 @@
                 populated_from: pht004802
                 slot_derivations:
                   value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht001045
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:2050062
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001045
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00081020
-                  unit:
-                    value: "[IU]/L"

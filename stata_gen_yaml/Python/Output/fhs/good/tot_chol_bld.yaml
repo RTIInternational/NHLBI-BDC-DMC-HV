@@ -1,343 +1,53 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000013
+      populated_from: pht007777
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00369651
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht007777
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00370072
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht009755
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00423778
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht009755
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00423784
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000013
       slot_derivations:
         associated_participant:
           populated_from: phv00001803
         associated_visit:
           value: FHS ORIGINAL EXAM 11
         age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000013
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00001586
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht006027
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006027
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00277199
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000027
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00006663
-        associated_visit:
-          value: FHS ORIGINAL EXAM 25
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000027
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00006659
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht006011
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00275410
-        associated_visit:
-          value: FHS OMNI 1 EXAM 3
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006011
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00275413
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht006027
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006027
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00277201
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht006027
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006027
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00277197
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht006010
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00275400
-        associated_visit:
-          value: FHS OMNI 1 EXAM 2
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006010
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00275402
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht006027
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006027
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00277195
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000074
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00021427
-        associated_visit:
-          value: FHS GENERATION 3 EXAM 1
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000074
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00021391
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000024
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00005557
-        associated_visit:
-          value: FHS ORIGINAL EXAM 22
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000024
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00005551
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht006027
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006027
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00277194
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000022
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00004525
-        associated_visit:
-          value: FHS ORIGINAL EXAM 20
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000022
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00004518
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000034
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00009579
-        associated_visit:
-          value: FHS OFFSPRING EXAM 5
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000034
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00009573
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000742
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00071899
-        associated_visit:
-          value: FHS OFFSPRING EXAM 8
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000742
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00071890
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht006027
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006027
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00277200
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000013
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00001803
-        associated_visit:
-          value: FHS ORIGINAL EXAM 11
-        age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177950} * 365'
         observation_type:
           value: OBA:VT0000180
         value_quantity:
@@ -352,80 +62,98 @@
                     value: "mg/dL"
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000029
+      populated_from: pht000013
       slot_derivations:
         associated_participant:
-          populated_from: phv00007534
+          populated_from: phv00001803
         associated_visit:
-          value: FHS ORIGINAL EXAM 27
+          value: FHS ORIGINAL EXAM 11
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177950} * 365'
         observation_type:
           value: OBA:VT0000180
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000029
+                populated_from: pht000013
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00007529
+                    populated_from: phv00001586
                   unit:
                     value: "mg/dL"
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000012
+      populated_from: pht007777
       slot_derivations:
         associated_participant:
-          populated_from: phv00001559
-        associated_visit:
-          value: FHS ORIGINAL EXAM 10
+          populated_from: phv00369651
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{0} * 365'
         observation_type:
           value: OBA:VT0000180
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000012
+                populated_from: pht007777
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00001398
+                    populated_from: phv00370081
                   unit:
                     value: "mg/dL"
 - class_derivations:
     MeasurementObservation:
-      populated from: pht006027
+      populated_from: pht000742
       slot_derivations:
         associated_participant:
-          populated_from: nan
+          populated_from: phv00071899
         associated_visit:
-          value: nan
+          value: FHS OFFSPRING EXAM 8
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177944} * 365'
         observation_type:
           value: OBA:VT0000180
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht006027
+                populated_from: pht000742
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00277196
+                    populated_from: phv00071890
                   unit:
                     value: "mg/dL"
 - class_derivations:
     MeasurementObservation:
-      populated from: pht004801
+      populated_from: pht009761
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00423868
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht009761
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00423932
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004801
       slot_derivations:
         associated_participant:
           populated_from: phv00227012
         associated_visit:
           value: FHS OMNI 1 EXAM 1
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177930} * 365'
         observation_type:
           value: OBA:VT0000180
         value_quantity:
@@ -440,168 +168,14 @@
                     value: "mg/dL"
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000030
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00007675
-        associated_visit:
-          value: FHS OFFSPRING EXAM 1
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000030
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00007536
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000026
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00006325
-        associated_visit:
-          value: FHS ORIGINAL EXAM 24
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000026
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00006319
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000031
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00008379
-        associated_visit:
-          value: FHS OFFSPRING EXAM 2
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000031
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00007970
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000028
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00007095
-        associated_visit:
-          value: FHS ORIGINAL EXAM 26
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000028
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00006668
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000692
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00070736
-        associated_visit:
-          value: FHS ORIGINAL EXAM 28
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000692
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00070731
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000036
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00010694
-        associated_visit:
-          value: FHS OFFSPRING EXAM 7
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000036
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00010142
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht006027
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0000180
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006027
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00277202
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000012
+      populated_from: pht000012
       slot_derivations:
         associated_participant:
           populated_from: phv00001559
         associated_visit:
           value: FHS ORIGINAL EXAM 10
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177948} * 365'
         observation_type:
           value: OBA:VT0000180
         value_quantity:
@@ -616,23 +190,777 @@
                     value: "mg/dL"
 - class_derivations:
     MeasurementObservation:
-      populated from: pht006027
+      populated_from: pht000012
       slot_derivations:
         associated_participant:
-          populated_from: nan
+          populated_from: phv00001559
         associated_visit:
-          value: nan
+          value: FHS ORIGINAL EXAM 10
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177948} * 365'
         observation_type:
           value: OBA:VT0000180
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht006027
+                populated_from: pht000012
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00277198
+                    populated_from: phv00001398
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht006026
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00277015
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00277015}) + ":" + FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 1-3'
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht006026
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00277048
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht007777
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00369651
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht007777
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00370064
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000036
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00010694
+        associated_visit:
+          value: FHS OFFSPRING EXAM 7
+        age_at_observation:
+          expr: '{phv00177942} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000036
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00010142
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht007777
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00369651
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht007777
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00370076
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht006010
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00275400
+        associated_visit:
+          value: FHS OMNI 1 EXAM 2
+        age_at_observation:
+          expr: '{phv00177932} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht006010
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00275402
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000692
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00070736
+        associated_visit:
+          value: FHS ORIGINAL EXAM 28
+        age_at_observation:
+          expr: '{phv00177984} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000692
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00070731
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht007777
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00369651
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht007777
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00370068
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000034
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00009579
+        associated_visit:
+          value: FHS OFFSPRING EXAM 5
+        age_at_observation:
+          expr: '{phv00177938} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000034
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00009573
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht009761
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00423868
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht009761
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00423931
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000074
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00021427
+        associated_visit:
+          value: FHS GENERATION 3 EXAM 1
+        age_at_observation:
+          expr: '{phv00177930} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000074
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00021391
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht007777
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00369651
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht007777
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00370065
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht007777
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00369651
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht007777
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00370075
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht007777
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00369651
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht007777
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00370069
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht006026
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00277015
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00277015}) + ":" + FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 1-3'
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht006026
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00277047
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000024
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00005557
+        associated_visit:
+          value: FHS ORIGINAL EXAM 22
+        age_at_observation:
+          expr: '{phv00177972} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000024
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00005551
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht006011
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00275410
+        associated_visit:
+          value: FHS OMNI 1 EXAM 3
+        age_at_observation:
+          expr: '{phv00177934} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht006011
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00275413
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht007777
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00369651
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht007777
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00370073
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000028
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00007095
+        associated_visit:
+          value: FHS ORIGINAL EXAM 26
+        age_at_observation:
+          expr: '{phv00177980} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000028
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00006668
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000027
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00006663
+        associated_visit:
+          value: FHS ORIGINAL EXAM 25
+        age_at_observation:
+          expr: '{phv00177978} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000027
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00006659
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht007777
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00369651
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht007777
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00370067
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht007777
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00369651
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht007777
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00370070
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000031
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00008379
+        associated_visit:
+          value: FHS OFFSPRING EXAM 2
+        age_at_observation:
+          expr: '{phv00177932} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000031
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00007970
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht007777
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00369651
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht007777
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00370079
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000022
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00004525
+        associated_visit:
+          value: FHS ORIGINAL EXAM 20
+        age_at_observation:
+          expr: '{phv00177968} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000022
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00004518
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht005143
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00255339
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00255339}) + ":" + FHS NEW OFFSPRING SPOUSE, OMNI 2 EXAM 1'
+        age_at_observation:
+          expr: '{phv00177930} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht005143
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00255341
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000029
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00007534
+        associated_visit:
+          value: FHS ORIGINAL EXAM 27
+        age_at_observation:
+          expr: '{phv00177982} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000029
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00007529
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht007777
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00369651
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht007777
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00370077
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht007777
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00369651
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht007777
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00370074
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000026
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00006325
+        associated_visit:
+          value: FHS ORIGINAL EXAM 24
+        age_at_observation:
+          expr: '{phv00177976} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000026
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00006319
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht009761
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00423868
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht009761
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00423930
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht007777
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00369651
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht007777
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00370071
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht007777
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00369651
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht007777
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00370063
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht007777
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00369651
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht007777
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00370080
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht007777
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00369651
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht007777
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00370066
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000030
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00007675
+        associated_visit:
+          value: FHS OFFSPRING EXAM 1
+        age_at_observation:
+          expr: '{phv00177930} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000030
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00007536
+                  unit:
+                    value: "mg/dL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht007777
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00369651
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT0000180
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht007777
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00370078
                   unit:
                     value: "mg/dL"

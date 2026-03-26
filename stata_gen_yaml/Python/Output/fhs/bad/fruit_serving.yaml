@@ -1,32 +1,13 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002150
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00157296
-        associated_visit:
-          value: FHS GENERATION 3 EXAM 1
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002150
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002350
+      populated_from: pht002350
       slot_derivations:
         associated_participant:
           populated_from: phv00162112
         associated_visit:
           value: FHS OFFSPRING EXAM 8
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177944} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -38,33 +19,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002150
+      populated_from: pht002150
       slot_derivations:
         associated_participant:
           populated_from: phv00157296
         associated_visit:
           value: FHS GENERATION 3 EXAM 1
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177930} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -76,52 +38,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002350
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00162112
-        associated_visit:
-          value: FHS OFFSPRING EXAM 8
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002350
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002150
+      populated_from: pht002150
       slot_derivations:
         associated_participant:
           populated_from: phv00157296
         associated_visit:
           value: FHS GENERATION 3 EXAM 1
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177930} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -133,52 +57,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002350
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00162112
-        associated_visit:
-          value: FHS OFFSPRING EXAM 8
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002350
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002150
+      populated_from: pht002150
       slot_derivations:
         associated_participant:
           populated_from: phv00157296
         associated_visit:
           value: FHS GENERATION 3 EXAM 1
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177930} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -190,52 +76,33 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002350
+      populated_from: pht002900
       slot_derivations:
         associated_participant:
-          populated_from: phv00162112
+          populated_from: phv00172393
         associated_visit:
-          value: FHS OFFSPRING EXAM 8
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172393}) + ":" + FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177932} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht002350
+                populated_from: pht002900
                 slot_derivations:
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002350
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00162112
-        associated_visit:
-          value: FHS OFFSPRING EXAM 8
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002350
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002150
+      populated_from: pht002150
       slot_derivations:
         associated_participant:
           populated_from: phv00157296
         associated_visit:
           value: FHS GENERATION 3 EXAM 1
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177930} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -247,90 +114,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002150
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00157296
-        associated_visit:
-          value: FHS GENERATION 3 EXAM 1
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002150
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002350
+      populated_from: pht002350
       slot_derivations:
         associated_participant:
           populated_from: phv00162112
         associated_visit:
           value: FHS OFFSPRING EXAM 8
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177944} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -342,33 +133,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002350
+      populated_from: pht002350
       slot_derivations:
         associated_participant:
           populated_from: phv00162112
         associated_visit:
           value: FHS OFFSPRING EXAM 8
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177944} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -380,33 +152,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002150
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00157296
-        associated_visit:
-          value: FHS GENERATION 3 EXAM 1
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002150
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002350
+      populated_from: pht002350
       slot_derivations:
         associated_participant:
           populated_from: phv00162112
         associated_visit:
           value: FHS OFFSPRING EXAM 8
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177944} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -418,71 +171,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002150
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00157296
-        associated_visit:
-          value: FHS GENERATION 3 EXAM 1
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002150
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002350
+      populated_from: pht002350
       slot_derivations:
         associated_participant:
           populated_from: phv00162112
         associated_visit:
           value: FHS OFFSPRING EXAM 8
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177944} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -494,33 +190,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002150
+      populated_from: pht002900
       slot_derivations:
         associated_participant:
-          populated_from: phv00157296
+          populated_from: phv00172393
         associated_visit:
-          value: FHS GENERATION 3 EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172393}) + ":" + FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'
         age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002150
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177932} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -532,90 +209,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002150
+      populated_from: pht002900
       slot_derivations:
         associated_participant:
-          populated_from: phv00157296
+          populated_from: phv00172393
         associated_visit:
-          value: FHS GENERATION 3 EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172393}) + ":" + FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'
         age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002150
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002350
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00162112
-        associated_visit:
-          value: FHS OFFSPRING EXAM 8
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002350
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002350
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00162112
-        associated_visit:
-          value: FHS OFFSPRING EXAM 8
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002350
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002150
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00157296
-        associated_visit:
-          value: FHS GENERATION 3 EXAM 1
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002150
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177932} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -627,90 +228,413 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000689
+      populated_from: pht002900
       slot_derivations:
         associated_participant:
-          populated_from: nan
+          populated_from: phv00172393
         associated_visit:
-          value: nan
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172393}) + ":" + FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177932} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000689
+                populated_from: pht002900
                 slot_derivations:
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002152
+      populated_from: pht002150
       slot_derivations:
         associated_participant:
-          populated_from: phv00158091
+          populated_from: phv00157296
         associated_visit:
-          value: FHS ORIGINAL EXAM 21
+          value: FHS GENERATION 3 EXAM 1
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177930} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht002152
+                populated_from: pht002150
                 slot_derivations:
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002153
+      populated_from: pht002900
       slot_derivations:
         associated_participant:
-          populated_from: phv00158540
+          populated_from: phv00172393
         associated_visit:
-          value: FHS ORIGINAL EXAM 22
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172393}) + ":" + FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177932} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht002153
+                populated_from: pht002900
                 slot_derivations:
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002152
+      populated_from: pht002900
       slot_derivations:
         associated_participant:
-          populated_from: phv00158091
+          populated_from: phv00172393
         associated_visit:
-          value: FHS ORIGINAL EXAM 21
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172393}) + ":" + FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177932} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht002152
+                populated_from: pht002900
                 slot_derivations:
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000682
+      populated_from: pht002150
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00157296
+        associated_visit:
+          value: FHS GENERATION 3 EXAM 1
+        age_at_observation:
+          expr: '{phv00177930} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002150
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002900
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00172393
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172393}) + ":" + FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'
+        age_at_observation:
+          expr: '{phv00177932} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002900
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002350
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00162112
+        associated_visit:
+          value: FHS OFFSPRING EXAM 8
+        age_at_observation:
+          expr: '{phv00177944} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002350
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002150
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00157296
+        associated_visit:
+          value: FHS GENERATION 3 EXAM 1
+        age_at_observation:
+          expr: '{phv00177930} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002150
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002350
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00162112
+        associated_visit:
+          value: FHS OFFSPRING EXAM 8
+        age_at_observation:
+          expr: '{phv00177944} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002350
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002350
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00162112
+        associated_visit:
+          value: FHS OFFSPRING EXAM 8
+        age_at_observation:
+          expr: '{phv00177944} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002350
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002150
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00157296
+        associated_visit:
+          value: FHS GENERATION 3 EXAM 1
+        age_at_observation:
+          expr: '{phv00177930} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002150
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002900
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00172393
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172393}) + ":" + FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'
+        age_at_observation:
+          expr: '{phv00177932} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002900
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002900
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00172393
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172393}) + ":" + FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'
+        age_at_observation:
+          expr: '{phv00177932} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002900
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002150
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00157296
+        associated_visit:
+          value: FHS GENERATION 3 EXAM 1
+        age_at_observation:
+          expr: '{phv00177930} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002150
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002350
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00162112
+        associated_visit:
+          value: FHS OFFSPRING EXAM 8
+        age_at_observation:
+          expr: '{phv00177944} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002350
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002900
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00172393
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172393}) + ":" + FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'
+        age_at_observation:
+          expr: '{phv00177932} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002900
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002150
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00157296
+        associated_visit:
+          value: FHS GENERATION 3 EXAM 1
+        age_at_observation:
+          expr: '{phv00177930} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002150
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002350
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00162112
+        associated_visit:
+          value: FHS OFFSPRING EXAM 8
+        age_at_observation:
+          expr: '{phv00177944} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002350
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002350
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00162112
+        associated_visit:
+          value: FHS OFFSPRING EXAM 8
+        age_at_observation:
+          expr: '{phv00177944} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002350
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002150
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00157296
+        associated_visit:
+          value: FHS GENERATION 3 EXAM 1
+        age_at_observation:
+          expr: '{phv00177930} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002150
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002900
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00172393
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172393}) + ":" + FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'
+        age_at_observation:
+          expr: '{phv00177932} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002900
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000682
       slot_derivations:
         associated_participant:
           populated_from: phv00069162
         associated_visit:
           value: FHS OFFSPRING EXAM 7
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177942} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -722,33 +646,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000689
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000689
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002152
+      populated_from: pht002152
       slot_derivations:
         associated_participant:
           populated_from: phv00158091
         associated_visit:
           value: FHS ORIGINAL EXAM 21
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177970} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -760,52 +665,50 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002153
+      populated_from: pht000689
       slot_derivations:
         associated_participant:
-          populated_from: phv00158540
-        associated_visit:
-          value: FHS ORIGINAL EXAM 22
+          populated_from: 0
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{0} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht002153
+                populated_from: pht000689
                 slot_derivations:
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000681
+      populated_from: pht002900
       slot_derivations:
         associated_participant:
-          populated_from: phv00068713
+          populated_from: phv00172393
         associated_visit:
-          value: FHS OFFSPRING EXAM 6
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172393}) + ":" + FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177932} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000681
+                populated_from: pht002900
                 slot_derivations:
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002151
+      populated_from: pht002151
       slot_derivations:
         associated_participant:
           populated_from: phv00157771
         associated_visit:
           value: FHS ORIGINAL EXAM 20
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177968} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -817,14 +720,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000682
+      populated_from: pht000682
       slot_derivations:
         associated_participant:
           populated_from: phv00069162
         associated_visit:
           value: FHS OFFSPRING EXAM 7
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177942} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -836,33 +739,33 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000682
+      populated_from: pht002153
       slot_derivations:
         associated_participant:
-          populated_from: phv00069162
+          populated_from: phv00158540
         associated_visit:
-          value: FHS OFFSPRING EXAM 7
+          value: FHS ORIGINAL EXAM 22
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177972} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000682
+                populated_from: pht002153
                 slot_derivations:
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000680
+      populated_from: pht000680
       slot_derivations:
         associated_participant:
           populated_from: phv00068241
         associated_visit:
           value: FHS OFFSPRING EXAM 5
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177938} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -874,52 +777,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000689
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000689
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002151
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00157771
-        associated_visit:
-          value: FHS ORIGINAL EXAM 20
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002151
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002152
+      populated_from: pht002152
       slot_derivations:
         associated_participant:
           populated_from: phv00158091
         associated_visit:
           value: FHS ORIGINAL EXAM 21
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177970} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -931,71 +796,33 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002151
+      populated_from: pht000681
       slot_derivations:
         associated_participant:
-          populated_from: phv00157771
+          populated_from: phv00068713
         associated_visit:
-          value: FHS ORIGINAL EXAM 20
+          value: FHS OFFSPRING EXAM 6
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177940} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht002151
+                populated_from: pht000681
                 slot_derivations:
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000689
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000689
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002153
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00158540
-        associated_visit:
-          value: FHS ORIGINAL EXAM 22
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002153
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000682
+      populated_from: pht000682
       slot_derivations:
         associated_participant:
           populated_from: phv00069162
         associated_visit:
           value: FHS OFFSPRING EXAM 7
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177942} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -1007,14 +834,50 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000680
+      populated_from: pht000689
+      slot_derivations:
+        associated_participant:
+          populated_from: 0
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000689
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002153
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158540
+        associated_visit:
+          value: FHS ORIGINAL EXAM 22
+        age_at_observation:
+          expr: '{phv00177972} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002153
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000680
       slot_derivations:
         associated_participant:
           populated_from: phv00068241
         associated_visit:
           value: FHS OFFSPRING EXAM 5
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177938} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -1026,71 +889,12 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000681
+      populated_from: pht000689
       slot_derivations:
         associated_participant:
-          populated_from: phv00068713
-        associated_visit:
-          value: FHS OFFSPRING EXAM 6
+          populated_from: 0
         age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000681
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002153
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00158540
-        associated_visit:
-          value: FHS ORIGINAL EXAM 22
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002153
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002151
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00157771
-        associated_visit:
-          value: FHS ORIGINAL EXAM 20
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002151
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000689
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
+          expr: '{0} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -1102,14 +906,33 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000680
+      populated_from: pht000681
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00068713
+        associated_visit:
+          value: FHS OFFSPRING EXAM 6
+        age_at_observation:
+          expr: '{phv00177940} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000681
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000680
       slot_derivations:
         associated_participant:
           populated_from: phv00068241
         associated_visit:
           value: FHS OFFSPRING EXAM 5
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177938} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -1121,147 +944,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002153
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00158540
-        associated_visit:
-          value: FHS ORIGINAL EXAM 22
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002153
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002152
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00158091
-        associated_visit:
-          value: FHS ORIGINAL EXAM 21
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002152
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002153
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00158540
-        associated_visit:
-          value: FHS ORIGINAL EXAM 22
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002153
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000682
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00069162
-        associated_visit:
-          value: FHS OFFSPRING EXAM 7
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000682
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000689
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000689
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000689
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000689
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002152
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00158091
-        associated_visit:
-          value: FHS ORIGINAL EXAM 21
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002152
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000681
+      populated_from: pht000681
       slot_derivations:
         associated_participant:
           populated_from: phv00068713
         associated_visit:
           value: FHS OFFSPRING EXAM 6
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177940} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -1273,71 +963,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002152
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00158091
-        associated_visit:
-          value: FHS ORIGINAL EXAM 21
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002152
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002152
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00158091
-        associated_visit:
-          value: FHS ORIGINAL EXAM 21
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002152
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002153
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00158540
-        associated_visit:
-          value: FHS ORIGINAL EXAM 22
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002153
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000680
+      populated_from: pht000680
       slot_derivations:
         associated_participant:
           populated_from: phv00068241
         associated_visit:
           value: FHS OFFSPRING EXAM 5
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177938} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -1349,52 +982,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000680
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00068241
-        associated_visit:
-          value: FHS OFFSPRING EXAM 5
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000680
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002153
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00158540
-        associated_visit:
-          value: FHS ORIGINAL EXAM 22
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002153
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000682
+      populated_from: pht000682
       slot_derivations:
         associated_participant:
           populated_from: phv00069162
         associated_visit:
           value: FHS OFFSPRING EXAM 7
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177942} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -1406,280 +1001,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000681
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00068713
-        associated_visit:
-          value: FHS OFFSPRING EXAM 6
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000681
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000682
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00069162
-        associated_visit:
-          value: FHS OFFSPRING EXAM 7
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000682
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000682
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00069162
-        associated_visit:
-          value: FHS OFFSPRING EXAM 7
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000682
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002153
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00158540
-        associated_visit:
-          value: FHS ORIGINAL EXAM 22
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002153
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000681
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00068713
-        associated_visit:
-          value: FHS OFFSPRING EXAM 6
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000681
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000682
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00069162
-        associated_visit:
-          value: FHS OFFSPRING EXAM 7
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000682
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000689
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000689
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000682
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00069162
-        associated_visit:
-          value: FHS OFFSPRING EXAM 7
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000682
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002153
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00158540
-        associated_visit:
-          value: FHS ORIGINAL EXAM 22
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002153
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002151
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00157771
-        associated_visit:
-          value: FHS ORIGINAL EXAM 20
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002151
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000680
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00068241
-        associated_visit:
-          value: FHS OFFSPRING EXAM 5
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000680
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002151
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00157771
-        associated_visit:
-          value: FHS ORIGINAL EXAM 20
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002151
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002151
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00157771
-        associated_visit:
-          value: FHS ORIGINAL EXAM 20
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002151
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002153
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00158540
-        associated_visit:
-          value: FHS ORIGINAL EXAM 22
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002153
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002152
+      populated_from: pht002152
       slot_derivations:
         associated_participant:
           populated_from: phv00158091
         associated_visit:
           value: FHS ORIGINAL EXAM 21
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177970} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -1691,33 +1020,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000689
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000689
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002151
+      populated_from: pht002151
       slot_derivations:
         associated_participant:
           populated_from: phv00157771
         associated_visit:
           value: FHS ORIGINAL EXAM 20
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177968} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -1729,109 +1039,33 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002151
+      populated_from: pht000680
       slot_derivations:
         associated_participant:
-          populated_from: phv00157771
+          populated_from: phv00068241
         associated_visit:
-          value: FHS ORIGINAL EXAM 20
+          value: FHS OFFSPRING EXAM 5
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177938} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht002151
+                populated_from: pht000680
                 slot_derivations:
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000681
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00068713
-        associated_visit:
-          value: FHS OFFSPRING EXAM 6
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000681
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000681
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00068713
-        associated_visit:
-          value: FHS OFFSPRING EXAM 6
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000681
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000682
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00069162
-        associated_visit:
-          value: FHS OFFSPRING EXAM 7
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000682
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002152
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00158091
-        associated_visit:
-          value: FHS ORIGINAL EXAM 21
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002152
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002153
+      populated_from: pht002153
       slot_derivations:
         associated_participant:
           populated_from: phv00158540
         associated_visit:
           value: FHS ORIGINAL EXAM 22
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177972} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -1843,14 +1077,12 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000689
+      populated_from: pht000689
       slot_derivations:
         associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
+          populated_from: 0
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{0} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -1862,14 +1094,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002151
+      populated_from: pht002151
       slot_derivations:
         associated_participant:
           populated_from: phv00157771
         associated_visit:
           value: FHS ORIGINAL EXAM 20
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177968} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -1881,14 +1113,1449 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002900
+      populated_from: pht000682
       slot_derivations:
         associated_participant:
-          populated_from: nan
+          populated_from: phv00069162
         associated_visit:
-          value: nan
+          value: FHS OFFSPRING EXAM 7
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177942} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000682
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002153
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158540
+        associated_visit:
+          value: FHS ORIGINAL EXAM 22
+        age_at_observation:
+          expr: '{phv00177972} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002153
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000689
+      slot_derivations:
+        associated_participant:
+          populated_from: 0
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000689
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002151
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00157771
+        associated_visit:
+          value: FHS ORIGINAL EXAM 20
+        age_at_observation:
+          expr: '{phv00177968} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002151
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002151
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00157771
+        associated_visit:
+          value: FHS ORIGINAL EXAM 20
+        age_at_observation:
+          expr: '{phv00177968} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002151
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000681
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00068713
+        associated_visit:
+          value: FHS OFFSPRING EXAM 6
+        age_at_observation:
+          expr: '{phv00177940} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000681
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002151
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00157771
+        associated_visit:
+          value: FHS ORIGINAL EXAM 20
+        age_at_observation:
+          expr: '{phv00177968} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002151
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002153
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158540
+        associated_visit:
+          value: FHS ORIGINAL EXAM 22
+        age_at_observation:
+          expr: '{phv00177972} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002153
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000681
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00068713
+        associated_visit:
+          value: FHS OFFSPRING EXAM 6
+        age_at_observation:
+          expr: '{phv00177940} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000681
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000682
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00069162
+        associated_visit:
+          value: FHS OFFSPRING EXAM 7
+        age_at_observation:
+          expr: '{phv00177942} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000682
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000682
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00069162
+        associated_visit:
+          value: FHS OFFSPRING EXAM 7
+        age_at_observation:
+          expr: '{phv00177942} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000682
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002153
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158540
+        associated_visit:
+          value: FHS ORIGINAL EXAM 22
+        age_at_observation:
+          expr: '{phv00177972} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002153
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000680
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00068241
+        associated_visit:
+          value: FHS OFFSPRING EXAM 5
+        age_at_observation:
+          expr: '{phv00177938} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000680
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002151
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00157771
+        associated_visit:
+          value: FHS ORIGINAL EXAM 20
+        age_at_observation:
+          expr: '{phv00177968} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002151
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002153
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158540
+        associated_visit:
+          value: FHS ORIGINAL EXAM 22
+        age_at_observation:
+          expr: '{phv00177972} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002153
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000680
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00068241
+        associated_visit:
+          value: FHS OFFSPRING EXAM 5
+        age_at_observation:
+          expr: '{phv00177938} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000680
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000689
+      slot_derivations:
+        associated_participant:
+          populated_from: 0
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000689
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002153
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158540
+        associated_visit:
+          value: FHS ORIGINAL EXAM 22
+        age_at_observation:
+          expr: '{phv00177972} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002153
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002151
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00157771
+        associated_visit:
+          value: FHS ORIGINAL EXAM 20
+        age_at_observation:
+          expr: '{phv00177968} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002151
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000681
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00068713
+        associated_visit:
+          value: FHS OFFSPRING EXAM 6
+        age_at_observation:
+          expr: '{phv00177940} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000681
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000689
+      slot_derivations:
+        associated_participant:
+          populated_from: 0
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000689
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002153
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158540
+        associated_visit:
+          value: FHS ORIGINAL EXAM 22
+        age_at_observation:
+          expr: '{phv00177972} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002153
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000680
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00068241
+        associated_visit:
+          value: FHS OFFSPRING EXAM 5
+        age_at_observation:
+          expr: '{phv00177938} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000680
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000681
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00068713
+        associated_visit:
+          value: FHS OFFSPRING EXAM 6
+        age_at_observation:
+          expr: '{phv00177940} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000681
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002153
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158540
+        associated_visit:
+          value: FHS ORIGINAL EXAM 22
+        age_at_observation:
+          expr: '{phv00177972} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002153
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002153
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158540
+        associated_visit:
+          value: FHS ORIGINAL EXAM 22
+        age_at_observation:
+          expr: '{phv00177972} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002153
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000689
+      slot_derivations:
+        associated_participant:
+          populated_from: 0
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000689
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002151
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00157771
+        associated_visit:
+          value: FHS ORIGINAL EXAM 20
+        age_at_observation:
+          expr: '{phv00177968} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002151
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000681
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00068713
+        associated_visit:
+          value: FHS OFFSPRING EXAM 6
+        age_at_observation:
+          expr: '{phv00177940} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000681
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000682
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00069162
+        associated_visit:
+          value: FHS OFFSPRING EXAM 7
+        age_at_observation:
+          expr: '{phv00177942} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000682
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000682
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00069162
+        associated_visit:
+          value: FHS OFFSPRING EXAM 7
+        age_at_observation:
+          expr: '{phv00177942} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000682
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000689
+      slot_derivations:
+        associated_participant:
+          populated_from: 0
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000689
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000681
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00068713
+        associated_visit:
+          value: FHS OFFSPRING EXAM 6
+        age_at_observation:
+          expr: '{phv00177940} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000681
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002151
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00157771
+        associated_visit:
+          value: FHS ORIGINAL EXAM 20
+        age_at_observation:
+          expr: '{phv00177968} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002151
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002153
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158540
+        associated_visit:
+          value: FHS ORIGINAL EXAM 22
+        age_at_observation:
+          expr: '{phv00177972} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002153
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000681
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00068713
+        associated_visit:
+          value: FHS OFFSPRING EXAM 6
+        age_at_observation:
+          expr: '{phv00177940} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000681
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002152
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158091
+        associated_visit:
+          value: FHS ORIGINAL EXAM 21
+        age_at_observation:
+          expr: '{phv00177970} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002152
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002152
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158091
+        associated_visit:
+          value: FHS ORIGINAL EXAM 21
+        age_at_observation:
+          expr: '{phv00177970} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002152
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002153
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158540
+        associated_visit:
+          value: FHS ORIGINAL EXAM 22
+        age_at_observation:
+          expr: '{phv00177972} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002153
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002151
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00157771
+        associated_visit:
+          value: FHS ORIGINAL EXAM 20
+        age_at_observation:
+          expr: '{phv00177968} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002151
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000689
+      slot_derivations:
+        associated_participant:
+          populated_from: 0
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000689
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002151
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00157771
+        associated_visit:
+          value: FHS ORIGINAL EXAM 20
+        age_at_observation:
+          expr: '{phv00177968} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002151
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000689
+      slot_derivations:
+        associated_participant:
+          populated_from: 0
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000689
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002152
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158091
+        associated_visit:
+          value: FHS ORIGINAL EXAM 21
+        age_at_observation:
+          expr: '{phv00177970} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002152
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002152
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158091
+        associated_visit:
+          value: FHS ORIGINAL EXAM 21
+        age_at_observation:
+          expr: '{phv00177970} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002152
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000682
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00069162
+        associated_visit:
+          value: FHS OFFSPRING EXAM 7
+        age_at_observation:
+          expr: '{phv00177942} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000682
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000680
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00068241
+        associated_visit:
+          value: FHS OFFSPRING EXAM 5
+        age_at_observation:
+          expr: '{phv00177938} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000680
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002151
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00157771
+        associated_visit:
+          value: FHS ORIGINAL EXAM 20
+        age_at_observation:
+          expr: '{phv00177968} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002151
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000680
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00068241
+        associated_visit:
+          value: FHS OFFSPRING EXAM 5
+        age_at_observation:
+          expr: '{phv00177938} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000680
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002152
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158091
+        associated_visit:
+          value: FHS ORIGINAL EXAM 21
+        age_at_observation:
+          expr: '{phv00177970} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002152
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002152
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158091
+        associated_visit:
+          value: FHS ORIGINAL EXAM 21
+        age_at_observation:
+          expr: '{phv00177970} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002152
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000681
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00068713
+        associated_visit:
+          value: FHS OFFSPRING EXAM 6
+        age_at_observation:
+          expr: '{phv00177940} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000681
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000689
+      slot_derivations:
+        associated_participant:
+          populated_from: 0
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000689
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000682
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00069162
+        associated_visit:
+          value: FHS OFFSPRING EXAM 7
+        age_at_observation:
+          expr: '{phv00177942} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000682
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000689
+      slot_derivations:
+        associated_participant:
+          populated_from: 0
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000689
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000682
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00069162
+        associated_visit:
+          value: FHS OFFSPRING EXAM 7
+        age_at_observation:
+          expr: '{phv00177942} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000682
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000682
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00069162
+        associated_visit:
+          value: FHS OFFSPRING EXAM 7
+        age_at_observation:
+          expr: '{phv00177942} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000682
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000681
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00068713
+        associated_visit:
+          value: FHS OFFSPRING EXAM 6
+        age_at_observation:
+          expr: '{phv00177940} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000681
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000682
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00069162
+        associated_visit:
+          value: FHS OFFSPRING EXAM 7
+        age_at_observation:
+          expr: '{phv00177942} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000682
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000689
+      slot_derivations:
+        associated_participant:
+          populated_from: 0
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000689
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002152
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158091
+        associated_visit:
+          value: FHS ORIGINAL EXAM 21
+        age_at_observation:
+          expr: '{phv00177970} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002152
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000689
+      slot_derivations:
+        associated_participant:
+          populated_from: 0
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000689
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000689
+      slot_derivations:
+        associated_participant:
+          populated_from: 0
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000689
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000681
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00068713
+        associated_visit:
+          value: FHS OFFSPRING EXAM 6
+        age_at_observation:
+          expr: '{phv00177940} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000681
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002153
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158540
+        associated_visit:
+          value: FHS ORIGINAL EXAM 22
+        age_at_observation:
+          expr: '{phv00177972} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002153
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002152
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158091
+        associated_visit:
+          value: FHS ORIGINAL EXAM 21
+        age_at_observation:
+          expr: '{phv00177970} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002152
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002152
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158091
+        associated_visit:
+          value: FHS ORIGINAL EXAM 21
+        age_at_observation:
+          expr: '{phv00177970} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002152
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000681
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00068713
+        associated_visit:
+          value: FHS OFFSPRING EXAM 6
+        age_at_observation:
+          expr: '{phv00177940} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000681
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002151
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00157771
+        associated_visit:
+          value: FHS ORIGINAL EXAM 20
+        age_at_observation:
+          expr: '{phv00177968} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002151
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000680
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00068241
+        associated_visit:
+          value: FHS OFFSPRING EXAM 5
+        age_at_observation:
+          expr: '{phv00177938} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000680
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000680
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00068241
+        associated_visit:
+          value: FHS OFFSPRING EXAM 5
+        age_at_observation:
+          expr: '{phv00177938} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000680
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002152
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158091
+        associated_visit:
+          value: FHS ORIGINAL EXAM 21
+        age_at_observation:
+          expr: '{phv00177970} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002152
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002153
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158540
+        associated_visit:
+          value: FHS ORIGINAL EXAM 22
+        age_at_observation:
+          expr: '{phv00177972} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002153
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000689
+      slot_derivations:
+        associated_participant:
+          populated_from: 0
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000689
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002153
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00158540
+        associated_visit:
+          value: FHS ORIGINAL EXAM 22
+        age_at_observation:
+          expr: '{phv00177972} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002153
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000689
+      slot_derivations:
+        associated_participant:
+          populated_from: 0
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000689
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000680
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00068241
+        associated_visit:
+          value: FHS OFFSPRING EXAM 5
+        age_at_observation:
+          expr: '{phv00177938} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000680
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002900
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00172393
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172393}) + ":" + FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'
+        age_at_observation:
+          expr: '{phv00177932} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -1900,394 +2567,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000689
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000689
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000681
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00068713
-        associated_visit:
-          value: FHS OFFSPRING EXAM 6
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000681
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002151
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00157771
-        associated_visit:
-          value: FHS ORIGINAL EXAM 20
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002151
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000689
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000689
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000681
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00068713
-        associated_visit:
-          value: FHS OFFSPRING EXAM 6
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000681
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002151
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00157771
-        associated_visit:
-          value: FHS ORIGINAL EXAM 20
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002151
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000680
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00068241
-        associated_visit:
-          value: FHS OFFSPRING EXAM 5
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000680
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000680
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00068241
-        associated_visit:
-          value: FHS OFFSPRING EXAM 5
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000680
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000680
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00068241
-        associated_visit:
-          value: FHS OFFSPRING EXAM 5
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000680
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000682
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00069162
-        associated_visit:
-          value: FHS OFFSPRING EXAM 7
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000682
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000681
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00068713
-        associated_visit:
-          value: FHS OFFSPRING EXAM 6
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000681
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000689
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000689
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002151
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00157771
-        associated_visit:
-          value: FHS ORIGINAL EXAM 20
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002151
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000681
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00068713
-        associated_visit:
-          value: FHS OFFSPRING EXAM 6
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000681
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000689
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000689
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000689
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000689
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000682
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00069162
-        associated_visit:
-          value: FHS OFFSPRING EXAM 7
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000682
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002151
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00157771
-        associated_visit:
-          value: FHS ORIGINAL EXAM 20
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002151
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000680
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00068241
-        associated_visit:
-          value: FHS OFFSPRING EXAM 5
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000680
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000689
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000689
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002152
+      populated_from: pht002152
       slot_derivations:
         associated_participant:
           populated_from: phv00158091
         associated_visit:
           value: FHS ORIGINAL EXAM 21
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177970} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -2299,33 +2586,90 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002152
+      populated_from: pht000681
       slot_derivations:
         associated_participant:
-          populated_from: phv00158091
+          populated_from: phv00068713
         associated_visit:
-          value: FHS ORIGINAL EXAM 21
+          value: FHS OFFSPRING EXAM 6
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177940} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht002152
+                populated_from: pht000681
                 slot_derivations:
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000680
+      populated_from: pht000681
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00068713
+        associated_visit:
+          value: FHS OFFSPRING EXAM 6
+        age_at_observation:
+          expr: '{phv00177940} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000681
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000682
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00069162
+        associated_visit:
+          value: FHS OFFSPRING EXAM 7
+        age_at_observation:
+          expr: '{phv00177942} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000682
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000682
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00069162
+        associated_visit:
+          value: FHS OFFSPRING EXAM 7
+        age_at_observation:
+          expr: '{phv00177942} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000682
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000680
       slot_derivations:
         associated_participant:
           populated_from: phv00068241
         associated_visit:
           value: FHS OFFSPRING EXAM 5
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177938} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -2337,14 +2681,31 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000689
+      populated_from: pht002152
       slot_derivations:
         associated_participant:
-          populated_from: nan
+          populated_from: phv00158091
         associated_visit:
-          value: nan
+          value: FHS ORIGINAL EXAM 21
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177970} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002152
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000689
+      slot_derivations:
+        associated_participant:
+          populated_from: 0
+        age_at_observation:
+          expr: '{0} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -2356,14 +2717,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002151
+      populated_from: pht002151
       slot_derivations:
         associated_participant:
           populated_from: phv00157771
         associated_visit:
           value: FHS ORIGINAL EXAM 20
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177968} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -2375,52 +2736,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000682
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00069162
-        associated_visit:
-          value: FHS OFFSPRING EXAM 7
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000682
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002153
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00158540
-        associated_visit:
-          value: FHS ORIGINAL EXAM 22
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002153
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000680
+      populated_from: pht000680
       slot_derivations:
         associated_participant:
           populated_from: phv00068241
         associated_visit:
           value: FHS OFFSPRING EXAM 5
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177938} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -2432,33 +2755,33 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000681
+      populated_from: pht002151
       slot_derivations:
         associated_participant:
-          populated_from: phv00068713
+          populated_from: phv00157771
         associated_visit:
-          value: FHS OFFSPRING EXAM 6
+          value: FHS ORIGINAL EXAM 20
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177968} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000681
+                populated_from: pht002151
                 slot_derivations:
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002152
+      populated_from: pht002152
       slot_derivations:
         associated_participant:
           populated_from: phv00158091
         associated_visit:
           value: FHS ORIGINAL EXAM 21
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177970} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -2470,223 +2793,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000680
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00068241
-        associated_visit:
-          value: FHS OFFSPRING EXAM 5
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000680
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002153
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00158540
-        associated_visit:
-          value: FHS ORIGINAL EXAM 22
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002153
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000681
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00068713
-        associated_visit:
-          value: FHS OFFSPRING EXAM 6
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000681
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000681
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00068713
-        associated_visit:
-          value: FHS OFFSPRING EXAM 6
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000681
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000681
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00068713
-        associated_visit:
-          value: FHS OFFSPRING EXAM 6
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000681
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002153
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00158540
-        associated_visit:
-          value: FHS ORIGINAL EXAM 22
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002153
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000689
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000689
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002152
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00158091
-        associated_visit:
-          value: FHS ORIGINAL EXAM 21
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002152
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000682
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00069162
-        associated_visit:
-          value: FHS OFFSPRING EXAM 7
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000682
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000680
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00068241
-        associated_visit:
-          value: FHS OFFSPRING EXAM 5
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000680
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000689
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000689
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002150
+      populated_from: pht002150
       slot_derivations:
         associated_participant:
           populated_from: phv00157296
         associated_visit:
           value: FHS GENERATION 3 EXAM 1
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177930} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -2698,90 +2812,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002152
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00158091
-        associated_visit:
-          value: FHS ORIGINAL EXAM 21
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002152
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000682
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00069162
-        associated_visit:
-          value: FHS OFFSPRING EXAM 7
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000682
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002152
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00158091
-        associated_visit:
-          value: FHS ORIGINAL EXAM 21
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002152
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002350
+      populated_from: pht002350
       slot_derivations:
         associated_participant:
           populated_from: phv00162112
         associated_visit:
           value: FHS OFFSPRING EXAM 8
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177944} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -2793,90 +2831,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002153
+      populated_from: pht002900
       slot_derivations:
         associated_participant:
-          populated_from: phv00158540
+          populated_from: phv00172393
         associated_visit:
-          value: FHS ORIGINAL EXAM 22
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172393}) + ":" + FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'
         age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002153
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000681
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00068713
-        associated_visit:
-          value: FHS OFFSPRING EXAM 6
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000681
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000680
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00068241
-        associated_visit:
-          value: FHS OFFSPRING EXAM 5
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000680
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002151
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00157771
-        associated_visit:
-          value: FHS ORIGINAL EXAM 20
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002151
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177932} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -2888,14 +2850,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002350
+      populated_from: pht002350
       slot_derivations:
         associated_participant:
           populated_from: phv00162112
         associated_visit:
           value: FHS OFFSPRING EXAM 8
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177944} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -2907,14 +2869,33 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002150
+      populated_from: pht002900
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00172393
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172393}) + ":" + FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'
+        age_at_observation:
+          expr: '{phv00177932} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002900
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002150
       slot_derivations:
         associated_participant:
           populated_from: phv00157296
         associated_visit:
           value: FHS GENERATION 3 EXAM 1
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177930} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -2926,33 +2907,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002150
+      populated_from: pht002150
       slot_derivations:
         associated_participant:
           populated_from: phv00157296
         associated_visit:
           value: FHS GENERATION 3 EXAM 1
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177930} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -2964,14 +2926,33 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002350
+      populated_from: pht002900
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00172393
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172393}) + ":" + FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'
+        age_at_observation:
+          expr: '{phv00177932} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002900
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002350
       slot_derivations:
         associated_participant:
           populated_from: phv00162112
         associated_visit:
           value: FHS OFFSPRING EXAM 8
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177944} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -2983,33 +2964,33 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002350
+      populated_from: pht002900
       slot_derivations:
         associated_participant:
-          populated_from: phv00162112
+          populated_from: phv00172393
         associated_visit:
-          value: FHS OFFSPRING EXAM 8
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172393}) + ":" + FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177932} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht002350
+                populated_from: pht002900
                 slot_derivations:
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002150
+      populated_from: pht002150
       slot_derivations:
         associated_participant:
           populated_from: phv00157296
         associated_visit:
           value: FHS GENERATION 3 EXAM 1
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177930} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -3021,14 +3002,14 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002350
+      populated_from: pht002350
       slot_derivations:
         associated_participant:
           populated_from: phv00162112
         associated_visit:
           value: FHS OFFSPRING EXAM 8
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177944} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -3040,14 +3021,33 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht002150
+      populated_from: pht002350
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00162112
+        associated_visit:
+          value: FHS OFFSPRING EXAM 8
+        age_at_observation:
+          expr: '{phv00177944} * 365'
+        observation_type:
+          value: OMOP:21493059
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002350
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002150
       slot_derivations:
         associated_participant:
           populated_from: phv00157296
         associated_visit:
           value: FHS GENERATION 3 EXAM 1
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177930} * 365'
         observation_type:
           value: OMOP:21493059
         value_quantity:
@@ -3057,415 +3057,3 @@
                 populated_from: pht002150
                 slot_derivations:
                   value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172961
-                  unit:
-                    value: "{#}/wk"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172969
-                  unit:
-                    value: "{#}/wk"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172965
-                  unit:
-                    value: "{#}/wk"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172967
-                  unit:
-                    value: "{#}/wk"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172957
-                  unit:
-                    value: "{#}/wk"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172963
-                  unit:
-                    value: "{#}/wk"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172966
-                  unit:
-                    value: "{#}/wk"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172959
-                  unit:
-                    value: "{#}/wk"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172954
-                  unit:
-                    value: "{#}/wk"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172955
-                  unit:
-                    value: "{#}/wk"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172968
-                  unit:
-                    value: "{#}/wk"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172960
-                  unit:
-                    value: "{#}/wk"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172953
-                  unit:
-                    value: "{#}/wk"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172958
-                  unit:
-                    value: "{#}/wk"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172964
-                  unit:
-                    value: "{#}/wk"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172956
-                  unit:
-                    value: "{#}/wk"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht002900
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:21493059
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002900
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172962
-                  unit:
-                    value: "{#}/wk"

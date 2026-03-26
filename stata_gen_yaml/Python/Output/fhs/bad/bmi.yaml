@@ -1,13 +1,11 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000397
+      populated_from: pht000397
       slot_derivations:
         associated_participant:
-          populated_from: nan
+          populated_from: phv00057982
         associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
+          value: FHS SLEEP HEART HEALTH STUDY (SHHS) FOLLOW UP 2
         observation_type:
           value: OBA:2045455
         value_quantity:
@@ -17,25 +15,3 @@
                 populated_from: pht000397
                 slot_derivations:
                   value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000395
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:2045455
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000395
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00056588
-                  unit:
-                    value: "kg/m2"

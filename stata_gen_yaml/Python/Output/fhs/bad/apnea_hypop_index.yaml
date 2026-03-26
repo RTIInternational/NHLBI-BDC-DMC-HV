@@ -1,32 +1,11 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000397
+      populated_from: pht000395
       slot_derivations:
         associated_participant:
-          populated_from: nan
+          populated_from: phv00056635
         associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:37396400
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000397
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000395
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
+          value: FHS SLEEP HEART HEALTH STUDY (SHHS) BASELINE
         observation_type:
           value: OMOP:37396400
         value_quantity:
@@ -38,33 +17,12 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000395
+      populated_from: pht000397
       slot_derivations:
         associated_participant:
-          populated_from: nan
+          populated_from: phv00057982
         associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OMOP:37396400
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000395
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000397
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
+          value: FHS SLEEP HEART HEALTH STUDY (SHHS) FOLLOW UP 2
         observation_type:
           value: OMOP:37396400
         value_quantity:
@@ -72,5 +30,39 @@
           - class_derivations:
               Quantity:
                 populated_from: pht000397
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000397
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00057982
+        associated_visit:
+          value: FHS SLEEP HEART HEALTH STUDY (SHHS) FOLLOW UP 2
+        observation_type:
+          value: OMOP:37396400
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000397
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000395
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00056635
+        associated_visit:
+          value: FHS SLEEP HEART HEALTH STUDY (SHHS) BASELINE
+        observation_type:
+          value: OMOP:37396400
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000395
                 slot_derivations:
                   value_decimal:

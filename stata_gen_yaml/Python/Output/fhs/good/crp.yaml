@@ -1,13 +1,57 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000080
+      populated_from: pht000081
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00021695
+        associated_visit:
+          value: FHS OFFSPRING EXAM 6
+        age_at_observation:
+          expr: '{phv00177940} * 365'
+        observation_type:
+          value: OMOP:4208414
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000081
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00021693
+                  unit:
+                    value: "mg/L"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004802
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00227023
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00227023}) + ":" + FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4'
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OMOP:4208414
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004802
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00227060
+                  unit:
+                    value: "mg/L"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000080
       slot_derivations:
         associated_participant:
           populated_from: phv00021692
         associated_visit:
           value: FHS OFFSPRING EXAM 2
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177932} * 365'
         observation_type:
           value: OMOP:4208414
         value_quantity:
@@ -22,23 +66,23 @@
                     value: "mg/L"
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000081
+      populated_from: pht002889
       slot_derivations:
         associated_participant:
-          populated_from: phv00021695
+          populated_from: phv00172159
         associated_visit:
-          value: FHS OFFSPRING EXAM 6
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172159}) + ":" + FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177932} * 365'
         observation_type:
           value: OMOP:4208414
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000081
+                populated_from: pht002889
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00021693
+                    populated_from: phv00172177
                   unit:
                     value: "mg/L"

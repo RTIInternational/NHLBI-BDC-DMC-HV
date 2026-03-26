@@ -1,13 +1,35 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000688
+      populated_from: pht004804
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00227079
+        associated_visit:
+          value: FHS OMNI 2 EXAM 1
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:2060174
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004804
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00227080
+                  unit:
+                    value: "pmol/L"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000688
       slot_derivations:
         associated_participant:
           populated_from: phv00069685
         associated_visit:
           value: FHS GENERATION 3 EXAM 1
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177930} * 365'
         observation_type:
           value: OBA:2060174
         value_quantity:
@@ -22,23 +44,67 @@
                     value: "pmol/L"
 - class_derivations:
     MeasurementObservation:
-      populated from: pht004804
+      populated_from: pht004805
       slot_derivations:
         associated_participant:
-          populated_from: phv00227079
+          populated_from: phv00227082
         associated_visit:
-          value: FHS OMNI 2 EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00227082}) + ":" + Offspring Exam 9 and Omni 1 Exam 4'
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{0} * 365'
         observation_type:
           value: OBA:2060174
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht004804
+                populated_from: pht004805
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00227080
+                    populated_from: phv00227085
+                  unit:
+                    value: "pmol/L"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003902
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00201993
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00201993}) + ":" + GENERATION 3 EXAM 2, NEW OFFSPRING SPOUSE EXAM 2, OMNI 2 EXAM 2'
+        age_at_observation:
+          expr: '{phv00177932} * 365'
+        observation_type:
+          value: OBA:2060174
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003902
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00201995
+                  unit:
+                    value: "pmol/L"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003901
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00201989
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00201989}) + ":" + Offspring Exam 8 and Omni 1 Exam 3'
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:2060174
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003901
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00201991
                   unit:
                     value: "pmol/L"

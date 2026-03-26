@@ -1,51 +1,13 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht010744
+      populated_from: pht010745
       slot_derivations:
         associated_participant:
-          populated_from: nan
+          populated_from: phv00476636
         associated_visit:
-          value: nan
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00476636}) + ":" + OFFSPRING EXAM 8 AND OMNI 1 EXAM 3'
         age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT2000000
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht010744
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht010746
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT2000000
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht010746
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht010745
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
+          expr: '{0} * 365'
         observation_type:
           value: OBA:VT2000000
         value_quantity:
@@ -57,45 +19,39 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000210
+      populated_from: pht010744
       slot_derivations:
         associated_participant:
-          populated_from: nan
+          populated_from: phv00476561
         associated_visit:
-          value: nan
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00476561}) + ":" + Generation 3 Exam 2, Omni 2 Exam 2, and New Offspring Spouse Exam 2'
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177932} * 365'
         observation_type:
           value: OBA:VT2000000
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000210
+                populated_from: pht010744
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00024826
-                  unit:
-                    value: "mm[Hg]"
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000209
+      populated_from: pht010746
       slot_derivations:
         associated_participant:
-          populated_from: nan
+          populated_from: phv00476758
         associated_visit:
-          value: nan
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00476758}) + ":" + OFFSPRING EXAM 9 AND OMNI 1 EXAM 4'
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{0} * 365'
         observation_type:
           value: OBA:VT2000000
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000209
+                populated_from: pht010746
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00024780
-                  unit:
-                    value: "mm[Hg]"

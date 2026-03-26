@@ -1,13 +1,57 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000211
+      populated_from: pht000209
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00024802
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00024802}) + ":" + FHS OFFSPRING EXAM 7, OMNI 1 EXAM 2'
+        age_at_observation:
+          expr: '{0} * 365'
+        observation_type:
+          value: OBA:VT2000000
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000209
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00024780
+                  unit:
+                    value: "mm[Hg]"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000194
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00024437
+        associated_visit:
+          value: FHS GENERATION 3 EXAM 1
+        age_at_observation:
+          expr: '{phv00177930} * 365'
+        observation_type:
+          value: OBA:VT2000000
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000194
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00024414
+                  unit:
+                    value: "mm[Hg]"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000211
       slot_derivations:
         associated_participant:
           populated_from: phv00024907
         associated_visit:
           value: FHS ORIGINAL EXAM 26
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177980} * 365'
         observation_type:
           value: OBA:VT2000000
         value_quantity:
@@ -22,14 +66,36 @@
                     value: "mm[Hg]"
 - class_derivations:
     MeasurementObservation:
-      populated from: pht000195
+      populated_from: pht000210
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00024846
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00024846}) + ":" + FHS GENERATION 3 EXAM 1, NEW OFFSPRING SPOUSE EXAM 1, OMNI 2 EXAM 1'
+        age_at_observation:
+          expr: '{phv00177930} * 365'
+        observation_type:
+          value: OBA:VT2000000
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000210
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00024826
+                  unit:
+                    value: "mm[Hg]"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000195
       slot_derivations:
         associated_participant:
           populated_from: phv00024510
         associated_visit:
           value: FHS OFFSPRING EXAM 7
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177942} * 365'
         observation_type:
           value: OBA:VT2000000
         value_quantity:
@@ -40,27 +106,5 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00024481
-                  unit:
-                    value: "mm[Hg]"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht000194
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00024437
-        associated_visit:
-          value: FHS GENERATION 3 EXAM 1
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT2000000
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000194
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00024414
                   unit:
                     value: "mm[Hg]"

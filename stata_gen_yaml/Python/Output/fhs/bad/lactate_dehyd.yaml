@@ -1,35 +1,13 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht001045
-      slot_derivations:
-        associated_participant:
-          populated_from: nan
-        associated_visit:
-          value: nan
-        age_at_observation:
-          expr: {nan} * 365
-        observation_type:
-          value: OBA:VT0010477
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001045
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00081018
-                  unit:
-                    value: "[IU]/L"
-- class_derivations:
-    MeasurementObservation:
-      populated from: pht006013
+      populated_from: pht006013
       slot_derivations:
         associated_participant:
           populated_from: phv00275427
         associated_visit:
           value: FHS OFFSPRING EXAM 5
         age_at_observation:
-          expr: {nan} * 365
+          expr: '{phv00177938} * 365'
         observation_type:
           value: OBA:VT0010477
         value_quantity:
