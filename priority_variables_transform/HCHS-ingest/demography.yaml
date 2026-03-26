@@ -14,3 +14,12 @@
         ethnicity:
           value: OMOP:38003563
           range: string
+        race:
+          value: UNKNOWN
+          range: string
+        # race mapped to UNKNOWN per Anne's guidance — HCHS/SOL has no OMB
+        # race variable. All participants are Hispanic/Latino; phv00226254
+        # (BKGRD1_C7) captures 7-level heritage subgroup (Dominican, Central
+        # American, Cuban, Mexican, Puerto-Rican, South American, Other) —
+        # these are NOT OMB race categories. A dedicated hispanic_subgroup
+        # slot has been proposed in HM repo to capture this data.

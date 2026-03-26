@@ -7,17 +7,15 @@
         associated_visit:
           value: HCHS EXAM
           range: string
-        age_at_condition_start:
-          expr: case(({phv00526597} == 1, {phv00526598} * 365))
         condition_concept:
-          value: HP:0001681
+          value: MONDO:0005386
           range: string
         condition_status:
-          populated_from: phv00526597
+          populated_from: phv00526629
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
-            '9': UNKNOWN
+            '1': PRESENT
+            'Q': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
