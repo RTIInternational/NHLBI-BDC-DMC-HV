@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00154925
         associated_visit:
-          value: WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP
+          expr: "case(({phv00154926} == 1, 'WHI SCREENING'), ({phv00154926} == 2 and {phv00154927} == 1, 'WHI SEMI-ANNUAL VISIT YEAR 1'), ({phv00154926} == 3 and {phv00154927} == 1, 'WHI YEAR 1'), ({phv00154926} == 3 and {phv00154927} == 2, 'WHI YEAR 2'), ({phv00154926} == 3 and {phv00154927} == 3, 'WHI YEAR 3'), ({phv00154926} == 3 and {phv00154927} == 4, 'WHI YEAR 4'), ({phv00154926} == 3 and {phv00154927} == 5, 'WHI YEAR 5'), ({phv00154926} == 3 and {phv00154927} == 6, 'WHI YEAR 6'), ({phv00154926} == 3 and {phv00154927} == 7, 'WHI YEAR 7'), ({phv00154926} == 3 and {phv00154927} == 8, 'WHI YEAR 8'), ({phv00154926} == 3 and {phv00154927} == 9, 'WHI YEAR 9'), ({phv00154926} == 3 and {phv00154927} == 10, 'WHI YEAR 10'), ({phv00154926} == 3 and {phv00154927} == 11, 'WHI YEAR 11'), (True, None))"
           range: string
         condition_concept:
           value: HP:0001712
