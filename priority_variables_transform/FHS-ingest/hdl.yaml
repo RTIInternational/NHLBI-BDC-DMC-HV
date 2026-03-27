@@ -509,7 +509,7 @@
                   value_decimal:
                     expr: 'case(
                              ({phv00172176} > 16.0, {phv00172176}),
-                             ({phv00172201} == 1, "LLOD")
+                             ({phv00172201} == 1, None)
                           )'
                   unit:
                     value: mg/dL
@@ -565,7 +565,7 @@
                 slot_derivations:
                   value_decimal:
                     expr: case(({phv00227059} > 16.0, {phv00227059}),({phv00227068}
-                      == 1, "'LLOD'"))
+                      == 1, None))
                   unit:
                     value: mg/dL
                     range: string
