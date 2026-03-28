@@ -1,0 +1,193 @@
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht013308
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00528692
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00528692}) + ":" + case(({phv00528696}
+            == ''VISIT_1'', ''SPIROMICS Visit 1''), ({phv00528696} == ''VISIT_2'', ''SPIROMICS
+            Visit 2''), ({phv00528696} == ''VISIT_3'', ''SPIROMICS Visit 3''), ({phv00528696}
+            == ''VISIT_4'', ''SPIROMICS Visit 4'')))'
+        observations:
+          object_derivations:
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht013308
+                slot_derivations:
+                  observation_type:
+                    value: OMOP:4176265
+                  method_type:
+                    value: Post-bronchodilator
+                  age_at_observation:
+                    expr: '{phv00528706} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht013308
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00528858
+                            unit:
+                              value: L
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht013308
+                slot_derivations:
+                  observation_type:
+                    value: OMOP:4241837
+                  method_type:
+                    value: Post-bronchodilator
+                  age_at_observation:
+                    expr: '{phv00528706} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht013308
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00528856
+                            unit:
+                              value: L
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht013308
+                slot_derivations:
+                  observation_type:
+                    value: OMOP:3011505
+                  method_type:
+                    value: Post-bronchodilator
+                  age_at_observation:
+                    expr: '{phv00528706} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht013308
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00528854
+                            unit:
+                              value: '%'
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht013308
+                slot_derivations:
+                  observation_type:
+                    value: OMOP:3002094
+                  method_type:
+                    value: Hankinson 1999 reference equations
+                  age_at_observation:
+                    expr: '{phv00528706} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht013308
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00528867
+                            unit:
+                              value: L
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht013308
+                slot_derivations:
+                  observation_type:
+                    value: OMOP:3022891
+                  method_type:
+                    value: Hankinson 1999 reference equations
+                  age_at_observation:
+                    expr: '{phv00528706} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht013308
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00528863
+                            unit:
+                              value: L
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht013308
+                slot_derivations:
+                  observation_type:
+                    value: OMOP:3024594
+                  method_type:
+                    value: Hankinson 1999 reference equations
+                  age_at_observation:
+                    expr: '{phv00528706} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht013308
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00528864
+                            unit:
+                              value: '%'
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht013308
+                slot_derivations:
+                  observation_type:
+                    value: OMOP:3005600
+                  method_type:
+                    value: Post-bronchodilator, Hankinson 1999 reference equations
+                  age_at_observation:
+                    expr: '{phv00528706} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht013308
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00528825
+                            unit:
+                              value: '%'
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht013308
+                slot_derivations:
+                  observation_type:
+                    value: OMOP:3011708
+                  method_type:
+                    value: Post-bronchodilator, Hankinson 1999 reference equations
+                  age_at_observation:
+                    expr: '{phv00528706} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht013308
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00528821
+                            unit:
+                              value: '%'
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht013308
+                slot_derivations:
+                  observation_type:
+                    value: OMOP:0
+                  method_type:
+                    value: Post-bronchodilator, Hankinson 1999 reference equations
+                  age_at_observation:
+                    expr: '{phv00528706} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht013308
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00528822
+                            unit:
+                              value: '%'
