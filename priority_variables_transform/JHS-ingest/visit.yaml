@@ -3,9 +3,11 @@
       populated_from: pht008729
       slot_derivations:
         id:
-          value: JHS Exam 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
         associated_participant:
           populated_from: phv00401078
+        visit_category:
+          value: HEALTH_EXAMINATION
         age_at_visit_start:
           expr: '{phv00401085} * 365'
         age_at_visit_end:
@@ -15,9 +17,11 @@
       populated_from: pht008730
       slot_derivations:
         id:
-          value: JHS Exam 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401273}) + ":JHS Exam 2")'
         associated_participant:
           populated_from: phv00401273
+        visit_category:
+          value: HEALTH_EXAMINATION
         age_at_visit_start:
           expr: '{phv00401282} * 365'
         age_at_visit_end:
@@ -27,22 +31,82 @@
       populated_from: pht008731
       slot_derivations:
         id:
-          value: JHS Exam 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
         associated_participant:
           populated_from: phv00401370
+        visit_category:
+          value: HEALTH_EXAMINATION
         age_at_visit_start:
           expr: '{phv00401379} * 365'
         age_at_visit_end:
           expr: '{phv00401379} * 365'
 - class_derivations:
     Visit:
-      populated_from: pht008734
+      populated_from: pht008725
       slot_derivations:
         id:
-          value: JHS Exam 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400849}) + ":JHS AFU")'
         associated_participant:
-          populated_from: phv00401565
-        age_at_visit_start:
-          expr: '{phv00401572} * 365'
-        age_at_visit_end:
-          expr: '{phv00401572} * 365'         
+          populated_from: phv00400849
+        visit_category:
+          value: TELEHEALTH
+- class_derivations:
+    Visit:
+      populated_from: pht008791
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00404188}) + ":JHS LAB DATA")'
+        associated_participant:
+          populated_from: phv00404188
+        visit_category:
+          value: LABORATORY_VISIT
+- class_derivations:
+    Visit:
+      populated_from: pht001969
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128197}) + ":JHS PULMONARY")'
+        associated_participant:
+          populated_from: phv00128197
+        visit_category:
+          value: HEALTH_EXAMINATION
+- class_derivations:
+    Visit:
+      populated_from: pht008728
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401067}) + ":JHS STROKE")'
+        associated_participant:
+          populated_from: phv00401067
+        visit_category:
+          value: UNKNOWN
+- class_derivations:
+    Visit:
+      populated_from: pht001960
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00127641}) + ":JHS URINE")'
+        associated_participant:
+          populated_from: phv00127641
+        visit_category:
+          value: LABORATORY_VISIT
+- class_derivations:
+    Visit:
+      populated_from: pht008755
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00402839}) + ":JHS HEART FAILURE EVENTS")'
+        associated_participant:
+          populated_from: phv00402839
+        visit_category:
+          value: UNKNOWN
+- class_derivations:
+    Visit:
+      populated_from: pht008756
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00402848}) + ":JHS ISTROKE")'
+        associated_participant:
+          populated_from: phv00402848
+        visit_category:
+          value: UNKNOWN

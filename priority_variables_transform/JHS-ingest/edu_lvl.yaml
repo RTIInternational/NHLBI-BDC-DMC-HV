@@ -5,8 +5,10 @@
         associated_participant:
           populated_from: phv00401078
         associated_visit:
-          value: JHS Exam 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
           range: string
+        observation_type:
+          value: OMOP:42528763
         category:
           value: EDUCATIONAL_ATTAINMENT
           range: string

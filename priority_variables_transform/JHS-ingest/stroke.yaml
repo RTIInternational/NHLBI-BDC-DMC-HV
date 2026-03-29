@@ -7,7 +7,7 @@
         age_at_condition_start:
           expr: case(({phv00128093} == 'Yes', {phv00128094} * 365))
         associated_visit:
-          value: JHS Exam 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128084}) + ":JHS Exam 1")'
           range: string
         condition_concept:
           value: HP:0001297
@@ -31,7 +31,7 @@
         associated_participant:
           populated_from: phv00128393
         associated_visit:
-          value: JHS Exam 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128393}) + ":JHS Exam 1")'
           range: string
         condition_concept:
           value: HP:0001297
@@ -54,7 +54,7 @@
         associated_participant:
           populated_from: phv00400849
         associated_visit:
-          value: JHS AFU
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400849}) + ":JHS AFU")'
           range: string
         condition_concept:
           value: HP:0001297
@@ -78,7 +78,7 @@
         associated_participant:
           populated_from: phv00401067
         associated_visit:
-          value: JHS STROKE
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401067}) + ":JHS STROKE")'
           range: string
         condition_concept:
           value: HP:0001297
@@ -100,7 +100,7 @@
         associated_participant:
           populated_from: phv00401067
         associated_visit:
-          value: JHS STROKE
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401067}) + ":JHS STROKE")'
           range: string
         condition_concept:
           value: MONDO:0005394
@@ -123,7 +123,7 @@
         associated_participant:
           populated_from: phv00401067
         associated_visit:
-          value: JHS STROKE
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401067}) + ":JHS STROKE")'
           range: string
         condition_concept:
           value: MONDO:0005394
@@ -146,7 +146,7 @@
         associated_participant:
           populated_from: phv00401067
         associated_visit:
-          value: JHS STROKE
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401067}) + ":JHS STROKE")'
           range: string
         condition_concept:
           value: HP:0002170
@@ -169,7 +169,7 @@
         associated_participant:
           populated_from: phv00401067
         associated_visit:
-          value: JHS STROKE
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401067}) + ":JHS STROKE")'
           range: string
         condition_concept:
           value: MONDO:0005099
@@ -192,7 +192,7 @@
         associated_participant:
           populated_from: phv00401078
         associated_visit:
-          value: JHS Exam 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
           range: string
         condition_concept:
           value: HP:0001297
@@ -215,7 +215,7 @@
         associated_participant:
           populated_from: phv00401273
         associated_visit:
-          value: JHS Exam 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401273}) + ":JHS Exam 2")'
           range: string
         condition_concept:
           value: HP:0001297
@@ -238,7 +238,7 @@
         associated_participant:
           populated_from: phv00401370
         associated_visit:
-          value: JHS Exam 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
           range: string
         condition_concept:
           value: HP:0001297
@@ -261,7 +261,7 @@
         associated_participant:
           populated_from: phv00402777
         associated_visit:
-          value: JHS Exam 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00402777}) + ":JHS Exam 2")'
           range: string
         condition_concept:
           value: HP:0001297
@@ -285,7 +285,7 @@
         associated_participant:
           populated_from: phv00402848
         associated_visit:
-          value: JHS ISTROKE
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00402848}) + ":JHS ISTROKE")'
           range: string
         condition_concept:
           value: HP:0001297
@@ -308,7 +308,7 @@
         associated_participant:
           populated_from: phv00403315
         associated_visit:
-          value: JHS Exam 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403315}) + ":JHS Exam 2")'
           range: string
         condition_concept:
           value: HP:0001297
@@ -331,7 +331,7 @@
         associated_participant:
           populated_from: phv00403369
         associated_visit:
-          value: JHS Exam 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403369}) + ":JHS Exam 3")'
           range: string
         condition_concept:
           value: HP:0001297
@@ -355,7 +355,7 @@
         associated_participant:
           populated_from: phv00403624
         associated_visit:
-          value: JHS Exam 9
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403624}) + ":JHS Exam 3")'
           range: string
         condition_concept:
           value: HP:0001297
@@ -379,7 +379,7 @@
         associated_participant:
           populated_from: phv00403885
         associated_visit:
-          value: JHS Exam 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403885}) + ":JHS Exam 1")'
           range: string
         condition_concept:
           value: HP:0001297
@@ -403,7 +403,7 @@
         associated_participant:
           populated_from: phv00403988
         associated_visit:
-          value: JHS Exam 9
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403988}) + ":JHS Exam 3")'
           range: string
         condition_concept:
           value: HP:0001297

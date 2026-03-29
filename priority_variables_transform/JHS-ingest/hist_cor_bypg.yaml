@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00400849
         associated_visit:
-          value: JHS AFU
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400849}) + ":JHS AFU")'
           range: string
         procedure_concept:
           populated_from: phv00400930
@@ -21,7 +21,7 @@
         associated_participant:
           populated_from: phv00126001
         associated_visit:
-          value: JHS Exam 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00126001}) + ":JHS Exam 2")'
           range: string
         procedure_concept:
           populated_from: phv00401900
@@ -37,7 +37,7 @@
         associated_participant:
           populated_from: phv00403058
         associated_visit:
-          value: JHS Exam 6
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403058}) + ":JHS Exam 2")'
           range: string
         procedure_concept:
           populated_from: phv00403115
@@ -53,7 +53,7 @@
         associated_participant:
           populated_from: phv00403140
         associated_visit:
-          value: JHS Exam 9
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403140}) + ":JHS Exam 3")'
           range: string
         procedure_concept:
           populated_from: phv00403190

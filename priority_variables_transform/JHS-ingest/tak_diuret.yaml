@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00401078
         associated_visit:
-          value: JHS Exam 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
           range: string
         drug_concept:
           expr: case(({phv00401108} == 1, "ATC:C03"))
@@ -19,7 +19,7 @@
         associated_participant:
           populated_from: phv00401273
         associated_visit:
-          value: JHS Exam 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401273}) + ":JHS Exam 2")'
           range: string
         drug_concept:
           expr: case(({phv00401300} == 1, "ATC:C03"))
@@ -33,7 +33,7 @@
         associated_participant:
           populated_from: phv00401370
         associated_visit:
-          value: JHS Exam 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
           range: string
         drug_concept:
           expr: case(({phv00401401} == 1, "ATC:C03"))
@@ -47,7 +47,7 @@
         associated_participant:
           populated_from: phv00401078
         associated_visit:
-          value: JHS Exam 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
           range: string
         drug_concept:
           expr: case(({phv00401102} == 1, "ATC:C03"))
@@ -61,7 +61,7 @@
         associated_participant:
           populated_from: phv00401273
         associated_visit:
-          value: JHS Exam 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401273}) + ":JHS Exam 2")'
           range: string
         drug_concept:
           expr: case(({phv00401294} == 1, "ATC:C03"))
@@ -75,7 +75,7 @@
         associated_participant:
           populated_from: phv00401565
         associated_visit:
-          value: JHS Exam 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401565}) + ":JHS Exam 3")'
           range: string
         drug_concept:
           expr: case(({phv00401574} == 1, "ATC:C03"))

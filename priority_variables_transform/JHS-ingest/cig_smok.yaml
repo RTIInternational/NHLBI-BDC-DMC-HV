@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00128494
         associated_visit:
-          value: JHS Exam 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128494}) + ":JHS Exam 1")'
           range: string
         observation_type:
           value: OMOP:4282779
@@ -21,7 +21,7 @@
         associated_participant:
           populated_from: phv00128494
         associated_visit:
-          value: JHS Exam 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128494}) + ":JHS Exam 1")'
           range: string
         observation_type:
           value: OMOP:4282779
