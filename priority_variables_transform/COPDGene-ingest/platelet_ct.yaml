@@ -1,11 +1,11 @@
+# P2/P3 gated: phv00569150 (Platelets) collected in P2 P3 only (not P1)
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002239
       slot_derivations:
         associated_visit:
-          expr: case(({phv00568798} == 'P1', 'COPDGene P1'), ({phv00568798} == 'P2',
-            'COPDGene P2'), ({phv00568798} == 'P3', 'COPDGene P3'), ({phv00568798}
-            == 'P3B', 'COPDGene P3B'))
+          expr: case(({phv00568798} == 'P2', 'COPDGene P2'), ({phv00568798} == 'P3',
+            'COPDGene P3'), ({phv00568798} == 'P3B', 'COPDGene P3B'), (True, None))
         associated_participant:
           populated_from: phv00159568
         age_at_observation:
