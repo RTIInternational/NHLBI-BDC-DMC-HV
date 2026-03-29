@@ -1,5 +1,30 @@
 - class_derivations:
     MeasurementObservation:
+      populated_from: pht001111
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00082638
+        associated_visit:
+          value: MESA AIR EXAM
+          range: string
+        age_at_observation:
+          expr: '{phv00082639} * 365'
+        observation_type:
+          value: OMOP:4152194
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001111
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00083410
+                  unit:
+                    value: mm[Hg]
+                    range: string
+- class_derivations:
+    MeasurementObservation:
       populated_from: pht001116
       slot_derivations:
         associated_participant:
@@ -10,7 +35,7 @@
         age_at_observation:
           expr: '{phv00084442} * 365'
         observation_type:
-          value: OMOP:3007081
+          value: OMOP:4152194
           range: string
         value_quantity:
           object_derivations:
@@ -19,9 +44,9 @@
                 populated_from: pht001116
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00085748
+                    populated_from: phv00085740
                   unit:
-                    value: mg/dL
+                    value: mm[Hg]
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -35,7 +60,7 @@
         age_at_observation:
           expr: '{phv00085773} * 365'
         observation_type:
-          value: OMOP:3007081
+          value: OMOP:4152194
           range: string
         value_quantity:
           object_derivations:
@@ -44,9 +69,9 @@
                 populated_from: pht001118
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00085930
+                    populated_from: phv00086224
                   unit:
-                    value: mg/dL
+                    value: mm[Hg]
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -60,7 +85,7 @@
         age_at_observation:
           expr: '{phv00086259} * 365'
         observation_type:
-          value: OMOP:3007081
+          value: OMOP:4152194
           range: string
         value_quantity:
           object_derivations:
@@ -69,9 +94,34 @@
                 populated_from: pht001119
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00086413
+                    populated_from: phv00086707
                   unit:
-                    value: mg/dL
+                    value: mm[Hg]
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001120
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00086726
+        associated_visit:
+          value: MESA CLASSIC EXAM 4
+          range: string
+        age_at_observation:
+          expr: '{phv00086727} * 365'
+        observation_type:
+          value: OMOP:4152194
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001120
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00087029
+                  unit:
+                    value: mm[Hg]
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -85,7 +135,7 @@
         age_at_observation:
           expr: '{phv00087071} * 365'
         observation_type:
-          value: OMOP:3007081
+          value: OMOP:4152194
           range: string
         value_quantity:
           object_derivations:
@@ -94,9 +144,9 @@
                 populated_from: pht001121
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00087530
+                    populated_from: phv00087084
                   unit:
-                    value: mg/dL
+                    value: mm[Hg]
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -110,7 +160,7 @@
         age_at_observation:
           expr: '{phv00174588} * 365'
         observation_type:
-          value: OMOP:3007081
+          value: OMOP:4152194
           range: string
         value_quantity:
           object_derivations:
@@ -119,9 +169,34 @@
                 populated_from: pht003086
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00175606
+                    populated_from: phv00175601
                   unit:
-                    value: mg/dL
+                    value: mm[Hg]
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003087
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00175794
+        associated_visit:
+          value: MESA LUNG CT
+          range: string
+        age_at_observation:
+          expr: '{phv00175854} * 365'
+        observation_type:
+          value: OMOP:4152194
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003087
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00175862
+                  unit:
+                    value: mm[Hg]
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -135,7 +210,7 @@
         age_at_observation:
           expr: '{phv00176011} * 365'
         observation_type:
-          value: OMOP:3007081
+          value: OMOP:4152194
           range: string
         value_quantity:
           object_derivations:
@@ -144,7 +219,7 @@
                 populated_from: pht003091
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00177040
+                    populated_from: phv00177035
                   unit:
-                    value: mg/dL
+                    value: mm[Hg]
                     range: string

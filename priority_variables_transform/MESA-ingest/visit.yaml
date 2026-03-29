@@ -3,9 +3,11 @@
       populated_from: pht001111
       slot_derivations:
         id:
-          value: MESA AIR EXAM
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         associated_participant:
           populated_from: phv00082638
+        visit_category:
+          value: HEALTH_EXAMINATION
         age_at_visit_start:
           expr: '{phv00082639} * 365'
         age_at_visit_end:
@@ -15,9 +17,11 @@
       populated_from: pht001112
       slot_derivations:
         id:
-          value: MESA AIR SPIROMETRY
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00083440}) + ":MESA AIR SPIROMETRY")'
         associated_participant:
           populated_from: phv00083440
+        visit_category:
+          value: HEALTH_EXAMINATION
         age_at_visit_start:
           expr: '{phv00083452} * 365'
         age_at_visit_end:
@@ -27,9 +31,11 @@
       populated_from: pht001114
       slot_derivations:
         id:
-          value: MESA LUNG SPIROMETRY
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00083675}) + ":MESA LUNG SPIROMETRY")'
         associated_participant:
           populated_from: phv00083675
+        visit_category:
+          value: HEALTH_EXAMINATION
         age_at_visit_start:
           expr: '{phv00083687} * 365'
         age_at_visit_end:
@@ -39,9 +45,11 @@
       populated_from: pht001116
       slot_derivations:
         id:
-          value: MESA CLASSIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         associated_participant:
           populated_from: phv00084441
+        visit_category:
+          value: HEALTH_EXAMINATION
         age_at_visit_start:
           expr: '{phv00084442} * 365'
         age_at_visit_end:
@@ -51,9 +59,11 @@
       populated_from: pht001118
       slot_derivations:
         id:
-          value: MESA CLASSIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         associated_participant:
           populated_from: phv00085772
+        visit_category:
+          value: HEALTH_EXAMINATION
         age_at_visit_start:
           expr: '{phv00085773} * 365'
         age_at_visit_end:
@@ -63,9 +73,11 @@
       populated_from: pht001119
       slot_derivations:
         id:
-          value: MESA CLASSIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         associated_participant:
           populated_from: phv00086258
+        visit_category:
+          value: HEALTH_EXAMINATION
         age_at_visit_start:
           expr: '{phv00086259} * 365'
         age_at_visit_end:
@@ -75,9 +87,11 @@
       populated_from: pht001120
       slot_derivations:
         id:
-          value: MESA CLASSIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         associated_participant:
           populated_from: phv00086726
+        visit_category:
+          value: HEALTH_EXAMINATION
         age_at_visit_start:
           expr: '{phv00086727} * 365'
         age_at_visit_end:
@@ -87,9 +101,11 @@
       populated_from: pht001121
       slot_derivations:
         id:
-          value: MESA FAMILY
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         associated_participant:
           populated_from: phv00087070
+        visit_category:
+          value: HEALTH_EXAMINATION
         age_at_visit_start:
           expr: '{phv00087071} * 365'
         age_at_visit_end:
@@ -99,9 +115,11 @@
       populated_from: pht001122
       slot_derivations:
         id:
-          value: MESA FAMILY SPIROMETRY
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087666}) + ":MESA FAMILY SPIROMETRY")'
         associated_participant:
           populated_from: phv00087666
+        visit_category:
+          value: HEALTH_EXAMINATION
         age_at_visit_start:
           expr: '{phv00087678} * 365'
         age_at_visit_end:
@@ -111,9 +129,11 @@
       populated_from: pht003086
       slot_derivations:
         id:
-          value: MESA AIR EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         associated_participant:
           populated_from: phv00174584
+        visit_category:
+          value: HEALTH_EXAMINATION
         age_at_visit_start:
           expr: '{phv00174588} * 365'
         age_at_visit_end:
@@ -123,10 +143,170 @@
       populated_from: pht003087
       slot_derivations:
         id:
-          value: MESA LUNG CT
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00175794}) + ":MESA LUNG CT")'
         associated_participant:
           populated_from: phv00175794
+        visit_category:
+          value: HEALTH_EXAMINATION
         age_at_visit_start:
           expr: '{phv00175854} * 365'
         age_at_visit_end:
-          expr: '{phv00175854} * 365'       
+          expr: '{phv00175854} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht003091
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
+        associated_participant:
+          populated_from: phv00176007
+        visit_category:
+          value: HEALTH_EXAMINATION
+        age_at_visit_start:
+          expr: '{phv00176011} * 365'
+        age_at_visit_end:
+          expr: '{phv00176011} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht001123
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087848}) + ":MESA CLASSIC CVE")'
+        associated_participant:
+          populated_from: phv00087848
+        visit_category:
+          value: HEALTH_EXAMINATION
+- class_derivations:
+    Visit:
+      populated_from: pht001217
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00090301}) + ":MESA AFIB")'
+        associated_participant:
+          populated_from: phv00090301
+        visit_category:
+          value: HEALTH_EXAMINATION
+- class_derivations:
+    Visit:
+      populated_from: pht003659
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197114}) + ":MESA TTD")'
+        associated_participant:
+          populated_from: phv00197114
+        visit_category:
+          value: HEALTH_EXAMINATION
+- class_derivations:
+    Visit:
+      populated_from: pht001205
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00090067}) + ":MESA AORTIC CT EXAM 4")'
+        associated_participant:
+          populated_from: phv00090067
+        visit_category:
+          value: HEALTH_EXAMINATION
+- class_derivations:
+    Visit:
+      populated_from: pht001984
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128699}) + ":MESA INFLAMMATION")'
+        associated_participant:
+          populated_from: phv00128699
+        visit_category:
+          value: HEALTH_EXAMINATION
+- class_derivations:
+    Visit:
+      populated_from: pht002099
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00142665}) + ":MESA IL-10")'
+        associated_participant:
+          populated_from: phv00142665
+        visit_category:
+          value: HEALTH_EXAMINATION
+- class_derivations:
+    Visit:
+      populated_from: pht004326
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00219018}) + ":MESA STRESS")'
+        associated_participant:
+          populated_from: phv00219018
+        visit_category:
+          value: HEALTH_EXAMINATION
+        age_at_visit_start:
+          expr: '{phv00219024} * 365'
+        age_at_visit_end:
+          expr: '{phv00219024} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht002140
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00156620}) + ":MESA BNP")'
+        associated_participant:
+          populated_from: phv00156620
+        visit_category:
+          value: HEALTH_EXAMINATION
+- class_derivations:
+    Visit:
+      populated_from: pht002198
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00159198}) + ":MESA ABD BODY COMPOSITION")'
+        associated_participant:
+          populated_from: phv00159198
+        visit_category:
+          value: HEALTH_EXAMINATION
+- class_derivations:
+    Visit:
+      populated_from: pht003089
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00175973}) + ":MESA ANCILLARY")'
+        associated_participant:
+          populated_from: phv00175973
+        visit_category:
+          value: HEALTH_EXAMINATION
+- class_derivations:
+    Visit:
+      populated_from: pht002515
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00165061}) + ":MESA ANCILLARY FET")'
+        associated_participant:
+          populated_from: phv00165061
+        visit_category:
+          value: HEALTH_EXAMINATION
+- class_derivations:
+    Visit:
+      populated_from: pht004319
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00218989}) + ":MESA EPIGENOMICS")'
+        associated_participant:
+          populated_from: phv00218989
+        visit_category:
+          value: HEALTH_EXAMINATION
+- class_derivations:
+    Visit:
+      populated_from: pht004317
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00218303}) + ":MESA DIET EXAM 5")'
+        associated_participant:
+          populated_from: phv00218303
+        visit_category:
+          value: HEALTH_EXAMINATION
+- class_derivations:
+    Visit:
+      populated_from: pht003088
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00175966}) + ":MESA LUNG")'
+        associated_participant:
+          populated_from: phv00175966
+        visit_category:
+          value: HEALTH_EXAMINATION
