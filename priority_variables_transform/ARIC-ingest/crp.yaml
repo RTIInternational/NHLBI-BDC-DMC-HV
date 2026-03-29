@@ -6,8 +6,6 @@
           populated_from: phv00296690
         associated_visit:
           value: ARIC EXAM 5
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4208414
         value_quantity:
@@ -28,8 +26,6 @@
           populated_from: phv00507546
         associated_visit:
           value: ARIC EXAM 1
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4208414
         value_quantity:
@@ -49,9 +45,9 @@
         associated_participant:
           populated_from: phv00519789
         associated_visit:
-          value: ARIC COHORT
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          value: ARIC EXAM 4
+        age_at_observation:
+          expr: "{phv00519798} * 365"
         observation_type:
           value: OMOP:4208414
         value_quantity:
