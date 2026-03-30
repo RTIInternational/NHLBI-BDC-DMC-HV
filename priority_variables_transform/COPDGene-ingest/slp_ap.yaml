@@ -15,12 +15,14 @@
         condition_status:
           expr: case( ({phv00159736} == 0, 'ABSENT'), ({phv00159736} == 1, case( ({phv00159737}
             == 0, case( ({phv00159739} == 0, 'HISTORICAL'), ({phv00159739} == 1, 'PRESENT'),
-            ({phv00159739} == 3, 'HISTORICAL') )), ({phv00159737} == 1, case( ({phv00159739}
+            ({phv00159739} == 3, 'HISTORICAL'), (True, 'PRESENT') )), ({phv00159737}
+            == 1, case( ({phv00159739} == 0, 'HISTORICAL'), ({phv00159739} == 1, 'PRESENT'),
+            ({phv00159739} == 3, 'HISTORICAL'), (True, 'PRESENT') )), (True, 'PRESENT')
+            )), ({phv00159736} == 3, case( ({phv00159737} == 0, case( ({phv00159739}
+            == 0, 'ABSENT'), ({phv00159739} == 1, 'PRESENT'), ({phv00159739} == 3,
+            'ABSENT'), (True, 'ABSENT') )), ({phv00159737} == 1, case( ({phv00159739}
             == 0, 'HISTORICAL'), ({phv00159739} == 1, 'PRESENT'), ({phv00159739} ==
-            3, 'HISTORICAL') )) )), ({phv00159736} == 3, case( ({phv00159737} == 0,
-            case( ({phv00159739} == 0, 'ABSENT'), ({phv00159739} == 1, 'PRESENT'), ({phv00159739}
-            == 3, 'ABSENT') )), ({phv00159737} == 1, case( ({phv00159739} == 0, 'HISTORICAL'),
-            ({phv00159739} == 1, 'PRESENT'), ({phv00159739} == 3, 'UNKNOWN') )) )) )
+            3, 'UNKNOWN'), (True, 'UNKNOWN') )), (True, 'UNKNOWN') )) )
         condition_provenance:
           expr: case( ({phv00159737} == 0, 'PATIENT_SELF-REPORTED_CONDITION'), ({phv00159737}
             == 1, 'CLINICAL_DIAGNOSIS'), (True, 'PATIENT_SELF-REPORTED_CONDITION') )
