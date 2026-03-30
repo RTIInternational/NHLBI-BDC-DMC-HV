@@ -36,7 +36,7 @@
           value: ARIC EXAM 1
           range: string
         drug_concept:
-          expr: 'case(({phv00207913} == 1, "ATC:C02"))'
+          expr: 'case(({phv00207913} == "Y", "ATC:C02"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -50,7 +50,7 @@
           value: ARIC EXAM 2
           range: string
         drug_concept:
-          expr: 'case(({phv00208001} == 1, "ATC:C02"))'
+          expr: 'case(({phv00208001} == "Y", "ATC:C02"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -64,7 +64,7 @@
           value: ARIC EXAM 3
           range: string
         drug_concept:
-          expr: 'case(({phv00208067} == 1, "ATC:C02"))'
+          expr: 'case(({phv00208067} == "Y", "ATC:C02"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -78,7 +78,7 @@
           value: ARIC EXAM 4
           range: string
         drug_concept:
-          expr: 'case(({phv00208296} == 1, "ATC:C02"))'
+          expr: 'case(({phv00208296} == "Y", "ATC:C02"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -92,7 +92,7 @@
           value: ARIC EXAM 4
           range: string
         drug_concept:
-          expr: 'case(({phv00209061} == 1, "ATC:C02"))'
+          expr: 'case(({phv00209061} == "Y", "ATC:C02"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
