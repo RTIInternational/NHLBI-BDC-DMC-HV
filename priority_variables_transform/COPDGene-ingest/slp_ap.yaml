@@ -13,19 +13,13 @@
         condition_concept:
           value: HP:0010535
         condition_status:
-          expr: case( ({phv00159736} == 0, 'ABSENT'), ({phv00159736} == 1, case( ({phv00159737}
-            == 0, case( ({phv00159739} == 0, 'HISTORICAL'), ({phv00159739} == 1, 'PRESENT'),
-            ({phv00159739} == 3, 'HISTORICAL'), (True, 'PRESENT') )), ({phv00159737}
-            == 1, case( ({phv00159739} == 0, 'HISTORICAL'), ({phv00159739} == 1, 'PRESENT'),
-            ({phv00159739} == 3, 'HISTORICAL'), (True, 'PRESENT') )), (True, 'PRESENT')
-            )), ({phv00159736} == 3, case( ({phv00159737} == 0, case( ({phv00159739}
-            == 0, 'ABSENT'), ({phv00159739} == 1, 'PRESENT'), ({phv00159739} == 3,
-            'ABSENT'), (True, 'ABSENT') )), ({phv00159737} == 1, case( ({phv00159739}
-            == 0, 'HISTORICAL'), ({phv00159739} == 1, 'PRESENT'), ({phv00159739} ==
-            3, 'UNKNOWN'), (True, 'UNKNOWN') )), (True, 'UNKNOWN') )) )
+          populated_from: phv00159736
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '3': UNKNOWN
         condition_provenance:
-          expr: case( ({phv00159737} == 0, 'PATIENT_SELF-REPORTED_CONDITION'), ({phv00159737}
-            == 1, 'CLINICAL_DIAGNOSIS'), (True, 'PATIENT_SELF-REPORTED_CONDITION') )
+          value: PATIENT_SELF-REPORTED_CONDITION
         associated_evidence:
           value: Medical History Questionnaire
         relationship_to_participant:
