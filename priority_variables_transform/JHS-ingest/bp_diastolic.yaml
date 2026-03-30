@@ -131,6 +131,30 @@
         observation_type:
           value: OMOP:4154790
         method_type:
+          value: "Sphygmomanometer reading 2"
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001974
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00128374
+                  unit:
+                    value: "mm[Hg]"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001974
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00128355
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128355}) + ":JHS Exam 1")'
+        # age_at_observation:
+          # expr: "{nan} * 365"
+        observation_type:
+          value: OMOP:4154790
+        method_type:
           value: "Sphygmomanometer average"
         value_quantity:
           object_derivations:
