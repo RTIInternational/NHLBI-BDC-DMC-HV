@@ -27,9 +27,6 @@
         ethnicity:
           populated_from: phv00082641
           value_mappings:
-            '1': OMOP:38003564
-            '2': OMOP:38003564
-            '3': OMOP:38003564
             '4': OMOP:38003563
         race:
           populated_from: phv00082641
@@ -54,9 +51,6 @@
         ethnicity:
           populated_from: phv00084444
           value_mappings:
-            '1': OMOP:38003564
-            '2': OMOP:38003564
-            '3': OMOP:38003564
             '4': OMOP:38003563
         race:
           populated_from: phv00084444
@@ -82,7 +76,7 @@
           expr: 'case(({phv00085775} == 4, "OMOP:38003563"),({phv00085776}
             == 1, "OMOP:38003563"),({phv00085777} == 1, "OMOP:38003563"),({phv00085778}
             == 1, "OMOP:38003563"),({phv00085779} == 1, "OMOP:38003563"),({phv00085780}
-            == 1, "OMOP:38003563"),(True, "OMOP:38003564"))'
+            == 1, "OMOP:38003563"))'
         race:
           populated_from: phv00085775
           value_mappings:
@@ -107,7 +101,7 @@
           expr: 'case(({phv00086261} == 4, "OMOP:38003563"),({phv00086262}
             == 1, "OMOP:38003563"),({phv00086263} == 1, "OMOP:38003563"),({phv00086264}
             == 1, "OMOP:38003563"),({phv00086265} == 1, "OMOP:38003563"),({phv00086266}
-            == 1, "OMOP:38003563"),(True, "OMOP:38003564"))'
+            == 1, "OMOP:38003563"))'
         race:
           populated_from: phv00086261
           value_mappings:
@@ -134,8 +128,7 @@
                       ({phv00086731} == 1, "OMOP:38003563"),
                       ({phv00086732} == 1, "OMOP:38003563"),
                       ({phv00086733} == 1, "OMOP:38003563"),
-                      ({phv00086734} == 1, "OMOP:38003563"),
-                      (True, "OMOP:38003564")
+                      ({phv00086734} == 1, "OMOP:38003563")
                 )'
         race:
           populated_from: phv00086729
@@ -158,7 +151,7 @@
             '1': OMOP:8507
             '0': OMOP:8532
         ethnicity:
-          expr: 'case(({phv00087074} == 4, "OMOP:38003563"), ({phv00087659} == 1, "OMOP:38003563"), (True, "OMOP:38003564"))'
+          expr: 'case(({phv00087074} == 4, "OMOP:38003563"), ({phv00087659} == 1, "OMOP:38003563"))'
         race:
           populated_from: phv00087074
           value_mappings:
@@ -182,9 +175,6 @@
         ethnicity:
           populated_from: phv00174585
           value_mappings:
-            '1': OMOP:38003564
-            '2': OMOP:38003564
-            '3': OMOP:38003564
             '4': OMOP:38003563
         race:
           populated_from: phv00174585
@@ -213,8 +203,7 @@
           expr: 'case(({phv00175941} == 4, "OMOP:38003563"),
                       ({phv00175855} == 4, "OMOP:38003563"),
                       ({phv00175876} == 4, "OMOP:38003563"),
-                      ({phv00175941} == 4, "OMOP:38003563"),
-                      (True, "OMOP:38003564"))'
+                      ({phv00175941} == 4, "OMOP:38003563"))'
         race:
           expr: 'case(({phv00175941} == 3, "OMOP:8516"),
                       ({phv00175855} == 3, "OMOP:8516"),
@@ -231,7 +220,6 @@
         ethnicity:
           populated_from: phv00175967
           value_mappings:
-            Black: OMOP:38003564
             Hispanic: OMOP:38003563
         race:
           populated_from: phv00175967
@@ -253,9 +241,6 @@
         ethnicity:
           populated_from: phv00176008
           value_mappings:
-            '1': OMOP:38003564
-            '2': OMOP:38003564
-            '3': OMOP:38003564
             '4': OMOP:38003563
         race:
           populated_from: phv00176008
@@ -280,9 +265,6 @@
         ethnicity:
           populated_from: phv00219021
           value_mappings:
-            '1': OMOP:38003564
-            '2': OMOP:38003564
-            '3': OMOP:38003564
             '4': OMOP:38003563
         race:
           populated_from: phv00219021
