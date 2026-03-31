@@ -90,7 +90,7 @@
                 populated_from: pht003699
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00197658
+                    expr: case({phv00197658}, 9999, None, {phv00197658})
                   unit:
                     value: h
                     range: string
@@ -113,7 +113,7 @@
                 populated_from: pht003699
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00197659
+                    expr: case({phv00197659}, 9000, None, 9999, None, {phv00197659})
                   unit:
                     value: h
                     range: string
@@ -147,7 +147,7 @@
         associated_participant:
           populated_from: phv00198805
         associated_visit:
-          value: CHS PSG 1
+          value: CHS PSG 2
           range: string
         observation_type:
           value: OBA:2040171
@@ -170,7 +170,7 @@
         associated_participant:
           populated_from: phv00198805
         associated_visit:
-          value: CHS PSG 1
+          value: CHS PSG 2
           range: string
         observation_type:
           value: OBA:2040171

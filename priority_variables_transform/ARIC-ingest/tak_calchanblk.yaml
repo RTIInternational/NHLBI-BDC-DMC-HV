@@ -9,7 +9,7 @@
         drug_concept:
           expr: case(({phv00203800} == "Y", "ATC:C08"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht004053
@@ -21,7 +21,7 @@
         drug_concept:
           expr: case(({phv00203967} == "Y", "ATC:C08"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht004102
@@ -33,7 +33,7 @@
         drug_concept:
           expr: case(({phv00206979} == "Y", "ATC:C08"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht004102
@@ -45,4 +45,4 @@
         drug_concept:
           expr: case(({phv00206980} == "Y", "ATC:C08"))
         exposure_provenance:
-          value: PRESCRIPTION WRITTEN
+          value: PRESCRIPTION_WRITTEN

@@ -17,10 +17,7 @@
                 populated_from: pht012835
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00516590
-                    unit_conversion:
-                      source_unit: "[in_us]"
-                      target_unit: "cm"
+                    expr: "{phv00516590} * 2.54"
                   unit:
                     value: "cm"
                     range: string
@@ -31,9 +28,7 @@
         associated_participant:
           populated_from: phv00207055
         associated_visit:
-          value: ARIC HOSPITAL FORM
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          value: ARIC Hospital Form
         observation_type:
           value: OBA:VT0001253
         value_quantity:
@@ -47,50 +42,59 @@
                   unit:
                     value: "cm"
                     range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht006415
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00294559
-        associated_visit:
-          value: ARIC EXAM 5
-        age_at_observation:
-          expr: "{phv00294561} * 365"
-        observation_type:
-          value: OBA:VT0001253
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006415
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00294562
-                  unit:
-                    value: "cm"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht012824
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00515065
-        associated_visit:
-          value: ARIC EXAM 4
-        age_at_observation:
-          expr: "{phv00515865} * 365"
-        observation_type:
-          value: OBA:VT0001253
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012824
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00515863
-                  unit:
-                    value: "cm"
+# COMMENTED OUT: ABI (Ankle Brachial Index) table — no unit metadata in dbGaP data dict.
+# Variable ABI5 (phv00294562) has empty unit field. Each exam already has proper cm height
+# from anthropometry/PFT forms. DCC used only pht004032 (ANTA01, confirmed cm) for ARIC height.
+# Ref: UW-GAC/topmed-dcc-harmonized-phenotypes height_baseline_1.json
+#
+# - class_derivations:
+#     MeasurementObservation:
+#       populated_from: pht006415
+#       slot_derivations:
+#         associated_participant:
+#           populated_from: phv00294559
+#         associated_visit:
+#           value: ARIC EXAM 5
+#         age_at_observation:
+#           expr: "{phv00294561} * 365"
+#         observation_type:
+#           value: OBA:VT0001253
+#         value_quantity:
+#           object_derivations:
+#           - class_derivations:
+#               Quantity:
+#                 populated_from: pht006415
+#                 slot_derivations:
+#                   value_decimal:
+#                     populated_from: phv00294562
+#                   unit:
+#                     value: "cm"
+# COMMENTED OUT: ECG Raw Epicare table — no unit metadata in dbGaP data dict.
+# Variable ECGRA278 (phv00515863) has empty unit field. Exam 4 already has proper cm height
+# from pht004035 (ANTD1, confirmed cm). DCC did not use ECG tables for height.
+#
+# - class_derivations:
+#     MeasurementObservation:
+#       populated_from: pht012824
+#       slot_derivations:
+#         associated_participant:
+#           populated_from: phv00515065
+#         associated_visit:
+#           value: ARIC EXAM 4
+#         age_at_observation:
+#           expr: "{phv00515865} * 365"
+#         observation_type:
+#           value: OBA:VT0001253
+#         value_quantity:
+#           object_derivations:
+#           - class_derivations:
+#               Quantity:
+#                 populated_from: pht012824
+#                 slot_derivations:
+#                   value_decimal:
+#                     populated_from: phv00515863
+#                   unit:
+#                     value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004032
@@ -99,8 +103,6 @@
           populated_from: phv00203163
         associated_visit:
           value: ARIC EXAM 1
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0001253
         value_quantity:
@@ -165,8 +167,6 @@
           populated_from: phv00203194
         associated_visit:
           value: ARIC EXAM 4
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0001253
         value_quantity:
@@ -179,28 +179,32 @@
                     populated_from: phv00203193
                   unit:
                     value: "cm"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht012822
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00513413
-        associated_visit:
-          value: ARIC EXAM 2
-        age_at_observation:
-          expr: "{phv00514213} * 365"
-        observation_type:
-          value: OBA:VT0001253
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012822
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00514211
-                  unit:
-                    value: "cm"
+# COMMENTED OUT: ECG Raw Epicare table — no unit metadata in dbGaP data dict.
+# Variable ECGRA278 (phv00514211) has empty unit field. Exam 2 already has proper height
+# from pht012835 (PFTB03, inches→cm via *2.54). DCC did not use ECG tables for height.
+#
+# - class_derivations:
+#     MeasurementObservation:
+#       populated_from: pht012822
+#       slot_derivations:
+#         associated_participant:
+#           populated_from: phv00513413
+#         associated_visit:
+#           value: ARIC EXAM 2
+#         age_at_observation:
+#           expr: "{phv00514213} * 365"
+#         observation_type:
+#           value: OBA:VT0001253
+#         value_quantity:
+#           object_derivations:
+#           - class_derivations:
+#               Quantity:
+#                 populated_from: pht012822
+#                 slot_derivations:
+#                   value_decimal:
+#                     populated_from: phv00514211
+#                   unit:
+#                     value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004034
@@ -209,8 +213,6 @@
           populated_from: phv00203181
         associated_visit:
           value: ARIC EXAM 3
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0001253
         value_quantity:
@@ -230,9 +232,7 @@
         associated_participant:
           populated_from: phv00297645
         associated_visit:
-          value: ARIC COHORT
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          value: ARIC Cohort
         observation_type:
           value: OBA:VT0001253
         value_quantity:
@@ -245,28 +245,32 @@
                     populated_from: phv00297646
                   unit:
                     value: "cm"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht012823
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00514239
-        associated_visit:
-          value: ARIC EXAM 3
-        age_at_observation:
-          expr: "{phv00515039} * 365"
-        observation_type:
-          value: OBA:VT0001253
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012823
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00515037
-                  unit:
-                    value: "cm"
+# COMMENTED OUT: ECG Raw Epicare table — no unit metadata in dbGaP data dict.
+# Variable ECGRA278 (phv00515037) has empty unit field. Exam 3 already has proper cm height
+# from pht004034 (ANTC1, confirmed cm). DCC did not use ECG tables for height.
+#
+# - class_derivations:
+#     MeasurementObservation:
+#       populated_from: pht012823
+#       slot_derivations:
+#         associated_participant:
+#           populated_from: phv00514239
+#         associated_visit:
+#           value: ARIC EXAM 3
+#         age_at_observation:
+#           expr: "{phv00515039} * 365"
+#         observation_type:
+#           value: OBA:VT0001253
+#         value_quantity:
+#           object_derivations:
+#           - class_derivations:
+#               Quantity:
+#                 populated_from: pht012823
+#                 slot_derivations:
+#                   value_decimal:
+#                     populated_from: phv00515037
+#                   unit:
+#                     value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006419
@@ -275,8 +279,6 @@
           populated_from: phv00294834
         associated_visit:
           value: ARIC EXAM 5
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0001253
         value_quantity:
@@ -297,8 +299,6 @@
           populated_from: phv00519876
         associated_visit:
           value: ARIC EXAM 5
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0001253
         value_quantity:
@@ -311,91 +311,82 @@
                     populated_from: phv00520006
                   unit:
                     value: "cm"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht004079
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00205920
-        associated_visit:
-          value: ARIC EXAM 3
-        age_at_observation:
-          expr: "{phv00510683} * 365"
-        observation_type:
-          value: OBA:VT0001253
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004079
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00510684
-                  unit:
-                    value: "cm"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht004079
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00205920
-        associated_visit:
-          value: ARIC EXAM 3
-        age_at_observation:
-          expr: "{phv00510683} * 365"
-        observation_type:
-          value: OBA:VT0001253
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004079
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00510685
-                  unit:
-                    value: "cm"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht012821
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00512590
-        associated_visit:
-          value: ARIC EXAM 1
-        age_at_observation:
-          expr: "{phv00513388} * 365"
-        observation_type:
-          value: OBA:VT0001253
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012821
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00513386
-                  unit:
-                    value: "cm"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht006414
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00294489
-        associated_visit:
-          value: ARIC EXAM 5
-        age_at_observation:
-          expr: "{phv00294491} * 365"
-        observation_type:
-          value: OBA:VT0001253
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006414
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00294492
-                  unit:
-                    value: "cm"
+# COMMENTED OUT: Jackson-only cohort table — no unit metadata in dbGaP data dict.
+# Variable ECHA2 (phv00510684) has empty unit field. Exam 3 already has proper cm height
+# from pht004034 (ANTC1, confirmed cm). DCC did not use ECHA tables for height.
+#
+# - class_derivations:
+#     MeasurementObservation:
+#       populated_from: pht004079
+#       slot_derivations:
+#         associated_participant:
+#           populated_from: phv00205920
+#         associated_visit:
+#           value: ARIC EXAM 3
+#         age_at_observation:
+#           expr: "{phv00510683} * 365"
+#         observation_type:
+#           value: OBA:VT0001253
+#         value_quantity:
+#           object_derivations:
+#           - class_derivations:
+#               Quantity:
+#                 populated_from: pht004079
+#                 slot_derivations:
+#                   value_decimal:
+#                     populated_from: phv00510684
+#                   unit:
+#                     value: "cm"
+# COMMENTED OUT: ECG Raw Epicare table — no unit metadata in dbGaP data dict.
+# Variable ECGRA278 (phv00513386) has empty unit field. Exam 1 already has proper cm height
+# from pht004032 (ANTA01, confirmed cm — same source DCC used). DCC did not use ECG tables.
+#
+# - class_derivations:
+#     MeasurementObservation:
+#       populated_from: pht012821
+#       slot_derivations:
+#         associated_participant:
+#           populated_from: phv00512590
+#         associated_visit:
+#           value: ARIC EXAM 1
+#         age_at_observation:
+#           expr: "{phv00513388} * 365"
+#         observation_type:
+#           value: OBA:VT0001253
+#         value_quantity:
+#           object_derivations:
+#           - class_derivations:
+#               Quantity:
+#                 populated_from: pht012821
+#                 slot_derivations:
+#                   value_decimal:
+#                     populated_from: phv00513386
+#                   unit:
+#                     value: "cm"
+# COMMENTED OUT: ABI (Ankle Brachial BP Index) table — no unit metadata in dbGaP data dict.
+# Variable ABI5 (phv00294492) has empty unit field. Exam 5 already has proper cm height from
+# pht006419 (ANT3, confirmed cm), pht006467 (PULB21, cm), pht006468 (PULP21, cm).
+# DCC did not use ABI tables for height.
+#
+# - class_derivations:
+#     MeasurementObservation:
+#       populated_from: pht006414
+#       slot_derivations:
+#         associated_participant:
+#           populated_from: phv00294489
+#         associated_visit:
+#           value: ARIC EXAM 5
+#         age_at_observation:
+#           expr: "{phv00294491} * 365"
+#         observation_type:
+#           value: OBA:VT0001253
+#         value_quantity:
+#           object_derivations:
+#           - class_derivations:
+#               Quantity:
+#                 populated_from: pht006414
+#                 slot_derivations:
+#                   value_decimal:
+#                     populated_from: phv00294492
+#                   unit:
+#                     value: "cm"

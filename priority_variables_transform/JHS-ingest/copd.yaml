@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00402777
         associated_visit:
-          value: JHS Exam 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00402777}) + ":JHS Exam 2")'
         condition_concept:
           value: MONDO:0000270
           range: string
@@ -18,6 +18,8 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "Health History Questionnaire"
         relationship_to_participant:
           value: ONESELF
           range: string

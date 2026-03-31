@@ -5,9 +5,9 @@
         associated_participant:
           populated_from: phv00127670
         age_at_condition_start:
-          expr: case((phv00127708 == 'Yes', {phv00127710} * 365))
+          expr: case(({phv00127708} == 'Yes', {phv00127710} * 365))
         associated_visit:
-          value: JHS Exam 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00127670}) + ":JHS Exam 1")'
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -18,6 +18,8 @@
             Dont know: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: "Medical History"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -27,9 +29,9 @@
         associated_participant:
           populated_from: phv00128084
         age_at_condition_start:
-          expr: case((phv00128091 == 'Yes', {phv00128092} * 365))
+          expr: case(({phv00128091} == 'Yes', {phv00128092} * 365))
         associated_visit:
-          value: JHS Exam 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128084}) + ":JHS Exam 1")'
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -40,6 +42,8 @@
             Dont know: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Personal and Family History Questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -49,7 +53,7 @@
         associated_participant:
           populated_from: phv00400849
         associated_visit:
-          value: JHS AFU
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400849}) + ":JHS AFU")'
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -60,6 +64,8 @@
             U: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Annual Follow-Up"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -69,7 +75,7 @@
         associated_participant:
           populated_from: phv00400849
         associated_visit:
-          value: JHS AFU
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400849}) + ":JHS AFU")'
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -80,6 +86,8 @@
             U: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Annual Follow-Up"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -89,7 +97,7 @@
         associated_participant:
           populated_from: phv00400849
         associated_visit:
-          value: JHS AFU
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400849}) + ":JHS AFU")'
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -100,6 +108,8 @@
             U: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: "Annual Follow-Up"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -109,7 +119,7 @@
         associated_participant:
           populated_from: phv00401078
         associated_visit:
-          value: JHS Exam 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -119,6 +129,8 @@
             'Yes': HISTORICAL
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: "Analysis derived"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -128,7 +140,7 @@
         associated_participant:
           populated_from: phv00401273
         associated_visit:
-          value: JHS Exam 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401273}) + ":JHS Exam 2")'
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -138,6 +150,8 @@
             'Yes': HISTORICAL
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: "Analysis derived"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -147,7 +161,7 @@
         associated_participant:
           populated_from: phv00401370
         associated_visit:
-          value: JHS Exam 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -157,6 +171,8 @@
             'Yes': HISTORICAL
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: "Analysis derived"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -166,7 +182,7 @@
         associated_participant:
           populated_from: phv00402777
         associated_visit:
-          value: JHS Exam 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00402777}) + ":JHS Exam 2")'
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -178,6 +194,8 @@
             '9': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: "Health History Questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -187,7 +205,7 @@
         associated_participant:
           populated_from: phv00403058
         associated_visit:
-          value: JHS Exam 6
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403058}) + ":JHS Exam 2")'
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -198,6 +216,8 @@
             Don't Know: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: "Medical History"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -207,7 +227,7 @@
         associated_participant:
           populated_from: phv00403140
         associated_visit:
-          value: JHS Exam 9
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403140}) + ":JHS Exam 3")'
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -219,6 +239,8 @@
             Missing: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: "Medical History"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -228,7 +250,7 @@
         associated_participant:
           populated_from: phv00403624
         associated_visit:
-          value: JHS Exam 9
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403624}) + ":JHS Exam 3")'
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -239,5 +261,7 @@
             Don't Know: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Personal and Family History Questionnaire"
         relationship_to_participant:
           value: ONESELF

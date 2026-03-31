@@ -11,9 +11,9 @@
         condition_status:
           populated_from: phv00203796
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '2': UNKNOWN
+            'N': ABSENT
+            'Y': PRESENT
+            'U': UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:
@@ -31,9 +31,9 @@
         condition_status:
           populated_from: phv00203982
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '2': UNKNOWN
+            'N': ABSENT
+            'Y': PRESENT
+            'U': UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:
@@ -165,8 +165,8 @@
         condition_status:
           populated_from: phv00206804
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            'N': ABSENT
+            'Y': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:
@@ -184,27 +184,8 @@
         condition_status:
           populated_from: phv00206806
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        relationship_to_participant:
-          value: ONESELF
-- class_derivations:
-    Condition:
-      populated_from: pht004102
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00207055
-        associated_visit:
-          value: ARIC Hospital Form
-        condition_concept:
-          value: HP:0000822
-        condition_status:
-          populated_from: phv00206804
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            'N': ABSENT
+            'Y': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:
@@ -222,9 +203,9 @@
         condition_status:
           populated_from: phv00207064
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '2': UNKNOWN
+            'N': ABSENT
+            'Y': PRESENT
+            'U': UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:
@@ -242,9 +223,9 @@
         condition_status:
           populated_from: phv00207311
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '2': UNKNOWN
+            'N': ABSENT
+            'Y': PRESENT
+            'U': UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:
@@ -262,9 +243,9 @@
         condition_status:
           populated_from: phv00208966
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '2': UNKNOWN
+            'N': ABSENT
+            'Y': PRESENT
+            'U': UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:
@@ -282,8 +263,8 @@
         condition_status:
           populated_from: phv00296245
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            'N': ABSENT
+            'Y': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:
@@ -295,14 +276,14 @@
         associated_participant:
           populated_from: phv00419900
         associated_visit:
-          value: Medical Conditions Update Form
+          value: ARIC Medical Conditions Update Form
         condition_concept:
           value: HP:0000822
         condition_status:
           populated_from: phv00419903
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            'N': ABSENT
+            'Y': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:

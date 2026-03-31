@@ -1,3 +1,8 @@
+# Baseline measured weight — ANTA4 (phv00253218), n=11,807.
+# Recalled weight blocks (WHEA3A_KG at age 21, WHEA4A_KG at age 45,
+# WHEA5A_KG at age 65) REMOVED — they contaminated baseline extraction
+# via lower hardcoded age_at_observation values and are not priority
+# baseline variables. See QC comparison report for details.
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004715
@@ -20,84 +25,6 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00253218
-                  unit:
-                    value: kg
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht004715
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00226250
-        associated_visit:
-          value: HCHS EXAM
-          range: string
-        age_at_observation:
-          value: 7665
-          range: integer
-        observation_type:
-          value: OBA:VT0001259
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004715
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00527442
-                  unit:
-                    value: kg
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht004715
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00226250
-        associated_visit:
-          value: HCHS EXAM
-          range: string
-        age_at_observation:
-          value: 16425
-          range: integer
-        observation_type:
-          value: OBA:VT0001259
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004715
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00527443
-                  unit:
-                    value: kg
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht004715
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00226250
-        associated_visit:
-          value: HCHS EXAM
-          range: string
-        age_at_observation:
-          value: 23725
-          range: integer
-        observation_type:
-          value: OBA:VT0001259
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004715
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00527444
                   unit:
                     value: kg
                     range: string                    

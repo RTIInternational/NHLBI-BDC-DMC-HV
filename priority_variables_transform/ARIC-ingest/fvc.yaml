@@ -6,8 +6,6 @@
           populated_from: phv00208835
         associated_visit:
           value: ARIC EXAM 1
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4176265
         value_quantity:
@@ -50,8 +48,6 @@
           populated_from: phv00209123
         associated_visit:
           value: ARIC EXAM 2
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4176265
         value_quantity:
@@ -72,8 +68,6 @@
           populated_from: phv00209111
         associated_visit:
           value: ARIC EXAM 1
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4176265
         value_quantity:
@@ -116,8 +110,6 @@
           populated_from: phv00295692
         associated_visit:
           value: ARIC EXAM 5
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4176265
         value_quantity:
@@ -149,10 +141,7 @@
                 populated_from: pht006467
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00297568
-                    unit_conversion:
-                      source_unit: "mL"
-                      target_unit: "L"
+                    expr: "{phv00297568} * 0.001"
                   unit:
                     value: "L"
                     range: string
@@ -175,10 +164,7 @@
                 populated_from: pht006468
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00297614
-                    unit_conversion:
-                      source_unit: "mL"
-                      target_unit: "L"
+                    expr: "{phv00297614} * 0.001"
                   unit:
                     value: "L"
                     range: string
@@ -201,10 +187,7 @@
                 populated_from: pht006467
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00297579
-                    unit_conversion:
-                      source_unit: "mL"
-                      target_unit: "L"
+                    expr: "{phv00297579} * 0.001"
                   unit:
                     value: "L"
                     range: string
@@ -227,10 +210,7 @@
                 populated_from: pht006468
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00297625
-                    unit_conversion:
-                      source_unit: "mL"
-                      target_unit: "L"
+                    expr: "{phv00297625} * 0.001"
                   unit:
                     value: "L"
                     range: string

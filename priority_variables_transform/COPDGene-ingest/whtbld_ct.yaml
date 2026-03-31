@@ -1,15 +1,17 @@
+# P2/P3 gated: phv00569133 (wbc) collected in P2 P3 only (not P1)
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002239
       slot_derivations:
         associated_visit:
-          value: COPDGene
+          expr: case(({phv00568798} == 'P2', 'COPDGene P2'), ({phv00568798} == 'P3',
+            'COPDGene P3'), ({phv00568798} == 'P3B', 'COPDGene P3B'), (True, None))
         associated_participant:
           populated_from: phv00159568
         age_at_observation:
-          expr: '{phv00159836} * 365'
+          expr: '{phv00568808} * 365'
         observation_type:
-          value: OMOP:4154790
+          value: OBA:VT0000217
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -17,6 +19,6 @@
                 populated_from: pht002239
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00159583
+                    populated_from: phv00569133
                   unit:
-                    value: 'mm[Hg]'
+                    value: 10*3/uL

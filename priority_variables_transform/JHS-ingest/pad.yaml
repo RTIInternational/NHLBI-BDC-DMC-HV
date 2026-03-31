@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00400849
         associated_visit:
-          value: JHS AFU
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400849}) + ":JHS AFU")'
           range: string
         condition_concept:
           value: MONDO:0005386
@@ -19,6 +19,8 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "Annual Follow-Up"
         relationship_to_participant:
           value: ONESELF
           range: string

@@ -9,7 +9,7 @@
         drug_concept:
           expr: case(({phv00204156} == 1, "ATC:C10A"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht004063
@@ -21,7 +21,7 @@
         drug_concept:
           expr: case(({phv00204695} == 1, "NDFRT:N0000175589"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht004063
@@ -29,11 +29,11 @@
         associated_participant:
           populated_from: phv00204812
         associated_visit:
-          value: ARIC EXAM 3
+          value: ARIC EXAM 1
         drug_concept:
           expr: case(({phv00204802} == 1, "ATC:C10A"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht012504
@@ -45,7 +45,7 @@
         drug_concept:
           expr: case(({phv00507346} == 1, "NDFRT:N0000175589"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht012504
@@ -57,7 +57,7 @@
         drug_concept:
           expr: case(({phv00507347} == 1, "NDFRT:N0000175589"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht012813
@@ -65,11 +65,11 @@
         associated_participant:
           populated_from: phv00511942
         associated_visit:
-          value: ARIC EXAM 7
+          value: ARIC EXAM 4
         drug_concept:
           expr: case(({phv00511951} == 1, "NDFRT:N0000175589"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht012814
@@ -81,7 +81,7 @@
         drug_concept:
           expr: case(({phv00512190} == 1, "NDFRT:N0000175589"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht012814
@@ -93,7 +93,7 @@
         drug_concept:
           expr: case(({phv00512191} == 1, "NDFRT:N0000175589"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht012815
@@ -105,7 +105,7 @@
         drug_concept:
           expr: case(({phv00512255} == 1, "NDFRT:N0000175589"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
 - class_derivations:
     DrugExposure:
       populated_from: pht012815
@@ -117,76 +117,5 @@
         drug_concept:
           expr: case(({phv00512256} == 1, "NDFRT:N0000175589"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-- class_derivations:
-    DrugExposure:
-      populated_from: pht004063
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00204812
-        associated_visit:
-          value: ARIC EXAM 1
-        drug_concept:
-          expr: case(({phv00204695} == 1, "NDFRT:N0000175589"))
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-- class_derivations:
-    DrugExposure:
-      populated_from: pht012504
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00507300
-        associated_visit:
-          value: ARIC EXAM 7
-        drug_concept:
-          expr: case(({phv00507347} == 1, "NDFRT:N0000175589"))
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-- class_derivations:
-    DrugExposure:
-      populated_from: pht012813
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00511942
-        associated_visit:
-          value: ARIC EXAM 4
-        drug_concept:
-          expr: case(({phv00507347} == 1, "NDFRT:N0000175589"))
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-- class_derivations:
-    DrugExposure:
-      populated_from: pht012814
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00512039
-        associated_visit:
-          value: ARIC EXAM 5
-        drug_concept:
-          expr: case(({phv00512191} == 1, "NDFRT:N0000175589"))
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-- class_derivations:
-    DrugExposure:
-      populated_from: pht012815
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00512222
-        associated_visit:
-          value: ARIC EXAM 6
-        drug_concept:
-          expr: case(({phv00512255} == 1, "NDFRT:N0000175589"))
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-- class_derivations:
-    DrugExposure:
-      populated_from: pht012815
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00512222
-        associated_visit:
-          value: ARIC EXAM 6
-        drug_concept:
-          expr: case(({phv00512256} == 1, "NDFRT:N0000175589"))
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
+

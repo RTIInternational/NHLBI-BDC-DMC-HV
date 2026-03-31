@@ -43,7 +43,7 @@
                 slot_derivations:
                   value_decimal:
                     expr: 'case(({phv00172166} > 5.0, {phv00172166}), 
-                            ({phv00172202} == 1, "LLOD"), 
+                            ({phv00172202} == 1, None), 
                             (True, {phv00172166})
                           )'
                   unit:
@@ -83,7 +83,7 @@
                   value_decimal:
                     expr: 'case(
                             ({phv00227050} > 5.0, {phv00227050}),
-                            ({phv00227066} == 1, "LLOD"), 
+                            ({phv00227066} == 1, None), 
                             (True, {phv00227050})
                           )'
                   unit:

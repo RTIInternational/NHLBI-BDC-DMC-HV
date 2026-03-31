@@ -49,32 +49,6 @@
                     value: mg/dL
                     range: string
         method_type:
-          expr: 'case(({phv00084980} >= 12, "Fasted minimum 12 hours"))'
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001116
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00084441
-        associated_visit:
-          value: MESA CLASSIC EXAM 1
-          range: string
-        age_at_observation:
-          expr: '{phv00084442} * 365'
-        observation_type:
-          expr: 'case(({phv00084980} >= 12, "OMOP:4041722"), (True, "OBA:VT0002644"))'
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001116
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00084968
-                  unit:
-                    value: mg/dL
-                    range: string
-        method_type:
           expr: 'case(({phv00084980} >= 12, "Fasted minimum 12 hours-CALCULATED FROM
             NMR LIPOPROFILE-3 SPECTRAL ANALYSIS"), (True, "CALCULATED FROM NMR
             LIPOPROFILE-3 SPECTRAL ANALYSIS"))'
@@ -186,7 +160,7 @@
         associated_participant:
           populated_from: phv00174584
         associated_visit:
-          value: MESA CLASSIC EXAM 5
+          value: MESA AIR EXAM 5
           range: string
         age_at_observation:
           expr: '{phv00174588} * 365'

@@ -5,11 +5,11 @@
         associated_participant:
           populated_from: phv00298028
         associated_visit:
-          value: ARIC LAB FORM
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          value: ARIC Lab Form
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Seated sphygmomanometer average"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -28,10 +28,10 @@
           populated_from: phv00203372
         associated_visit:
           value: ARIC EXAM 4
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Dinamap supine arm reading 3"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -50,10 +50,10 @@
           populated_from: phv00215518
         associated_visit:
           value: ARIC EXAM 1
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Carotid ultrasound context reading 1"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -72,10 +72,10 @@
           populated_from: phv00210370
         associated_visit:
           value: ARIC EXAM 4
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Seated random-zero average"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -94,10 +94,10 @@
           populated_from: phv00203372
         associated_visit:
           value: ARIC EXAM 4
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Dinamap supine arm reading 1"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -116,10 +116,10 @@
           populated_from: phv00210370
         associated_visit:
           value: ARIC EXAM 4
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Seated random-zero reading 1"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -138,10 +138,10 @@
           populated_from: phv00215518
         associated_visit:
           value: ARIC EXAM 1
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Carotid ultrasound context reading 2"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -154,38 +154,16 @@
                     value: "mm[Hg]"
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht006414
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00294489
-        associated_visit:
-          value: ARIC EXAM 5
-        age_at_observation:
-          expr: "{phv00294491} * 365"
-        observation_type:
-          value: OMOP:4154790
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006414
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00294517
-                  unit:
-                    value: "mm[Hg]"
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht006480
       slot_derivations:
         associated_participant:
           populated_from: phv00298028
         associated_visit:
-          value: ARIC LAB FORM
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          value: ARIC Lab Form
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Seated sphygmomanometer reading 3"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -204,10 +182,10 @@
           populated_from: phv00203372
         associated_visit:
           value: ARIC EXAM 4
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Dinamap sitting"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -226,10 +204,10 @@
           populated_from: phv00203348
         associated_visit:
           value: ARIC EXAM 3
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Dinamap sitting"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -248,10 +226,10 @@
           populated_from: phv00210296
         associated_visit:
           value: ARIC EXAM 1
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Seated random-zero reading 1"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -270,10 +248,10 @@
           populated_from: phv00203348
         associated_visit:
           value: ARIC EXAM 3
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Dinamap standing reading 2"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -292,10 +270,10 @@
           populated_from: phv00210296
         associated_visit:
           value: ARIC EXAM 1
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Seated random-zero reading 3"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -314,32 +292,10 @@
           populated_from: phv00210296
         associated_visit:
           value: ARIC EXAM 1
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004192
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00210289
-                  unit:
-                    value: "mm[Hg]"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht004192
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00210296
-        associated_visit:
-          value: ARIC EXAM 1
-        # age_at_observation:
-          # expr: "{nan} * 365"
-        observation_type:
-          value: OMOP:4154790
+        method_type:
+          value: "Seated random-zero reading 2"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -352,38 +308,16 @@
                     value: "mm[Hg]"
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht004043
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00203372
-        associated_visit:
-          value: ARIC EXAM 4
-        # age_at_observation:
-          # expr: "{nan} * 365"
-        observation_type:
-          value: OMOP:4154790
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004043
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00203359
-                  unit:
-                    value: "mm[Hg]"
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht006480
       slot_derivations:
         associated_participant:
           populated_from: phv00298028
         associated_visit:
-          value: ARIC LAB FORM
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          value: ARIC Lab Form
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Seated sphygmomanometer reading 1"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -402,10 +336,10 @@
           populated_from: phv00210347
         associated_visit:
           value: ARIC EXAM 3
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Seated random-zero reading 1"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -424,10 +358,10 @@
           populated_from: phv00203348
         associated_visit:
           value: ARIC EXAM 3
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Dinamap supine arm reading 3"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -446,10 +380,10 @@
           populated_from: phv00210347
         associated_visit:
           value: ARIC EXAM 3
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Seated random-zero average"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -468,10 +402,10 @@
           populated_from: phv00203372
         associated_visit:
           value: ARIC EXAM 4
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Dinamap supine arm reading 2"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -490,10 +424,10 @@
           populated_from: phv00203372
         associated_visit:
           value: ARIC EXAM 4
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Dinamap standing reading 1"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -512,10 +446,10 @@
           populated_from: phv00210347
         associated_visit:
           value: ARIC EXAM 3
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Seated random-zero reading 3"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -528,38 +462,16 @@
                     value: "mm[Hg]"
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht006415
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00294559
-        associated_visit:
-          value: ARIC EXAM 5
-        age_at_observation:
-          expr: "{phv00294561} * 365"
-        observation_type:
-          value: OMOP:4154790
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006415
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00294576
-                  unit:
-                    value: "mm[Hg]"
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht004230
       slot_derivations:
         associated_participant:
           populated_from: phv00215626
         associated_visit:
           value: ARIC EXAM 2
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Carotid ultrasound context mean"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -578,10 +490,10 @@
           populated_from: phv00210321
         associated_visit:
           value: ARIC EXAM 2
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Seated random-zero average"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -600,10 +512,10 @@
           populated_from: phv00215518
         associated_visit:
           value: ARIC EXAM 1
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Carotid ultrasound context mean"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -622,10 +534,10 @@
           populated_from: phv00210321
         associated_visit:
           value: ARIC EXAM 2
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Seated random-zero reading 1"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -644,10 +556,10 @@
           populated_from: phv00210296
         associated_visit:
           value: ARIC EXAM 1
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Seated random-zero average"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -666,10 +578,10 @@
           populated_from: phv00210321
         associated_visit:
           value: ARIC EXAM 2
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Seated random-zero reading 2"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -688,10 +600,10 @@
           populated_from: phv00210321
         associated_visit:
           value: ARIC EXAM 2
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Seated random-zero reading 3"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -704,38 +616,16 @@
                     value: "mm[Hg]"
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht006415
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00294559
-        associated_visit:
-          value: ARIC EXAM 5
-        age_at_observation:
-          expr: "{phv00294561} * 365"
-        observation_type:
-          value: OMOP:4154790
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006415
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00294579
-                  unit:
-                    value: "mm[Hg]"
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht006480
       slot_derivations:
         associated_participant:
           populated_from: phv00298028
         associated_visit:
-          value: ARIC LAB FORM
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          value: ARIC Lab Form
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Seated sphygmomanometer reading 2"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -754,10 +644,10 @@
           populated_from: phv00210370
         associated_visit:
           value: ARIC EXAM 4
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Seated random-zero reading 2"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -776,32 +666,10 @@
           populated_from: phv00203348
         associated_visit:
           value: ARIC EXAM 3
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004042
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00203335
-                  unit:
-                    value: "mm[Hg]"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht004042
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00203348
-        associated_visit:
-          value: ARIC EXAM 3
-        # age_at_observation:
-          # expr: "{nan} * 365"
-        observation_type:
-          value: OMOP:4154790
+        method_type:
+          value: "Dinamap supine arm reading 2"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -824,6 +692,8 @@
           expr: "{phv00294561} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "ABI derived right arm"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -842,10 +712,10 @@
           populated_from: phv00203372
         associated_visit:
           value: ARIC EXAM 4
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Dinamap standing reading 2"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -868,6 +738,8 @@
           expr: "{phv00510683} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Echocardiogram (Jackson substudy)"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -886,10 +758,10 @@
           populated_from: phv00203348
         associated_visit:
           value: ARIC EXAM 3
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Dinamap supine arm reading 1"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -908,10 +780,10 @@
           populated_from: phv00203348
         associated_visit:
           value: ARIC EXAM 3
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Dinamap standing reading 1"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -934,6 +806,8 @@
           expr: "{phv00294561} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "ABI derived left arm"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -952,10 +826,10 @@
           populated_from: phv00215626
         associated_visit:
           value: ARIC EXAM 2
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Carotid ultrasound context reading 2"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -978,6 +852,8 @@
           expr: "{phv00294491} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Supine brachial (ABI) left arm"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -996,10 +872,10 @@
           populated_from: phv00210347
         associated_visit:
           value: ARIC EXAM 3
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Seated random-zero reading 2"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -1012,60 +888,16 @@
                     value: "mm[Hg]"
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht004192
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00210296
-        associated_visit:
-          value: ARIC EXAM 1
-        # age_at_observation:
-          # expr: "{nan} * 365"
-        observation_type:
-          value: OMOP:4154790
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004192
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00210286
-                  unit:
-                    value: "mm[Hg]"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht006414
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00294489
-        associated_visit:
-          value: ARIC EXAM 5
-        age_at_observation:
-          expr: "{phv00294491} * 365"
-        observation_type:
-          value: OMOP:4154790
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006414
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00294514
-                  unit:
-                    value: "mm[Hg]"
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht004230
       slot_derivations:
         associated_participant:
           populated_from: phv00215626
         associated_visit:
           value: ARIC EXAM 2
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Carotid ultrasound context reading 1"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -1088,6 +920,8 @@
           expr: "{phv00294491} * 365"
         observation_type:
           value: OMOP:4154790
+        method_type:
+          value: "Supine brachial (ABI) right arm"
         value_quantity:
           object_derivations:
           - class_derivations:

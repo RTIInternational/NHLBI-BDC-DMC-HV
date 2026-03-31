@@ -128,34 +128,6 @@
                     range: string
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001111
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00082638
-        associated_visit:
-          value: MESA AIR EXAM
-          range: string
-        age_at_observation:
-          expr: '{phv00082639} * 365'
-        observation_type:
-          value: OBA:1001087
-          range: string
-        method_type:
-          value: seated
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00083412
-                  unit:
-                    value: '{beats}/min'
-                    range: string
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht001116
       slot_derivations:
         associated_participant:
@@ -869,7 +841,7 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: vetricular
+          value: ventricular
           range: string
         value_quantity:
           object_derivations:

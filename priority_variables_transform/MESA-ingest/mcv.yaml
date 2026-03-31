@@ -17,7 +17,7 @@
                 populated_from: pht004319
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00218996
+                    expr: "case(({phv00218996} < 50, None), ({phv00218996} > 130, None), (True, {phv00218996}))"
                   unit:
                     value: fL
                     range: string

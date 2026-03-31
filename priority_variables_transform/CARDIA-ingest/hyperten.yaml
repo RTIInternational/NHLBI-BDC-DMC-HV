@@ -15,7 +15,7 @@
         condition_status:
           expr: case(({phv00113020} == 2, 'PRESENT'), ({phv00113022} == 1, 'HISTORICAL'))
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -37,7 +37,7 @@
         condition_status:
           expr: case(({phv00114385} == 2, 'PRESENT'), ({phv00114387} == 1, 'HISTORICAL'))
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -61,9 +61,10 @@
           value_mappings:
             '1': ABSENT
             '2': PRESENT
+            '8': UNKNOWN
             'M': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -89,7 +90,7 @@
             '2': PRESENT
             '8': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -115,7 +116,7 @@
             '2': PRESENT
             '8': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -141,7 +142,7 @@
             '2': PRESENT
             '8': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -167,7 +168,7 @@
             '2': PRESENT
             '8': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
