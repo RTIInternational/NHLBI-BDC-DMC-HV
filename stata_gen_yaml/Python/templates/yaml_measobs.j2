@@ -11,7 +11,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({{ '{' }}{{participantidphv}}{{ '}' }}) + ":" + {{associatedvisit_expr}}'
         {% endif %}
-      {% if ageinyearsphv %}
+      {% if ageinyearsphv and ageinyearsphv != 0 %}
         age_at_observation:
           expr: '{{ '{' }}{{ageinyearsphv}}{{ '}' }} * 365'
       {% endif %}

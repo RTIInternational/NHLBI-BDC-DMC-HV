@@ -1,0 +1,17 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004061
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00204606
+        associated_visit:
+          value: ARIC HOSPITAL FORM
+        observation_type:
+          value: OMOP:43020498
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004061
+                slot_derivations:
+                  value_decimal:

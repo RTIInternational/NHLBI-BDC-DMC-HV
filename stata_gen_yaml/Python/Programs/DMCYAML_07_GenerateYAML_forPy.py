@@ -98,7 +98,7 @@ measurement_observation_fhs = [
 
 # Configuration (change these values as needed)
 entity = "MeasurementObservation"
-cohort = "fhs"
+cohort = "whi"
 macroname = f"{entity}_{cohort}"
 print(macroname)
 
