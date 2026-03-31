@@ -274,35 +274,7 @@
           value: CHS YEAR 7
           range: string
         drug_concept:
-          expr: 'case(({phv00108721} == 1, "RxCUI:1191"))'
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-          range: string
-- class_derivations:
-    DrugExposure:
-      populated_from: pht001493
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00108303
-        associated_visit:
-          value: CHS YEAR 7
-          range: string
-        drug_concept:
           expr: 'case(({phv00108988} == 1, "RxCUI:1191"))'
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-          range: string
-- class_derivations:
-    DrugExposure:
-      populated_from: pht001494
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00109056
-        associated_visit:
-          value: CHS YEAR 8
-          range: string
-        drug_concept:
-          expr: 'case(({phv00109457} == 1, "RxCUI:1191"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string

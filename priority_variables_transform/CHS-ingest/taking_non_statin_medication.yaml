@@ -47,7 +47,7 @@
         associated_participant:
           populated_from: phv00100285
         associated_visit:
-          value: CHS BASELINE 2
+          value: CHS BASELINE BOTH
           range: string
         drug_concept:
           expr: 'case(({phv00100529} == 1, "NDFRT:N0000180292"))'
@@ -61,7 +61,7 @@
         associated_participant:
           populated_from: phv00100285
         associated_visit:
-          value: CHS BASELINE 2
+          value: CHS BASELINE BOTH
           range: string
         drug_concept:
           expr: 'case(({phv00100546} == 1, "NxCUI:C10AB"))'
@@ -75,7 +75,7 @@
         associated_participant:
           populated_from: phv00100285
         associated_visit:
-          value: CHS BASELINE 2
+          value: CHS BASELINE BOTH
           range: string
         drug_concept:
           expr: 'case(({phv00100560} == 1, "NDFRT:N0000175594"))'
@@ -131,7 +131,7 @@
         associated_participant:
           populated_from: phv00102174
         associated_visit:
-          value: CHS YEAR 10
+          value: CHS YEAR 11
           range: string
         drug_concept:
           expr: 'case(({phv00103080} == 1, "NDFRT:N0000180292"))'
@@ -145,7 +145,7 @@
         associated_participant:
           populated_from: phv00102174
         associated_visit:
-          value: CHS YEAR 10
+          value: CHS YEAR 11
           range: string
         drug_concept:
           expr: 'case(({phv00103097} == 1, "NxCUI:C10AB"))'
@@ -159,7 +159,7 @@
         associated_participant:
           populated_from: phv00102174
         associated_visit:
-          value: CHS YEAR 10
+          value: CHS YEAR 11
           range: string
         drug_concept:
           expr: 'case(({phv00103111} == 1, "NDFRT:N0000175594"))'
@@ -205,20 +205,6 @@
           range: string
         drug_concept:
           expr: 'case(({phv00104415} == 1, "NxCUI:C10AB"))'
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-          range: string
-- class_derivations:
-    DrugExposure:
-      populated_from: pht001488
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00103781
-        associated_visit:
-          value: CHS YEAR 3
-          range: string
-        drug_concept:
-          expr: 'case(({phv00104429} == 1, "NDFRT:N0000175594"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -481,7 +467,7 @@
         associated_participant:
           populated_from: phv00109768
         associated_visit:
-          value: CHS YEAR 8
+          value: CHS YEAR 9
           range: string
         drug_concept:
           expr: 'case(({phv00110642} == 1, "NDFRT:N0000180292"))'
@@ -495,7 +481,7 @@
         associated_participant:
           populated_from: phv00109768
         associated_visit:
-          value: CHS YEAR 8
+          value: CHS YEAR 9
           range: string
         drug_concept:
           expr: 'case(({phv00110659} == 1, "NxCUI:C10AB"))'
@@ -509,7 +495,7 @@
         associated_participant:
           populated_from: phv00109768
         associated_visit:
-          value: CHS YEAR 8
+          value: CHS YEAR 9
           range: string
         drug_concept:
           expr: 'case(({phv00110673} == 1, "NDFRT:N0000175594"))'
@@ -523,7 +509,7 @@
         associated_participant:
           populated_from: phv00197394
         associated_visit:
-          value: CHS YEAR 8
+          value: CHS PSG 1
           range: string
         drug_concept:
           expr: 'case(({phv00197544} == 1, "NDFRT:N0000180292"))'
@@ -537,7 +523,7 @@
         associated_participant:
           populated_from: phv00197394
         associated_visit:
-          value: CHS YEAR 8
+          value: CHS PSG 1
           range: string
         drug_concept:
           expr: 'case(({phv00197545} == 1, "NDFRT:N0000175594"))'
@@ -551,7 +537,7 @@
         associated_participant:
           populated_from: phv00198805
         associated_visit:
-          value: CHS YEAR 8
+          value: CHS PSG 2
           range: string
         drug_concept:
           expr: 'case(({phv00199045} == 1, "NDFRT:N0000180292"))'
@@ -565,7 +551,7 @@
         associated_participant:
           populated_from: phv00198805
         associated_visit:
-          value: CHS YEAR 8
+          value: CHS PSG 2
           range: string
         drug_concept:
           expr: 'case(({phv00199062} == 1, "NxCUI:C10AB"))'
@@ -579,7 +565,7 @@
         associated_participant:
           populated_from: phv00198805
         associated_visit:
-          value: CHS YEAR 8
+          value: CHS PSG 2
           range: string
         drug_concept:
           expr: 'case(({phv00199076} == 1, "NDFRT:N0000175594"))'

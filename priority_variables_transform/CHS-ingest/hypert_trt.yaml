@@ -140,20 +140,6 @@
           range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht001490
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00105099
-        associated_visit:
-          value: CHS YEAR 5 NEW
-          range: string
-        drug_concept:
-          expr: 'case(({phv00106515} == 1, "ATC:C02"))'
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-          range: string
-- class_derivations:
-    DrugExposure:
       populated_from: pht001491
       slot_derivations:
         associated_participant:
