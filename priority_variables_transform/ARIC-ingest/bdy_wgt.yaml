@@ -1,87 +1,93 @@
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht004032
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00203163
-        associated_visit:
-          value: ARIC EXAM 1
-        observation_type:
-          value: OBA:VT0001259
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004032
-                slot_derivations:
-                  value_decimal:
-                    expr: "float({phv00203154}) * 0.453592"
-                  unit:
-                    value: "kg"
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht004035
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00203194
-        associated_visit:
-          value: ARIC EXAM 4
-        observation_type:
-          value: OBA:VT0001259
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004035
-                slot_derivations:
-                  value_decimal:
-                    expr: "float({phv00203187}) * 0.453592"
-                  unit:
-                    value: "kg"
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht004033
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00203174
-        associated_visit:
-          value: ARIC EXAM 2
-        observation_type:
-          value: OBA:VT0001259
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004033
-                slot_derivations:
-                  value_decimal:
-                    expr: "float({phv00203166}) * 0.453592"
-                  unit:
-                    value: "kg"
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht004034
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00203181
-        associated_visit:
-          value: ARIC EXAM 3
-        observation_type:
-          value: OBA:VT0001259
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004034
-                slot_derivations:
-                  value_decimal:
-                    expr: "float({phv00203176}) * 0.453592"
-                  unit:
-                    value: "kg"
-                    range: string
+# BLOCKED: Exams 1-4 lbs-to-kg conversion — source PHVs are lbs (string-typed).
+# Both bare "{phv} * 0.453592" and "float({phv}) * 0.453592" fail at runtime:
+#   RuntimeError: Expression not in safe subset
+# Root cause: non-numeric coded values (e.g. 'A') in source column crash simpleeval.
+# Needs dm-bip/linkml-map fix (unrestricted_eval or upstream data cleaning). — discuss with Corey
+#
+# - class_derivations:
+#     MeasurementObservation:
+#       populated_from: pht004032
+#       slot_derivations:
+#         associated_participant:
+#           populated_from: phv00203163
+#         associated_visit:
+#           value: ARIC EXAM 1
+#         observation_type:
+#           value: OBA:VT0001259
+#         value_quantity:
+#           object_derivations:
+#           - class_derivations:
+#               Quantity:
+#                 populated_from: pht004032
+#                 slot_derivations:
+#                   value_decimal:
+#                     expr: "float({phv00203154}) * 0.453592"
+#                   unit:
+#                     value: "kg"
+#                     range: string
+# - class_derivations:
+#     MeasurementObservation:
+#       populated_from: pht004035
+#       slot_derivations:
+#         associated_participant:
+#           populated_from: phv00203194
+#         associated_visit:
+#           value: ARIC EXAM 4
+#         observation_type:
+#           value: OBA:VT0001259
+#         value_quantity:
+#           object_derivations:
+#           - class_derivations:
+#               Quantity:
+#                 populated_from: pht004035
+#                 slot_derivations:
+#                   value_decimal:
+#                     expr: "float({phv00203187}) * 0.453592"
+#                   unit:
+#                     value: "kg"
+#                     range: string
+# - class_derivations:
+#     MeasurementObservation:
+#       populated_from: pht004033
+#       slot_derivations:
+#         associated_participant:
+#           populated_from: phv00203174
+#         associated_visit:
+#           value: ARIC EXAM 2
+#         observation_type:
+#           value: OBA:VT0001259
+#         value_quantity:
+#           object_derivations:
+#           - class_derivations:
+#               Quantity:
+#                 populated_from: pht004033
+#                 slot_derivations:
+#                   value_decimal:
+#                     expr: "float({phv00203166}) * 0.453592"
+#                   unit:
+#                     value: "kg"
+#                     range: string
+# - class_derivations:
+#     MeasurementObservation:
+#       populated_from: pht004034
+#       slot_derivations:
+#         associated_participant:
+#           populated_from: phv00203181
+#         associated_visit:
+#           value: ARIC EXAM 3
+#         observation_type:
+#           value: OBA:VT0001259
+#         value_quantity:
+#           object_derivations:
+#           - class_derivations:
+#               Quantity:
+#                 populated_from: pht004034
+#                 slot_derivations:
+#                   value_decimal:
+#                     expr: "float({phv00203176}) * 0.453592"
+#                   unit:
+#                     value: "kg"
+#                     range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006467
