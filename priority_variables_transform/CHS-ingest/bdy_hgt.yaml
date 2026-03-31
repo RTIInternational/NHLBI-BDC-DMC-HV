@@ -19,56 +19,6 @@
                 populated_from: pht001450
                 slot_derivations:
                   value_decimal:
-                    expr: '{phv00098846} * 30.48'
-                  unit:
-                    value: cm
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001450
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00098771
-        associated_visit:
-          value: CHS BASELINE 2
-          range: string
-        age_at_observation:
-          expr: '{phv00098799} * 365'   
-        observation_type:
-          value: OBA:VT0001253
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001450
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00098847} * 2.54'
-                  unit:
-                    value: cm
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001450
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00098771
-        associated_visit:
-          value: CHS BASELINE 2
-          range: string
-        age_at_observation:
-          expr: '{phv00098799} * 365' 
-        observation_type:
-          value: OBA:VT0001253
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001450
-                slot_derivations:
-                  value_decimal:
                     populated_from: phv00099550
                   unit:
                     value: cm
@@ -95,56 +45,6 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00100382
-                  unit:
-                    value: cm
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001490
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00105099
-        associated_visit:
-          value: CHS YEAR 5 NEW
-          range: string
-        age_at_observation:
-          expr: '({phv00105116} * 365) + 1825'   
-        observation_type:
-          value: OBA:VT0001253
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001490
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00098846} * 30.48'
-                  unit:
-                    value: cm
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001490
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00105099
-        associated_visit:
-          value: CHS YEAR 5 NEW
-          range: string
-        age_at_observation:
-          expr: '({phv00105116} * 365) + 1825'  
-        observation_type:
-          value: OBA:VT0001253
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001490
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00105146} * 2.54'
                   unit:
                     value: cm
                     range: string
