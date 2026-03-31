@@ -11,7 +11,7 @@
           value: OMOP:4282779
           range: string
         value_enum:
-          expr: 'case(({phv00128498} == Y, "OMOP:40766945"),({phv00128496} == Y, "OMOP:45883458"),(True, "OMOP:45883537"))'
+          expr: 'case(({phv00128498} == "Y", "OMOP:40766945"),({phv00128496} == "Y", "OMOP:45883458"),(True, "OMOP:45883537"))'
 - class_derivations:
     Observation:
       populated_from: pht008729
