@@ -10,7 +10,7 @@
         drug_concept:
           expr: case(({phv00113012} == 2, "ATC:C02"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
@@ -24,5 +24,5 @@
         drug_concept:
           expr: 'case(({phv00113154} == "HBP", "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
