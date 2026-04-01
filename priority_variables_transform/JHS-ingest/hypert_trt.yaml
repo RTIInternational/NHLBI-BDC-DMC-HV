@@ -7,7 +7,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00127753}) + ":JHS Exam 1")'
         drug_concept:
-          expr: 'case(({phv00127922} == 1, "ATC:C02"))'
+          expr: 'case(({phv00127922} == "Y", "ATC:C02"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
@@ -19,7 +19,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400849}) + ":JHS AFU")'
         drug_concept:
-          expr: 'case(({phv00400884} == 1, "ATC:C02"))'
+          expr: 'case(({phv00400884} == "Y", "ATC:C02"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
