@@ -147,10 +147,10 @@
         associated_participant:
           populated_from: phv00105099
         associated_visit:
-          value: CHS YEAR 5 NEW
+          value: CHS BASELINE 2
           range: string
         age_at_observation:
-          expr: '({phv00105116} * 365) + 1825'    
+          expr: '{phv00105622} * 365'
         observation_type:
           value: OBA:VT0001259
           range: string
@@ -175,10 +175,10 @@
         associated_participant:
           populated_from: phv00105099
         associated_visit:
-          value: CHS YEAR 5 NEW
+          value: CHS BASELINE 2
           range: string
         age_at_observation:
-          value: 18250
+          expr: '{phv00105622} * 365'
           range: integer      
         observation_type:
           value: OBA:VT0001259

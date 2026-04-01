@@ -20,27 +20,6 @@
             '3': OMOP:40766945
 - class_derivations:
     Observation:
-      populated_from: pht001452
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00100285
-        associated_visit:
-          value: CHS BASELINE BOTH
-          range: string
-        age_at_observation:
-          expr: '{phv00100487} * 365' 
-        observation_type:
-          value: OMOP:4282779
-          range: string
-        value_enum:
-          populated_from: phv00100466
-          value_mappings:
-            '0': OMOP:45883537
-            '1': OMOP:45883458
-            '2': OMOP:40766945
-            '3': OMOP:40766945
-- class_derivations:
-    Observation:
       populated_from: pht001474
       slot_derivations:
         associated_participant:
@@ -126,10 +105,10 @@
         associated_participant:
           populated_from: phv00105099
         associated_visit:
-          value: CHS YEAR 5 NEW
+          value: CHS BASELINE 2
           range: string
         age_at_observation:
-          expr: '({phv00105116} * 365) + 1825'  
+          expr: '{phv00105622} * 365'
         observation_type:
           value: OMOP:4282779
           range: string
