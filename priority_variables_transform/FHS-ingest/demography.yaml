@@ -14,8 +14,8 @@
         ethnicity:
           populated_from: phv00021245
           value_mappings:
-            '1': HISPANIC_OR_LATINO
-            '0': NOT_HISPANIC_OR_LATINO
+            '1': OMOP:38003563
+            '0': OMOP:38003564
         race:
           expr: >
             case(
@@ -292,7 +292,7 @@
 #             '1': OMOP:8507
 #             '2': OMOP:8532
         ethnicity:
-          expr: 'case(({phv00423859} == 1, "OMOP:38003563"), (True, "OMOP:38003564"))'
+          expr: 'case(({phv00423859} == 1, "OMOP:38003563"), ({phv00423859} == 0, "OMOP:38003564"))'
         race:
           expr: >
             case(
