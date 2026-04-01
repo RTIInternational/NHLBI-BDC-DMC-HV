@@ -90,7 +90,7 @@
                 populated_from: pht003699
                 slot_derivations:
                   value_decimal:
-                    expr: case({phv00197658}, 9999, None, {phv00197658})
+                    expr: "case(({phv00197658} == 9999, None), (True, {phv00197658}))"
                   unit:
                     value: h
                     range: string
@@ -113,7 +113,7 @@
                 populated_from: pht003699
                 slot_derivations:
                   value_decimal:
-                    expr: case({phv00197659}, 9000, None, 9999, None, {phv00197659})
+                    expr: "case(({phv00197659} == 9000, None), ({phv00197659} == 9999, None), (True, {phv00197659}))"
                   unit:
                     value: h
                     range: string
