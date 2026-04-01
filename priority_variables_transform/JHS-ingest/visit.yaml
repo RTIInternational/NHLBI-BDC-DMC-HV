@@ -14,6 +14,16 @@
           expr: '{phv00401085} * 365'
 - class_derivations:
     Visit:
+      populated_from: pht008782
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403792}) + ":JHS Exam 6")'
+        associated_participant:
+          populated_from: phv00403792
+        visit_category:
+          value: HEALTH_EXAMINATION
+- class_derivations:
+    Visit:
       populated_from: pht008730
       slot_derivations:
         id:
