@@ -8,31 +8,6 @@
           value: CHS BASELINE BOTH
           range: string
         age_at_observation:
-          expr: '{phv00100487} * 365'  
-        observation_type:
-          value: OMOP:4208414
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001452
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00100498
-                  unit:
-                    value: mg/L
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001452
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00100285
-        associated_visit:
-          value: CHS BASELINE BOTH
-          range: string
-        age_at_observation:
           expr: '{phv00100487} * 365'
         observation_type:
           value: OMOP:4208414
@@ -57,10 +32,10 @@
         associated_participant:
           populated_from: phv00105099
         associated_visit:
-          value: CHS YEAR 5 NEW
+          value: CHS BASELINE 2
           range: string
         age_at_observation:
-          expr: '({phv00105116} * 365) + 1825'  
+          expr: '{phv00105622} * 365'  
         observation_type:
           value: OMOP:4208414
           range: string
