@@ -60,26 +60,6 @@
                     value: "10*3/uL"
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht012503
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00506928
-        associated_visit:
-          value: ARIC CHEM 2
-        observation_type:
-          value: OMOP:4267147
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012503
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00507180
-                  unit:
-                    value: "10*3/uL"
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht004109
       slot_derivations:
         associated_participant:
