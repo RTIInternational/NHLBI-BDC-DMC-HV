@@ -58,6 +58,24 @@
             '1': OMOP:40766945
 - class_derivations:
     Observation:
+      populated_from: pht004813
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00250282
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00250282}) + ":FHS OMNI 1 EXAM 1")'
+        age_at_observation:
+          expr: '{pht003099.phv00177930} * 365'
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          populated_from: phv00565599
+          value_mappings:
+            '0': None
+            '1': OMOP:40766945
+- class_derivations:
+    Observation:
       populated_from: pht004814
       slot_derivations:
         associated_participant:
@@ -369,12 +387,27 @@
             '2': OMOP:45883458
 - class_derivations:
     Observation:
+      populated_from: pht006006
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00274193
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00274193}) + ":FHS OMNI 2 EXAM 1")'
+        age_at_observation:
+          expr: '{pht003099.phv00177930} * 365'
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          expr: 'case(({phv00565922} == 0, "OMOP:45883537"), ({phv00565923} == 1, "OMOP:40766945"), ({phv00565924} == 1, "OMOP:40766945"), ({phv00565922} == 1, "OMOP:45883458"), (True, None))'
+- class_derivations:
+    Observation:
       populated_from: pht006026
       slot_derivations:
         associated_participant:
           populated_from: phv00277015
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00277015}) + ":" + case(({phv00277016} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 1''), ({phv00277016} == ''3'', ''FHS GENERATION 3 EXAM 1''), ({phv00277016} == ''72'', ''FHS OMNI 2 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00277015}) + ":" + case(({phv00277016} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 1''), ({phv00277016} == ''3'', ''FHS GENERATION 3 EXAM 1''), ({phv00277016} == ''72'', ''FHS OMNI 2 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'  
         age_at_observation:
           expr: '{pht003099.phv00177930} * 365'   
         observation_type:
@@ -383,7 +416,7 @@
         value_enum:
           populated_from: phv00277032
           value_mappings:
-            '0': OMOP:45883537
+            '0': None
             '1': OMOP:40766945
 - class_derivations:
     Observation:
@@ -392,7 +425,7 @@
         associated_participant:
           populated_from: phv00277015
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00277015}) + ":" + case(({phv00277016} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00277016} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00277016} == ''72'', ''FHS OMNI 2 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00277015}) + ":" + case(({phv00277016} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00277016} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00277016} == ''72'', ''FHS OMNI 2 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'  
         age_at_observation:
           expr: '{pht003099.phv00177932} * 365'   
         observation_type:
@@ -401,7 +434,7 @@
         value_enum:
           populated_from: phv00277033
           value_mappings:
-            '0': OMOP:45883537
+            '0': None
             '1': OMOP:40766945
 - class_derivations:
     Observation:
@@ -419,7 +452,7 @@
         value_enum:
           populated_from: phv00423898
           value_mappings:
-            '0': OMOP:45883537
+            '0': None
             '1': OMOP:40766945
 - class_derivations:
     Observation:
@@ -437,7 +470,7 @@
         value_enum:
           populated_from: phv00423899
           value_mappings:
-            '0': OMOP:45883537
+            '0': None
             '1': OMOP:40766945
 - class_derivations:
     Observation:
@@ -455,7 +488,7 @@
         value_enum:
           populated_from: phv00423900
           value_mappings:
-            '0': OMOP:45883537
+            '0': None
             '1': OMOP:40766945
 - class_derivations:
     Observation:
@@ -473,7 +506,7 @@
         value_enum:
           populated_from: phv00423901
           value_mappings:
-            '0': OMOP:45883537
+            '0': None
             '1': OMOP:40766945
 - class_derivations:
     Observation:
