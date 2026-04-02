@@ -167,6 +167,19 @@
           range: string
 - class_derivations:
     DrugExposure:
+      populated_from: pht000009
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00001036
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001036}) + ":FHS ORIGINAL EXAM 4")'
+        drug_concept:
+          expr: 'case(({phv00000705} == 1, "ATC:C02"), ({phv00000705} == 2, "ATC:C02"))'
+        exposure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
       populated_from: pht000016
       slot_derivations:
         associated_participant:
