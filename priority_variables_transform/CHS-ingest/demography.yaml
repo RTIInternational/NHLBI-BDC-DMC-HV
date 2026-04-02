@@ -89,20 +89,13 @@
             '0': OMOP:38003564
             '1': OMOP:38003563
         race:
-          expr: 'case(
-                   ({phv00105645} == 2, "OMOP:8516"),
-                   ({phv00105117} == "AM OF AFRI DESC", "OMOP:8516"),
-                   ({phv00105117} == "AFRO AMERICAN", "OMOP:8516"),
-                   ({phv00105117} == "AFRICAN-AM", "OMOP:8516"),
-                   ({phv00105645} == 3, "OMOP:8657"),
-                   ({phv00105117} == "MIXED", "OMOP:45880900"),
-                   ({phv00105117} == "BLACK/INDIAN", "OMOP:45880900"),
-                   ({phv00105117} == "PART HISPANIC", "OMOP:45880900"),
-                   ({phv00105117} == "BIRACIAL", "OMOP:45880900"),
-                   ({phv00105117} == "CHATAQUA/AFR/FR", "OMOP:45880900"),
-                   ({phv00105117} == "MIX OF 1 & 2", "OMOP:45880900"),
-                   (True, "OMOP:8552")
-                )'
+          populated_from: phv00105645
+          value_mappings:
+            '1': OMOP:8527
+            '2': OMOP:8516
+            '3': OMOP:8657
+            '4': OMOP:8515
+            '5': OMOP:8552
 - class_derivations:
     Demography:
       populated_from: pht001491

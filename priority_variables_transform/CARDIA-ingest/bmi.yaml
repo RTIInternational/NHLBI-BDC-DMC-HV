@@ -1,0 +1,23 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001583
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00113633
+        associated_visit:
+          value: CARDIA YEAR 0
+        # age_at_observation:
+          # expr: "{nan} * 365"
+        observation_type:
+          value: OBA:2045455
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001583
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00113661
+                  unit:
+                    value: "kg/m2"
+                    range: string
