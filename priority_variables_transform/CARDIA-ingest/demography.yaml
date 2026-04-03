@@ -17,8 +17,20 @@
             '5': OMOP:38003564
             '4': OMOP:38003564
             '3': OMOP:38003563
+# Race block uses B2REF (pht001645) — the official CARDIA reference file with
+# race verified at Exam 2. Covers all 3,622 participants with only codes 4
+# (Black) and 5 (White). Preferred over A4F01 telephone screen which has 9
+# Hispanic participants that fall through unmapped.
+- class_derivations:
+    Demography:
+      populated_from: pht001645
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00115110
+        associated_visit:
+          value: CARDIA EXAM 0
         race:
-          populated_from: phv00112422
+          populated_from: phv00115113
           value_mappings:
             '5': OMOP:8527
             '4': OMOP:8516
