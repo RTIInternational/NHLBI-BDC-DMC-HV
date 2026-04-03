@@ -1,45 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001592
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00113907
-        associated_visit:
-          value: CARDIA YEAR 0
-        observation_type:
-          value: OMOP:606729
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001592
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00113961
-                  unit:
-                    value: "mg/d"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001745
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00117593
-        associated_visit:
-          value: CARDIA YEAR 7
-        observation_type:
-          value: OMOP:606729
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001745
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00117628
-                  unit:
-                    value: "mg/d"
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht001591
       slot_derivations:
         associated_participant:
@@ -57,27 +17,27 @@
                   value_decimal:
                     populated_from: phv00113867
                   unit:
-                    value: "mg/d"
+                    value: 'mg/d'
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001746
+      populated_from: pht001592
       slot_derivations:
         associated_participant:
-          populated_from: phv00117707
+          populated_from: phv00113907
         associated_visit:
-          value: CARDIA YEAR 7
+          value: CARDIA YEAR 0
         observation_type:
           value: OMOP:606729
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht001746
+                populated_from: pht001592
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00117742
+                    populated_from: phv00113961
                   unit:
-                    value: "mg/d"
+                    value: 'mg/d'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001638
@@ -97,4 +57,44 @@
                   value_decimal:
                     populated_from: phv00115050
                   unit:
-                    value: "mg/d"
+                    value: 'mg/d'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001745
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00117593
+        associated_visit:
+          value: CARDIA YEAR 7
+        observation_type:
+          value: OMOP:606729
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001745
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00117628
+                  unit:
+                    value: 'mg/d'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001746
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00117707
+        associated_visit:
+          value: CARDIA YEAR 7
+        observation_type:
+          value: OMOP:606729
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001746
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00117742
+                  unit:
+                    value: 'mg/d'

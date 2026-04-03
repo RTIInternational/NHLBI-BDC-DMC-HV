@@ -1,5 +1,25 @@
 - class_derivations:
     MeasurementObservation:
+      populated_from: pht001959
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00127609
+        associated_visit:
+          value: JHS EXAM 1
+        observation_type:
+          value: OBA:VT0000188
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001959
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00127613
+                  unit:
+                    value: 'mg/dL'
+- class_derivations:
+    MeasurementObservation:
       populated_from: pht008741
       slot_derivations:
         associated_participant:
@@ -17,10 +37,10 @@
                   value_decimal:
                     populated_from: phv00401716
                     unit_conversion:
-                      source_unit: "mg/L"
-                      target_unit: "mg/dL"
+                      source_unit: 'mg/L'
+                      target_unit: 'mg/dL'
                   unit:
-                    value: "mg/dL"
+                    value: 'mg/dL'
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -41,31 +61,11 @@
                   value_decimal:
                     populated_from: phv00401733
                     unit_conversion:
-                      source_unit: "mg/L"
-                      target_unit: "mg/dL"
+                      source_unit: 'mg/L'
+                      target_unit: 'mg/dL'
                   unit:
-                    value: "mg/dL"
+                    value: 'mg/dL'
                     range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001959
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00127609
-        associated_visit:
-          value: JHS EXAM 1
-        observation_type:
-          value: OBA:VT0000188
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001959
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00127613
-                  unit:
-                    value: "mg/dL"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008748
@@ -85,4 +85,4 @@
                   value_decimal:
                     populated_from: phv00402738
                   unit:
-                    value: "mg/dL"
+                    value: 'mg/dL'

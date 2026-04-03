@@ -1,30 +1,9 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht010745
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00476636
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00476636}) + ":" + OFFSPRING EXAM 8 AND OMNI 1 EXAM 3'
-        age_at_observation:
-          expr: '{0} * 365'
-        observation_type:
-          value: OBA:VT2000000
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht010745
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht010744
       slot_derivations:
         associated_participant:
           populated_from: phv00476561
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00476561}) + ":" + Generation 3 Exam 2, Omni 2 Exam 2, and New Offspring Spouse Exam 2'
         age_at_observation:
           expr: '{phv00177932} * 365'
         observation_type:
@@ -38,14 +17,29 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
+      populated_from: pht010745
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00476636
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00476636}) + ":" + case(({phv00476637} == 1, ''FHS OFFSPRING EXAM 8''), ({phv00476637} == 7 , ''FHS OMNI 1 EXAM 3''), (True, ''FHS UNKNOWN VISIT'')))'
+        observation_type:
+          value: OBA:VT2000000
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht010745
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
       populated_from: pht010746
       slot_derivations:
         associated_participant:
           populated_from: phv00476758
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00476758}) + ":" + OFFSPRING EXAM 9 AND OMNI 1 EXAM 4'
-        age_at_observation:
-          expr: '{0} * 365'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00476758}) + ":" + case(({phv00476759} == 1, ''FHS OFFSPRING EXAM 9''), ({phv00476759} == 7, ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         observation_type:
           value: OBA:VT2000000
         value_quantity:

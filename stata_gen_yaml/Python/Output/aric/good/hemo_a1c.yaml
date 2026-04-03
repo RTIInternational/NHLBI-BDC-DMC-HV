@@ -1,25 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht012503
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00506928
-        associated_visit:
-          value: ARIC CHEM 2
-        observation_type:
-          value: OMOP:4184637
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012503
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00506933
-                  unit:
-                    value: "%"
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht006427
       slot_derivations:
         associated_participant:
@@ -37,4 +17,24 @@
                   value_decimal:
                     populated_from: phv00295245
                   unit:
-                    value: "%"
+                    value: '%'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht012503
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00506928
+        associated_visit:
+          value: ARIC CHEM 2
+        observation_type:
+          value: OMOP:4184637
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht012503
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00506933
+                  unit:
+                    value: '%'

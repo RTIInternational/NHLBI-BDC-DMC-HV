@@ -1,80 +1,28 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht000017
+      populated_from: pht000014
       slot_derivations:
         associated_participant:
-          populated_from: phv00002668
+          populated_from: phv00002020
         associated_visit:
-          value: FHS ORIGINAL EXAM 15
+          value: FHS ORIGINAL EXAM 12
         age_at_observation:
-          expr: '{phv00177958} * 365'
+          expr: '{phv00177952} * 365'
         observation_type:
           value: OMOP:4273023
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000017
+                populated_from: pht000014
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00002594
+                    populated_from: phv00001979
                     unit_conversion:
-                      source_unit: "cs"
-                      target_unit: "ms"
+                      source_unit: 'cs'
+                      target_unit: 'ms'
                   unit:
-                    value: "ms"
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000031
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00008379
-        associated_visit:
-          value: FHS OFFSPRING EXAM 2
-        age_at_observation:
-          expr: '{phv00177932} * 365'
-        observation_type:
-          value: OMOP:4273023
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000031
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00007890
-                    unit_conversion:
-                      source_unit: "cs"
-                      target_unit: "ms"
-                  unit:
-                    value: "ms"
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000020
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00003667
-        associated_visit:
-          value: FHS ORIGINAL EXAM 18
-        age_at_observation:
-          expr: '{phv00177964} * 365'
-        observation_type:
-          value: OMOP:4273023
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000020
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00003596
-                    unit_conversion:
-                      source_unit: "cs"
-                      target_unit: "ms"
-                  unit:
-                    value: "ms"
+                    value: 'ms'
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -97,36 +45,10 @@
                   value_decimal:
                     populated_from: phv00002159
                     unit_conversion:
-                      source_unit: "cs"
-                      target_unit: "ms"
+                      source_unit: 'cs'
+                      target_unit: 'ms'
                   unit:
-                    value: "ms"
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000014
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00002020
-        associated_visit:
-          value: FHS ORIGINAL EXAM 12
-        age_at_observation:
-          expr: '{phv00177952} * 365'
-        observation_type:
-          value: OMOP:4273023
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000014
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00001979
-                    unit_conversion:
-                      source_unit: "cs"
-                      target_unit: "ms"
-                  unit:
-                    value: "ms"
+                    value: 'ms'
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -149,10 +71,62 @@
                   value_decimal:
                     populated_from: phv00002354
                     unit_conversion:
-                      source_unit: "cs"
-                      target_unit: "ms"
+                      source_unit: 'cs'
+                      target_unit: 'ms'
                   unit:
-                    value: "ms"
+                    value: 'ms'
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000017
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00002668
+        associated_visit:
+          value: FHS ORIGINAL EXAM 15
+        age_at_observation:
+          expr: '{phv00177958} * 365'
+        observation_type:
+          value: OMOP:4273023
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000017
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00002594
+                    unit_conversion:
+                      source_unit: 'cs'
+                      target_unit: 'ms'
+                  unit:
+                    value: 'ms'
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000020
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00003667
+        associated_visit:
+          value: FHS ORIGINAL EXAM 18
+        age_at_observation:
+          expr: '{phv00177964} * 365'
+        observation_type:
+          value: OMOP:4273023
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000020
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00003596
+                    unit_conversion:
+                      source_unit: 'cs'
+                      target_unit: 'ms'
+                  unit:
+                    value: 'ms'
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -175,10 +149,36 @@
                   value_decimal:
                     populated_from: phv00007650
                     unit_conversion:
-                      source_unit: "cs"
-                      target_unit: "ms"
+                      source_unit: 'cs'
+                      target_unit: 'ms'
                   unit:
-                    value: "ms"
+                    value: 'ms'
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000031
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00008379
+        associated_visit:
+          value: FHS OFFSPRING EXAM 2
+        age_at_observation:
+          expr: '{phv00177932} * 365'
+        observation_type:
+          value: OMOP:4273023
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000031
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00007890
+                    unit_conversion:
+                      source_unit: 'cs'
+                      target_unit: 'ms'
+                  unit:
+                    value: 'ms'
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -186,76 +186,6 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00036379
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036379}) + ":" + FHS ORIGINAL EXAM 11, OFFSPRING EXAM 1, GENERATION 3 EXAM 1'
-        age_at_observation:
-          expr: '{0} * 365'
-        observation_type:
-          value: OMOP:4273023
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000299
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00036356
-                  unit:
-                    value: "ms"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000299
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00036379
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036379}) + ":" + FHS ORIGINAL EXAM 11, OFFSPRING EXAM 1, GENERATION 3 EXAM 1'
-        age_at_observation:
-          expr: '{0} * 365'
-        observation_type:
-          value: OMOP:4273023
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000299
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00036353
-                  unit:
-                    value: "ms"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000299
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00036379
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036379}) + ":" + FHS ORIGINAL EXAM 11, OFFSPRING EXAM 1, GENERATION 3 EXAM 1'
-        age_at_observation:
-          expr: '{0} * 365'
-        observation_type:
-          value: OMOP:4273023
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000299
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00036355
-                  unit:
-                    value: "ms"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000299
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00036379
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036379}) + ":" + FHS ORIGINAL EXAM 11, OFFSPRING EXAM 1, GENERATION 3 EXAM 1'
-        age_at_observation:
-          expr: '{0} * 365'
         observation_type:
           value: OMOP:4273023
         value_quantity:
@@ -267,4 +197,58 @@
                   value_decimal:
                     populated_from: phv00036354
                   unit:
-                    value: "ms"
+                    value: 'ms'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000299
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00036379
+        observation_type:
+          value: OMOP:4273023
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000299
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00036355
+                  unit:
+                    value: 'ms'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000299
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00036379
+        observation_type:
+          value: OMOP:4273023
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000299
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00036356
+                  unit:
+                    value: 'ms'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000299
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00036379
+        observation_type:
+          value: OMOP:4273023
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000299
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00036353
+                  unit:
+                    value: 'ms'

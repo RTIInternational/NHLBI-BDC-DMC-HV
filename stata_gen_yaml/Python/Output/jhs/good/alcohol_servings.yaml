@@ -6,8 +6,6 @@
           populated_from: phv00124667
         associated_visit:
           value: JHS EXAM 1
-        age_at_observation:
-          expr: '{0} * 365'
         observation_type:
           value: OMOP:35609491
         value_quantity:
@@ -19,29 +17,7 @@
                   value_decimal:
                     populated_from: phv00124671
                   unit:
-                    value: "{#}/wk"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht008731
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00401370
-        associated_visit:
-          value: JHS EXAM 3
-        age_at_observation:
-          expr: '{phv00401379} * 365'
-        observation_type:
-          value: OMOP:35609491
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008731
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401384
-                  unit:
-                    value: "{#}/wk"
+                    value: '{#}/wk'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008729
@@ -63,4 +39,26 @@
                   value_decimal:
                     populated_from: phv00401090
                   unit:
-                    value: "{#}/wk"
+                    value: '{#}/wk'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht008731
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00401370
+        associated_visit:
+          value: JHS EXAM 3
+        age_at_observation:
+          expr: '{phv00401379} * 365'
+        observation_type:
+          value: OMOP:35609491
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht008731
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00401384
+                  unit:
+                    value: '{#}/wk'

@@ -1,113 +1,29 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht000105
+      populated_from: pht000019
       slot_derivations:
         associated_participant:
-          populated_from: phv00022687
+          populated_from: phv00003261
         associated_visit:
-          value: FHS OFFSPRING EXAM 3
+          value: FHS ORIGINAL EXAM 17
         age_at_observation:
-          expr: '{phv00177934} * 365'
+          expr: '{phv00177962} * 365'
         observation_type:
           value: OMOP:4176265
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000105
+                populated_from: pht000019
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00022678
+                    populated_from: phv00003249
+                    unit_conversion:
+                      source_unit: 'dL'
+                      target_unit: 'L'
                   unit:
-                    value: "L"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht005170
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00257846
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00257846}) + ":" + FHS NEW OFFSPRING SPOUSE, OMNI 2 EXAM 1'
-        age_at_observation:
-          expr: '{phv00177930} * 365'
-        observation_type:
-          value: OMOP:4176265
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht005170
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00257853
-                  unit:
-                    value: "L"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht005169
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00257829
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00257829}) + ":" + FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4'
-        age_at_observation:
-          expr: '{0} * 365'
-        observation_type:
-          value: OMOP:4176265
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht005169
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00257838
-                  unit:
-                    value: "L"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000106
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00022700
-        associated_visit:
-          value: FHS OFFSPRING EXAM 7
-        age_at_observation:
-          expr: '{phv00177942} * 365'
-        observation_type:
-          value: OMOP:4176265
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000106
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00022689
-                  unit:
-                    value: "L"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht003632
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00196546
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00196546}) + ":" + FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'
-        age_at_observation:
-          expr: '{phv00177932} * 365'
-        observation_type:
-          value: OMOP:4176265
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003632
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00196552
-                  unit:
-                    value: "L"
+                    value: 'L'
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000101
@@ -129,7 +45,7 @@
                   value_decimal:
                     populated_from: phv00022555
                   unit:
-                    value: "L"
+                    value: 'L'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000102
@@ -151,51 +67,7 @@
                   value_decimal:
                     populated_from: phv00022571
                   unit:
-                    value: "L"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000832
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00073843
-        associated_visit:
-          value: FHS OFFSPRING EXAM 8
-        age_at_observation:
-          expr: '{phv00177944} * 365'
-        observation_type:
-          value: OMOP:4176265
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000832
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00073832
-                  unit:
-                    value: "L"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000395
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00056635
-        associated_visit:
-          value: FHS SLEEP HEART HEALTH STUDY (SHHS) BASELINE
-        age_at_observation:
-          expr: '{0} * 365'
-        observation_type:
-          value: OMOP:4176265
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000395
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00055266
-                  unit:
-                    value: "L"
+                    value: 'L'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000104
@@ -217,30 +89,148 @@
                   value_decimal:
                     populated_from: phv00022664
                   unit:
-                    value: "L"
+                    value: 'L'
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht000019
+      populated_from: pht000105
       slot_derivations:
         associated_participant:
-          populated_from: phv00003261
+          populated_from: phv00022687
         associated_visit:
-          value: FHS ORIGINAL EXAM 17
+          value: FHS OFFSPRING EXAM 3
         age_at_observation:
-          expr: '{phv00177962} * 365'
+          expr: '{phv00177934} * 365'
         observation_type:
           value: OMOP:4176265
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000019
+                populated_from: pht000105
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00003249
-                    unit_conversion:
-                      source_unit: "dL"
-                      target_unit: "L"
+                    populated_from: phv00022678
                   unit:
-                    value: "L"
-                    range: string
+                    value: 'L'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000106
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00022700
+        associated_visit:
+          value: FHS OFFSPRING EXAM 7
+        age_at_observation:
+          expr: '{phv00177942} * 365'
+        observation_type:
+          value: OMOP:4176265
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000106
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00022689
+                  unit:
+                    value: 'L'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000395
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00056635
+        associated_visit:
+          value: FHS SLEEP HEART HEALTH STUDY (SHHS) BASELINE
+        observation_type:
+          value: OMOP:4176265
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000395
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00055266
+                  unit:
+                    value: 'L'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000832
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00073843
+        associated_visit:
+          value: FHS OFFSPRING EXAM 8
+        age_at_observation:
+          expr: '{phv00177944} * 365'
+        observation_type:
+          value: OMOP:4176265
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000832
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00073832
+                  unit:
+                    value: 'L'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003632
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00196546
+        age_at_observation:
+          expr: '{phv00177932} * 365'
+        observation_type:
+          value: OMOP:4176265
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003632
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00196552
+                  unit:
+                    value: 'L'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht005169
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00257829
+        observation_type:
+          value: OMOP:4176265
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht005169
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00257838
+                  unit:
+                    value: 'L'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht005170
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00257846
+        age_at_observation:
+          expr: '{phv00177930} * 365'
+        observation_type:
+          value: OMOP:4176265
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht005170
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00257853
+                  unit:
+                    value: 'L'

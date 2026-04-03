@@ -6,8 +6,6 @@
           populated_from: phv00125925
         associated_visit:
           value: JHS EXAM 6
-        age_at_observation:
-          expr: '{0} * 365'
         observation_type:
           value: OMOP:4184637
         value_quantity:
@@ -19,29 +17,7 @@
                   value_decimal:
                     populated_from: phv00125929
                   unit:
-                    value: "%"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht008734
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00401565
-        associated_visit:
-          value: JHS EXAM 3
-        age_at_observation:
-          expr: '{phv00401572} * 365'
-        observation_type:
-          value: OMOP:4184637
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008734
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401573
-                  unit:
-                    value: "%"
+                    value: '%'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008729
@@ -63,7 +39,7 @@
                   value_decimal:
                     populated_from: phv00401123
                   unit:
-                    value: "%"
+                    value: '%'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008730
@@ -85,7 +61,7 @@
                   value_decimal:
                     populated_from: phv00401312
                   unit:
-                    value: "%"
+                    value: '%'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008731
@@ -107,7 +83,29 @@
                   value_decimal:
                     populated_from: phv00401414
                   unit:
-                    value: "%"
+                    value: '%'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht008734
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00401565
+        associated_visit:
+          value: JHS EXAM 3
+        age_at_observation:
+          expr: '{phv00401572} * 365'
+        observation_type:
+          value: OMOP:4184637
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht008734
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00401573
+                  unit:
+                    value: '%'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008741
@@ -116,8 +114,6 @@
           populated_from: phv00401710
         associated_visit:
           value: JHS EXAM 6
-        age_at_observation:
-          expr: '{0} * 365'
         observation_type:
           value: OMOP:4184637
         value_quantity:
@@ -129,7 +125,7 @@
                   value_decimal:
                     populated_from: phv00401717
                   unit:
-                    value: "%"
+                    value: '%'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008742
@@ -138,8 +134,6 @@
           populated_from: phv00401725
         associated_visit:
           value: JHS EXAM 1
-        age_at_observation:
-          expr: '{0} * 365'
         observation_type:
           value: OMOP:4184637
         value_quantity:
@@ -151,4 +145,4 @@
                   value_decimal:
                     populated_from: phv00401734
                   unit:
-                    value: "%"
+                    value: '%'

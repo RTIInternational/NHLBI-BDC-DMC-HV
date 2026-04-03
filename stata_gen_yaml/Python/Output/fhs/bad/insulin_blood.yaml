@@ -1,24 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht010725
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00462160
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00462160}) + ":" + Offspring Exams 5, 6, 7 and Omni 1 Exams 1, 2'
-        age_at_observation:
-          expr: '{0} * 365'
-        observation_type:
-          value: OBA:2060174
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht010725
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht006013
       slot_derivations:
         associated_participant:
@@ -42,10 +23,21 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00462160
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00462160}) + ":" + Offspring Exams 5, 6, 7 and Omni 1 Exams 1, 2'
-        age_at_observation:
-          expr: '{0} * 365'
+        observation_type:
+          value: OBA:2060174
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht010725
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht010725
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00462160
         observation_type:
           value: OBA:2060174
         value_quantity:

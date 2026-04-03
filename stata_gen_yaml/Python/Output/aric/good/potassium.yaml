@@ -1,9 +1,9 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht012851
+      populated_from: pht004051
       slot_derivations:
         associated_participant:
-          populated_from: phv00519771
+          populated_from: phv00203875
         associated_visit:
           value: ARIC EXAM 1
         observation_type:
@@ -12,32 +12,12 @@
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht012851
+                populated_from: pht004051
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00519775
+                    populated_from: phv00203864
                   unit:
-                    value: "mmol/L"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht012503
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00506928
-        associated_visit:
-          value: ARIC CHEM 2
-        observation_type:
-          value: OBA:VT0002668
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012503
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00507115
-                  unit:
-                    value: "mmol/L"
+                    value: 'mmol/L'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004052
@@ -57,13 +37,33 @@
                   value_decimal:
                     populated_from: phv00203881
                   unit:
-                    value: "mmol/L"
+                    value: 'mmol/L'
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht004051
+      populated_from: pht012503
       slot_derivations:
         associated_participant:
-          populated_from: phv00203875
+          populated_from: phv00506928
+        associated_visit:
+          value: ARIC CHEM 2
+        observation_type:
+          value: OBA:VT0002668
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht012503
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00507115
+                  unit:
+                    value: 'mmol/L'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht012851
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00519771
         associated_visit:
           value: ARIC EXAM 1
         observation_type:
@@ -72,9 +72,9 @@
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht004051
+                populated_from: pht012851
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00203864
+                    populated_from: phv00519775
                   unit:
-                    value: "mmol/L"
+                    value: 'mmol/L'

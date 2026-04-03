@@ -1,5 +1,39 @@
 - class_derivations:
     MeasurementObservation:
+      populated_from: pht000685
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00069668
+        associated_visit:
+          value: FHS OFFSPRING EXAM 7
+        age_at_observation:
+          expr: '{phv00177942} * 365'
+        observation_type:
+          value: OBA:VT0010540
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000685
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001039
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00080759
+        observation_type:
+          value: OBA:VT0010540
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001039
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
       populated_from: pht004362
       slot_derivations:
         associated_participant:
@@ -23,10 +57,6 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00227261
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00227261}) + ":" + FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4'
-        age_at_observation:
-          expr: '{0} * 365'
         observation_type:
           value: OBA:VT0010540
         value_quantity:
@@ -34,43 +64,5 @@
           - class_derivations:
               Quantity:
                 populated_from: pht004809
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001039
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00080759
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00080759}) + ":" + Offspring Exams 5, 6, and Omni 1 Exam 1'
-        age_at_observation:
-          expr: '{0} * 365'
-        observation_type:
-          value: OBA:VT0010540
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001039
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000685
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00069668
-        associated_visit:
-          value: FHS OFFSPRING EXAM 7
-        age_at_observation:
-          expr: '{phv00177942} * 365'
-        observation_type:
-          value: OBA:VT0010540
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000685
                 slot_derivations:
                   value_decimal:

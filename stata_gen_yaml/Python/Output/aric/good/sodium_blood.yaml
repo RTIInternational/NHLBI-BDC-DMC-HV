@@ -1,45 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht004102
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00207055
-        associated_visit:
-          value: ARIC HOSPITAL FORM
-        observation_type:
-          value: OBA:VT0001776
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004102
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00206958
-                  unit:
-                    value: "mmol/L"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht004102
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00207055
-        associated_visit:
-          value: ARIC HOSPITAL FORM
-        observation_type:
-          value: OBA:VT0001776
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004102
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00206959
-                  unit:
-                    value: "mmol/L"
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht004051
       slot_derivations:
         associated_participant:
@@ -57,7 +17,7 @@
                   value_decimal:
                     populated_from: phv00203863
                   unit:
-                    value: "mmol/L"
+                    value: 'mmol/L'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004052
@@ -77,7 +37,47 @@
                   value_decimal:
                     populated_from: phv00203880
                   unit:
-                    value: "mmol/L"
+                    value: 'mmol/L'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004102
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00207055
+        associated_visit:
+          value: ARIC HOSPITAL FORM
+        observation_type:
+          value: OBA:VT0001776
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004102
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00206959
+                  unit:
+                    value: 'mmol/L'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004102
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00207055
+        associated_visit:
+          value: ARIC HOSPITAL FORM
+        observation_type:
+          value: OBA:VT0001776
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004102
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00206958
+                  unit:
+                    value: 'mmol/L'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012851
@@ -97,4 +97,4 @@
                   value_decimal:
                     populated_from: phv00519776
                   unit:
-                    value: "mmol/L"
+                    value: 'mmol/L'

@@ -1,6 +1,6 @@
 - class_derivations:
     MeasurementObservation:
-      populated from: pht008733
+      populated_from: pht008733
       slot_derivations:
         associated_participant: 
           populated_from: phv00401561
@@ -10,14 +10,14 @@
           value: OBA:2045303
         value_quantity:
           object_derivations:
-          - class derivations:
+          - class_derivations:
               Quantity:
                 populated_from: pht008733
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00401563
                   unit: 
-                    value: pg/mL
+                    value: 'pg/mL'
 # phv00401564 is a categorical var indicating if bnp fell below detection limit or was an abnormally high value
         range_low:
           object_derivations:
@@ -29,7 +29,7 @@
                     value: '2'
                     range: string
                   unit:
-                    value: pg/mL
+                    value: 'pg/mL'
                     range: string 
         range_high:
           object_derivations:
@@ -41,5 +41,5 @@
                     value: '100'
                     range: string
                   unit:
-                    value: pg/mL
+                    value: 'pg/mL'
                     range: string   

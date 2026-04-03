@@ -1,25 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht004108
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00207283
-        associated_visit:
-          value: ARIC EXAM 2
-        observation_type:
-          value: OMOP:37208690
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004108
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00207276
-                  unit:
-                    value: "%{WBCs}"
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht004107
       slot_derivations:
         associated_participant:
@@ -37,7 +17,27 @@
                   value_decimal:
                     populated_from: phv00207261
                   unit:
-                    value: "%{WBCs}"
+                    value: '%{WBCs}'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004108
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00207283
+        associated_visit:
+          value: ARIC EXAM 2
+        observation_type:
+          value: OMOP:37208690
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004108
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00207276
+                  unit:
+                    value: '%{WBCs}'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006422
@@ -57,4 +57,4 @@
                   value_decimal:
                     populated_from: phv00294964
                   unit:
-                    value: "%{WBCs}"
+                    value: '%{WBCs}'

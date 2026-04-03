@@ -1,73 +1,25 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht008737
+      populated_from: pht008729
       slot_derivations:
         associated_participant:
-          populated_from: phv00401588
+          populated_from: phv00401078
         associated_visit:
-          value: JHS EXAM 6
+          value: JHS EXAM 1
         age_at_observation:
-          expr: '{0} * 365'
+          expr: '{phv00401085} * 365'
         observation_type:
           value: OBA:1001085
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht008737
+                populated_from: pht008729
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00401613
-                    unit_conversion:
-                      source_unit: "[in_us]"
-                      target_unit: "cm"
+                    populated_from: phv00401095
                   unit:
-                    value: "cm"
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht008731
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00401370
-        associated_visit:
-          value: JHS EXAM 3
-        age_at_observation:
-          expr: '{phv00401379} * 365'
-        observation_type:
-          value: OBA:1001085
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008731
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401388
-                  unit:
-                    value: "cm"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht008738
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00401621
-        associated_visit:
-          value: JHS EXAM 9
-        age_at_observation:
-          expr: '{0} * 365'
-        observation_type:
-          value: OBA:1001085
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008738
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401628
-                  unit:
-                    value: "cm"
+                    value: 'cm'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008730
@@ -89,26 +41,70 @@
                   value_decimal:
                     populated_from: phv00401287
                   unit:
-                    value: "cm"
+                    value: 'cm'
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht008729
+      populated_from: pht008731
       slot_derivations:
         associated_participant:
-          populated_from: phv00401078
+          populated_from: phv00401370
         associated_visit:
-          value: JHS EXAM 1
+          value: JHS EXAM 3
         age_at_observation:
-          expr: '{phv00401085} * 365'
+          expr: '{phv00401379} * 365'
         observation_type:
           value: OBA:1001085
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht008729
+                populated_from: pht008731
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00401095
+                    populated_from: phv00401388
                   unit:
-                    value: "cm"
+                    value: 'cm'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht008737
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00401588
+        associated_visit:
+          value: JHS EXAM 6
+        observation_type:
+          value: OBA:1001085
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht008737
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00401613
+                    unit_conversion:
+                      source_unit: '[in_us]'
+                      target_unit: 'cm'
+                  unit:
+                    value: 'cm'
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht008738
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00401621
+        associated_visit:
+          value: JHS EXAM 9
+        observation_type:
+          value: OBA:1001085
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht008738
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00401628
+                  unit:
+                    value: 'cm'

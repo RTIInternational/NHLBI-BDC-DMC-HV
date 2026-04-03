@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00177237
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177237}) + ":" + case(({phv00177238} == ''2'', ''FHS New Offspring Spouse Exam 2''), ({phv00177238} == ''3'', ''FHS Generation 3 Exam 2''), ({phv00177238} == ''72'', ''FHS OMNI 2 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177237}) + ":" + case(({phv00177238} == 2, ''FHS New Offspring Spouse Exam 2''), ({phv00177238} == 3, ''FHS Generation 3 Exam 2''), ({phv00177238} == 72, ''FHS OMNI 2 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
           expr: '{phv00177932} * 365'
         observation_type:
@@ -24,9 +24,7 @@
         associated_participant:
           populated_from: phv00254010
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == ''1'', ''FHS Offspring Exam 9''), ({phv00254011} == ''7'', ''FHS Omni 1 Exam 4''), (True, ''FHS UNKNOWN VISIT'')))'
-        age_at_observation:
-          expr: '{0} * 365'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == 1, ''FHS Offspring Exam 9''), ({phv00254011} == 7, ''FHS Omni 1 Exam 4''), (True, ''FHS UNKNOWN VISIT'')))'
         observation_type:
           value: OBA:1000032
         value_quantity:

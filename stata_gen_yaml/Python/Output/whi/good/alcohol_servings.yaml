@@ -1,43 +1,51 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001004
+      populated_from: pht000990
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          populated_from: phv00077450
         associated_visit:
-          value: WHI PH 35
+          value: WHI YEAR 3
         observation_type:
           value: OMOP:35609491
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht001004
+                populated_from: pht000990
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00078866
+                    populated_from: phv00077552
+                    unit_conversion:
+                      source_unit: '{#}/d'
+                      target_unit: '{#}/wk'
                   unit:
-                    value: "{#}/wk"
+                    value: '{#}/wk'
+                    range: string
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht002125
+      populated_from: pht000993
       slot_derivations:
         associated_participant:
-          populated_from: phv00156379
+          populated_from: phv00077907
         associated_visit:
-          value: WHI FG 60 2
+          value: WHI YEAR 6
         observation_type:
           value: OMOP:35609491
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht002125
+                populated_from: pht000993
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00156410
+                    populated_from: phv00077954
+                    unit_conversion:
+                      source_unit: '{#}/d'
+                      target_unit: '{#}/wk'
                   unit:
-                    value: "{#}/wk"
+                    value: '{#}/wk'
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001003
@@ -57,4 +65,116 @@
                   value_decimal:
                     populated_from: phv00078826
                   unit:
-                    value: "{#}/wk"
+                    value: '{#}/wk'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001004
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00082638
+        associated_visit:
+          value: WHI PH 35
+        observation_type:
+          value: OMOP:35609491
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001004
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00078866
+                  unit:
+                    value: '{#}/wk'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001517
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00111654
+        associated_visit:
+          value: WHI FG 60 1
+        observation_type:
+          value: OMOP:35609491
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001517
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00111862
+                    unit_conversion:
+                      source_unit: '{#}/d'
+                      target_unit: '{#}/wk'
+                  unit:
+                    value: '{#}/wk'
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001517
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00111654
+        associated_visit:
+          value: WHI FG 60 1
+        observation_type:
+          value: OMOP:35609491
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001517
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00111861
+                    unit_conversion:
+                      source_unit: '{#}/d'
+                      target_unit: '{#}/wk'
+                  unit:
+                    value: '{#}/wk'
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001517
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00111654
+        associated_visit:
+          value: WHI FG 60 1
+        observation_type:
+          value: OMOP:35609491
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001517
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00111860
+                    unit_conversion:
+                      source_unit: '{#}/d'
+                      target_unit: '{#}/wk'
+                  unit:
+                    value: '{#}/wk'
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht002125
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00156379
+        associated_visit:
+          value: WHI FG 60 2
+        observation_type:
+          value: OMOP:35609491
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht002125
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00156410
+                  unit:
+                    value: '{#}/wk'

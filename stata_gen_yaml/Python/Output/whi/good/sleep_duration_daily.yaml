@@ -1,5 +1,25 @@
 - class_derivations:
     MeasurementObservation:
+      populated_from: pht000990
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00077450
+        associated_visit:
+          value: WHI YEAR 3
+        observation_type:
+          value: OBA:2040171
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000990
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00077490
+                  unit:
+                    value: 'h'
+- class_derivations:
+    MeasurementObservation:
       populated_from: pht000993
       slot_derivations:
         associated_participant:
@@ -17,7 +37,7 @@
                   value_decimal:
                     populated_from: phv00077943
                   unit:
-                    value: "h"
+                    value: 'h'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001005
@@ -37,47 +57,7 @@
                   value_decimal:
                     populated_from: phv00079041
                   unit:
-                    value: "h"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht006214
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00282977
-        associated_visit:
-          value: WHI LQ 155
-        observation_type:
-          value: OBA:2040171
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006214
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00283093
-                  unit:
-                    value: "h"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000990
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00077450
-        associated_visit:
-          value: WHI YEAR 3
-        observation_type:
-          value: OBA:2040171
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000990
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00077490
-                  unit:
-                    value: "h"
+                    value: 'h'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001006
@@ -97,7 +77,7 @@
                   value_decimal:
                     populated_from: phv00079193
                   unit:
-                    value: "h"
+                    value: 'h'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001010
@@ -117,4 +97,24 @@
                   value_decimal:
                     populated_from: phv00079391
                   unit:
-                    value: "h"
+                    value: 'h'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht006214
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00282977
+        associated_visit:
+          value: WHI LQ 155
+        observation_type:
+          value: OBA:2040171
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht006214
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00283093
+                  unit:
+                    value: 'h'

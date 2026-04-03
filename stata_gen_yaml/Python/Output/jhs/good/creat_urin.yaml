@@ -1,23 +1,25 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht008759
+      populated_from: pht008729
       slot_derivations:
         associated_participant:
-          populated_from: phv00403002
+          populated_from: phv00401078
         associated_visit:
-          value: JHS URINE
+          value: JHS EXAM 1
         age_at_observation:
-          expr: '{0} * 365'
+          expr: '{phv00401085} * 365'
         observation_type:
           value: OBA:VT0010540
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht008759
+                populated_from: pht008729
                 slot_derivations:
                   value_decimal:
-                    expr: '{phv00403005} / {phv00403006} * 100'
+                    populated_from: phv00401151
+                  unit:
+                    value: 'mg/dL'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008730
@@ -39,7 +41,7 @@
                   value_decimal:
                     populated_from: phv00401328
                   unit:
-                    value: "mg/dL"
+                    value: 'mg/dL'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008731
@@ -61,51 +63,7 @@
                   value_decimal:
                     populated_from: phv00401435
                   unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht008742
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00401725
-        associated_visit:
-          value: JHS EXAM 1
-        age_at_observation:
-          expr: '{0} * 365'
-        observation_type:
-          value: OBA:VT0010540
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008742
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401729
-                  unit:
-                    value: "mg/dL"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht008729
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00401078
-        associated_visit:
-          value: JHS EXAM 1
-        age_at_observation:
-          expr: '{phv00401085} * 365'
-        observation_type:
-          value: OBA:VT0010540
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008729
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401151
-                  unit:
-                    value: "mg/dL"
+                    value: 'mg/dL'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008741
@@ -114,8 +72,6 @@
           populated_from: phv00401710
         associated_visit:
           value: JHS EXAM 6
-        age_at_observation:
-          expr: '{0} * 365'
         observation_type:
           value: OBA:VT0010540
         value_quantity:
@@ -127,4 +83,42 @@
                   value_decimal:
                     populated_from: phv00401714
                   unit:
-                    value: "mg/dL"
+                    value: 'mg/dL'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht008742
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00401725
+        associated_visit:
+          value: JHS EXAM 1
+        observation_type:
+          value: OBA:VT0010540
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht008742
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00401729
+                  unit:
+                    value: 'mg/dL'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht008759
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00403002
+        associated_visit:
+          value: JHS URINE
+        observation_type:
+          value: OBA:VT0010540
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht008759
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00403005} / {phv00403006} * 100'

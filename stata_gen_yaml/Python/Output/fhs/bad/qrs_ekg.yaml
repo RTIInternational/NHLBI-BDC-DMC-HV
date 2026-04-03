@@ -1,20 +1,20 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht000149
+      populated_from: pht000010
       slot_derivations:
         associated_participant:
-          populated_from: phv00023494
+          populated_from: phv00001187
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023494}) + ":" + FHS ORIGINAL EXAM 16-18, OFFSPRING EXAM 2'
+          value: FHS ORIGINAL EXAM 8
         age_at_observation:
-          expr: '{0} * 365'
+          expr: '{phv00177944} * 365'
         observation_type:
           value: OBA:1001086
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000149
+                populated_from: pht000010
                 slot_derivations:
                   value_decimal:
 - class_derivations:
@@ -38,20 +38,16 @@
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht000010
+      populated_from: pht000149
       slot_derivations:
         associated_participant:
-          populated_from: phv00001187
-        associated_visit:
-          value: FHS ORIGINAL EXAM 8
-        age_at_observation:
-          expr: '{phv00177944} * 365'
+          populated_from: phv00023494
         observation_type:
           value: OBA:1001086
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht000010
+                populated_from: pht000149
                 slot_derivations:
                   value_decimal:

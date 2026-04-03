@@ -16,7 +16,7 @@ from pathlib import Path
 
 # Today's date in YYYY-MM-DD format
 #today = datetime.now().strftime("%Y-%m-%d")
-today = "2026-03-26"  # hardcoding for testing purposes - update as needed
+today = "2026-04-02"  # hardcoding for testing purposes - update as needed
 
 # Filepaths
 base_dir = r"C:\\Users\smccutchan\Documents\DMC\\NHLBI-BDC-DMC-HV\stata_gen_yaml"

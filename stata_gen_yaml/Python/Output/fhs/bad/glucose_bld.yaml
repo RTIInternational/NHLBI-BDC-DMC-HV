@@ -1,24 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht000035
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00010138
-        associated_visit:
-          value: FHS OFFSPRING EXAM 6
-        age_at_observation:
-          expr: '{phv00177940} * 365'
-        observation_type:
-          value: OBA:VT0000188
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000035
-                slot_derivations:
-                  value_decimal:
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht000031
       slot_derivations:
         associated_participant:
@@ -72,6 +53,25 @@
           - class_derivations:
               Quantity:
                 populated_from: pht000033
+                slot_derivations:
+                  value_decimal:
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000035
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00010138
+        associated_visit:
+          value: FHS OFFSPRING EXAM 6
+        age_at_observation:
+          expr: '{phv00177940} * 365'
+        observation_type:
+          value: OBA:VT0000188
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000035
                 slot_derivations:
                   value_decimal:
 - class_derivations:

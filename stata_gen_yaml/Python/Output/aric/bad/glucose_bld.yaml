@@ -1,34 +1,38 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht002125
+      populated_from: pht004063
       slot_derivations:
         associated_participant:
-          populated_from: phv00156379
+          populated_from: phv00204812
         associated_visit:
-          value: WHI FG 60 2
+          value: ARIC EXAM 1
+        age_at_observation:
+          expr: '{phv00204712} * 365'
         observation_type:
-          value: OMOP:21493059
+          value: OBA:VT0000188
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht002125
+                populated_from: pht004063
                 slot_derivations:
                   value_decimal:
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001517
+      populated_from: pht012504
       slot_derivations:
         associated_participant:
-          populated_from: phv00111654
+          populated_from: phv00507300
         associated_visit:
-          value: WHI FG 60 1
+          value: ARIC EXAM 7
+        age_at_observation:
+          expr: '{phv00507307} * 365'
         observation_type:
-          value: OMOP:21493059
+          value: OBA:VT0000188
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht001517
+                populated_from: pht012504
                 slot_derivations:
                   value_decimal:
