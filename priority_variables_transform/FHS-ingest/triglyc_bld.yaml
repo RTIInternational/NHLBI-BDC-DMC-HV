@@ -27,17 +27,179 @@
                     range: string
 - class_derivations:
     MeasurementObservation:
+      populated_from: pht000013
+      slot_derivations:
+        observation_type:
+          value: OBA:VT0002644
+          range: string
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001803}) + ":FHS ORIGINAL EXAM 11")'
+        age_at_observation:
+          expr: '{pht003099.phv00177950} * 365'
+        associated_participant:
+          populated_from: phv00001803
+        method_type:
+          value: fasting minimum 12 hrs
+          range: string          
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000013
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00001593
+                  unit:
+                    value: mg/dL
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000013
+      slot_derivations:
+        observation_type:
+          value: OBA:VT0002644
+          range: string
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001803}) + ":FHS ORIGINAL EXAM 11")'
+        age_at_observation:
+          expr: '{pht003099.phv00177950} * 365'
+        associated_participant:
+          populated_from: phv00001803
+        method_type:
+          value: fasting minimum 12 hrs
+          range: string          
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000013
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00001594
+                  unit:
+                    value: mg/dL
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000026
+      slot_derivations:
+        observation_type:
+          value: OBA:VT0002644
+          range: string
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006031}) + ":FHS ORIGINAL EXAM 24")'
+        age_at_observation:
+          expr: '{pht003099.phv00177976} * 365'
+        associated_participant:
+          populated_from: phv00006031
+        method_type:
+          value: fasting minimum 12 hrs
+          range: string          
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000026
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00006321
+                  unit:
+                    value: mg/dL
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000028
+      slot_derivations:
+        observation_type:
+          value: OBA:VT0002644
+          range: string
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007095}) + ":FHS ORIGINAL EXAM 26")'
+        age_at_observation:
+          expr: '{pht003099.phv00177980} * 365'
+        associated_participant:
+          populated_from: phv00007095
+        method_type:
+          value: fasting minimum 12 hrs
+          range: string          
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000028
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00006669
+                  unit:
+                    value: mg/dL
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000029
+      slot_derivations:
+        observation_type:
+          value: OBA:VT0002644
+          range: string
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007534}) + ":FHS ORIGINAL EXAM 27")'
+        age_at_observation:
+          expr: '{pht003099.phv00177982} * 365'
+        associated_participant:
+          populated_from: phv00007534
+        method_type:
+          value: fasting minimum 12 hrs
+          range: string          
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000029
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00007530
+                  unit:
+                    value: mg/dL
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000692
+      slot_derivations:
+        observation_type:
+          value: OBA:VT0002644
+          range: string
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00070736}) + ":FHS ORIGINAL EXAM 28")'
+        age_at_observation:
+          expr: '{pht003099.phv00177984} * 365'
+        associated_participant:
+          populated_from: phv00070736
+        method_type:
+          value: fasting minimum 12 hrs
+          range: string          
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000692
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00070733
+                  unit:
+                    value: mg/dL
+                    range: string
+- class_derivations:
+    MeasurementObservation:
       populated_from: pht000009
       slot_derivations:
         observation_type:
           value: OMOP:4042590
           range: string
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001035}) + ":FHS ORIGINAL EXAM 7")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001036}) + ":FHS ORIGINAL EXAM 7")'
         age_at_observation:
           expr: '{pht003099.phv00177942} * 365'
         associated_participant:
-          populated_from: phv00001035
+          populated_from: phv00001036
         method_type:
           value: fasting minimum 12 hrs
           range: string          
@@ -48,7 +210,34 @@
                 populated_from: pht000009
                 slot_derivations:
                   value_decimal:
-                    expr: 'case(({phv00000931} < 9000, {phv00000931}), (True, None))'
+                    populated_from: phv00000931
+                  unit:
+                    value: mg/dL
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000010
+      slot_derivations:
+        observation_type:
+          value: OBA:VT0002644
+          range: string
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001187}) + ":FHS ORIGINAL EXAM 8")'
+        age_at_observation:
+          expr: '{pht003099.phv00177944} * 365'
+        associated_participant:
+          populated_from: phv00001187
+        method_type:
+          value: fasting minimum 12 hrs - centrifuged
+          range: string          
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000010
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00001053
                   unit:
                     value: mg/dL
                     range: string
@@ -75,7 +264,7 @@
                 populated_from: pht000010
                 slot_derivations:
                   value_decimal:
-                    expr: 'case(({phv00001054} < 9000, {phv00001054}), (True, None))'
+                    populated_from: phv00001054
                   unit:
                     value: mg/dL
                     range: string
@@ -102,7 +291,61 @@
                 populated_from: pht000011
                 slot_derivations:
                   value_decimal:
-                    expr: 'case(({phv00001209} < 9000, {phv00001209}), (True, None))'
+                    populated_from: phv00001209
+                  unit:
+                    value: mg/dL
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000031
+      slot_derivations:
+        observation_type:
+          value: OBA:VT0002644
+          range: string
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008378}) + ":FHS OFFSPRING EXAM 2")'
+        age_at_observation:
+          expr: '{pht003099.phv00177932} * 365'
+        associated_participant:
+          populated_from: phv00008378
+        method_type:
+          value: fasting minimum 12 hrs
+          range: string          
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000031
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00007976
+                  unit:
+                    value: mg/dL
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000031
+      slot_derivations:
+        observation_type:
+          value: OBA:VT0002644
+          range: string
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008378}) + ":FHS OFFSPRING EXAM 2")'
+        age_at_observation:
+          expr: '{pht003099.phv00177932} * 365'
+        associated_participant:
+          populated_from: phv00008378
+        method_type:
+          value: fasting minimum 12 hrs
+          range: string          
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000031
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00008105
                   unit:
                     value: mg/dL
                     range: string

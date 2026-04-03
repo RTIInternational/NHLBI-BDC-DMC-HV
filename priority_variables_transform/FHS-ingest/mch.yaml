@@ -94,27 +94,3 @@
                   unit:
                     value: pg/{cell}
                     range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht015118
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00546068
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00546068}) + ":" + case(({phv00546069} == ''1'', ''FHS OFFSPRING EXAM 10''), ({phv00546069} == ''7'', ''FHS OMNI 1 EXAM 5''), (True, ''FHS UNKNOWN VISIT'')))'
-        age_at_observation:
-          expr: case(({phv00546069} == 1, {pht003099.phv00177948} * 365), case({phv00546069} == 7, {pht003099.phv00177938} * 365))
-        observation_type:
-          value: OBA:2045301
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht015118
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00546089
-                  unit:
-                    value: pg/{cell}
-                    range: string
