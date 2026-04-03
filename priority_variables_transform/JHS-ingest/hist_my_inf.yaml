@@ -154,48 +154,6 @@
           value: "Medical History"
         relationship_to_participant:
           value: ONESELF
-- class_derivations:
-    Condition:
-      populated_from: pht008765
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00403140
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403140}) + ":JHS Exam 3")'
-        condition_concept:
-          value: MONDO:0005068
-        condition_status:
-          populated_from: phv00403170
-          value_mappings:
-            'No': ABSENT
-            'Yes': HISTORICAL
-            Don't Know: UNKNOWN
-            Missing: UNKNOWN
-        condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "Medical History"
-        relationship_to_participant:
-          value: ONESELF
-- class_derivations:
-    Condition:
-      populated_from: pht008778
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00403624
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403624}) + ":JHS Exam 3")'
-        condition_concept:
-          value: MONDO:0005068
-        condition_status:
-          populated_from: phv00403632
-          value_mappings:
-            'No': ABSENT
-            'Yes': HISTORICAL
-            Don't Know: UNKNOWN
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "Personal and Family History Questionnaire"
-        relationship_to_participant:
-          value: ONESELF
+# NOTE: pht008765 (MHXC25) and pht008778 (PFHB4A) removed — these ask
+# "Since your last JHS exam, have you had a heart attack?" — INCIDENT events,
+# not baseline history. Including them inflated MI prevalence from ~5.6% to 7.4%.
