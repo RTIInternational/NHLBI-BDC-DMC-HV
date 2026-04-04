@@ -8,7 +8,12 @@
           value: CHS BASELINE 2
           range: string
         procedure_concept:
-          expr: 'case(({phv00099031} == 1, "OMOP:4336464"))'
+          value: OMOP:4336464
+        procedure_status:
+          populated_from: phv00099031
+          value_mappings:
+            '1': PRESENT
+            '0': ABSENT
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -22,7 +27,12 @@
           value: CHS BASELINE BOTH
           range: string
         procedure_concept:
-          expr: 'case(({phv00100321} == 1, "OMOP:4336464"))'
+          value: OMOP:4336464
+        procedure_status:
+          populated_from: phv00100321
+          value_mappings:
+            '1': PRESENT
+            '0': ABSENT
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -36,7 +46,12 @@
           value: CHS SUMMARY
           range: string
         procedure_concept:
-          expr: 'case(({phv00100785} == 1, "OMOP:4336464"))'
+          value: OMOP:4336464
+        procedure_status:
+          populated_from: phv00100785
+          value_mappings:
+            '1': PRESENT
+            '0': ABSENT
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -50,7 +65,12 @@
           value: CHS YEAR 5 NEW
           range: string
         procedure_concept:
-          expr: 'case(({phv00105974} == 1, "OMOP:4336464"))'
+          value: OMOP:4336464
+        procedure_status:
+          populated_from: phv00105974
+          value_mappings:
+            '1': PRESENT
+            '0': ABSENT
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string

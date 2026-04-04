@@ -8,9 +8,12 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400849}) + ":JHS AFU")'
           range: string
         procedure_concept:
+          value: OMOP:4336464
+        procedure_status:
           populated_from: phv00400930
           value_mappings:
-            Y: OMOP:4336464
+            Y: PRESENT
+            N: ABSENT
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -24,9 +27,12 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00126001}) + ":JHS Exam 2")'
           range: string
         procedure_concept:
+          value: OMOP:4336464
+        procedure_status:
           populated_from: phv00401900
           value_mappings:
-            Y: OMOP:4336464
+            Y: PRESENT
+            N: ABSENT
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -40,9 +46,12 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403058}) + ":JHS Exam 2")'
           range: string
         procedure_concept:
+          value: OMOP:4336464
+        procedure_status:
           populated_from: phv00403115
           value_mappings:
-            'Yes': OMOP:4336464
+            '1': PRESENT
+            '2': ABSENT
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -56,9 +65,12 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403140}) + ":JHS Exam 3")'
           range: string
         procedure_concept:
+          value: OMOP:4336464
+        procedure_status:
           populated_from: phv00403190
           value_mappings:
-            'Yes': OMOP:4336464
+            '1': PRESENT
+            '2': ABSENT
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
