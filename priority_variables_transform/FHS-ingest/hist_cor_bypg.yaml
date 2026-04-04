@@ -1,7 +1,7 @@
 # CABG — Keep only latest exam per sub-cohort to avoid cumulative overcount.
 # Source PHVs ask "HISTORY OF CORONARY BYPASS SURGERY" (cumulative, not incident).
 # Mapping every exam produces ~10 Procedure rows per actual CABG event.
-# Retained: Exam 28 (Original Cohort latest), Exam 7 (Offspring latest).
+# Retained: Exam 28 (Original Cohort latest), Exam 7 (Offspring latest), Gen3 Exam 1.
 # Removed: Original Exams 21-27 and Offspring Exams 5-6 (all earlier cumulative duplicates).
 - class_derivations:
     Procedure:
@@ -28,6 +28,21 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010139}) + ":FHS OFFSPRING EXAM 7")'
         procedure_concept:
           populated_from: phv00010353
+          value_mappings:
+            '1': OMOP:4336464
+        procedure_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+- class_derivations:
+    Procedure:
+      populated_from: pht000074
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00021427
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00021427}) + ":FHS GENERATION 3 EXAM 1")'
+        procedure_concept:
+          populated_from: phv00021084
           value_mappings:
             '1': OMOP:4336464
         procedure_provenance:
