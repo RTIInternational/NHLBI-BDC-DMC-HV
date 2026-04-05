@@ -1,12 +1,15 @@
-# PAD — Adjudicated CVD events surveillance approach (pht000309).
+# PAD -- Adjudicated CVD events surveillance approach (pht000309).
 # Source: FHS Sequence of Events table (vr_soe_2023_a_1553s).
-# Filter: EVENT == 30 (intermittent claudication, first episode) AND DATE <= 0 (before baseline).
+# Maps EVENT == 30 (IC, intermittent claudication, first episode) via value_mappings.
+# Includes ALL adjudicated PAD/claudication events (pre- and post-baseline).
+# Temporal subsetting (DATE <= 0 for baseline-only) is handled at extract/compare phase,
+# not at the mapping layer -- the DATE variable (phv00036471) is preserved in the source data.
 # Replaced: 5 exam-level blocks from pht000747 (Offsp Exam 8, not baseline),
 #   pht000074 (Gen3 Exam 1), pht004813 (Omni 1), pht006005 (NOS), pht006006 (Omni 2).
 #   The exam-level approach missed the entire Original Cohort (~5,079 participants)
 #   and used non-baseline Offspring Exam 8 data. The surveillance table covers all
 #   6 sub-cohorts via centralized adjudicated review.
-# Note: FHS uses intermittent claudication as the PAD indicator (per DCC documentation).
+# Note: FHS uses intermittent claudication as the PAD indicator (per study protocol).
 # PHV reference:
 #   phv00036472 = shareid (participant ID)
 #   phv00036470 = IDTYPE  (sub-cohort: 0=Orig, 1=Offsp, 2=NOS, 3=Gen3, 7=Omni1, 72=Omni2)
@@ -21,9 +24,12 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036472}) + ":" + case(({phv00036470} == 0, ''FHS ORIGINAL EXAM 4''), ({phv00036470} == 1, ''FHS OFFSPRING EXAM 1''), ({phv00036470} == 2, ''FHS NEW OFFSPRING SPOUSE EXAM 1''), ({phv00036470} == 3, ''FHS GENERATION 3 EXAM 1''), ({phv00036470} == 7, ''FHS OMNI 1 EXAM 1''), ({phv00036470} == 72, ''FHS OMNI 2 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
-          expr: 'case(({phv00036469} == 30 and {phv00036471} <= 0, "MONDO:0005386"))'
+          populated_from: phv00036469
+          value_mappings:
+            '30': MONDO:0005386
         condition_status:
-          expr: 'case(({phv00036469} == 30 and {phv00036471} <= 0, "HISTORICAL"))'
+          value: HISTORICAL
+          range: string
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string

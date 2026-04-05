@@ -1,6 +1,9 @@
 # History of MI -- Adjudicated CVD events surveillance approach (pht000309).
 # Source: FHS Sequence of Events table (vr_soe_2023_a_1553s).
-# Filter: EVENT in {1,2,3,4,5} (MI subtypes) AND DATE <= 0 (before baseline).
+# Maps EVENT codes 1-5 (MI subtypes) via value_mappings on phv00036469.
+# Includes ALL adjudicated MI events (pre- and post-baseline).
+# Temporal subsetting (DATE <= 0 for baseline-only) is handled at extract/compare phase,
+# not at the mapping layer -- the DATE variable (phv00036471) is preserved in the source data.
 # Replaced: 106 exam-level blocks across 38 PHTs mapping ECG-based MI indicators
 #   and self-reported "told by doctor" questions. The exam-level approach had 39.6%
 #   structural missingness because ECG MI findings only exist when the ECG shows
@@ -27,9 +30,16 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036472}) + ":" + case(({phv00036470} == 0, ''FHS ORIGINAL EXAM 4''), ({phv00036470} == 1, ''FHS OFFSPRING EXAM 1''), ({phv00036470} == 2, ''FHS NEW OFFSPRING SPOUSE EXAM 1''), ({phv00036470} == 3, ''FHS GENERATION 3 EXAM 1''), ({phv00036470} == 7, ''FHS OMNI 1 EXAM 1''), ({phv00036470} == 72, ''FHS OMNI 2 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
-          expr: 'case(({phv00036469} in (1, 2, 3, 4, 5) and {phv00036471} <= 0, "MONDO:0005068"))'
+          populated_from: phv00036469
+          value_mappings:
+            '1': MONDO:0005068
+            '2': MONDO:0005068
+            '3': MONDO:0005068
+            '4': MONDO:0005068
+            '5': MONDO:0005068
         condition_status:
-          expr: 'case(({phv00036469} in (1, 2, 3, 4, 5) and {phv00036471} <= 0, "HISTORICAL"))'
+          value: HISTORICAL
+          range: string
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
