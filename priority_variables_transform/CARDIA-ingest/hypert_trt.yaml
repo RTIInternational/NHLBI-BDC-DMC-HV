@@ -1,28 +1,18 @@
-- class_derivations:
-    DrugExposure:
-      populated_from: pht001569
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00112975
-        associated_visit:
-          value: CARDIA YEAR 0
-          range: string
-        drug_concept:
-          expr: case(({phv00113012} == 2, "ATC:C02"))
-        exposure_provenance:
-          value: PATIENT_SELF_REPORTED_MEDICATION
-          range: string
+# Block 1 removed: pht001569 A08BPMED asks "EVER TAKEN meds for high blood
+# pressure" — lifetime exposure, not current use. The harmonized DrugExposure
+# is visit-anchored ("currently taking"), so this variable has wrong temporal
+# semantics. Replaced by Block 2 with A09MDNOW filter below.
 - class_derivations:
     DrugExposure:
       populated_from: pht001571
       slot_derivations:
         associated_participant:
-          populated_from: phv00113153
+          expr: 'case(({phv00113154} == "HBP" and {phv00113155} == 2, {phv00113153}))'
         associated_visit:
-          value: CARDIA YEAR 0
+          expr: 'case(({phv00113154} == "HBP" and {phv00113155} == 2, "CARDIA YEAR 0"))'
           range: string
         drug_concept:
-          expr: 'case(({phv00113154} == "HBP", "ATC:C02"))'
+          expr: 'case(({phv00113154} == "HBP" and {phv00113155} == 2, "ATC:C02"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
