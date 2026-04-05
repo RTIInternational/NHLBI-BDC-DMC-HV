@@ -1,9 +1,9 @@
 # PAD -- Adjudicated CVD events surveillance approach (pht000309).
 # Source: FHS Sequence of Events table (vr_soe_2023_a_1553s).
-# Maps EVENT == 30 (IC, intermittent claudication, first episode) via value_mappings.
-# Includes ALL adjudicated PAD/claudication events (pre- and post-baseline).
-# Temporal subsetting (DATE <= 0 for baseline-only) is handled at extract/compare phase,
-# not at the mapping layer -- the DATE variable (phv00036471) is preserved in the source data.
+# Filter: EVENT == 30 (intermittent claudication, first episode) AND DATE <= 0 (before baseline).
+# IMPORTANT: Must use expr:case() -- NOT value_mappings -- because pht000309 contains
+#   20K+ rows for ALL event types; value_mappings passes unmapped rows through with raw
+#   integer condition_concept values, silently corrupting the entire Condition composed spec.
 # Replaced: 5 exam-level blocks from pht000747 (Offsp Exam 8, not baseline),
 #   pht000074 (Gen3 Exam 1), pht004813 (Omni 1), pht006005 (NOS), pht006006 (Omni 2).
 #   The exam-level approach missed the entire Original Cohort (~5,079 participants)
@@ -24,17 +24,11 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036472}) + ":" + case(({phv00036470} == 0, ''FHS ORIGINAL EXAM 4''), ({phv00036470} == 1, ''FHS OFFSPRING EXAM 1''), ({phv00036470} == 2, ''FHS NEW OFFSPRING SPOUSE EXAM 1''), ({phv00036470} == 3, ''FHS GENERATION 3 EXAM 1''), ({phv00036470} == 7, ''FHS OMNI 1 EXAM 1''), ({phv00036470} == 72, ''FHS OMNI 2 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
-          populated_from: phv00036469
-          value_mappings:
-            '30': MONDO:0005386
+          expr: 'case(({phv00036469} == 30 and {phv00036471} <= 0, "MONDO:0005386"))'
         condition_status:
-          value: HISTORICAL
-          range: string
+          expr: 'case(({phv00036469} == 30 and {phv00036471} <= 0, "HISTORICAL"))'
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
-          range: string
-        associated_evidence:
-          value: Adjudicated cardiovascular event surveillance (intermittent claudication)
           range: string
         relationship_to_participant:
           value: ONESELF
