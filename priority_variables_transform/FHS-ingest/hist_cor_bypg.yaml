@@ -32,32 +32,15 @@
           value: CLINICAL_DIAGNOSIS
           range: string
 # Gen3 Exam 1 self-report CABG history (pht000074, G3A255).
-# Provides Yes/No/Maybe coverage for ~4,095 Gen3 participants at baseline.
-# This complements the adjudicated pht000389 block above, which only captures
-# positive events. Together they give Gen3 full CABG coverage and add ~4,000
-# participants with explicit "No prior CABG" records.
-# PHV reference:
-#   phv00021427 = shareid (participant ID)
-#   phv00021084 = G3A255 (CORONARY BYPASS SURGERY: 0=NO, 1=YES, 2=MAYBE)
-- class_derivations:
-    Condition:
-      populated_from: pht000074
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00021427
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00021427}) + ":FHS GENERATION 3 EXAM 1")'
-        condition_concept:
-          value: OMOP:4336464
-          range: string
-        condition_status:
-          populated_from: phv00021084
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
+# REMOVED 2026-04-05: This Condition block from pht000074 caused the entire
+# Condition composed spec to produce zero output (silent failure), killing ALL
+# condition variables (angina, MI, PAD, afib, asthma, COPD, CHF, diabetes,
+# hypertension, stroke, heart disease, venous thrombosis, etc.).
+# Root cause: adding a second class_derivations document (Condition) alongside
+# the existing Procedure document in this file appears to corrupt the
+# Condition.yaml composed spec at pipeline runtime. The block is structurally
+# valid and phv00021084 exists in pht000074, but the pipeline silently drops
+# all Condition output when this block is present.
+# TODO: Investigate compose_specs merging behavior for files with mixed
+# Procedure+Condition blocks. May need to move this to a separate YAML file
+# (e.g., hist_cor_bypg_condition.yaml) once the root cause is fully understood.
