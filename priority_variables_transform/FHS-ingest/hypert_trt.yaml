@@ -775,3 +775,42 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht004813
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00250282
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00250282}) + ":FHS OMNI 1 EXAM 1")'
+        drug_concept:
+          expr: 'case(({phv00565505} == 1, "ATC:C02"))'
+        exposure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht006005
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00273700
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00273700}) + ":FHS NEW OFFSPRING SPOUSE EXAM 1")'
+        drug_concept:
+          expr: 'case(({phv00273711} == 1, "ATC:C02"))'
+        exposure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+- class_derivations:
+    DrugExposure:
+      populated_from: pht006006
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00274193
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00274193}) + ":FHS OMNI 2 EXAM 1")'
+        drug_concept:
+          expr: 'case(({phv00565874} == 1, "ATC:C02"))'
+        exposure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
