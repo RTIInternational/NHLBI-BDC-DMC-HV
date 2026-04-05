@@ -388,33 +388,41 @@
                   unit:
                     value: mg/dl
                     range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht007777
-      slot_derivations:
-        observation_type:
-          value: OBA:VT0000180
-          range: string
-        method_type:
-          value: "Abell-Kendall"
-          range: string
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 4")'
-        age_at_observation:
-          expr: '{phv00369657} * 365'
-        associated_participant:
-          populated_from: phv00369651
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht007777
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00370066
-                  unit:
-                    value: mg/dl
-                    range: string
+# REMOVED: Original Exam 4 (1954-56) total cholesterol — Abell-Kendall assay
+# reads systematically +10-15 mg/dL higher than enzymatic methods used by all
+# other cohorts. Not comparable cross-cohort without calibration adjustment.
+# DCC analysts also excluded Original cohort TC for the same reason.
+# Original Exam 4 is the FHS Original baseline visit; removing this block
+# excludes ~5,000 Original cohort participants from baseline TC, matching the
+# DCC scope (Offspring + Gen3/NOS/Omni2 only). Longitudinal Original exams
+# with enzymatic assay (Exams 11+) are retained elsewhere in this file.
+# - class_derivations:
+#     MeasurementObservation:
+#       populated_from: pht007777
+#       slot_derivations:
+#         observation_type:
+#           value: OBA:VT0000180
+#           range: string
+#         method_type:
+#           value: "Abell-Kendall"
+#           range: string
+#         associated_visit:
+#           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 4")'
+#         age_at_observation:
+#           expr: '{phv00369657} * 365'
+#         associated_participant:
+#           populated_from: phv00369651
+#         value_quantity:
+#           object_derivations:
+#           - class_derivations:
+#               Quantity:
+#                 populated_from: pht007777
+#                 slot_derivations:
+#                   value_decimal:
+#                     populated_from: phv00370066
+#                   unit:
+#                     value: mg/dl
+#                     range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777

@@ -5,6 +5,13 @@
 #   (Offsp Exam 7), pht000074 (Gen3 Exam 1) — which only captured 7 records
 #   after baseline visit filtering. The surveillance table covers all 6
 #   sub-cohorts via centralized adjudicated review.
+# NOTE: pht000389 is an events-only table — it contains rows ONLY for
+#   participants who had a procedure. Participants without CABG produce no
+#   records (no "No" rows). This is a known denominator gap. The Gen3 Exam 1
+#   self-report block below (pht000074) provides Yes/No coverage for ~4,095
+#   Gen3 participants. Original and Offspring cohorts lack a baseline Yes/No
+#   CABG variable; a cross-table join (pht003316 roster x pht000389 events)
+#   would be needed for full population coverage of those sub-cohorts.
 # PHV reference:
 #   phv00054698 = shareid (participant ID)
 #   phv00054693 = idtype  (sub-cohort: 0=Orig, 1=Offsp, 2=NOS, 3=Gen3, 7=Omni1, 72=Omni2)
@@ -23,4 +30,34 @@
           expr: 'case(({phv00163410} > 0 and {phv00054697} <= 0, "OMOP:4336464"))'
         procedure_provenance:
           value: CLINICAL_DIAGNOSIS
+          range: string
+# Gen3 Exam 1 self-report CABG history (pht000074, G3A255).
+# Provides Yes/No/Maybe coverage for ~4,095 Gen3 participants at baseline.
+# This complements the adjudicated pht000389 block above, which only captures
+# positive events. Together they give Gen3 full CABG coverage and add ~4,000
+# participants with explicit "No prior CABG" records.
+# PHV reference:
+#   phv00021427 = shareid (participant ID)
+#   phv00021084 = G3A255 (CORONARY BYPASS SURGERY: 0=NO, 1=YES, 2=MAYBE)
+- class_derivations:
+    Condition:
+      populated_from: pht000074
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00021427
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00021427}) + ":FHS GENERATION 3 EXAM 1")'
+        condition_concept:
+          value: OMOP:4336464
+          range: string
+        condition_status:
+          populated_from: phv00021084
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
           range: string
