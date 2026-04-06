@@ -1,44 +1,99 @@
 - class_derivations:
     Condition:
-      populated_from: pht000395
+      populated_from: pht000074
       slot_derivations:
         associated_participant:
-          populated_from: phv00056635
+          populated_from: phv00021427
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":" + case(({phv00056607} == ''1'', ''FHS OFFSPRING SHHS EXAM 1''), ({phv00056607} == ''7'', ''FHS OMNI 1 SHHS EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00021427}) + ":FHS GENERATION 3 EXAM 1")'
         condition_concept:
           value: HP:0001681
           range: string
         condition_status:
-          populated_from: phv00055298
+          populated_from: phv00021023
           value_mappings:
             '0': ABSENT
             '1': PRESENT
-            '8': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: SELF_REPORTED
+          range: string
+        associated_evidence:
+          value: Rose Angina Questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
 - class_derivations:
     Condition:
-      populated_from: pht003094
+      populated_from: pht004813
       slot_derivations:
         associated_participant:
-          populated_from: phv00177237
+          populated_from: phv00250282
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177237}) + ":" + case(({phv00177238} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00177238} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00177238} == ''72'', ''FHS OMNI 2 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00250282}) + ":FHS OMNI 1 EXAM 1")'
         condition_concept:
           value: HP:0001681
           range: string
         condition_status:
-          populated_from: phv00177357
+          populated_from: phv00565628
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
           value: SELF_REPORTED
+          range: string
+        associated_evidence:
+          value: Rose Angina Questionnaire
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht006005
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00273700
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00273700}) + ":FHS NEW OFFSPRING SPOUSE EXAM 1")'
+        condition_concept:
+          value: HP:0001681
+          range: string
+        condition_status:
+          populated_from: phv00273857
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: SELF_REPORTED
+          range: string
+        associated_evidence:
+          value: Rose Angina Questionnaire
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht006006
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00274193
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00274193}) + ":FHS OMNI 2 EXAM 1")'
+        condition_concept:
+          value: HP:0001681
+          range: string
+        condition_status:
+          populated_from: phv00566020
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: SELF_REPORTED
+          range: string
+        associated_evidence:
+          value: Rose Angina Questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF
