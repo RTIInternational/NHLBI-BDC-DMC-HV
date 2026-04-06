@@ -1,50 +1,83 @@
-# CABG — Keep only latest exam per sub-cohort to avoid cumulative overcount.
-# Source PHVs ask "HISTORY OF CORONARY BYPASS SURGERY" (cumulative, not incident).
-# Mapping every exam produces ~10 Procedure rows per actual CABG event.
-# Retained: Exam 28 (Original Cohort latest), Exam 7 (Offspring latest), Gen3 Exam 1.
-# Removed: Original Exams 21-27 and Offspring Exams 5-6 (all earlier cumulative duplicates).
+# CABG — Rewritten from Procedure to Condition entity (2026-04-06).
+# Source PHVs ask "HISTORY OF CORONARY BYPASS SURGERY" (cumulative, 0=No/1=Yes/2=Maybe).
+# As Procedure, only code 1 produced rows — ~11,800 "No" respondents were invisible.
+# As Condition with condition_status ABSENT/PRESENT, both 0s and 1s produce rows,
+# aligning with DCC approach (N=11,814) and MESA cross-cohort pattern.
+#
+# Uses EARLIEST exam per subcohort to maximize participant coverage:
+#   Original Exam 21 (pht000023, n=1,142) vs Exam 28 (pht000692, n=300)
+#   Offspring Exam 5 (pht000034, n=3,677) vs Exam 7 (pht000036, n=3,465)
+#   Gen3 Exam 1 (pht000074, n=4,034) — unchanged (only exam for this subcohort)
+# CABG questions first appear at Original Exam 21 (~1990) and Offspring Exam 5 (~1991).
+# Earlier exams have no CABG variable (surgery wasn't widespread before the 1970s).
+# Since the question is cumulative ("HISTORY OF"), earlier exams are equally valid
+# and capture more living participants.
 - class_derivations:
-    Procedure:
-      populated_from: pht000692
+    Condition:
+      populated_from: pht000023
       slot_derivations:
         associated_participant:
-          populated_from: phv00070736
+          populated_from: phv00004939
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00070736}) + ":FHS ORIGINAL EXAM 28")'
-        procedure_concept:
-          populated_from: phv00070493
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004939}) + ":FHS ORIGINAL EXAM 21")'
+        condition_concept:
+          value: OMOP:4336464
+          range: string
+        condition_status:
+          populated_from: phv00004774
           value_mappings:
-            '1': OMOP:4336464
-        procedure_provenance:
+            '0': ABSENT
+            '1': PRESENT
+            '2': UNKNOWN
+        condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
 - class_derivations:
-    Procedure:
-      populated_from: pht000036
+    Condition:
+      populated_from: pht000034
       slot_derivations:
         associated_participant:
-          populated_from: phv00010139
+          populated_from: phv00009579
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010139}) + ":FHS OFFSPRING EXAM 7")'
-        procedure_concept:
-          populated_from: phv00010353
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00009579}) + ":FHS OFFSPRING EXAM 5")'
+        condition_concept:
+          value: OMOP:4336464
+          range: string
+        condition_status:
+          populated_from: phv00009390
           value_mappings:
-            '1': OMOP:4336464
-        procedure_provenance:
+            '0': ABSENT
+            '1': PRESENT
+            '2': UNKNOWN
+        condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
 - class_derivations:
-    Procedure:
+    Condition:
       populated_from: pht000074
       slot_derivations:
         associated_participant:
           populated_from: phv00021427
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00021427}) + ":FHS GENERATION 3 EXAM 1")'
-        procedure_concept:
+        condition_concept:
+          value: OMOP:4336464
+          range: string
+        condition_status:
           populated_from: phv00021084
           value_mappings:
-            '1': OMOP:4336464
-        procedure_provenance:
+            '0': ABSENT
+            '1': PRESENT
+            '2': UNKNOWN
+        condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
           range: string
