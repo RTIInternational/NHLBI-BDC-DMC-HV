@@ -5,48 +5,22 @@
         associated_participant:
           populated_from: phv00077369
         associated_visit:
-          value: WHI CORE
-          range: string
+          expr: "case(({phv00077370} == 1, 'WHI SCREENING'), ({phv00077370} == 3 and {phv00077371} == 1, 'WHI YEAR 1'), ({phv00077370} == 3 and {phv00077371} == 2, 'WHI YEAR 2'), ({phv00077370} == 3 and {phv00077371} == 3, 'WHI YEAR 3'), ({phv00077370} == 3 and {phv00077371} == 4, 'WHI YEAR 4'), ({phv00077370} == 3 and {phv00077371} == 5, 'WHI YEAR 5'), ({phv00077370} == 3 and {phv00077371} == 6, 'WHI YEAR 6'), ({phv00077370} == 4, 'WHI NON-ROUTINE'), (True, None))"
+        # age_at_observation:
+          # expr: "{nan} * 365"
         observation_type:
           value: OBA:2060174
-          range: string
-        method_type:
-          value: RIA method
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000987
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00077389} * 6'
-                  unit:
-                    value: pmol/l
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000987
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00077369
-        associated_visit:
-          value: WHI CORE
-          range: string
-        observation_type:
-          value: OBA:2060174
-          range: string
-        method_type:
-          value: automated ES300 method
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000987
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00077390} * 6'
-                  unit:
-                    value: pmol/l
-                    range: string
+#        value_quantity:
+#          object_derivations:
+#          - class_derivations:
+#              Quantity:
+#                populated_from: pht000987
+#                slot_derivations:
+#                  value_decimal:
+#                    populated_from: phv00077389
+#                    unit_conversion:
+#                      source_unit: "u[IU]/mL"
+#                      target_unit: "pmol/L"
+#                  unit:
+#                    value: "pmol/L"
+#                    range: string

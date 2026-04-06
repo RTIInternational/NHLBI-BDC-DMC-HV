@@ -5,8 +5,9 @@
         associated_participant:
           populated_from: phv00021738
         associated_visit:
-          value: FHS OFFSPRING EXAM 6
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00021738}) + ":FHS OFFSPRING EXAM 6")'
+        age_at_observation:
+          expr: '{pht003099.phv00177940} * 365'
         observation_type:
           value: OMOP:4138462
           range: string
@@ -30,8 +31,9 @@
         associated_participant:
           populated_from: phv00021738
         associated_visit:
-          value: FHS OFFSPRING EXAM 6
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00021738}) + ":FHS OFFSPRING EXAM 6")'
+        age_at_observation:
+          expr: '{pht003099.phv00177940} * 365'
         observation_type:
           value: OMOP:4138462
           range: string
@@ -55,8 +57,9 @@
         associated_participant:
           populated_from: phv00076368
         associated_visit:
-          value: FHS OFFSPRING EXAM 6
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00076368}) + ":FHS OFFSPRING EXAM 6")'
+        age_at_observation:
+          expr: '{pht003099.phv00177940} * 365'
         observation_type:
           value: OMOP:4138462
           range: string
@@ -80,8 +83,9 @@
         associated_participant:
           populated_from: phv00076368
         associated_visit:
-          value: FHS OFFSPRING EXAM 6
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00076368}) + ":FHS OFFSPRING EXAM 6")'
+        age_at_observation:
+          expr: '{pht003099.phv00177940} * 365'
         observation_type:
           value: OMOP:4138462
           range: string

@@ -5,8 +5,9 @@
         associated_participant:
           populated_from: phv00023209
         associated_visit:
-          value: FHS OFFSPRING EXAM 7
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023209}) + ":FHS OFFSPRING EXAM 7")'
+        age_at_observation:
+          expr: '{pht003099.phv00177942} * 365' 
         observation_type:
           value: OBA:2052375
           range: string
@@ -55,8 +56,9 @@
         associated_participant:
           populated_from: phv00275427
         associated_visit:
-          value: FHS OFFSPRING EXAM 5
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275427}) + ":FHS OFFSPRING EXAM 5")'
+        age_at_observation:
+          expr: '{pht003099.phv00177938} * 365'
         observation_type:
           value: OBA:2052375
           range: string

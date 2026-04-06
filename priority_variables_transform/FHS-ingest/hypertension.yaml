@@ -5,11 +5,7 @@
         associated_participant:
           populated_from: phv00177237
         associated_visit:
-          populated_from: phv00177238
-          value_mappings:
-            '2': FHS NEW OFFSPRING SPOUSE EXAM 2
-            '3': FHS GENERATION 3 EXAM 2
-            '72': FHS OMNI 2 EXAM 2  
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177237}) + ":" + case(({phv00177238} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00177238} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00177238} == ''72'', ''FHS OMNI 2 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: HP:0000822
           range: string
@@ -21,8 +17,11 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: Medical History
+          range: string
         relationship_to_participant:
-          value: SELF
+          value: ONESELF
           range: string
 - class_derivations:
     Condition:
@@ -31,10 +30,7 @@
         associated_participant:
           populated_from: phv00254010
         associated_visit:
-          populated_from: phv00254011
-          value_mappings:
-            '1': FHS OFFSPRING EXAM 9
-            '7': FHS OMNI 1 EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: HP:0000822
           range: string
@@ -46,8 +42,11 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: Medical History
+          range: string
         relationship_to_participant:
-          value: SELF
+          value: ONESELF
           range: string
 - class_derivations:
     Condition:
@@ -56,10 +55,7 @@
         associated_participant:
           populated_from: phv00254010
         associated_visit:
-          populated_from: phv00254011
-          value_mappings:
-            '1': FHS OFFSPRING EXAM 9
-            '7': FHS OMNI 1 EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: HP:0000822
           range: string
@@ -72,8 +68,11 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: Clinical Diagnostic Impression
+          range: string
         relationship_to_participant:
-          value: SELF
+          value: ONESELF
           range: string
 - class_derivations:
     Condition:
@@ -82,8 +81,7 @@
         associated_participant:
           populated_from: phv00002425
         associated_visit:
-          value: FHS OFFSPRING EXAM 9, OMNI 1 EXAM 4
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002425}) + ":FHS ORIGINAL EXAM 14")'
         condition_concept:
           value: HP:0000822
           range: string
@@ -96,8 +94,11 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: Clinical Diagnostic Impression
+          range: string
         relationship_to_participant:
-          value: SELF
+          value: ONESELF
           range: string
 - class_derivations:
     Condition:
@@ -106,7 +107,9 @@
         associated_participant:
           populated_from: phv00003667
         associated_visit:
-          value: NCIT:C157879
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003667}) + ":FHS ORIGINAL EXAM 18")'
+        condition_concept:
+          value: HP:0000822
           range: string
         condition_status:
           populated_from: phv00003634
@@ -119,8 +122,11 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: Clinical Diagnostic Impression
+          range: string
         relationship_to_participant:
-          value: SELF
+          value: ONESELF
           range: string
 - class_derivations:
     Condition:
@@ -129,6 +135,8 @@
         associated_participant:
           populated_from: phv00004083
         associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004083}) + ":FHS ORIGINAL EXAM 19")'
+        condition_concept:
           value: HP:0000822
           range: string
         condition_status:
@@ -140,16 +148,21 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: Clinical Diagnostic Impression
+          range: string
         relationship_to_participant:
-          value: SELF
+          value: ONESELF
           range: string
 - class_derivations:
     Condition:
       populated_from: pht000009
       slot_derivations:
         associated_participant:
-          populated_from: phv00004083
+          populated_from: phv00001035
         associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001035}) + ":FHS ORIGINAL EXAM 1")'
+        condition_concept:
           value: HP:0000822
           range: string
         condition_status:
@@ -163,8 +176,11 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: Medical History
+          range: string
         relationship_to_participant:
-          value: SELF
+          value: ONESELF
           range: string
 - class_derivations:
     Condition:
@@ -173,8 +189,7 @@
         associated_participant:
           populated_from: phv00007675
         associated_visit:
-          value: FHS OFFSPRING EXAM 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007675}) + ":FHS OFFSPRING EXAM 1")'
         condition_concept:
           value: HP:0000822
           range: string
@@ -186,16 +201,21 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: Medical History
+          range: string
         relationship_to_participant:
-          value: SELF
+          value: ONESELF
           range: string
 - class_derivations:
     Condition:
       populated_from: pht000031
       slot_derivations:
         associated_participant:
-          populated_from: phv00008379
+          populated_from: phv00008378
         associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008378}) + ":FHS OFFSPRING EXAM 2")'
+        condition_concept:
           value: HP:0000822
           range: string
         condition_status:
@@ -207,18 +227,20 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: Clinical Diagnostic Impression
+          range: string
         relationship_to_participant:
-          value: SELF
+          value: ONESELF
           range: string
 - class_derivations:
     Condition:
       populated_from: pht000031
       slot_derivations:
         associated_participant:
-          populated_from: phv00007675
+          populated_from: phv00008378
         associated_visit:
-          value: FHS OFFSPRING EXAM 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008378}) + ":FHS OFFSPRING EXAM 1")'
         condition_concept:
           value: HP:0000822
           range: string
@@ -231,15 +253,17 @@
           value: CLINICAL_DIAGNOSIS
           range: string
         relationship_to_participant:
-          value: SELF
+          value: ONESELF
           range: string
 - class_derivations:
     Condition:
       populated_from: pht000032
       slot_derivations:
         associated_participant:
-          populated_from: phv00008379
+          populated_from: phv00008742
         associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008742}) + ":FHS OFFSPRING EXAM 3")'
+        condition_concept:
           value: HP:0000822
           range: string
         condition_status:
@@ -251,8 +275,11 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: Clinical Diagnostic Impression
+          range: string
         relationship_to_participant:
-          value: SELF
+          value: ONESELF
           range: string
 - class_derivations:
     Condition:
@@ -261,8 +288,7 @@
         associated_participant:
           populated_from: phv00010138
         associated_visit:
-          value: FHS OFFSPRING EXAM 6
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010138}) + ":FHS OFFSPRING EXAM 6")'
         condition_concept:
           value: NCIT:C3117
           range: string
@@ -275,8 +301,11 @@
         condition_provenance:
           value: SELF_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: Awareness of Coronary Factors Questionnaire
+          range: string
         relationship_to_participant:
-          value: SELF
+          value: ONESELF
           range: string
 - class_derivations:
     Condition:
@@ -285,8 +314,7 @@
         associated_participant:
           populated_from: phv00056635
         associated_visit:
-          value: FHS OFFSPRING BASELINE
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":" + case(({phv00056607} == 1, ''FHS OFFSPRING SHHS EXAM 1''), ({phv00056607} == 7, ''FHS OMNI 1 SHHS EXAM 1''), (True, ''FHS UNKNOWN VISIT EXAM 1'')))'
         condition_concept:
           value: NCIT:C3117
           range: string
@@ -298,6 +326,9 @@
         condition_provenance:
           value: SELF_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: Awareness of Coronary Factors Questionnaire
+          range: string
         relationship_to_participant:
-          value: SELF
+          value: ONESELF
           range: string

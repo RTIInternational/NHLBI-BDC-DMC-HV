@@ -3,10 +3,11 @@
       populated_from: pht000031
       slot_derivations:
         associated_participant:
-          populated_from: phv00008379
+          populated_from: phv00008378
         associated_visit:
-          value: FHS OFFSPRING EXAM 2
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008378}) + ":FHS OFFSPRING EXAM 2")'
+        age_at_observation:
+          expr: '{pht003099.phv00177932} * 365'
         observation_type:
           value: OMOP:44805650
           range: string

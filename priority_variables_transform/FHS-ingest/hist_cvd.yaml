@@ -5,14 +5,7 @@
         associated_participant:
           populated_from: phv00190814
         associated_visit:
-          populated_from: phv00190815
-          value_mappings:
-            '0': FHS ORIGINAL SFS
-            '1': FHS OFFSPRING SFS
-            '2': FHS NEW OFFSPRING SPOUSE SFS
-            '3': FHS GENERATION 3 SFS
-            '7': FHS OMNI 1 SFS
-            '72': FHS OMNI 2 SFS
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190814}) + ":" + case(({phv00190815} == ''0'', ''FHS ORIGINAL SFS''), ({phv00190815} == ''1'', ''FHS OFFSPRING SFS''), ({phv00190815} == ''2'', ''FHS NEW OFFSPRING SPOUSE SFS''), ({phv00190815} == ''3'', ''FHS GENERATION 3 SFS''), ({phv00190815} == ''7'', ''FHS OMNI 1 SFS''), ({phv00190815} == ''72'', ''FHS OMNI 2 SFS''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005010
           range: string
@@ -25,6 +18,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: Medical History
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -33,10 +29,9 @@
       populated_from: pht000009
       slot_derivations:
         associated_participant:
-          populated_from: phv00001036
+          populated_from: phv00001035
         associated_visit:
-          value: FHS ORIGINAL EXAM 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001035}) + ":FHS ORIGINAL EXAM 1")'
         condition_concept:
           value: MONDO:0004995
           range: string
@@ -48,6 +43,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: Medical History
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -58,8 +56,7 @@
         associated_participant:
           populated_from: phv00255463
         associated_visit:
-          value: FHS OFFSPRING EXAM 8
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00255463}) + ":FHS OFFSPRING EXAM 8")'
         condition_concept:
           value: MONDO:0004995
           range: string
@@ -71,6 +68,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: RNA sequencing
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -81,14 +81,7 @@
         associated_participant:
           populated_from: phv00190814
         associated_visit:
-          populated_from: phv00190815
-          value_mappings:
-            '0': FHS ORIGINAL SFS
-            '1': FHS OFFSPRING SFS
-            '2': FHS NEW OFFSPRING SPOUSE SFS
-            '3': FHS GENERATION 3 SFS
-            '7': FHS OMNI 1 SFS
-            '72': FHS OMNI 2 SFS
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190814}) + ":" + case(({phv00190815} == ''0'', ''FHS ORIGINAL SFS''), ({phv00190815} == ''1'', ''FHS OFFSPRING SFS''), ({phv00190815} == ''2'', ''FHS NEW OFFSPRING SPOUSE SFS''), ({phv00190815} == ''3'', ''FHS GENERATION 3 SFS''), ({phv00190815} == ''7'', ''FHS OMNI 1 SFS''), ({phv00190815} == ''72'', ''FHS OMNI 2 SFS''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0004995
           range: string
@@ -100,6 +93,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: Medical History
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -110,14 +106,7 @@
         associated_participant:
           populated_from: phv00190814
         associated_visit:
-          populated_from: phv00190815
-          value_mappings:
-            '0': FHS ORIGINAL SFS
-            '1': FHS OFFSPRING SFS
-            '2': FHS NEW OFFSPRING SPOUSE SFS
-            '3': FHS GENERATION 3 SFS
-            '7': FHS OMNI 1 SFS
-            '72': FHS OMNI 2 SFS
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190814}) + ":" + case(({phv00190815} == ''0'', ''FHS ORIGINAL SFS''), ({phv00190815} == ''1'', ''FHS OFFSPRING SFS''), ({phv00190815} == ''2'', ''FHS NEW OFFSPRING SPOUSE SFS''), ({phv00190815} == ''3'', ''FHS GENERATION 3 SFS''), ({phv00190815} == ''7'', ''FHS OMNI 1 SFS''), ({phv00190815} == ''72'', ''FHS OMNI 2 SFS''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: MONDO:0005009
           range: string
@@ -128,6 +117,9 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        associated_evidence:
+          value: Medical History
           range: string
         relationship_to_participant:
           value: ONESELF

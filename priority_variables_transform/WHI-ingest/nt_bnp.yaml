@@ -6,56 +6,10 @@
           populated_from: phv00283451
         associated_visit:
           value: WHI UNC HEART FAILURE DETAILS
-          range: string
+        # age_at_observation:
+          # expr: "{nan} * 365"
         observation_type:
           value: OBA:2045303
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006223
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00283649
-                  unit:
-                    value: pg/ml
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht006223
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00283451
-        associated_visit:
-          value: WHI UNC HEART FAILURE DETAILS
-          range: string
-        observation_type:
-          value: OBA:2045303
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006223
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00283650
-                  unit:
-                    value: pg/ml
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht006223
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00283451
-        associated_visit:
-          value: WHI UNC HEART FAILURE DETAILS
-          range: string
-        observation_type:
-          value: OBA:2045303
-          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -65,5 +19,48 @@
                   value_decimal:
                     populated_from: phv00283651
                   unit:
-                    value: pg/ml
-                    range: string
+                    value: "pg/mL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht006223
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00283451
+        associated_visit:
+          value: WHI UNC HEART FAILURE DETAILS
+        # age_at_observation:
+          # expr: "{nan} * 365"
+        observation_type:
+          value: OBA:2045303
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht006223
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00283649
+                  unit:
+                    value: "pg/mL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht006223
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00283451
+        associated_visit:
+          value: WHI UNC HEART FAILURE DETAILS
+        # age_at_observation:
+          # expr: "{nan} * 365"
+        observation_type:
+          value: OBA:2045303
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht006223
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00283650
+                  unit:
+                    value: "pg/mL"

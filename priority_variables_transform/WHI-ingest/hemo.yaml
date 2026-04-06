@@ -5,7 +5,9 @@
         associated_participant:
           populated_from: phv00077360
         associated_visit:
-          value: WHI CBC
+          expr: "case(({phv00077361} == 1, 'WHI SCREENING'), ({phv00077361} == 3 and {phv00077362} == 1, 'WHI YEAR 1'), ({phv00077361} == 3 and {phv00077362} == 2, 'WHI YEAR 2'), ({phv00077361} == 3 and {phv00077362} == 3, 'WHI YEAR 3'), (True, None))"
+        # age_at_observation:
+          # expr: "{nan} * 365"
         observation_type:
           value: OBA:2060175
         value_quantity:
@@ -17,7 +19,7 @@
                   value_decimal:
                     populated_from: phv00077366
                   unit:
-                    value: g/dl
+                    value: "g/dL"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006223
@@ -26,6 +28,8 @@
           populated_from: phv00283451
         associated_visit:
           value: WHI UNC HEART FAILURE DETAILS
+        # age_at_observation:
+          # expr: "{nan} * 365"
         observation_type:
           value: OBA:2060175
         value_quantity:
@@ -37,4 +41,4 @@
                   value_decimal:
                     populated_from: phv00283661
                   unit:
-                    value: g/dl
+                    value: "g/dL"

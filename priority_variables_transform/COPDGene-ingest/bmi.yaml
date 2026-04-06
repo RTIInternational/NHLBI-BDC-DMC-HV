@@ -3,20 +3,22 @@
       populated_from: pht002239
       slot_derivations:
         associated_visit:
-          value: COPDGene
+          expr: case(({phv00568798} == 'P1', 'COPDGene P1'), ({phv00568798} == 'P2',
+            'COPDGene P2'), ({phv00568798} == 'P3', 'COPDGene P3'), ({phv00568798}
+            == 'P3B', 'COPDGene P3B'))
         associated_participant:
           populated_from: phv00159568
         age_at_observation:
-          expr: '{phv00159836} * 365'
+          expr: '{phv00568808} * 365'
         observation_type:
-          expr: '''OBA:2045455'''
+          value: OBA:2045455
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: COPDGene
+                populated_from: pht002239
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00159593
                   unit:
-                    expr: '''kg/m2'''
+                    value: kg/m2

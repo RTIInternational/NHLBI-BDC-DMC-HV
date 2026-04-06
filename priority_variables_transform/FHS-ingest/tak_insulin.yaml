@@ -5,11 +5,10 @@
         associated_participant:
           populated_from: phv00250718
         associated_visit:
-          value: FHS OMNI 1 EXAM 2
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00250718}) + ":FHS OMNI 1 EXAM 2")'
         drug_concept:
-          expr: case(({phv00250767} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00250767} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -19,11 +18,10 @@
         associated_participant:
           populated_from: phv00002020
         associated_visit:
-          value: FHS ORIGINAL EXAM 12
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002020}) + ":FHS ORIGINAL EXAM 12")'
         drug_concept:
-          expr: case(({phv00001827} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00001827} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -33,11 +31,10 @@
         associated_participant:
           populated_from: phv00002204
         associated_visit:
-          value: FHS ORIGINAL EXAM 13
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002204}) + ":FHS ORIGINAL EXAM 13")'
         drug_concept:
-          expr: case(({phv00002046} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00002046} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -47,11 +44,10 @@
         associated_participant:
           populated_from: phv00002425
         associated_visit:
-          value: FHS ORIGINAL EXAM 14
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002425}) + ":FHS ORIGINAL EXAM 14")'
         drug_concept:
-          expr: case(({phv00002229} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00002229} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -61,11 +57,10 @@
         associated_participant:
           populated_from: phv00002668
         associated_visit:
-          value: FHS ORIGINAL EXAM 15
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002668}) + ":FHS ORIGINAL EXAM 15")'
         drug_concept:
-          expr: case(({phv00002451} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00002451} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -75,11 +70,10 @@
         associated_participant:
           populated_from: phv00002946
         associated_visit:
-          value: FHS ORIGINAL EXAM 16
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002946}) + ":FHS ORIGINAL EXAM 16")'
         drug_concept:
-          expr: case(({phv00002705} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00002705} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -89,11 +83,10 @@
         associated_participant:
           populated_from: phv00003261
         associated_visit:
-          value: FHS ORIGINAL EXAM 17
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003261}) + ":FHS ORIGINAL EXAM 17")'
         drug_concept:
-          expr: case(({phv00002970} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00002970} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -103,11 +96,10 @@
         associated_participant:
           populated_from: phv00003667
         associated_visit:
-          value: FHS ORIGINAL EXAM 18
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003667}) + ":FHS ORIGINAL EXAM 18")'
         drug_concept:
-          expr: case(({phv00003358} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00003358} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -117,11 +109,10 @@
         associated_participant:
           populated_from: phv00004083
         associated_visit:
-          value: FHS ORIGINAL EXAM 19
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004083}) + ":FHS ORIGINAL EXAM 19")'
         drug_concept:
-          expr: case(({phv00003789} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00003789} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -131,11 +122,10 @@
         associated_participant:
           populated_from: phv00004525
         associated_visit:
-          value: FHS ORIGINAL EXAM 20
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004525}) + ":FHS ORIGINAL EXAM 20")'
         drug_concept:
-          expr: case(({phv00004224} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00004224} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -145,11 +135,10 @@
         associated_participant:
           populated_from: phv00004939
         associated_visit:
-          value: FHS ORIGINAL EXAM 21
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004939}) + ":FHS ORIGINAL EXAM 21")'
         drug_concept:
-          expr: case(({phv00004620} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00004620} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -159,11 +148,10 @@
         associated_participant:
           populated_from: phv00005557
         associated_visit:
-          value: FHS ORIGINAL EXAM 22
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005557}) + ":FHS ORIGINAL EXAM 22")'
         drug_concept:
-          expr: case(({phv00004981} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00004981} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -171,13 +159,12 @@
       populated_from: pht000025
       slot_derivations:
         associated_participant:
-          populated_from: phv00006030
+          populated_from: phv00005558
         associated_visit:
-          value: FHS ORIGINAL EXAM 23
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005558}) + ":FHS ORIGINAL EXAM 23")'
         drug_concept:
-          expr: case(({phv00005601} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00005601} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -185,13 +172,12 @@
       populated_from: pht000026
       slot_derivations:
         associated_participant:
-          populated_from: phv00006325
+          populated_from: phv00006031
         associated_visit:
-          value: FHS ORIGINAL EXAM 24
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006031}) + ":FHS ORIGINAL EXAM 24")'
         drug_concept:
-          expr: case(({phv00006152} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00006152} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -201,11 +187,10 @@
         associated_participant:
           populated_from: phv00006663
         associated_visit:
-          value: FHS ORIGINAL EXAM 25
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006663}) + ":FHS ORIGINAL EXAM 25")'
         drug_concept:
-          expr: case(({phv00006492} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00006492} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -215,11 +200,10 @@
         associated_participant:
           populated_from: phv00007095
         associated_visit:
-          value: FHS ORIGINAL EXAM 26
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007095}) + ":FHS ORIGINAL EXAM 26")'
         drug_concept:
-          expr: case(({phv00006887} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00006887} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -229,11 +213,10 @@
         associated_participant:
           populated_from: phv00007534
         associated_visit:
-          value: FHS ORIGINAL EXAM 27
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007534}) + ":FHS ORIGINAL EXAM 27")'
         drug_concept:
-          expr: case(({phv00007324} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00007324} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -241,13 +224,12 @@
       populated_from: pht000031
       slot_derivations:
         associated_participant:
-          populated_from: phv00008379
+          populated_from: phv00008378
         associated_visit:
-          value: FHS OFFSPRING EXAM 2
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008378}) + ":FHS OFFSPRING EXAM 2")'
         drug_concept:
-          expr: case(({phv00007718} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00007718} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -255,13 +237,12 @@
       populated_from: pht000032
       slot_derivations:
         associated_participant:
-          populated_from: phv00008743
+          populated_from: phv00008742
         associated_visit:
-          value: FHS OFFSPRING EXAM 3
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008742}) + ":FHS OFFSPRING EXAM 3")'
         drug_concept:
-          expr: case(({phv00008404} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00008404} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -271,11 +252,10 @@
         associated_participant:
           populated_from: phv00009127
         associated_visit:
-          value: FHS OFFSPRING EXAM 4
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00009127}) + ":FHS OFFSPRING EXAM 4")'
         drug_concept:
-          expr: case(({phv00008805} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00008805} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -285,11 +265,10 @@
         associated_participant:
           populated_from: phv00009579
         associated_visit:
-          value: FHS OFFSPRING EXAM 5
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00009579}) + ":FHS OFFSPRING EXAM 5")'
         drug_concept:
-          expr: case(({phv00009207} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00009207} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -299,11 +278,10 @@
         associated_participant:
           populated_from: phv00010138
         associated_visit:
-          value: FHS OFFSPRING EXAM 6
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010138}) + ":FHS OFFSPRING EXAM 6")'
         drug_concept:
-          expr: case(({phv00009708} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00009708} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -311,13 +289,12 @@
       populated_from: pht000036
       slot_derivations:
         associated_participant:
-          populated_from: phv00010694
+          populated_from: phv00010139
         associated_visit:
-          value: FHS OFFSPRING EXAM 7
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010139}) + ":FHS OFFSPRING EXAM 7")'
         drug_concept:
-          expr: case(({phv00010193} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00010193} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -327,13 +304,10 @@
         associated_participant:
           populated_from: phv00056635
         associated_visit:
-          populated_from: phv00056607
-          value_mappings:
-            '1': FHS OFFSPRING SHHS EXAM 1
-            '7': FHS OMNI 1 SHHS EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":" + case(({phv00056607} == ''1'', ''FHS OFFSPRING SHHS EXAM 1''), ({phv00056607} == ''7'', ''FHS OMNI 1 SHHS EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
         drug_concept:
-          expr: case(({phv00055345} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00055345} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
 - class_derivations:
@@ -343,12 +317,9 @@
         associated_participant:
           populated_from: phv00057982
         associated_visit:
-          populated_from: phv00057968
-          value_mappings:
-            '1': FHS OFFSPRING SHHS 2
-            '7': FHS OMNI 1 SHHS 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00057982}) + ":" + case(({phv00057968} == ''1'', ''FHS OFFSPRING SHHS EXAM 2''), ({phv00057968} == ''7'', ''FHS OMNI 1 SHHS EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         drug_concept:
-          expr: case(({phv00056962} == 1, '''RxCUI:D007328'''))
-        expsoure_provenance:
+          expr: 'case(({phv00056962} == 1, "MeSH:D007328"))'
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string

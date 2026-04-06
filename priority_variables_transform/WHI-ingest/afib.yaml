@@ -43,13 +43,13 @@
       populated_from: pht000992
       slot_derivations:
         associated_participant:
-          populated_from: phv00077873
+          populated_from: phv00077797
         associated_visit:
           value: WHI YEAR 5
         condition_concept:
           value: MONDO:0004981
         condition_status:
-          populated_from: phv00077638
+          populated_from: phv00077873
           value_mappings:
             '0': ABSENT
             '1': PRESENT
@@ -121,7 +121,7 @@
         associated_participant:
           populated_from: phv00078506
         associated_visit:
-          value: WHI FORM 30 - MEDICAL HISTORY QUESTIONNAIRE
+          value: WHI SCREENING
         condition_concept:
           value: MONDO:0004981
         condition_status:
@@ -140,7 +140,7 @@
         associated_participant:
           populated_from: phv00154925
         associated_visit:
-          value: WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP
+          expr: "case(({phv00154926} == 1, 'WHI SCREENING'), ({phv00154926} == 2 and {phv00154927} == 1, 'WHI SEMI-ANNUAL VISIT YEAR 1'), ({phv00154926} == 3 and {phv00154927} == 1, 'WHI YEAR 1'), ({phv00154926} == 3 and {phv00154927} == 2, 'WHI YEAR 2'), ({phv00154926} == 3 and {phv00154927} == 3, 'WHI YEAR 3'), ({phv00154926} == 3 and {phv00154927} == 4, 'WHI YEAR 4'), ({phv00154926} == 3 and {phv00154927} == 5, 'WHI YEAR 5'), ({phv00154926} == 3 and {phv00154927} == 6, 'WHI YEAR 6'), ({phv00154926} == 3 and {phv00154927} == 7, 'WHI YEAR 7'), ({phv00154926} == 3 and {phv00154927} == 8, 'WHI YEAR 8'), ({phv00154926} == 3 and {phv00154927} == 9, 'WHI YEAR 9'), ({phv00154926} == 3 and {phv00154927} == 10, 'WHI YEAR 10'), ({phv00154926} == 3 and {phv00154927} == 11, 'WHI YEAR 11'), (True, None))"
         condition_concept:
           value: MONDO:0004981
         condition_status:
@@ -157,7 +157,7 @@
       populated_from: pht003406
       slot_derivations:
         associated_participant:
-          populated_from: phv00154925
+          populated_from: phv00193046
         associated_visit:
           value: WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP
         condition_concept:
@@ -175,7 +175,7 @@
       populated_from: pht003406
       slot_derivations:
         associated_participant:
-          populated_from: phv00154925
+          populated_from: phv00193046
         associated_visit:
           value: WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP
         condition_concept:
@@ -184,8 +184,8 @@
           populated_from: phv00193129
           value_mappings:
             '1': PRESENT
-            '0': PRESENT
-            '9': PRESENT
+            '0': ABSENT
+            '9': UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:
@@ -215,25 +215,6 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00193686
-        associated_visit:
-          value: WHI EXTENSION STUDY 2 SRC
-        condition_concept:
-          value: MONDO:0004981
-        condition_status:
-          populated_from: phv00193727
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        relationship_to_participant:
-          value: ONESELF
-- class_derivations:
-    Condition:
-      populated_from: pht003414
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00193729
         associated_visit:
           value: WHI EXTENSION STUDY 2 SRC
         condition_concept:

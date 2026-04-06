@@ -5,8 +5,9 @@
         associated_participant:
           populated_from: phv00275427
         associated_visit:
-          value: FHS OFFSPRING EXAM 5
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275427}) + ":FHS OFFSPRING EXAM 5")'
+        age_at_observation:
+          expr: '{pht003099.phv00177938} * 365'
         observation_type:
           value: OMOP:3004578
           range: string
@@ -31,7 +32,7 @@
 #           value: OFFSPRING EXAM 7
 #           range: string
 #         observation_type:
-#           value: NCIT:C74806
+#           value: OMOP:3004578
 #           range: string
 #         value_quantity:
 #           object_derivations:
@@ -54,7 +55,7 @@
 #           value: OFFSPRING EXAM 7
 #           range: string
 #         observation_type:
-#           value: NCIT:C74806
+#           value: OMOP:3004578
 #           range: string
 #         value_quantity:
 #           object_derivations:

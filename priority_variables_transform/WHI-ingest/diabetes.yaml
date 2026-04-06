@@ -4,17 +4,14 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00078435
-        age_at_condition_start:
-          expr: case(phv00078464 == 1, {phv00078465} * 365)
         associated_visit:
-          value: WHI ELIGIBILITY
+          value: WHI SCREENING
           range: string
         condition_concept:
           value: MONDO:0005015
           range: string
         condition_status:
-          expr: case(({phv00078464} == 0, '''ABSENT'''), ({phv00078471} == 0, '''HISTORICAL'''),
-            (True, '''PRESENT'''))
+          expr: 'case(({phv00078464} == 0, "ABSENT"), ({phv00078471} == 0, "HISTORICAL"), (True, "PRESENT"))'
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -36,8 +33,8 @@
         condition_status:
           populated_from: phv00111545
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
@@ -59,8 +56,8 @@
         condition_status:
           populated_from: phv00283531
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string

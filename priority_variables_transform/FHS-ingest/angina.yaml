@@ -5,10 +5,7 @@
         associated_participant:
           populated_from: phv00056635
         associated_visit:
-          populated_from: phv00056607
-          value_mappings:
-            '1': FHS OFFSPRING SHHS EXAM 1
-            '7': FHS OMNI 1 SHHS EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":" + case(({phv00056607} == ''1'', ''FHS OFFSPRING SHHS EXAM 1''), ({phv00056607} == ''7'', ''FHS OMNI 1 SHHS EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
           value: HP:0001681
           range: string
@@ -20,6 +17,9 @@
             '8': UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: Medical History
           range: string
         relationship_to_participant:
           value: ONESELF

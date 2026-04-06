@@ -1,0 +1,588 @@
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 2, ''FHS NEW OFFSPRING SPOUSE''), ({phv00177928} == 3, ''FHS GENERATION 3''), ({phv00177928} == 7, ''FHS OMNI 1''), ({phv00177928} == 72, ''FHS OMNI 2''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 1'')'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL''),
+                 ({phv00177928} == 1, ''FHS OFFSPRING''),
+                 ({phv00177928} == 2, ''FHS NEW OFFSPRING SPOUSE''),
+                 ({phv00177928} == 3, ''FHS GENERATION 3''),
+                 ({phv00177928} == 7, ''FHS OMNI 1''),
+                 ({phv00177928} == 72, ''FHS OMNI 2''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 1'''
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177930} * 365'
+        age_at_visit_end:
+          expr: '{phv00177930} * 365'
+        # visit_category: commented out - cross-table populated_from not supported by pipeline
+        #   populated_from: pht004813.phv00565431
+        #   value_mappings:
+        #   '0': OUTPATIENT
+        #   '1': NON_HOSPITAL_INSTITUTION
+        #   '2': HOME
+        #   '.': UNKNOWN
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 2, ''FHS NEW OFFSPRING SPOUSE''), ({phv00177928} == 3, ''FHS GENERATION 3''), ({phv00177928} == 7, ''FHS OMNI 1''), ({phv00177928} == 72, ''FHS OMNI 2''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 2'')'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''),
+            ({phv00177928} == 2, ''FHS NEW OFFSPRING SPOUSE''), ({phv00177928} == 3, ''FHS GENERATION 3''),
+            ({phv00177928} == 7, ''FHS OMNI 1''), ({phv00177928} == 72, ''FHS OMNI 2''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 2'''
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177932} * 365'
+        age_at_visit_end:
+          expr: '{phv00177932} * 365'
+        # visit_category: commented out - cross-table populated_from not supported by pipeline
+        #   populated_from: pht004814.phv00251057
+        #   value_mappings:
+        #   '0': OUTPATIENT
+        #   '1': NON_HOSPITAL_INSTITUTION
+        #   '2': HOME
+        #   '3': NON_HOSPITAL_INSTITUTION
+        #   '.': UNKNOWN
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 2, ''FHS NEW OFFSPRING SPOUSE''), ({phv00177928} == 3, ''FHS GENERATION 3''), ({phv00177928} == 7, ''FHS OMNI 1''), ({phv00177928} == 72, ''FHS OMNI 2''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 3'')'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''),
+            ({phv00177928} == 2, ''FHS NEW OFFSPRING SPOUSE''), ({phv00177928} == 3, ''FHS GENERATION 3''),
+            ({phv00177928} == 7, ''FHS OMNI 1''), ({phv00177928} == 72, ''FHS OMNI 2''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 3'''
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177934} * 365'
+        age_at_visit_end:
+          expr: '{phv00177934} * 365'
+        # visit_category: commented out - cross-table populated_from not supported by pipeline
+        #   populated_from: pht004815.phv00251531
+        #   value_mappings:
+        #   '0': OUTPATIENT
+        #   '1': NON_HOSPITAL_INSTITUTION
+        #   '2': HOME
+        #   '3': NON_HOSPITAL_INSTITUTION
+        #   '.': UNKNOWN
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} in [0, 1, 3, 7, 72], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 3, ''FHS GENERATION 3''), ({phv00177928} == 7, ''FHS OMNI 1''), ({phv00177928} == 72, ''FHS OMNI 2''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 4'')), (True, None))'
+        name:
+          expr: 'case(({phv00177928} in [0, 1, 3, 7, 72], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 3, ''FHS GENERATION 3''), ({phv00177928} == 7, ''FHS OMNI 1''), ({phv00177928} == 72, ''FHS OMNI 2''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 4''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177936} * 365'
+        age_at_visit_end:
+          expr: '{phv00177936} * 365'
+        # visit_category: commented out - cross-table populated_from not supported by pipeline
+        #   populated_from: pht005140.phv00254283
+        #   value_mappings:
+        #   '0': OUTPATIENT
+        #   '1': NON_HOSPITAL_INSTITUTION
+        #   '2': HOME
+        #   '3': NON_HOSPITAL_INSTITUTION
+        #   '.': UNKNOWN
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} in [0, 1, 7], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 5'')), (True, None))'
+        name:
+          expr: 'case(({phv00177928} in [0, 1, 7], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 7, ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 5''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177938} * 365'
+        age_at_visit_end:
+          expr: '{phv00177938} * 365'
+        # visit_category: commented out - cross-table populated_from not supported by pipeline
+        #   populated_from: pht015104.phv00545435
+        #   value_mappings:
+        #   '0': OUTPATIENT
+        #   '1': NON_HOSPITAL_INSTITUTION
+        #   '2': HOME
+        #   '3': TELEHEALTH
+        #   '8': OUTPATIENT
+        #   '.': UNKNOWN
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} in [0, 1], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 6'')), (True, None))'
+        name:
+          expr: 'case(({phv00177928} in [0, 1], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 6''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177940} * 365'
+        age_at_visit_end:
+          expr: '{phv00177940} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} in [0, 1], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 7'')), (True, None))'
+        name:
+          expr: 'case(({phv00177928} in [0, 1], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 7''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177942} * 365'
+        age_at_visit_end:
+          expr: '{phv00177942} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} in [0, 1], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 8'')), (True, None))'
+        name:
+          expr: 'case(({phv00177928} in [0, 1], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 8''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177944} * 365'
+        age_at_visit_end:
+          expr: '{phv00177944} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} in [0, 1], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 9'')), (True, None))'
+        name:
+          expr: 'case(({phv00177928} in [0, 1], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 9''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177946} * 365'
+        age_at_visit_end:
+          expr: '{phv00177946} * 365'
+        # visit_category: commented out - cross-table populated_from not supported by pipeline
+        #   populated_from: pht005140.phv00254283
+        #   value_mappings:
+        #   '0': OUTPATIENT
+        #   '1': NON_HOSPITAL_INSTITUTION
+        #   '2': HOME
+        #   '3': NON_HOSPITAL_INSTITUTION
+        #   '.': UNKNOWN
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} in [0, 1], uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 10'')), (True, None))'
+        name:
+          expr: 'case(({phv00177928} in [0, 1], case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 10''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177948} * 365'
+        age_at_visit_end:
+          expr: '{phv00177948} * 365'
+        # visit_category: commented out - cross-table populated_from not supported by pipeline
+        #   populated_from: pht015104.phv00545435
+        #   value_mappings:
+        #   '0': OUTPATIENT
+        #   '1': NON_HOSPITAL_INSTITUTION
+        #   '2': HOME
+        #   '3': TELEHEALTH
+        #   '8': OUTPATIENT
+        #   '.': UNKNOWN
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} == 0, uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":FHS ORIGINAL EXAM 11")), (True, None))'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 11''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177950} * 365'
+        age_at_visit_end:
+          expr: '{phv00177950} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} == 0, uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":FHS ORIGINAL EXAM 12")), (True, None))'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 12''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177952} * 365'
+        age_at_visit_end:
+          expr: '{phv00177952} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} == 0, uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":FHS ORIGINAL EXAM 13")), (True, None))'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 13''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177954} * 365'
+        age_at_visit_end:
+          expr: '{phv00177954} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} == 0, uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":FHS ORIGINAL EXAM 14")), (True, None))'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 14''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177956} * 365'
+        age_at_visit_end:
+          expr: '{phv00177956} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} == 0, uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":FHS ORIGINAL EXAM 15")), (True, None))'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 15''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177958} * 365'
+        age_at_visit_end:
+          expr: '{phv00177958} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} == 0, uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":FHS ORIGINAL EXAM 16")), (True, None))'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 16''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177960} * 365'
+        age_at_visit_end:
+          expr: '{phv00177960} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} == 0, uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":FHS ORIGINAL EXAM 17")), (True, None))'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 17''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177962} * 365'
+        age_at_visit_end:
+          expr: '{phv00177962} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} == 0, uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":FHS ORIGINAL EXAM 18")), (True, None))'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 18''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177964} * 365'
+        age_at_visit_end:
+          expr: '{phv00177964} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} == 0, uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":FHS ORIGINAL EXAM 19")), (True, None))'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 19''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177966} * 365'
+        age_at_visit_end:
+          expr: '{phv00177966} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} == 0, uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":FHS ORIGINAL EXAM 20")), (True, None))'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 20''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177968} * 365'
+        age_at_visit_end:
+          expr: '{phv00177968} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} == 0, uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":FHS ORIGINAL EXAM 21")), (True, None))'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 21''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177970} * 365'
+        age_at_visit_end:
+          expr: '{phv00177970} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} == 0, uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":FHS ORIGINAL EXAM 22")), (True, None))'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 22''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177972} * 365'
+        age_at_visit_end:
+          expr: '{phv00177972} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} == 0, uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":FHS ORIGINAL EXAM 23")), (True, None))'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 23''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177974} * 365'
+        age_at_visit_end:
+          expr: '{phv00177974} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} == 0, uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":FHS ORIGINAL EXAM 24")), (True, None))'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 24''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177976} * 365'
+        age_at_visit_end:
+          expr: '{phv00177976} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} == 0, uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":FHS ORIGINAL EXAM 25")), (True, None))'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 25''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177978} * 365'
+        age_at_visit_end:
+          expr: '{phv00177978} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} == 0, uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":FHS ORIGINAL EXAM 26")), (True, None))'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 26''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177980} * 365'
+        age_at_visit_end:
+          expr: '{phv00177980} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} == 0, uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":FHS ORIGINAL EXAM 27")), (True, None))'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 27''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177982} * 365'
+        age_at_visit_end:
+          expr: '{phv00177982} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} == 0, uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":FHS ORIGINAL EXAM 28")), (True, None))'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 28''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00177984} * 365'
+        age_at_visit_end:
+          expr: '{phv00177984} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} == 0, uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":FHS ORIGINAL EXAM 29")), (True, None))'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 29''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00226999} * 365'
+        age_at_visit_end:
+          expr: '{phv00226999} * 365'
+        # visit_category: commented out - cross-table populated_from not supported by pipeline
+        #   populated_from: pht005141.phv00254761
+        #   value_mappings:
+        #   '0': OUTPATIENT
+        #   '1': NON_HOSPITAL_INSTITUTION
+        #   '2': HOME
+        #   '3': NON_HOSPITAL_INSTITUTION
+        #   '.': UNKNOWN
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} == 0, uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":FHS ORIGINAL EXAM 30")), (True, None))'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 30''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00227002} * 365'
+        age_at_visit_end:
+          expr: '{phv00227002} * 365'
+        # visit_category: commented out - cross-table populated_from not supported by pipeline
+        #   populated_from: pht005142.phv00255154
+        #   value_mappings:
+        #   '0': OUTPATIENT
+        #   '1': NON_HOSPITAL_INSTITUTION
+        #   '2': HOME
+        #   '3': NON_HOSPITAL_INSTITUTION
+        #   '.': UNKNOWN
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} == 0, uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":FHS ORIGINAL EXAM 31")), (True, None))'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 31''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00227005} * 365'
+        age_at_visit_end:
+          expr: '{phv00227005} * 365'
+        # visit_category: commented out - cross-table populated_from not supported by pipeline
+        #   populated_from: pht006007.phv00274879
+        #   value_mappings:
+        #   '0': OUTPATIENT
+        #   '1': NON_HOSPITAL_INSTITUTION
+        #   '2': HOME
+        #   '3': NON_HOSPITAL_INSTITUTION
+        #   '.': UNKNOWN
+- class_derivations:
+    Visit:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'case(({phv00177928} == 0, uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":FHS ORIGINAL EXAM 32")), (True, None))'
+        name:
+          expr: 'case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 32''), (True, None))'
+        associated_participant:
+          populated_from: phv00177926
+        age_at_visit_start:
+          expr: '{phv00227008} * 365'
+        age_at_visit_end:
+          expr: '{phv00227008} * 365'
+        # visit_category: commented out - cross-table populated_from not supported by pipeline
+        #   populated_from: pht006008.phv00275237
+        #   value_mappings:
+        #   '0': OUTPATIENT
+        #   '1': NON_HOSPITAL_INSTITUTION
+        #   '2': HOME
+        #   '3': NON_HOSPITAL_INSTITUTION
+        #   '.': UNKNOWN
+- class_derivations:
+    Visit:
+      populated_from: pht000395
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":" + case(({phv00056607} == 1, ''FHS OFFSPRING SHHS''), ({phv00056607} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 1'')'
+        name:
+          expr: 'case(({phv00056607} == 1, ''FHS OFFSPRING SHHS''), ({phv00056607} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 1'''
+        associated_participant:
+          populated_from: phv00056635
+        age_at_visit_start:
+          expr: '{phv00056587} * 365'
+        age_at_visit_end:
+          expr: '{phv00056587} * 365'
+- class_derivations:
+    Visit:
+      populated_from: pht000396
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056722}) + ":" + case(({phv00056716} == 1, ''FHS OFFSPRING SHHS''), ({phv00056716} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' INTERIM FOLLOW UP'')'
+        name:
+          expr: 'case(({phv00056716} == 1, ''FHS OFFSPRING SHHS''), ({phv00056716} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' INTERIM FOLLOW UP'''
+        associated_participant:
+          populated_from: phv00056722
+        age_at_visit_start:
+          expr: '({phv00056587} * 365) + {phv00056720}'
+        age_at_visit_end:
+          expr: '({phv00056587} * 365) + {phv00056720}'
+- class_derivations:
+    Visit:
+      populated_from: pht000397
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00057982}) + ":" + case(({phv00057968} == 1, ''FHS OFFSPRING SHHS''), ({phv00057968} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 2'')'
+        name:
+          expr: 'case(({phv00057968} == 1, ''FHS OFFSPRING SHHS''), ({phv00057968} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 2'''
+        associated_participant:
+          populated_from: phv00057982
+        age_at_visit_start:
+          expr: '{phv00056723} * 365'
+        age_at_visit_end:
+          expr: '{phv00056723} * 365'

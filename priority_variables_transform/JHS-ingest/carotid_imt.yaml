@@ -5,11 +5,11 @@
         associated_participant:
           populated_from: phv00404188
         associated_visit:
-          value: JHS Lab Data
-          range: string
+          value: JHS LAB DATA
+        # age_at_observation:
+          # expr: "{nan} * 365"
         observation_type:
-          value: OMOP:4138462
-          range: string
+          value: OBA:2050108
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -17,8 +17,116 @@
                 populated_from: pht008791
                 slot_derivations:
                   value_decimal:
-                    expr: ({phv00404195} + {phv00404196} + {phv00404197} + {phv00404198}
-                      + {phv00404199} + {phv00404200})/6
+                    populated_from: phv00404198
                   unit:
-                    value: mm
-                    range: string
+                    value: "mm"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht008791
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00404188
+        associated_visit:
+          value: JHS LAB DATA
+        # age_at_observation:
+          # expr: "{nan} * 365"
+        observation_type:
+          value: OBA:2050108
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht008791
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00404197
+                  unit:
+                    value: "mm"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht008791
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00404188
+        associated_visit:
+          value: JHS LAB DATA
+        # age_at_observation:
+          # expr: "{nan} * 365"
+        observation_type:
+          value: OBA:2050108
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht008791
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00404199
+                  unit:
+                    value: "mm"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht008791
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00404188
+        associated_visit:
+          value: JHS LAB DATA
+        # age_at_observation:
+          # expr: "{nan} * 365"
+        observation_type:
+          value: OBA:2050108
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht008791
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00404195
+                  unit:
+                    value: "mm"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht008791
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00404188
+        associated_visit:
+          value: JHS LAB DATA
+        # age_at_observation:
+          # expr: "{nan} * 365"
+        observation_type:
+          value: OBA:2050108
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht008791
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00404196
+                  unit:
+                    value: "mm"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht008791
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00404188
+        associated_visit:
+          value: JHS LAB DATA
+        # age_at_observation:
+          # expr: "{nan} * 365"
+        observation_type:
+          value: OBA:2050108
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht008791
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00404200
+                  unit:
+                    value: "mm"

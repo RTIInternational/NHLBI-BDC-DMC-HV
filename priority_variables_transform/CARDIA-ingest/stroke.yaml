@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00116953
         age_at_condition_start:
-          expr: case(phv00117058 == 2, {phv00117059} * 365)
+          expr: case((phv00117058 == 2, {phv00117059} * 365))
         associated_visit:
           value: CARDIA YEAR 0
           range: string
@@ -31,7 +31,7 @@
         associated_participant:
           populated_from: phv00117898
         age_at_condition_start:
-          expr: case(phv00117941 == 2, {phv00117942} * 365)
+          expr: case((phv00117941 == 2, {phv00117942} * 365))
         associated_visit:
           value: CARDIA YEAR 7
           range: string
@@ -57,7 +57,7 @@
         associated_participant:
           populated_from: phv00118426
         age_at_condition_start:
-          expr: case(phv00118538 == 2, {phv00118539} * 365)
+          expr: case((phv00118538 == 2, {phv00118539} * 365))
         associated_visit:
           value: CARDIA YEAR 10
           range: string
@@ -83,7 +83,7 @@
         associated_participant:
           populated_from: phv00119801
         age_at_condition_start:
-          expr: case(phv00119916 == 2, {phv00119926} * 365)
+          expr: case((phv00119916 == 2, {phv00119926} * 365))
         associated_visit:
           value: CARDIA YEAR 15
           range: string

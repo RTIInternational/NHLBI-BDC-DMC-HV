@@ -5,11 +5,11 @@
         associated_participant:
           populated_from: phv00077360
         associated_visit:
-          value: WHI CBC
-          range: string
+          expr: "case(({phv00077361} == 1, 'WHI SCREENING'), ({phv00077361} == 3 and {phv00077362} == 1, 'WHI YEAR 1'), ({phv00077361} == 3 and {phv00077362} == 2, 'WHI YEAR 2'), ({phv00077361} == 3 and {phv00077362} == 3, 'WHI YEAR 3'), (True, None))"
+        # age_at_observation:
+          # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4267147
-          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -19,5 +19,4 @@
                   value_decimal:
                     populated_from: phv00077367
                   unit:
-                    value: 10^3/ul
-                    range: string
+                    value: "10*3/uL"

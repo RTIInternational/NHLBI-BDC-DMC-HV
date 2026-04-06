@@ -13,8 +13,8 @@
         condition_status:
           populated_from: phv00082701
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -36,8 +36,8 @@
         condition_status:
           populated_from: phv00082843
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
@@ -59,8 +59,8 @@
         condition_status:
           populated_from: phv00087141
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -82,8 +82,8 @@
         condition_status:
           populated_from: phv00090303
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -100,8 +100,7 @@
           value: MESA AFIB
           range: string
         condition_concept:
-          expr: case(({phv00090305} == 427.31, '''"MONDO:0004981"'''), ({phv00090305}
-            == 427.32, '''"MONDO:0005310"'''))
+          expr: 'case(({phv00090305} == 427.31, "MONDO:0004981"), ({phv00090305} == 427.32, "MONDO:0005310"))'
         condition_status:
           value: PRESENT
           range: string
@@ -126,8 +125,8 @@
         condition_status:
           populated_from: phv00176281
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -149,9 +148,9 @@
         condition_status:
           populated_from: phv00176292
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
-            '2': '''PRESENT'''
+            '0': ABSENT
+            '1': PRESENT
+            '2': PRESENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -173,9 +172,9 @@
         condition_status:
           populated_from: phv00176292
           value_mappings:
-            '0': '''ABSENT'''
-            '1': '''PRESENT'''
-            '2': '''PRESENT'''
+            '0': ABSENT
+            '1': PRESENT
+            '2': PRESENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string

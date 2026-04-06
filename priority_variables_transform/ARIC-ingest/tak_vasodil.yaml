@@ -7,8 +7,8 @@
         associated_visit:
           value: ARIC Hospital Form
         drug_concept:
-          expr: case(({phv00206993} == 1, "RxCUI:C04"))
-        expsoure_provenance:
+          expr: case(({phv00206993} == 1, "ATC:C04"))
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
@@ -19,8 +19,8 @@
         associated_visit:
           value: ARIC Hospital Form
         drug_concept:
-          expr: case(({phv00206994} == 1, "RxCUI:C04"))
-        expsoure_provenance:
+          expr: case(({phv00206994} == 1, "ATC:C04"))
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
     DrugExposure:
@@ -31,6 +31,6 @@
         associated_visit:
           value: ARIC Hospital Form
         drug_concept:
-          expr: case(({phv00207048} == 1, "RxCUI:C04"))
-        expsoure_provenance:
+          expr: case(({phv00207048} == 1, "ATC:C04"))
+        exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION

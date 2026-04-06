@@ -5,8 +5,9 @@
         associated_participant:
           populated_from: phv00141869
         associated_visit:
-          value: FHS OFFSPRING EXAM 6
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00141869}) + ":FHS OFFSPRING EXAM 6")'
+        age_at_observation:
+          expr: '{pht003099.phv00177940} * 365'
         observation_type:
           value: OMOP:8842
           range: string
@@ -44,14 +45,7 @@
         associated_participant:
           populated_from: phv00276803
         associated_visit:
-          populated_from: phv00276845
-          value_mappings:
-            '0': FHS ORIGINAL CHF
-            '1': FHS OFFSPRING CHF
-            '2': FHS NEW OFFSPRING CHF
-            '3': FHS GENERATION 3 CHF
-            '7': FHS OMNI 1 CHF
-            '72': FHS OMNI 2 CHF        
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276803}) + ":" + case(({phv00276845} == ''0'', ''FHS ORIGINAL CHF''), ({phv00276845} == ''1'', ''FHS OFFSPRING CHF''), ({phv00276845} == ''2'', ''FHS NEW OFFSPRING CHF''), ({phv00276845} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00276845} == ''7'', ''FHS OMNI 1 CHF''), ({phv00276845} == ''72'', ''FHS OMNI 2 CHF''), (True, ''FHS UNKNOWN VISIT'')))'
         observation_type:
           value: OMOP:8842
           range: string

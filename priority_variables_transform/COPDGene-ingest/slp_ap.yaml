@@ -3,28 +3,24 @@
       populated_from: pht002239
       slot_derivations:
         associated_visit:
-          value: COPDGene
+          expr: case(({phv00568798} == 'P1', 'COPDGene P1'), ({phv00568798} == 'P2',
+            'COPDGene P2'), ({phv00568798} == 'P3', 'COPDGene P3'), ({phv00568798}
+            == 'P3B', 'COPDGene P3B'))
         associated_participant:
           populated_from: phv00159568
         age_at_condition_start:
-          expr: case((phv00159736 == 1, {phv00159738} * 365))
+          expr: case(({phv00159736} == 1, {phv00159738} * 365))
         condition_concept:
-          expr: '''HP:0010535'''
+          value: HP:0010535
         condition_status:
-          expr: case( ({phv00159736} == 0, 'ABSENT'), ({phv00159736} == 1, case( ({phv00159737}
-            == 0, case( ({phv00159739} == 0, 'HISTORICAL'), ({phv00159739} == 1, 'PRESENT'),
-            ({phv00159739} == 3, 'HISTORICAL') )), ({phv00159737} == 1, case( ({phv00159739}
-            == 0, 'HISTORICAL'), ({phv00159739} == 1, 'PRESENT'), ({phv00159739} ==
-            3, 'HISTORICAL') )) )), ({phv00159736} == 3, case( ({phv00159737} == 0,
-            case( ({phv00159739} == 0, 'ABSENT'), ({phv00159739} == 1, 'PRESENT'), ({phv00159739}
-            == 3, 'ABSENT') )), ({phv00159737} == 1, case( ({phv00159739} == 0, 'HISTORICAL'),
-            ({phv00159739} == 1, 'PRESENT'), ({phv00159739} == 3, 'UNKNOWN') )) )) )
+          populated_from: phv00159736
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '3': UNKNOWN
         condition_provenance:
-          expr: case( ({phv00159737} == 0, 'PATIENT_SELF-REPORTED_CONDITION'), ({phv00159737}
-            == 1, 'CLINICAL_DIAGNOSIS'), (True, 'PATIENT_SELF-REPORTED_CONDITION') )
+          value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: Medical History Questionnaire
         relationship_to_participant:
-          expr: '''SELF'''
-        age_at_condition_start:
-          expr: None
-        age_at_condition_end:
-          expr: None
+          value: ONESELF

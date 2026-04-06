@@ -3,10 +3,13 @@
       populated_from: pht000009
       slot_derivations:
         associated_participant:
-          populated_from: phv00001036
+          populated_from: phv00001035
         associated_visit:
-          value: FHS ORIGINAL EXAM 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001035}) + ":FHS ORIGINAL EXAM 1")'
+        age_at_observation:
+          expr: '{pht003099.phv00177930} * 365'
+        observation_type:
+          value: EDUCATIONAL_ATTAINMENT
         category:
           value: EDUCATIONAL_ATTAINMENT
           range: string
@@ -31,41 +34,9 @@
         associated_participant:
           populated_from: phv00220821
         associated_visit:
-          populated_from: phv00220822
-          value_mappings:
-            '0': FHS ORIGINAL NTS
-            '1': FHS OFFSPRING NTS
-            '2': FHS NEW OFFSPRING SPOUSE NTS
-            '3': FHS GENERATION 3 NTS
-            '7': FHS OMNI 1 NTS
-            '72': FHS OMNI 2 NTS
-        category:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00220821}) + ":FHS NEURO ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 1, OMNI 2")'
+        observation_type:
           value: EDUCATIONAL_ATTAINMENT
-          range: string
-        value_enum:
-          populated_from: phv00220823
-          value_mappings:
-            '0': 8TH_GRADE_OR_LESS
-            '1': 8TH_GRADE_OR_LESS
-            '2': 8TH_GRADE_OR_LESS
-            '3': 8TH_GRADE_OR_LESS
-            '4': HIGH_SCHOOL_NO_DIPLOMA
-            '5': HIGH_SCHOOL_GRADUATE_GED
-            '6': SOME_COLLEGE_OR_TECH_NO_DEGREE
-            '7': COLLEGE_OR_TECH_WITH_DEGREE
-            '8': MASTERS_OR_DOCTORAL_DEGREE
-            '10': COLLEGE_OR_TECH_WITH_DEGREE
-            .: UNKNOWN
-- class_derivations:
-    SdohObservation:
-      populated_from: pht004374
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00220821
-        associated_visit:
-          value: FHS NEURO ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE,
-            OMNI 1, OMNI 2
-          range: string
         category:
           value: EDUCATIONAL_ATTAINMENT
           range: string
@@ -95,8 +66,9 @@
         associated_participant:
           populated_from: phv00220863
         associated_visit:
-          value: FHS ORIGINAL EXAM 14-15
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00220863}) + ":FHS ORIGINAL EXAM 14-15")'
+        observation_type:
+          value: EDUCATIONAL_ATTAINMENT
         category:
           value: EDUCATIONAL_ATTAINMENT
           range: string
