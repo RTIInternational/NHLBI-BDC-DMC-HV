@@ -3,20 +3,28 @@
 # As Procedure, only code 1 produced rows — ~11,800 "No" respondents were invisible.
 # As Condition with condition_status ABSENT/PRESENT, both 0s and 1s produce rows,
 # aligning with DCC approach (N=11,814) and MESA cross-cohort pattern.
-# Retained: Exam 28 (Original Cohort latest), Exam 7 (Offspring latest), Gen3 Exam 1.
+#
+# Uses EARLIEST exam per subcohort to maximize participant coverage:
+#   Original Exam 21 (pht000023, n=1,142) vs Exam 28 (pht000692, n=300)
+#   Offspring Exam 5 (pht000034, n=3,677) vs Exam 7 (pht000036, n=3,465)
+#   Gen3 Exam 1 (pht000074, n=4,034) — unchanged (only exam for this subcohort)
+# CABG questions first appear at Original Exam 21 (~1990) and Offspring Exam 5 (~1991).
+# Earlier exams have no CABG variable (surgery wasn't widespread before the 1970s).
+# Since the question is cumulative ("HISTORY OF"), earlier exams are equally valid
+# and capture more living participants.
 - class_derivations:
     Condition:
-      populated_from: pht000692
+      populated_from: pht000023
       slot_derivations:
         associated_participant:
-          populated_from: phv00070736
+          populated_from: phv00004939
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00070736}) + ":FHS ORIGINAL EXAM 28")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004939}) + ":FHS ORIGINAL EXAM 21")'
         condition_concept:
           value: OMOP:4336464
           range: string
         condition_status:
-          populated_from: phv00070493
+          populated_from: phv00004774
           value_mappings:
             '0': ABSENT
             '1': PRESENT
@@ -29,17 +37,17 @@
           range: string
 - class_derivations:
     Condition:
-      populated_from: pht000036
+      populated_from: pht000034
       slot_derivations:
         associated_participant:
-          populated_from: phv00010139
+          populated_from: phv00009579
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010139}) + ":FHS OFFSPRING EXAM 7")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00009579}) + ":FHS OFFSPRING EXAM 5")'
         condition_concept:
           value: OMOP:4336464
           range: string
         condition_status:
-          populated_from: phv00010353
+          populated_from: phv00009390
           value_mappings:
             '0': ABSENT
             '1': PRESENT
