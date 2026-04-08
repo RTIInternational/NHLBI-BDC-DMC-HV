@@ -1,0 +1,26 @@
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht010063
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00429450
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00429450}) + ":LTRC Baseline")'
+        observations:
+          object_derivations:
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht010063
+                slot_derivations:
+                  observation_type:
+                    value: SMOKING
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht010063
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00429456
+                            unit:
+                              value: '{pack-years}'

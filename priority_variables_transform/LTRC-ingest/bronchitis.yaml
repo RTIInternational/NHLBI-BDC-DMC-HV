@@ -1,0 +1,20 @@
+- class_derivations:
+    Condition:
+      populated_from: pht010060
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00429124
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00429124}) + ":LTRC Baseline")'
+        condition_concept:
+          value: MONDO:0005607
+        condition_status:
+          populated_from: phv00429128
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN
+        condition_provenance:
+          value: PATIENT_SELF_REPORT
+        relationship_to_participant:
+          value: ONESELF
