@@ -11,4 +11,4 @@ Transform specifications for LTRC (phs001662.v4.p2) harmonization.
 ## Status
 - **Branch:** `feature/LTRC`
 - **Started:** 2026-04-07
-- **Progress:** Initial setup — dbGaP metadata cached, transform specs pending
+- **Progress:** 20 YAML transform files implemented — scaffolding, measurements, conditions, smoking
