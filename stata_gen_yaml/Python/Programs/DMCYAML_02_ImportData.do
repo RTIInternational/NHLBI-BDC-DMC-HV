@@ -1,29 +1,4 @@
-/* -------------------------------------------------------------------------------- */
-/* Project: BioDataCatalyst Data Management Core									*/
-/* RTI PI: Chris Siege																*/
-/* Program: DMCYAML_02_ImportData													*/
-/* Programmer: Sabrina McCutchan (CDMS)												*/
-/* Date Created: 2025/06/18															*/
-/* Date Last Updated: 2025/07/07													*/
-/* Description:	This program imports data and standardizes column names.			*/
-/*		0. Read in data																*/
-/* 		1. Create key of variables (FHS)											*/
-/*		2. Use key to drop and rename vars (FHS)									*/
-/*		3. Create key of variables (BDCHM_noFHS_noCOPDGene) 						*/
-/*		4. Use key to drop and rename vars (BDCHM_noFHS_noCOPDGene)					*/
-/*		5. Append & clean data														*/
-/*																					*/
-/* Notes:  																			*/
-/*	- 2025/07/14 Raw data files are downloaded from Google Drive, folder path:		*/
-/*	  Task 3 - Data Standards > BDC Harmonization Data Model (BDCHM) > 				*/
-/*    Data Modeling and Mapping > Priority Variable Values (Properties)				*/
-/*	- 2025/07/14 The data files read in here contain metadata about phv variables	*/
-/*	  in dbGAP that were mapped during a previous exercise to BDCHM priority vars	*/
-/*	- 2025/08/01 Column names differ between the 2 input files, one which contains	*/
-/*	  only FHS study metadata and the other which contains metadata about all other */
-/*    priority studies from the 2025 pilot. This program standardizes column names.	*/
-/* -------------------------------------------------------------------------------- */
-
+* This program reads in files containing dbGaP metadata and phv-BDCHV mappings, then compiles them into a single file with consistent column names *; 
 
 /* ----- 0. Read in data ----- */
 foreach dtaset in FHS_VariableProperties {
@@ -73,25 +48,26 @@ replace varlab=lower(varlab)
 replace varlab=subinstr(varlab," ","_",.)
 replace varlab="cohort" if name=="cohort"
 split varlab, p(".")
+
 replace newname=varlab1 if varlab2==""
 replace newname=varlab2 if varlab1=="data_table" & varlab3==""
 replace newname=varlab5+"_"+varlab6 if inlist(varlab5,"stat","enum","example")
-	/* yes */replace newname="data_table_name" if varlab=="data_table.name"
-	/* yes */replace newname="data_table_descr" if varlab=="data_table.description"
-	/* yes */replace newname="data_table_id" if varlab=="data_table.dataset_id"
-	/* yes */replace newname="cohort_long" if varlab=="data_table.study_name"
-	/* yes */replace newname="var_id" if varlab=="data_table.variable.id"
-	/* yes */replace newname="var_type" if varlab=="data_table.variable.calculated_type"
-	/* yes */replace newname="var_units" if varlab=="data_table.variable.units"
-	/* yes */replace newname="var_desc" if varlab=="data_table.variable.description"
-	/* yes */ replace newname="var_comment" if varlab=="data_table.variable.comment"
-	/* yes */replace newname="var_name" if varlab=="source_variable_name"
-	/* yes*/ replace newname="curator_note" if varlab=="note"
+	replace newname="data_table_name" if varlab=="data_table.name"
+	replace newname="data_table_descr" if varlab=="data_table.description"
+	replace newname="data_table_id" if varlab=="data_table.dataset_id"
+	replace newname="cohort_long" if varlab=="data_table.study_name"
+	replace newname="var_id" if varlab=="data_table.variable.id"
+	replace newname="var_type" if varlab=="data_table.variable.calculated_type"
+	replace newname="var_units" if varlab=="data_table.variable.units"
+	replace newname="var_desc" if varlab=="data_table.variable.description"
+	replace newname="var_comment" if varlab=="data_table.variable.comment"
+	replace newname="var_name" if varlab=="source_variable_name"
+	replace newname="curator_note" if varlab=="note"
 
 * -- Flag variables to drop, add new variable label and name to key -- *;
 gen dropvar=0
-/* yes */replace dropvar=1 if inlist(name,"variableaccession","dbgapstudyaccession","datasetaccession","sourcevariabledescription")
-/* yes*/ replace dropvar=1 if inlist(varlab,"data_table.variable.total.stats.example.count")
+replace dropvar=1 if inlist(name,"variableaccession","dbgapstudyaccession","datasetaccession","sourcevariabledescription")
+replace dropvar=1 if inlist(varlab,"data_table.variable.total.stats.example.count")
 drop varlab1-varlab6
 
 save "$doc\varlist_key_fhs.dta", replace
@@ -146,7 +122,7 @@ forvalues i = 1/`mobs' {
 foreach dtaset in Export_BDCHM_noFHS-noCOPDGene_phv_mappings_$today {
 	descsave using "$raw\\`dtaset'.dta", list(,) saving("$temp/`dtaset'_varlist.dta", replace)
 	use "$temp/`dtaset'_varlist.dta", clear
-}
+
 * -- Add new variable label and name to key -- *;
 gen newname=""
 replace varlab=lower(varlab)
@@ -171,15 +147,16 @@ replace newname=varlab5+"_"+varlab6 if inlist(varlab5,"stat","enum","example")
 	replace newname="var_comment" if varlab=="var_report.variable.comment"
 	replace newname="topmed_varname" if varlab=="topmed_harmonized_variable"
 	replace newname="curator_note" if varlab=="notes"
+	replace newname="bdchm_label_corrected" if newname=="bdchm_label_(corrected)"
 
 * -- Flag variables to drop, add new variable label and name to key -- *;
 gen dropvar=0
-replace dropvar=1 if inlist(name,"firstdata_tablestudy_id","firstdata_tabledataset_id","firstdata_tablevariableid","sourcevariabledescription","bdchmlabelcorrected")
+replace dropvar=1 if inlist(name,"firstdata_tablestudy_id","firstdata_tabledataset_id","firstdata_tablevariableid","sourcevariabledescription","bdchmlabelcorrected","vlookupresults")
 replace dropvar=1 if inlist(varlab,"var_report.variable.var_name","var_report.variable.total.stats.example.count")
 drop varlab1-varlab6
 
 save "$doc\varlist_key_nofhscopd.dta", replace
-
+}
 
 
 
@@ -245,7 +222,7 @@ foreach var in var_id study_id data_table_id {
 rename var_id1 phv
 rename study_id1 phs
 rename data_table_id1 pht
-drop var_id2 var_id3 study_id2 data_table_id2
+drop var_id* study_id* data_table_id*
 drop if phv==""
 
 * Values *; 
@@ -262,4 +239,10 @@ do "$prog\\units.do" var_units
 	
 * Type *;
 replace var_type="categorical" if (enum_!="" | example_code!="")
-save "$temp\alldata.dta", replace
+
+order cohort bdchm_label phv pht phs
+order cohort_long data_table_name data_table_descr, last
+order var_desc, after(var_name)
+save "$temp\variable_mappings.dta", replace
+
+
