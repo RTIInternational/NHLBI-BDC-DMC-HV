@@ -1,28 +1,22 @@
 - class_derivations:
-    MeasurementObservationSet:
+    MeasurementObservation:
       populated_from: pht010057
       slot_derivations:
         associated_participant:
           populated_from: phv00429048
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00429048}) + ":LTRC Baseline")'
-        observations:
+        observation_type:
+          value: BMI
+        age_at_observation:
+          expr: '{phv00429049} * 365'
+        value_quantity:
           object_derivations:
           - class_derivations:
-              MeasurementObservation:
+              Quantity:
                 populated_from: pht010057
                 slot_derivations:
-                  observation_type:
-                    value: BMI
-                  age_at_observation:
-                    expr: '{phv00429049} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht010057
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00429058
-                            unit:
-                              value: kg/m2
+                  value_decimal:
+                    populated_from: phv00429058
+                  unit:
+                    value: kg/m2

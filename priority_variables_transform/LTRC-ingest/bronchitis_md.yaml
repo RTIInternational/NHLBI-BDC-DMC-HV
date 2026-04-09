@@ -9,12 +9,13 @@
         condition_concept:
           value: MONDO:0005607
         condition_status:
+          # TODO: revisit when dm-bip supports "ever had" / "still have" condition pattern
           populated_from: phv00429130
           value_mappings:
             '0': ABSENT
             '1': PRESENT
             '9': UNKNOWN
         condition_provenance:
-          value: CASE_REPORT_FORM
+          value: CLINICAL_DIAGNOSIS
         relationship_to_participant:
           value: ONESELF

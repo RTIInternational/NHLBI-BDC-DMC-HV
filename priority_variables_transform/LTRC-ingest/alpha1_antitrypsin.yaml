@@ -1,27 +1,21 @@
 - class_derivations:
-    MeasurementObservationSet:
+    MeasurementObservation:
       populated_from: pht010059
       slot_derivations:
         associated_participant:
           populated_from: phv00429073
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00429073}) + ":LTRC Baseline")'
-        observations:
+        observation_type:
+          # NOTE: OBA:2050075 not yet in MeasurementObservationTypeEnum; HM schema enhancement pending (per Anne)
+          value: OBA:2050075
+        value_quantity:
           object_derivations:
           - class_derivations:
-              MeasurementObservation:
+              Quantity:
                 populated_from: pht010059
                 slot_derivations:
-                  observation_type:
-                    # NOTE: Alpha-1 antitrypsin not yet in MeasurementObservationTypeEnum; schema enhancement needed
-                    value: LOINC:6768-6
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht010059
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00429118
-                            unit:
-                              value: mg/dL
+                  value_decimal:
+                    populated_from: phv00429118
+                  unit:
+                    value: mg/dL
