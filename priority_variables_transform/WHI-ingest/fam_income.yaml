@@ -5,7 +5,8 @@
         associated_participant:
           populated_from: phv00077450
         associated_visit:
-          value: WHI YEAR 3
+
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00077450}) + ":WHI YEAR 3")'
           range: string
         observation_type:
           value: OMOP:4076114
@@ -37,7 +38,8 @@
         associated_participant:
           populated_from: phv00077907
         associated_visit:
-          value: WHI YEAR 6
+
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00077907}) + ":WHI YEAR 6")'
           range: string
         observation_type:
           value: OMOP:4076114
@@ -70,7 +72,8 @@
         associated_participant:
           populated_from: phv00078385
         associated_visit:
-          value: WHI SCREENING
+
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078385}) + ":WHI SCREENING")'
           range: string
         observation_type:
           value: OMOP:4076114

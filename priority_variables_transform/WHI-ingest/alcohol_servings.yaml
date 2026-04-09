@@ -28,7 +28,8 @@
         associated_participant:
           populated_from: phv00078772
         associated_visit:
-          value: WHI SCREENING
+
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078772}) + ":WHI SCREENING")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
@@ -50,7 +51,8 @@
         associated_participant:
           populated_from: phv00156379
         associated_visit:
-          value: WHI YEAR 3
+
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00156379}) + ":WHI YEAR 3")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
