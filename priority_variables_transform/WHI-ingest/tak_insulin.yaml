@@ -5,7 +5,8 @@
         associated_participant:
           populated_from: phv00078435
         associated_visit:
-          value: WHI SCREENING
+
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078435}) + ":WHI SCREENING")'
           range: string
         drug_concept:
           expr: 'case(({phv00078469} == 1, "MeSH:D007328"))'
@@ -19,7 +20,8 @@
         associated_participant:
           populated_from: phv00170566
         associated_visit:
-          value: WHI CAD
+
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00170566}) + ":WHI CAD")'
           range: string
         drug_concept:
           expr: 'case(({phv00170601} == 1, "MeSH:D007328"))'
@@ -33,7 +35,8 @@
         associated_participant:
           populated_from: phv00170648
         associated_visit:
-          value: WHI SCREENING
+
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00170648}) + ":WHI SCREENING")'
           range: string
         drug_concept:
           expr: 'case(({phv00170683} == 1, "MeSH:D007328"))'
@@ -47,7 +50,8 @@
         associated_participant:
           populated_from: phv00193628
         associated_visit:
-          value: WHI EXTENSION STUDY 2 MRC
+
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193628}) + ":WHI EXTENSION STUDY 2 MRC")'
           range: string
         drug_concept:
           expr: 'case(({phv00193671} == 1, "MeSH:D007328"))'
@@ -61,7 +65,8 @@
         associated_participant:
           populated_from: phv00193686
         associated_visit:
-          value: WHI EXTENSION STUDY 2 SRC
+
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
           range: string
         drug_concept:
           expr: 'case(({phv00193783} == 1, "MeSH:D007328"))'

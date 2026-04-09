@@ -5,7 +5,8 @@
         associated_participant:
           populated_from: phv00078506
         associated_visit:
-          value: WHI SCREENING
+
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078506}) + ":WHI SCREENING")'
         procedure_concept:
           expr: case(({phv00078536} == 1, "OMOP:4184832"))
         procedure_provenance:
@@ -17,7 +18,8 @@
         associated_participant:
           populated_from: phv00193141
         associated_visit:
-          value: WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED
+
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193141}) + ":WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED")'
         procedure_concept:
           expr: case(({phv00193199} == 1, "OMOP:4006788"))
         procedure_provenance:

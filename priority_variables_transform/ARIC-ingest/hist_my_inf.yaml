@@ -587,7 +587,7 @@
           value_mappings:
             'N': ABSENT
             'Y': HISTORICAL
-            M: UNKNOWN
+            U: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -611,7 +611,7 @@
           value_mappings:
             'N': ABSENT
             'Y': HISTORICAL
-            M: UNKNOWN
+            U: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -635,7 +635,7 @@
           value_mappings:
             'N': ABSENT
             'Y': HISTORICAL
-            M: UNKNOWN
+            U: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -659,7 +659,7 @@
           value_mappings:
             'N': ABSENT
             'Y': HISTORICAL
-            M: UNKNOWN
+            U: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -943,6 +943,286 @@
           value_mappings:
             '0': ABSENT
             '1': HISTORICAL
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+# ---------- Restored ECG-based MI blocks (Anne PR #544 review) ----------
+# ECG data: MI by Minnesota code (Exams 1-5)
+- class_derivations:
+    Condition:
+      populated_from: pht004231
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00216043
+        associated_visit:
+          value: ARIC EXAM 1
+          range: string
+        condition_concept:
+          value: MONDO:0005068
+          range: string
+        condition_status:
+          populated_from: phv00215643
+          value_mappings:
+            '1': ABSENT
+            '2': HISTORICAL
+        condition_provenance:
+          value: EHR_ENCOUNTER_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: ECG
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht004232
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00216460
+        associated_visit:
+          value: ARIC EXAM 2
+          range: string
+        condition_concept:
+          value: MONDO:0005068
+          range: string
+        condition_status:
+          populated_from: phv00216060
+          value_mappings:
+            '1': ABSENT
+            '2': HISTORICAL
+        condition_provenance:
+          value: EHR_ENCOUNTER_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: ECG
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht004233
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00216877
+        associated_visit:
+          value: ARIC EXAM 3
+          range: string
+        condition_concept:
+          value: MONDO:0005068
+          range: string
+        condition_status:
+          populated_from: phv00216477
+          value_mappings:
+            '1': ABSENT
+            '2': HISTORICAL
+        condition_provenance:
+          value: EHR_ENCOUNTER_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: ECG
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht004234
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00217294
+        associated_visit:
+          value: ARIC EXAM 4
+          range: string
+        condition_concept:
+          value: MONDO:0005068
+          range: string
+        condition_status:
+          populated_from: phv00216894
+          value_mappings:
+            '1': ABSENT
+            '2': HISTORICAL
+        condition_provenance:
+          value: EHR_ENCOUNTER_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: ECG
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht006436
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00295776
+        associated_visit:
+          value: ARIC EXAM 5
+          range: string
+        condition_concept:
+          value: MONDO:0005068
+          range: string
+        condition_status:
+          populated_from: phv00295792
+          value_mappings:
+            '1': ABSENT
+            '2': HISTORICAL
+        condition_provenance:
+          value: EHR_ENCOUNTER_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: ECG
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+# ECG-derived MI variables from Cohort Visit Derived Variables (Exam 1)
+- class_derivations:
+    Condition:
+      populated_from: pht004063
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00204812
+        associated_visit:
+          value: ARIC EXAM 1
+          range: string
+        condition_concept:
+          value: MONDO:0005068
+          range: string
+        condition_status:
+          populated_from: phv00204704
+          value_mappings:
+            '0': ABSENT
+            '1': HISTORICAL
+            T: UNKNOWN
+        condition_provenance:
+          value: EHR_ENCOUNTER_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: ECG
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht004063
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00204812
+        associated_visit:
+          value: ARIC EXAM 1
+          range: string
+        condition_concept:
+          value: MONDO:0005068
+          range: string
+        condition_status:
+          populated_from: phv00204709
+          value_mappings:
+            '0': ABSENT
+            '1': HISTORICAL
+            T: UNKNOWN
+        condition_provenance:
+          value: EHR_ENCOUNTER_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: ECG
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht004063
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00204812
+        associated_visit:
+          value: ARIC EXAM 1
+          range: string
+        condition_concept:
+          value: MONDO:0005068
+          range: string
+        condition_status:
+          populated_from: phv00204740
+          value_mappings:
+            '0': ABSENT
+            '1': HISTORICAL
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        associated_evidence:
+          value: Rose questionnaire
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht004063
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00204812
+        associated_visit:
+          value: ARIC EXAM 1
+          range: string
+        condition_concept:
+          value: MONDO:0005068
+          range: string
+        condition_status:
+          populated_from: phv00204705
+          value_mappings:
+            '0': ABSENT
+            '1': HISTORICAL
+            T: UNKNOWN
+        condition_provenance:
+          value: EHR_ENCOUNTER_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: ECG or medical history
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+# ---------- Restored self-reported MI blocks (Anne PR #544 review) ----------
+# Informant Interview Form - Death Event
+- class_derivations:
+    Condition:
+      populated_from: pht004054
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00204350
+        associated_visit:
+          value: ARIC Death Event
+          range: string
+        condition_concept:
+          value: MONDO:0005068
+          range: string
+        condition_status:
+          populated_from: phv00204300
+          value_mappings:
+            '1': ABSENT
+            '2': HISTORICAL
+            M: UNKNOWN
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht006416
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00294620
+        associated_visit:
+          value: Annual Follow-Up Questionnaire Form
+          range: string
+        condition_concept:
+          value: MONDO:0005068
+          range: string
+        condition_status:
+          populated_from: phv00294812
+          value_mappings:
+            '1': ABSENT
+            '2': HISTORICAL
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string

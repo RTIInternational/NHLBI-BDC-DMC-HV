@@ -5,7 +5,8 @@
         associated_participant:
           populated_from: phv00078506
         associated_visit:
-          value: WHI SCREENING
+
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078506}) + ":WHI SCREENING")'
           range: string
         procedure_concept:
           value: OMOP:4336464
@@ -24,7 +25,8 @@
         associated_participant:
           populated_from: phv00193141
         associated_visit:
-          value: WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED
+
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193141}) + ":WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED")'
           range: string
         procedure_concept:
           value: OMOP:4336464
@@ -43,7 +45,8 @@
         associated_participant:
           populated_from: phv00283451
         associated_visit:
-          value: WHI UNC HEART FAILURE DETAILS
+
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
           range: string
         procedure_concept:
           value: OMOP:4336464
