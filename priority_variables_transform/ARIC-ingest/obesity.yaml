@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00294559
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00294559}) + ":ARIC EXAM 5")'
           range: string
         age_at_observation:
           expr: "{phv00294561} * 365"

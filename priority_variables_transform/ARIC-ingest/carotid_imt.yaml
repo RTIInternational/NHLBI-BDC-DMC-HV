@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00211150
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00211150}) + ":ARIC EXAM 1")'
           range: string
         observation_type:
           value: OMOP:4138462
@@ -32,7 +32,7 @@
         associated_participant:
           populated_from: phv00212653
         associated_visit:
-          value: ARIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00212653}) + ":ARIC EXAM 2")'
           range: string
         observation_type:
           value: OMOP:4138462
@@ -59,7 +59,7 @@
         associated_participant:
           populated_from: phv00213977
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00213977}) + ":ARIC EXAM 4")'
           range: string
         observation_type:
           value: OMOP:4138462
@@ -84,7 +84,7 @@
         associated_participant:
           populated_from: phv00211150
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00211150}) + ":ARIC EXAM 1")'
           range: string
         observation_type:
           value: OMOP:4138462
@@ -112,7 +112,7 @@
         associated_participant:
           populated_from: phv00212653
         associated_visit:
-          value: ARIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00212653}) + ":ARIC EXAM 2")'
           range: string
         observation_type:
           value: OMOP:4138462
@@ -139,7 +139,7 @@
         associated_participant:
           populated_from: phv00213977
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00213977}) + ":ARIC EXAM 4")'
           range: string
         observation_type:
           value: OMOP:4138462
@@ -164,7 +164,7 @@
         associated_participant:
           populated_from: phv00519695
         associated_visit:
-          value: ARIC Lab Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519695}) + ":ARIC Lab Form")'
           range: string
         observation_type:
           value: OMOP:4138462

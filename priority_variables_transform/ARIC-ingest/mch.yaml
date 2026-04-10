@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00207307
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207307}) + ":ARIC EXAM 4")'
         observation_type:
           value: OBA:2045301
         value_quantity:
@@ -25,7 +25,7 @@
         associated_participant:
           populated_from: phv00207295
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207295}) + ":ARIC EXAM 3")'
         observation_type:
           value: OBA:2045301
         value_quantity:
@@ -45,7 +45,7 @@
         associated_participant:
           populated_from: phv00294953
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00294953}) + ":ARIC EXAM 5")'
         observation_type:
           value: OBA:2045301
         value_quantity:

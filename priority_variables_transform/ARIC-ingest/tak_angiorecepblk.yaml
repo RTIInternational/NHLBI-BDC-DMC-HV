@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00203808
         associated_visit:
-          value: ARIC Death Event
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203808}) + ":ARIC Death Event")'
           range: string
         drug_concept:
           expr: case(({phv00203803} == 1, "ATC:C09C"))
@@ -19,7 +19,7 @@
         associated_participant:
           populated_from: phv00204295
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204295}) + ":ARIC Hospital Form")'
           range: string
         drug_concept:
           expr: case(({phv00203973} == 1, "ATC:C09C"))
@@ -33,7 +33,7 @@
         associated_participant:
           populated_from: phv00204812
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
           range: string
         drug_concept:
           expr: case(({phv00204712} == 1, "ATC:C09C"))
@@ -47,7 +47,7 @@
         associated_participant:
           populated_from: phv00207055
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
         drug_concept:
           expr: case(({phv00206921} == 1, "ATC:C09C"))
@@ -61,7 +61,7 @@
         associated_participant:
           populated_from: phv00207055
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
         drug_concept:
           expr: case(({phv00206964} == 1, "ATC:C09C"))
@@ -75,7 +75,7 @@
         associated_participant:
           populated_from: phv00507300
         associated_visit:
-          value: ARIC EXAM 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
           range: string
         drug_concept:
           expr: case(({phv00507368} == 1, "ATC:C09C"))
@@ -89,7 +89,7 @@
         associated_participant:
           populated_from: phv00507300
         associated_visit:
-          value: ARIC EXAM 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
           range: string
         drug_concept:
           expr: case(({phv00507369} == 1, "ATC:C09C"))
@@ -103,7 +103,7 @@
         associated_participant:
           populated_from: phv00512039
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
           range: string
         drug_concept:
           expr: case(({phv00512212} == 1, "ATC:C09C"))
@@ -117,7 +117,7 @@
         associated_participant:
           populated_from: phv00512039
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
           range: string
         drug_concept:
           expr: case(({phv00512213} == 1, "ATC:C09C"))
@@ -131,7 +131,7 @@
         associated_participant:
           populated_from: phv00512222
         associated_visit:
-          value: ARIC EXAM 6
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
           range: string
         drug_concept:
           expr: case(({phv00512277} == 1, "ATC:C09C"))
@@ -145,7 +145,7 @@
         associated_participant:
           populated_from: phv00512222
         associated_visit:
-          value: ARIC EXAM 6
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
           range: string
         drug_concept:
           expr: case(({phv00512278} == 1, "ATC:C09C"))
