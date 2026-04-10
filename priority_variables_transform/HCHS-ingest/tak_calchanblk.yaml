@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          value: HCHS EXAM
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         drug_concept:
           expr: 'case(({phv00226332} == 1, "ATC:C08"))'
         exposure_provenance:
@@ -19,8 +18,7 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          value: HCHS EXAM
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         drug_concept:
           expr: 'case(({phv00258121} == 1, "RxCUI:3443"))'
         exposure_provenance:
@@ -33,8 +31,7 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          value: HCHS EXAM
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         drug_concept:
           expr: 'case(({phv00258122} == 1, "RxCUI:11170"))'
         exposure_provenance:

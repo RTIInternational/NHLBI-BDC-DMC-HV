@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          value: HCHS EXAM
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         sex:
           populated_from: phv00226279
           value_mappings:
