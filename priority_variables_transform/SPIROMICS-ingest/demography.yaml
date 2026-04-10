@@ -1,0 +1,31 @@
+- class_derivations:
+    Demography:
+      populated_from: pht013308
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00528692
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00528692}) + ":" + case(({phv00528696}
+            == ''VISIT_1'', ''SPIROMICS Visit 1''), ({phv00528696} == ''VISIT_2'', ''SPIROMICS
+            Visit 2''), ({phv00528696} == ''VISIT_3'', ''SPIROMICS Visit 3''), ({phv00528696}
+            == ''VISIT_4'', ''SPIROMICS Visit 4'')))'
+        sex:
+          populated_from: phv00528693
+          value_mappings:
+            '1': OMOP:8507
+            '2': OMOP:8532
+        ethnicity:
+          populated_from: phv00528695
+          value_mappings:
+            '0': OMOP:38003564
+            '1': OMOP:38003563
+        race:
+          populated_from: phv00528694
+          value_mappings:
+            '1': OMOP:8527
+            '2': OMOP:8516
+            '3': OMOP:8515
+            '4': OMOP:8657
+            '5': OMOP:8557
+            '6': OMOP:45880900
+            '7': OMOP:8552
