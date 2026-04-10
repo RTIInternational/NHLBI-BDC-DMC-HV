@@ -82,6 +82,12 @@
           expr: '{phv00120748} * 365'
         age_at_visit_end:
           expr: '{phv00120748} * 365'
+# CARDIA Medical History visit: pht001869 (Y1MORB06) and pht001871 (YM106) are
+# companion hospitalization-review tables representing the same conceptual visit.
+# Both use Individual_ID as participant key, so uuid5 produces the same Visit ID
+# for any given participant across both tables — intentional deduplication by design.
+# Both blocks are retained so coverage is not lost for participants appearing in
+# only one of the two tables.
 - class_derivations:
     Visit:
       populated_from: pht001869
