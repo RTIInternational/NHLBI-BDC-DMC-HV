@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00087848
         associated_visit:
-          value: MESA CLASSIC CVE
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087848}) + ":MESA CLASSIC CVE")'
         condition_concept:
           value: MONDO:0005386
           range: string
@@ -28,8 +27,7 @@
         associated_participant:
           populated_from: phv00087848
         associated_visit:
-          value: MESA CLASSIC EXAM 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087848}) + ":MESA CLASSIC EXAM 1")'
         condition_concept:
           value: MONDO:0005386
           range: string

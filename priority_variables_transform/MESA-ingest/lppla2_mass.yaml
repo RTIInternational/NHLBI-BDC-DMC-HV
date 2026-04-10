@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00165046
         associated_visit:
-          value: MESA ANCILLARY
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00165046}) + ":MESA ANCILLARY")'
         observation_type:
           value: OMOP:3041450
           range: string
