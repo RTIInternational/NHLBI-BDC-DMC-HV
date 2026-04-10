@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00112401
         associated_visit:
-          value: CARDIA YEAR 0
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00112401}) + ":CARDIA YEAR 0")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
@@ -27,7 +27,7 @@
         associated_participant:
           populated_from: phv00117551
         associated_visit:
-          value: CARDIA YEAR 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00117551}) + ":CARDIA YEAR 7")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:

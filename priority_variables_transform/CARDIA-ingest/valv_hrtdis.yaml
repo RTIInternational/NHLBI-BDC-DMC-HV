@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00113019
         associated_visit:
-          value: CARDIA YEAR 0
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113019}) + ":CARDIA YEAR 0")'
         condition_concept:
           value: MONDO:0002869
         condition_status:
@@ -26,7 +26,7 @@
         associated_participant:
           populated_from: phv00114388
         associated_visit:
-          value: CARDIA YEAR 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00114388}) + ":CARDIA YEAR 2")'
         condition_concept:
           value: MONDO:0002869
         condition_status:
