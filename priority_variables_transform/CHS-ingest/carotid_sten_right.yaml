@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00101233
         associated_visit:
-          value: CHS YEAR 5
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00101233}) + ":CHS YEAR 5")'
         age_at_observation:
           expr: ({pht001452.phv00100487} * 365) + 1825          
         observation_type:
