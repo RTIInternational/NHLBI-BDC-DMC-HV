@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00101324
         associated_visit:
-          value: CHS YEAR 10
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00101324}) + ":CHS YEAR 10")'
         drug_concept:
           expr: 'case(({phv00101537} == 1, "ATC:A10"))'
         exposure_provenance:
@@ -19,8 +18,7 @@
         associated_participant:
           populated_from: phv00102174
         associated_visit:
-          value: CHS YEAR 11
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00102174}) + ":CHS YEAR 11")'
         drug_concept:
           expr: 'case(({phv00102685} == 1, "ATC:A10"))'
         exposure_provenance:
@@ -33,8 +31,7 @@
         associated_participant:
           populated_from: phv00105099
         associated_visit:
-          value: CHS YEAR 5 NEW
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS BASELINE 2")'
         drug_concept:
           expr: 'case(({phv00105966} == 1, "ATC:A10"))'
         exposure_provenance:
@@ -47,8 +44,7 @@
         associated_participant:
           populated_from: phv00106520
         associated_visit:
-          value: CHS YEAR 5 OLD
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00106520}) + ":CHS YEAR 5 OLD")'
         drug_concept:
           expr: 'case(({phv00107087} == 1, "ATC:A10"))'
         exposure_provenance:
@@ -61,8 +57,7 @@
         associated_participant:
           populated_from: phv00107443
         associated_visit:
-          value: CHS YEAR 6
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00107443}) + ":CHS YEAR 6")'
         drug_concept:
           expr: 'case(({phv00107955} == 1, "ATC:A10"))'
         exposure_provenance:
@@ -75,8 +70,7 @@
         associated_participant:
           populated_from: phv00108303
         associated_visit:
-          value: CHS YEAR 7
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00108303}) + ":CHS YEAR 7")'
         drug_concept:
           expr: 'case(({phv00108629} == 1, "ATC:A10"))'
         exposure_provenance:
@@ -89,8 +83,7 @@
         associated_participant:
           populated_from: phv00109056
         associated_visit:
-          value: CHS YEAR 8
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109056}) + ":CHS YEAR 8")'
         drug_concept:
           expr: 'case(({phv00109396} == 1, "ATC:A10"))'
         exposure_provenance:
@@ -103,8 +96,7 @@
         associated_participant:
           populated_from: phv00109768
         associated_visit:
-          value: CHS YEAR 9
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109768}) + ":CHS YEAR 9")'
         drug_concept:
           expr: 'case(({phv00110058} == 1, "ATC:A10"))'
         exposure_provenance:

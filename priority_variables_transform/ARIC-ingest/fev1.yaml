@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00512039
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
         age_at_observation:
           expr: "{phv00512050} * 365"
         observation_type:
@@ -27,7 +27,7 @@
         associated_participant:
           populated_from: phv00297546
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00297546}) + ":ARIC EXAM 5")'
         age_at_observation:
           expr: "{phv00297561} * 365"
         observation_type:
@@ -50,7 +50,7 @@
         associated_participant:
           populated_from: phv00297599
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00297599}) + ":ARIC EXAM 5")'
         age_at_observation:
           expr: "{phv00511022} * 365"
         observation_type:

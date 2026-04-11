@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00515956
         associated_visit:
-          value: ARIC Lab Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00515956}) + ":ARIC Lab Form")'
         observation_type:
           value: OMOP:37393605
         value_quantity:

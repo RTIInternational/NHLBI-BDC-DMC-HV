@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00156620
         associated_visit:
-          value: MESA BNP
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00156620}) + ":MESA BNP")'
         observation_type:
           value: OMOP:4189511
           range: string
@@ -28,8 +27,7 @@
         associated_participant:
           populated_from: phv00156620
         associated_visit:
-          value: MESA BNP
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00156620}) + ":MESA BNP")'
         observation_type:
           value: OMOP:4189511
           range: string

@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00297979
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00297979}) + ":ARIC EXAM 5")'
         observation_type:
           value: OBA:2040171
         value_quantity:

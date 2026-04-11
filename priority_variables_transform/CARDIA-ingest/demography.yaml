@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00112417
         associated_visit:
-          value: CARDIA YEAR 0
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00112417}) + ":CARDIA YEAR 0")'
         sex:
           populated_from: phv00112420
           value_mappings:
@@ -17,10 +17,13 @@
             '5': OMOP:38003564
             '4': OMOP:38003564
             '3': OMOP:38003563
-# Race block uses B2REF (pht001645) — the official CARDIA reference file with
-# race verified at Exam 2. Covers all 3,622 participants with only codes 4
-# (Black) and 5 (White). Preferred over A4F01 telephone screen which has 9
-# Hispanic participants that fall through unmapped.
+# Race block uses B2REF (pht001645) — the official CARDIA race reference file
+# sourced from the Exam 2 clinical visit record. Race is a stable baseline
+# characteristic; associated_visit is deliberately anchored to CARDIA YEAR 0
+# (not YEAR 2) for cross-cohort consistency with demographic baselines.
+# Covers all 3,622 participants with only codes 4 (Black) and 5 (White).
+# Preferred over A4F01 telephone screen which has 9 Hispanic participants
+# that fall through unmapped.
 - class_derivations:
     Demography:
       populated_from: pht001645
@@ -28,7 +31,7 @@
         associated_participant:
           populated_from: phv00115110
         associated_visit:
-          value: CARDIA YEAR 0
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00115110}) + ":CARDIA YEAR 0")'
         race:
           populated_from: phv00115113
           value_mappings:

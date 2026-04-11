@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00082638
         associated_visit:
-          value: MESA AIR EXAM
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         condition_concept:
           value: MONDO:0004981
           range: string
@@ -15,6 +14,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': PRESENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -28,8 +28,7 @@
         associated_participant:
           populated_from: phv00082638
         associated_visit:
-          value: MESA AIR EXAM
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         condition_concept:
           value: MONDO:0004981
           range: string
@@ -51,8 +50,7 @@
         associated_participant:
           populated_from: phv00087070
         associated_visit:
-          value: MESA FAMILY
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         condition_concept:
           value: MONDO:0004981
           range: string
@@ -74,8 +72,7 @@
         associated_participant:
           populated_from: phv00090301
         associated_visit:
-          value: MESA AFIB
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00090301}) + ":MESA AFIB")'
         condition_concept:
           value: MONDO:0004981
           range: string
@@ -97,8 +94,7 @@
         associated_participant:
           populated_from: phv00090301
         associated_visit:
-          value: MESA AFIB
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00090301}) + ":MESA AFIB")'
         condition_concept:
           expr: 'case(({phv00090305} == 427.31, "MONDO:0004981"), ({phv00090305} == 427.32, "MONDO:0005310"))'
         condition_status:
@@ -117,8 +113,7 @@
         associated_participant:
           populated_from: phv00176007
         associated_visit:
-          value: MESA CLASSIC EXAM 5
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         condition_concept:
           value: MONDO:0004981
           range: string
@@ -140,8 +135,7 @@
         associated_participant:
           populated_from: phv00176007
         associated_visit:
-          value: MESA CLASSIC EXAM 5
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         condition_concept:
           value: MONDO:0004981
           range: string

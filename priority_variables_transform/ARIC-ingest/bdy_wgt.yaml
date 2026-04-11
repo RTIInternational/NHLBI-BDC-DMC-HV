@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00203163
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203163}) + ":ARIC EXAM 1")'
         observation_type:
           value: OBA:VT0001259
         value_quantity:
@@ -29,7 +29,7 @@
         associated_participant:
           populated_from: phv00203174
         associated_visit:
-          value: ARIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203174}) + ":ARIC EXAM 2")'
         observation_type:
           value: OBA:VT0001259
         value_quantity:
@@ -53,7 +53,7 @@
         associated_participant:
           populated_from: phv00203181
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203181}) + ":ARIC EXAM 3")'
         observation_type:
           value: OBA:VT0001259
         value_quantity:
@@ -77,7 +77,7 @@
         associated_participant:
           populated_from: phv00203194
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203194}) + ":ARIC EXAM 4")'
         observation_type:
           value: OBA:VT0001259
         value_quantity:
@@ -101,7 +101,7 @@
         associated_participant:
           populated_from: phv00297546
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00297546}) + ":ARIC EXAM 5")'
         age_at_observation:
           expr: "{phv00297561} * 365"
         observation_type:
@@ -114,9 +114,6 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00297563
-                    unit_conversion:
-                      source_unit: '[lb_av]'
-                      target_unit: kg
                   unit:
                     value: kg
                     range: string
@@ -127,7 +124,7 @@
         associated_participant:
           populated_from: phv00297599
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00297599}) + ":ARIC EXAM 5")'
         age_at_observation:
           expr: "{phv00511022} * 365"
         observation_type:
@@ -140,9 +137,6 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00511024
-                    unit_conversion:
-                      source_unit: '[lb_av]'
-                      target_unit: kg
                   unit:
                     value: kg
                     range: string

@@ -8,7 +8,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
           range: string
         drug_concept:
-          expr: case(({phv00401102} == 1, 'MeSH:D007328'))
+          expr: 'case(({phv00401102} == 1, "MeSH:D007328"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -22,7 +22,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401273}) + ":JHS Exam 2")'
           range: string
         drug_concept:
-          expr: case(({phv00401294} == 1, 'MeSH:D007328'))
+          expr: 'case(({phv00401294} == 1, "MeSH:D007328"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -36,7 +36,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
           range: string
         drug_concept:
-          expr: case(({phv00401395} == 1, 'MeSH:D007328'))
+          expr: 'case(({phv00401395} == 1, "MeSH:D007328"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -50,7 +50,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401565}) + ":JHS Exam 3")'
           range: string
         drug_concept:
-          expr: case(({phv00401574} == 1, 'MeSH:D007328'))
+          expr: 'case(({phv00401574} == 1, "MeSH:D007328"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string

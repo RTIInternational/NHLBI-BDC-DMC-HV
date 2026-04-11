@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00098771
         associated_visit:
-          value: CHS BASELINE 2
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
         procedure_concept:
           value: OMOP:4184832
         procedure_status:
@@ -24,8 +23,7 @@
         associated_participant:
           populated_from: phv00100285
         associated_visit:
-          value: CHS BASELINE BOTH
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100285}) + ":CHS BASELINE BOTH")'
         procedure_concept:
           value: OMOP:4184832
         procedure_status:
@@ -43,8 +41,7 @@
         associated_participant:
           populated_from: phv00100773
         associated_visit:
-          value: CHS SUMMARY
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100773}) + ":CHS SUMMARY")'
         procedure_concept:
           value: OMOP:4184832
         procedure_status:
@@ -62,8 +59,7 @@
         associated_participant:
           populated_from: phv00105099
         associated_visit:
-          value: CHS BASELINE 2
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS BASELINE 2")'
         procedure_concept:
           value: OMOP:4184832
         procedure_status:
@@ -81,8 +77,7 @@
         associated_participant:
           populated_from: phv00197394
         associated_visit:
-          value: CHS PSG 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197394}) + ":CHS PSG 1")'
         procedure_concept:
           value: OMOP:4184832
         procedure_status:

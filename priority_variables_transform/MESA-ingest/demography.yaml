@@ -18,7 +18,7 @@
         associated_participant:
           populated_from: phv00082638
         associated_visit:
-          value: MESA AIR EXAM
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         sex:
           populated_from: phv00082643
           value_mappings:
@@ -42,7 +42,7 @@
         associated_participant:
           populated_from: phv00084441
         associated_visit:
-          value: MESA CLASSIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         sex:
           populated_from: phv00084446
           value_mappings:
@@ -66,7 +66,7 @@
         associated_participant:
           populated_from: phv00085772
         associated_visit:
-          value: MESA CLASSIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         sex:
           populated_from: phv00085782
           value_mappings:
@@ -91,7 +91,7 @@
         associated_participant:
           populated_from: phv00086258
         associated_visit:
-          value: MESA CLASSIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         sex:
           populated_from: phv00086268
           value_mappings:
@@ -116,7 +116,7 @@
         associated_participant:
           populated_from: phv00086726
         associated_visit:
-          value: MESA CLASSIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         sex:
           populated_from: phv00086736
           value_mappings:
@@ -144,7 +144,7 @@
         associated_participant:
           populated_from: phv00087070
         associated_visit:
-          value: MESA FAMILY
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         sex:
           populated_from: phv00087073
           value_mappings:
@@ -166,7 +166,7 @@
         associated_participant:
           populated_from: phv00174584
         associated_visit:
-          value: MESA AIR EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         sex:
           populated_from: phv00174586
           value_mappings:
@@ -190,7 +190,7 @@
         associated_participant:
           populated_from: phv00175794
         associated_visit:
-          value: MESA LUNG CT
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00175794}) + ":MESA LUNG CT")'
         sex:
           expr: 'case(({phv00175856} == 1, "OMOP:8507"),
                       ({phv00175877} == 1, "OMOP:8507"),
@@ -216,7 +216,7 @@
         associated_participant:
           populated_from: phv00175966
         associated_visit:
-          value: MESA LUNG
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00175966}) + ":MESA LUNG")'
         ethnicity:
           populated_from: phv00175967
           value_mappings:
@@ -232,7 +232,7 @@
         associated_participant:
           populated_from: phv00176007
         associated_visit:
-          value: MESA CLASSIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         sex:
           populated_from: phv00176009
           value_mappings:
@@ -256,7 +256,7 @@
         associated_participant:
           populated_from: phv00219018
         associated_visit:
-          value: MESA STRESS
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00219018}) + ":MESA STRESS")'
         sex:
           populated_from: phv00219022
           value_mappings:

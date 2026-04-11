@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00207055
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         drug_concept:
           expr: case(({phv00206983} == "Y", "ATC:C03"))
         exposure_provenance:
@@ -17,7 +17,7 @@
         associated_participant:
           populated_from: phv00207055
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         drug_concept:
           expr: case(({phv00206984} == 1, "ATC:C03"))
         exposure_provenance:
@@ -29,7 +29,7 @@
         associated_participant:
           populated_from: phv00207055
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         drug_concept:
           expr: case(({phv00206996} == "Y", "ATC:C03"))
         exposure_provenance:
@@ -41,7 +41,7 @@
         associated_participant:
           populated_from: phv00507300
         associated_visit:
-          value: ARIC EXAM 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
         drug_concept:
           expr: case(({phv00507372} == 1, "VANDF:CV702"))
         exposure_provenance:
@@ -53,7 +53,7 @@
         associated_participant:
           populated_from: phv00507300
         associated_visit:
-          value: ARIC EXAM 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
         drug_concept:
           expr: case(({phv00507373} == 1, "VANDF:CV702"))
         exposure_provenance:
@@ -65,7 +65,7 @@
         associated_participant:
           populated_from: phv00512039
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
         drug_concept:
           expr: case(({phv00512216} == 1, "VANDF:CV702"))
         exposure_provenance:
@@ -77,7 +77,7 @@
         associated_participant:
           populated_from: phv00512039
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
         drug_concept:
           expr: case(({phv00512217} == 1, "VANDF:CV702"))
         exposure_provenance:
@@ -89,7 +89,7 @@
         associated_participant:
           populated_from: phv00512222
         associated_visit:
-          value: ARIC EXAM 6
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
         drug_concept:
           expr: case(({phv00512281} == 1, "VANDF:CV702"))
         exposure_provenance:
@@ -101,7 +101,7 @@
         associated_participant:
           populated_from: phv00512222
         associated_visit:
-          value: ARIC EXAM 6
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
         drug_concept:
           expr: case(({phv00512282} == 1, "VANDF:CV702"))
         exposure_provenance:
