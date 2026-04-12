@@ -31,30 +31,35 @@ COMPONENTS = {
         "label": "yamllint",
         "cohort_flag": "--cohort",
         "extra_args": ["--summary"],
+        "supports_fail_on": False,
     },
     "quoting": {
         "script": SCRIPT_DIR / "check_quoting_rules.py",
         "label": "Quoting Rules (Issue #387)",
         "cohort_flag": "--cohort",
         "extra_args": ["--summary"],
+        "supports_fail_on": False,
     },
     "structure": {
         "script": SCRIPT_DIR / "validate_yaml_structure.py",
         "label": "Structural Checks (1.1-1.5)",
         "cohort_flag": "--cohort",
         "extra_args": [],
+        "supports_fail_on": True,
     },
     "cross-block": {
         "script": SCRIPT_DIR / "check_cross_block_consistency.py",
         "label": "Cross-Block Slot Consistency (1.6)",
         "cohort_flag": "--cohort",
         "extra_args": [],
+        "supports_fail_on": True,
     },
     "cross-file-pht": {
         "script": SCRIPT_DIR / "check_cross_file_pht_consistency.py",
         "label": "Cross-File PHT Visit Label Consistency (1.8)",
         "cohort_flag": "--cohort",
         "extra_args": [],
+        "supports_fail_on": True,
     },
 }
 
@@ -99,7 +104,7 @@ def run_component(name: str, cohort: str, fail_on: str) -> int:
 
     cmd.extend(comp["extra_args"])
 
-    if name == "structure":
+    if comp.get("supports_fail_on"):
         cmd.extend(["--fail-on", fail_on])
 
     result = subprocess.run(cmd)

@@ -98,7 +98,7 @@ def main() -> int:
     p.add_argument(
         "--source-cache",
         default=None,
-        help="Path to dbGaP HTML cache (default: data/dbgap-cache in repo root)"
+        help="Path to dbGaP HTML cache (default: hv-lint/dbgap-cache, or data/dbgap-cache if present)"
     )
     p.add_argument(
         "--output-dir",
