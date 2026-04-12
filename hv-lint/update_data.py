@@ -494,7 +494,7 @@ def extract_visit_metadata(cohort_key: str) -> dict | None:
 
             # Participant IDs
             if vname.upper() in ("SUBJECT_ID", "SHAREID", "SUBJID", "PID", "ID",
-                                  "RANID", "SID", "dbGaP_Subject_ID"):
+                                  "RANID", "SID", "DBGAP_SUBJECT_ID"):
                 phv_raw = var_elem.get("id", "")
                 participant_ids.append({"name": vname, "phv": phv_raw.split(".")[0]})
 

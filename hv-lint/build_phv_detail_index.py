@@ -102,13 +102,14 @@ def parse_data_dict(path: Path) -> dict[str, dict]:
 
 def main() -> int:
     hvlint_dir = Path(__file__).resolve().parent
-    # Auto-detect control center root
+    # Default source cache is hv-lint/dbgap-cache (same dir as output)
+    # Falls back to control-center data/dbgap-cache if present.
     for candidate in [hvlint_dir.parent.parent, hvlint_dir.parent]:
         if (candidate / "data" / "dbgap-cache").is_dir():
             repo_root = candidate
             break
     else:
-        repo_root = hvlint_dir.parent
+        repo_root = hvlint_dir  # HV repo: source cache is hv-lint/dbgap-cache
 
     p = argparse.ArgumentParser(
         description="Build extended PHV detail indexes from FTP data dictionaries"
@@ -127,14 +128,17 @@ def main() -> int:
 
     if args.source_cache:
         source = Path(args.source_cache)
-    else:
+    elif (repo_root / "data" / "dbgap-cache").is_dir():
         source = repo_root / "data" / "dbgap-cache"
-        if not source.is_dir():
-            print(
-                f"ERROR: Cannot find dbGaP cache at {source}. Use --source-cache.",
-                file=sys.stderr,
-            )
-            return 1
+    elif (hvlint_dir / "dbgap-cache").is_dir():
+        source = hvlint_dir / "dbgap-cache"
+    else:
+        print(
+            f"ERROR: Cannot find dbGaP source cache. "
+            f"Run 'python hv-lint/update_data.py' first or use --source-cache.",
+            file=sys.stderr,
+        )
+        return 1
 
     output = Path(args.output_dir)
     output.mkdir(parents=True, exist_ok=True)

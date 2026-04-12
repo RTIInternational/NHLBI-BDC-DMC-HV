@@ -85,12 +85,14 @@ def main() -> int:
     # Auto-detect repo root -- works from control center (hv-lint/)
     # or HV repo (hv-lint/). The dbGaP cache is in the control center.
     hvlint_dir = Path(__file__).resolve().parent
+    # Default source cache is hv-lint/dbgap-cache (same dir as output)
+    # Falls back to control-center data/dbgap-cache if present.
     for candidate in [hvlint_dir.parent.parent, hvlint_dir.parent]:
         if (candidate / "data" / "dbgap-cache").is_dir():
             repo_root = candidate
             break
     else:
-        repo_root = hvlint_dir.parent  # fallback; --source-cache required
+        repo_root = hvlint_dir  # HV repo: source cache is hv-lint/dbgap-cache
 
     p = argparse.ArgumentParser(description="Build compact PHV-to-PHT indexes")
     p.add_argument(
@@ -108,12 +110,17 @@ def main() -> int:
     # Auto-detect source cache
     if args.source_cache:
         source = Path(args.source_cache)
-    else:
+    elif (repo_root / "data" / "dbgap-cache").is_dir():
         source = repo_root / "data" / "dbgap-cache"
-        if not source.is_dir():
-            print(f"ERROR: Cannot find dbGaP cache at {source}. Use --source-cache.",
-                  file=sys.stderr)
-            return 1
+    elif (hvlint_dir / "dbgap-cache").is_dir():
+        source = hvlint_dir / "dbgap-cache"
+    else:
+        print(
+            f"ERROR: Cannot find dbGaP source cache. "
+            f"Run 'python hv-lint/update_data.py' first or use --source-cache.",
+            file=sys.stderr,
+        )
+        return 1
 
     output = Path(args.output_dir)
     output.mkdir(parents=True, exist_ok=True)

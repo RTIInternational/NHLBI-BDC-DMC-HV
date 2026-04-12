@@ -7,8 +7,8 @@ Orchestrates the Phase 5 sub-components:
 Usage:
     python hv-lint/phase-5/run_phase5.py
     python hv-lint/phase-5/run_phase5.py --cohort FHS
-    python hv-lint/phase-5/run_phase5.py --cohort WHI --visit-cache data/visit-cache
-    python hv-lint/phase-5/run_phase5.py --visit-cache data/visit-cache --cache-dir hv-lint/dbgap-cache
+    python hv-lint/phase-5/run_phase5.py --cohort WHI --visit-cache hv-lint/dbgap-cache
+    python hv-lint/phase-5/run_phase5.py --visit-cache hv-lint/dbgap-cache --cache-dir hv-lint/dbgap-cache
 """
 
 from __future__ import annotations

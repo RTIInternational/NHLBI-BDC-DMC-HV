@@ -117,7 +117,7 @@ When dbGaP releases a new version for a cohort:
 
 What changes between versions:
 - PHTs may be added or removed
-- PHVs may be re-accessiond or retired
+- PHVs may be re-accessioned or retired
 - Coded value lists may change
 - New tables may appear
 
