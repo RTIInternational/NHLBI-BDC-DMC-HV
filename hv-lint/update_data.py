@@ -82,7 +82,7 @@ def load_cohorts(cohorts_yaml: Path | None = None) -> dict[str, dict]:
     if not path.exists():
         print(f"ERROR: cohorts.yaml not found at {path}", file=sys.stderr)
         sys.exit(1)
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         data = yaml.safe_load(f)
     if not isinstance(data, dict):
         print(f"ERROR: cohorts.yaml is empty or malformed at {path}", file=sys.stderr)
@@ -548,7 +548,7 @@ def build_visit_cache(cohort_key: str) -> bool:
 
     dest = CACHE_DIR / f"{cohort_key}_visit.json"
     with open(dest, "w", encoding="utf-8") as f:
-        json.dump(metadata, f, indent=2, ensure_ascii=False)
+        json.dump(metadata, f, indent=2, ensure_ascii=True)
 
     n_multi = metadata["n_multi_visit"]
     print(

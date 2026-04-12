@@ -377,9 +377,9 @@ def parse_args() -> argparse.Namespace:
         help="Cohort or 'all' (default: all)"
     )
     p.add_argument(
-        "--fail-on", default="high",
+        "--fail-on", default="error",
         choices=["critical", "error", "high", "warning", "info"],
-        help="Minimum severity for non-zero exit (default: high)"
+        help="Minimum severity for non-zero exit (default: error)"
     )
     return p.parse_args()
 

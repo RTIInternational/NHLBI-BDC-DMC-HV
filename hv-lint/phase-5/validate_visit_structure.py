@@ -61,6 +61,7 @@ COHORT_TO_CACHE_KEY: dict[str, str] = {
     "MESA": "mesa",
     "SPIROMICS": "spiromics",
     "WHI": "whi",
+    "LTRC": "ltrc",
 }
 
 # -- Regex patterns -----------------------------------------------------------
@@ -907,7 +908,7 @@ def check_5_7_visit_pht_alignment(
 
         # -- 5.7b: Discriminator PHV cross-check --
         if is_multi and vb.all_phvs:
-            discrim_vars = table.get("visit_discriminator_variables", [])
+            discrim_vars = table.get("visit_discriminator_variables", table.get("visit_discriminators", []))
             if discrim_vars:
                 discrim_phvs = set()
                 for dv in discrim_vars:
@@ -1330,18 +1331,42 @@ def load_phv_index(cache_dir: Path, cache_key: str) -> dict[str, str] | None:
         return json.load(f)
 
 
+def _normalize_visit_cache(raw: dict) -> dict:
+    """Normalize visit cache to canonical list-of-dicts format.
+
+    update_data.py writes tables as a dict keyed by PHT with
+    'is_multi_visit', while data/visit-cache/ uses a list of dicts
+    with 'is_multi_visit_table'.  Normalize to list format with
+    consistent key names so Phase 5 checks work with either source.
+    """
+    tables = raw.get("tables", [])
+    if isinstance(tables, dict):
+        normalized = []
+        for pht_key, entry in tables.items():
+            entry.setdefault("pht", pht_key)
+            if "is_multi_visit" in entry and "is_multi_visit_table" not in entry:
+                entry["is_multi_visit_table"] = entry["is_multi_visit"]
+            if "visit_discriminators" in entry and "visit_discriminator_variables" not in entry:
+                entry["visit_discriminator_variables"] = entry["visit_discriminators"]
+            normalized.append(entry)
+        raw["tables"] = normalized
+    return raw
+
+
 def load_visit_cache(visit_cache_dir: Path, cache_key: str) -> dict | None:
     """Load the visit cache JSON for a cohort.
 
     Checks two naming conventions:
       - {cache_key}.json        (data/visit-cache/ layout)
       - {cache_key}_visit.json  (hv-lint/dbgap-cache/ layout from update_data.py)
+
+    Normalizes the schema so Phase 5 checks work with either source.
     """
     for pattern in [f"{cache_key}.json", f"{cache_key}_visit.json"]:
         json_path = visit_cache_dir / pattern
         if json_path.exists():
             with json_path.open(encoding="utf-8") as f:
-                return json.load(f)
+                return _normalize_visit_cache(json.load(f))
     return None
 
 
