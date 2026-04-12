@@ -9,8 +9,10 @@ Single entry point for all dbGaP data maintenance in hv-lint. Performs:
   4. Build compressed PHV detail index (.json.gz)
   5. Extract visit cache (visit-relevant metadata per table)
 
-All intermediate files are written to hv-lint/dbgap-cache/ which is
-fully .gitignore'd. Nothing fetched or built here is committed.
+Fetched source XML files and intermediate data are written to
+hv-lint/dbgap-cache/ and are git-ignored. The compressed indexes
+(*.json.gz) built by the index steps ARE committed so that Phases 3
+and 5 can run offline in CI and local environments.
 
 Usage:
     # Full refresh -- fetch from NCBI + rebuild all indexes:

@@ -30,6 +30,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -46,6 +48,7 @@ jobs:
           # Find which cohort directories have changes
           CHANGED=$(git diff --name-only ${{ github.event.pull_request.base.sha }} HEAD \
             -- priority_variables_transform/ \
+            | grep -- '-ingest/' \
             | sed 's|priority_variables_transform/\([^/]*\)-ingest/.*|\1|' \
             | sort -u \
             | tr '\n' ',' \

@@ -127,33 +127,42 @@ def check_cross_block_consistency(
         if len(block_list) < 2:
             continue
 
-        # Compute union of all slots across all blocks of this class
-        all_slots = set()
-        for _, _, slots in block_list:
-            all_slots.update(slots)
-
+        # Group by PHT so we only compare blocks sharing the same source table
+        pht_groups: dict[str, list[tuple[int, set[str]]]] = {}
         for block_idx, pht, slots in block_list:
-            missing = all_slots - slots
-            if not missing:
+            pht_groups.setdefault(pht, []).append((block_idx, slots))
+
+        for pht, pht_blocks in pht_groups.items():
+            if len(pht_blocks) < 2:
                 continue
+
+            # Compute union of all slots across blocks of this class + PHT
+            all_slots = set()
+            for _, slots in pht_blocks:
+                all_slots.update(slots)
+
             pht_label = pht if pht else "unknown"
-            for slot in sorted(missing):
-                # Find which block(s) have this slot for context
-                providers = [
-                    str(bi) for bi, _, s in block_list if slot in s
-                ]
-                provider_str = ", ".join(providers[:3])
-                findings.append(Finding(
-                    file=rel_path,
-                    block=block_idx,
-                    check="1.6",
-                    severity="WARNING",
-                    message=(
-                        f"{cls_name} block {block_idx} ({pht_label}) "
-                        f"missing slot '{slot}' -- present in block(s) "
-                        f"{provider_str}"
-                    ),
-                ))
+            for block_idx, slots in pht_blocks:
+                missing = all_slots - slots
+                if not missing:
+                    continue
+                for slot in sorted(missing):
+                    # Find which block(s) have this slot for context
+                    providers = [
+                        str(bi) for bi, s in pht_blocks if slot in s
+                    ]
+                    provider_str = ", ".join(providers[:3])
+                    findings.append(Finding(
+                        file=rel_path,
+                        block=block_idx,
+                        check="1.6",
+                        severity="WARNING",
+                        message=(
+                            f"{cls_name} block {block_idx} ({pht_label}) "
+                            f"missing slot '{slot}' -- present in block(s) "
+                            f"{provider_str}"
+                        ),
+                    ))
 
     return findings
 

@@ -2,8 +2,9 @@
 
 This document covers the full lifecycle of dbGaP source data used by HV-Lint:
 fetching from NCBI, building indexes, onboarding new cohorts, and version
-upgrades. Everything described here runs locally — no data is committed to
-the repository.
+upgrades. Fetched source XML and intermediate files stay local (git-ignored),
+but the compressed indexes (`*.json.gz`) are committed so CI and local runs
+work offline without NCBI access.
 
 ---
 

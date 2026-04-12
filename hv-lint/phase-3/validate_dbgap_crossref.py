@@ -76,8 +76,8 @@ EXPECTED_CROSS_TABLE_PREFIXES = (
 # ---------------------------------------------------------------------------
 
 # Strict format: the canonical dbGaP accession pattern
-PHV_STRICT_RE = re.compile(r"phv\d{8}")
-PHT_STRICT_RE = re.compile(r"pht\d{6}")
+PHV_STRICT_RE = re.compile(r"phv\d{8}(?!\d)")
+PHT_STRICT_RE = re.compile(r"pht\d{6}(?!\d)")
 
 # Loose format: catches anything that looks like a PHV/PHT but may have
 # wrong digit count -- used by check 3.1 to detect malformed accessions

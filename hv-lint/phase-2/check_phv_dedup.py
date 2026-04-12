@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import re
 import sys
 from collections import defaultdict
 from dataclasses import dataclass
@@ -308,10 +309,13 @@ def _write_summary(path: str, files: int, phvs: int,
         lines.append(f"### Findings (showing {len(shown)} of {len(findings)})\n")
         lines.append("| Severity | PHV | Message |")
         lines.append("|----------|-----|---------|")
+        _phv_re = re.compile(r"(phv\d{8})")
         for f in shown:
             msg = (f.message.replace("\r", " ").replace("\n", " ")
                    .replace("|", "\\|"))
-            lines.append(f"| {f.severity} | {f.check} | {msg} |")
+            phv_match = _phv_re.search(f.message)
+            phv_col = phv_match.group(1) if phv_match else f.check
+            lines.append(f"| {f.severity} | {phv_col} | {msg} |")
         if len(findings) > limit:
             lines.append(
                 f"\n> **{len(findings) - limit} additional findings omitted.**"
