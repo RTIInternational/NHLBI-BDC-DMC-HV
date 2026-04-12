@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""HV-Lint Phase 3 Manager: Run all dbGaP cross-reference checks.
+"""HV-Lint Phase 3 Manager: Run all dbGaP cross-reference and semantic checks.
 
 Orchestrates the Phase 3 sub-components in sequence:
-  1. dbGaP cross-reference  (validate_dbgap_crossref.py) -- checks 3.1-3.5
+  1. dbGaP cross-reference    (validate_dbgap_crossref.py)  -- checks 3.1-3.5
+  2. Semantic validation       (validate_semantic.py)        -- checks 3.9, 3.10, 3.12-3.16
+  3. Value semantic alignment  (check_value_semantic.py)     -- check 3.11
 
 Each sub-component runs independently and reports its own findings.
 The manager collects exit codes and reports a consolidated summary.

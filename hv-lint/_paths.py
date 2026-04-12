@@ -82,15 +82,15 @@ def find_hv_root(script_path: str | Path | None = None) -> Path:
     anchor = Path(script_path).resolve().parent if script_path else HVLINT_ROOT
 
     # Case A -- running inside the HV repo:
-    #   hv-lint/_paths.py  ->  HVLINT_ROOT = hv-lint/  ->  HVLINT_ROOT.parent = HV root
-    candidate = HVLINT_ROOT.parent
+    #   anchor = hv-lint/  ->  anchor.parent = HV root
+    candidate = anchor.parent
     if (candidate / "priority_variables_transform").is_dir():
         return candidate
 
     # Case B -- running from the control center repo:
-    #   hv-lint/_paths.py  ->  ...parent...parent = control-center root
+    #   anchor = .../hv-lint  ->  ...parent...parent = control-center root
     #   sibling NHLBI-BDC-DMC-HV should be next to the control-center dir
-    control_center = HVLINT_ROOT.parent.parent  # QC -> control-center
+    control_center = anchor.parent.parent  # QC -> control-center
     sibling = control_center.parent / "NHLBI-BDC-DMC-HV"
     if (sibling / "priority_variables_transform").is_dir():
         return sibling

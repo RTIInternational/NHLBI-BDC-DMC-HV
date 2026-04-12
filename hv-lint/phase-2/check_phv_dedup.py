@@ -33,11 +33,6 @@ from _paths import find_transform_dir  # noqa: E402
 
 TRANSFORM_DIR = find_transform_dir()
 
-COHORTS = [
-    "ARIC", "CARDIA", "CHS", "COPDGene",
-    "FHS", "HCHS", "JHS", "MESA", "SPIROMICS", "WHI",
-]
-
 # Cohort detection: directory name before "-ingest" -> cohort key
 COHORT_DIR_PATTERN = "-ingest"
 

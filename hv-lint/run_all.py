@@ -104,7 +104,9 @@ def run_phase(phase_name: str, args: argparse.Namespace, cache_dir: str) -> tupl
         return 0, msg
 
     cmd = [sys.executable, str(script)]
-    cmd.extend(["--cohort", args.cohort])
+    # Normalize cohort to uppercase (Phase 1 scripts use uppercase choices)
+    cohort_val = args.cohort if args.cohort.lower() == "all" else args.cohort.upper()
+    cmd.extend(["--cohort", cohort_val])
     cmd.extend(["--fail-on", args.fail_on])
 
     if phase["needs_cache"]:
