@@ -9,7 +9,7 @@ Override the auto-detected HV repo root in two ways (checked in order):
   - ``HV_ROOT`` environment variable -- for CLI / subprocess use
 
 Detection logic (fallback): check two fixed candidate locations:
-  - Two levels up from ``hv-lint/`` (HV repo layout)
+  - One level up from ``hv-lint/`` (HV repo layout)
   - Sibling ``NHLBI-BDC-DMC-HV`` directory (control center layout)
 Does NOT walk up the directory tree.
 """

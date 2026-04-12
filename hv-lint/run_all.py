@@ -110,6 +110,11 @@ def run_phase(phase_name: str, args: argparse.Namespace, cache_dir: str) -> tupl
     if phase["needs_cache"]:
         cmd.extend(["--cache-dir", cache_dir])
 
+    # Phase 5 visit checks (5.3/5.5/5.7) need --visit-cache;
+    # visit JSON lives in the same directory as the PHV indexes.
+    if phase_name == "phase5":
+        cmd.extend(["--visit-cache", cache_dir])
+
     if args.hv_root:
         cmd.extend(["--hv-root", args.hv_root])
 

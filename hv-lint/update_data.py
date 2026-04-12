@@ -84,6 +84,9 @@ def load_cohorts(cohorts_yaml: Path | None = None) -> dict[str, dict]:
         sys.exit(1)
     with open(path) as f:
         data = yaml.safe_load(f)
+    if not isinstance(data, dict):
+        print(f"ERROR: cohorts.yaml is empty or malformed at {path}", file=sys.stderr)
+        sys.exit(1)
     return data.get("cohorts", {})
 
 
@@ -368,7 +371,7 @@ def build_phv_detail_index(cohort_key: str) -> int:
         cohort_index.update(records)
 
     json_bytes = json.dumps(
-        cohort_index, separators=(",", ":"), ensure_ascii=False
+        cohort_index, separators=(",", ":"), ensure_ascii=True
     ).encode("utf-8")
     gz_path = CACHE_DIR / f"{cohort_key}_detail.json.gz"
     with gzip.open(gz_path, "wb") as f:

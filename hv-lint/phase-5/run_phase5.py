@@ -108,6 +108,11 @@ def main() -> int:
     if args.cache_dir is None:
         args.cache_dir = str(SCRIPT_DIR.parent / "dbgap-cache")
 
+    # Default visit-cache to the same directory as cache-dir
+    # (update_data.py writes *_visit.json alongside *.json.gz)
+    if args.visit_cache is None:
+        args.visit_cache = args.cache_dir
+
     print("=" * 70)
     print("HV-Lint Phase 5: Visit Structure Validation")
     print(f"Cohort: {args.cohort}")
