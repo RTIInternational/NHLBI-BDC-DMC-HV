@@ -2,7 +2,7 @@
 """HV-Lint Phase 3 Manager: Run all dbGaP cross-reference checks.
 
 Orchestrates the Phase 3 sub-components in sequence:
-  1. dbGaP cross-reference  (validate_dbgap_crossref.py) — checks 3.1–3.5
+  1. dbGaP cross-reference  (validate_dbgap_crossref.py) -- checks 3.1-3.5
 
 Each sub-component runs independently and reports its own findings.
 The manager collects exit codes and reports a consolidated summary.
@@ -25,13 +25,13 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 COMPONENTS = {
     "crossref": {
         "script": SCRIPT_DIR / "validate_dbgap_crossref.py",
-        "label": "dbGaP Cross-Reference (3.1–3.5)",
+        "label": "dbGaP Cross-Reference (3.1-3.5)",
         "cohort_flag": "--cohort",
         "extra_args": [],
     },
     "semantic": {
         "script": SCRIPT_DIR / "validate_semantic.py",
-        "label": "Semantic Validation (3.9, 3.10, 3.12–3.16)",
+        "label": "Semantic Validation (3.9, 3.10, 3.12-3.16)",
         "cohort_flag": "--cohort",
         "extra_args": [],
     },
@@ -80,7 +80,7 @@ def run_component(name: str, cohort: str, fail_on: str,
     comp = COMPONENTS[name]
     script = comp["script"]
     if not script.exists():
-        print(f"  WARNING: {script.name} not found — skipping")
+        print(f"  WARNING: {script.name} not found -- skipping")
         return 0
 
     cmd = [sys.executable, str(script)]
@@ -94,7 +94,7 @@ def run_component(name: str, cohort: str, fail_on: str,
     cmd.extend(comp["extra_args"])
 
     print(f"\n{'='*70}")
-    print(f"Phase 3 — {comp['label']}")
+    print(f"Phase 3 -- {comp['label']}")
     print(f"{'='*70}\n")
 
     result = subprocess.run(cmd)

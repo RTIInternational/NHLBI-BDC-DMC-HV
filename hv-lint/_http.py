@@ -1,5 +1,5 @@
 """
-_http.py — Transparent HTTP cache for dbGaP/NCBI requests.
+_http.py -- Transparent HTTP cache for dbGaP/NCBI requests.
 
 Self-contained replacement for orchestrator/tools/dbgap_client.py.
 Used by update_data.py for polite, cached downloads from NCBI FTP.
@@ -17,7 +17,7 @@ Requires:
 
     If requests-cache is not installed, get_session() raises ImportError
     with a helpful message. The rest of hv-lint (phases 1-5) does NOT
-    require this module — it is only needed for update_data.py.
+    require this module -- it is only needed for update_data.py.
 """
 
 from __future__ import annotations

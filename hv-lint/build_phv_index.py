@@ -81,7 +81,7 @@ def parse_variable_html(path: Path) -> dict[str, str]:
 
 
 def main() -> int:
-    # Auto-detect repo root — works from control center (hv-lint/)
+    # Auto-detect repo root -- works from control center (hv-lint/)
     # or HV repo (hv-lint/). The dbGaP cache is in the control center.
     hvlint_dir = Path(__file__).resolve().parent
     for candidate in [hvlint_dir.parent.parent, hvlint_dir.parent]:

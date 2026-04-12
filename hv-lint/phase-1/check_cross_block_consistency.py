@@ -7,7 +7,7 @@ Catches the common copy-paste error where a new block omits a slot
 that the original block had.
 
 Checks:
-    1.6  Cross-block slot consistency — slots in the union but absent
+    1.6  Cross-block slot consistency -- slots in the union but absent
          from a block are flagged as WARNING.
 
 Usage:
@@ -150,7 +150,7 @@ def check_cross_block_consistency(
                     severity="WARNING",
                     message=(
                         f"{cls_name} block {block_idx} ({pht_label}) "
-                        f"missing slot '{slot}' — present in block(s) "
+                        f"missing slot '{slot}' -- present in block(s) "
                         f"{provider_str}"
                     ),
                 ))
@@ -233,7 +233,7 @@ def main() -> int:
     if parts:
         print(f"Findings:       {', '.join(parts)}")
     else:
-        print("Findings:       None — all blocks have consistent slots")
+        print("Findings:       None -- all blocks have consistent slots")
 
     if findings_by_file:
         print(f"\n{'-'*70}")

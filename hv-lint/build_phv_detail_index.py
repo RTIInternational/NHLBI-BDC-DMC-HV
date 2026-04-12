@@ -6,7 +6,7 @@ compressed JSON files with per-variable metadata: name, parent PHT,
 data type, unit, description, and coded value set.
 
 These detail indexes power the semantic validation rules in Phase 3
-(checks 3.9–3.12) that go beyond structural / existence checks.
+(checks 3.9-3.12) that go beyond structural / existence checks.
 
 Usage (from control center repo root):
     python hv-lint/build_phv_detail_index.py

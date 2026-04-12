@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-update_data.py — Fetch dbGaP source data and rebuild lint indexes.
+update_data.py -- Fetch dbGaP source data and rebuild lint indexes.
 
 Single entry point for all dbGaP data maintenance in hv-lint. Performs:
   1. Fetch CGI variable index (variables.xml) from NCBI
@@ -13,7 +13,7 @@ All intermediate files are written to hv-lint/dbgap-cache/ which is
 fully .gitignore'd. Nothing fetched or built here is committed.
 
 Usage:
-    # Full refresh — fetch from NCBI + rebuild all indexes:
+    # Full refresh -- fetch from NCBI + rebuild all indexes:
     python hv-lint/update_data.py
 
     # Single cohort:
@@ -211,7 +211,7 @@ def fetch_ftp_data_dicts(cohort_key: str, study_id: str, data_version: str,
 
     if not targets:
         print(f"  [FTP] No data_dict.xml files found ({len(parser.links)} entries)")
-        return True  # Not an error — some studies have none
+        return True  # Not an error -- some studies have none
 
     print(f"  [FTP] Found {len(targets)} data_dict files")
     dest_dir = CACHE_DIR / cohort_key / "pheno_variable_summaries"

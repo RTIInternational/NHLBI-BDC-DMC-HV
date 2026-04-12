@@ -7,16 +7,16 @@ from visit.yaml and validates referential integrity, uniqueness, age
 formula structure, multi-visit coverage, and orphan detection.
 
 Checks:
-  5.1  Visit ID Uniqueness — no duplicate visit IDs within a cohort
-  5.2  Visit ID Referential Integrity — associated_visit references resolve
-  5.3  Visit ↔ PHT Consistency — visit block PHTs exist in visit cache
-  5.4  Age Formula Structural Check — age expressions reference valid PHVs
-  5.5  Multi-Visit Table Coverage — multi-visit table blocks need case() visit
-  5.6  Orphan Visit References — visit IDs defined but never referenced
-  5.7  Visit PHT/Label Alignment — visit block PHTs match visit-cache context
-  5.8  Collection Interval Mismatch — data PHV coll_interval vs visit case
-  5.9  Visit uuid5 Format Compliance — visit IDs must use uuid5 expressions
-  5.10 Visit uuid5 Namespace — uuid5 must use canonical bdchm namespace URL
+  5.1  Visit ID Uniqueness -- no duplicate visit IDs within a cohort
+  5.2  Visit ID Referential Integrity -- associated_visit references resolve
+  5.3  Visit <-> PHT Consistency -- visit block PHTs exist in visit cache
+  5.4  Age Formula Structural Check -- age expressions reference valid PHVs
+  5.5  Multi-Visit Table Coverage -- multi-visit table blocks need case() visit
+  5.6  Orphan Visit References -- visit IDs defined but never referenced
+  5.7  Visit PHT/Label Alignment -- visit block PHTs match visit-cache context
+  5.8  Collection Interval Mismatch -- data PHV coll_interval vs visit case
+  5.9  Visit uuid5 Format Compliance -- visit IDs must use uuid5 expressions
+  5.10 Visit uuid5 Namespace -- uuid5 must use canonical bdchm namespace URL
 
 Optional data sources:
   --visit-cache   Directory with per-cohort visit cache JSONs (checks 5.3, 5.5)
@@ -44,11 +44,11 @@ from _paths import find_transform_dir  # noqa: E402
 
 import yaml
 
-# ── Severity ─────────────────────────────────────────────────────────────────
+# -- Severity -----------------------------------------------------------------
 
 SEVERITY_RANK = {"CRITICAL": 5, "ERROR": 4, "HIGH": 3, "WARNING": 2, "INFO": 1}
 
-# ── Cohort mapping ───────────────────────────────────────────────────────────
+# -- Cohort mapping -----------------------------------------------------------
 
 COHORT_TO_CACHE_KEY: dict[str, str] = {
     "ARIC": "aric",
@@ -63,7 +63,7 @@ COHORT_TO_CACHE_KEY: dict[str, str] = {
     "WHI": "whi",
 }
 
-# ── Regex patterns ───────────────────────────────────────────────────────────
+# -- Regex patterns -----------------------------------------------------------
 
 # Matches the result string in a case tuple: , "RESULT") or , 'RESULT')
 # YAML single-quoted strings use '' for literal ', producing single-quoted
@@ -100,7 +100,7 @@ def _strip_label_artifacts(label: str) -> str:
     return label.lstrip(":")
 
 
-# ── Data structures ──────────────────────────────────────────────────────────
+# -- Data structures ----------------------------------------------------------
 
 @dataclass
 class Finding:
@@ -184,7 +184,7 @@ class TransformBlock:
     visit_uses_case: bool
 
 
-# ── Visit label extraction ───────────────────────────────────────────────────
+# -- Visit label extraction ---------------------------------------------------
 
 def extract_visit_labels_from_expr(expr: str) -> tuple[set[str], bool]:
     """Extract human-readable visit labels from an id or associated_visit expression.
@@ -193,8 +193,8 @@ def extract_visit_labels_from_expr(expr: str) -> tuple[set[str], bool]:
       - Simple case(): case((..., "LABEL1"), (..., "LABEL2"))
       - Case + suffix: case((..., "PREFIX1"), ...) + " SUFFIX"
       - UUID5 wrapping: uuid5("URL", ... + case(...) + " SUFFIX")
-      - FHS Pattern A: str({phv}) + ":LABEL" — colon prefix on label
-      - Single-quoted values: YAML '' escaping → Python ' in parsed exprs
+      - FHS Pattern A: str({phv}) + ":LABEL" -- colon prefix on label
+      - Single-quoted values: YAML '' escaping -> Python ' in parsed exprs
 
     Returns (set_of_labels, is_dynamic).
     """
@@ -229,7 +229,7 @@ def extract_visit_labels_from_expr(expr: str) -> tuple[set[str], bool]:
         }
         return labels, is_dynamic
 
-    # No case() — extract quoted strings as candidate labels
+    # No case() -- extract quoted strings as candidate labels
     all_quoted = (
         QUOTED_DQ_RE.findall(expr_str)
         + QUOTED_SQ_RE.findall(expr_str)
@@ -252,7 +252,7 @@ def extract_phvs_from_expr(expr: str) -> set[str]:
     return set(PHV_RE.findall(str(expr)))
 
 
-# ── YAML parsing ─────────────────────────────────────────────────────────────
+# -- YAML parsing -------------------------------------------------------------
 
 def find_yaml_files(base_dir: Path, cohort: str) -> list[Path]:
     """Find all transform YAML files, optionally filtered by cohort."""
@@ -292,7 +292,7 @@ def parse_yaml_safe(file_path: Path) -> list[dict] | None:
     return data if isinstance(data, list) else [data]
 
 
-# ── Visit registry construction ──────────────────────────────────────────────
+# -- Visit registry construction ----------------------------------------------
 
 def build_visit_registry(visit_file: Path, hv_root: Path) -> VisitRegistry | None:
     """Parse a visit.yaml and build a VisitRegistry."""
@@ -321,7 +321,7 @@ def build_visit_registry(visit_file: Path, hv_root: Path) -> VisitRegistry | Non
         pht = visit_cd.get("populated_from")
         slot_derivs = visit_cd.get("slot_derivations", {})
 
-        # ── Extract visit ID ──
+        # -- Extract visit ID --
         id_slot = slot_derivs.get("id", {})
         visit_id = None
         visit_labels_set: set[str] = set()
@@ -343,7 +343,7 @@ def build_visit_registry(visit_file: Path, hv_root: Path) -> VisitRegistry | Non
 
         all_labels.update(visit_labels_set)
 
-        # ── Extract age expressions and PHVs ──
+        # -- Extract age expressions and PHVs --
         age_start = slot_derivs.get("age_at_visit_start", {})
         age_end = slot_derivs.get("age_at_visit_end", {})
 
@@ -366,14 +366,14 @@ def build_visit_registry(visit_file: Path, hv_root: Path) -> VisitRegistry | Non
                 phvs = PHV_RE.findall(pfrom)
                 age_phvs.update(phvs)
 
-        # ── Check for associated_participant ──
+        # -- Check for associated_participant --
         participant_slot = slot_derivs.get("associated_participant", {})
         has_participant = bool(
             isinstance(participant_slot, dict)
             and (participant_slot.get("populated_from") or participant_slot.get("expr"))
         )
 
-        # ── Collect ALL PHVs from all expressions in this block ──
+        # -- Collect ALL PHVs from all expressions in this block --
         all_block_phvs: set[str] = set(age_phvs)
         for sd_name, sd_val in slot_derivs.items():
             if not isinstance(sd_val, dict):
@@ -410,7 +410,7 @@ def build_visit_registry(visit_file: Path, hv_root: Path) -> VisitRegistry | Non
     )
 
 
-# ── Transform file scanning ─────────────────────────────────────────────────
+# -- Transform file scanning -------------------------------------------------
 
 def scan_transform_file(
     yaml_file: Path, hv_root: Path,
@@ -539,7 +539,7 @@ def _scan_nested_visit_refs(
                     ))
 
 
-# ── Checks ───────────────────────────────────────────────────────────────────
+# -- Checks -------------------------------------------------------------------
 
 def check_5_1_uniqueness(registry: VisitRegistry) -> list[Finding]:
     """5.1: No duplicate visit IDs within a cohort's visit.yaml."""
@@ -557,14 +557,14 @@ def check_5_1_uniqueness(registry: VisitRegistry) -> list[Finding]:
                         check="5.1",
                         severity="ERROR",
                         message=(
-                            f"Duplicate visit label '{label}' — "
+                            f"Duplicate visit label '{label}' -- "
                             f"also in block {seen_labels[label]}"
                         ),
                     ))
                 else:
                     seen_labels[label] = vb.block_index
     else:
-        # Static IDs — check exact ID uniqueness
+        # Static IDs -- check exact ID uniqueness
         seen_ids: dict[str, int] = {}
         for vb in registry.blocks:
             vid = vb.visit_id
@@ -577,7 +577,7 @@ def check_5_1_uniqueness(registry: VisitRegistry) -> list[Finding]:
                     check="5.1",
                     severity="ERROR",
                     message=(
-                        f"Duplicate visit ID '{vid}' — "
+                        f"Duplicate visit ID '{vid}' -- "
                         f"also in block {seen_ids[vid]}"
                     ),
                 ))
@@ -596,7 +596,7 @@ def check_5_2_referential_integrity(
 
     for ref in all_refs:
         if ref.visit_id and not ref.is_dynamic:
-            # Static reference — must match a static ID or known label
+            # Static reference -- must match a static ID or known label
             if (ref.visit_id not in registry.static_ids
                     and ref.visit_id not in registry.all_labels):
                 findings.append(Finding(
@@ -610,7 +610,7 @@ def check_5_2_referential_integrity(
                     ),
                 ))
         elif ref.visit_labels:
-            # Dynamic or case-based reference — check labels
+            # Dynamic or case-based reference -- check labels
             for label in sorted(ref.visit_labels):
                 if label not in registry.all_labels:
                     is_fallback = any(
@@ -719,7 +719,7 @@ def check_5_4_age_formula(
                         ),
                     ))
 
-        # Check for * 365 pattern (age in years → days conversion)
+        # Check for * 365 pattern (age in years -> days conversion)
         for expr_label, expr_val in [
             ("age_at_visit_start", vb.age_start_expr),
             ("age_at_visit_end", vb.age_end_expr),
@@ -732,7 +732,7 @@ def check_5_4_age_formula(
                     severity="INFO",
                     message=(
                         f"Visit '{label}' {expr_label} does not contain "
-                        f"'* 365' conversion — verify units are in days"
+                        f"'* 365' conversion -- verify units are in days"
                     ),
                 ))
 
@@ -771,7 +771,7 @@ def check_5_5_multivist_coverage(
                 severity="WARNING",
                 message=(
                     f"{tb.class_name} uses multi-visit table {table_desc} "
-                    f"but has no associated_visit — rows from different visits "
+                    f"but has no associated_visit -- rows from different visits "
                     f"will be indistinguishable"
                 ),
             ))
@@ -783,7 +783,7 @@ def check_5_5_multivist_coverage(
                 severity="INFO",
                 message=(
                     f"{tb.class_name} uses multi-visit table {table_desc} "
-                    f"with static associated_visit — verify row-level visit "
+                    f"with static associated_visit -- verify row-level visit "
                     f"discrimination is handled elsewhere (e.g., case() on "
                     f"value slots)"
                 ),
@@ -808,7 +808,7 @@ def check_5_6_orphan_visits(
 
     for vb in registry.blocks:
         if vb.visit_id:
-            # Static ID — check if referenced
+            # Static ID -- check if referenced
             if vb.visit_id not in referenced:
                 findings.append(Finding(
                     file=registry.file_path,
@@ -821,7 +821,7 @@ def check_5_6_orphan_visits(
                     ),
                 ))
         elif vb.visit_labels:
-            # Dynamic — check if ANY label is referenced
+            # Dynamic -- check if ANY label is referenced
             unreferenced = vb.visit_labels - referenced
             if unreferenced and len(unreferenced) == len(vb.visit_labels):
                 label_preview = sorted(vb.visit_labels)[0]
@@ -831,7 +831,7 @@ def check_5_6_orphan_visits(
                     check="5.6",
                     severity="INFO",
                     message=(
-                        f"Visit block (labels include '{label_preview}') — "
+                        f"Visit block (labels include '{label_preview}') -- "
                         f"no labels referenced by any transform file"
                     ),
                 ))
@@ -844,7 +844,7 @@ def check_5_7_visit_pht_alignment(
     visit_cache: dict,
     phv_index: dict[str, str] | None,
 ) -> list[Finding]:
-    """5.7: Visit block PHT ↔ table visit-context alignment.
+    """5.7: Visit block PHT <-> table visit-context alignment.
 
     For each visit block, validates that the referenced PHT's visit-cache
     metadata is consistent with the block's visit structure:
@@ -858,7 +858,7 @@ def check_5_7_visit_pht_alignment(
     """
     findings: list[Finding] = []
 
-    # Build PHT → table metadata lookup from visit cache
+    # Build PHT -> table metadata lookup from visit cache
     pht_meta: dict[str, dict] = {}
     for table in visit_cache.get("tables", []):
         pht = table.get("pht", "")
@@ -870,23 +870,23 @@ def check_5_7_visit_pht_alignment(
             continue
         table = pht_meta.get(vb.pht)
         if table is None:
-            continue  # PHT not in visit cache — 5.3 already flags this
+            continue  # PHT not in visit cache -- 5.3 already flags this
 
         label = vb.visit_id or next(iter(vb.visit_labels), f"block {vb.block_index}")
         table_name = table.get("table_name", "")
         is_multi = table.get("is_multi_visit_table", False)
 
-        # ── 5.7a: Multi-visit table should use case() for ID ──
+        # -- 5.7a: Multi-visit table should use case() for ID --
         if is_multi:
             has_case_in_id = vb.id_expr and "case(" in vb.id_expr
             if not has_case_in_id and vb.id_is_dynamic:
-                # Dynamic UUID without case — labels are static, but
+                # Dynamic UUID without case -- labels are static, but
                 # visit discrimination may be implicit. Skip.
                 pass
             elif not has_case_in_id and not vb.visit_id:
-                pass  # No ID at all — other checks catch this
+                pass  # No ID at all -- other checks catch this
             elif vb.visit_id and not vb.id_expr:
-                # Static ID with multi-visit table — this block represents
+                # Static ID with multi-visit table -- this block represents
                 # a single visit from a multi-visit table, which is valid
                 # (each block filters different rows via case() on other
                 # slots). Only flag if this is the ONLY block for this PHT.
@@ -900,19 +900,19 @@ def check_5_7_visit_pht_alignment(
                         message=(
                             f"Visit '{label}' uses multi-visit table "
                             f"{vb.pht} ({table_name}) with a static ID "
-                            f"and is the only block for this table — "
+                            f"and is the only block for this table -- "
                             f"verify visit discrimination is handled"
                         ),
                     ))
 
-        # ── 5.7b: Discriminator PHV cross-check ──
+        # -- 5.7b: Discriminator PHV cross-check --
         if is_multi and vb.all_phvs:
             discrim_vars = table.get("visit_discriminator_variables", [])
             if discrim_vars:
                 discrim_phvs = set()
                 for dv in discrim_vars:
                     dv_phv = dv.get("phv", "")
-                    # Strip version suffix (e.g., phv00098579.v7 → phv00098579)
+                    # Strip version suffix (e.g., phv00098579.v7 -> phv00098579)
                     base_phv = dv_phv.split(".")[0] if "." in dv_phv else dv_phv
                     if base_phv:
                         discrim_phvs.add(base_phv)
@@ -928,13 +928,13 @@ def check_5_7_visit_pht_alignment(
                             f"Visit '{label}' uses multi-visit table "
                             f"{vb.pht} ({table_name}) but its expressions "
                             f"don't reference any known discriminator "
-                            f"variable ({', '.join(discrim_names)}) — "
+                            f"variable ({', '.join(discrim_names)}) -- "
                             f"visit discrimination may use a different "
                             f"mechanism"
                         ),
                     ))
 
-        # ── 5.7c: Age variable alignment ──
+        # -- 5.7c: Age variable alignment --
         age_vars = table.get("age_variables", [])
         if age_vars and vb.age_phvs:
             age_phvs_in_cache = set()
@@ -945,7 +945,7 @@ def check_5_7_visit_pht_alignment(
                     age_phvs_in_cache.add(base_phv)
             if age_phvs_in_cache and not (vb.age_phvs & age_phvs_in_cache):
                 # The visit block's age PHVs don't match any from this table
-                # This is only informational — age may come from a different
+                # This is only informational -- age may come from a different
                 # table or use a different calculation entirely
                 cache_age_names = [av.get("name", "?") for av in age_vars[:3]]
                 block_age_phvs = sorted(vb.age_phvs)[:3]
@@ -958,7 +958,7 @@ def check_5_7_visit_pht_alignment(
                         f"Visit '{label}' age PHVs "
                         f"({', '.join(block_age_phvs)}) don't overlap "
                         f"with table {vb.pht}'s age variables "
-                        f"({', '.join(cache_age_names)}) — "
+                        f"({', '.join(cache_age_names)}) -- "
                         f"verify age source is correct"
                     ),
                 ))
@@ -966,16 +966,16 @@ def check_5_7_visit_pht_alignment(
     return findings
 
 
-# ── Collection interval parsing ──────────────────────────────────────────────
+# -- Collection interval parsing ----------------------------------------------
 
 # Matches "Collected in: P1 P2 P3" or "Collected in: P2 P3" style values
 _COLLECTED_IN_RE = re.compile(r"^Collected\s+in:\s*(.+)$", re.IGNORECASE)
 
 # Sub-phase aliases: if a parent phase is in coll_interval, its sub-phases
 # are considered covered.  COPDGene P3B is "Phase 3 Short-term 1-year
-# follow-up" — a sub-visit of P3 that dbGaP rolls into "Collected in: P3".
+# follow-up" -- a sub-visit of P3 that dbGaP rolls into "Collected in: P3".
 _PHASE_SUB_ALIASES: dict[str, str] = {
-    "P3B": "P3",  # COPDGene Phase 3B → Phase 3
+    "P3B": "P3",  # COPDGene Phase 3B -> Phase 3
 }
 
 
@@ -987,7 +987,7 @@ def expand_ci_phases(ci_phases: set[str]) -> set[str]:
     annotates sub-visit data under the parent phase's collection interval.
     """
     expanded = set(ci_phases)
-    # Reverse lookup: parent → children
+    # Reverse lookup: parent -> children
     for child, parent in _PHASE_SUB_ALIASES.items():
         if parent in ci_phases:
             expanded.add(child)
@@ -999,7 +999,7 @@ def parse_coll_interval_phases(coll_interval: str) -> set[str] | None:
 
     Returns a set of phase tokens (e.g., {"P1", "P2", "P3"}) if the string
     follows the "Collected in: X Y Z" format.  Returns None if the format
-    is unstructured (e.g., FHS date ranges) — callers should skip validation.
+    is unstructured (e.g., FHS date ranges) -- callers should skip validation.
     """
     if not coll_interval:
         return None
@@ -1012,7 +1012,7 @@ def parse_coll_interval_phases(coll_interval: str) -> set[str] | None:
 
 
 def extract_visit_phase_token(visit_label: str) -> str | None:
-    """Extract a phase token from a visit label like 'COPDGene P2' → 'P2'.
+    """Extract a phase token from a visit label like 'COPDGene P2' -> 'P2'.
 
     Heuristic: the last whitespace-separated token that looks like a
     phase identifier (starts with uppercase letter or digit). Returns
@@ -1037,7 +1037,7 @@ def _extract_data_phvs_from_block(
     data_phvs: set[str] = set()
     case_visit_phvs: set[str] = set()
 
-    # Administrative slots whose PHVs are not "data" — they are structural
+    # Administrative slots whose PHVs are not "data" -- they are structural
     admin_slots = {
         "associated_visit", "associated_participant", "id",
         "associated_person", "associated_study",
@@ -1079,12 +1079,12 @@ def check_5_8_collection_interval(
 
     If a data PHV is NOT collected at a phase that the case expression
     routes to, the pipeline will process rows for that phase with null
-    data values — producing NaN measurements or (worse) false ABSENT
+    data values -- producing NaN measurements or (worse) false ABSENT
     conditions.
 
     Severity:
-        CRITICAL — Condition class mismatch (null → false ABSENT)
-        ERROR    — Measurement/Observation class mismatch (null → NaN)
+        CRITICAL -- Condition class mismatch (null -> false ABSENT)
+        ERROR    -- Measurement/Observation class mismatch (null -> NaN)
     """
     findings: list[Finding] = []
 
@@ -1122,7 +1122,7 @@ def check_5_8_collection_interval(
                 if not visit_labels:
                     continue
 
-                # Extract phase tokens from labels (e.g., "COPDGene P2" → "P2")
+                # Extract phase tokens from labels (e.g., "COPDGene P2" -> "P2")
                 label_to_phase: dict[str, str] = {}
                 for label in visit_labels:
                     phase = extract_visit_phase_token(label)
@@ -1133,7 +1133,7 @@ def check_5_8_collection_interval(
 
                 case_phases = set(label_to_phase.values())
 
-                # Ignore the (True, None) fallback — it suppresses, not routes
+                # Ignore the (True, None) fallback -- it suppresses, not routes
                 # filter out None labels that came from extract
                 visit_labels.discard("None")
 
@@ -1152,7 +1152,7 @@ def check_5_8_collection_interval(
                     ci = detail.get("coll_interval", "")
                     ci_phases = parse_coll_interval_phases(ci)
                     if ci_phases is None:
-                        # Unstructured or missing coll_interval → skip
+                        # Unstructured or missing coll_interval -> skip
                         continue
 
                     # Expand ci_phases with known sub-phase aliases
@@ -1172,13 +1172,13 @@ def check_5_8_collection_interval(
                         severity = "CRITICAL"
                         impact = (
                             f"null condition_status at [{uncovered_str}] "
-                            f"may default to ABSENT → false negatives"
+                            f"may default to ABSENT -> false negatives"
                         )
                     else:
                         severity = "ERROR"
                         impact = (
                             f"null data at [{uncovered_str}] "
-                            f"→ NaN rows in output"
+                            f"-> NaN rows in output"
                         )
 
                     findings.append(Finding(
@@ -1197,7 +1197,7 @@ def check_5_8_collection_interval(
     return findings
 
 
-# ── Check 5.9: Visit uuid5 Format Compliance ─────────────────────────────────
+# -- Check 5.9: Visit uuid5 Format Compliance ---------------------------------
 
 _UUID5_RE = re.compile(r'\buuid5\s*\(')
 _CANONICAL_NS = "https://w3id.org/bdchm/Visit"
@@ -1224,7 +1224,7 @@ def check_5_9_uuid5_format(
                 check="5.9",
                 severity="ERROR",
                 message=(
-                    f"Visit.id uses plain value: '{vb.visit_id}' — "
+                    f"Visit.id uses plain value: '{vb.visit_id}' -- "
                     f"should use expr: with uuid5() for deterministic, "
                     f"participant-scoped identifiers"
                 ),
@@ -1240,7 +1240,7 @@ def check_5_9_uuid5_format(
                 severity="ERROR",
                 message=(
                     f"{ref.class_name}.associated_visit uses plain "
-                    f"value: '{ref.visit_id}' — should use expr: with "
+                    f"value: '{ref.visit_id}' -- should use expr: with "
                     f"uuid5() to match visit.yaml identifiers"
                 ),
             ))
@@ -1248,7 +1248,7 @@ def check_5_9_uuid5_format(
     return findings
 
 
-# ── Check 5.10: Visit uuid5 Namespace Consistency ────────────────────────────
+# -- Check 5.10: Visit uuid5 Namespace Consistency ----------------------------
 
 
 def check_5_10_uuid5_namespace(
@@ -1275,13 +1275,13 @@ def check_5_10_uuid5_namespace(
                     check="5.10",
                     severity="CRITICAL",
                     message=(
-                        f"Visit.id uuid5 uses non-canonical namespace — "
+                        f"Visit.id uuid5 uses non-canonical namespace -- "
                         f"must use '{_CANONICAL_NS}'. Mismatched namespaces "
                         f"produce incompatible UUIDs"
                     ),
                 ))
 
-    # Check entity files — need to re-read for raw expr access
+    # Check entity files -- need to re-read for raw expr access
     for yf in yaml_files:
         if yf.name == "visit.yaml":
             continue
@@ -1311,7 +1311,7 @@ def check_5_10_uuid5_namespace(
                             severity="CRITICAL",
                             message=(
                                 f"{cls_name}.associated_visit uuid5 uses "
-                                f"non-canonical namespace — must use "
+                                f"non-canonical namespace -- must use "
                                 f"'{_CANONICAL_NS}'"
                             ),
                         ))
@@ -1319,10 +1319,10 @@ def check_5_10_uuid5_namespace(
     return findings
 
 
-# ── Index loading ────────────────────────────────────────────────────────────
+# -- Index loading ------------------------------------------------------------
 
 def load_phv_index(cache_dir: Path, cache_key: str) -> dict[str, str] | None:
-    """Load the basic PHV→PHT index for a cohort."""
+    """Load the basic PHV->PHT index for a cohort."""
     gz_path = cache_dir / f"{cache_key}.json.gz"
     if not gz_path.exists():
         return None
@@ -1354,7 +1354,7 @@ def load_detail_index(cache_dir: Path, cache_key: str) -> dict[str, dict] | None
         return json.load(f)
 
 
-# ── Main ─────────────────────────────────────────────────────────────────────
+# -- Main ---------------------------------------------------------------------
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(
@@ -1450,7 +1450,7 @@ def main() -> int:
         print(f"  Visit references: {len(cohort_refs)}")
         print(f"{'=' * 70}")
 
-        # ── Run checks ──
+        # -- Run checks --
 
         # 5.1: Visit ID uniqueness
         all_findings.extend(check_5_1_uniqueness(registry))
@@ -1466,15 +1466,15 @@ def main() -> int:
         if args.visit_cache:
             visit_cache_data = load_visit_cache(Path(args.visit_cache), cache_key)
             if not visit_cache_data:
-                print(f"  INFO: No visit cache for {cohort} — skipping 5.3, 5.5")
+                print(f"  INFO: No visit cache for {cohort} -- skipping 5.3, 5.5")
 
         if args.cache_dir:
             phv_index = load_phv_index(Path(args.cache_dir), cache_key)
             if not phv_index:
-                print(f"  INFO: No PHV index for {cohort} — "
+                print(f"  INFO: No PHV index for {cohort} -- "
                       f"skipping PHV validation in 5.4")
 
-        # 5.3: Visit ↔ PHT consistency
+        # 5.3: Visit <-> PHT consistency
         if visit_cache_data:
             all_findings.extend(
                 check_5_3_visit_pht_consistency(registry, visit_cache_data)
@@ -1492,7 +1492,7 @@ def main() -> int:
         # 5.6: Orphan visit references
         all_findings.extend(check_5_6_orphan_visits(registry, cohort_refs))
 
-        # 5.7: Visit PHT ↔ table visit-context alignment
+        # 5.7: Visit PHT <-> table visit-context alignment
         if visit_cache_data:
             all_findings.extend(
                 check_5_7_visit_pht_alignment(
@@ -1513,7 +1513,7 @@ def main() -> int:
                         )
                     )
                 else:
-                    print(f"  INFO: No coll_interval data for {cohort} — skipping 5.8")
+                    print(f"  INFO: No coll_interval data for {cohort} -- skipping 5.8")
 
         # 5.9: Visit uuid5 format compliance
         all_findings.extend(check_5_9_uuid5_format(registry, cohort_refs))
@@ -1527,7 +1527,7 @@ def main() -> int:
 
         cohorts_processed += 1
 
-    # ── Print findings grouped by file ──
+    # -- Print findings grouped by file --
     findings_by_file: dict[str, list[Finding]] = {}
     for f in all_findings:
         findings_by_file.setdefault(f.file, []).append(f)
@@ -1542,7 +1542,7 @@ def main() -> int:
             if in_ci:
                 print(finding.gh_annotation())
 
-    # ── Summary ──
+    # -- Summary --
     by_severity: dict[str, int] = {}
     for f in all_findings:
         by_severity[f.severity] = by_severity.get(f.severity, 0) + 1
@@ -1557,7 +1557,7 @@ def main() -> int:
     if cohorts_skipped:
         print(f"  Skipped: {', '.join(cohorts_skipped)}")
 
-    # ── Exit code ──
+    # -- Exit code --
     fail_rank = SEVERITY_RANK[args.fail_on.upper()]
     blocking = [
         f for f in all_findings

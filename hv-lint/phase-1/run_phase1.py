@@ -40,7 +40,7 @@ COMPONENTS = {
     },
     "structure": {
         "script": SCRIPT_DIR / "validate_yaml_structure.py",
-        "label": "Structural Checks (1.1–1.5)",
+        "label": "Structural Checks (1.1-1.5)",
         "cohort_flag": "--cohort",
         "extra_args": [],
     },
@@ -89,7 +89,7 @@ def run_component(name: str, cohort: str, fail_on: str) -> int:
     comp = COMPONENTS[name]
     script = comp["script"]
     if not script.exists():
-        print(f"  WARNING: {script.name} not found — skipping")
+        print(f"  WARNING: {script.name} not found -- skipping")
         return 0
 
     cmd = [sys.executable, str(script)]
@@ -142,7 +142,7 @@ def main() -> int:
 
     any_failed = any(rc != 0 for rc in results.values())
     if any_failed:
-        print(f"\nPhase 1 FAILED — one or more components reported errors")
+        print(f"\nPhase 1 FAILED -- one or more components reported errors")
         return 1
     else:
         print(f"\nPhase 1 PASSED")

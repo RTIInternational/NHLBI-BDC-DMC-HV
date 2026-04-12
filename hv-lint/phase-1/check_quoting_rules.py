@@ -6,15 +6,15 @@ and reports violations by rule. Designed to complement yamllint which
 cannot detect these semantic quoting conventions.
 
 Rules (from Issue #387):
-  Rule 1: value_mappings values — strip '''...''' wrapper, leave bare
-  Rule 2: value: static values — strip '''...''' wrapper, leave bare
-  Rule 3: expr: with '''VALUE''' (not properly outer-quoted) — replace with "VALUE"
-  Rule 4: expr: with ''X'' inside proper 'expr: ...' quoting — LEAVE ALONE
-  Rule 5: Commented-out lines — LEAVE AS-IS
+  Rule 1: value_mappings values -- strip '''...''' wrapper, leave bare
+  Rule 2: value: static values -- strip '''...''' wrapper, leave bare
+  Rule 3: expr: with '''VALUE''' (not properly outer-quoted) -- replace with "VALUE"
+  Rule 4: expr: with ''X'' inside proper 'expr: ...' quoting -- LEAVE ALONE
+  Rule 5: Commented-out lines -- LEAVE AS-IS
 
 Key distinction between Rule 3 and Rule 4:
-  Rule 3: expr: '''VALUE'''   — starts with ''', the ''' IS the wrapper
-  Rule 4: expr: '...''X''...' — outer ' wraps the full expr, '' inside = YAML escapes
+  Rule 3: expr: '''VALUE'''   -- starts with ''', the ''' IS the wrapper
+  Rule 4: expr: '...''X''...' -- outer ' wraps the full expr, '' inside = YAML escapes
 
 Usage:
     python hv-lint/phase-1/check_quoting_rules.py                   # all cohorts
@@ -27,7 +27,7 @@ import re
 import sys
 from pathlib import Path
 
-# Path resolution — works in both control center and HV repo
+# Path resolution -- works in both control center and HV repo
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
 
@@ -41,7 +41,7 @@ COHORTS = [
 # --- Pattern definitions ---
 
 # Detect expr lines and how they're quoted
-# Rule 3 pattern: expr: '''...  (opens with triple-quote — no proper outer wrapping)
+# Rule 3 pattern: expr: '''...  (opens with triple-quote -- no proper outer wrapping)
 EXPR_TRIPLE_OPEN_RE = re.compile(r"""^\s+expr:\s+'''""")
 # Rule 4 pattern: expr: '...   (proper outer single-quote wrapping)
 EXPR_PROPER_OPEN_RE = re.compile(r"""^\s+expr:\s+'(?!'')""")
@@ -83,8 +83,8 @@ def check_file(filepath: Path) -> list[Finding]:
 
     The critical logic is distinguishing Rule 3 (real violation) from
     Rule 4 (legitimate YAML escapes):
-      - Rule 3: expr: '''VALUE'''  — the ''' is the wrapper itself
-      - Rule 4: expr: '...''X''...' — outer ' wraps the expr, '' = YAML escapes
+      - Rule 3: expr: '''VALUE'''  -- the ''' is the wrapper itself
+      - Rule 4: expr: '...''X''...' -- outer ' wraps the expr, '' = YAML escapes
     """
     findings = []
     rel_path = str(filepath)
@@ -112,19 +112,19 @@ def check_file(filepath: Path) -> list[Finding]:
 
         # --- Detect expr: line openings ---
         if EXPR_TRIPLE_OPEN_RE.match(line):
-            # Rule 3: expr: '''...  (triple-quote opener — violation)
+            # Rule 3: expr: '''...  (triple-quote opener -- violation)
             in_rule3_expr = True
             in_rule4_expr = False
 
             findings.append(Finding(
                 rel_path, i, 3, "ERROR", stripped,
-                "Rule 3: expr uses '''...''' quoting — replace with \"...\" "
+                "Rule 3: expr uses '''...''' quoting -- replace with \"...\" "
                 "and wrap full expr in outer single quotes",
             ))
             continue
 
         if EXPR_PROPER_OPEN_RE.match(line) or EXPR_DOUBLE_RE.match(line):
-            # Rule 4 or double-quoted: properly wrapped — no violation
+            # Rule 4 or double-quoted: properly wrapped -- no violation
             in_rule4_expr = True
             in_rule3_expr = False
             continue
@@ -136,7 +136,7 @@ def check_file(filepath: Path) -> list[Finding]:
             if TRIPLE_QUOTE_RE.search(line):
                 findings.append(Finding(
                     rel_path, i, 3, "ERROR", stripped,
-                    "Rule 3: bare expr contains '''...''' — needs quoting fix",
+                    "Rule 3: bare expr contains '''...''' -- needs quoting fix",
                 ))
             continue
 
@@ -151,7 +151,7 @@ def check_file(filepath: Path) -> list[Finding]:
             if m:
                 findings.append(Finding(
                     rel_path, i, 1, "ERROR", stripped,
-                    f"Rule 1: value_mapping has '''...''' — should be bare: {m.group(1)}",
+                    f"Rule 1: value_mapping has '''...''' -- should be bare: {m.group(1)}",
                 ))
                 continue
 
@@ -160,7 +160,7 @@ def check_file(filepath: Path) -> list[Finding]:
             if m:
                 findings.append(Finding(
                     rel_path, i, 2, "ERROR", stripped,
-                    f"Rule 2: value: has '''...''' — should be bare: {m.group(1)}",
+                    f"Rule 2: value: has '''...''' -- should be bare: {m.group(1)}",
                 ))
                 continue
 
@@ -168,18 +168,18 @@ def check_file(filepath: Path) -> list[Finding]:
             if TRIPLE_QUOTE_RE.search(line):
                 findings.append(Finding(
                     rel_path, i, 0, "WARNING", stripped,
-                    "Triple-quote in unexpected context — review manually",
+                    "Triple-quote in unexpected context -- review manually",
                 ))
             continue
 
         # --- Continuation lines ---
         if in_rule4_expr:
-            # Inside a properly-quoted expr — all '' patterns are Rule 4 (legitimate)
+            # Inside a properly-quoted expr -- all '' patterns are Rule 4 (legitimate)
             # The ''' at end of line is just '' (escaped quote) + ' (closing string)
             continue
 
         if in_rule3_expr:
-            # Inside a triple-quote-opened expr — these are part of the violation
+            # Inside a triple-quote-opened expr -- these are part of the violation
             # (already flagged on the opening line)
             continue
 
@@ -194,7 +194,7 @@ def check_file(filepath: Path) -> list[Finding]:
         if m:
             findings.append(Finding(
                 rel_path, i, 1, "ERROR", stripped,
-                f"Rule 1: value_mapping has '''...''' — should be bare: {m.group(1)}",
+                f"Rule 1: value_mapping has '''...''' -- should be bare: {m.group(1)}",
             ))
             continue
 
@@ -202,14 +202,14 @@ def check_file(filepath: Path) -> list[Finding]:
         if m:
             findings.append(Finding(
                 rel_path, i, 2, "ERROR", stripped,
-                f"Rule 2: value: has '''...''' — should be bare: {m.group(1)}",
+                f"Rule 2: value: has '''...''' -- should be bare: {m.group(1)}",
             ))
             continue
 
         if TRIPLE_QUOTE_RE.search(line):
             findings.append(Finding(
                 rel_path, i, 0, "WARNING", stripped,
-                "Triple-quote in unexpected context — review manually",
+                "Triple-quote in unexpected context -- review manually",
             ))
 
     return findings

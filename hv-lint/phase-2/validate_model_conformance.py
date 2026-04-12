@@ -68,19 +68,19 @@ BDCHM_URL_TEMPLATE = (
 # See HV-Lint-Reference.md Assumption A2 for rationale.
 #
 # Captured from NHLBI-BDC-DMC-HV/.venv (Python 3.12, linkml-map 0.3.9) by
-# reading transformer_model.py directly — the import path crashes on Python 3.14
+# reading transformer_model.py directly -- the import path crashes on Python 3.14
 # due to ucumvert/pint initializing at module level (KeyError: 'millimeter_Hg').
 # When the import fails, _derive_valid_keys() returns these frozen constants
 # and prints a warning.  CI (Python 3.12) always uses the live import.
 #
 # HV-specific extensions ('value', 'object_derivations') are added
-# manually — see Assumption A3.
+# manually -- see Assumption A3.
 def _derive_valid_keys():
     """Derive valid key sets from the installed linkml-map model.
 
     Tries a live import first (accurate, Python 3.12 / CI).  Falls back to
     frozen constants captured from linkml-map v0.3.9 when the import fails
-    (e.g., Python 3.14 pint/ucumvert incompatibility — Assumption A2).
+    (e.g., Python 3.14 pint/ucumvert incompatibility -- Assumption A2).
     """
     # --- frozen fallback (linkml-map v0.3.9, extracted 2026-03-15) -----------
     _TS_FROZEN = frozenset({
@@ -103,7 +103,7 @@ def _derive_valid_keys():
         "mixins", "name", "overrides", "populated_from", "range", "sources",
         "stringification", "target_definition", "type_designator",
         "unit_conversion", "value_mappings",
-        # HV extensions (not in base linkml-map model — Assumption A3):
+        # HV extensions (not in base linkml-map model -- Assumption A3):
         "value",               # Static value assignment
         "object_derivations",  # Nested object structure (e.g., Quantity)
     })
@@ -135,7 +135,7 @@ VALID_TRANSFORMATION_SPEC_KEYS: frozenset = frozenset()
 VALID_CLASS_DERIVATION_KEYS: frozenset = frozenset()
 VALID_SLOT_DERIVATION_KEYS: frozenset = frozenset()
 
-# CURIE prefix → (compiled regex for identifier part, human description)
+# CURIE prefix -> (compiled regex for identifier part, human description)
 CURIE_RULES: dict[str, tuple[re.Pattern, str]] = {
     "OMOP":  (re.compile(r"^\d{4,9}$"), "numeric, 4-9 digits"),
     "OBA":   (re.compile(r"^(\d{7}|VT\d{7})$"), "7 digits, or VT followed by 7 digits"),
@@ -187,10 +187,10 @@ class ValidationContext:
     class_slots: dict[str, set[str]] = field(default_factory=dict)
     required_slots: dict[str, set[str]] = field(default_factory=dict)
     recommended_slots: dict[str, set[str]] = field(default_factory=dict)
-    # Check 2.5b: slot range → expected nested class (including ancestors)
+    # Check 2.5b: slot range -> expected nested class (including ancestors)
     slot_ranges: dict[str, dict[str, str]] = field(default_factory=dict)  # {class: {slot: range_class}}
     class_ancestors: dict[str, set[str]] = field(default_factory=dict)  # {class: {self, parent, ...}}
-    # Check 2.7: {class: {slot: frozenset(valid_enum_values)}} — only static enums
+    # Check 2.7: {class: {slot: frozenset(valid_enum_values)}} -- only static enums
     slot_enum_values: dict[str, dict[str, frozenset[str]]] = field(default_factory=dict)
 
 
@@ -268,7 +268,7 @@ def load_bdchm_schema(bdchm_ref: str, bdchm_schema: str | None) -> ValidationCon
             for parent_name in edef.inherits:
                 parent_pvs = _resolve_enum_pvs(parent_name)
                 if parent_pvs is None:
-                    # Parent is dynamic → this enum is effectively dynamic
+                    # Parent is dynamic -> this enum is effectively dynamic
                     enum_pvs[enum_name] = None
                     return None
                 values.update(parent_pvs)
@@ -280,7 +280,7 @@ def load_bdchm_schema(bdchm_ref: str, bdchm_schema: str | None) -> ValidationCon
     for enum_name in enum_names:
         _resolve_enum_pvs(enum_name)
 
-    # Map class.slot → valid enum values (only for static enums with values)
+    # Map class.slot -> valid enum values (only for static enums with values)
     for cls_name in ctx.valid_classes:
         slots = sv.class_induced_slots(cls_name)
         for s in slots:
@@ -513,7 +513,7 @@ def _format_pvs(pvs: frozenset[str], max_show: int = 8) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Checks 2.2, 2.3, 2.4, 2.5, 2.6, 2.7 — recursive class_derivations walk
+# Checks 2.2, 2.3, 2.4, 2.5, 2.6, 2.7 -- recursive class_derivations walk
 # ---------------------------------------------------------------------------
 
 def validate_class_derivations(
@@ -554,7 +554,7 @@ def validate_class_derivations(
         slot_derivs = class_def.get("slot_derivations")
         if not isinstance(slot_derivs, dict):
             if slot_derivs is not None:
-                # Key exists but wrong type — structural error
+                # Key exists but wrong type -- structural error
                 findings.append(Finding(
                     rel_path, block_idx, "2.4", "ERROR",
                     f"{path_prefix}{class_name} slot_derivations is "
@@ -715,7 +715,7 @@ def validate_class_derivations(
                         for v in cs_vm.values()
                     )
                 if has_absent:
-                    # Block maps both PRESENT and ABSENT — age should be guarded
+                    # Block maps both PRESENT and ABSENT -- age should be guarded
                     age_expr = age_slot.get("expr", "")
                     age_pf = age_slot.get("populated_from", "")
                     age_source = age_expr or age_pf
@@ -724,7 +724,7 @@ def validate_class_derivations(
                             rel_path, block_idx, "2.10", "WARNING",
                             f"{path_prefix}Condition.age_at_condition_start "
                             f"is unconditional but condition_status maps "
-                            f"ABSENT rows — age should use case() to return "
+                            f"ABSENT rows -- age should use case() to return "
                             f"None for ABSENT"
                         ))
 
@@ -748,7 +748,7 @@ def validate_class_derivations(
                         findings.append(Finding(
                             rel_path, block_idx, "2.11", "WARNING",
                             f"{path_prefix}Condition.condition_status maps "
-                            f"PRESENT/HISTORICAL but has no ABSENT mapping — "
+                            f"PRESENT/HISTORICAL but has no ABSENT mapping -- "
                             f"verify that ABSENT rows are handled (possibly "
                             f"in a separate block)"
                         ))
@@ -761,7 +761,7 @@ def validate_class_derivations(
 # ---------------------------------------------------------------------------
 
 # Slots where cross-file consistency matters (different values across files
-# indicate an error — the cohort should use one value everywhere).
+# indicate an error -- the cohort should use one value everywhere).
 _CONSISTENCY_SLOTS = {"relationship_to_participant"}
 
 
@@ -795,7 +795,7 @@ def check_cross_file_enum_consistency(
     """Check 2.7 ext: Flag slots where different enum values are used across files.
 
     For example, relationship_to_participant should consistently use either
-    "SELF" or "ONESELF" across all files in a cohort — not a mix.
+    "SELF" or "ONESELF" across all files in a cohort -- not a mix.
     """
     findings: list[Finding] = []
     for slot_name, file_values in tracker.items():
@@ -860,7 +860,7 @@ def main() -> int:
     in_ci = os.environ.get("GITHUB_ACTIONS") == "true"
 
     # Derive valid linkml-map keys (deferred so --help works without linkml_map).
-    # _derive_valid_keys() handles its own fallback — it never raises.
+    # _derive_valid_keys() handles its own fallback -- it never raises.
     VALID_TRANSFORMATION_SPEC_KEYS, VALID_CLASS_DERIVATION_KEYS, VALID_SLOT_DERIVATION_KEYS = _derive_valid_keys()
 
     # Load BDCHM schema
@@ -929,7 +929,7 @@ def main() -> int:
             # 2.1: Top-level TransformationSpecification keys
             all_findings.extend(check_top_level_keys(block, idx, rel_path))
 
-            # 2.2–2.6: Class derivation walk (slot names, class names,
+            # 2.2-2.6: Class derivation walk (slot names, class names,
             # required/recommended, object derivation, CURIEs)
             class_derivs = block.get("class_derivations")
             if isinstance(class_derivs, dict):
@@ -968,7 +968,7 @@ def main() -> int:
     if parts:
         print(f"Findings:       {', '.join(parts)}")
     else:
-        print("Findings:       None — all checks passed!")
+        print("Findings:       None -- all checks passed!")
 
     if findings_by_file:
         print(f"\n{'-'*70}")

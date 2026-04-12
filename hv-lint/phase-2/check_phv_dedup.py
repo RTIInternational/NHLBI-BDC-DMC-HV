@@ -37,7 +37,7 @@ COHORTS = [
     "FHS", "HCHS", "JHS", "MESA", "SPIROMICS", "WHI",
 ]
 
-# Cohort detection: directory name before "-ingest" → cohort key
+# Cohort detection: directory name before "-ingest" -> cohort key
 COHORT_DIR_PATTERN = "-ingest"
 
 # Severity ranking for --fail-on filtering
@@ -76,7 +76,7 @@ class Finding:
 # ---------------------------------------------------------------------------
 
 def _get_cohort_from_path(file_path: Path) -> str:
-    """Extract cohort name from file path (e.g., ARIC-ingest/bmi.yaml → ARIC)."""
+    """Extract cohort name from file path (e.g., ARIC-ingest/bmi.yaml -> ARIC)."""
     for part in file_path.parts:
         if COHORT_DIR_PATTERN in part:
             return part.split(COHORT_DIR_PATTERN)[0]
@@ -181,7 +181,7 @@ def main() -> int:
         return 1
     print(f"Found {len(yaml_files)} YAML files to check for PHV deduplication")
 
-    # Collect PHV → (concept, file, block) mappings per cohort
+    # Collect PHV -> (concept, file, block) mappings per cohort
     # phv -> [(concept, file_path, block_index), ...]
     phv_hits: dict[str, dict[str, list[tuple[str | None, str, int]]]] = {}
     parse_errors: list[tuple[str, str]] = []
@@ -258,7 +258,7 @@ def main() -> int:
     if parts:
         print(f"Findings:       {', '.join(parts)}")
     else:
-        print("Findings:       None — no PHV duplicates detected!")
+        print("Findings:       None -- no PHV duplicates detected!")
 
     if all_findings:
         print(f"\n{'-'*70}")

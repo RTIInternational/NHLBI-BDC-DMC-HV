@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""HV-Lint Phase 3: value_mappings label ↔ OMOP concept semantic check (Rule 3.11).
+"""HV-Lint Phase 3: value_mappings label <-> OMOP concept semantic check (Rule 3.11).
 
 Detects value_mappings entries where the dbGaP source label semantically
 contradicts the target OMOP concept. Catches copy-paste swaps of target
@@ -11,7 +11,7 @@ Requires:
     (if absent, uses an embedded lookup of ~100 common HV concepts)
 
 Check:
-    3.11  value_mappings label ↔ OMOP concept semantic alignment
+    3.11  value_mappings label <-> OMOP concept semantic alignment
 
 Usage:
     python hv-lint/phase-3/check_value_semantic.py --cache-dir hv-lint/dbgap-cache
@@ -176,7 +176,7 @@ class Finding:
 
 
 def load_omop_concepts(cache_root: Path) -> dict[int, str]:
-    """Load OMOP concept_id → concept_name from Athena extract or embedded.
+    """Load OMOP concept_id -> concept_name from Athena extract or embedded.
 
     Tries ``data/terminology-cache/omop/CONCEPT.csv`` first; falls back
     to the embedded lookup table.
@@ -253,7 +253,7 @@ def detect_cohort(file_path: Path) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Check 3.11: value_mappings Label ↔ OMOP Concept Alignment
+# Check 3.11: value_mappings Label <-> OMOP Concept Alignment
 # ---------------------------------------------------------------------------
 
 
@@ -350,8 +350,8 @@ def check_value_semantic_alignment(
                         message=(
                             f"value_mappings on {cls_name}.{slot_name}: "
                             f"code '{source_key_str}' "
-                            f"(\"{source_label}\") → "
-                            f"{target_val} (\"{concept_name}\") — "
+                            f"(\"{source_label}\") -> "
+                            f"{target_val} (\"{concept_name}\") -- "
                             f"contradictory keywords: {pairs_str}"
                         ),
                     ))
@@ -366,7 +366,7 @@ def check_value_semantic_alignment(
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(
-        description="HV-Lint Check 3.11: value_mappings label ↔ OMOP alignment"
+        description="HV-Lint Check 3.11: value_mappings label <-> OMOP alignment"
     )
     p.add_argument(
         "--cache-dir", required=True,
@@ -491,7 +491,7 @@ def main() -> int:
     if parts:
         print(f"Findings:       {', '.join(parts)}")
     else:
-        print("Findings:       None — all value_mappings semantically consistent")
+        print("Findings:       None -- all value_mappings semantically consistent")
 
     if findings_by_file:
         print(f"\n{'-'*70}")

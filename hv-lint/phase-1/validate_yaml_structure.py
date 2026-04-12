@@ -2,7 +2,7 @@
 """HV-Lint Phase 1: YAML Structural & Formatting Checks.
 
 Validates transformation YAML files for structural correctness.
-No schema, no linkml imports, no dbGaP data required — PyYAML only.
+No schema, no linkml imports, no dbGaP data required -- PyYAML only.
 
 Checks:
     1.1  Expression syntax validation (balanced braces, non-empty)
@@ -59,7 +59,7 @@ _EMPTY_VAR_REF_RE = re.compile(r"\{\{\s*\}\}")
 #   - Standalone comment lines (entire line starts with #)
 #   - Lines where # is inside a quoted string
 #   - Lines that are blank
-# This is a heuristic — it catches the common patterns but may miss edge
+# This is a heuristic -- it catches the common patterns but may miss edge
 # cases involving complex quoting. Known safe for HV YAML files.
 _INLINE_COMMENT_RE = re.compile(
     r"""
@@ -78,7 +78,7 @@ _INLINE_COMMENT_RE = re.compile(
 # Check 1.4: Unquoted UCUM unit value containing {xxx}/yyy pattern.
 # Matches: value: {#}/wk  or  value: {servings}/wk  (not wrapped in quotes).
 # The leading { causes YAML to treat the value as a flow mapping, silently
-# misparsing it — so this must run before yaml.safe_load.
+# misparsing it -- so this must run before yaml.safe_load.
 _UNQUOTED_BRACE_UNIT_RE = re.compile(r"^\s+\w[\w_-]*:\s+\{[^}\s]+\}/\S")
 
 # Check 1.5: Unquoted expr value starting with {.
@@ -87,8 +87,8 @@ _UNQUOTED_BRACE_UNIT_RE = re.compile(r"^\s+\w[\w_-]*:\s+\{[^}\s]+\}/\S")
 _UNQUOTED_EXPR_RE = re.compile(r"^\s+expr:\s+\{")
 
 # Check 1.9: Common typo dictionary.
-# Maps known misspellings → correct spelling. Checked against raw file text.
-# Sourced from HV-Audit Dimension 4 checks (4b, 4f) — migrated to Lint for
+# Maps known misspellings -> correct spelling. Checked against raw file text.
+# Sourced from HV-Audit Dimension 4 checks (4b, 4f) -- migrated to Lint for
 # deterministic CI detection.
 KNOWN_TYPOS: dict[str, str] = {
     "expsoure_provenance": "exposure_provenance",
@@ -321,7 +321,7 @@ def get_block_identity(block: dict) -> list[tuple]:
             concept = (_s(ot.get("value", ""))
                        or _s(ot.get("expr", ""))
                        or _s(ot.get("populated_from", "")))
-            # Include method_type in identity — blocks with different
+            # Include method_type in identity -- blocks with different
             # method_type values (e.g., fasting protocol variations)
             # are NOT duplicates
             mt = _d(slots.get("method_type"))
@@ -334,7 +334,7 @@ def get_block_identity(block: dict) -> list[tuple]:
                     qty = _d(_d(od.get("class_derivations")).get("Quantity"))
                     qty_slots = _d(qty.get("slot_derivations"))
                     # Bug fix: also check value_concept, not just
-                    # value_decimal/value_integer — blocks mapping
+                    # value_decimal/value_integer -- blocks mapping
                     # different PHVs via value_concept are NOT duplicates
                     vd = _d(qty_slots.get("value_decimal")
                             or qty_slots.get("value_integer")
@@ -364,7 +364,7 @@ def get_block_identity(block: dict) -> list[tuple]:
             # each mapping a different ICD-10 code + order)
             cod = _d(slots.get("cause_of_death"))
             # Bug fix: collect ALL object_derivations, not just the
-            # first — Person blocks may have multiple cause_of_death
+            # first -- Person blocks may have multiple cause_of_death
             # derivations with distinct cause concepts
             cod_parts = []
             for od in (cod.get("object_derivations") or []):
@@ -379,7 +379,7 @@ def get_block_identity(block: dict) -> list[tuple]:
                         cod_parts.append(part)
             distinguishing_phv = "|".join(cod_parts)
         elif cls_name == "Visit":
-            # Bug fix: check id.value, id.expr, AND name — FHS Visit
+            # Bug fix: check id.value, id.expr, AND name -- FHS Visit
             # blocks have no id slot; they use name.expr with different
             # "EXAM N" suffixes and different age PHVs
             id_deriv = _d(slots.get("id"))
@@ -422,13 +422,13 @@ def check_duplicates(blocks: list[dict], rel_path: str) -> list[Finding]:
             if identity in seen:
                 first_idx = seen[identity]
                 cls, pht, visit, concept, dist = identity
-                # Truncate only for display — full strings used for comparison
-                v_disp = visit[:80] + "…" if len(visit) > 80 else visit
-                c_disp = concept[:80] + "…" if len(concept) > 80 else concept
+                # Truncate only for display -- full strings used for comparison
+                v_disp = visit[:80] + "..." if len(visit) > 80 else visit
+                c_disp = concept[:80] + "..." if len(concept) > 80 else concept
                 # Content-equality safety guard: only flag as ERROR
                 # if blocks are byte-identical.  Identity-only
                 # collisions (same tuple, different content) are
-                # WARNINGS — the identity function may be incomplete.
+                # WARNINGS -- the identity function may be incomplete.
                 import yaml as _yaml
                 b1 = _yaml.dump(blocks[first_idx], sort_keys=True)
                 b2 = _yaml.dump(block, sort_keys=True)
@@ -437,7 +437,7 @@ def check_duplicates(blocks: list[dict], rel_path: str) -> list[Finding]:
                     suffix = ""
                 else:
                     severity = "WARNING"
-                    suffix = (" — identity collision but content DIFFERS; "
+                    suffix = (" -- identity collision but content DIFFERS; "
                               "review manually before removing")
                 findings.append(Finding(
                     rel_path, idx, "1.2", severity,
@@ -458,8 +458,8 @@ def check_drug_exposure_duplicates(blocks: list[dict], rel_path: str) -> list[Fi
     """Check 1.7: Detect DrugExposure blocks with the same source PHV but different vocab codes.
 
     A common error pattern is mapping the same source variable (e.g., a
-    yes/no medication question) to two DrugExposure blocks — one with an
-    ATC code and one with a VANDF code — when only one vocabulary mapping
+    yes/no medication question) to two DrugExposure blocks -- one with an
+    ATC code and one with a VANDF code -- when only one vocabulary mapping
     is needed. This produces duplicate drug entries per participant.
     """
     findings: list[Finding] = []
@@ -521,13 +521,13 @@ def check_drug_exposure_duplicates(blocks: list[dict], rel_path: str) -> list[Fi
         concepts = set(c for _, c in entries)
         if len(concepts) < 2:
             continue
-        # Multiple blocks, same source, different concepts — likely duplicates
+        # Multiple blocks, same source, different concepts -- likely duplicates
         block_ids = ", ".join(str(i) for i, _ in entries)
         concept_strs = ", ".join(sorted(concepts))
         findings.append(Finding(
             rel_path, entries[0][0], "1.7", "WARNING",
             f"DrugExposure blocks {block_ids} share source "
-            f"'{src}' but map to different concepts: {concept_strs} — "
+            f"'{src}' but map to different concepts: {concept_strs} -- "
             f"possible semantic duplicate (same medication, multiple vocabs)"
         ))
 
@@ -586,13 +586,13 @@ def check_inline_comments(file_path: Path, rel_path: str) -> list[Finding]:
 def check_unquoted_brace_units(file_path: Path, rel_path: str) -> list[Finding]:
     """Check 1.4 & 1.5: Detect unquoted values that YAML misparsing as flow mappings.
 
-    Check 1.4 — unit values like `{#}/wk` or `{servings}/wk` not wrapped in quotes.
-    Check 1.5 — expr values that start with `{` not wrapped in quotes, e.g.:
+    Check 1.4 -- unit values like `{#}/wk` or `{servings}/wk` not wrapped in quotes.
+    Check 1.5 -- expr values that start with `{` not wrapped in quotes, e.g.:
                  `expr: {phv00112960} + {phv00112961} + {phv00112962}`
 
     Both cases: the leading `{` causes YAML to attempt flow-mapping parsing.
     This either produces a silent wrong value or a hard YAMLError. Must run
-    before yaml.safe_load — the parsed tree is already corrupt by then.
+    before yaml.safe_load -- the parsed tree is already corrupt by then.
 
     Source: commits 4361f51 and 20888f4 (Check 1.4), commit 4361f51 (Check 1.5)
     on RTIInternational/NHLBI-BDC-DMC-HV feature/414-measobs-curation-fixes.
@@ -612,7 +612,7 @@ def check_unquoted_brace_units(file_path: Path, rel_path: str) -> list[Finding]:
         if _UNQUOTED_BRACE_UNIT_RE.match(line):
             findings.append(Finding(
                 rel_path, -1, "1.4", "ERROR",
-                f"Unquoted brace unit value — YAML will misparse as flow mapping: "
+                f"Unquoted brace unit value -- YAML will misparse as flow mapping: "
                 f"{stripped[:80]}",
                 line=i,
             ))
@@ -621,7 +621,7 @@ def check_unquoted_brace_units(file_path: Path, rel_path: str) -> list[Finding]:
         if _UNQUOTED_EXPR_RE.match(line):
             findings.append(Finding(
                 rel_path, -1, "1.5", "CRITICAL",
-                f"Unquoted expr value starting with '{{' — YAML will misparse as "
+                f"Unquoted expr value starting with '{{' -- YAML will misparse as "
                 f"flow mapping: {stripped[:80]}",
                 line=i,
             ))
@@ -836,7 +836,7 @@ def main() -> int:
     if parts:
         print(f"Findings:       {', '.join(parts)}")
     else:
-        print("Findings:       None — all checks passed!")
+        print("Findings:       None -- all checks passed!")
 
     if findings_by_file:
         print(f"\n{'-'*70}")

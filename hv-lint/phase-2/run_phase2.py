@@ -2,8 +2,8 @@
 """HV-Lint Phase 2 Manager: Run all BDC-HM model conformance checks.
 
 Orchestrates the Phase 2 sub-components in sequence:
-  1. Model conformance  (validate_model_conformance.py) — checks 2.1–2.6
-  2. PHV deduplication   (check_phv_dedup.py) — check 2.8
+  1. Model conformance  (validate_model_conformance.py) -- checks 2.1-2.6
+  2. PHV deduplication   (check_phv_dedup.py) -- check 2.8
 
 Each sub-component runs independently and reports its own findings.
 The manager collects exit codes and reports a consolidated summary.
@@ -28,7 +28,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 COMPONENTS = {
     "conformance": {
         "script": SCRIPT_DIR / "validate_model_conformance.py",
-        "label": "Model Conformance (2.1–2.6)",
+        "label": "Model Conformance (2.1-2.6)",
         "cohort_flag": "--cohort",
         "extra_args": [],
         "pass_bdchm": True,
@@ -82,7 +82,7 @@ def run_component(name: str, cohort: str, fail_on: str,
     comp = COMPONENTS[name]
     script = comp["script"]
     if not script.exists():
-        print(f"  WARNING: {script.name} not found — skipping")
+        print(f"  WARNING: {script.name} not found -- skipping")
         return 0
 
     cmd = [sys.executable, str(script)]
@@ -102,7 +102,7 @@ def run_component(name: str, cohort: str, fail_on: str,
     cmd.extend(comp["extra_args"])
 
     print(f"\n{'='*70}")
-    print(f"Phase 2 — {comp['label']}")
+    print(f"Phase 2 -- {comp['label']}")
     print(f"{'='*70}\n")
 
     result = subprocess.run(cmd)

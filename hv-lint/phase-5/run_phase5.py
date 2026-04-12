@@ -2,7 +2,7 @@
 """HV-Lint Phase 5 Manager: Run visit structure validation.
 
 Orchestrates the Phase 5 sub-components:
-  1. Visit structure validation (validate_visit_structure.py) — checks 5.1–5.6
+  1. Visit structure validation (validate_visit_structure.py) -- checks 5.1-5.6
 
 Usage:
     python hv-lint/phase-5/run_phase5.py
@@ -24,7 +24,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 COMPONENTS = {
     "visit-structure": {
         "script": SCRIPT_DIR / "validate_visit_structure.py",
-        "label": "Visit Structure Validation (5.1–5.8)",
+        "label": "Visit Structure Validation (5.1-5.8)",
         "cohort_flag": "--cohort",
         "extra_args": [],
     },
@@ -75,7 +75,7 @@ def run_component(
     comp = COMPONENTS[name]
     script = comp["script"]
     if not script.exists():
-        print(f"  WARNING: {script.name} not found — skipping")
+        print(f"  WARNING: {script.name} not found -- skipping")
         return 0
 
     cmd = [sys.executable, str(script)]
@@ -143,7 +143,7 @@ def main() -> int:
 
     any_failed = any(rc != 0 for rc in results.values())
     if any_failed:
-        print("\nPhase 5 FAILED — one or more components reported errors")
+        print("\nPhase 5 FAILED -- one or more components reported errors")
         return 1
     else:
         print("\nPhase 5 PASSED")

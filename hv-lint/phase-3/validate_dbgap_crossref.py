@@ -12,11 +12,11 @@ Usage:
     python hv-lint/phase-3/validate_dbgap_crossref.py --cache-dir hv-lint/dbgap-cache --cohort ARIC
 
 Checks implemented:
-    3.1  PHV/PHT accession format — malformed accessions flagged
-    3.2  PHT existence — referenced PHTs must exist in dbGaP index
-    3.3  PHV existence — referenced PHVs must exist in dbGaP index
-    3.4  PHV-to-PHT membership — PHVs must belong to the declared table
-    3.5  Cross-table reference — PHV from a different table without joins
+    3.1  PHV/PHT accession format -- malformed accessions flagged
+    3.2  PHT existence -- referenced PHTs must exist in dbGaP index
+    3.3  PHV existence -- referenced PHVs must exist in dbGaP index
+    3.4  PHV-to-PHT membership -- PHVs must belong to the declared table
+    3.5  Cross-table reference -- PHV from a different table without joins
 """
 
 from __future__ import annotations
@@ -30,7 +30,7 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
-# Path resolution — works in both control center and HV repo
+# Path resolution -- works in both control center and HV repo
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
 
@@ -40,7 +40,7 @@ import yaml
 # Constants
 # ---------------------------------------------------------------------------
 
-# Maps directory-derived cohort name → dbGaP cache key
+# Maps directory-derived cohort name -> dbGaP cache key
 COHORT_TO_CACHE_KEY: dict[str, str] = {
     "ARIC": "aric",
     "CARDIA": "cardia",
@@ -55,7 +55,7 @@ COHORT_TO_CACHE_KEY: dict[str, str] = {
     "LTRC": "ltrc",
 }
 
-# Files to skip entirely (reset — start fresh for Phase 3 restructuring)
+# Files to skip entirely (reset -- start fresh for Phase 3 restructuring)
 KNOWN_ISSUES: dict[str, str] = {}
 
 SEVERITY_RANK = {"CRITICAL": 5, "ERROR": 4, "HIGH": 3, "WARNING": 2, "INFO": 1}
@@ -80,7 +80,7 @@ PHV_STRICT_RE = re.compile(r"phv\d{8}")
 PHT_STRICT_RE = re.compile(r"pht\d{6}")
 
 # Loose format: catches anything that looks like a PHV/PHT but may have
-# wrong digit count — used by check 3.1 to detect malformed accessions
+# wrong digit count -- used by check 3.1 to detect malformed accessions
 PHV_LOOSE_RE = re.compile(r"phv\d+")
 PHT_LOOSE_RE = re.compile(r"pht\d+")
 
@@ -98,7 +98,7 @@ class Finding:
 
     @staticmethod
     def _esc_prop(text: str) -> str:
-        """Escape a workflow-command *property* value (file=, line=, …)."""
+        """Escape a workflow-command *property* value (file=, line=, ...)."""
         return (text.replace("%", "%25").replace("\r", "%0D")
                 .replace("\n", "%0A").replace(":", "%3A").replace(",", "%2C"))
 
@@ -368,14 +368,14 @@ def check_accession_format(
             if not PHV_STRICT_RE.fullmatch(accession):
                 findings.append(Finding(
                     rel_path, block_idx, "3.1", "ERROR",
-                    f"Malformed PHV '{accession}' ({context}) — "
+                    f"Malformed PHV '{accession}' ({context}) -- "
                     f"expected phv + exactly 8 digits"
                 ))
         elif accession.startswith("pht"):
             if not PHT_STRICT_RE.fullmatch(accession):
                 findings.append(Finding(
                     rel_path, block_idx, "3.1", "ERROR",
-                    f"Malformed PHT '{accession}' ({context}) — "
+                    f"Malformed PHT '{accession}' ({context}) -- "
                     f"expected pht + exactly 6 digits"
                 ))
 
@@ -383,14 +383,14 @@ def check_accession_format(
 
 
 # ---------------------------------------------------------------------------
-# Checks 3.2–3.5
+# Checks 3.2-3.5
 # ---------------------------------------------------------------------------
 
 def check_block(
     block: dict, block_idx: int, rel_path: str,
     dbgap: DbGaPIndex
 ) -> list[Finding]:
-    """Run checks 3.2–3.5 on a single block."""
+    """Run checks 3.2-3.5 on a single block."""
     findings: list[Finding] = []
     class_derivs = block.get("class_derivations")
     if not isinstance(class_derivs, dict):
@@ -551,7 +551,7 @@ def main() -> int:
             phts = len(indexes[cohort_name].valid_phts)
             print(f"  Loaded {cohort_name}: {count:,} PHVs across {phts} PHTs")
         except FileNotFoundError:
-            pass  # cohort not available — will skip files for it
+            pass  # cohort not available -- will skip files for it
 
     if not indexes:
         print("ERROR: No dbGaP indexes found. Run build_phv_index.py.", file=sys.stderr)
@@ -607,7 +607,7 @@ def main() -> int:
                 continue
             # Check 3.1: accession format
             all_findings.extend(check_accession_format(block, idx, rel_path))
-            # Checks 3.2–3.5: existence and membership
+            # Checks 3.2-3.5: existence and membership
             all_findings.extend(check_block(block, idx, rel_path, dbgap))
 
     # -----------------------------------------------------------------------
@@ -619,7 +619,7 @@ def main() -> int:
             all_findings.append(Finding(
                 check="3.0", severity="ERROR",
                 file=skipped_file, block=0,
-                message="No dbGaP index available for cohort — file not validated",
+                message="No dbGaP index available for cohort -- file not validated",
             ))
 
     fail_rank = SEVERITY_RANK[args.fail_on.upper()]

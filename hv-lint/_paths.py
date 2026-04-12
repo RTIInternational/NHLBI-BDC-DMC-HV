@@ -5,8 +5,8 @@ Works in both deployment locations:
   2. HV repo:         hv-lint/phase-{1,2,3}/     (CI & production)
 
 Override the auto-detected HV repo root in two ways (checked in order):
-  - ``set_hv_root(path)`` — programmatic override (same process)
-  - ``HV_ROOT`` environment variable — for CLI / subprocess use
+  - ``set_hv_root(path)`` -- programmatic override (same process)
+  - ``HV_ROOT`` environment variable -- for CLI / subprocess use
 
 Detection logic (fallback): walk up from the calling script until we
 find ``priority_variables_transform/``.  Two levels up from ``hv-lint/``
@@ -25,7 +25,7 @@ HVLINT_ROOT = Path(__file__).resolve().parent
 # .yamllint config lives alongside this module
 YAMLLINT_CONFIG = HVLINT_ROOT / ".yamllint"
 
-# Programmatic override — set via set_hv_root()
+# Programmatic override -- set via set_hv_root()
 _hv_root_override: Path | None = None
 
 
@@ -81,16 +81,16 @@ def find_hv_root(script_path: str | Path | None = None) -> Path:
     # 3. Auto-detection
     anchor = Path(script_path).resolve().parent if script_path else HVLINT_ROOT
 
-    # Case A — running inside the HV repo:
-    #   hv-lint/_paths.py  →  parent = hv-lint/  →  parent.parent = HV root
+    # Case A -- running inside the HV repo:
+    #   hv-lint/_paths.py  ->  parent = hv-lint/  ->  parent.parent = HV root
     candidate = HVLINT_ROOT.parent
     if (candidate / "priority_variables_transform").is_dir():
         return candidate
 
-    # Case B — running from the control center repo:
-    #   hv-lint/_paths.py  →  ...parent...parent = control-center root
+    # Case B -- running from the control center repo:
+    #   hv-lint/_paths.py  ->  ...parent...parent = control-center root
     #   sibling NHLBI-BDC-DMC-HV should be next to the control-center dir
-    control_center = HVLINT_ROOT.parent.parent  # QC → control-center
+    control_center = HVLINT_ROOT.parent.parent  # QC -> control-center
     sibling = control_center.parent / "NHLBI-BDC-DMC-HV"
     if (sibling / "priority_variables_transform").is_dir():
         return sibling

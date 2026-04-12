@@ -4,7 +4,7 @@
 For each populated_from PHT used across all YAML files in a cohort,
 collects every associated_visit label paired with that PHT.  If a PHT
 appears with more than one DISTINCT visit label, the minority usage is
-flagged as ERROR — this is always a copy-paste bug.
+flagged as ERROR -- this is always a copy-paste bug.
 
 Handles both static associated_visit values (value: "...") and
 expr-based visit references (including uuid5 patterns).  For expr-based
@@ -12,7 +12,7 @@ visits, visit labels are extracted using regex parsing of case() results
 and uuid5 seed strings.
 
 Checks:
-    1.8  Cross-file PHT visit label consistency — a given PHT should
+    1.8  Cross-file PHT visit label consistency -- a given PHT should
          map to the same visit label everywhere in the cohort.
 
 Usage:
@@ -39,7 +39,7 @@ TRANSFORM_DIR = find_transform_dir()
 
 PHT_RE = re.compile(r"pht\d{6}")
 
-# ── Regex patterns for visit label extraction from expressions ───────────
+# -- Regex patterns for visit label extraction from expressions -----------
 # Replicates Phase 5's extract_visit_labels_from_expr() locally, since
 # phases are independent modules.
 
@@ -97,7 +97,7 @@ def _extract_labels_from_expr(expr: str) -> set[str]:
             for cr in case_results
         }
 
-    # No case() — extract quoted strings as candidate labels
+    # No case() -- extract quoted strings as candidate labels
     all_quoted = (
         QUOTED_DQ_RE.findall(expr_str)
         + QUOTED_SQ_RE.findall(expr_str)
@@ -181,7 +181,7 @@ def _extract_visit_refs(
         if not isinstance(cls_def, dict):
             continue
 
-        # Skip visit.yaml Visit blocks — they define, not reference
+        # Skip visit.yaml Visit blocks -- they define, not reference
         if cls_name == "Visit":
             continue
 
@@ -253,7 +253,7 @@ def check_cross_file_pht_consistency(
             label_refs[ref.visit_label].append(ref)
 
         if len(label_counts) <= 1:
-            continue  # Consistent — nothing to flag
+            continue  # Consistent -- nothing to flag
 
         # Find majority label
         sorted_labels = sorted(label_counts.items(), key=lambda x: -x[1])
@@ -261,7 +261,7 @@ def check_cross_file_pht_consistency(
         second_count = sorted_labels[1][1]
 
         if majority_count == second_count:
-            # No clear majority — flag ALL occurrences
+            # No clear majority -- flag ALL occurrences
             all_labels = ", ".join(
                 f"'{lb}' ({ct}x)" for lb, ct in sorted_labels
             )
@@ -273,11 +273,11 @@ def check_cross_file_pht_consistency(
                     severity="ERROR",
                     message=(
                         f"{pht} has inconsistent visit labels across files: "
-                        f"{all_labels} — no clear majority, manual review needed"
+                        f"{all_labels} -- no clear majority, manual review needed"
                     ),
                 ))
         else:
-            # Clear majority — flag minority occurrences only
+            # Clear majority -- flag minority occurrences only
             for label, label_count in sorted_labels[1:]:
                 majority_files = sorted(set(
                     r.file.rsplit("/", 1)[-1] for r in label_refs[majority_label]
@@ -295,7 +295,7 @@ def check_cross_file_pht_consistency(
                         message=(
                             f"{pht} uses visit label '{ref.visit_label}' here "
                             f"but '{majority_label}' in {majority_count} other "
-                            f"block(s) ({majority_examples}) — likely copy-paste error"
+                            f"block(s) ({majority_examples}) -- likely copy-paste error"
                         ),
                     ))
 
@@ -356,7 +356,7 @@ def main() -> int:
 
     findings = check_cross_file_pht_consistency(all_refs)
 
-    # ── Report ────────────────────────────────────────────────────────
+    # -- Report --------------------------------------------------------
     fail_rank = SEVERITY_RANK[args.fail_on.upper()]
 
     # Count distinct PHTs checked
@@ -384,7 +384,7 @@ def main() -> int:
         print(f"Findings:       {', '.join(parts)}")
     else:
         print(
-            "Findings:       None — all PHTs have consistent visit "
+            "Findings:       None -- all PHTs have consistent visit "
             "labels across files"
         )
 
