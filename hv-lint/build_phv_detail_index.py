@@ -8,13 +8,14 @@ data type, unit, description, and coded value set.
 These detail indexes power the semantic validation rules in Phase 3
 (checks 3.9-3.12) that go beyond structural / existence checks.
 
-Usage (from control center repo root):
+Usage:
     python hv-lint/build_phv_detail_index.py
-    python hv-lint/build_phv_detail_index.py --source-cache data/dbgap-cache
+    python hv-lint/build_phv_detail_index.py --source-cache hv-lint/dbgap-cache
     python hv-lint/build_phv_detail_index.py --output-dir hv-lint/dbgap-cache
 
-The default source cache is ``data/dbgap-cache`` (this repo).
-Override with ``--source-cache``.
+Normally invoked via ``update_data.py`` which handles source fetching
+and index building together. Run standalone only when rebuilding
+indexes from already-fetched FTP data dictionaries.
 """
 
 from __future__ import annotations

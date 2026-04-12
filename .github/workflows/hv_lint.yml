@@ -48,7 +48,7 @@ jobs:
           # Find which cohort directories have changes
           CHANGED=$(git diff --name-only ${{ github.event.pull_request.base.sha }} HEAD \
             -- priority_variables_transform/ \
-            | grep -- '-ingest/' \
+            | { grep -- '-ingest/' || true; } \
             | sed 's|priority_variables_transform/\([^/]*\)-ingest/.*|\1|' \
             | sort -u \
             | tr '\n' ',' \

@@ -2,7 +2,7 @@
 """HV-Lint Phase 5 Manager: Run visit structure validation.
 
 Orchestrates the Phase 5 sub-components:
-  1. Visit structure validation (validate_visit_structure.py) -- checks 5.1-5.6
+  1. Visit structure validation (validate_visit_structure.py) -- checks 5.1-5.10
 
 Usage:
     python hv-lint/phase-5/run_phase5.py

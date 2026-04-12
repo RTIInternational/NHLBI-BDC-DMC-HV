@@ -134,7 +134,7 @@ def find_yaml_files(base_dir: Path, cohort: str) -> list[Path]:
     )
     if cohort.lower() != "all":
         pattern = f"{cohort}-ingest".lower()
-        files = [f for f in files if pattern in str(f).lower()]
+        files = [f for f in files if any(part.lower() == pattern for part in f.parts)]
     return files
 
 
@@ -188,7 +188,10 @@ def main() -> int:
     parse_errors: list[tuple[str, str]] = []
 
     for file_path in yaml_files:
-        rel_path = file_path.as_posix()
+        try:
+            rel_path = file_path.relative_to(base_dir.parent).as_posix()
+        except ValueError:
+            rel_path = file_path.as_posix()
         cohort = _get_cohort_from_path(file_path)
 
         if cohort not in phv_hits:

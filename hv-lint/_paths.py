@@ -8,10 +8,10 @@ Override the auto-detected HV repo root in two ways (checked in order):
   - ``set_hv_root(path)`` -- programmatic override (same process)
   - ``HV_ROOT`` environment variable -- for CLI / subprocess use
 
-Detection logic (fallback): walk up from the calling script until we
-find ``priority_variables_transform/``.  Two levels up from ``hv-lint/``
-in the HV repo; four levels up then into the sibling ``NHLBI-BDC-DMC-HV``
-for the control center.
+Detection logic (fallback): check two fixed candidate locations:
+  - Two levels up from ``hv-lint/`` (HV repo layout)
+  - Sibling ``NHLBI-BDC-DMC-HV`` directory (control center layout)
+Does NOT walk up the directory tree.
 """
 
 from __future__ import annotations

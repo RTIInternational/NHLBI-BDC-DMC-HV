@@ -126,7 +126,7 @@ def run_phase(phase_name: str, args: argparse.Namespace, cache_dir: str) -> tupl
     result = subprocess.run(cmd, capture_output=True, text=True)
     output = result.stdout + result.stderr
 
-    # Print to terminal in real time
+    # Print buffered output after phase completes
     print(output, end="")
 
     return result.returncode, header + output
