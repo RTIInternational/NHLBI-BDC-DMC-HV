@@ -1,0 +1,64 @@
+---
+# yamllint configuration for BDC DMC Harmonization
+# Used by YAML-LinkML Expert agent to lint HV repo transformation specs
+#
+# Usage:
+#   yamllint -c QC/.yamllint <path-to-yaml-files>
+#   python QC/hv-lint/phase-1/run_yamllint.py [--cohort <name>] [--format parsable]
+#
+# Exceptions per team decision (2026-03-14):
+#   - line-length: disabled (long expr strings are normal)
+#   - trailing-spaces: disabled (not a functional concern)
+#   - new-line-at-end-of-file: disabled (not a functional concern)
+#   - new-lines: disabled (Windows CRLF is normal in this environment)
+#   - document-start: disabled (files don't use --- consistently)
+
+extends: default
+
+rules:
+  # --- Disabled rules ---
+  line-length: disable
+  trailing-spaces: disable
+  new-line-at-end-of-file: disable
+  new-lines: disable
+  document-start: disable
+
+  # --- Enabled rules ---
+  indentation:
+    spaces: 2
+    indent-sequences: whatever
+    check-multi-line-strings: false
+
+  key-duplicates:
+    level: error
+
+  truthy:
+    level: warning
+    allowed-values: ['true', 'false']
+    check-keys: true
+
+  comments:
+    require-starting-space: true
+    ignore-shebangs: true
+    min-spaces-from-content: 1
+
+  empty-lines:
+    max: 2
+    max-start: 0
+    max-end: 1
+
+  brackets:
+    min-spaces-inside: 0
+    max-spaces-inside: 0
+
+  colons:
+    max-spaces-before: 0
+    max-spaces-after: 1
+
+  commas:
+    max-spaces-before: 0
+    min-spaces-after: 1
+    max-spaces-after: 1
+
+  hyphens:
+    max-spaces-after: 1
