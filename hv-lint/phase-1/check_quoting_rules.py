@@ -87,7 +87,11 @@ def check_file(filepath: Path) -> list[Finding]:
       - Rule 4: expr: '...''X''...' -- outer ' wraps the expr, '' = YAML escapes
     """
     findings = []
-    rel_path = str(filepath)
+    hv_root = TRANSFORM_DIR.parent
+    try:
+        rel_path = str(filepath.relative_to(hv_root))
+    except ValueError:
+        rel_path = str(filepath)
 
     try:
         lines = filepath.read_text(encoding="utf-8", errors="replace").splitlines()

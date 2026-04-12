@@ -87,7 +87,11 @@ def load_cohorts(cohorts_yaml: Path | None = None) -> dict[str, dict]:
     if not isinstance(data, dict):
         print(f"ERROR: cohorts.yaml is empty or malformed at {path}", file=sys.stderr)
         sys.exit(1)
-    return data.get("cohorts", {})
+    cohorts = data.get("cohorts")
+    if not cohorts or not isinstance(cohorts, dict):
+        print(f"ERROR: cohorts.yaml missing 'cohorts:' mapping at {path}", file=sys.stderr)
+        sys.exit(1)
+    return cohorts
 
 
 # ---------------------------------------------------------------------------
@@ -611,6 +615,10 @@ def print_summary() -> None:
     print(f"\n{'=' * 65}")
     print("  Cache Summary")
     print(f"{'=' * 65}")
+
+    if not CACHE_DIR.is_dir():
+        print(f"  Cache directory not found: {CACHE_DIR}")
+        return
 
     total_gz = 0
     total_xml = 0
