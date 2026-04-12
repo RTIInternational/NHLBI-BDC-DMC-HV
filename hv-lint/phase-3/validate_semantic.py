@@ -214,11 +214,8 @@ def find_yaml_files(base_dir: Path, cohort: str) -> list[Path]:
     )
     if cohort.lower() != "all":
         pattern = f"{cohort}-ingest".lower()
-        files = [f for f in files if pattern in str(f).lower()]
+        files = [f for f in files if any(part.lower() == pattern for part in f.parts)]
     return files
-
-
-def detect_cohort(file_path: Path) -> str:
     for part in file_path.parts:
         if part.endswith("-ingest"):
             return part.replace("-ingest", "")

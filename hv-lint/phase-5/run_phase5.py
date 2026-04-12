@@ -24,7 +24,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 COMPONENTS = {
     "visit-structure": {
         "script": SCRIPT_DIR / "validate_visit_structure.py",
-        "label": "Visit Structure Validation (5.1-5.8)",
+        "label": "Visit Structure Validation (5.1-5.10)",
         "cohort_flag": "--cohort",
         "extra_args": [],
     },
