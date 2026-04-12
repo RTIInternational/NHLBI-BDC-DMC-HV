@@ -17,25 +17,40 @@ How to run HV-Lint locally against your branch before submitting a PR.
 
 ---
 
+## One-time setup: create venv and install deps
+    python -m venv .venv
+    .venv\Scripts\Activate.ps1
+    pip install pyyaml yamllint linkml-runtime
+
+---
+
 ## Quick Start
 
 From the HV repo root:
 
 ```bash
-# Phase 1 -- YAML structure (no external data needed)
-python hv-lint/phase-1/run_phase1.py --cohort ARIC
+# Run ALL phases for a cohort:
+python hv-lint/run_all.py --cohort WHI
 
-# Phase 2 -- Model conformance (needs network for schema fetch)
-python hv-lint/phase-2/run_phase2.py --cohort ARIC
+# Run all phases, skip Phase 2 (offline -- no network needed):
+python hv-lint/run_all.py --cohort WHI --skip phase2
 
-# Phase 3 -- dbGaP cross-reference (needs indexes)
-python hv-lint/phase-3/run_phase3.py --cohort ARIC --cache-dir hv-lint/dbgap-cache
-
-# Phase 5 -- Visit structure (needs indexes)
-python hv-lint/phase-5/run_phase5.py --cohort ARIC --cache-dir hv-lint/dbgap-cache
+# Run all phases for every cohort:
+python hv-lint/run_all.py
 ```
 
-Replace `ARIC` with any cohort name, or use `all` to lint everything.
+Replace `WHI` with any cohort name. The `--cache-dir` is auto-detected from the script location -- no need to specify it.
+
+### Running Individual Phases
+
+If you only need one phase:
+
+```bash
+python hv-lint/phase-1/run_phase1.py --cohort ARIC
+python hv-lint/phase-2/run_phase2.py --cohort ARIC
+python hv-lint/phase-3/run_phase3.py --cohort ARIC
+python hv-lint/phase-5/run_phase5.py --cohort ARIC
+```
 
 ---
 
@@ -68,7 +83,7 @@ python hv-lint/phase-2/run_phase2.py --cohort ARIC --bdchm-schema path/to/bdchm.
 Requires the compressed indexes in `hv-lint/dbgap-cache/`. Checks PHV/PHT existence, membership, value_mappings completeness, type compatibility, unit conversion, phantom codes, and more.
 
 ```bash
-python hv-lint/phase-3/run_phase3.py --cohort ARIC --cache-dir hv-lint/dbgap-cache --fail-on error
+python hv-lint/phase-3/run_phase3.py --cohort ARIC --fail-on error
 ```
 
 ### Phase 5 -- Visit Structure Validation
@@ -76,7 +91,7 @@ python hv-lint/phase-3/run_phase3.py --cohort ARIC --cache-dir hv-lint/dbgap-cac
 Cross-file validation of visit.yaml against all measurement/condition files. Checks visit ID uniqueness, referential integrity, uuid5 compliance, collection interval mismatches.
 
 ```bash
-python hv-lint/phase-5/run_phase5.py --cohort ARIC --cache-dir hv-lint/dbgap-cache --fail-on error
+python hv-lint/phase-5/run_phase5.py --cohort ARIC --fail-on error
 ```
 
 ---
@@ -90,7 +105,7 @@ python hv-lint/phase-5/run_phase5.py --cohort ARIC --cache-dir hv-lint/dbgap-cac
 | `--skip <component>` | All phases | Skip one or more sub-components by name |
 | `--bdchm-ref <ref>` | Phase 2 | Git ref for BDCHM schema (default: `main`) |
 | `--bdchm-schema <path>` | Phase 2 | Local schema file (overrides `--bdchm-ref`) |
-| `--cache-dir <path>` | Phase 3, 5 | Path to index directory (default: `hv-lint/dbgap-cache`) |
+| `--cache-dir <path>` | Phase 3, 5, run_all | Path to index directory (default: auto-detected from script location) |
 | `--hv-root <path>` | All phases | Override HV repo root detection |
 
 ---

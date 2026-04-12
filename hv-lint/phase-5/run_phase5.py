@@ -104,6 +104,10 @@ def main() -> int:
     if args.hv_root:
         os.environ["HV_ROOT"] = str(Path(args.hv_root).resolve())
 
+    # Default cache-dir: hv-lint/dbgap-cache relative to this script
+    if args.cache_dir is None:
+        args.cache_dir = str(SCRIPT_DIR.parent / "dbgap-cache")
+
     print("=" * 70)
     print("HV-Lint Phase 5: Visit Structure Validation")
     print(f"Cohort: {args.cohort}")

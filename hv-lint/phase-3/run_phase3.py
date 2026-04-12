@@ -8,7 +8,7 @@ Each sub-component runs independently and reports its own findings.
 The manager collects exit codes and reports a consolidated summary.
 
 Usage:
-    python hv-lint/phase-3/run_phase3.py --cache-dir hv-lint/dbgap-cache
+    python hv-lint/phase-3/run_phase3.py --cohort ARIC
     python hv-lint/phase-3/run_phase3.py --cache-dir hv-lint/dbgap-cache --cohort ARIC
 """
 
@@ -64,8 +64,8 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument(
         "--cache-dir",
-        required=True,
-        help="Directory containing per-cohort .json.gz indexes"
+        default=None,
+        help="Directory containing per-cohort .json.gz indexes (default: hv-lint/dbgap-cache relative to HV root)"
     )
     p.add_argument(
         "--hv-root",
@@ -107,6 +107,10 @@ def main() -> int:
     # Propagate --hv-root to child processes via environment variable
     if args.hv_root:
         os.environ["HV_ROOT"] = str(Path(args.hv_root).resolve())
+
+    # Default cache-dir: hv-lint/dbgap-cache relative to this script
+    if args.cache_dir is None:
+        args.cache_dir = str(SCRIPT_DIR.parent / "dbgap-cache")
 
     results: dict[str, int] = {}
 
