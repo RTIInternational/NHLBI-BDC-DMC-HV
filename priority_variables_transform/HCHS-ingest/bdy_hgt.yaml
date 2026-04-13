@@ -1,8 +1,3 @@
-# Baseline measured height — HEIGHT (phv00226281), "Height (corrected)", n=11,815.
-# Recalled height block (WHEA2A_CM at age 21, phv00527446) REMOVED — it
-# contaminated baseline extraction via lower hardcoded age_at_observation (7665
-# days) and introduced implausible values from the wider recalled range
-# (100–213.36 cm vs measured 122–199 cm). Not a priority baseline variable.
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004715
@@ -24,6 +19,37 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00226281
+                  unit:
+                    value: cm
+                    range: string
+# Block 2: Recalled height at age 21 -- uses WHEA2A_CM (phv00527446), the derived/unified
+# variable combining metric + imperial respondents (n=9,555). The raw metric-only variable
+# WHEA2A (phv00527433, n=3,232) was removed as a strict subset to avoid duplicate records.
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004715
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00226250
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
+        age_at_observation:
+          value: 7665
+          range: integer
+        observation_type:
+          value: OBA:VT0001253
+          range: string
+        method_type:
+          value: height recalled at age 21
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004715
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00527446
                   unit:
                     value: cm
                     range: string
