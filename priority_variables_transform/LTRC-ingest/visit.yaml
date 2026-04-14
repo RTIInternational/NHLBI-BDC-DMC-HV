@@ -1,0 +1,16 @@
+- class_derivations:
+    Visit:
+      populated_from: pht010057
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00429048}) + ":LTRC Baseline")'
+        name:
+          value: LTRC Baseline
+        associated_participant:
+          populated_from: phv00429048
+        visit_category:
+          value: HEALTH_EXAMINATION
+        age_at_visit_start:
+          expr: '{phv00429049} * 365'
+        age_at_visit_end:
+          expr: '{phv00429049} * 365'

@@ -1,0 +1,21 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht010059
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00429073
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00429073}) + ":LTRC Baseline")'
+        observation_type:
+          # NOTE: OBA:2050075 not yet in MeasurementObservationTypeEnum; HM schema enhancement pending (per Anne)
+          value: OBA:2050075
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht010059
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00429118
+                  unit:
+                    value: mg/dL
