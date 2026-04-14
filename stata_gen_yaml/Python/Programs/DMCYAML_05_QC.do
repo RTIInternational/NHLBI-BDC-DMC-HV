@@ -2,10 +2,8 @@
 
 /* ----- 1. Output "bad" phvs to a spreadsheet ----- */
 
-/* Note: change value of cohort local macro to desired cohort before running */
 clear
 local entity = "MeasurementObservation"
-
 
 foreach cohort in aric cardia fhs jhs whi {	
 use "$der\shortdata_$today.dta", clear

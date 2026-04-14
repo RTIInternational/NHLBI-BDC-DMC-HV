@@ -1,4 +1,10 @@
-* This program reads in BDC harmonized variable definitions, the contextual variables key, and the unit key *;
+/* This program reads in BDC harmonized variable definitions, the contextual variables key, and the unit key.
+ Input file sources:
+	- bdchv_defs is tab "BDCHM Harmonized Variables V1" from the sheet "BDCHM Variable Mapping", at url https://docs.google.com/spreadsheets/d/1hxbZxSxR88HnBXjcgdeJD1AOj-pzlxMrnx5n_YLkEF0/edit?gid=2039879463#gid=2039879463
+	- contextual_variables_key is tab "contextual variables V2" from the sheet "BDCHM Variable Mapping"
+	- unit_key was created by Sabrina
+*/
+	
 
 /* ----- Read in BDC HV definitions ----- */
 foreach sheet in bdchv_defs {

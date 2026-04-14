@@ -30,6 +30,7 @@ merge m:1 pht using "$doc\contextual_variables_key.dta"
 drop if _merge==2
 rename _merge merge_pht
 
+* If there is a curator override for a value, take the override value instead *;
 capture confirm file "$doc\fixed_bdchm_mappings.dta" 
 if _rc == 0 {
 	foreach var of varlist participantidphv associatedvisit associatedvisit_expr ageinyearsphv conversion_rule {
@@ -56,12 +57,12 @@ drop drop_table
 /* ----- 3. Update fields from documentation files ----- */
 
 * Update units matches requiring more sophisticated rules *;
-replace equivalent_units=1 if bdchm_label=="sodium in blood" & var_units=="meq/L" & bdchm_unit=="mmol/L"
 replace conversion_rule="* 38.67" if var_units=="mmol/L" & bdchm_unit=="mg/dL" & inlist(bdchm_label,"hdl","total cholesterol in blood")
 replace conversion_rule="* 0.01" if var_units=="%" & bdchm_unit=="[IU]/mL" & bdchm_label=="factor viii"
 
 * Update unit equivalencies requring more sophisticated rules *;
 replace equivalent_units=1 if var_units=="%" & bdchm_unit=="g/dL" & bdchm_label=="mean corpuscular hemoglobin concentration"
+replace equivalent_units=1 if bdchm_label=="sodium in blood" & var_units=="meq/L" & bdchm_unit=="mmol/L"
 
 capture confirm file "$doc\fixed_bdchm_mappings.dta" 
 if _rc == 0 {

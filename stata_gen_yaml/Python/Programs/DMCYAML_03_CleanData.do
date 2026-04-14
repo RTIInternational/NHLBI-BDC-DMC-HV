@@ -1,4 +1,4 @@
-* This program cleans dbGaP metadata. If the YAML authoring QC program (#5) has been run before, it merges in manual curation fixes from that human-in-the-loop step. 
+* This program cleans dbGaP metadata. If the YAML authoring QC program (#5) has been run before, it merges in manual curation fixes from that human-in-the-loop step that are contained in the file $doc/fixed_bdchm_mappings. 
 
 use "$temp\variable_mappings.dta", clear
 
