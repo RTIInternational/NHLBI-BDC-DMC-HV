@@ -1,6 +1,10 @@
 name: HV-Lint Quality Checks
 
 on:
+  pull_request:
+    paths:
+      - 'priority_variables_transform/**'
+      - 'hv-lint/**'
   workflow_dispatch:
     inputs:
       bdchm_ref:
@@ -26,58 +30,121 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Install Poetry
-        run: pipx install poetry
-
       - name: Install dependencies
-        run: poetry install
+        run: pip install pyyaml yamllint linkml-runtime
+
+      - name: Detect changed cohort
+        id: detect
+        if: github.event_name == 'pull_request'
+        run: |
+          # Find which cohort directories have changes
+          CHANGED=$(git diff --name-only ${{ github.event.pull_request.base.sha }} HEAD \
+            -- priority_variables_transform/ \
+            | { grep -- '-ingest/' || true; } \
+            | sed 's|priority_variables_transform/\([^/]*\)-ingest/.*|\1|' \
+            | sort -u \
+            | tr '\n' ',' \
+            | sed 's/,$//')
+          if [ -z "$CHANGED" ]; then
+            echo "cohort=all" >> "$GITHUB_OUTPUT"
+          elif [ "$(echo "$CHANGED" | tr ',' '\n' | wc -l)" -gt 1 ]; then
+            echo "cohort=all" >> "$GITHUB_OUTPUT"
+          else
+            echo "cohort=$CHANGED" >> "$GITHUB_OUTPUT"
+          fi
+          echo "Detected cohort: $(cat "$GITHUB_OUTPUT" | grep cohort)"
+
+      - name: Set cohort variable
+        id: config
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "cohort=${{ github.event.inputs.cohort || 'all' }}" >> "$GITHUB_OUTPUT"
+            echo "fail_on=${{ github.event.inputs.fail_on || 'error' }}" >> "$GITHUB_OUTPUT"
+            echo "bdchm_ref=${{ github.event.inputs.bdchm_ref || 'main' }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "cohort=${{ steps.detect.outputs.cohort || 'all' }}" >> "$GITHUB_OUTPUT"
+            echo "fail_on=error" >> "$GITHUB_OUTPUT"
+            echo "bdchm_ref=main" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: "Phase 1: YAML structural & formatting checks"
         id: phase1
         run: |
-          poetry run python hv-lint/phase-1/run_phase1.py \
-            --cohort "${{ github.event.inputs.cohort || 'all' }}" \
-            --fail-on "${{ github.event.inputs.fail_on || 'error' }}" \
+          python hv-lint/phase-1/run_phase1.py \
+            --cohort "${{ steps.config.outputs.cohort }}" \
+            --fail-on "${{ steps.config.outputs.fail_on }}" \
             2>&1 | tee phase1-output.txt
 
       - name: "Phase 2: BDC-HM model conformance checks"
         id: phase2
         if: always()
         run: |
-          poetry run python hv-lint/phase-2/run_phase2.py \
-            --bdchm-ref "${{ github.event.inputs.bdchm_ref || 'main' }}" \
-            --cohort "${{ github.event.inputs.cohort || 'all' }}" \
-            --fail-on "${{ github.event.inputs.fail_on || 'error' }}" \
+          python hv-lint/phase-2/run_phase2.py \
+            --bdchm-ref "${{ steps.config.outputs.bdchm_ref }}" \
+            --cohort "${{ steps.config.outputs.cohort }}" \
+            --fail-on "${{ steps.config.outputs.fail_on }}" \
             2>&1 | tee phase2-output.txt
 
       - name: "Phase 3: dbGaP cross-reference checks"
         id: phase3
         if: always()
         run: |
-          poetry run python hv-lint/phase-3/run_phase3.py \
-            --cache-dir hv-lint/dbgap-cache \
-            --cohort "${{ github.event.inputs.cohort || 'all' }}" \
-            --fail-on "${{ github.event.inputs.fail_on || 'error' }}" \
+          python hv-lint/phase-3/run_phase3.py \
+            --cohort "${{ steps.config.outputs.cohort }}" \
+            --fail-on "${{ steps.config.outputs.fail_on }}" \
             2>&1 | tee phase3-output.txt
+
+      - name: "Phase 5: Visit structure validation"
+        id: phase5
+        if: always()
+        run: |
+          python hv-lint/phase-5/run_phase5.py \
+            --cohort "${{ steps.config.outputs.cohort }}" \
+            --fail-on "${{ steps.config.outputs.fail_on }}" \
+            2>&1 | tee phase5-output.txt
 
       - name: Publish step summary
         if: always()
         run: |
-          echo "## HV-Lint Results" >> "$GITHUB_STEP_SUMMARY"
+          COHORT="${{ steps.config.outputs.cohort }}"
+          LIMIT="${{ github.event.inputs.summary_limit || '50' }}"
+
+          echo "## HV-Lint Results -- ${COHORT}" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          for phase in 1 2 3; do
+
+          for phase in 1 2 3 5; do
             f="phase${phase}-output.txt"
             if [ -f "$f" ]; then
-              echo "### Phase $phase" >> "$GITHUB_STEP_SUMMARY"
+              # Extract pass/fail from last lines
+              STATUS="unknown"
+              if grep -q "PASSED" "$f"; then STATUS="passed"; fi
+              if grep -q "FAILED" "$f"; then STATUS="FAILED"; fi
+
+              if [ "$STATUS" = "passed" ]; then
+                ICON="white_check_mark"
+              elif [ "$STATUS" = "FAILED" ]; then
+                ICON="x"
+              else
+                ICON="question"
+              fi
+
+              echo "### :${ICON}: Phase ${phase}" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              echo '<details><summary>Click to expand output</summary>' >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
               echo '```' >> "$GITHUB_STEP_SUMMARY"
-              tail -30 "$f" >> "$GITHUB_STEP_SUMMARY"
+              tail -n "$LIMIT" "$f" >> "$GITHUB_STEP_SUMMARY"
               echo '```' >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              echo '</details>' >> "$GITHUB_STEP_SUMMARY"
               echo "" >> "$GITHUB_STEP_SUMMARY"
             fi
           done
@@ -91,4 +158,5 @@ jobs:
             phase1-output.txt
             phase2-output.txt
             phase3-output.txt
+            phase5-output.txt
           if-no-files-found: ignore
