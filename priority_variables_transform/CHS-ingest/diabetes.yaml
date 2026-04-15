@@ -636,13 +636,17 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS BASELINE 2")'
         condition_concept:
-          value: MONDO:0005015
-          range: string
+          populated_from: phv00106406
+          value_mappings:
+            '1': MONDO:0005015
+            '2': MONDO:0006920
+            '3': MONDO:0005015
+            '4': MONDO:0005015
         condition_status:
           populated_from: phv00106406
           value_mappings:
             '1': ABSENT
-            '2': ABSENT
+            '2': PRESENT
             '3': PRESENT
             '4': PRESENT
         condition_provenance:
