@@ -3,7 +3,7 @@
       populated_from: pht004067
       slot_derivations:
         associated_participant:
-          populated_from: phv00205057
+          expr: 'uuid5("https://w3id.org/bdchm/Person", str({phv00205057}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00205057}) + ":ARIC EXAM 4")'
           range: string
@@ -21,7 +21,7 @@
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from: phv00207055
+          expr: 'uuid5("https://w3id.org/bdchm/Person", str({phv00207055}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
@@ -38,7 +38,7 @@
       populated_from: pht004128
       slot_derivations:
         associated_participant:
-          populated_from: phv00207836
+          expr: 'uuid5("https://w3id.org/bdchm/Person", str({phv00207836}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207836}) + ":ARIC EXAM 3")'
           range: string

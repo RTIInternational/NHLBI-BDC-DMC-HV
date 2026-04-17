@@ -3,7 +3,7 @@
       populated_from: pht004063
       slot_derivations:
         associated_participant:
-          populated_from: phv00204812
+          expr: 'uuid5("https://w3id.org/bdchm/Person", str({phv00204812}) + ":ARIC")'
         age_at_observation:
           expr: '{phv00204712} * 365'
         associated_visit:
