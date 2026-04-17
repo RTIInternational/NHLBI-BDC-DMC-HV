@@ -1,0 +1,8 @@
+- class_derivations:
+    Person:
+      populated_from: pht001440
+      slot_derivations:
+        identity:
+          expr: 'uuid5("https://w3id.org/bdchm/Person", str({phv00098579}))'
+        species:
+          value: NCBITaxon:9606
