@@ -61,6 +61,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00207742
+        age_at_condition_start:
+          expr: "case(({phv00207698} == 'Y', {phv00207733} * 365))"
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207742}) + ":ARIC EXAM 4")'
         condition_concept:
@@ -80,6 +82,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00207742
+        age_at_condition_start:
+          expr: "case(({phv00207699} == 'Y', {phv00207734} * 365))"
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207742}) + ":ARIC EXAM 4")'
         condition_concept:
