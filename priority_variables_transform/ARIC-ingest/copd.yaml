@@ -15,6 +15,8 @@
             'Y': PRESENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          - value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -33,6 +35,8 @@
           expr: case(({phv00298000} == 0, 'ABSENT'), ({phv00298002} == 0, 'HISTORICAL'), (True, 'PRESENT'))
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          - value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -52,5 +56,7 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          - value: "Frailty deficit index item 33"
         relationship_to_participant:
           value: ONESELF
