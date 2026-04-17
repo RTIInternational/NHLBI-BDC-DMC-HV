@@ -2,11 +2,11 @@
 # null-propagation aborting the entire case() expression when TBEA3 is
 # NULL for never-smokers (skip-patterned: only asked if TBEA1=1).
 #
-# TBEA1 (phv00258106): 0=No → Never Smoked; 1=Yes → check TBEA3
-# TBEA3 (phv00258107): 1=Daily, 2=Some days → Current; 3=Not at all → Former
+# TBEA1 (phv00258106): 0=No -> Never Smoked; 1=Yes -> check TBEA3
+# TBEA3 (phv00258107): 1=Daily, 2=Some days -> Current; 3=Not at all -> Former
 # OMOP codes verified against Athena 2026-03-23.
 #
-# Block 1: Never smokers (TBEA1=0). TBEA3 not referenced — no NULL risk.
+# Block 1: Never smokers (TBEA1=0). TBEA3 not referenced -- no NULL risk.
 # Block 2: Ever smokers (TBEA1=1). TBEA3 always populated for this group.
 - class_derivations:
     Observation:
@@ -15,8 +15,7 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          value: HCHS EXAM
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         age_at_observation:
           expr: '{phv00226251} * 365'
         observation_type:
@@ -31,8 +30,7 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          value: HCHS EXAM
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         age_at_observation:
           expr: '{phv00226251} * 365'
         observation_type:
