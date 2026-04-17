@@ -9,7 +9,9 @@
         age_at_observation:
           expr: "{phv00401085} * 365"
         observation_type:
-          value: OBA:VT0001259
+          value: OBA:2045455
+        method_type:
+          value: "Analysis derived"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -17,31 +19,9 @@
                 populated_from: pht008729
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00401093
+                    populated_from: phv00401097
                   unit:
-                    value: "kg"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht008731
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00401370
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
-        age_at_observation:
-          expr: "{phv00401379} * 365"
-        observation_type:
-          value: OBA:VT0001259
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008731
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401386
-                  unit:
-                    value: "kg"
+                    value: "kg/m2"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008730
@@ -53,7 +33,9 @@
         age_at_observation:
           expr: "{phv00401282} * 365"
         observation_type:
-          value: OBA:VT0001259
+          value: OBA:2045455
+        method_type:
+          value: "Analysis derived"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -61,28 +43,30 @@
                 populated_from: pht008730
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00401285
+                    populated_from: phv00401289
                   unit:
-                    value: "kg"
+                    value: "kg/m2"
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001940
+      populated_from: pht008731
       slot_derivations:
         associated_participant:
-          populated_from: phv00125856
+          populated_from: phv00401370
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00125856}) + ":JHS Exam 1")'
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
+        age_at_observation:
+          expr: "{phv00401379} * 365"
         observation_type:
-          value: OBA:VT0001259
+          value: OBA:2045455
+        method_type:
+          value: "Analysis derived"
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht001940
+                populated_from: pht008731
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00125861
+                    populated_from: phv00401390
                   unit:
-                    value: "kg"
+                    value: "kg/m2"
