@@ -5,7 +5,6 @@
         associated_participant:
           populated_from: phv00078233
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078233}) + ":WHI YEAR 8")'
         # age_at_observation:
           # expr: "{nan} * 365"
@@ -32,7 +31,6 @@
         associated_participant:
           populated_from: phv00079556
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00079556}) + ":WHI YEAR 1")'
         # age_at_observation:
           # expr: "{nan} * 365"
@@ -59,7 +57,6 @@
         associated_participant:
           populated_from: phv00077671
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00077671}) + ":WHI YEAR 4")'
         # age_at_observation:
           # expr: "{nan} * 365"
@@ -86,7 +83,6 @@
         associated_participant:
           populated_from: phv00077797
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00077797}) + ":WHI YEAR 5")'
         # age_at_observation:
           # expr: "{nan} * 365"
@@ -113,7 +109,6 @@
         associated_participant:
           populated_from: phv00078109
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078109}) + ":WHI YEAR 7")'
         # age_at_observation:
           # expr: "{nan} * 365"
@@ -140,7 +135,6 @@
         associated_participant:
           populated_from: phv00077907
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00077907}) + ":WHI YEAR 6")'
         # age_at_observation:
           # expr: "{nan} * 365"
@@ -167,7 +161,6 @@
         associated_participant:
           populated_from: phv00283183
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283183}) + ":WHI EXT 156")'
         # age_at_observation:
           # expr: "{nan} * 365"
@@ -194,7 +187,6 @@
         associated_participant:
           populated_from: phv00079849
         associated_visit:
-
           expr: "case(({phv00079850} == 1, uuid5('https://w3id.org/bdchm/Visit', str({phv00079849}) + ':WHI SCREENING')), ({phv00079850} == 3 and {phv00079851} == 1, uuid5('https://w3id.org/bdchm/Visit', str({phv00079849}) + ':WHI YEAR 1')), ({phv00079850} == 3 and {phv00079851} == 2, uuid5('https://w3id.org/bdchm/Visit', str({phv00079849}) + ':WHI YEAR 2')), ({phv00079850} == 3 and {phv00079851} == 3, uuid5('https://w3id.org/bdchm/Visit', str({phv00079849}) + ':WHI YEAR 3')), ({phv00079850} == 3 and {phv00079851} == 4, uuid5('https://w3id.org/bdchm/Visit', str({phv00079849}) + ':WHI YEAR 4')), ({phv00079850} == 3 and {phv00079851} == 5, uuid5('https://w3id.org/bdchm/Visit', str({phv00079849}) + ':WHI YEAR 5')), ({phv00079850} == 3 and {phv00079851} == 6, uuid5('https://w3id.org/bdchm/Visit', str({phv00079849}) + ':WHI YEAR 6')), ({phv00079850} == 3 and {phv00079851} == 7, uuid5('https://w3id.org/bdchm/Visit', str({phv00079849}) + ':WHI YEAR 7')), ({phv00079850} == 3 and {phv00079851} == 8, uuid5('https://w3id.org/bdchm/Visit', str({phv00079849}) + ':WHI YEAR 8')), ({phv00079850} == 3 and {phv00079851} == 9, uuid5('https://w3id.org/bdchm/Visit', str({phv00079849}) + ':WHI YEAR 9')), (True, None))"
         # age_at_observation:
           # expr: "{nan} * 365"

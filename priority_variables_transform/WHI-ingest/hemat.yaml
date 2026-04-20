@@ -5,7 +5,6 @@
         associated_participant:
           populated_from: phv00077360
         associated_visit:
-
           expr: "case(({phv00077361} == 1, uuid5('https://w3id.org/bdchm/Visit', str({phv00077360}) + ':WHI SCREENING')), ({phv00077361} == 3 and {phv00077362} == 1, uuid5('https://w3id.org/bdchm/Visit', str({phv00077360}) + ':WHI YEAR 1')), ({phv00077361} == 3 and {phv00077362} == 2, uuid5('https://w3id.org/bdchm/Visit', str({phv00077360}) + ':WHI YEAR 2')), ({phv00077361} == 3 and {phv00077362} == 3, uuid5('https://w3id.org/bdchm/Visit', str({phv00077360}) + ':WHI YEAR 3')), (True, None))"
         # age_at_observation:
           # expr: "{nan} * 365"
@@ -28,7 +27,6 @@
         associated_participant:
           populated_from: phv00283451
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
         # age_at_observation:
           # expr: "{nan} * 365"

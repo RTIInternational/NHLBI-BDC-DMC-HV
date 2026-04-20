@@ -5,7 +5,6 @@
         associated_participant:
           populated_from: phv00283451
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
         drug_concept:
           expr: case(({phv00283673} == 1, "ATC:C09A"))
@@ -18,7 +17,6 @@
         associated_participant:
           populated_from: phv00283451
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
         drug_concept:
           expr: case(({phv00283674} == 1, "ATC:C09A"))
