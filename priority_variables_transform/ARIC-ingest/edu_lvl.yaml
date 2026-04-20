@@ -7,7 +7,7 @@
         age_at_observation:
           expr: '{phv00204712} * 365'
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
           range: string
         category:
           value: EDUCATIONAL_ATTAINMENT

@@ -1,13 +1,31 @@
 - class_derivations:
     MeasurementObservation:
+      populated_from: pht004063
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00204812
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
+        observation_type:
+          value: OBA:2045455
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004063
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00204719
+                  unit:
+                    value: "kg/m2"
+- class_derivations:
+    MeasurementObservation:
       populated_from: pht012502
       slot_derivations:
         associated_participant:
           populated_from: phv00506823
         associated_visit:
-          value: ARIC COHORT
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00506823}) + ":ARIC Cohort")'
         observation_type:
           value: OBA:2045455
         value_quantity:
@@ -27,9 +45,7 @@
         associated_participant:
           populated_from: phv00511637
         associated_visit:
-          value: ARIC COHORT
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511637}) + ":ARIC Cohort")'
         observation_type:
           value: OBA:2045455
         value_quantity:

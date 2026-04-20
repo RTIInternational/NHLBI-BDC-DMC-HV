@@ -5,9 +5,7 @@
         associated_participant:
           populated_from: phv00206665
         associated_visit:
-          value: ARIC EXAM 3
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00206665}) + ":ARIC EXAM 3")'
         observation_type:
           value: OBA:0000061
         value_quantity:
@@ -27,9 +25,7 @@
         associated_participant:
           populated_from: phv00206655
         associated_visit:
-          value: ARIC EXAM 1
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00206655}) + ":ARIC EXAM 1")'
         observation_type:
           value: OBA:0000061
         value_quantity:

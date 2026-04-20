@@ -5,12 +5,16 @@
         associated_participant:
           populated_from: phv00203808
         associated_visit:
-          value: ARIC Death Event
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203808}) + ":ARIC Death Event")'
           range: string
         procedure_concept:
+          value: OMOP:4184832
+        procedure_status:
           populated_from: phv00203793
           value_mappings:
-            Y: OMOP:4184832
+            Y: PRESENT
+            N: ABSENT
+            U: UNKNOWN
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -21,12 +25,15 @@
         associated_participant:
           populated_from: phv00204295
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204295}) + ":ARIC Hospital Form")'
           range: string
         procedure_concept:
+          value: OMOP:4184832
+        procedure_status:
           populated_from: phv00203945
           value_mappings:
-            Y: OMOP:4184832
+            Y: PRESENT
+            N: ABSENT
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -37,12 +44,15 @@
         associated_participant:
           populated_from: phv00204295
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204295}) + ":ARIC Hospital Form")'
           range: string
         procedure_concept:
+          value: OMOP:4184832
+        procedure_status:
           populated_from: phv00203981
           value_mappings:
-            Y: OMOP:4184832
+            Y: PRESENT
+            N: ABSENT
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -53,12 +63,15 @@
         associated_participant:
           populated_from: phv00207191
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207191}) + ":ARIC EXAM 3")'
           range: string
         procedure_concept:
+          value: OMOP:4184832
+        procedure_status:
           populated_from: phv00207175
           value_mappings:
-            Y: OMOP:4184832
+            Y: PRESENT
+            N: ABSENT
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -69,12 +82,16 @@
         associated_participant:
           populated_from: phv00207252
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207252}) + ":ARIC EXAM 4")'
           range: string
         procedure_concept:
+          value: OMOP:4184832
+        procedure_status:
           populated_from: phv00207215
           value_mappings:
-            Y: OMOP:4184832
+            Y: PRESENT
+            N: ABSENT
+            U: UNKNOWN
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -85,12 +102,16 @@
         associated_participant:
           populated_from: phv00208902
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00208902}) + ":ARIC EXAM 1")'
           range: string
         procedure_concept:
+          value: OMOP:4044550
+        procedure_status:
           populated_from: phv00208853
           value_mappings:
-            Y: OMOP:4044550
+            Y: PRESENT
+            N: ABSENT
+            T: UNKNOWN
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -101,12 +122,16 @@
         associated_participant:
           populated_from: phv00208902
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00208902}) + ":ARIC EXAM 1")'
           range: string
         procedure_concept:
+          value: OMOP:4184832
+        procedure_status:
           populated_from: phv00208854
           value_mappings:
-            Y: OMOP:4184832
+            Y: PRESENT
+            N: ABSENT
+            T: UNKNOWN
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string

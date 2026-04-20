@@ -5,9 +5,7 @@
         associated_participant:
           populated_from: phv00204606
         associated_visit:
-          value: ARIC HOSPITAL FORM
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204606}) + ":ARIC Hospital Form")'
         observation_type:
           value: OMOP:43021859
         value_quantity:

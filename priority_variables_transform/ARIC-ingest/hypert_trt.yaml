@@ -5,12 +5,12 @@
         associated_participant:
           populated_from: phv00204812
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
           range: string
         drug_concept:
           expr: 'case(({phv00204798} == 1, "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
@@ -19,12 +19,12 @@
         associated_participant:
           populated_from: phv00204919
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204919}) + ":ARIC EXAM 3")'
           range: string
         drug_concept:
           expr: 'case(({phv00204913} == 1, "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
@@ -33,12 +33,12 @@
         associated_participant:
           populated_from: phv00207923
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207923}) + ":ARIC EXAM 1")'
           range: string
         drug_concept:
-          expr: 'case(({phv00207913} == 1, "ATC:C02"))'
+          expr: 'case(({phv00207913} == "Y", "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
@@ -47,12 +47,12 @@
         associated_participant:
           populated_from: phv00208012
         associated_visit:
-          value: ARIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00208012}) + ":ARIC EXAM 2")'
           range: string
         drug_concept:
-          expr: 'case(({phv00208001} == 1, "ATC:C02"))'
+          expr: 'case(({phv00208001} == "Y", "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
@@ -61,12 +61,12 @@
         associated_participant:
           populated_from: phv00208084
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00208084}) + ":ARIC EXAM 3")'
           range: string
         drug_concept:
-          expr: 'case(({phv00208067} == 1, "ATC:C02"))'
+          expr: 'case(({phv00208067} == "Y", "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
@@ -75,12 +75,12 @@
         associated_participant:
           populated_from: phv00208322
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00208322}) + ":ARIC EXAM 4")'
           range: string
         drug_concept:
-          expr: 'case(({phv00208296} == 1, "ATC:C02"))'
+          expr: 'case(({phv00208296} == "Y", "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
@@ -89,12 +89,12 @@
         associated_participant:
           populated_from: phv00209097
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00209097}) + ":ARIC EXAM 4")'
           range: string
         drug_concept:
-          expr: 'case(({phv00209061} == 1, "ATC:C02"))'
+          expr: 'case(({phv00209061} == "Y", "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
@@ -103,12 +103,12 @@
         associated_participant:
           populated_from: phv00296935
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00296935}) + ":ARIC EXAM 5")'
           range: string
         drug_concept:
           expr: 'case(({phv00506313} == 1, "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
@@ -117,12 +117,12 @@
         associated_participant:
           populated_from: phv00507300
         associated_visit:
-          value: ARIC EXAM 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
           range: string
         drug_concept:
           expr: 'case(({phv00507343} == 1, "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
@@ -131,12 +131,12 @@
         associated_participant:
           populated_from: phv00507300
         associated_visit:
-          value: ARIC EXAM 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
           range: string
         drug_concept:
           expr: 'case(({phv00507345} == 1, "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
@@ -145,12 +145,12 @@
         associated_participant:
           populated_from: phv00511942
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511942}) + ":ARIC EXAM 4")'
           range: string
         drug_concept:
           expr: 'case(({phv00511981} == 1, "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
@@ -159,12 +159,12 @@
         associated_participant:
           populated_from: phv00511942
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511942}) + ":ARIC EXAM 4")'
           range: string
         drug_concept:
           expr: 'case(({phv00512030} == 1, "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
@@ -173,12 +173,12 @@
         associated_participant:
           populated_from: phv00512039
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
           range: string
         drug_concept:
           expr: 'case(({phv00512187} == 1, "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
@@ -187,12 +187,12 @@
         associated_participant:
           populated_from: phv00512039
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
           range: string
         drug_concept:
           expr: 'case(({phv00512189} == 1, "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
@@ -201,12 +201,12 @@
         associated_participant:
           populated_from: phv00512222
         associated_visit:
-          value: ARIC EXAM 6
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
           range: string
         drug_concept:
           expr: 'case(({phv00512252} == 1, "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
@@ -215,12 +215,12 @@
         associated_participant:
           populated_from: phv00512222
         associated_visit:
-          value: ARIC EXAM 6
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
           range: string
         drug_concept:
           expr: 'case(({phv00512253} == 1, "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
@@ -229,12 +229,12 @@
         associated_participant:
           populated_from: phv00512222
         associated_visit:
-          value: ARIC EXAM 6
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
           range: string
         drug_concept:
           expr: 'case(({phv00512254} == 1, "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
@@ -243,10 +243,10 @@
         associated_participant:
           populated_from: phv00204812
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
           range: string
         drug_concept:
           expr: 'case(({phv00204754} == 1, "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
