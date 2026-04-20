@@ -7,7 +7,7 @@
         age_at_condition_start:
           expr: case((phv00113025 == 2, {phv00113026} * 365))
         associated_visit:
-          value: CARDIA YEAR 0
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113019}) + ":CARDIA YEAR 0")'
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -15,6 +15,7 @@
           value_mappings:
             '1': ABSENT
             '2': HISTORICAL
+            '8': UNKNOWN
             M: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
@@ -29,7 +30,7 @@
         age_at_condition_start:
           expr: case((phv00114389 == 2, {phv00114390} * 365))
         associated_visit:
-          value: CARDIA YEAR 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00114388}) + ":CARDIA YEAR 2")'
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -51,7 +52,7 @@
         age_at_condition_start:
           expr: case((phv00115429 == 2, {phv00115430} * 365))
         associated_visit:
-          value: CARDIA YEAR 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00115423}) + ":CARDIA YEAR 5")'
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -59,6 +60,7 @@
           value_mappings:
             '1': ABSENT
             '2': HISTORICAL
+            '8': UNKNOWN
             M: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
@@ -73,7 +75,7 @@
         age_at_condition_start:
           expr: case((phv00116960 == 2, {phv00116961} * 365))
         associated_visit:
-          value: CARDIA YEAR 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116953}) + ":CARDIA YEAR 7")'
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -81,6 +83,8 @@
           value_mappings:
             '1': ABSENT
             '2': HISTORICAL
+            '8': UNKNOWN
+            M: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
@@ -92,7 +96,7 @@
         associated_participant:
           populated_from: phv00117898
         associated_visit:
-          value: CARDIA YEAR 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00117898}) + ":CARDIA YEAR 7")'
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -112,7 +116,7 @@
         associated_participant:
           populated_from: phv00117898
         associated_visit:
-          value: CARDIA YEAR 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00117898}) + ":CARDIA YEAR 7")'
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -133,7 +137,7 @@
         age_at_condition_start:
           expr: case((phv00118434 == 2, {phv00118435} * 365))
         associated_visit:
-          value: CARDIA YEAR 10
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00118426}) + ":CARDIA YEAR 10")'
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -154,7 +158,7 @@
         age_at_condition_start:
           expr: case((phv00119809 == 2, {phv00119814} * 365))
         associated_visit:
-          value: CARDIA YEAR 15
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119801}) + ":CARDIA YEAR 15")'
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -174,7 +178,7 @@
         associated_participant:
           populated_from: phv00121257
         associated_visit:
-          value: CARDIA MEDICAL HISTORY
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121257}) + ":CARDIA MEDICAL HISTORY")'
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -193,7 +197,7 @@
         associated_participant:
           populated_from: phv00121454
         associated_visit:
-          value: CARDIA HOSPITALIZATIONS DIAGNOSIS
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121454}) + ":CARDIA HOSPITALIZATIONS DIAGNOSIS")'
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -212,7 +216,7 @@
         associated_participant:
           populated_from: phv00121473
         associated_visit:
-          value: CARDIA MEDICAL HISTORY
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121473}) + ":CARDIA MEDICAL HISTORY")'
         condition_concept:
           value: MONDO:0005068
         condition_status:

@@ -5,8 +5,8 @@
         associated_participant:
           populated_from: phv00118359
         associated_visit:
-          value: CARDIA YEAR 10
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00118359}) + ":CARDIA YEAR 10")'
         drug_concept:
           expr: case(({phv00118386} == 2, 'MeSH:D007328'))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION

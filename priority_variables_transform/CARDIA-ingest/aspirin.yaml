@@ -5,12 +5,12 @@
         associated_participant:
           populated_from: phv00116953
         associated_visit:
-          value: CARDIA YEAR 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116953}) + ":CARDIA YEAR 7")'
           range: string
         drug_concept:
           expr: case(({phv00117068} == 2, "RxCUI:1191"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
@@ -19,12 +19,12 @@
         associated_participant:
           populated_from: phv00118426
         associated_visit:
-          value: CARDIA YEAR 10
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00118426}) + ":CARDIA YEAR 10")'
           range: string
         drug_concept:
           expr: case(({phv00118548} == 2, "RxCUI:1191"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
@@ -33,10 +33,10 @@
         associated_participant:
           populated_from: phv00119801
         associated_visit:
-          value: CARDIA YEAR 15
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119801}) + ":CARDIA YEAR 15")'
           range: string
         drug_concept:
           expr: case(({phv00119943} == 2, "RxCUI:1191"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
