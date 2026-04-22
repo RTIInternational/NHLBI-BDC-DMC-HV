@@ -16,7 +16,8 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         associated_evidence:
-          - value: "hospital record abstraction"
+          value: "hospital record abstraction"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -38,7 +39,8 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         associated_evidence:
-          - value: "self-report questionnaire"
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -60,7 +62,8 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         associated_evidence:
-          - value: "self-report questionnaire"
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -82,7 +85,8 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         associated_evidence:
-          - value: "self-report questionnaire"
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -104,7 +108,8 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         associated_evidence:
-          - value: "self-report questionnaire"
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -126,7 +131,8 @@
         condition_provenance:
           expr: case(({phv00209715} == 0, 'PATIENT_SELF-REPORTED_CONDITION'), (True, 'CLINICAL_DIAGNOSIS'))
         associated_evidence:
-          - value: "self-report questionnaire"
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -148,7 +154,8 @@
         condition_provenance:
           expr: case(({phv00298008} == 0, 'PATIENT_SELF-REPORTED_CONDITION'), (True, 'CLINICAL_DIAGNOSIS'))
         associated_evidence:
-          - value: "self-report questionnaire"
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -169,7 +176,8 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         associated_evidence:
-          - value: "self-report questionnaire"
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
