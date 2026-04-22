@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00109768
         associated_visit:
-          value: CHS YEAR 9
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109768}) + ":CHS YEAR 9")'
         age_at_observation:
           expr: '{phv00109855} * 365' 
         observation_type:
@@ -33,8 +32,7 @@
         associated_participant:
           populated_from: phv00109768
         associated_visit:
-          value: CHS YEAR 9
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109768}) + ":CHS YEAR 9")'
         age_at_observation:
           expr: '{phv00109855} * 365'
         observation_type:
@@ -61,8 +59,7 @@
         associated_participant:
           populated_from: phv00109768
         associated_visit:
-          value: CHS YEAR 9
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109768}) + ":CHS YEAR 9")'
         age_at_observation:
           expr: '{phv00109855} * 365'
         observation_type:

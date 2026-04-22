@@ -1,0 +1,31 @@
+- class_derivations:
+    Demography:
+      populated_from: pht010057
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00429048
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00429048}) + ":LTRC Baseline")'
+        sex:
+          populated_from: phv00429050
+          value_mappings:
+            '1': OMOP:8507
+            '2': OMOP:8532
+            'UNK': UNKNOWN
+        ethnicity:
+          populated_from: phv00429052
+          value_mappings:
+            '1': OMOP:38003563
+            '2': OMOP:38003564
+            '3': UNKNOWN
+            '9': UNKNOWN
+        race:
+          populated_from: phv00429051
+          value_mappings:
+            '1': OMOP:8657
+            '2': OMOP:8515
+            '3': OMOP:8516
+            '4': OMOP:8557
+            '5': OMOP:8527
+            '6': OMOP:45880900
+            '9': OMOP:8552

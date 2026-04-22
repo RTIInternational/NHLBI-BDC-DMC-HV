@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00099663
         associated_visit:
-          value: CHS BASELINE 2
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00099663}) + ":CHS BASELINE 2")'
         observation_type:
           value: OBA:2041536
           range: string

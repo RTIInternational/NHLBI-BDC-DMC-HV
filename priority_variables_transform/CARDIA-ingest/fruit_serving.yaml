@@ -4,8 +4,8 @@
       slot_derivations:
         associated_participant: 
           populated_from: phv00112709 
-        associated_visit: 
-          value: CARDIA YEAR 0
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00112709}) + ":CARDIA YEAR 0")'
         observation_type: 
           value: OMOP:21493059
         value_quantity:
@@ -24,8 +24,8 @@
       slot_derivations:
         associated_participant: 
           populated_from: phv00116761
-        associated_visit: 
-          value: CARDIA YEAR 7
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116761}) + ":CARDIA YEAR 7")'
         observation_type: 
           value: OMOP:21493059
         value_quantity:
@@ -45,8 +45,8 @@
       slot_derivations:
         associated_participant: 
           populated_from: phv00116928
-        associated_visit: 
-          value: CARDIA YEAR 7
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116928}) + ":CARDIA YEAR 7")'
         observation_type: 
           value: OMOP:21493059
         value_quantity:
@@ -65,8 +65,8 @@
       slot_derivations:
         associated_participant: 
           populated_from: phv00112876
-        associated_visit: 
-          value: CARDIA YEAR 0
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00112876}) + ":CARDIA YEAR 0")'
         observation_type: 
           value: OMOP:21493059
         value_quantity:

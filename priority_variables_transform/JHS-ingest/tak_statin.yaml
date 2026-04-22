@@ -5,10 +5,10 @@
         associated_participant:
           populated_from: phv00401078
         associated_visit:
-          value: JHS Exam 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
           range: string
         drug_concept:
-          expr: case(({phv00401114} == 1, 'NDFRT:N0000175589'))
+          expr: 'case(({phv00401114} == 1, "ATC:C10A"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -19,10 +19,10 @@
         associated_participant:
           populated_from: phv00401273
         associated_visit:
-          value: JHS Exam 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401273}) + ":JHS Exam 2")'
           range: string
         drug_concept:
-          expr: case(({phv00401296} == 1, 'NDFRT:N0000175589'))
+          expr: 'case(({phv00401296} == 1, "ATC:C10A"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -33,10 +33,10 @@
         associated_participant:
           populated_from: phv00401370
         associated_visit:
-          value: JHS Exam 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
           range: string
         drug_concept:
-          expr: case(({phv00401397} == 1, 'NDFRT:N0000175589'))
+          expr: 'case(({phv00401397} == 1, "ATC:C10A"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string

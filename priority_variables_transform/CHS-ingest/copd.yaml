@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00100285
         associated_visit:
-          value: CHS BASELINE BOTH
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100285}) + ":CHS BASELINE BOTH")'
         condition_concept:
           value: MONDO:0005002
           range: string
@@ -28,8 +27,7 @@
         associated_participant:
           populated_from: phv00197394
         associated_visit:
-          value: CHS PSG 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197394}) + ":CHS PSG 1")'
         condition_concept:
           value: MONDO:0005002
           range: string

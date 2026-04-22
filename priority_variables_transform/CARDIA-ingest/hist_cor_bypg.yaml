@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00121257
         associated_visit:
-          value: CARDIA MEDICAL HISTORY
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121257}) + ":CARDIA MEDICAL HISTORY")'
           range: string
         procedure_concept:
           expr: case(({phv00121381} == 2, "OMOP:4336464"))
@@ -19,7 +19,7 @@
         associated_participant:
           populated_from: phv00121473
         associated_visit:
-          value: CARDIA MEDICAL HISTORY
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121473}) + ":CARDIA MEDICAL HISTORY")'
           range: string
         procedure_concept:
           expr: case(({phv00121601} == 2, "OMOP:4336464"))
