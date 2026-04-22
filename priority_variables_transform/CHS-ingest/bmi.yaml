@@ -7,9 +7,9 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
         age_at_observation:
-          expr: '{phv00098799} * 365'   
+          expr: '{phv00098799} * 365'
         observation_type:
-          value: OBA:1001085
+          value: OBA:2045455
           range: string
         value_quantity:
           object_derivations:
@@ -18,9 +18,9 @@
                 populated_from: pht001450
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00099351
+                    populated_from: phv00099468
                   unit:
-                    value: cm
+                    value: kg/m2
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -31,9 +31,9 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100285}) + ":CHS BASELINE BOTH")'
         age_at_observation:
-          expr: '{phv00100487} * 365'    
+          expr: '{phv00100487} * 365'
         observation_type:
-          value: OBA:1001085
+          value: OBA:2045455
           range: string
         value_quantity:
           object_derivations:
@@ -42,33 +42,9 @@
                 populated_from: pht001452
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00100385
+                    populated_from: phv00100386
                   unit:
-                    value: cm
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001475
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00102174
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00102174}) + ":CHS YEAR 11")'
-        age_at_observation:
-          expr: '{phv00102583} * 365'
-        observation_type:
-          value: OBA:1001085
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001475
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00102455
-                  unit:
-                    value: cm
+                    value: kg/m2
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -79,9 +55,9 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS BASELINE 2")'
         age_at_observation:
-          expr: '{phv00105622} * 365' 
+          expr: '{phv00105622} * 365'
         observation_type:
-          value: OBA:1001085
+          value: OBA:2045455
           range: string
         value_quantity:
           object_derivations:
@@ -90,9 +66,9 @@
                 populated_from: pht001490
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00105416
+                    populated_from: phv00105306
                   unit:
-                    value: cm
+                    value: kg/m2
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -102,10 +78,8 @@
           populated_from: phv00106520
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00106520}) + ":CHS YEAR 5 OLD")'
-        age_at_observation:
-          expr: '{phv00106844} * 365'  
         observation_type:
-          value: OBA:1001085
+          value: OBA:2045455
           range: string
         value_quantity:
           object_derivations:
@@ -114,9 +88,9 @@
                 populated_from: pht001491
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00106778
+                    populated_from: phv00106840
                   unit:
-                    value: cm
+                    value: kg/m2
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -129,7 +103,7 @@
         age_at_observation:
           expr: '{phv00109855} * 365'
         observation_type:
-          value: OBA:1001085
+          value: OBA:2045455
           range: string
         value_quantity:
           object_derivations:
@@ -138,7 +112,29 @@
                 populated_from: pht001495
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00110377
+                    populated_from: phv00110612
                   unit:
-                    value: cm
+                    value: kg/m2
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003700
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00198805
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
+        observation_type:
+          value: OBA:2045455
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003700
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00198926
+                  unit:
+                    value: kg/m2
                     range: string

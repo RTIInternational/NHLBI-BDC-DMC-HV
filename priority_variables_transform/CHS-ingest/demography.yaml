@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00098771
         associated_visit:
-          value: CHS BASELINE 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
         sex:
           populated_from: phv00098797
           value_mappings:
@@ -16,7 +16,7 @@
                   ({phv00099434} == 1, "OMOP:38003563"),
                   ({phv00098800} == "MEXICAN", "OMOP:38003563"),
                   ({phv00098800} == "HISPANIC", "OMOP:38003563"),
-                  (True, "OMOP:38003564")
+                  ({phv00099434} == 0, "OMOP:38003564")
                 )'
         race:
           expr: 'case(
@@ -24,11 +24,11 @@
                   ({phv00099569} == 2, "OMOP:8516"),
                   ({phv00099569} == 3, "OMOP:8657"),
                   ({phv00099569} == 4, "OMOP:8515"),
+                  ({phv00099569} == 5, "OMOP:8552"),
                   ({phv00098800} == "NEGRO", "OMOP:8516"),
-                  ({phv00098800} == "COLORED", "OMOP: 8516"),
+                  ({phv00098800} == "COLORED", "OMOP:8516"),
                   ({phv00098800} == "BLACK/INDIAN", "OMOP:45880900"),
-                  ({phv00098800} == "BLACK/AMER IND", "OMOP:45880900"),
-                  (True, "OMOP:8552")
+                  ({phv00098800} == "BLACK/AMER IND", "OMOP:45880900")
                 )'
 - class_derivations:
     Demography:
@@ -37,7 +37,7 @@
         associated_participant:
           populated_from: phv00100285
         associated_visit:
-          value: CHS BASELINE BOTH
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100285}) + ":CHS BASELINE BOTH")'
         sex:
           populated_from: phv00100302
           value_mappings:
@@ -58,18 +58,12 @@
         associated_participant:
           populated_from: phv00100808
         associated_visit:
-          value: CHS EVENTS
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100808}) + ":CHS EVENTS")'
         sex:
           populated_from: phv00100810
           value_mappings:
             '1': OMOP:8507
             '0': OMOP:8532
-        race:
-          populated_from: phv00100837
-          value_mappings:
-            '1': OMOP:8527
-            '2': OMOP:8516
-            '3': OMOP:8552
 - class_derivations:
     Demography:
       populated_from: pht001490
@@ -77,7 +71,7 @@
         associated_participant:
           populated_from: phv00105099
         associated_visit:
-          value: CHS YEAR 5 NEW
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS BASELINE 2")'
         sex:
           populated_from: phv00105644
           value_mappings:
@@ -89,20 +83,13 @@
             '0': OMOP:38003564
             '1': OMOP:38003563
         race:
-          expr: 'case(
-                   ({phv00105645} == 2, "OMOP:8516"),
-                   ({phv00105117} == "AM OF AFRI DESC", "OMOP: 8516"),
-                   ({phv00105117} == "AFRO AMERICAN", "OMOP: 8516"),
-                   ({phv00105117} == "AFRICAN-AM", "OMOP: 8516"),
-                   ({phv00105645} == 3, "OMOP: 8657"),
-                   ({phv00105117} == "MIXED", "OMOP: 45880900"),
-                   ({phv00105117} == "BLACK/INDIAN", "OMOP:45880900"),
-                   ({phv00105117} == "PART HISPANIC", "OMOP: 45880900"),
-                   ({phv00105117} == "BIRACIAL", "OMOP: 45880900"),
-                   ({phv00105117} == "CHATAQUA/AFR/FR", "OMOP: 45880900"),
-                   ({phv00105117} == "MIX OF 1 & 2", "OMOP: 45880900"),
-                   (True, "OMOP: 8552")
-                )'
+          populated_from: phv00105645
+          value_mappings:
+            '1': OMOP:8527
+            '2': OMOP:8516
+            '3': OMOP:8657
+            '4': OMOP:8515
+            '5': OMOP:8552
 - class_derivations:
     Demography:
       populated_from: pht001491
@@ -110,7 +97,7 @@
         associated_participant:
           populated_from: phv00106520
         associated_visit:
-          value: CHS YEAR 5 OLD
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00106520}) + ":CHS YEAR 5 OLD")'
         sex:
           populated_from: phv00106545
           value_mappings:
@@ -123,7 +110,7 @@
         associated_participant:
           populated_from: phv00108303
         associated_visit:
-          value: CHS YEAR 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00108303}) + ":CHS YEAR 7")'
         sex:
           populated_from: phv00108393
           value_mappings:
@@ -136,7 +123,7 @@
         associated_participant:
           populated_from: phv00109056
         associated_visit:
-          value: CHS YEAR 8
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109056}) + ":CHS YEAR 8")'
         sex:
           populated_from: phv00109144
           value_mappings:
@@ -149,7 +136,7 @@
         associated_participant:
           populated_from: phv00109768
         associated_visit:
-          value: CHS YEAR 9
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109768}) + ":CHS YEAR 9")'
         sex:
           populated_from: phv00109854
           value_mappings:

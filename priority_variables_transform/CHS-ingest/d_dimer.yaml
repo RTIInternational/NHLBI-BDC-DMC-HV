@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00098763
         associated_visit:
-          value: CHS BASELINE
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098763}) + ":CHS BASELINE")'
         age_at_observation:
           expr: '{phv00100487} * 365'   
         observation_type:
@@ -30,8 +29,7 @@
         associated_participant:
           populated_from: phv00098763
         associated_visit:
-          value: CHS BASELINE
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098763}) + ":CHS BASELINE")'
         age_at_observation:
           expr: '{phv00100487} * 365'     
         observation_type:
@@ -55,8 +53,7 @@
         associated_participant:
           populated_from: phv00100683
         associated_visit:
-          value: CHS DDIM
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100683}) + ":CHS DDIM")'
         observation_type:
           value: OMOP:37393605
           range: string
@@ -64,10 +61,10 @@
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht001449
+                populated_from: pht001457
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00100683
+                    populated_from: phv00100687
                   unit:
                     value: mg/L
                     range: string

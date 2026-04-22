@@ -5,34 +5,7 @@
         associated_participant:
           populated_from: phv00099663
         associated_visit:
-          value: CHS BASELINE 2
-          range: string
-        observation_type:
-          value: OBA:VT0000181
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001451
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00100043
-                  unit:
-                    value: mg/dL
-                    range: string
-        method_type:
-          value: unadjusted calculated
-          range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001451
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00099663
-        associated_visit:
-          value: CHS BASELINE 2
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00099663}) + ":CHS BASELINE 2")'
         observation_type:
           value: OBA:VT0000181
           range: string
@@ -57,8 +30,7 @@
         associated_participant:
           populated_from: phv00100285
         associated_visit:
-          value: CHS BASELINE BOTH
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100285}) + ":CHS BASELINE BOTH")'
         age_at_observation:
           expr: '{phv00100487} * 365'
         observation_type:
@@ -85,38 +57,9 @@
         associated_participant:
           populated_from: phv00105099
         associated_visit:
-          value: CHS YEAR 5 NEW
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS BASELINE 2")'
         age_at_observation:
-          expr: '({phv00105116} * 365) + 1825'
-        observation_type:
-          value: OBA:VT0000181
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001490
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00106415
-                  unit:
-                    value: mg/dL
-                    range: string
-        method_type:
-          value: unadjusted calculated
-          range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001490
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00105099
-        associated_visit:
-          value: CHS YEAR 5 NEW
-          range: string
-        age_at_observation:
-          expr: '({phv00105116} * 365) + 1825'
+          expr: '{phv00105622} * 365'
         observation_type:
           value: OBA:VT0000181
           range: string
@@ -141,34 +84,7 @@
         associated_participant:
           populated_from: phv00106520
         associated_visit:
-          value: CHS YEAR 5 OLD
-          range: string
-        observation_type:
-          value: OBA:VT0000181
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001491
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00106992
-                  unit:
-                    value: mg/dL
-                    range: string
-        method_type:
-          value: calculated
-          range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001491
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00106520
-        associated_visit:
-          value: CHS YEAR 5 OLD
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00106520}) + ":CHS YEAR 5 OLD")'
         age_at_observation:
           expr: '{phv00106844} * 365' 
         observation_type:
