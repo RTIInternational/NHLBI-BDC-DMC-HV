@@ -9,7 +9,7 @@
         age_at_observation:
           expr: '{phv00082639} * 365'
         observation_type:
-          value: OBA:1001085
+          value: OMOP:4154790
           range: string
         value_quantity:
           object_derivations:
@@ -18,9 +18,9 @@
                 populated_from: pht001111
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00082687
+                    populated_from: phv00083411
                   unit:
-                    value: cm
+                    value: mm[Hg]
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -33,7 +33,7 @@
         age_at_observation:
           expr: '{phv00084442} * 365'
         observation_type:
-          value: OBA:1001085
+          value: OMOP:4154790
           range: string
         value_quantity:
           object_derivations:
@@ -42,9 +42,9 @@
                 populated_from: pht001116
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00084486
+                    populated_from: phv00085741
                   unit:
-                    value: cm
+                    value: mm[Hg]
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -57,7 +57,7 @@
         age_at_observation:
           expr: '{phv00085773} * 365'
         observation_type:
-          value: OBA:1001085
+          value: OMOP:4154790
           range: string
         value_quantity:
           object_derivations:
@@ -66,9 +66,9 @@
                 populated_from: pht001118
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00085801
+                    populated_from: phv00086225
                   unit:
-                    value: cm
+                    value: mm[Hg]
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -81,7 +81,7 @@
         age_at_observation:
           expr: '{phv00086259} * 365'
         observation_type:
-          value: OBA:1001085
+          value: OMOP:4154790
           range: string
         value_quantity:
           object_derivations:
@@ -90,9 +90,9 @@
                 populated_from: pht001119
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00086301
+                    populated_from: phv00086708
                   unit:
-                    value: cm
+                    value: mm[Hg]
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -105,7 +105,7 @@
         age_at_observation:
           expr: '{phv00086727} * 365'
         observation_type:
-          value: OBA:1001085
+          value: OMOP:4154790
           range: string
         value_quantity:
           object_derivations:
@@ -114,9 +114,33 @@
                 populated_from: pht001120
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00086754
+                    populated_from: phv00087030
                   unit:
-                    value: cm
+                    value: mm[Hg]
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001121
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087070
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
+        age_at_observation:
+          expr: '{phv00087071} * 365'
+        observation_type:
+          value: OMOP:4154790
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001121
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00087085
+                  unit:
+                    value: mm[Hg]
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -129,7 +153,7 @@
         age_at_observation:
           expr: '{phv00174588} * 365'
         observation_type:
-          value: OBA:1001085
+          value: OMOP:4154790
           range: string
         value_quantity:
           object_derivations:
@@ -138,9 +162,9 @@
                 populated_from: pht003086
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00174634
+                    populated_from: phv00175602
                   unit:
-                    value: cm
+                    value: mm[Hg]
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -153,7 +177,7 @@
         age_at_observation:
           expr: '{phv00176011} * 365'
         observation_type:
-          value: OBA:1001085
+          value: OMOP:4154790
           range: string
         value_quantity:
           object_derivations:
@@ -162,7 +186,7 @@
                 populated_from: pht003091
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00176057
+                    populated_from: phv00177036
                   unit:
-                    value: cm
+                    value: mm[Hg]
                     range: string

@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00087666
         associated_visit:
-          value: MESA_FamilySpirometry
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087666}) + ":MESA FAMILY SPIROMETRY")'
         age_at_observation:
           expr: '{phv00087678} * 365'
         observation_type:
@@ -33,8 +32,7 @@
         associated_participant:
           populated_from: phv00087666
         associated_visit:
-          value: MESA_FamilySpirometry
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087666}) + ":MESA FAMILY SPIROMETRY")'
         age_at_observation:
           expr: '{phv00087678} * 365'
         observation_type:
@@ -58,8 +56,7 @@
         associated_participant:
           populated_from: phv00087666
         associated_visit:
-          value: MESA_FamilySpirometry
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087666}) + ":MESA FAMILY SPIROMETRY")'
         age_at_observation:
           expr: '{phv00087678} * 365'
         observation_type:

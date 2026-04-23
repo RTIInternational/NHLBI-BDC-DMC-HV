@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00218989
         associated_visit:
-          value: MESA_AncilMesaEpigenomicCBC
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00218989}) + ":MESA EPIGENOMICS")'
         observation_type:
           value: OMOP:37208699
           range: string

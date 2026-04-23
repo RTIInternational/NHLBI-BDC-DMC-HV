@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00218989
         associated_visit:
-          value: MESA EPIGENOMICS
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00218989}) + ":MESA EPIGENOMICS")'
         observation_type:
           value: OBA:0003460
           range: string
@@ -17,7 +16,7 @@
                 populated_from: pht004319
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00218996
+                    expr: "case(({phv00218996} < 50, None), ({phv00218996} > 130, None), (True, {phv00218996}))"
                   unit:
                     value: fL
                     range: string
