@@ -1,0 +1,18 @@
+- class_derivations:
+    Participant:
+      populated_from: pht001447
+      slot_derivations:
+        identity:
+          expr: 'uuid5("https://w3id.org/bdchm/Person", str({phv00098755}) + ":CHS")'
+        member_of_research_study:
+          value: 'Cardiovascular Health Study (CHS) Cohort'
+        associated_person:
+          object_derivations:
+          - class_derivations:
+              Person:
+                populated_from: pht001447
+                slot_derivations:
+                  identity:
+                    expr: 'uuid5("https://w3id.org/bdchm/Person", str({phv00098755}))'
+                  species:
+                    value: NCBITaxon:9606

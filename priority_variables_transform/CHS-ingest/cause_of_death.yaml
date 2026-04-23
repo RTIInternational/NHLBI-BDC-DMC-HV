@@ -1,39 +1,4 @@
-- class_derivations:
-    Person:
-      populated_from: pht001464
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00100773
-        cause_of_death:
-          object_derivations:
-          - class_derivations:
-              CauseOfDeath:
-                populated_from: pht001464
-                slot_derivations:
-                  cause:
-                    populated_from: phv00100775
-                    value_mappings:
-                      '1': ICD10CM:I20-I25
-                      '2': ICD10CM:I60-I69
-                      '3': ICD10CM:I70
-                      '4': ICD10CM:I00-I99
-                  order:
-                    value: 1
-          - class_derivations:
-              CauseOfDeath:
-                populated_from: pht001466
-                slot_derivations:
-                  cause:
-                    populated_from: phv00100832
-                    value_mappings:
-                      '1': ICD10CM:I20-I25
-                      '2': ICD10CM:I60-I69
-                      '3': ICD10CM:I70
-                      '4': ICD10CM:I00-I99
-                  order:
-                    value: 1                    
-        vital_status:
-          populated_from: phv00100774
-          value_mappings:
-            '0': OMOP:4230556
-            '1': OMOP:434489
+[]
+# Person.vital_status and Person.cause_of_death are now defined in person.yaml,
+# which has the canonical Person identity (uuid5) and joins both pht001464 and pht001466.
+# This file is kept as a placeholder; it can be deleted once the migration is confirmed.
