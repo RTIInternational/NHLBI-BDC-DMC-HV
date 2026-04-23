@@ -537,3 +537,19 @@
           value: ATRIAL FIBRILLATION DATA
         associated_participant:
           populated_from: phv00100677
+
+# CHS YEAR 5 NEW -- YR5NEW (pht001490)
+- class_derivations:
+    Visit:
+      populated_from: pht001490
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
+        name:
+          value: CHS YEAR 5 NEW
+        associated_participant:
+          populated_from: phv00105099
+        age_at_visit_start:
+          expr: '{phv00105622} * 365'
+        age_at_visit_end:
+          expr: '{phv00105622} * 365'
