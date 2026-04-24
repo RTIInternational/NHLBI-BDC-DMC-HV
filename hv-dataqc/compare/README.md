@@ -1,0 +1,128 @@
+# compare — Source vs. Harmonized Output Comparison Engine
+
+Compares aggregate JSON summaries produced by `extract-source/` and
+`extract-harmonized/`. Runs checks C1–C10 and produces a Markdown + JSON
+report. Runs **outside the enclave** — no participant-level data.
+
+Re-run as often as needed as HV YAMLs evolve. Only the two JSON summary files
+and the current HV YAML checkout are required.
+
+---
+
+## Usage
+
+```bash
+# Full run with YAML-driven crosswalk
+python compare_source_output.py \
+    --source  spiromics_source_20250101T120000.json \
+    --output  spiromics_output_20250101T120000.json \
+    --cohort  SPIROMICS \
+    --yaml-dir /path/to/HV-repo/priority_variables_transform/SPIROMICS-ingest/ \
+    --cache-dir /path/to/data/dbgap-cache/spiromics/
+
+# Without YAML crosswalk (only C1/C8/C10 run)
+python compare_source_output.py \
+    --source  spiromics_source_20250101T120000.json \
+    --output  spiromics_output_20250101T120000.json \
+    --cohort  SPIROMICS
+
+# Custom tolerances and output paths
+python compare_source_output.py \
+    --source  src.json --output out.json --cohort CARDIA \
+    --yaml-dir /HV/priority_variables_transform/CARDIA-ingest/ \
+    --cache-dir /dbgap-cache/cardia/ \
+    --mean-tolerance 0.02 \
+    --report cardia_compare_report.md \
+    --json-report cardia_compare_results.json
+```
+
+### All Arguments
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `--source JSON` | Yes | Source summary JSON from extract_source_summaries.py |
+| `--output JSON` | Yes | Harmonized output JSON from extract_output_summaries.py |
+| `--cohort NAME` | Yes | Cohort name (used in report title) |
+| `--yaml-dir DIR` | Recommended | HV transform directory for YAML-driven crosswalk. Without this, C2–C7/C9 skip. |
+| `--cache-dir DIR` | Recommended | dbGaP cache dir for PHV→name resolution. Without this, PHV IDs are used as labels. |
+| `--clinical-ranges YAML` | No | Clinical ranges file (default: `config/clinical_ranges.yaml`) |
+| `--mean-tolerance FLOAT` | No | Relative tolerance for mean comparison (default: 0.01 = 1%) |
+| `--report FILE` | No | Markdown report output (default: `<cohort>_comparison_report.md`) |
+| `--json-report FILE` | No | JSON report output (default: `<cohort>_comparison_results.json`) |
+
+---
+
+## Check Descriptions
+
+| Check | Name | What It Tests |
+|-------|------|---------------|
+| C1 | N Preservation | Total participant count did not drop unexpectedly |
+| C2 | N Loss Detection | Per-variable valid-N: output should preserve source N |
+| C3 | Missing Value Accounting | Missing rate stable between source and output |
+| C4 | Mean Preservation | Continuous mean within tolerance (no unit conversion) |
+| C5 | Mean After Conversion | Mean correct after known unit conversion factor |
+| C6 | SD Preservation | Standard deviation within tolerance |
+| C7 | Categorical Distribution | Category percentages match (respects value_mappings from YAML) |
+| C8 | Visit N Distribution | Per-visit row counts preserved; UUID namespace fallback to totals |
+| C9 | Clinical Range | Output min/max within clinically plausible bounds |
+| C10 | Cross-Variable Consistency | SBP > DBP, FEV1 < FVC, etc. |
+
+### Status Codes
+
+| Status | Meaning |
+|--------|---------|
+| `PASS` | Check passed |
+| `WARN` | Minor deviation (within warning threshold) |
+| `FAIL` | Significant discrepancy requiring investigation |
+| `SKIP` | Check could not run (missing data, not applicable) |
+| `INFO` | Informational — e.g., unmatched variables |
+
+Exit code is `1` if any `FAIL` result exists, `0` otherwise.
+
+---
+
+## Variable Crosswalk Strategy
+
+When `--yaml-dir` is provided, the engine builds a source-to-output crosswalk
+by parsing YAML transform files:
+
+1. For each `class_derivations` block, extracts:
+   - `observation_type` / `condition_concept` value → output entity key
+   - `populated_from` PHV accessions → resolved to variable names via dbGaP cache
+   - `value_mappings` → used for C7 categorical translation
+   - `method_type` → appended as compound key (e.g., `measurement_OMOP:4241837|Pre-bronchodilator`)
+
+2. For `MeasurementObservationSet` (blood pressure, spirometry), recurses into
+   `observations.object_derivations` to extract each nested `MeasurementObservation`.
+
+3. Falls back to PHV ID match, then variable name match if YAML matching fails.
+
+---
+
+## Clinical Ranges Config
+
+`config/clinical_ranges.yaml` defines plausible and red-flag ranges per
+variable, matched by OBA/OMOP concept code or common variable name. Edit
+this file to add new variables or adjust thresholds.
+
+Format:
+```yaml
+variable_name:
+  unit: "mg/dL"
+  plausible_lo: 20
+  plausible_hi: 600
+  red_flag_lo: 5
+  red_flag_hi: 1000
+  oba_codes: ["OBA:VT0000188"]
+  omop_codes: []
+  common_phv_names: ["GLUCOSE", "FASTING_GLUCOSE"]
+```
+
+---
+
+## Requirements
+
+```
+pandas >= 1.3
+pyyaml >= 5.4
+```
