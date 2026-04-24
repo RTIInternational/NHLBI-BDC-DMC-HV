@@ -18,6 +18,7 @@ CHECKS:
   C8  Visit N Distribution   — per-visit row counts
   C9  Clinical Range         — output values within clinical_ranges.yaml bounds
   C10 Cross-Variable Consistency — SBP > DBP, FEV1 < FVC, etc.
+  C11 Variable Type Consistency  — source/output agree on continuous vs. categorical
 
 USAGE:
   python compare_source_output.py \\
@@ -705,6 +706,29 @@ def check_c5_mean_after_conversion(
                        {"expected": expected, "actual": out_mean, "factor": conversion_factor})
 
 
+def check_c11_type_consistency(src_var: dict, out_var: dict, var_name: str) -> CheckResult:
+    """C11: Variable type consistency between source and output.
+
+    Flags when source and output disagree on whether a variable is continuous
+    or categorical.  A mismatch usually means the pipeline recoded a continuous
+    value into buckets (or treated categorical codes as numbers), which is a
+    data-quality concern.
+    """
+    src_type = src_var.get("type")
+    out_type = out_var.get("type")
+
+    if not src_type or not out_type:
+        return CheckResult("C11", var_name, "SKIP", "Type information missing")
+    if src_type == out_type:
+        return CheckResult("C11", var_name, "PASS", f"Type consistent: {src_type}")
+
+    return CheckResult(
+        "C11", var_name, "WARN",
+        f"Type mismatch: source={src_type}, output={out_type}",
+        {"source_type": src_type, "output_type": out_type},
+    )
+
+
 def check_c6_sd_preservation(
     src_var: dict, out_var: dict, var_name: str, tolerance: float = 0.02,
 ) -> CheckResult:
@@ -1017,10 +1041,11 @@ def generate_markdown_report(
         "C5": "Mean After Conversion", "C6": "SD Preservation",
         "C7": "Categorical Distribution", "C8": "Visit N Distribution",
         "C9": "Clinical Range", "C10": "Cross-Variable Consistency",
+        "C11": "Variable Type Consistency",
     }
 
     _sort_key = {"FAIL": 0, "WARN": 1, "PASS": 2, "INFO": 3, "SKIP": 4}
-    for check_id in ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10"]:
+    for check_id in ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11"]:
         check_results = [r for r in results if r.check_id == check_id]
         if not check_results:
             continue
@@ -1170,6 +1195,7 @@ def main(argv: list[str] | None = None) -> None:
         all_results.append(check_c7_categorical_distribution(src_var, out_var, display_name,
                                                                value_map=value_map))
         all_results.append(check_c9_clinical_range(out_var, display_name, clinical_ranges))
+        all_results.append(check_c11_type_consistency(src_var, out_var, display_name))
 
     all_results.extend(check_c8_visit_distribution(source, output))
     all_results.extend(check_c10_cross_variable(output_vars, clinical_ranges))
@@ -1184,7 +1210,7 @@ def main(argv: list[str] | None = None) -> None:
             ))
     for ok in output_vars:
         if ok not in matched_out:
-            all_results.append(CheckResult("C2", ok, "INFO", "Output variable not matched in source"))
+            all_results.append(CheckResult("C2", ok, "WARN", "Output variable not matched in source — no source PHV traceable"))
 
     # Summary
     counts: dict[str, int] = {}
