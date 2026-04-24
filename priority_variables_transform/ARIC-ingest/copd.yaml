@@ -3,7 +3,7 @@
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Person", str({phv00207055}) + ":ARIC")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         condition_concept:
@@ -25,7 +25,7 @@
       populated_from: pht006479
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Person", str({phv00297979}) + ":ARIC")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00297979}) + ":ARIC")'
         age_at_condition_start:
           expr: case(({phv00298000} == 1, {phv00298001} * 365))
         associated_visit:
@@ -46,7 +46,7 @@
       populated_from: pht012825
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Person", str({phv00515894}) + ":ARIC")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00515894}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00515894}) + ":ARIC Cohort")'
         condition_concept:
