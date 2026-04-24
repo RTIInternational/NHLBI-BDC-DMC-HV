@@ -270,6 +270,7 @@ def categorical_stats(series: pd.Series) -> dict[str, Any]:
     total = len(series)
     n_valid = int(series.notna().sum())
     n_missing = int(series.isna().sum())
+    n_total = n_valid + n_missing
 
     counts = series.value_counts(dropna=True, sort=True)
     distribution: dict[str, dict] = {}
@@ -281,8 +282,10 @@ def categorical_stats(series: pd.Series) -> dict[str, Any]:
 
     return {
         "type": "categorical",
+        "n_total": n_total,
         "n_valid": n_valid,
         "n_missing": n_missing,
+        "pct_missing": round(n_missing / n_total * 100, 2) if n_total > 0 else 0.0,
         "n_distinct": int(series.nunique(dropna=True)),
         "distribution": distribution,
     }
@@ -293,11 +296,14 @@ def continuous_stats(series: pd.Series) -> dict[str, Any]:
     numeric = pd.to_numeric(series, errors="coerce")
     n_valid = int(numeric.notna().sum())
     n_missing = int(numeric.isna().sum())
+    n_total = n_valid + n_missing
 
     stats: dict[str, Any] = {
         "type": "continuous",
+        "n_total": n_total,
         "n_valid": n_valid,
         "n_missing": n_missing,
+        "pct_missing": round(n_missing / n_total * 100, 2) if n_total > 0 else 0.0,
     }
 
     if n_valid > 0:
