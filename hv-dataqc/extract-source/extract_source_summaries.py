@@ -175,6 +175,17 @@ def infer_variable_type(
 # ---------------------------------------------------------------------------
 
 _CONSENT_GROUP_RE = re.compile(r"_c\d+$", re.IGNORECASE)
+_PHT_RE = re.compile(r"\bpht(\d{6,7})\b", re.IGNORECASE)
+
+
+def _extract_pht_id(filename: str) -> str:
+    """Extract PHT accession string from a filename (e.g. 'pht002239').
+
+    Matches the ``phtNNNNNN`` pattern anywhere in the filename.  Falls back
+    to ``"unknown"`` when no PHT accession can be found.
+    """
+    m = _PHT_RE.search(filename)
+    return f"pht{m.group(1)}" if m else "unknown"
 
 
 def discover_source_dirs(root: Path, cohort: str) -> list[Path]:
@@ -206,23 +217,24 @@ def discover_source_dirs(root: Path, cohort: str) -> list[Path]:
 def load_source_data(
     source_dirs: list[Path],
     pht_filter: str | None = None,
+    participant_col: str | None = None,
 ) -> list[tuple[str, pd.DataFrame]]:
-    """Load and concatenate raw phenotype TSV files from consent-group directories.
+    """Load raw phenotype TSV files grouped by PHT accession.
 
-    Each element of *source_dirs* is a consent-group directory (e.g.
-    ``copdgene_phs000179_v7_c1/``).  Files are loaded from all consent groups
-    and concatenated into a single DataFrame, returned as a one-element list
-    so the caller's ``for pht_label, df in loaded`` loop works unchanged.
+    Files from multiple consent-group directories for the *same* PHT are
+    concatenated together.  MULTI files (whose names contain ``"MULTI"``) are
+    deduplicated on the participant-ID column to avoid counting the same
+    subject once per consent group.
 
-    File selection:
-      - Globs ``*.txt``, ``*.tsv``, ``*.txt.gz``, ``*.tsv.gz`` in each dir
-      - Skips files whose names start with ``.`` or contain ``Sample``
-      - If *pht_filter* is set, only loads files whose names contain that string
-
-    A ``_consent_group`` column is added to each row.
+    Returns ``[(pht_id, DataFrame), ...]`` — one entry per distinct PHT,
+    sorted by PHT accession.  The caller's
+    ``for pht_label, df in loaded`` loop works unchanged.
     """
     _GLOB_PATTERNS = ("*.txt", "*.tsv", "*.txt.gz", "*.tsv.gz")
-    frames: list[pd.DataFrame] = []
+
+    # Collect frames and MULTI flags keyed by PHT accession.
+    pht_frames: dict[str, list[pd.DataFrame]] = {}
+    pht_is_multi: dict[str, bool] = {}
 
     for src_dir in source_dirs:
         dir_files: list[Path] = []
@@ -234,6 +246,10 @@ def load_source_data(
                 continue
             if pht_filter and pht_filter not in f.name:
                 continue
+
+            pht_id = _extract_pht_id(f.name)
+            is_multi = "MULTI" in f.name.upper()
+
             try:
                 df = pd.read_csv(
                     f,
@@ -243,22 +259,56 @@ def load_source_data(
                     low_memory=False,
                 )
                 df["_consent_group"] = src_dir.name
-                frames.append(df)
-                log.info("  [%s] %s: %d rows", src_dir.name, f.name, len(df))
+                log.info(
+                    "  [%s] %s: %d rows (pht=%s%s)",
+                    src_dir.name, f.name, len(df), pht_id,
+                    ", MULTI" if is_multi else "",
+                )
+                pht_frames.setdefault(pht_id, []).append(df)
+                if is_multi:
+                    pht_is_multi[pht_id] = True
             except Exception as exc:
                 log.warning("  Could not load %s: %s", f, exc)
 
-    if not frames:
+    if not pht_frames:
         return []
 
-    combined = pd.concat(frames, ignore_index=True)
-    log.info(
-        "  Combined: %d total rows across %d file(s) from %d consent group(s)",
-        len(combined), len(frames), len(source_dirs),
-    )
-    # Return as single-element list; cohort label derived from first consent dir
-    cohort_label = source_dirs[0].name.rsplit("_c", 1)[0] if source_dirs else "combined"
-    return [(cohort_label, combined)]
+    result: list[tuple[str, pd.DataFrame]] = []
+    for pht_id in sorted(pht_frames):
+        frames = pht_frames[pht_id]
+        combined = pd.concat(frames, ignore_index=True)
+        row_count_before = len(combined)
+
+        if pht_is_multi.get(pht_id):
+            # MULTI files list the same subjects in multiple consent groups.
+            # Deduplicate to get exactly one row per participant.
+            subj_col = participant_col
+            if subj_col is None or subj_col not in combined.columns:
+                for candidate in ("dbgap_subject_id", "topmed_subject_id", "subject_id"):
+                    if candidate in combined.columns:
+                        subj_col = candidate
+                        break
+            if subj_col and subj_col in combined.columns:
+                combined = combined.drop_duplicates(subset=[subj_col], keep="first")
+                log.info(
+                    "  MULTI dedup %s: %d -> %d rows (on column '%s')",
+                    pht_id, row_count_before, len(combined), subj_col,
+                )
+            else:
+                log.warning(
+                    "  MULTI file %s: no participant-ID column found for dedup "
+                    "(pass --participant-col to specify one)",
+                    pht_id,
+                )
+
+        log.info(
+            "  PHT %s: %d rows from %d file(s)",
+            pht_id, len(combined), len(frames),
+        )
+        result.append((pht_id, combined))
+
+    log.info("  Loaded %d distinct PHT(s)", len(result))
+    return result
 
 
 # ---------------------------------------------------------------------------
@@ -491,7 +541,7 @@ def main(argv: list[str] | None = None) -> None:
         # ------------------------------------------------------------------
         # 2. Load all TSVs
         # ------------------------------------------------------------------
-        loaded = load_source_data(source_dirs, args.pht_filter)
+        loaded = load_source_data(source_dirs, args.pht_filter, args.participant_col)
         if not loaded:
             log.error("No data loaded — check --source-root / --source-dirs.")
             sys.exit(1)
@@ -517,19 +567,29 @@ def main(argv: list[str] | None = None) -> None:
         # 5. Summarize variables across all pht frames
         # ------------------------------------------------------------------
         variables: dict[str, dict] = {}
+        variables_by_pht: dict[str, dict] = {}   # per-PHT stats (Option B)
         total_rows_all = 0
+        total_rows_by_pht: dict[str, int] = {}
         total_participants: int | None = None
         rows_per_visit_combined: dict[str, int] = {}
 
         for pht_label, df in loaded:
             log.info("--- Processing %s (%d rows) ---", pht_label, len(df))
             total_rows_all += len(df)
+            total_rows_by_pht[pht_label] = len(df)
 
             # Visit stratification
             visit_col = args.visit_col
             if visit_col is None:
-                # Auto-detect common visit column names
-                for candidate in ("VISIT", "visit", "EXAM", "exam", "VISIT_LABEL"):
+                # Auto-detect common visit column names across cohorts:
+                # - VISIT / EXAM / VISIT_LABEL — generic / SPIROMICS / CHS
+                # - phase_study — COPDGene (P1, P2, P3)
+                # - visitnum — COPDGene numeric visit number
+                # - phase — generic phase column
+                for candidate in (
+                    "VISIT", "visit", "EXAM", "exam", "VISIT_LABEL",
+                    "phase_study", "visitnum", "phase",
+                ):
                     if candidate in df.columns:
                         visit_col = candidate
                         log.info("  Auto-detected visit column: %s", visit_col)
@@ -539,9 +599,20 @@ def main(argv: list[str] | None = None) -> None:
             for k, v in rpv.items():
                 rows_per_visit_combined[k] = rows_per_visit_combined.get(k, 0) + v
 
-            # Participant N
-            if args.participant_col and args.participant_col in df.columns:
-                n_unique_here = int(df[args.participant_col].nunique(dropna=True))
+            # Participant N — use explicit --participant-col if given, otherwise
+            # fall back to standard dbGaP system ID columns (case-insensitive).
+            # These columns are filtered from variable stats but are valid for
+            # counting unique participants.
+            part_col = args.participant_col
+            if part_col is None:
+                cols_lower = {c.lower(): c for c in df.columns}
+                for candidate in ("dbgap_subject_id", "topmed_subject_id", "subject_id"):
+                    if candidate in cols_lower:
+                        part_col = cols_lower[candidate]
+                        log.info("  Auto-detected participant column: %s", part_col)
+                        break
+            if part_col and part_col in df.columns:
+                n_unique_here = int(df[part_col].nunique(dropna=True))
                 if total_participants is None:
                     total_participants = n_unique_here
                 else:
@@ -580,6 +651,8 @@ def main(argv: list[str] | None = None) -> None:
                     summary["name"] = phv_name_map[col.lower()]
 
                 variables[entry_key] = summary
+                # Per-PHT storage for per-table disambiguation
+                variables_by_pht.setdefault(pht_label, {})[col_key] = summary
                 log.debug("  Summarized: %s (%s, n_valid=%d)", col, summary["type"], summary.get("n_valid", 0))
 
             log.info("  Running total variables: %d", len(variables))
@@ -597,7 +670,9 @@ def main(argv: list[str] | None = None) -> None:
                 "n_distinct_threshold": args.n_distinct_threshold,
             },
             "total_rows": total_rows_all,
+            "total_rows_by_pht": total_rows_by_pht,
             "rows_per_visit": rows_per_visit_combined,
+            "variables_by_pht": variables_by_pht,
             "variables": variables,
         }
         if total_participants is not None:

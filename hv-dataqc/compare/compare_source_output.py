@@ -114,6 +114,43 @@ def load_phv_name_map(cache_dir: Path) -> dict[str, str]:
     return phv_names
 
 
+def load_phv_to_pht_map(cache_dir: Path) -> dict[str, str]:
+    """Build PHV-accession -> PHT-accession map from dbGaP data-dict XML files.
+
+    Each ``*.data_dict.xml`` filename encodes the PHT accession (e.g.
+    ``phs000179.v7.pht002239.v8...data_dict.xml`` -> ``pht002239``).
+    Every ``<variable id="phvXXXXXX">`` element inside maps to that PHT.
+
+    Returns ``{phv_id: pht_id}`` (e.g. ``{"phv00169419": "pht002239"}``).
+    Returns empty dict when cache is unavailable.
+    """
+    phv_to_pht: dict[str, str] = {}
+    pheno_dir = cache_dir / "pheno_variable_summaries"
+    if not pheno_dir.exists():
+        return phv_to_pht
+
+    _pht_file_re = re.compile(r"\bpht(\d{6,7})\b", re.IGNORECASE)
+
+    for dd_file in sorted(pheno_dir.glob("*.data_dict.xml")):
+        m = _pht_file_re.search(dd_file.name)
+        if not m:
+            continue
+        pht_id = f"pht{m.group(1)}"
+        try:
+            tree = ET.parse(dd_file)
+            for var in tree.getroot().findall(".//variable"):
+                raw_id = var.get("id", "")
+                phv_id = raw_id.split(".")[0]   # strip version suffix
+                if phv_id.startswith("phv"):
+                    phv_to_pht[phv_id] = pht_id
+        except ET.ParseError:
+            pass
+
+    print(f"  PHV->PHT map: {len(phv_to_pht)} entries across "
+          f"{len(set(phv_to_pht.values()))} PHTs")
+    return phv_to_pht
+
+
 # ---------------------------------------------------------------------------
 # YAML crosswalk construction
 # ---------------------------------------------------------------------------
@@ -381,13 +418,19 @@ def build_variable_crosswalk(
     output_vars: dict,
     yaml_dir: Path | None = None,
     cache_dir: Path | None = None,
+    source_doc: dict | None = None,
 ) -> list[dict]:
-    """Build source ↔ output variable crosswalk.
+    """Build source <-> output variable crosswalk.
 
     Strategy (in priority order):
-    1. YAML-driven: PHV → concept code → entity key.
+    1. YAML-driven: PHV -> concept code -> entity key.
     2. PHV ID match: source key starts with "phv", check output metadata.
     3. Name match: source ``name`` == output ``bdc_label``.
+
+    When *source_doc* contains ``variables_by_pht`` and *cache_dir* provides a
+    PHV->PHT map, each YAML-matched entry gains a ``_resolved_src`` field with
+    stats drawn from the correct PHT table.  This eliminates false C2/C3
+    failures caused by the same variable appearing in multiple PHT files.
     """
     matches: list[dict] = []
     matched_src: set[str] = set()
@@ -396,8 +439,14 @@ def build_variable_crosswalk(
     # --- Strategy 1: YAML-driven ---
     if yaml_dir and yaml_dir.exists():
         phv_names: dict[str, str] = {}
+        phv_to_pht: dict[str, str] = {}
         if cache_dir and cache_dir.exists():
             phv_names = load_phv_name_map(cache_dir)
+            phv_to_pht = load_phv_to_pht_map(cache_dir)
+
+        variables_by_pht: dict[str, dict] = (
+            source_doc.get("variables_by_pht", {}) if source_doc else {}
+        )
 
         yaml_cw = build_yaml_crosswalk(yaml_dir, phv_names)
         print(f"  YAML crosswalk: {len(yaml_cw)} entries from {yaml_dir.name}")
@@ -431,6 +480,23 @@ def build_variable_crosswalk(
             if out_key in matched_out:
                 # Multi-source MOS: another source column already claimed this key
                 continue
+
+            # Resolve per-PHT source stats to avoid multi-table inflation.
+            phv_id = entry.get("phv_id", "")
+            if phv_id and variables_by_pht:
+                pht_id = phv_to_pht.get(phv_id)
+                if pht_id and pht_id in variables_by_pht:
+                    pht_vars = variables_by_pht[pht_id]
+                    # Try exact match first, then case-insensitive.
+                    resolved = pht_vars.get(src_key)
+                    if resolved is None:
+                        for k, v in pht_vars.items():
+                            if k.upper() == src_key.upper():
+                                resolved = v
+                                break
+                    if resolved is not None:
+                        entry["_resolved_src"] = resolved
+                        entry["_resolved_pht"] = pht_id
 
             matches.append(entry)
             matched_src.add(src_key)
@@ -1069,14 +1135,17 @@ def main(argv: list[str] | None = None) -> None:
         source_vars, output_vars,
         yaml_dir=yaml_dir,
         cache_dir=cache_dir,
+        source_doc=source,
     )
     print(f"Matched {len(crosswalk)} variable pairs")
     for m in crosswalk:
         method = m.get("match_method", "?")
         yaml_f = m.get("yaml_file", "")
         phv = m.get("phv_id", "")
+        resolved_pht = m.get("_resolved_pht", "")
         extra = f" [{yaml_f}]" if yaml_f else ""
         extra += f" ({phv})" if phv else ""
+        extra += f" -> {resolved_pht}" if resolved_pht else ""
         print(f"  {m['source_key']:<30} -> {m['output_key']:<40} [{method}]{extra}")
 
     # Run checks
@@ -1087,7 +1156,8 @@ def main(argv: list[str] | None = None) -> None:
     for match in crosswalk:
         src_key = match["source_key"]
         out_key = match["output_key"]
-        src_var = source_vars[src_key]
+        # Use per-PHT stats when available (eliminates multi-table inflation).
+        src_var = match.get("_resolved_src") or source_vars.get(src_key, {})
         out_var = output_vars[out_key]
         display_name = src_var.get("name", src_key)
         value_map = match.get("value_map")
