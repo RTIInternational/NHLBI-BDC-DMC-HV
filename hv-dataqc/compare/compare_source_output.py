@@ -351,11 +351,10 @@ def _extract_crosswalk_from_class_derivations(
                 )
 
         prefix = ENTITY_PREFIX.get(entity_class, f"{entity_class.lower()}_")
-        output_key = (
-            f"{prefix}{concept_code}|{method_type_val}"
-            if method_type_val
-            else f"{prefix}{concept_code}"
-        )
+        # Use bare concept code as key — the output extractor groups MeasurementObservation
+        # rows by observation_type only (no method_type suffix), so the crosswalk key must
+        # match that form.  method_type_val is retained as metadata only.
+        output_key = f"{prefix}{concept_code}"
 
         value_phvs = [p for p in primary_phvs if p["is_value_slot"]]
         primary = value_phvs[0] if value_phvs else primary_phvs[0]
@@ -412,6 +411,53 @@ def build_yaml_crosswalk(
                     )
 
     return crosswalk
+
+
+# ---------------------------------------------------------------------------
+# Output variable key normalization
+# ---------------------------------------------------------------------------
+
+_TUPLE_OBS_RE = re.compile(r"^\(\s*['\"]?([^'\"()]+?)['\"]?\s*,?\s*\)$")
+# Matches full output keys whose observation_type was serialized as a Python
+# singleton tuple: e.g.  measurement_('OMOP:4152194',)
+_TUPLE_KEY_RE = re.compile(r"^([a-z_]+)\('([^']+)',?\)$")
+
+
+def _norm_obs_type(s: str) -> str:
+    """Strip Python singleton-tuple notation from an observation_type string.
+
+    dm-bip occasionally serializes observation_type as a Python tuple repr
+    (e.g. ``('OMOP:4152194',)``) rather than a plain string.  This returns
+    the inner value, leaving already-clean strings unchanged.
+    """
+    m = _TUPLE_OBS_RE.match(s.strip())
+    return m.group(1) if m else s
+
+
+def _normalize_output_vars(raw: dict) -> dict:
+    """Normalize output variable keys and metadata produced by dm-bip.
+
+    Fixes two serialization quirks:
+    - Dict key contains prefixed tuple notation:
+      ``measurement_('OMOP:4152194',)``  ->  ``measurement_OMOP:4152194``
+    - The ``observation_type`` metadata field inside the variable dict
+      also carries the tuple string and must be cleaned so that C10
+      cross-variable lookups (which match on observation_type) work.
+    """
+    result: dict = {}
+    for key, val in raw.items():
+        if "(" in key:
+            m = _TUPLE_KEY_RE.match(key)
+            new_key = (m.group(1) + m.group(2)) if m else key
+        else:
+            new_key = key
+        if isinstance(val, dict):
+            obs = val.get("observation_type", "")
+            if isinstance(obs, str) and "(" in obs:
+                val = dict(val)
+                val["observation_type"] = _norm_obs_type(obs)
+        result[new_key] = val
+    return result
 
 
 def build_variable_crosswalk(
@@ -1145,7 +1191,7 @@ def main(argv: list[str] | None = None) -> None:
         output: dict = json.load(fh)
 
     source_vars = source.get("variables", {})
-    output_vars = output.get("variables", {})
+    output_vars = _normalize_output_vars(output.get("variables", {}))
     source_meta = source.get("metadata", {})
     output_meta = output.get("metadata", {})
 

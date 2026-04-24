@@ -110,6 +110,8 @@ def discover_mapped_data_dirs(output_root: Path, cohort: str) -> list[Path]:
     Sorted by consent group suffix for deterministic order.
     """
     mapped_dirs: list[Path] = []
+    # Build a filter token: "_COPDGene_Processed_" (case-insensitive match)
+    cohort_token = f"_{cohort}_Processed_".lower()
 
     for run_dir in sorted(output_root.iterdir()):
         if not run_dir.is_dir():
@@ -117,6 +119,8 @@ def discover_mapped_data_dirs(output_root: Path, cohort: str) -> list[Path]:
         if run_dir.name.lower().startswith("dataqc"):
             continue
         if not run_dir.name.upper().startswith("DMC_"):
+            continue
+        if cohort_token not in run_dir.name.lower():
             continue
 
         for bdchm_dir in sorted(run_dir.iterdir()):
@@ -528,6 +532,16 @@ def process_measurement_observation_sets(
             if not isinstance(obs, dict):
                 continue
             obs_type = obs.get("observation_type")
+            if not obs_type:
+                continue
+            # Normalize tuple-form observation_type — dm-bip occasionally stores
+            # these as Python singleton tuples: ('OMOP:4152194',) -> OMOP:4152194
+            if isinstance(obs_type, (list, tuple)):
+                obs_type = obs_type[0] if obs_type else None
+            elif isinstance(obs_type, str) and "(" in obs_type:
+                _t = re.match(r"^\(\s*['\"]?([^'\"()]+?)['\"]?\s*,?\s*\)$", obs_type.strip())
+                if _t:
+                    obs_type = _t.group(1)
             if not obs_type:
                 continue
             vq = obs.get("value_quantity", {})
