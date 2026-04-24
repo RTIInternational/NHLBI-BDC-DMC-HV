@@ -1210,7 +1210,7 @@ def main(argv: list[str] | None = None) -> None:
             ))
     for ok in output_vars:
         if ok not in matched_out:
-            all_results.append(CheckResult("C2", ok, "WARN", "Output variable not matched in source — no source PHV traceable"))
+            all_results.append(CheckResult("C2", ok, "FAIL", "Output variable not matched in source — no source PHV traceable"))
 
     # Summary
     counts: dict[str, int] = {}
