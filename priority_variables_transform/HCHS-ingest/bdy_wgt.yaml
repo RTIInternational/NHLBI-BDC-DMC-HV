@@ -1,8 +1,3 @@
-# Baseline measured weight — ANTA4 (phv00253218), n=11,807.
-# Recalled weight blocks (WHEA3A_KG at age 21, WHEA4A_KG at age 45,
-# WHEA5A_KG at age 65) REMOVED — they contaminated baseline extraction
-# via lower hardcoded age_at_observation values and are not priority
-# baseline variables. See QC comparison report for details.
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004715
@@ -26,4 +21,91 @@
                     populated_from: phv00253218
                   unit:
                     value: kg
-                    range: string                    
+                    range: string
+# Block 2: Recalled weight at age 21 -- WHEA3A_KG (phv00527442)
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004715
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00226250
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
+        age_at_observation:
+          value: 7665
+          range: integer
+        observation_type:
+          value: OBA:VT0001259
+          range: string
+        method_type:
+          value: weight recalled at age 21
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004715
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00527442
+                  unit:
+                    value: kg
+                    range: string
+# Block 3: Recalled weight at age 45 -- WHEA4A_KG (phv00527443)
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004715
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00226250
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
+        age_at_observation:
+          value: 16425
+          range: integer
+        observation_type:
+          value: OBA:VT0001259
+          range: string
+        method_type:
+          value: weight recalled at age 45
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004715
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00527443
+                  unit:
+                    value: kg
+                    range: string
+# Block 4: Recalled weight at age 65 -- WHEA5A_KG (phv00527444)
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004715
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00226250
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
+        age_at_observation:
+          value: 23725
+          range: integer
+        observation_type:
+          value: OBA:VT0001259
+          range: string
+        method_type:
+          value: weight recalled at age 65
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004715
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00527444
+                  unit:
+                    value: kg
+                    range: string

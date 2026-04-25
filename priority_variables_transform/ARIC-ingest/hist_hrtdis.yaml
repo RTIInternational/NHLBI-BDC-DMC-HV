@@ -3,7 +3,7 @@
       populated_from: pht004047
       slot_derivations:
         associated_participant:
-          populated_from: phv00203808
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00203808}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203808}) + ":ARIC Death Event")'
           range: string
@@ -18,6 +18,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "death investigation record"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -26,7 +29,7 @@
       populated_from: pht004047
       slot_derivations:
         associated_participant:
-          populated_from: phv00203808
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00203808}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203808}) + ":ARIC Death Event")'
           range: string
@@ -41,6 +44,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "death investigation record"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -49,7 +55,7 @@
       populated_from: pht004047
       slot_derivations:
         associated_participant:
-          populated_from: phv00203808
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00203808}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203808}) + ":ARIC Death Event")'
           range: string
@@ -64,6 +70,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "death investigation record"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -72,7 +81,7 @@
       populated_from: pht004053
       slot_derivations:
         associated_participant:
-          populated_from: phv00204295
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204295}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204295}) + ":ARIC Hospital Form")'
           range: string
@@ -88,6 +97,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "hospital record abstraction"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -96,7 +108,7 @@
       populated_from: pht004053
       slot_derivations:
         associated_participant:
-          populated_from: phv00204295
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204295}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204295}) + ":ARIC Hospital Form")'
           range: string
@@ -112,6 +124,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "hospital record abstraction"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -120,7 +135,7 @@
       populated_from: pht004053
       slot_derivations:
         associated_participant:
-          populated_from: phv00204295
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204295}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204295}) + ":ARIC Hospital Form")'
           range: string
@@ -135,6 +150,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "hospital record abstraction"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -143,7 +161,7 @@
       populated_from: pht004054
       slot_derivations:
         associated_participant:
-          populated_from: phv00204350
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204350}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204350}) + ":ARIC Death Event")'
           range: string
@@ -159,6 +177,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "informant interview"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -167,7 +188,7 @@
       populated_from: pht004063
       slot_derivations:
         associated_participant:
-          populated_from: phv00204812
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204812}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
           range: string
@@ -190,7 +211,7 @@
       populated_from: pht004063
       slot_derivations:
         associated_participant:
-          populated_from: phv00204812
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204812}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
           range: string
@@ -213,7 +234,7 @@
       populated_from: pht004064
       slot_derivations:
         associated_participant:
-          populated_from: phv00204919
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204919}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204919}) + ":ARIC EXAM 3")'
           range: string
@@ -236,7 +257,7 @@
       populated_from: pht004064
       slot_derivations:
         associated_participant:
-          populated_from: phv00204919
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204919}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204919}) + ":ARIC EXAM 3")'
           range: string
@@ -259,7 +280,7 @@
       populated_from: pht004064
       slot_derivations:
         associated_participant:
-          populated_from: phv00204919
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204919}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204919}) + ":ARIC EXAM 3")'
           range: string
@@ -274,6 +295,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "Definition 3"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -282,7 +306,7 @@
       populated_from: pht004067
       slot_derivations:
         associated_participant:
-          populated_from: phv00205057
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00205057}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00205057}) + ":ARIC EXAM 4")'
           range: string
@@ -298,6 +322,9 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -306,7 +333,7 @@
       populated_from: pht004067
       slot_derivations:
         associated_participant:
-          populated_from: phv00205057
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00205057}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00205057}) + ":ARIC EXAM 4")'
           range: string
@@ -322,6 +349,9 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -330,7 +360,7 @@
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from: phv00207055
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
@@ -345,6 +375,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "hospital record abstraction"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -353,7 +386,7 @@
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from: phv00207055
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
@@ -368,6 +401,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "hospital record abstraction"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -376,7 +412,7 @@
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from: phv00207055
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
@@ -391,6 +427,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "hospital record abstraction"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -399,7 +438,7 @@
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from: phv00207055
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
@@ -414,6 +453,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "hospital record abstraction"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -422,7 +464,7 @@
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from: phv00207055
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
@@ -437,6 +479,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "hospital record abstraction"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -445,7 +490,7 @@
       populated_from: pht006443
       slot_derivations:
         associated_participant:
-          populated_from: phv00296689
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00296689}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00296689}) + ":ARIC Cohort")'
           range: string
@@ -468,7 +513,7 @@
       populated_from: pht012813
       slot_derivations:
         associated_participant:
-          populated_from: phv00511942
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00511942}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511942}) + ":ARIC EXAM 4")'
           range: string
@@ -491,7 +536,7 @@
       populated_from: pht012813
       slot_derivations:
         associated_participant:
-          populated_from: phv00511942
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00511942}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511942}) + ":ARIC EXAM 4")'
           range: string
@@ -506,6 +551,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "Definition 3"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -514,7 +562,7 @@
       populated_from: pht012825
       slot_derivations:
         associated_participant:
-          populated_from: phv00515894
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00515894}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00515894}) + ":ARIC Cohort")'
           range: string
@@ -528,6 +576,9 @@
             '0': ABSENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        associated_evidence:
+          value: "Frailty deficit index item 3"
           range: string
         relationship_to_participant:
           value: ONESELF

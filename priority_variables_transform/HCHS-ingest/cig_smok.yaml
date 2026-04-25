@@ -1,12 +1,13 @@
-# Smoking status — uses CIGARETTE_USE (phv00226258), the derived 3-level
-# variable with 99.9% coverage (n=11,818, only 13 nulls).
+# Smoking status — split into two blocks to avoid linkml-map {variable}
+# null-propagation aborting the entire case() expression when TBEA3 is
+# NULL for never-smokers (skip-patterned: only asked if TBEA1=1).
 #
-# Previous implementation used raw TBEA1 (phv00258106) + TBEA3 (phv00258107)
-# split into two blocks. TBEA3 is skip-patterned (only asked if TBEA1=1),
-# so 7,036 never-smokers had NULL TBEA3 → 54.7% missing in output.
-#
-# CIGARETTE_USE values:   1=Never, 2=Former, 3=Current
+# TBEA1 (phv00258106): 0=No -> Never Smoked; 1=Yes -> check TBEA3
+# TBEA3 (phv00258107): 1=Daily, 2=Some days -> Current; 3=Not at all -> Former
 # OMOP codes verified against Athena 2026-03-23.
+#
+# Block 1: Never smokers (TBEA1=0). TBEA3 not referenced -- no NULL risk.
+# Block 2: Ever smokers (TBEA1=1). TBEA3 always populated for this group.
 - class_derivations:
     Observation:
       populated_from: pht004715
@@ -21,4 +22,19 @@
           value: OMOP:4282779
           range: string
         value_enum:
-          expr: 'case(({phv00226258} == 1, "OMOP:45883537"), ({phv00226258} == 2, "OMOP:45883458"), ({phv00226258} == 3, "OMOP:40766945"), (True, None))'
+          expr: 'case(({phv00258106} == 0, "OMOP:45883537"), (True, None))'
+- class_derivations:
+    Observation:
+      populated_from: pht004715
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00226250
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
+        age_at_observation:
+          expr: '{phv00226251} * 365'
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          expr: 'case(({phv00258106} == 1 and {phv00258107} == 1, "OMOP:40766945"), ({phv00258106} == 1 and {phv00258107} == 2, "OMOP:40766945"), ({phv00258106} == 1 and {phv00258107} == 3, "OMOP:45883458"), (True, None))'
