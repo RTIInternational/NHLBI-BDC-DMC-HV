@@ -1,6 +1,10 @@
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001459
+      joins:
+        pht001452:
+          source_key: phv00100690
+          lookup_key: phv00100285
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00100690}) + ":CHS")'
