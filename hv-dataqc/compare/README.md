@@ -122,6 +122,26 @@ The compare script validates this config at startup and prints non-fatal
 warnings for malformed ranges or cross-variable rules that reference undefined
 range names.
 
+### `config/thresholds.yaml`
+
+Controls the PASS / WARN / FAIL boundaries for statistical checks C1-C8.
+All thresholds are calibrated against COPDGene real-world data where
+cleanly-mapped variables have exact (d=0.000) preservation.
+
+| Check | Threshold param | Default | Old default | Effect |
+|-------|----------------|---------|-------------|--------|
+| C1 | `fail_pct` | 1.0% | 5.0% | Tighter FAIL on participant loss |
+| C2 | `pass_pct` / `warn_pct` | 0.5% / 2.0% | 1% / 5% | WARN and FAIL at lower N drift |
+| C3 | `pass_pp` / `warn_pp` | 0.5 pp / 3.0 pp | 1 pp / 5 pp | Earlier flag on missing rate change |
+| C4 | `pass_rel` / `warn_rel` | 0.1% / 1.0% | 1% / 5% | Pre-BD FEV1 drift now FAIL not WARN |
+| C5 | `pass_rel` | 0.1% | 1% | Tighter conversion check |
+| C6 | `pass_rel` / `warn_rel` | 0.2% / 1.0% | 2% / 10% | Tighter SD check |
+| C7 | `pass_pct` | 0.5 pp | 2.0 pp | Tighter categorical shift |
+| C8 | `warn_lo_ratio` / `warn_hi_ratio` | 0.95 / 1.05 | 0.90 / 1.10 | Tighter visit count band |
+
+Override any check's thresholds with `--thresholds /path/to/custom.yaml`.
+The custom file only needs to include the keys you want to override.
+
 Format:
 ```yaml
 variable_name:

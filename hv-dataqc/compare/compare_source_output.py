@@ -50,6 +50,7 @@ import yaml
 
 # Default clinical ranges config (relative to this script)
 _CONFIG_DIR = Path(__file__).resolve().parent / "config"
+_THRESHOLDS_PATH = _CONFIG_DIR / "thresholds.yaml"
 
 
 def _canonical_phv_id(raw_id: str) -> str:
@@ -149,6 +150,23 @@ def validate_clinical_ranges_config(clinical_ranges: dict) -> list[str]:
                     )
 
     return warnings
+
+
+def load_thresholds(path: Path | None = None) -> dict:
+    """Load statistical comparison thresholds from YAML, falling back to built-in defaults.
+
+    Built-in defaults match COPDGene-calibrated values.  Any subset of keys
+    can be overridden by supplying a custom YAML path via ``--thresholds``.
+    """
+    effective_path = path or _THRESHOLDS_PATH
+    if effective_path.exists():
+        with effective_path.open("r", encoding="utf-8") as fh:
+            cfg = yaml.safe_load(fh) or {}
+        print(f"Loaded thresholds from {effective_path.name}")
+        return cfg
+    if path is not None:
+        print(f"WARNING: Thresholds file not found: {effective_path} -- using built-in defaults")
+    return {}
 
 
 # ---------------------------------------------------------------------------
@@ -701,7 +719,9 @@ def build_variable_crosswalk(
 # Check implementations
 # ---------------------------------------------------------------------------
 
-def check_c1_n_preservation(source: dict, output: dict) -> list[CheckResult]:
+def check_c1_n_preservation(
+    source: dict, output: dict, fail_pct: float = 1.0
+) -> list[CheckResult]:
     """C1: Total participant count comparison."""
     src_n = source.get("total_participants", 0)
     out_n = output.get("total_participants", 0)
@@ -715,7 +735,7 @@ def check_c1_n_preservation(source: dict, output: dict) -> list[CheckResult]:
 
     if out_n < src_n:
         loss_pct = round((src_n - out_n) / src_n * 100, 1)
-        status = "FAIL" if loss_pct > 5 else "WARN"
+        status = "FAIL" if loss_pct > fail_pct else "WARN"
         return [CheckResult("C1", "_total", status,
                              f"Participant loss: {src_n} -> {out_n} ({loss_pct}%)",
                              {"source_n": src_n, "output_n": out_n, "loss_pct": loss_pct})]
@@ -725,7 +745,10 @@ def check_c1_n_preservation(source: dict, output: dict) -> list[CheckResult]:
                          {"source_n": src_n, "output_n": out_n})]
 
 
-def check_c2_n_loss(src_var: dict, out_var: dict, var_name: str) -> CheckResult:
+def check_c2_n_loss(
+    src_var: dict, out_var: dict, var_name: str,
+    pass_pct: float = 0.5, warn_pct: float = 2.0,
+) -> CheckResult:
     """C2: Per-variable valid-N comparison."""
     src_n = src_var.get("n_valid", 0)
     out_n = out_var.get("n_valid", 0)
@@ -736,15 +759,15 @@ def check_c2_n_loss(src_var: dict, out_var: dict, var_name: str) -> CheckResult:
         return CheckResult("C2", var_name, "PASS", f"N preserved: {src_n}")
 
     loss_pct = round((src_n - out_n) / src_n * 100, 1) if src_n > 0 else 0
-    if abs(loss_pct) <= 1:
+    if abs(loss_pct) <= pass_pct:
         return CheckResult("C2", var_name, "PASS",
-                           f"N within 1%: {src_n} -> {out_n}",
+                           f"N within {pass_pct}%: {src_n} -> {out_n}",
                            {"source_n": src_n, "output_n": out_n, "loss_pct": loss_pct})
-    if 0 < loss_pct <= 5:
+    if 0 < loss_pct <= warn_pct:
         return CheckResult("C2", var_name, "WARN",
                            f"Moderate N loss: {src_n} -> {out_n} ({loss_pct}%)",
                            {"source_n": src_n, "output_n": out_n, "loss_pct": loss_pct})
-    if loss_pct > 5:
+    if loss_pct > warn_pct:
         return CheckResult("C2", var_name, "FAIL",
                            f"Significant N loss: {src_n} -> {out_n} ({loss_pct}%)",
                            {"source_n": src_n, "output_n": out_n, "loss_pct": loss_pct})
@@ -754,7 +777,9 @@ def check_c2_n_loss(src_var: dict, out_var: dict, var_name: str) -> CheckResult:
 
 
 def check_c3_missing_accounting(
-    src_var: dict, out_var: dict, var_name: str
+    src_var: dict, out_var: dict, var_name: str,
+    pass_pp: float = 0.5, warn_pp: float = 3.0,
+    n_valid_pass_pct: float = 0.5, n_valid_warn_pct: float = 3.0,
 ) -> CheckResult:
     """C3: Missing value rate comparison.
 
@@ -776,10 +801,10 @@ def check_c3_missing_accounting(
                 return CheckResult("C3", var_name, "PASS",
                                    f"n_valid preserved: {src_valid}")
             diff_pct = abs(out_valid - src_valid) / src_valid * 100
-            if diff_pct <= 1:
+            if diff_pct <= n_valid_pass_pct:
                 return CheckResult("C3", var_name, "PASS",
-                                   f"n_valid within 1%: {src_valid} -> {out_valid}")
-            if diff_pct <= 5:
+                                   f"n_valid within {n_valid_pass_pct}%: {src_valid} -> {out_valid}")
+            if diff_pct <= n_valid_warn_pct:
                 return CheckResult("C3", var_name, "WARN",
                                    f"n_valid shifted: {src_valid} -> {out_valid} ({diff_pct:.1f}%)")
             return CheckResult("C3", var_name, "FAIL",
@@ -790,10 +815,10 @@ def check_c3_missing_accounting(
     out_pct = out_var.get("pct_missing", 0)
     diff = abs(out_pct - src_pct)
 
-    if diff <= 1.0:
+    if diff <= pass_pp:
         return CheckResult("C3", var_name, "PASS",
                            f"Missing rate stable: {src_pct}% -> {out_pct}%")
-    if diff <= 5.0:
+    if diff <= warn_pp:
         return CheckResult("C3", var_name, "WARN",
                            f"Missing rate changed: {src_pct}% -> {out_pct}% (d={diff:.1f}%)")
     return CheckResult("C3", var_name, "FAIL",
@@ -802,7 +827,8 @@ def check_c3_missing_accounting(
 
 
 def check_c4_mean_preservation(
-    src_var: dict, out_var: dict, var_name: str, tolerance: float = 0.01
+    src_var: dict, out_var: dict, var_name: str,
+    pass_rel: float = 0.001, warn_rel: float = 0.01,
 ) -> CheckResult:
     """C4: Continuous mean comparison (no unit conversion)."""
     if src_var.get("type") != "continuous" or out_var.get("type") != "continuous":
@@ -819,10 +845,10 @@ def check_c4_mean_preservation(
         return CheckResult("C4", var_name, "WARN", f"Source mean=0, output mean={out_mean}")
 
     rel_diff = abs(out_mean - src_mean) / abs(src_mean)
-    if rel_diff <= tolerance:
+    if rel_diff <= pass_rel:
         return CheckResult("C4", var_name, "PASS",
                            f"Mean preserved: {src_mean} -> {out_mean} (d={rel_diff:.4f})")
-    if rel_diff <= tolerance * 5:
+    if rel_diff <= warn_rel:
         return CheckResult("C4", var_name, "WARN",
                            f"Mean shifted: {src_mean} -> {out_mean} (d={rel_diff:.4f})",
                            {"source_mean": src_mean, "output_mean": out_mean})
@@ -833,7 +859,7 @@ def check_c4_mean_preservation(
 
 def check_c5_mean_after_conversion(
     src_var: dict, out_var: dict, var_name: str,
-    conversion_factor: float | None = None, tolerance: float = 0.01,
+    conversion_factor: float | None = None, pass_rel: float = 0.001,
 ) -> CheckResult:
     """C5: Mean comparison with a known unit conversion factor."""
     if conversion_factor is None:
@@ -851,7 +877,7 @@ def check_c5_mean_after_conversion(
         return CheckResult("C5", var_name, "SKIP", "Expected mean after conversion is 0")
 
     rel_diff = abs(out_mean - expected) / abs(expected)
-    if rel_diff <= tolerance:
+    if rel_diff <= pass_rel:
         return CheckResult("C5", var_name, "PASS",
                            f"Mean after x{conversion_factor}: "
                            f"{src_mean} -> {expected:.4f} (output={out_mean}, d={rel_diff:.4f})")
@@ -885,7 +911,8 @@ def check_c11_type_consistency(src_var: dict, out_var: dict, var_name: str) -> C
 
 
 def check_c6_sd_preservation(
-    src_var: dict, out_var: dict, var_name: str, tolerance: float = 0.02,
+    src_var: dict, out_var: dict, var_name: str,
+    pass_rel: float = 0.002, warn_rel: float = 0.01,
 ) -> CheckResult:
     """C6: Standard deviation comparison."""
     if src_var.get("type") != "continuous" or out_var.get("type") != "continuous":
@@ -902,10 +929,10 @@ def check_c6_sd_preservation(
         return CheckResult("C6", var_name, "WARN", f"Source SD=0, output SD={out_sd}")
 
     rel_diff = abs(out_sd - src_sd) / abs(src_sd)
-    if rel_diff <= tolerance:
+    if rel_diff <= pass_rel:
         return CheckResult("C6", var_name, "PASS",
                            f"SD preserved: {src_sd} -> {out_sd} (d={rel_diff:.4f})")
-    if rel_diff <= tolerance * 5:
+    if rel_diff <= warn_rel:
         return CheckResult("C6", var_name, "WARN",
                            f"SD shifted: {src_sd} -> {out_sd} (d={rel_diff:.4f})")
     return CheckResult("C6", var_name, "FAIL",
@@ -915,7 +942,7 @@ def check_c6_sd_preservation(
 
 def check_c7_categorical_distribution(
     src_var: dict, out_var: dict, var_name: str,
-    tolerance_pct: float = 2.0,
+    pass_pct: float = 0.5,
     value_map: dict | None = None,
 ) -> CheckResult:
     """C7: Categorical distribution comparison.
@@ -976,7 +1003,7 @@ def check_c7_categorical_distribution(
         src_pct = src_dist[cat].get("pct", 0)
         out_pct = out_dist[cat].get("pct", 0)
         diff = abs(out_pct - src_pct)
-        if diff > tolerance_pct:
+        if diff > pass_pct:
             mismatches.append({
                 "category": cat,
                 "source_n": src_dist[cat].get("n"),
@@ -1017,10 +1044,13 @@ def check_c7_categorical_distribution(
         return CheckResult("C7", var_name, "FAIL",
                            f"Missing categories in output: {missing}", detail)
     return CheckResult("C7", var_name, "WARN",
-                       f"{len(mismatches)} categories with >+/-{tolerance_pct}% shift", detail)
+                       f"{len(mismatches)} categories with >+/-{pass_pct}% shift", detail)
 
 
-def check_c8_visit_distribution(source: dict, output: dict) -> list[CheckResult]:
+def check_c8_visit_distribution(
+    source: dict, output: dict,
+    warn_lo_ratio: float = 0.95, warn_hi_ratio: float = 1.05,
+) -> list[CheckResult]:
     """C8: Visit-stratified row count comparison.
 
     When source and output use incompatible visit label namespaces (zero overlap),
@@ -1055,7 +1085,7 @@ def check_c8_visit_distribution(source: dict, output: dict) -> list[CheckResult]
                                 f"Total visits match: N={src_total} (label namespace fallback)",
                                 detail)]
         ratio = out_total / src_total if src_total > 0 else 0
-        status = "WARN" if 0.9 <= ratio <= 1.1 else "FAIL"
+        status = "WARN" if warn_lo_ratio <= ratio <= warn_hi_ratio else "FAIL"
         return [CheckResult("C8", "visit_TOTAL", status,
                              f"Total visits: {src_total} -> {out_total} (label namespace fallback)",
                              detail)]
@@ -1071,7 +1101,7 @@ def check_c8_visit_distribution(source: dict, output: dict) -> list[CheckResult]
                                        f"Visit {visit}: missing in output (source N={src_n})"))
         else:
             ratio = out_n / src_n if src_n > 0 else 0
-            status = "WARN" if 0.9 <= ratio <= 1.1 else "FAIL"
+            status = "WARN" if warn_lo_ratio <= ratio <= warn_hi_ratio else "FAIL"
             results.append(CheckResult("C8", f"visit_{visit}", status,
                                        f"Visit {visit}: {src_n} -> {out_n}",
                                        {"source_n": src_n, "output_n": out_n, "ratio": ratio}))
@@ -1436,8 +1466,8 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
     p.add_argument("--clinical-ranges", metavar="YAML",
                    help=f"Clinical ranges YAML (default: {_CONFIG_DIR / 'clinical_ranges.yaml'})")
-    p.add_argument("--mean-tolerance", type=float, default=0.01,
-                   help="Relative tolerance for mean comparison (default: 0.01 = 1%%)")
+    p.add_argument("--thresholds", metavar="YAML",
+                   help=f"Statistical thresholds YAML (default: {_THRESHOLDS_PATH})")
     p.add_argument("--report", metavar="FILE",
                    help="Markdown report output path "
                         "(default: <cohort>_comparison_report.md)")
@@ -1485,7 +1515,19 @@ def main(argv: list[str] | None = None) -> None:
         for warning in validate_clinical_ranges_config(clinical_ranges):
             print(f"WARNING: clinical ranges config: {warning}")
     else:
-        print(f"NOTE: Clinical ranges file not found: {cr_path} — C9/C10 will SKIP")
+        print(f"NOTE: Clinical ranges file not found: {cr_path} -- C9/C10 will SKIP")
+
+    # Load thresholds
+    thresholds_path = Path(args.thresholds) if args.thresholds else _THRESHOLDS_PATH
+    thresholds = load_thresholds(thresholds_path)
+    c1_t = thresholds.get("c1", {})
+    c2_t = thresholds.get("c2", {})
+    c3_t = thresholds.get("c3", {})
+    c4_t = thresholds.get("c4", {})
+    c5_t = thresholds.get("c5", {})
+    c6_t = thresholds.get("c6", {})
+    c7_t = thresholds.get("c7", {})
+    c8_t = thresholds.get("c8", {})
 
     # Load summaries
     print(f"\nLoading source summary : {args.source}")
@@ -1528,7 +1570,9 @@ def main(argv: list[str] | None = None) -> None:
     # Run checks
     all_results: list[CheckResult] = []
 
-    all_results.extend(check_c1_n_preservation(source, output))
+    all_results.extend(check_c1_n_preservation(
+        source, output, fail_pct=c1_t.get("fail_pct", 1.0),
+    ))
 
     for match in crosswalk:
         src_key = match["source_key"]
@@ -1539,17 +1583,40 @@ def main(argv: list[str] | None = None) -> None:
         display_name = src_var.get("name", src_key)
         value_map = match.get("value_map")
 
-        all_results.append(check_c2_n_loss(src_var, out_var, display_name))
-        all_results.append(check_c3_missing_accounting(src_var, out_var, display_name))
-        all_results.append(check_c4_mean_preservation(src_var, out_var, display_name, args.mean_tolerance))
-        all_results.append(check_c5_mean_after_conversion(src_var, out_var, display_name))
-        all_results.append(check_c6_sd_preservation(src_var, out_var, display_name))
-        all_results.append(check_c7_categorical_distribution(src_var, out_var, display_name,
-                                                               value_map=value_map))
+        all_results.append(check_c2_n_loss(
+            src_var, out_var, display_name,
+            pass_pct=c2_t.get("pass_pct", 0.5), warn_pct=c2_t.get("warn_pct", 2.0),
+        ))
+        all_results.append(check_c3_missing_accounting(
+            src_var, out_var, display_name,
+            pass_pp=c3_t.get("pass_pp", 0.5), warn_pp=c3_t.get("warn_pp", 3.0),
+            n_valid_pass_pct=c3_t.get("n_valid_pass_pct", 0.5),
+            n_valid_warn_pct=c3_t.get("n_valid_warn_pct", 3.0),
+        ))
+        all_results.append(check_c4_mean_preservation(
+            src_var, out_var, display_name,
+            pass_rel=c4_t.get("pass_rel", 0.001), warn_rel=c4_t.get("warn_rel", 0.01),
+        ))
+        all_results.append(check_c5_mean_after_conversion(
+            src_var, out_var, display_name,
+            pass_rel=c5_t.get("pass_rel", 0.001),
+        ))
+        all_results.append(check_c6_sd_preservation(
+            src_var, out_var, display_name,
+            pass_rel=c6_t.get("pass_rel", 0.002), warn_rel=c6_t.get("warn_rel", 0.01),
+        ))
+        all_results.append(check_c7_categorical_distribution(
+            src_var, out_var, display_name,
+            pass_pct=c7_t.get("pass_pct", 0.5), value_map=value_map,
+        ))
         all_results.append(check_c9_clinical_range(out_var, display_name, clinical_ranges, src_var=src_var))
         all_results.append(check_c11_type_consistency(src_var, out_var, display_name))
 
-    all_results.extend(check_c8_visit_distribution(source, output))
+    all_results.extend(check_c8_visit_distribution(
+        source, output,
+        warn_lo_ratio=c8_t.get("warn_lo_ratio", 0.95),
+        warn_hi_ratio=c8_t.get("warn_hi_ratio", 1.05),
+    ))
     all_results.extend(check_c10_cross_variable(output_vars, clinical_ranges))
 
     # Flag unmatched variables
@@ -1584,7 +1651,7 @@ def main(argv: list[str] | None = None) -> None:
             "generated_at": datetime.now(timezone.utc).isoformat(),
             "source_file": args.source,
             "output_file": args.output,
-            "mean_tolerance": args.mean_tolerance,
+            "thresholds_file": str(thresholds_path),
         },
         "summary": counts,
         "crosswalk": crosswalk,

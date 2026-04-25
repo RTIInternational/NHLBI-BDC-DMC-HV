@@ -1,0 +1,79 @@
+# hv-dataqc statistical comparison thresholds
+# =============================================
+# Controls PASS / WARN / FAIL boundaries for all statistical checks (C1-C8).
+# Clinical plausible-range bounds (C9) and cross-variable rules (C10) remain in
+# clinical_ranges.yaml.
+#
+# Calibration basis: COPDGene v12 compare run (2026-04-25)
+#   - 14 cleanly-mapped continuous variables: rel_diff = 0.0000 (exact)
+#   - 3 pre-bronchodilator spirometry variables: rel_diff = 0.012-0.022
+#     caused by known N-doubling defect (flagged by C3 FAIL at 100%)
+#   - Old 1%/5% thresholds were too loose: pre-BD drift only WARNed.
+#     New thresholds correctly escalate these to FAIL.
+#
+# Usage:
+#   python compare_source_output.py ... --thresholds /path/to/thresholds.yaml
+#   (without --thresholds, this file is loaded automatically from config/)
+#
+# All relative tolerances are decimal fractions (0.001 = 0.1%), NOT percentages.
+# Percentage-point values (miss rate, categorical pct) are plain numbers.
+
+# -- C1: Total participant count -------------------------------------------
+# Any participant loss triggers WARN; >fail_pct% triggers FAIL.
+# Exact match always = PASS regardless of this threshold.
+c1:
+  fail_pct: 1.0         # >1.0% loss -> FAIL  (was 5.0%)
+
+# -- C2: Per-variable valid-N -----------------------------------------------
+# |loss_pct| <= pass_pct  -> PASS
+# loss_pct in (pass_pct, warn_pct] -> WARN
+# loss_pct > warn_pct      -> FAIL
+# negative loss_pct (N gain) -> always WARN
+c2:
+  pass_pct: 0.5         # <=0.5% -> PASS   (was 1.0%)
+  warn_pct: 2.0         # <=2.0% -> WARN   (was 5.0%)
+
+# -- C3: Missing value rate (percentage points) -----------------------------
+# Two code paths:
+#   (a) When total-row denominators agree within 20%: compare pct_missing diff
+#   (b) When denominators diverge >20%: fall back to n_valid comparison
+c3:
+  # Path (a): percentage-point difference in missing rate
+  pass_pp: 0.5          # <=0.5 pp diff -> PASS   (was 1.0 pp)
+  warn_pp: 3.0          # <=3.0 pp diff -> WARN   (was 5.0 pp)
+  # Path (b): relative n_valid difference
+  n_valid_pass_pct: 0.5 # <=0.5% n_valid shift -> PASS   (was 1.0%)
+  n_valid_warn_pct: 3.0 # <=3.0% n_valid shift -> WARN   (was 5.0%)
+
+# -- C4: Mean preservation (relative difference) ----------------------------
+# rel_diff = |out_mean - src_mean| / |src_mean|
+# COPDGene clean variables: rel_diff = 0.000 (exact).
+# Pre-BD spirometry after N-doubling: rel_diff = 0.012-0.022 -> correctly FAIL.
+c4:
+  pass_rel: 0.001       # <=0.1% -> PASS   (was 1.0%)
+  warn_rel: 0.01        # <=1.0% -> WARN   (was 5.0%)
+
+# -- C5: Mean after unit conversion (relative difference) -------------------
+# No WARN tier -- any deviation beyond pass_rel is a FAIL.
+# Used for variables that undergo a known scalar unit conversion in the pipeline.
+c5:
+  pass_rel: 0.001       # <=0.1% -> PASS   (was 1.0%)
+
+# -- C6: Standard deviation preservation (relative difference) --------------
+# COPDGene: most SDs exact; fev1_fvc_pre SD drifts 1.9% (N-doubling artifact).
+c6:
+  pass_rel: 0.002       # <=0.2% -> PASS   (was 2.0%)
+  warn_rel: 0.01        # <=1.0% -> WARN   (was 10.0%)
+
+# -- C7: Categorical distribution (per-category percentage-point shift) ------
+# A category whose source/output pct differ by more than pass_pct is a mismatch.
+c7:
+  pass_pct: 0.5         # <=0.5 pp shift per category -> no mismatch   (was 2.0 pp)
+
+# -- C8: Visit row count ratio (output / source) ----------------------------
+# Exact match -> PASS. Otherwise:
+#   [warn_lo_ratio, warn_hi_ratio] -> WARN
+#   outside that band             -> FAIL
+c8:
+  warn_lo_ratio: 0.95   # was 0.90
+  warn_hi_ratio: 1.05   # was 1.10

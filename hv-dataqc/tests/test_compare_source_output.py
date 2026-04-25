@@ -15,8 +15,10 @@ sys.path.insert(0, str(COMPARE_DIR))
 
 from compare_source_output import (  # noqa: E402
     _json_safe,
+    check_c4_mean_preservation,
     check_c10_cross_variable,
     check_c7_categorical_distribution,
+    load_thresholds,
     validate_clinical_ranges_config,
 )
 
@@ -97,6 +99,25 @@ class CompareSourceOutputTests(unittest.TestCase):
         self.assertEqual(sanitized["ok"], 1.0)
         self.assertIsNone(sanitized["bad"])
         self.assertIsNone(sanitized["nested"][0])
+
+    def test_c4_tighter_thresholds_escalate_warn_to_fail(self) -> None:
+        """A 1.5% mean shift WARNs with old defaults but FAILs with tight thresholds."""
+        src = {"type": "continuous", "mean": 100.0, "n_valid": 1000}
+        out = {"type": "continuous", "mean": 101.5, "n_valid": 1000}  # 1.5% shift
+
+        # Old defaults: pass_rel=0.01 (1%), warn_rel=0.05 (5%) -> WARN
+        result_loose = check_c4_mean_preservation(src, out, "test", pass_rel=0.01, warn_rel=0.05)
+        self.assertEqual(result_loose.status, "WARN")
+
+        # Tight defaults: pass_rel=0.001 (0.1%), warn_rel=0.01 (1%) -> FAIL (1.5% > 1%)
+        result_tight = check_c4_mean_preservation(src, out, "test", pass_rel=0.001, warn_rel=0.01)
+        self.assertEqual(result_tight.status, "FAIL")
+
+    def test_load_thresholds_returns_empty_dict_for_nonexistent_path(self) -> None:
+        from pathlib import Path
+        result = load_thresholds(Path("/nonexistent/thresholds.yaml"))
+        self.assertIsInstance(result, dict)
+        self.assertEqual(len(result), 0)
 
 
 if __name__ == "__main__":
