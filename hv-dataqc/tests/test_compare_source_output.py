@@ -1,0 +1,103 @@
+"""Unit tests for HV-DataQC compare helpers.
+
+All fixtures are aggregate metadata only; no participant-level rows are used.
+"""
+
+from __future__ import annotations
+
+import sys
+import unittest
+from pathlib import Path
+
+
+COMPARE_DIR = Path(__file__).resolve().parents[1] / "compare"
+sys.path.insert(0, str(COMPARE_DIR))
+
+from compare_source_output import (  # noqa: E402
+    _json_safe,
+    check_c10_cross_variable,
+    check_c7_categorical_distribution,
+    validate_clinical_ranges_config,
+)
+
+
+class CompareSourceOutputTests(unittest.TestCase):
+    def test_c7_aggregates_many_source_categories_to_one_output_category(self) -> None:
+        src = {
+            "type": "categorical",
+            "distribution": {
+                "1": {"n": 2, "pct": 20.0},
+                "2": {"n": 3, "pct": 30.0},
+                "3": {"n": 5, "pct": 50.0},
+            },
+        }
+        out = {
+            "type": "categorical",
+            "distribution": {
+                "OMOP:A": {"n": 5, "pct": 50.0},
+                "OMOP:B": {"n": 5, "pct": 50.0},
+            },
+        }
+        result = check_c7_categorical_distribution(
+            src,
+            out,
+            "test categorical",
+            value_map={"1": "OMOP:A", "2": "OMOP:A", "3": "OMOP:B"},
+        )
+
+        self.assertEqual(result.status, "PASS")
+        by_cat = {row["category"]: row for row in result.detail["distribution_table"]}
+        self.assertEqual(by_cat["OMOP:A"]["source_n"], 5)
+        self.assertEqual(by_cat["OMOP:A"]["source_pct"], 50.0)
+
+    def test_c10_uses_config_codes_and_reports_less_than_as_less_or_equal(self) -> None:
+        clinical_ranges = {
+            "fev1": {"omop_codes": ["OMOP:FEV1"], "oba_codes": []},
+            "fvc": {"omop_codes": ["OMOP:FVC"], "oba_codes": []},
+            "_cross_variable_rules": {
+                "fev1_lt_fvc": {
+                    "description": "FEV1 is generally less than FVC",
+                    "check": "mean(FEV1) < mean(FVC)",
+                    "variables": ["fev1", "fvc"],
+                    "severity": "WARNING",
+                }
+            },
+        }
+        output_vars = {
+            "measurement_OMOP:FEV1": {"observation_type": "OMOP:FEV1", "mean": 2.0},
+            "measurement_OMOP:FVC": {"observation_type": "OMOP:FVC", "mean": 2.0},
+        }
+
+        results = check_c10_cross_variable(output_vars, clinical_ranges)
+
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].status, "PASS")
+        self.assertIn("<=", results[0].message)
+
+    def test_clinical_ranges_validation_warns_on_bad_cross_rule_reference(self) -> None:
+        warnings = validate_clinical_ranges_config(
+            {
+                "known": {
+                    "plausible_lo": 1,
+                    "plausible_hi": 2,
+                    "red_flag_lo": 0,
+                    "red_flag_hi": 3,
+                },
+                "_cross_variable_rules": {
+                    "bad": {"variables": ["known", "missing"]},
+                },
+            }
+        )
+
+        self.assertTrue(any("missing" in warning for warning in warnings))
+
+    def test_json_safe_converts_non_finite_floats_to_none(self) -> None:
+        sanitized = _json_safe({"ok": 1.0, "bad": float("nan"), "nested": [float("inf")]})
+
+        self.assertEqual(sanitized["ok"], 1.0)
+        self.assertIsNone(sanitized["bad"])
+        self.assertIsNone(sanitized["nested"][0])
+
+
+if __name__ == "__main__":
+    unittest.main()

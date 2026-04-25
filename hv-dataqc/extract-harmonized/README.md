@@ -16,6 +16,11 @@ Run this **inside the data enclave** after each pipeline execution.
   `id: expr: uuid5(...)`) to human-readable labels before building per-visit stats.
   Without this fix, by-visit stats would have UUID keys that can't be matched
   against source visit labels in the C8 check.
+- Visit labels prefer `name`, then `visit_type`, then `visit_category`, preserving
+  distinct timepoints when available.
+- Participant counts prefer `Demography.associated_participant`, then fall back to
+  `Participant`, `Person`, or associated participant columns on entity tables.
+- JSON is written atomically and non-finite numeric summaries are exported as `null`.
 - Discovers observation types, condition concepts, and value distributions
   directly from the TSV data — no YAML dependency.
 - Writes a per-pipeline-run JSON artifact (regenerate after each dm-bip run).

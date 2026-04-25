@@ -36,7 +36,9 @@ USAGE:
 from __future__ import annotations
 
 import argparse
+import ast
 import json
+import math
 import re
 import sys
 from datetime import datetime, timezone
@@ -48,6 +50,105 @@ import yaml
 
 # Default clinical ranges config (relative to this script)
 _CONFIG_DIR = Path(__file__).resolve().parent / "config"
+
+
+def _canonical_phv_id(raw_id: str) -> str:
+    """Return canonical PHV accession: lower-case, version suffix stripped."""
+    return str(raw_id or "").split(".")[0].lower()
+
+
+def _json_safe(value: Any) -> Any:
+    """Recursively convert non-finite floats to None before strict JSON writing."""
+    if isinstance(value, dict):
+        return {str(k): _json_safe(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_json_safe(v) for v in value]
+    if isinstance(value, float):
+        return value if math.isfinite(value) else None
+    return value
+
+
+def _write_json_atomic(path: Path, data: Any) -> None:
+    """Write strict JSON via temp file then atomic replace."""
+    tmp_path = path.with_name(f"{path.name}.tmp")
+    try:
+        with tmp_path.open("w", encoding="utf-8") as fh:
+            json.dump(_json_safe(data), fh, indent=2, default=str, allow_nan=False)
+        tmp_path.replace(path)
+    finally:
+        if tmp_path.exists():
+            tmp_path.unlink()
+
+
+def _write_text_atomic(path: Path, text: str) -> None:
+    """Write text via temp file then atomic replace."""
+    tmp_path = path.with_name(f"{path.name}.tmp")
+    try:
+        with tmp_path.open("w", encoding="utf-8") as fh:
+            fh.write(text)
+        tmp_path.replace(path)
+    finally:
+        if tmp_path.exists():
+            tmp_path.unlink()
+
+
+def _md_escape(value: Any) -> str:
+    """Escape values embedded in Markdown prose/tables."""
+    text = str(value).replace("\r", " ").replace("\n", " ")
+    return (
+        text.replace("\\", "\\\\")
+        .replace("|", "\\|")
+        .replace("`", "\\`")
+        .replace("*", "\\*")
+        .replace("_", "\\_")
+    )
+
+
+def validate_clinical_ranges_config(clinical_ranges: dict) -> list[str]:
+    """Return non-fatal validation warnings for clinical_ranges.yaml."""
+    warnings: list[str] = []
+    required_bounds = ("plausible_lo", "plausible_hi", "red_flag_lo", "red_flag_hi")
+    range_names = {k for k in clinical_ranges if not str(k).startswith("_")}
+
+    for name in sorted(range_names):
+        rng = clinical_ranges.get(name)
+        if not isinstance(rng, dict):
+            warnings.append(f"{name}: range definition is not a mapping")
+            continue
+        missing = [k for k in required_bounds if k not in rng]
+        if missing:
+            warnings.append(f"{name}: missing bound(s): {', '.join(missing)}")
+            continue
+        try:
+            plaus_lo = float(rng["plausible_lo"])
+            plaus_hi = float(rng["plausible_hi"])
+            red_lo = float(rng["red_flag_lo"])
+            red_hi = float(rng["red_flag_hi"])
+        except (TypeError, ValueError):
+            warnings.append(f"{name}: one or more bounds are not numeric")
+            continue
+        if plaus_lo > plaus_hi:
+            warnings.append(f"{name}: plausible_lo > plausible_hi")
+        if red_lo > plaus_lo:
+            warnings.append(f"{name}: red_flag_lo > plausible_lo")
+        if red_hi < plaus_hi:
+            warnings.append(f"{name}: red_flag_hi < plausible_hi")
+
+    rules = clinical_ranges.get("_cross_variable_rules", {})
+    if rules and not isinstance(rules, dict):
+        warnings.append("_cross_variable_rules: expected a mapping")
+    elif isinstance(rules, dict):
+        for rule_name, rule in sorted(rules.items()):
+            if not isinstance(rule, dict):
+                warnings.append(f"_cross_variable_rules.{rule_name}: expected a mapping")
+                continue
+            for var_name in rule.get("variables", []) or []:
+                if var_name not in range_names:
+                    warnings.append(
+                        f"_cross_variable_rules.{rule_name}: unknown variable reference {var_name!r}"
+                    )
+
+    return warnings
 
 
 # ---------------------------------------------------------------------------
@@ -103,13 +204,12 @@ def load_phv_name_map(cache_dir: Path) -> dict[str, str]:
         try:
             tree = ET.parse(dd_file)
             for var in tree.getroot().findall(".//variable"):
-                raw_id = var.get("id", "")
-                phv_id = raw_id.split(".")[0]   # strip version suffix
+                phv_id = _canonical_phv_id(var.get("id", ""))
                 name = (var.findtext("name") or "").strip()
                 if phv_id and name:
                     phv_names[phv_id] = name
-        except ET.ParseError:
-            pass
+        except ET.ParseError as exc:
+            print(f"  WARNING: Could not parse PHV name XML {dd_file.name}: {exc}")
 
     print(f"  PHV name map: {len(phv_names)} entries")
     return phv_names
@@ -140,12 +240,11 @@ def load_phv_to_pht_map(cache_dir: Path) -> dict[str, str]:
         try:
             tree = ET.parse(dd_file)
             for var in tree.getroot().findall(".//variable"):
-                raw_id = var.get("id", "")
-                phv_id = raw_id.split(".")[0]   # strip version suffix
+                phv_id = _canonical_phv_id(var.get("id", ""))
                 if phv_id.startswith("phv"):
                     phv_to_pht[phv_id] = pht_id
-        except ET.ParseError:
-            pass
+        except ET.ParseError as exc:
+            print(f"  WARNING: Could not parse PHV->PHT XML {dd_file.name}: {exc}")
 
     print(f"  PHV->PHT map: {len(phv_to_pht)} entries across "
           f"{len(set(phv_to_pht.values()))} PHTs")
@@ -395,7 +494,8 @@ def build_yaml_crosswalk(
         try:
             with yaml_file.open("r", encoding="utf-8") as fh:
                 docs = list(yaml.safe_load_all(fh))
-        except yaml.YAMLError:
+        except yaml.YAMLError as exc:
+            print(f"  WARNING: Could not parse YAML {yaml_file.name}: {exc}")
             continue
 
         for doc in docs:
@@ -430,6 +530,12 @@ def _norm_obs_type(s: str) -> str:
     (e.g. ``('OMOP:4152194',)``) rather than a plain string.  This returns
     the inner value, leaving already-clean strings unchanged.
     """
+    try:
+        parsed = ast.literal_eval(s.strip())
+        if isinstance(parsed, (list, tuple)) and len(parsed) == 1:
+            return str(parsed[0])
+    except (ValueError, SyntaxError):
+        pass
     m = _TUPLE_OBS_RE.match(s.strip())
     return m.group(1) if m else s
 
@@ -449,6 +555,9 @@ def _normalize_output_vars(raw: dict) -> dict:
         if "(" in key:
             m = _TUPLE_KEY_RE.match(key)
             new_key = (m.group(1) + m.group(2)) if m else key
+        elif key.endswith("]") and "_[" in key:
+            prefix, raw_obs = key.split("_", 1)
+            new_key = f"{prefix}_{_norm_obs_type(raw_obs)}"
         else:
             new_key = key
         if isinstance(val, dict):
@@ -825,6 +934,7 @@ def check_c7_categorical_distribution(
     # Translate using value_map
     if value_map:
         translated: dict[str, Any] = {}
+        translated_total = 0
         for cat, stats in src_dist.items():
             mapped = value_map.get(cat)
             if not mapped:
@@ -832,7 +942,19 @@ def check_c7_categorical_distribution(
                     mapped = value_map.get(str(int(float(cat))))
                 except (ValueError, OverflowError):
                     pass
-            translated[mapped if mapped else cat] = stats
+            new_cat = mapped if mapped else cat
+            existing = translated.setdefault(
+                new_cat,
+                {"n": 0, "pct": 0.0, "source_categories": []},
+            )
+            count = int(stats.get("n", 0) or 0)
+            existing["n"] += count
+            existing["source_categories"].append(cat)
+            translated_total += count
+        for stats in translated.values():
+            stats["pct"] = round(stats["n"] / translated_total * 100, 2) if translated_total else 0.0
+            if len(stats["source_categories"]) == 1:
+                stats.pop("source_categories", None)
         src_dist = translated
 
     # Normalize output keys — pipeline may serialize lists as "['OMOP:8527']"
@@ -988,9 +1110,9 @@ def check_c9_clinical_range(
     """C9: Output values within defined clinical plausible range.
 
     When src_var is provided, each violation message is annotated with:
-      [out+src]  — both source and output exceed the bound
-      [out only] — only the output exceeds the bound (transformation may have introduced issue)
-      [src only] — only the source exceeds the bound (pre-existing in raw data)
+            [out+src]  - both source and output exceed the bound
+            [out only] - only the output exceeds the bound (transformation may have introduced issue)
+            [src only] - only the source exceeds the bound (pre-existing in raw data)
     """
     if out_var.get("type") != "continuous":
         return CheckResult("C9", var_name, "SKIP", "Not continuous")
@@ -1067,7 +1189,7 @@ def check_c9_clinical_range(
 
 
 # Detects simple 2-variable directional checks: "mean(X) > mean(Y)" or "mean(X) < mean(Y)".
-# Rules using >=, <=, ≈, or multi-variable formulas do not match and are emitted as SKIP.
+# Rules using >=, <=, approximate equality, or multi-variable formulas do not match and are emitted as SKIP.
 _C10_SIMPLE_RE = re.compile(r"mean\([^)]+\)\s*([<>])\s*mean\([^)]+\)")
 
 
@@ -1077,10 +1199,10 @@ def check_c10_cross_variable(
     """C10: Cross-variable consistency driven by _cross_variable_rules in clinical_ranges.
 
     Rules with exactly 2 variables and a simple mean(X) > mean(Y) or mean(X) < mean(Y)
-    check expression are executed automatically.  Complex rules (>=, ≈, multi-variable
+    check expression are executed automatically.  Complex rules (>=, approximate equality, multi-variable
     formulas) emit SKIP and are intended for future implementation.
 
-    Concept codes are resolved from the per-range definitions in clinical_ranges —
+    Concept codes are resolved from the per-range definitions in clinical_ranges -
     no concept IDs are hardcoded in this function.
     """
     results: list[CheckResult] = []
@@ -1102,7 +1224,7 @@ def check_c10_cross_variable(
 
         operator = m.group(1)  # "<" or ">"
 
-        # Resolve concept codes from config — no hardcoded IDs here (A2)
+        # Resolve concept codes from config - no hardcoded IDs here (A2)
         range_a = clinical_ranges.get(variables[0])
         range_b = clinical_ranges.get(variables[1])
         if not range_a or not range_b:
@@ -1128,7 +1250,15 @@ def check_c10_cross_variable(
                       if v.get("observation_type") in codes_b), None)
 
         if not var_a or not var_b:
-            # Variables not present in this cohort's output — silent skip
+            missing = []
+            if not var_a:
+                missing.append(variables[0])
+            if not var_b:
+                missing.append(variables[1])
+            results.append(CheckResult(
+                "C10", rule_id, "SKIP",
+                f"Rule not applicable; required output variable(s) not found: {', '.join(missing)}"
+            ))
             continue
 
         mean_a = var_a.get("mean")
@@ -1145,18 +1275,20 @@ def check_c10_cross_variable(
 
         if operator == ">":
             passed = mean_a > mean_b
+            display_operator = ">"
         else:  # "<"
             passed = mean_a <= mean_b
+            display_operator = "<="
 
         if passed:
             results.append(CheckResult(
                 "C10", rule_id, "PASS",
-                f"{label_a} mean ({mean_a:.4g}) {operator} {label_b} mean ({mean_b:.4g})"
+                f"{label_a} mean ({mean_a:.4g}) {display_operator} {label_b} mean ({mean_b:.4g})"
             ))
         else:
             results.append(CheckResult(
                 "C10", rule_id, severity,
-                f"{label_a} mean ({mean_a:.4g}) NOT {operator} {label_b} mean ({mean_b:.4g})"
+                f"{label_a} mean ({mean_a:.4g}) NOT {display_operator} {label_b} mean ({mean_b:.4g})"
                 f" -- {description}"
             ))
 
@@ -1232,6 +1364,7 @@ def generate_markdown_report(
         extra_cats = set(r.detail.get("extra_categories", []))
         for row in table:
             cat = row["category"]
+            cat_label = _md_escape(cat)
             src_n = row.get("source_n", "")
             src_pct = f"{row['source_pct']:.1f}" if row.get("source_pct") is not None else ""
             out_n = row.get("output_n", "")
@@ -1243,7 +1376,7 @@ def generate_markdown_report(
             flag = " ⚠" if cat in mismatch_cats else (
                    " ✗" if cat in missing_cats else (
                    " ＋" if cat in extra_cats else ""))
-            sub.append(f"  | `{cat}`{flag} | {src_n} | {src_pct} | {out_n} | {out_pct} | {delta} |")
+            sub.append(f"  | {cat_label}{flag} | {src_n} | {src_pct} | {out_n} | {out_pct} | {delta} |")
         return sub
 
     _check_notes = {
@@ -1268,7 +1401,7 @@ def generate_markdown_report(
             lines.append("")
         for r in sorted(check_results, key=lambda x: _sort_key.get(x.status, 9)):
             icon = _STATUS_ICONS.get(r.status, r.status)
-            lines.append(f"- {icon} **{r.variable}**: {r.message}")
+            lines.append(f"- {icon} **{_md_escape(r.variable)}**: {_md_escape(r.message)}")
             if check_id == "C7" and r.status in ("PASS", "WARN", "FAIL", "INFO"):
                 lines.extend(_render_c7_detail(r))
         lines.append("")
@@ -1349,6 +1482,8 @@ def main(argv: list[str] | None = None) -> None:
         with cr_path.open("r", encoding="utf-8") as fh:
             clinical_ranges = yaml.safe_load(fh) or {}
         print(f"Loaded {len(clinical_ranges)} clinical range definitions from {cr_path.name}")
+        for warning in validate_clinical_ranges_config(clinical_ranges):
+            print(f"WARNING: clinical ranges config: {warning}")
     else:
         print(f"NOTE: Clinical ranges file not found: {cr_path} — C9/C10 will SKIP")
 
@@ -1439,8 +1574,7 @@ def main(argv: list[str] | None = None) -> None:
     # Write Markdown
     md = generate_markdown_report(all_results, cohort, source_meta, output_meta)
     report_path = Path(args.report or f"{cohort.lower()}_comparison_report.md")
-    with report_path.open("w", encoding="utf-8") as fh:
-        fh.write(md)
+    _write_text_atomic(report_path, md)
     print(f"\nMarkdown report : {report_path}")
 
     # Write JSON
@@ -1457,8 +1591,7 @@ def main(argv: list[str] | None = None) -> None:
         "results": [r.to_dict() for r in all_results],
     }
     json_path = Path(args.json_report or f"{cohort.lower()}_comparison_results.json")
-    with json_path.open("w", encoding="utf-8") as fh:
-        json.dump(json_report, fh, indent=2, default=str)
+    _write_json_atomic(json_path, json_report)
     print(f"JSON report     : {json_path}")
 
     n_fail = counts.get("FAIL", 0)

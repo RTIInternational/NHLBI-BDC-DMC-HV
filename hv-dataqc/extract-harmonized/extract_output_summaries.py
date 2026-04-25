@@ -43,10 +43,12 @@ from __future__ import annotations
 import argparse
 import ast
 import json
+import math
 import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 
@@ -63,6 +65,29 @@ ENTITY_FILES = {
     "Procedure": "Procedure.tsv",
     "Observation": "Observation.tsv",
 }
+
+
+def _json_safe(value: Any) -> Any:
+    """Recursively convert non-finite floats to None before strict JSON writing."""
+    if isinstance(value, dict):
+        return {str(k): _json_safe(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [_json_safe(v) for v in value]
+    if isinstance(value, float):
+        return value if math.isfinite(value) else None
+    return value
+
+
+def _write_json_atomic(path: Path, data: Any) -> None:
+    """Write strict JSON via temp file then atomic replace."""
+    tmp_path = path.with_name(f"{path.name}.tmp")
+    try:
+        with tmp_path.open("w", encoding="utf-8") as fh:
+            json.dump(_json_safe(data), fh, indent=2, default=str, allow_nan=False)
+        tmp_path.replace(path)
+    finally:
+        if tmp_path.exists():
+            tmp_path.unlink()
 
 
 # ---------------------------------------------------------------------------
@@ -154,6 +179,7 @@ def load_entity(mapped_data_dirs: list[Path], entity: str) -> pd.DataFrame | Non
         if tsv.exists():
             try:
                 df = pd.read_csv(tsv, sep="\t", low_memory=False)
+                df.columns = df.columns.astype(str).str.strip()
                 frames.append(df)
                 label = d.parent.parent.name
                 found_files.append((label, len(df)))
@@ -177,7 +203,7 @@ def load_entity(mapped_data_dirs: list[Path], entity: str) -> pd.DataFrame | Non
 def build_visit_id_to_label(visit_df: pd.DataFrame) -> dict[str, str]:
     """Build a {uuid_or_id: human_label} dict from the Visit.tsv entity.
 
-    Priority for the label column: visit_category > name.
+    Priority for the label column: name > visit_type > visit_category.
     Falls back to the id itself if neither is populated.
     """
     mapping: dict[str, str] = {}
@@ -185,8 +211,9 @@ def build_visit_id_to_label(visit_df: pd.DataFrame) -> dict[str, str]:
         return mapping
 
     label_col = (
-        "visit_category" if "visit_category" in visit_df.columns
-        else "name" if "name" in visit_df.columns
+        "name" if "name" in visit_df.columns
+        else "visit_type" if "visit_type" in visit_df.columns
+        else "visit_category" if "visit_category" in visit_df.columns
         else None
     )
     if label_col is None:
@@ -216,6 +243,14 @@ def resolve_visit_series(
     return series.map(
         lambda v: visit_id_to_label.get(str(v), v) if pd.notna(v) else v
     )
+
+
+def participant_count_from_entity(df: pd.DataFrame, preferred_cols: tuple[str, ...]) -> int:
+    """Return unique participant count from the first available preferred column."""
+    for col in preferred_cols:
+        if col in df.columns:
+            return int(df[col].nunique(dropna=True))
+    return 0
 
 
 # ---------------------------------------------------------------------------
@@ -436,14 +471,14 @@ def process_observations(df: pd.DataFrame) -> dict[str, dict]:
     if "observation_type" not in df.columns:
         return variables
 
-    value_col: str | None = None
-    for candidate in ["value_enum", "value_coded", "value_as_string", "value_as_concept_name"]:
-        if candidate in df.columns and df[candidate].notna().any():
-            value_col = candidate
-            break
-
     for obs_type, group in df.groupby("observation_type", dropna=False):
         key = str(obs_type) if pd.notna(obs_type) else "MISSING_OBS_TYPE"
+
+        value_col: str | None = None
+        for candidate in ["value_enum", "value_coded", "value_as_string", "value_as_concept_name"]:
+            if candidate in group.columns and group[candidate].notna().any():
+                value_col = candidate
+                break
 
         if value_col:
             summary = categorical_stats(group[value_col])
@@ -686,6 +721,7 @@ def main(argv: list[str] | None = None) -> None:
     datasets_loaded: list[str] = []
     entity_counts: dict[str, int] = {}
     rows_per_visit: dict[str, int] = {}
+    participant_count_candidates: dict[str, int] = {}
 
     # ------------------------------------------------------------------
     # 1. Visit — MUST be loaded first to build UUID→label map
@@ -702,8 +738,9 @@ def main(argv: list[str] | None = None) -> None:
 
         # Build rows_per_visit from Visit entity
         visit_cat_col = (
-            "visit_category" if "visit_category" in visit_df.columns
+            "name" if "name" in visit_df.columns
             else "visit_type" if "visit_type" in visit_df.columns
+            else "visit_category" if "visit_category" in visit_df.columns
             else None
         )
         if visit_cat_col:
@@ -728,6 +765,7 @@ def main(argv: list[str] | None = None) -> None:
             if "associated_participant" in dem_df.columns
             else len(dem_df)
         )
+        participant_count_candidates["Demography"] = n_participants
         print(f"    Total: {len(dem_df):,} rows | {n_participants:,} unique participants")
     else:
         print("    Not found")
@@ -741,6 +779,9 @@ def main(argv: list[str] | None = None) -> None:
     if meas_df is not None:
         datasets_loaded.append("MeasurementObservation")
         entity_counts["MeasurementObservation"] = len(meas_df)
+        participant_count_candidates["MeasurementObservation"] = participant_count_from_entity(
+            meas_df, ("associated_participant", "participant", "participant_id")
+        )
         mo_vars = process_measurements(meas_df, visit_id_to_label, args.by_visit)
         variables.update(mo_vars)
         n_types = (
@@ -763,6 +804,9 @@ def main(argv: list[str] | None = None) -> None:
     if meas_set_df is not None:
         datasets_loaded.append("MeasurementObservationSet")
         entity_counts["MeasurementObservationSet"] = len(meas_set_df)
+        participant_count_candidates["MeasurementObservationSet"] = participant_count_from_entity(
+            meas_set_df, ("associated_participant", "participant", "participant_id")
+        )
         mos_vars = process_measurement_observation_sets(meas_set_df, visit_id_to_label, args.by_visit)
         variables.update(mos_vars)
         print(f"    Total: {len(meas_set_df):,} rows | {len(mos_vars)} observation types extracted")
@@ -782,6 +826,9 @@ def main(argv: list[str] | None = None) -> None:
     if cond_df is not None:
         datasets_loaded.append("Condition")
         entity_counts["Condition"] = len(cond_df)
+        participant_count_candidates["Condition"] = participant_count_from_entity(
+            cond_df, ("associated_participant", "participant", "participant_id")
+        )
         cond_vars = process_conditions(cond_df, visit_id_to_label, args.by_visit)
         variables.update(cond_vars)
         print(f"    Total: {len(cond_df):,} rows | {len(cond_vars)} condition concepts")
@@ -797,6 +844,9 @@ def main(argv: list[str] | None = None) -> None:
     if obs_df is not None:
         datasets_loaded.append("Observation")
         entity_counts["Observation"] = len(obs_df)
+        participant_count_candidates["Observation"] = participant_count_from_entity(
+            obs_df, ("associated_participant", "participant", "participant_id")
+        )
         obs_vars = process_observations(obs_df)
         variables.update(obs_vars)
         print(f"    Total: {len(obs_df):,} rows | {len(obs_vars)} observation types")
@@ -812,6 +862,16 @@ def main(argv: list[str] | None = None) -> None:
         if ent_df is not None:
             datasets_loaded.append(entity)
             entity_counts[entity] = len(ent_df)
+            participant_count_candidates[entity] = participant_count_from_entity(
+                ent_df, ("id", "associated_participant", "participant", "participant_id")
+            ) or len(ent_df)
+
+    if n_participants == 0:
+        for source in ("Participant", "Person", "MeasurementObservation", "MeasurementObservationSet", "Condition", "Observation"):
+            if participant_count_candidates.get(source):
+                n_participants = participant_count_candidates[source]
+                print(f"  Participant count fallback from {source}: {n_participants:,}")
+                break
 
     # ------------------------------------------------------------------
     # 8. Write output JSON
@@ -825,6 +885,7 @@ def main(argv: list[str] | None = None) -> None:
             "mapped_data_dirs": [str(d) for d in mapped_dirs],
             "by_visit": args.by_visit,
             "uuid_map_size": len(visit_id_to_label),
+            "participant_count_candidates": participant_count_candidates,
         },
         "total_participants": n_participants,
         "total_rows": sum(entity_counts.values()),
@@ -834,8 +895,7 @@ def main(argv: list[str] | None = None) -> None:
         "variables": variables,
     }
 
-    with output_path.open("w", encoding="utf-8") as fh:
-        json.dump(output_doc, fh, indent=2, default=str)
+    _write_json_atomic(output_path, output_doc)
 
     print()
     print("=" * 60)

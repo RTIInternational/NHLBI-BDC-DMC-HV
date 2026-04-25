@@ -12,7 +12,7 @@ ranges, visit structure, and cross-variable consistency.
 |--------|--------|---------|-----------|
 | `extract-source/` | `extract_source_summaries.py` | Summarize raw dbGaP TSVs | **Inside enclave** |
 | `extract-harmonized/` | `extract_output_summaries.py` | Summarize dm-bip harmonized output | **Inside enclave** |
-| `compare/` | `compare_source_output.py` | Compare both summaries; run checks C1–C10 | Outside enclave |
+| `compare/` | `compare_source_output.py` | Compare both summaries; run checks C1-C11 | Outside enclave |
 
 ---
 
@@ -94,7 +94,7 @@ Both `extract_source_summaries.py` and `extract_output_summaries.py` write
 
 ---
 
-## Checks (C1–C10)
+## Checks (C1-C11)
 
 | Check | What it validates |
 |-------|------------------|
@@ -108,6 +108,17 @@ Both `extract_source_summaries.py` and `extract_output_summaries.py` write
 | C8 | Visit N distribution preserved |
 | C9 | Output values within clinical plausible range |
 | C10 | Cross-variable consistency (SBP > DBP, FEV1 < FVC) |
+| C11 | Source/output type consistency (continuous vs categorical) |
+
+Recent comparison report details:
+
+- C7 includes full source/output categorical distribution tables, with many-to-one
+  YAML value mappings aggregated before percentages are compared.
+- C9 annotates range findings as `[out+src]`, `[out only]`, or `[src only]` when
+  source min/max context is available.
+- C10 reads `_cross_variable_rules` from `clinical_ranges.yaml`; simple two-variable
+  mean comparisons run automatically, while formula rules are reported as `SKIP`
+  until implemented.
 
 ---
 

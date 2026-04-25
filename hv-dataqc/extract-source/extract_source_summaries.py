@@ -37,6 +37,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import math
 import os
 import re
 import sys
@@ -64,6 +65,34 @@ log.addHandler(_console_handler)
 log.propagate = False
 
 _file_handler: logging.FileHandler | None = None
+
+
+def _canonical_phv_id(raw_id: str) -> str:
+    """Return canonical PHV accession: lower-case, version suffix stripped."""
+    return str(raw_id or "").split(".")[0].lower()
+
+
+def _json_safe(value: Any) -> Any:
+    """Recursively convert non-finite floats to None before strict JSON writing."""
+    if isinstance(value, dict):
+        return {str(k): _json_safe(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [_json_safe(v) for v in value]
+    if isinstance(value, float):
+        return value if math.isfinite(value) else None
+    return value
+
+
+def _write_json_atomic(path: Path, data: Any) -> None:
+    """Write strict JSON via temp file then atomic replace."""
+    tmp_path = path.with_name(f"{path.name}.tmp")
+    try:
+        with tmp_path.open("w", encoding="utf-8") as fh:
+            json.dump(_json_safe(data), fh, indent=2, ensure_ascii=True, allow_nan=False)
+        tmp_path.replace(path)
+    finally:
+        if tmp_path.exists():
+            tmp_path.unlink()
 
 
 def _add_file_logging(log_path: Path) -> None:
@@ -258,6 +287,7 @@ def load_source_data(
                     na_values=["", "NA", ".", "NaN"],
                     low_memory=False,
                 )
+                df.columns = df.columns.astype(str).str.strip()
                 df["_consent_group"] = src_dir.name
                 log.info(
                     "  [%s] %s: %d rows (pht=%s%s)",
@@ -412,12 +442,12 @@ def load_phv_name_map(cache_dir: Path) -> dict[str, str]:
                 tree = ET.parse(xml_path)
                 root = xml_path.name  # for error messages only
                 for var_el in tree.getroot().findall(".//variable"):
-                    phv = var_el.get("id", "")
+                    phv = _canonical_phv_id(var_el.get("id", ""))
                     name_el = var_el.find("name")
                     if phv and name_el is not None and name_el.text:
                         name_map[phv] = name_el.text.strip()
             except Exception as exc:
-                log.debug("Skipping %s: %s", xml_path.name, exc)
+                log.warning("Skipping PHV name XML %s: %s", xml_path.name, exc)
     except Exception as exc:
         log.warning("Could not load PHV names: %s", exc)
 
@@ -571,6 +601,7 @@ def main(argv: list[str] | None = None) -> None:
         total_rows_all = 0
         total_rows_by_pht: dict[str, int] = {}
         total_participants: int | None = None
+        participant_ids: set[str] = set()
         rows_per_visit_combined: dict[str, int] = {}
 
         for pht_label, df in loaded:
@@ -613,6 +644,7 @@ def main(argv: list[str] | None = None) -> None:
                         break
             if part_col and part_col in df.columns:
                 n_unique_here = int(df[part_col].nunique(dropna=True))
+                participant_ids.update(str(v) for v in df[part_col].dropna().unique())
                 if total_participants is None:
                     total_participants = n_unique_here
                 else:
@@ -657,6 +689,9 @@ def main(argv: list[str] | None = None) -> None:
 
             log.info("  Running total variables: %d", len(variables))
 
+        if participant_ids:
+            total_participants = len(participant_ids)
+
         # ------------------------------------------------------------------
         # 6. Build output document
         # ------------------------------------------------------------------
@@ -687,8 +722,7 @@ def main(argv: list[str] | None = None) -> None:
             out_path = output_dir / f"{cohort_lower}_source_{timestamp}.json"
 
         log.info("Writing %d variable summaries to %s", len(variables), out_path)
-        with out_path.open("w", encoding="utf-8") as fh:
-            json.dump(output_doc, fh, indent=2, ensure_ascii=True)
+        _write_json_atomic(out_path, output_doc)
 
         log.info("=== Done. Variables summarized: %d, Total rows: %d ===",
                  len(variables), total_rows_all)

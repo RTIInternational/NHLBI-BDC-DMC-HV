@@ -1,7 +1,7 @@
 # compare — Source vs. Harmonized Output Comparison Engine
 
 Compares aggregate JSON summaries produced by `extract-source/` and
-`extract-harmonized/`. Runs checks C1–C10 and produces a Markdown + JSON
+`extract-harmonized/`. Runs checks C1-C11 and produces a Markdown + JSON
 report. Runs **outside the enclave** — no participant-level data.
 
 Re-run as often as needed as HV YAMLs evolve. Only the two JSON summary files
@@ -66,6 +66,19 @@ python compare_source_output.py \
 | C8 | Visit N Distribution | Per-visit row counts preserved; UUID namespace fallback to totals |
 | C9 | Clinical Range | Output min/max within clinically plausible bounds |
 | C10 | Cross-Variable Consistency | SBP > DBP, FEV1 < FVC, etc. |
+| C11 | Variable Type Consistency | Source/output agree on continuous vs categorical |
+
+Notes:
+
+- C7 translates YAML `value_mappings` before comparison and aggregates many source
+    categories that map to the same harmonized output category.
+- C7 report sections include a full source/output distribution table for every
+    compared categorical variable.
+- C9 annotates violations with `[out+src]`, `[out only]`, or `[src only]` when the
+    source summary contains min/max values for the same range.
+- C10 is driven by `_cross_variable_rules` in `clinical_ranges.yaml`. Simple
+    two-variable mean comparisons run automatically; formula rules are emitted as
+    `SKIP` with an explanatory message until implemented.
 
 ### Status Codes
 
@@ -90,7 +103,7 @@ by parsing YAML transform files:
    - `observation_type` / `condition_concept` value → output entity key
    - `populated_from` PHV accessions → resolved to variable names via dbGaP cache
    - `value_mappings` → used for C7 categorical translation
-   - `method_type` → appended as compound key (e.g., `measurement_OMOP:4241837|Pre-bronchodilator`)
+    - `method_type` → retained as crosswalk metadata when present
 
 2. For `MeasurementObservationSet` (blood pressure, spirometry), recurses into
    `observations.object_derivations` to extract each nested `MeasurementObservation`.
@@ -104,6 +117,10 @@ by parsing YAML transform files:
 `config/clinical_ranges.yaml` defines plausible and red-flag ranges per
 variable, matched by OBA/OMOP concept code or common variable name. Edit
 this file to add new variables or adjust thresholds.
+
+The compare script validates this config at startup and prints non-fatal
+warnings for malformed ranges or cross-variable rules that reference undefined
+range names.
 
 Format:
 ```yaml

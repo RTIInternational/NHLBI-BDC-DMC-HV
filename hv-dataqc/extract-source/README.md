@@ -12,6 +12,8 @@ an aggregate-only JSON artifact. Run this **inside the data enclave**.
 - Auto-detects categorical vs. continuous based on dtype and n_distinct
 - Optionally stratifies row counts by a visit column
 - Optionally resolves PHV IDs to variable names from the local dbGaP cache
+- Counts the participant union internally and exports only the aggregate count
+- Writes strict JSON atomically; non-finite numeric summaries are exported as `null`
 - Writes a stable, YAML-version-independent JSON artifact
 
 The source JSON only needs to be re-run when the dbGaP study version changes
