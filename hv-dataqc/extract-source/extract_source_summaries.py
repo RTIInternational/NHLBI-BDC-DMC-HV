@@ -525,7 +525,7 @@ def main(argv: list[str] | None = None) -> None:
     if args.verbose:
         log.setLevel(logging.DEBUG)
 
-    timestamp = datetime.now().strftime("%Y%m%dT%H%M%S")
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     cohort_lower = args.cohort.lower()
 
     try:
