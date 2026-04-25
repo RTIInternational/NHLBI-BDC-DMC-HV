@@ -1,7 +1,7 @@
 # hv-dataqc clinical ranges configuration
 # =========================================
 # Per-variable plausible ranges for flagging impossible/suspicious values.
-# Used by check_clinical_ranges.py and compare_source_output.py.
+# Used by check_clinical_ranges.py and compare_source_harmonized.py.
 #
 # Format:
 #   variable_name:
@@ -412,7 +412,7 @@ age:
 
 # ── Cross-Variable Consistency Rules ─────────────────────────────────────────
 # These rules define expected relationships BETWEEN variables.
-# Used by check_yaml_consistency.py and compare_source_output.py.
+# Used by check_yaml_consistency.py and compare_source_harmonized.py.
 _cross_variable_rules:
   sbp_gt_dbp:
     description: "Systolic BP should always be greater than Diastolic BP"

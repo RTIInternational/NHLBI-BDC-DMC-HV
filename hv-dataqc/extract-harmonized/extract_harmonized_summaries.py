@@ -1,8 +1,8 @@
 """
-extract_output_summaries.py — HV-DataQC Component 2
+extract_harmonized_summaries.py — HV-DataQC Component 2
 
 Summarize dm-bip harmonized output TSV files for one cohort and export an
-aggregate-only JSON artifact compatible with compare_source_output.py.
+aggregate-only JSON artifact compatible with compare_source_harmonized.py.
 
 Design:
   - ZERO dependency on HV transform YAML files. Reads entity TSVs produced by
@@ -15,26 +15,26 @@ Design:
 
 Usage examples:
   # Auto-discover consent group dirs under a root
-  python extract_output_summaries.py \\
+  python extract_harmonized_summaries.py \\
       --cohort SPIROMICS \\
-      --output-root /enclave/SPIROMICS-BDCHM
+      --harmonized-root /enclave/SPIROMICS-BDCHM
 
   # Specify explicit mapped-data directories
-  python extract_output_summaries.py \\
+  python extract_harmonized_summaries.py \\
       --cohort SPIROMICS \\
       --mapped-data-dirs /enclave/SPIROMICS-BDCHM/.../mapped-data \\
                          /enclave/SPIROMICS-BDCHM/.../mapped-data
 
   # Include visit-stratified stats
-  python extract_output_summaries.py \\
+  python extract_harmonized_summaries.py \\
       --cohort SPIROMICS \\
-      --output-root /enclave/SPIROMICS-BDCHM \\
+      --harmonized-root /enclave/SPIROMICS-BDCHM \\
       --by-visit
 
   # Write to a specific directory
-  python extract_output_summaries.py \\
+  python extract_harmonized_summaries.py \\
       --cohort SPIROMICS \\
-      --output-root /enclave/SPIROMICS-BDCHM \\
+      --harmonized-root /enclave/SPIROMICS-BDCHM \\
       --output-dir /enclave/dataqc-runs/
 """
 
@@ -119,12 +119,12 @@ class _Tee:
 # Directory auto-discovery
 # ---------------------------------------------------------------------------
 
-def discover_mapped_data_dirs(output_root: Path, cohort: str) -> list[Path]:
-    """Walk *output_root* and return all mapped-data/ directories.
+def discover_mapped_data_dirs(harmonized_root: Path, cohort: str) -> list[Path]:
+    """Walk *harmonized_root* and return all mapped-data/ directories.
 
     Expected layout::
 
-        <output_root>/
+        <harmonized_root>/
             DMC_<cohort_lower>_<study>_c1_<COHORT>_Processed_<ts>/
                 <cohort_lower>_<study>_c1_BDCHM/
                     mapped-data/        <- collected
@@ -138,7 +138,7 @@ def discover_mapped_data_dirs(output_root: Path, cohort: str) -> list[Path]:
     # Build a filter token: "_COPDGene_Processed_" (case-insensitive match)
     cohort_token = f"_{cohort}_Processed_".lower()
 
-    for run_dir in sorted(output_root.iterdir()):
+    for run_dir in sorted(harmonized_root.iterdir()):
         if not run_dir.is_dir():
             continue
         if run_dir.name.lower().startswith("dataqc"):
@@ -615,7 +615,7 @@ def process_measurement_observation_sets(
             else None
         )
 
-        output_key = (
+        harmonized_key = (
             f"measurement_{obs_type_str}|{method_str}"
             if method_str
             else f"measurement_{obs_type_str}"
@@ -634,7 +634,7 @@ def process_measurement_observation_sets(
                 by_visit_stats[vlabel] = continuous_stats(vgroup["value_decimal"])
             summary["by_visit"] = by_visit_stats
 
-        variables[output_key] = summary
+        variables[harmonized_key] = summary
 
     return variables
 
@@ -652,7 +652,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
                    help="Cohort name (e.g. SPIROMICS).")
 
     src_grp = p.add_mutually_exclusive_group()
-    src_grp.add_argument("--output-root", metavar="DIR", default=None,
+    src_grp.add_argument("--harmonized-root", metavar="DIR", default=None,
                          help="Root dir containing DMC_* run directories (auto-discover). "
                               "Defaults to . (current directory) if omitted.")
     src_grp.add_argument("--mapped-data-dirs", nargs="+", metavar="DIR",
@@ -662,7 +662,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
                    help="Include per-visit breakdowns in variable summaries.")
 
     p.add_argument("--output-dir", metavar="DIR", default=None,
-                   help="Output directory. Defaults to <output-root>/dataqc-runs/.")
+                   help="Output directory. Defaults to <harmonized-root>/dataqc-runs/.")
     p.add_argument("--output", metavar="FILE",
                    help="Override output JSON filename.")
     return p.parse_args(argv)
@@ -679,12 +679,12 @@ def main(argv: list[str] | None = None) -> None:
         mapped_dirs = [Path(d) for d in args.mapped_data_dirs]
         resolved_root = mapped_dirs[0].parent  # best-effort for output-dir default
     else:
-        # Default output-root to current directory when not specified
-        root = Path(args.output_root) if args.output_root else Path(".")
+        # Default harmonized-root to current directory when not specified
+        root = Path(args.harmonized_root) if args.harmonized_root else Path(".")
         if not root.exists():
             print(
-                f"ERROR: output root does not exist: {root}  "
-                f"(pass --output-root DIR or --mapped-data-dirs DIR [DIR ...])"
+                f"ERROR: harmonized root does not exist: {root}  "
+                f"(pass --harmonized-root DIR or --mapped-data-dirs DIR [DIR ...])"
             )
             sys.exit(1)
         mapped_dirs = discover_mapped_data_dirs(root, cohort)
@@ -697,14 +697,14 @@ def main(argv: list[str] | None = None) -> None:
     output_dir = Path(args.output_dir) if args.output_dir else (resolved_root / "dataqc-runs")
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    base_stem = f"{cohort.lower()}_output_{run_ts}"
+    base_stem = f"{cohort.lower()}_harmonized_{run_ts}"
     output_path = Path(args.output) if args.output else output_dir / f"{base_stem}.json"
     log_path = output_dir / f"{base_stem}.log"
 
     tee = _Tee(log_path)
 
     print("=" * 60)
-    print(f"  HV-DataQC Harmonized Output Extractor: {cohort}")
+    print(f"  HV-DataQC Harmonized Extractor: {cohort}")
     print("=" * 60)
     print(f"  Run timestamp : {run_ts}")
     print(f"  Output JSON   : {output_path}")

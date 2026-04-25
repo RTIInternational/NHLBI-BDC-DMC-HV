@@ -1,4 +1,4 @@
-# extract-harmonized — dm-bip Harmonized Output Summarizer
+# extract-harmonized — dm-bip Harmonized Summarizer
 
 Extracts aggregate statistics from dm-bip harmonized output TSV files (entity
 files produced by the pipeline) and exports an aggregate-only JSON artifact.
@@ -56,23 +56,23 @@ before building per-visit stats, so C8 can compare visit distributions correctly
 
 ```bash
 # Minimal — run from the directory containing DMC_* folders
-python extract_output_summaries.py --cohort COPDGene
+python extract_harmonized_summaries.py --cohort COPDGene
 
-# With explicit output root
-python extract_output_summaries.py \
+# With explicit harmonized root
+python extract_harmonized_summaries.py \
     --cohort SPIROMICS \
-    --output-root /enclave/SPIROMICS-BDCHM
+    --harmonized-root /enclave/SPIROMICS-BDCHM
 
 # Including per-visit breakdowns
-python extract_output_summaries.py \
+python extract_harmonized_summaries.py \
     --cohort SPIROMICS \
-    --output-root /enclave/SPIROMICS-BDCHM \
+    --harmonized-root /enclave/SPIROMICS-BDCHM \
     --by-visit
 
 # Write to a specific directory
-python extract_output_summaries.py \
+python extract_harmonized_summaries.py \
     --cohort SPIROMICS \
-    --output-root /enclave/SPIROMICS-BDCHM \
+    --harmonized-root /enclave/SPIROMICS-BDCHM \
     --output-dir /enclave/dataqc-runs/
 ```
 
@@ -81,10 +81,10 @@ python extract_output_summaries.py \
 | Argument | Required | Description |
 |----------|----------|-------------|
 | `--cohort NAME` | Yes | Cohort name (used in output filename) |
-| `--output-root DIR` | No | Root dir containing `DMC_*` run directories. Defaults to `.` (current directory) if omitted. |
-| `--mapped-data-dirs DIR ...` | No | Explicit list of `mapped-data/` directories (mutually exclusive with `--output-root`). |
+| `--harmonized-root DIR` | No | Root dir containing `DMC_*` run directories. Defaults to `.` (current directory) if omitted. |
+| `--mapped-data-dirs DIR ...` | No | Explicit list of `mapped-data/` directories (mutually exclusive with `--harmonized-root`). |
 | `--by-visit` | No | Include per-visit variable breakdowns. |
-| `--output-dir DIR` | No | Output directory. Defaults to `<output-root>/dataqc-runs/`. |
+| `--output-dir DIR` | No | Output directory. Defaults to `<harmonized-root>/dataqc-runs/`. |
 | `--output FILE` | No | Override output JSON filename |
 
 ---
@@ -129,7 +129,7 @@ python extract_output_summaries.py \
 ## Expected dm-bip Directory Layout
 
 ```
-<output-root>/
+<harmonized-root>/
     DMC_<cohort>_<study>_c1_<COHORT>_Processed_<timestamp>/
         <cohort>_<study>_c1_BDCHM/
             mapped-data/

@@ -12,7 +12,7 @@
 #     New thresholds correctly escalate these to FAIL.
 #
 # Usage:
-#   python compare_source_output.py ... --thresholds /path/to/thresholds.yaml
+#   python compare_source_harmonized.py ... --thresholds /path/to/thresholds.yaml
 #   (without --thresholds, this file is loaded automatically from config/)
 #
 # All relative tolerances are decimal fractions (0.001 = 0.1%), NOT percentages.
@@ -46,7 +46,7 @@ c3:
   n_valid_warn_pct: 3.0 # <=3.0% n_valid shift -> WARN   (was 5.0%)
 
 # -- C4: Mean preservation (relative difference) ----------------------------
-# rel_diff = |out_mean - src_mean| / |src_mean|
+# rel_diff = |harmonized_mean - src_mean| / |src_mean|
 # COPDGene clean variables: rel_diff = 0.000 (exact).
 # Pre-BD spirometry after N-doubling: rel_diff = 0.012-0.022 -> correctly FAIL.
 c4:
@@ -66,11 +66,11 @@ c6:
   warn_rel: 0.01        # <=1.0% -> WARN   (was 10.0%)
 
 # -- C7: Categorical distribution (per-category percentage-point shift) ------
-# A category whose source/output pct differ by more than pass_pct is a mismatch.
+# A category whose source/harmonized pct differ by more than pass_pct is a mismatch.
 c7:
   pass_pct: 0.5         # <=0.5 pp shift per category -> no mismatch   (was 2.0 pp)
 
-# -- C8: Visit row count ratio (output / source) ----------------------------
+# -- C8: Visit row count ratio (harmonized / source) ------------------------
 # Exact match -> PASS. Otherwise:
 #   [warn_lo_ratio, warn_hi_ratio] -> WARN
 #   outside that band             -> FAIL

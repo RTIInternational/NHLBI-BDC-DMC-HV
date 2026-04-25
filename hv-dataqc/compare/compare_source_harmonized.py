@@ -1,8 +1,8 @@
 """
-compare_source_output.py — HV-DataQC Component 3
+compare_source_harmonized.py — HV-DataQC Component 3
 
 Compare aggregate summaries from extract_source_summaries.py (raw dbGaP source)
-and extract_output_summaries.py (dm-bip harmonized output). Runs checks C1–C10
+and extract_harmonized_summaries.py (dm-bip harmonized output). Runs checks C1–C10
 and produces a Markdown + JSON report.
 
 No hardcoded paths. All paths are explicit CLI arguments.
@@ -10,20 +10,20 @@ No hardcoded paths. All paths are explicit CLI arguments.
 CHECKS:
   C1  N Preservation        — total participant / row counts
   C2  N Loss Detection       — per-variable valid-N comparison
-  C3  Missing Value Accounting — missing-rate source vs. output
+  C3  Missing Value Accounting — missing-rate source vs. harmonized
   C4  Mean Preservation      — continuous mean within tolerance
   C5  Mean After Conversion  — mean with unit-conversion factor
   C6  SD Preservation        — standard deviation within tolerance
   C7  Categorical Distribution — distribution match (with value_mappings)
   C8  Visit N Distribution   — per-visit row counts
-  C9  Clinical Range         — output values within clinical_ranges.yaml bounds
+  C9  Clinical Range         — harmonized values within clinical_ranges.yaml bounds
   C10 Cross-Variable Consistency — SBP > DBP, FEV1 < FVC, etc.
-  C11 Variable Type Consistency  — source/output agree on continuous vs. categorical
+  C11 Variable Type Consistency  — source/harmonized agree on continuous vs. categorical
 
 USAGE:
-  python compare_source_output.py \\
+  python compare_source_harmonized.py \\
       --source  spiromics_source_20250101T120000.json \\
-      --output  spiromics_output_20250101T120000.json \\
+      --harmonized  spiromics_harmonized_20250101T120000.json \\
       --cohort  SPIROMICS \\
       --yaml-dir /path/to/HV-repo/priority_variables_transform/SPIROMICS-ingest/ \\
       --cache-dir /path/to/data/dbgap-cache/spiromics/
@@ -353,7 +353,7 @@ def _extract_crosswalk_from_class_derivations(
                 crosswalk.append(
                     {
                         "source_key": src_name,
-                        "output_key": f"demog_{slot_name}",
+                        "harmonized_key": f"demog_{slot_name}",
                         "match_method": "yaml",
                         "yaml_file": yaml_filename,
                         "phv_id": pf,
@@ -457,7 +457,7 @@ def _extract_crosswalk_from_class_derivations(
         if not primary_phvs or not concept_code:
             continue
 
-        # method_type creates a compound output key (e.g. MO spirometry legs)
+        # method_type creates a compound harmonized key (e.g. MO spirometry legs)
         method_type_val: str | None = None
         if entity_class == "MeasurementObservation" and "method_type" in slots:
             mt = slots["method_type"]
@@ -468,10 +468,10 @@ def _extract_crosswalk_from_class_derivations(
                 )
 
         prefix = ENTITY_PREFIX.get(entity_class, f"{entity_class.lower()}_")
-        # Use bare concept code as key — the output extractor groups MeasurementObservation
+        # Use bare concept code as key — the harmonized extractor groups MeasurementObservation
         # rows by observation_type only (no method_type suffix), so the crosswalk key must
         # match that form.  method_type_val is retained as metadata only.
-        output_key = f"{prefix}{concept_code}"
+        harmonized_key = f"{prefix}{concept_code}"
 
         value_phvs = [p for p in primary_phvs if p["is_value_slot"]]
         primary = value_phvs[0] if value_phvs else primary_phvs[0]
@@ -483,7 +483,7 @@ def _extract_crosswalk_from_class_derivations(
         crosswalk.append(
             {
                 "source_key": src_name,
-                "output_key": output_key,
+                "harmonized_key": harmonized_key,
                 "match_method": "yaml",
                 "yaml_file": yaml_filename,
                 "phv_id": primary["phv"],
@@ -502,7 +502,7 @@ def build_yaml_crosswalk(
     """Parse all YAML transform files in *yaml_dir* and return crosswalk entries.
 
     Each entry maps a source variable name (resolved via *phv_names*) to an
-    output entity key (``measurement_<code>``, ``condition_<code>``, etc.).
+    harmonized entity key (``measurement_<code>``, ``condition_<code>``, etc.).
     """
     crosswalk: list[dict] = []
 
@@ -532,11 +532,11 @@ def build_yaml_crosswalk(
 
 
 # ---------------------------------------------------------------------------
-# Output variable key normalization
+# Harmonized variable key normalization
 # ---------------------------------------------------------------------------
 
 _TUPLE_OBS_RE = re.compile(r"^\(\s*['\"]?([^'\"()]+?)['\"]?\s*,?\s*\)$")
-# Matches full output keys whose observation_type was serialized as a Python
+# Matches full harmonized keys whose observation_type was serialized as a Python
 # singleton tuple: e.g.  measurement_('OMOP:4152194',)
 _TUPLE_KEY_RE = re.compile(r"^([a-z_]+)\('([^']+)',?\)$")
 
@@ -558,8 +558,8 @@ def _norm_obs_type(s: str) -> str:
     return m.group(1) if m else s
 
 
-def _normalize_output_vars(raw: dict) -> dict:
-    """Normalize output variable keys and metadata produced by dm-bip.
+def _normalize_harmonized_vars(raw: dict) -> dict:
+    """Normalize harmonized variable keys and metadata produced by dm-bip.
 
     Fixes two serialization quirks:
     - Dict key contains prefixed tuple notation:
@@ -589,17 +589,17 @@ def _normalize_output_vars(raw: dict) -> dict:
 
 def build_variable_crosswalk(
     source_vars: dict,
-    output_vars: dict,
+    harmonized_vars: dict,
     yaml_dir: Path | None = None,
     cache_dir: Path | None = None,
     source_doc: dict | None = None,
 ) -> list[dict]:
-    """Build source <-> output variable crosswalk.
+    """Build source <-> harmonized variable crosswalk.
 
     Strategy (in priority order):
     1. YAML-driven: PHV -> concept code -> entity key.
-    2. PHV ID match: source key starts with "phv", check output metadata.
-    3. Name match: source ``name`` == output ``bdc_label``.
+    2. PHV ID match: source key starts with "phv", check harmonized metadata.
+    3. Name match: source ``name`` == harmonized ``bdc_label``.
 
     When *source_doc* contains ``variables_by_pht`` and *cache_dir* provides a
     PHV->PHT map, each YAML-matched entry gains a ``_resolved_src`` field with
@@ -608,7 +608,7 @@ def build_variable_crosswalk(
     """
     matches: list[dict] = []
     matched_src: set[str] = set()
-    matched_out: set[str] = set()
+    matched_harmonized: set[str] = set()
 
     # --- Strategy 1: YAML-driven ---
     if yaml_dir and yaml_dir.exists():
@@ -627,7 +627,7 @@ def build_variable_crosswalk(
 
         for entry in yaml_cw:
             src_key = entry["source_key"]
-            out_key = entry["output_key"]
+            harmonized_key = entry["harmonized_key"]
 
             # Case-insensitive fallback for source key
             if src_key not in source_vars:
@@ -639,19 +639,19 @@ def build_variable_crosswalk(
                 else:
                     continue
 
-            # Case-insensitive fallback for output key
-            if out_key not in output_vars:
-                for ok in output_vars:
-                    if ok.upper() == out_key.upper():
-                        out_key = ok
-                        entry["output_key"] = ok
+            # Case-insensitive fallback for harmonized key
+            if harmonized_key not in harmonized_vars:
+                for ok in harmonized_vars:
+                    if ok.upper() == harmonized_key.upper():
+                        harmonized_key = ok
+                        entry["harmonized_key"] = ok
                         break
                 else:
                     continue
 
             if src_key in matched_src:
                 continue
-            if out_key in matched_out:
+            if harmonized_key in matched_harmonized:
                 # Multi-source MOS: another source column already claimed this key
                 continue
 
@@ -674,7 +674,7 @@ def build_variable_crosswalk(
 
             matches.append(entry)
             matched_src.add(src_key)
-            matched_out.add(out_key)
+            matched_harmonized.add(harmonized_key)
 
     # --- Strategy 2: PHV ID match ---
     for src_key, src_info in source_vars.items():
@@ -682,15 +682,15 @@ def build_variable_crosswalk(
             continue
         if not src_key.startswith("phv"):
             continue
-        for out_key, out_info in output_vars.items():
-            if out_key in matched_out:
+        for harmonized_key, out_info in harmonized_vars.items():
+            if harmonized_key in matched_harmonized:
                 continue
-            if src_key in out_key or src_key in str(out_info):
+            if src_key in harmonized_key or src_key in str(out_info):
                 matches.append(
-                    {"source_key": src_key, "output_key": out_key, "match_method": "phv_id"}
+                    {"source_key": src_key, "harmonized_key": harmonized_key, "match_method": "phv_id"}
                 )
                 matched_src.add(src_key)
-                matched_out.add(out_key)
+                matched_harmonized.add(harmonized_key)
                 break
 
     # --- Strategy 3: Name match ---
@@ -700,16 +700,16 @@ def build_variable_crosswalk(
         src_name = src_info.get("name", "").upper()
         if not src_name:
             continue
-        for out_key, out_info in output_vars.items():
-            if out_key in matched_out:
+        for harmonized_key, out_info in harmonized_vars.items():
+            if harmonized_key in matched_harmonized:
                 continue
             out_label = out_info.get("bdc_label", "").upper()
             if out_label and src_name == out_label:
                 matches.append(
-                    {"source_key": src_key, "output_key": out_key, "match_method": "name"}
+                    {"source_key": src_key, "harmonized_key": harmonized_key, "match_method": "name"}
                 )
                 matched_src.add(src_key)
-                matched_out.add(out_key)
+                matched_harmonized.add(harmonized_key)
                 break
 
     return matches
@@ -720,64 +720,64 @@ def build_variable_crosswalk(
 # ---------------------------------------------------------------------------
 
 def check_c1_n_preservation(
-    source: dict, output: dict, fail_pct: float = 1.0
+    source: dict, harmonized: dict, fail_pct: float = 1.0
 ) -> list[CheckResult]:
     """C1: Total participant count comparison."""
     src_n = source.get("total_participants", 0)
-    out_n = output.get("total_participants", 0)
+    harmonized_n = harmonized.get("total_participants", 0)
 
     if src_n == 0:
         return [CheckResult("C1", "_total", "SKIP", "No source participant count")]
-    if out_n == 0:
-        return [CheckResult("C1", "_total", "FAIL", "No output participants found")]
-    if out_n == src_n:
+    if harmonized_n == 0:
+        return [CheckResult("C1", "_total", "FAIL", "No harmonized participants found")]
+    if harmonized_n == src_n:
         return [CheckResult("C1", "_total", "PASS", f"Participant count matches: {src_n}")]
 
-    if out_n < src_n:
-        loss_pct = round((src_n - out_n) / src_n * 100, 1)
+    if harmonized_n < src_n:
+        loss_pct = round((src_n - harmonized_n) / src_n * 100, 1)
         status = "FAIL" if loss_pct > fail_pct else "WARN"
         return [CheckResult("C1", "_total", status,
-                             f"Participant loss: {src_n} -> {out_n} ({loss_pct}%)",
-                             {"source_n": src_n, "output_n": out_n, "loss_pct": loss_pct})]
+                             f"Participant loss: {src_n} -> {harmonized_n} ({loss_pct}%)",
+                             {"source_n": src_n, "harmonized_n": harmonized_n, "loss_pct": loss_pct})]
 
     return [CheckResult("C1", "_total", "WARN",
-                         f"Output has MORE participants than source: {src_n} -> {out_n}",
-                         {"source_n": src_n, "output_n": out_n})]
+                         f"Harmonized has MORE participants than source: {src_n} -> {harmonized_n}",
+                         {"source_n": src_n, "harmonized_n": harmonized_n})]
 
 
 def check_c2_n_loss(
-    src_var: dict, out_var: dict, var_name: str,
+    src_var: dict, harmonized_var: dict, var_name: str,
     pass_pct: float = 0.5, warn_pct: float = 2.0,
 ) -> CheckResult:
     """C2: Per-variable valid-N comparison."""
     src_n = src_var.get("n_valid", 0)
-    out_n = out_var.get("n_valid", 0)
+    harmonized_n = harmonized_var.get("n_valid", 0)
 
     if src_n == 0:
         return CheckResult("C2", var_name, "SKIP", "No valid source values")
-    if out_n == src_n:
+    if harmonized_n == src_n:
         return CheckResult("C2", var_name, "PASS", f"N preserved: {src_n}")
 
-    loss_pct = round((src_n - out_n) / src_n * 100, 1) if src_n > 0 else 0
+    loss_pct = round((src_n - harmonized_n) / src_n * 100, 1) if src_n > 0 else 0
     if abs(loss_pct) <= pass_pct:
         return CheckResult("C2", var_name, "PASS",
-                           f"N within {pass_pct}%: {src_n} -> {out_n}",
-                           {"source_n": src_n, "output_n": out_n, "loss_pct": loss_pct})
+                           f"N within {pass_pct}%: {src_n} -> {harmonized_n}",
+                           {"source_n": src_n, "harmonized_n": harmonized_n, "loss_pct": loss_pct})
     if 0 < loss_pct <= warn_pct:
         return CheckResult("C2", var_name, "WARN",
-                           f"Moderate N loss: {src_n} -> {out_n} ({loss_pct}%)",
-                           {"source_n": src_n, "output_n": out_n, "loss_pct": loss_pct})
+                           f"Moderate N loss: {src_n} -> {harmonized_n} ({loss_pct}%)",
+                           {"source_n": src_n, "harmonized_n": harmonized_n, "loss_pct": loss_pct})
     if loss_pct > warn_pct:
         return CheckResult("C2", var_name, "FAIL",
-                           f"Significant N loss: {src_n} -> {out_n} ({loss_pct}%)",
-                           {"source_n": src_n, "output_n": out_n, "loss_pct": loss_pct})
+                           f"Significant N loss: {src_n} -> {harmonized_n} ({loss_pct}%)",
+                           {"source_n": src_n, "harmonized_n": harmonized_n, "loss_pct": loss_pct})
     return CheckResult("C2", var_name, "WARN",
-                       f"N gain: {src_n} -> {out_n}",
-                       {"source_n": src_n, "output_n": out_n})
+                       f"N gain: {src_n} -> {harmonized_n}",
+                       {"source_n": src_n, "harmonized_n": harmonized_n})
 
 
 def check_c3_missing_accounting(
-    src_var: dict, out_var: dict, var_name: str,
+    src_var: dict, harmonized_var: dict, var_name: str,
     pass_pp: float = 0.5, warn_pp: float = 3.0,
     n_valid_pass_pct: float = 0.5, n_valid_warn_pct: float = 3.0,
 ) -> CheckResult:
@@ -787,174 +787,174 @@ def check_c3_missing_accounting(
     TSVs), falls back to n_valid comparison to avoid false positives.
     """
     src_total = src_var.get("n_total", 0)
-    out_total = out_var.get("n_total", 0)
+    harmonized_total = harmonized_var.get("n_total", 0)
     src_valid = src_var.get("n_valid", 0)
-    out_valid = out_var.get("n_valid", 0)
+    harmonized_valid = harmonized_var.get("n_valid", 0)
 
-    if src_total > 0 and out_total > 0:
-        denom_ratio = min(src_total, out_total) / max(src_total, out_total)
+    if src_total > 0 and harmonized_total > 0:
+        denom_ratio = min(src_total, harmonized_total) / max(src_total, harmonized_total)
         if denom_ratio < 0.8:
             if src_valid == 0:
                 return CheckResult("C3", var_name, "SKIP",
                                    "No valid source values (denominator mismatch)")
-            if out_valid == src_valid:
+            if harmonized_valid == src_valid:
                 return CheckResult("C3", var_name, "PASS",
                                    f"n_valid preserved: {src_valid}")
-            diff_pct = abs(out_valid - src_valid) / src_valid * 100
+            diff_pct = abs(harmonized_valid - src_valid) / src_valid * 100
             if diff_pct <= n_valid_pass_pct:
                 return CheckResult("C3", var_name, "PASS",
-                                   f"n_valid within {n_valid_pass_pct}%: {src_valid} -> {out_valid}")
+                                   f"n_valid within {n_valid_pass_pct}%: {src_valid} -> {harmonized_valid}")
             if diff_pct <= n_valid_warn_pct:
                 return CheckResult("C3", var_name, "WARN",
-                                   f"n_valid shifted: {src_valid} -> {out_valid} ({diff_pct:.1f}%)")
+                                   f"n_valid shifted: {src_valid} -> {harmonized_valid} ({diff_pct:.1f}%)")
             return CheckResult("C3", var_name, "FAIL",
-                               f"n_valid mismatch: {src_valid} -> {out_valid} ({diff_pct:.1f}%)",
-                               {"source_n_valid": src_valid, "output_n_valid": out_valid})
+                               f"n_valid mismatch: {src_valid} -> {harmonized_valid} ({diff_pct:.1f}%)",
+                               {"source_n_valid": src_valid, "harmonized_n_valid": harmonized_valid})
 
     src_pct = src_var.get("pct_missing", 0)
-    out_pct = out_var.get("pct_missing", 0)
-    diff = abs(out_pct - src_pct)
+    harmonized_pct = harmonized_var.get("pct_missing", 0)
+    diff = abs(harmonized_pct - src_pct)
 
     if diff <= pass_pp:
         return CheckResult("C3", var_name, "PASS",
-                           f"Missing rate stable: {src_pct}% -> {out_pct}%")
+                           f"Missing rate stable: {src_pct}% -> {harmonized_pct}%")
     if diff <= warn_pp:
         return CheckResult("C3", var_name, "WARN",
-                           f"Missing rate changed: {src_pct}% -> {out_pct}% (d={diff:.1f}%)")
+                           f"Missing rate changed: {src_pct}% -> {harmonized_pct}% (d={diff:.1f}%)")
     return CheckResult("C3", var_name, "FAIL",
-                       f"Large missing rate change: {src_pct}% -> {out_pct}% (d={diff:.1f}%)",
-                       {"source_pct": src_pct, "output_pct": out_pct})
+                       f"Large missing rate change: {src_pct}% -> {harmonized_pct}% (d={diff:.1f}%)",
+                       {"source_pct": src_pct, "harmonized_pct": harmonized_pct})
 
 
 def check_c4_mean_preservation(
-    src_var: dict, out_var: dict, var_name: str,
+    src_var: dict, harmonized_var: dict, var_name: str,
     pass_rel: float = 0.001, warn_rel: float = 0.01,
 ) -> CheckResult:
     """C4: Continuous mean comparison (no unit conversion)."""
-    if src_var.get("type") != "continuous" or out_var.get("type") != "continuous":
+    if src_var.get("type") != "continuous" or harmonized_var.get("type") != "continuous":
         return CheckResult("C4", var_name, "SKIP", "Not both continuous")
 
     src_mean = src_var.get("mean")
-    out_mean = out_var.get("mean")
-    if src_mean is None or out_mean is None:
+    harmonized_mean = harmonized_var.get("mean")
+    if src_mean is None or harmonized_mean is None:
         return CheckResult("C4", var_name, "SKIP", "Missing mean value")
 
     if src_mean == 0:
-        if out_mean == 0:
+        if harmonized_mean == 0:
             return CheckResult("C4", var_name, "PASS", "Both means are 0")
-        return CheckResult("C4", var_name, "WARN", f"Source mean=0, output mean={out_mean}")
+        return CheckResult("C4", var_name, "WARN", f"Source mean=0, harmonized mean={harmonized_mean}")
 
-    rel_diff = abs(out_mean - src_mean) / abs(src_mean)
+    rel_diff = abs(harmonized_mean - src_mean) / abs(src_mean)
     if rel_diff <= pass_rel:
         return CheckResult("C4", var_name, "PASS",
-                           f"Mean preserved: {src_mean} -> {out_mean} (d={rel_diff:.4f})")
+                           f"Mean preserved: {src_mean} -> {harmonized_mean} (d={rel_diff:.4f})")
     if rel_diff <= warn_rel:
         return CheckResult("C4", var_name, "WARN",
-                           f"Mean shifted: {src_mean} -> {out_mean} (d={rel_diff:.4f})",
-                           {"source_mean": src_mean, "output_mean": out_mean})
+                           f"Mean shifted: {src_mean} -> {harmonized_mean} (d={rel_diff:.4f})",
+                           {"source_mean": src_mean, "harmonized_mean": harmonized_mean})
     return CheckResult("C4", var_name, "FAIL",
-                       f"Mean mismatch: {src_mean} -> {out_mean} (d={rel_diff:.4f})",
-                       {"source_mean": src_mean, "output_mean": out_mean})
+                       f"Mean mismatch: {src_mean} -> {harmonized_mean} (d={rel_diff:.4f})",
+                       {"source_mean": src_mean, "harmonized_mean": harmonized_mean})
 
 
 def check_c5_mean_after_conversion(
-    src_var: dict, out_var: dict, var_name: str,
+    src_var: dict, harmonized_var: dict, var_name: str,
     conversion_factor: float | None = None, pass_rel: float = 0.001,
 ) -> CheckResult:
     """C5: Mean comparison with a known unit conversion factor."""
     if conversion_factor is None:
         return CheckResult("C5", var_name, "SKIP", "No conversion factor specified")
-    if src_var.get("type") != "continuous" or out_var.get("type") != "continuous":
+    if src_var.get("type") != "continuous" or harmonized_var.get("type") != "continuous":
         return CheckResult("C5", var_name, "SKIP", "Not both continuous")
 
     src_mean = src_var.get("mean")
-    out_mean = out_var.get("mean")
-    if src_mean is None or out_mean is None:
+    harmonized_mean = harmonized_var.get("mean")
+    if src_mean is None or harmonized_mean is None:
         return CheckResult("C5", var_name, "SKIP", "Missing mean value")
 
     expected = src_mean * conversion_factor
     if expected == 0:
         return CheckResult("C5", var_name, "SKIP", "Expected mean after conversion is 0")
 
-    rel_diff = abs(out_mean - expected) / abs(expected)
+    rel_diff = abs(harmonized_mean - expected) / abs(expected)
     if rel_diff <= pass_rel:
         return CheckResult("C5", var_name, "PASS",
                            f"Mean after x{conversion_factor}: "
-                           f"{src_mean} -> {expected:.4f} (output={out_mean}, d={rel_diff:.4f})")
+                           f"{src_mean} -> {expected:.4f} (harmonized={harmonized_mean}, d={rel_diff:.4f})")
     return CheckResult("C5", var_name, "FAIL",
                        f"Mean mismatch after x{conversion_factor}: "
-                       f"expected {expected:.4f}, got {out_mean} (d={rel_diff:.4f})",
-                       {"expected": expected, "actual": out_mean, "factor": conversion_factor})
+                       f"expected {expected:.4f}, got {harmonized_mean} (d={rel_diff:.4f})",
+                       {"expected": expected, "actual": harmonized_mean, "factor": conversion_factor})
 
 
-def check_c11_type_consistency(src_var: dict, out_var: dict, var_name: str) -> CheckResult:
-    """C11: Variable type consistency between source and output.
+def check_c11_type_consistency(src_var: dict, harmonized_var: dict, var_name: str) -> CheckResult:
+    """C11: Variable type consistency between source and harmonized.
 
-    Flags when source and output disagree on whether a variable is continuous
+    Flags when source and harmonized disagree on whether a variable is continuous
     or categorical.  A mismatch usually means the pipeline recoded a continuous
     value into buckets (or treated categorical codes as numbers), which is a
     data-quality concern.
     """
     src_type = src_var.get("type")
-    out_type = out_var.get("type")
+    harmonized_type = harmonized_var.get("type")
 
-    if not src_type or not out_type:
+    if not src_type or not harmonized_type:
         return CheckResult("C11", var_name, "SKIP", "Type information missing")
-    if src_type == out_type:
+    if src_type == harmonized_type:
         return CheckResult("C11", var_name, "PASS", f"Type consistent: {src_type}")
 
     return CheckResult(
         "C11", var_name, "WARN",
-        f"Type mismatch: source={src_type}, output={out_type}",
-        {"source_type": src_type, "output_type": out_type},
+        f"Type mismatch: source={src_type}, harmonized={harmonized_type}",
+        {"source_type": src_type, "harmonized_type": harmonized_type},
     )
 
 
 def check_c6_sd_preservation(
-    src_var: dict, out_var: dict, var_name: str,
+    src_var: dict, harmonized_var: dict, var_name: str,
     pass_rel: float = 0.002, warn_rel: float = 0.01,
 ) -> CheckResult:
     """C6: Standard deviation comparison."""
-    if src_var.get("type") != "continuous" or out_var.get("type") != "continuous":
+    if src_var.get("type") != "continuous" or harmonized_var.get("type") != "continuous":
         return CheckResult("C6", var_name, "SKIP", "Not both continuous")
 
     src_sd = src_var.get("sd")
-    out_sd = out_var.get("sd")
-    if src_sd is None or out_sd is None:
+    harmonized_sd = harmonized_var.get("sd")
+    if src_sd is None or harmonized_sd is None:
         return CheckResult("C6", var_name, "SKIP", "Missing SD value")
 
     if src_sd == 0:
-        if out_sd == 0:
+        if harmonized_sd == 0:
             return CheckResult("C6", var_name, "PASS", "Both SDs are 0")
-        return CheckResult("C6", var_name, "WARN", f"Source SD=0, output SD={out_sd}")
+        return CheckResult("C6", var_name, "WARN", f"Source SD=0, harmonized SD={harmonized_sd}")
 
-    rel_diff = abs(out_sd - src_sd) / abs(src_sd)
+    rel_diff = abs(harmonized_sd - src_sd) / abs(src_sd)
     if rel_diff <= pass_rel:
         return CheckResult("C6", var_name, "PASS",
-                           f"SD preserved: {src_sd} -> {out_sd} (d={rel_diff:.4f})")
+                           f"SD preserved: {src_sd} -> {harmonized_sd} (d={rel_diff:.4f})")
     if rel_diff <= warn_rel:
         return CheckResult("C6", var_name, "WARN",
-                           f"SD shifted: {src_sd} -> {out_sd} (d={rel_diff:.4f})")
+                           f"SD shifted: {src_sd} -> {harmonized_sd} (d={rel_diff:.4f})")
     return CheckResult("C6", var_name, "FAIL",
-                       f"SD mismatch: {src_sd} -> {out_sd} (d={rel_diff:.4f})",
-                       {"source_sd": src_sd, "output_sd": out_sd})
+                       f"SD mismatch: {src_sd} -> {harmonized_sd} (d={rel_diff:.4f})",
+                       {"source_sd": src_sd, "harmonized_sd": harmonized_sd})
 
 
 def check_c7_categorical_distribution(
-    src_var: dict, out_var: dict, var_name: str,
+    src_var: dict, harmonized_var: dict, var_name: str,
     pass_pct: float = 0.5,
     value_map: dict | None = None,
 ) -> CheckResult:
     """C7: Categorical distribution comparison.
 
-    *value_map* translates source category keys (raw dbGaP codes) to output
+    *value_map* translates source category keys (raw dbGaP codes) to harmonized
     category keys (e.g. OMOP concept codes) before comparison.
     """
-    if src_var.get("type") != "categorical" or out_var.get("type") != "categorical":
+    if src_var.get("type") != "categorical" or harmonized_var.get("type") != "categorical":
         return CheckResult("C7", var_name, "SKIP", "Not both categorical")
 
     src_dist = src_var.get("distribution", {})
-    out_dist = out_var.get("distribution", {})
+    harmonized_dist = harmonized_var.get("distribution", {})
     if not src_dist:
         return CheckResult("C7", var_name, "SKIP", "No source distribution")
 
@@ -984,46 +984,46 @@ def check_c7_categorical_distribution(
                 stats.pop("source_categories", None)
         src_dist = translated
 
-    # Normalize output keys — pipeline may serialize lists as "['OMOP:8527']"
+    # Normalize harmonized keys — pipeline may serialize lists as "['OMOP:8527']"
     normalized_out: dict[str, Any] = {}
-    for ok, stats in out_dist.items():
+    for ok, stats in harmonized_dist.items():
         key = ok.strip()
         if key.startswith("[") and key.endswith("]"):
             key = key[1:-1].strip().strip("'\"")
         normalized_out[key] = stats
-    out_dist = normalized_out
+    harmonized_dist = normalized_out
 
     src_keys = set(src_dist)
-    out_keys = set(out_dist)
-    missing = sorted(src_keys - out_keys)
-    extra = sorted(out_keys - src_keys)
+    harmonized_keys = set(harmonized_dist)
+    missing = sorted(src_keys - harmonized_keys)
+    extra = sorted(harmonized_keys - src_keys)
 
     mismatches: list[dict] = []
-    for cat in src_keys & out_keys:
+    for cat in src_keys & harmonized_keys:
         src_pct = src_dist[cat].get("pct", 0)
-        out_pct = out_dist[cat].get("pct", 0)
-        diff = abs(out_pct - src_pct)
+        harmonized_pct = harmonized_dist[cat].get("pct", 0)
+        diff = abs(harmonized_pct - src_pct)
         if diff > pass_pct:
             mismatches.append({
                 "category": cat,
                 "source_n": src_dist[cat].get("n"),
                 "source_pct": src_pct,
-                "output_n": out_dist[cat].get("n"),
-                "output_pct": out_pct,
+                "harmonized_n": harmonized_dist[cat].get("n"),
+                "harmonized_pct": harmonized_pct,
                 "diff": diff,
             })
 
     # Build full per-category distribution table for report rendering
-    all_cats = sorted(src_keys | out_keys)
+    all_cats = sorted(src_keys | harmonized_keys)
     full_table: list[dict] = []
     for cat in all_cats:
         row: dict = {"category": cat}
         if cat in src_dist:
             row["source_n"] = src_dist[cat].get("n")
             row["source_pct"] = src_dist[cat].get("pct")
-        if cat in out_dist:
-            row["output_n"] = out_dist[cat].get("n")
-            row["output_pct"] = out_dist[cat].get("pct")
+        if cat in harmonized_dist:
+            row["harmonized_n"] = harmonized_dist[cat].get("n")
+            row["harmonized_pct"] = harmonized_dist[cat].get("pct")
         full_table.append(row)
 
     detail: dict = {"distribution_table": full_table}
@@ -1039,76 +1039,76 @@ def check_c7_categorical_distribution(
                            f"Distribution matches ({len(src_dist)} categories)", detail)
     if not mismatches and not missing:
         return CheckResult("C7", var_name, "INFO",
-                           f"Extra output categories: {extra}", detail)
+                           f"Extra harmonized categories: {extra}", detail)
     if missing:
         return CheckResult("C7", var_name, "FAIL",
-                           f"Missing categories in output: {missing}", detail)
+                           f"Missing categories in harmonized: {missing}", detail)
     return CheckResult("C7", var_name, "WARN",
                        f"{len(mismatches)} categories with >+/-{pass_pct}% shift", detail)
 
 
 def check_c8_visit_distribution(
-    source: dict, output: dict,
+    source: dict, harmonized: dict,
     warn_lo_ratio: float = 0.95, warn_hi_ratio: float = 1.05,
 ) -> list[CheckResult]:
     """C8: Visit-stratified row count comparison.
 
-    When source and output use incompatible visit label namespaces (zero overlap),
+    When source and harmonized use incompatible visit label namespaces (zero overlap),
     falls back to total-count comparison.
     """
     results: list[CheckResult] = []
     src_visits = source.get("rows_per_visit", {})
-    out_visits = output.get("rows_per_visit", {})
+    harmonized_visits = harmonized.get("rows_per_visit", {})
 
-    if not src_visits and not out_visits:
+    if not src_visits and not harmonized_visits:
         return [CheckResult("C8", "_visits", "SKIP", "No visit data in either summary")]
     if not src_visits:
         return [CheckResult("C8", "_visits", "SKIP", "No source visit data")]
 
     src_keys = set(src_visits) - {"_MISSING"}
-    out_keys = set(out_visits) - {"_MISSING"}
+    harmonized_keys = set(harmonized_visits) - {"_MISSING"}
 
     # Namespace mismatch fallback
-    if src_keys and out_keys and not (src_keys & out_keys):
+    if src_keys and harmonized_keys and not (src_keys & harmonized_keys):
         src_total = sum(n for k, n in src_visits.items() if k != "_MISSING")
-        out_total = sum(n for k, n in out_visits.items() if k != "_MISSING")
+        harmonized_total = sum(n for k, n in harmonized_visits.items() if k != "_MISSING")
         detail = {
-            "note": "Source and output use different visit label namespaces; "
+            "note": "Source and harmonized use different visit label namespaces; "
                     "comparing total counts only",
             "source_labels": sorted(src_keys),
-            "output_labels": sorted(out_keys),
+            "harmonized_labels": sorted(harmonized_keys),
             "source_total": src_total,
-            "output_total": out_total,
+            "harmonized_total": harmonized_total,
         }
-        if out_total == src_total:
+        if harmonized_total == src_total:
             return [CheckResult("C8", "visit_TOTAL", "PASS",
                                 f"Total visits match: N={src_total} (label namespace fallback)",
                                 detail)]
-        ratio = out_total / src_total if src_total > 0 else 0
+        ratio = harmonized_total / src_total if src_total > 0 else 0
         status = "WARN" if warn_lo_ratio <= ratio <= warn_hi_ratio else "FAIL"
         return [CheckResult("C8", "visit_TOTAL", status,
-                             f"Total visits: {src_total} -> {out_total} (label namespace fallback)",
+                             f"Total visits: {src_total} -> {harmonized_total} (label namespace fallback)",
                              detail)]
 
     # Normal label-keyed comparison
     for visit, src_n in sorted(src_visits.items()):
-        out_n = out_visits.get(visit, 0)
-        if out_n == src_n:
+        harmonized_n = harmonized_visits.get(visit, 0)
+        if harmonized_n == src_n:
             results.append(CheckResult("C8", f"visit_{visit}", "PASS",
                                        f"Visit {visit}: N={src_n}"))
-        elif out_n == 0:
+        elif harmonized_n == 0:
             results.append(CheckResult("C8", f"visit_{visit}", "FAIL",
-                                       f"Visit {visit}: missing in output (source N={src_n})"))
+                                       f"Visit {visit}: missing in harmonized (source N={src_n})"))
         else:
-            ratio = out_n / src_n if src_n > 0 else 0
+            ratio = harmonized_n / src_n if src_n > 0 else 0
             status = "WARN" if warn_lo_ratio <= ratio <= warn_hi_ratio else "FAIL"
             results.append(CheckResult("C8", f"visit_{visit}", status,
-                                       f"Visit {visit}: {src_n} -> {out_n}",
-                                       {"source_n": src_n, "output_n": out_n, "ratio": ratio}))
+                                       f"Visit {visit}: {src_n} -> {harmonized_n}",
+                                       {"source_n": src_n, "harmonized_n": harmonized_n, "ratio": ratio}))
 
-    for visit in sorted(set(out_visits) - set(src_visits)):
+    for visit in sorted(set(harmonized_visits) - set(src_visits)):
         results.append(CheckResult("C8", f"visit_{visit}", "INFO",
-                                   f"Visit {visit}: only in output (N={out_visits[visit]})"))
+                                   f"Visit {visit}: only in harmonized (N={harmonized_visits[visit]})"))
 
     return results
 
@@ -1134,23 +1134,23 @@ def _range_violations(val_min, val_max, matched: dict) -> list[str]:
 
 
 def check_c9_clinical_range(
-    out_var: dict, var_name: str, clinical_ranges: dict,
+    harmonized_var: dict, var_name: str, clinical_ranges: dict,
     src_var: dict | None = None,
 ) -> CheckResult:
-    """C9: Output values within defined clinical plausible range.
+    """C9: Harmonized values within defined clinical plausible range.
 
     When src_var is provided, each violation message is annotated with:
-            [out+src]  - both source and output exceed the bound
-            [out only] - only the output exceeds the bound (transformation may have introduced issue)
+            [out+src]  - both source and harmonized exceed the bound
+            [out only] - only the harmonized exceeds the bound (transformation may have introduced issue)
             [src only] - only the source exceeds the bound (pre-existing in raw data)
     """
-    if out_var.get("type") != "continuous":
+    if harmonized_var.get("type") != "continuous":
         return CheckResult("C9", var_name, "SKIP", "Not continuous")
 
     # Match range definition: exact name > code match > substring
     matched: dict | None = None
     best_len = 0
-    obs_type = out_var.get("observation_type", "")
+    obs_type = harmonized_var.get("observation_type", "")
     for range_name, rng in clinical_ranges.items():
         if range_name.startswith("_"):
             continue
@@ -1172,10 +1172,10 @@ def check_c9_clinical_range(
     if not matched:
         return CheckResult("C9", var_name, "SKIP", "No clinical range defined")
 
-    out_min = out_var.get("min")
-    out_max = out_var.get("max")
+    out_min = harmonized_var.get("min")
+    out_max = harmonized_var.get("max")
     if out_min is None or out_max is None:
-        return CheckResult("C9", var_name, "SKIP", "No min/max in output")
+        return CheckResult("C9", var_name, "SKIP", "No min/max in harmonized")
 
     out_issues = _range_violations(out_min, out_max, matched)
 
@@ -1224,7 +1224,7 @@ _C10_SIMPLE_RE = re.compile(r"mean\([^)]+\)\s*([<>])\s*mean\([^)]+\)")
 
 
 def check_c10_cross_variable(
-    output_vars: dict, clinical_ranges: dict,
+    harmonized_vars: dict, clinical_ranges: dict,
 ) -> list[CheckResult]:
     """C10: Cross-variable consistency driven by _cross_variable_rules in clinical_ranges.
 
@@ -1274,9 +1274,9 @@ def check_c10_cross_variable(
             ))
             continue
 
-        var_a = next((v for v in output_vars.values()
+        var_a = next((v for v in harmonized_vars.values()
                       if v.get("observation_type") in codes_a), None)
-        var_b = next((v for v in output_vars.values()
+        var_b = next((v for v in harmonized_vars.values()
                       if v.get("observation_type") in codes_b), None)
 
         if not var_a or not var_b:
@@ -1287,7 +1287,7 @@ def check_c10_cross_variable(
                 missing.append(variables[1])
             results.append(CheckResult(
                 "C10", rule_id, "SKIP",
-                f"Rule not applicable; required output variable(s) not found: {', '.join(missing)}"
+                f"Rule not applicable; required harmonized variable(s) not found: {', '.join(missing)}"
             ))
             continue
 
@@ -1324,7 +1324,7 @@ def check_c10_cross_variable(
 
     if not results:
         results.append(CheckResult("C10", "_cross", "SKIP",
-                                   "No cross-variable pairs found in output"))
+                                   "No cross-variable pairs found in harmonized data"))
 
     return results
 
@@ -1343,7 +1343,7 @@ def generate_markdown_report(
     results: list[CheckResult],
     cohort: str,
     source_meta: dict,
-    output_meta: dict,
+    harmonized_meta: dict,
 ) -> str:
     """Generate a human-readable Markdown report."""
     lines = [
@@ -1351,7 +1351,7 @@ def generate_markdown_report(
         "",
         f"**Generated:** {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}",
         f"**Source:** {source_meta.get('source', '?')}",
-        f"**Output:** {output_meta.get('source', '?')}",
+        f"**Harmonized:** {harmonized_meta.get('source', '?')}",
         "",
     ]
 
@@ -1387,7 +1387,7 @@ def generate_markdown_report(
         if not table:
             return sub
         sub.append("")
-        sub.append("  | Category | Src N | Src % | Out N | Out % | Δ% |")
+        sub.append("  | Category | Src N | Src % | Harmonized N | Harmonized % | Δ% |")
         sub.append("  |----------|------:|------:|------:|------:|---:|")
         mismatch_cats = {m["category"] for m in r.detail.get("mismatches", [])}
         missing_cats = set(r.detail.get("missing_categories", []))
@@ -1397,25 +1397,25 @@ def generate_markdown_report(
             cat_label = _md_escape(cat)
             src_n = row.get("source_n", "")
             src_pct = f"{row['source_pct']:.1f}" if row.get("source_pct") is not None else ""
-            out_n = row.get("output_n", "")
-            out_pct = f"{row['output_pct']:.1f}" if row.get("output_pct") is not None else ""
-            if row.get("source_pct") is not None and row.get("output_pct") is not None:
-                delta = f"{row['output_pct'] - row['source_pct']:+.1f}"
+            harmonized_n = row.get("harmonized_n", "")
+            harmonized_pct = f"{row['harmonized_pct']:.1f}" if row.get("harmonized_pct") is not None else ""
+            if row.get("source_pct") is not None and row.get("harmonized_pct") is not None:
+                delta = f"{row['harmonized_pct'] - row['source_pct']:+.1f}"
             else:
                 delta = ""
             flag = " ⚠" if cat in mismatch_cats else (
                    " ✗" if cat in missing_cats else (
                    " ＋" if cat in extra_cats else ""))
-            sub.append(f"  | {cat_label}{flag} | {src_n} | {src_pct} | {out_n} | {out_pct} | {delta} |")
+            sub.append(f"  | {cat_label}{flag} | {src_n} | {src_pct} | {harmonized_n} | {harmonized_pct} | {delta} |")
         return sub
 
     _check_notes = {
         "C9": (
-            "> **Annotation key:** `[out+src]` = violation present in both source and output "
+            "> **Annotation key:** `[out+src]` = violation present in both source and harmonized "
             "(pre-existing in raw data, faithfully preserved); "
-            "`[out only]` = output exceeds bound but source did not "
+            "`[out only]` = harmonized exceeds bound but source did not "
             "(transformation may have introduced the issue); "
-            "`[src only]` = source exceeds bound but output does not "
+            "`[src only]` = source exceeds bound but harmonized does not "
             "(pipeline corrected or filtered the value)."
         ),
     }
@@ -1445,13 +1445,13 @@ def generate_markdown_report(
 
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(
-        description="Compare source vs. harmonized output summaries (C1-C10 checks).",
+        description="Compare source vs. harmonized summaries (C1-C10 checks).",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     p.add_argument("--source", required=True, metavar="JSON",
                    help="Source summary JSON from extract_source_summaries.py")
-    p.add_argument("--output", required=True, metavar="JSON",
-                   help="Harmonized output summary JSON from extract_output_summaries.py")
+    p.add_argument("--harmonized", required=True, metavar="JSON",
+                   help="Harmonized summary JSON from extract_harmonized_summaries.py")
     p.add_argument("--cohort", required=True, metavar="NAME",
                    help="Cohort name (e.g. SPIROMICS, CARDIA)")
 
@@ -1482,7 +1482,7 @@ def main(argv: list[str] | None = None) -> None:
     cohort = args.cohort.upper()
 
     # Validate inputs
-    for path_arg, label in [(args.source, "--source"), (args.output, "--output")]:
+    for path_arg, label in [(args.source, "--source"), (args.harmonized, "--harmonized")]:
         if not Path(path_arg).exists():
             print(f"ERROR: {label} file not found: {path_arg}", file=sys.stderr)
             sys.exit(1)
@@ -1534,24 +1534,24 @@ def main(argv: list[str] | None = None) -> None:
     with open(args.source, "r", encoding="utf-8") as fh:
         source: dict = json.load(fh)
 
-    print(f"Loading output summary : {args.output}")
-    with open(args.output, "r", encoding="utf-8") as fh:
-        output: dict = json.load(fh)
+    print(f"Loading harmonized summary: {args.harmonized}")
+    with open(args.harmonized, "r", encoding="utf-8") as fh:
+        harmonized: dict = json.load(fh)
 
     source_vars = source.get("variables", {})
-    output_vars = _normalize_output_vars(output.get("variables", {}))
+    harmonized_vars = _normalize_harmonized_vars(harmonized.get("variables", {}))
     source_meta = source.get("metadata", {})
-    output_meta = output.get("metadata", {})
+    harmonized_meta = harmonized.get("metadata", {})
 
     print(f"\nSource: {len(source_vars)} variables, "
           f"{source.get('total_participants', '?')} participants")
-    print(f"Output: {len(output_vars)} variables, "
-          f"{output.get('total_participants', '?')} participants")
+    print(f"Harmonized: {len(harmonized_vars)} variables, "
+          f"{harmonized.get('total_participants', '?')} participants")
 
     # Build crosswalk
     print("\nBuilding variable crosswalk...")
     crosswalk = build_variable_crosswalk(
-        source_vars, output_vars,
+        source_vars, harmonized_vars,
         yaml_dir=yaml_dir,
         cache_dir=cache_dir,
         source_doc=source,
@@ -1565,71 +1565,71 @@ def main(argv: list[str] | None = None) -> None:
         extra = f" [{yaml_f}]" if yaml_f else ""
         extra += f" ({phv})" if phv else ""
         extra += f" -> {resolved_pht}" if resolved_pht else ""
-        print(f"  {m['source_key']:<30} -> {m['output_key']:<40} [{method}]{extra}")
+        print(f"  {m['source_key']:<30} -> {m['harmonized_key']:<40} [{method}]{extra}")
 
     # Run checks
     all_results: list[CheckResult] = []
 
     all_results.extend(check_c1_n_preservation(
-        source, output, fail_pct=c1_t.get("fail_pct", 1.0),
+        source, harmonized, fail_pct=c1_t.get("fail_pct", 1.0),
     ))
 
     for match in crosswalk:
         src_key = match["source_key"]
-        out_key = match["output_key"]
+        harmonized_key = match["harmonized_key"]
         # Use per-PHT stats when available (eliminates multi-table inflation).
         src_var = match.get("_resolved_src") or source_vars.get(src_key, {})
-        out_var = output_vars[out_key]
+        harmonized_var = harmonized_vars[harmonized_key]
         display_name = src_var.get("name", src_key)
         value_map = match.get("value_map")
 
         all_results.append(check_c2_n_loss(
-            src_var, out_var, display_name,
+            src_var, harmonized_var, display_name,
             pass_pct=c2_t.get("pass_pct", 0.5), warn_pct=c2_t.get("warn_pct", 2.0),
         ))
         all_results.append(check_c3_missing_accounting(
-            src_var, out_var, display_name,
+            src_var, harmonized_var, display_name,
             pass_pp=c3_t.get("pass_pp", 0.5), warn_pp=c3_t.get("warn_pp", 3.0),
             n_valid_pass_pct=c3_t.get("n_valid_pass_pct", 0.5),
             n_valid_warn_pct=c3_t.get("n_valid_warn_pct", 3.0),
         ))
         all_results.append(check_c4_mean_preservation(
-            src_var, out_var, display_name,
+            src_var, harmonized_var, display_name,
             pass_rel=c4_t.get("pass_rel", 0.001), warn_rel=c4_t.get("warn_rel", 0.01),
         ))
         all_results.append(check_c5_mean_after_conversion(
-            src_var, out_var, display_name,
+            src_var, harmonized_var, display_name,
             pass_rel=c5_t.get("pass_rel", 0.001),
         ))
         all_results.append(check_c6_sd_preservation(
-            src_var, out_var, display_name,
+            src_var, harmonized_var, display_name,
             pass_rel=c6_t.get("pass_rel", 0.002), warn_rel=c6_t.get("warn_rel", 0.01),
         ))
         all_results.append(check_c7_categorical_distribution(
-            src_var, out_var, display_name,
+            src_var, harmonized_var, display_name,
             pass_pct=c7_t.get("pass_pct", 0.5), value_map=value_map,
         ))
-        all_results.append(check_c9_clinical_range(out_var, display_name, clinical_ranges, src_var=src_var))
-        all_results.append(check_c11_type_consistency(src_var, out_var, display_name))
+        all_results.append(check_c9_clinical_range(harmonized_var, display_name, clinical_ranges, src_var=src_var))
+        all_results.append(check_c11_type_consistency(src_var, harmonized_var, display_name))
 
     all_results.extend(check_c8_visit_distribution(
-        source, output,
+        source, harmonized,
         warn_lo_ratio=c8_t.get("warn_lo_ratio", 0.95),
         warn_hi_ratio=c8_t.get("warn_hi_ratio", 1.05),
     ))
-    all_results.extend(check_c10_cross_variable(output_vars, clinical_ranges))
+    all_results.extend(check_c10_cross_variable(harmonized_vars, clinical_ranges))
 
     # Flag unmatched variables
     matched_src = {m["source_key"] for m in crosswalk}
-    matched_out = {m["output_key"] for m in crosswalk}
+    matched_harmonized = {m["harmonized_key"] for m in crosswalk}
     for sk in source_vars:
         if sk not in matched_src and "error" not in source_vars[sk]:
             all_results.append(CheckResult(
-                "C2", source_vars[sk].get("name", sk), "INFO", "Source variable not matched in output"
+                "C2", source_vars[sk].get("name", sk), "INFO", "Source variable not matched in harmonized"
             ))
-    for ok in output_vars:
-        if ok not in matched_out:
-            all_results.append(CheckResult("C2", ok, "FAIL", "Output variable not matched in source — no source PHV traceable"))
+    for ok in harmonized_vars:
+        if ok not in matched_harmonized:
+            all_results.append(CheckResult("C2", ok, "FAIL", "Harmonized variable not matched in source — no source PHV traceable"))
 
     # Summary
     counts: dict[str, int] = {}
@@ -1639,7 +1639,7 @@ def main(argv: list[str] | None = None) -> None:
     print(f"Results: {counts}")
 
     # Write Markdown
-    md = generate_markdown_report(all_results, cohort, source_meta, output_meta)
+    md = generate_markdown_report(all_results, cohort, source_meta, harmonized_meta)
     report_path = Path(args.report or f"{cohort.lower()}_comparison_report.md")
     _write_text_atomic(report_path, md)
     print(f"\nMarkdown report : {report_path}")
@@ -1650,7 +1650,7 @@ def main(argv: list[str] | None = None) -> None:
             "cohort": cohort,
             "generated_at": datetime.now(timezone.utc).isoformat(),
             "source_file": args.source,
-            "output_file": args.output,
+            "harmonized_file": args.harmonized,
             "thresholds_file": str(thresholds_path),
         },
         "summary": counts,

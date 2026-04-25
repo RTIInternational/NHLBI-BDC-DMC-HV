@@ -13,7 +13,7 @@ from pathlib import Path
 COMPARE_DIR = Path(__file__).resolve().parents[1] / "compare"
 sys.path.insert(0, str(COMPARE_DIR))
 
-from compare_source_output import (  # noqa: E402
+from compare_source_harmonized import (  # noqa: E402
     _json_safe,
     check_c4_mean_preservation,
     check_c10_cross_variable,
@@ -23,8 +23,8 @@ from compare_source_output import (  # noqa: E402
 )
 
 
-class CompareSourceOutputTests(unittest.TestCase):
-    def test_c7_aggregates_many_source_categories_to_one_output_category(self) -> None:
+class CompareSourceHarmonizedTests(unittest.TestCase):
+    def test_c7_aggregates_many_source_categories_to_one_harmonized_category(self) -> None:
         src = {
             "type": "categorical",
             "distribution": {
@@ -65,12 +65,12 @@ class CompareSourceOutputTests(unittest.TestCase):
                 }
             },
         }
-        output_vars = {
+        harmonized_vars = {
             "measurement_OMOP:FEV1": {"observation_type": "OMOP:FEV1", "mean": 2.0},
             "measurement_OMOP:FVC": {"observation_type": "OMOP:FVC", "mean": 2.0},
         }
 
-        results = check_c10_cross_variable(output_vars, clinical_ranges)
+        results = check_c10_cross_variable(harmonized_vars, clinical_ranges)
 
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0].status, "PASS")

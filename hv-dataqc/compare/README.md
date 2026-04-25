@@ -1,4 +1,4 @@
-# compare — Source vs. Harmonized Output Comparison Engine
+# compare — Source vs. Harmonized Comparison Engine
 
 Compares aggregate JSON summaries produced by `extract-source/` and
 `extract-harmonized/`. Runs checks C1-C11 and produces a Markdown + JSON
@@ -13,25 +13,25 @@ and the current HV YAML checkout are required.
 
 ```bash
 # Full run with YAML-driven crosswalk
-python compare_source_output.py \
+python compare_source_harmonized.py \
     --source  spiromics_source_20250101T120000.json \
-    --output  spiromics_output_20250101T120000.json \
+    --harmonized  spiromics_harmonized_20250101T120000.json \
     --cohort  SPIROMICS \
     --yaml-dir /path/to/HV-repo/priority_variables_transform/SPIROMICS-ingest/ \
     --cache-dir /path/to/data/dbgap-cache/spiromics/
 
 # Without YAML crosswalk (only C1/C8/C10 run)
-python compare_source_output.py \
+python compare_source_harmonized.py \
     --source  spiromics_source_20250101T120000.json \
-    --output  spiromics_output_20250101T120000.json \
+    --harmonized  spiromics_harmonized_20250101T120000.json \
     --cohort  SPIROMICS
 
 # Custom tolerances and output paths
-python compare_source_output.py \
-    --source  src.json --output out.json --cohort CARDIA \
+python compare_source_harmonized.py \
+    --source  src.json --harmonized out.json --cohort CARDIA \
     --yaml-dir /HV/priority_variables_transform/CARDIA-ingest/ \
     --cache-dir /dbgap-cache/cardia/ \
-    --mean-tolerance 0.02 \
+    --thresholds config/thresholds.yaml \
     --report cardia_compare_report.md \
     --json-report cardia_compare_results.json
 ```
@@ -41,12 +41,12 @@ python compare_source_output.py \
 | Argument | Required | Description |
 |----------|----------|-------------|
 | `--source JSON` | Yes | Source summary JSON from extract_source_summaries.py |
-| `--output JSON` | Yes | Harmonized output JSON from extract_output_summaries.py |
+| `--harmonized JSON` | Yes | Harmonized summary JSON from extract_harmonized_summaries.py |
 | `--cohort NAME` | Yes | Cohort name (used in report title) |
 | `--yaml-dir DIR` | Recommended | HV transform directory for YAML-driven crosswalk. Without this, C2–C7/C9 skip. |
 | `--cache-dir DIR` | Recommended | dbGaP cache dir for PHV→name resolution. Without this, PHV IDs are used as labels. |
 | `--clinical-ranges YAML` | No | Clinical ranges file (default: `config/clinical_ranges.yaml`) |
-| `--mean-tolerance FLOAT` | No | Relative tolerance for mean comparison (default: 0.01 = 1%) |
+| `--thresholds YAML` | No | Statistical thresholds file (default: `config/thresholds.yaml`) |
 | `--report FILE` | No | Markdown report output (default: `<cohort>_comparison_report.md`) |
 | `--json-report FILE` | No | JSON report output (default: `<cohort>_comparison_results.json`) |
 
@@ -57,22 +57,22 @@ python compare_source_output.py \
 | Check | Name | What It Tests |
 |-------|------|---------------|
 | C1 | N Preservation | Total participant count did not drop unexpectedly |
-| C2 | N Loss Detection | Per-variable valid-N: output should preserve source N |
-| C3 | Missing Value Accounting | Missing rate stable between source and output |
+| C2 | N Loss Detection | Per-variable valid-N: harmonized should preserve source N |
+| C3 | Missing Value Accounting | Missing rate stable between source and harmonized |
 | C4 | Mean Preservation | Continuous mean within tolerance (no unit conversion) |
 | C5 | Mean After Conversion | Mean correct after known unit conversion factor |
 | C6 | SD Preservation | Standard deviation within tolerance |
 | C7 | Categorical Distribution | Category percentages match (respects value_mappings from YAML) |
 | C8 | Visit N Distribution | Per-visit row counts preserved; UUID namespace fallback to totals |
-| C9 | Clinical Range | Output min/max within clinically plausible bounds |
+| C9 | Clinical Range | Harmonized min/max within clinically plausible bounds |
 | C10 | Cross-Variable Consistency | SBP > DBP, FEV1 < FVC, etc. |
-| C11 | Variable Type Consistency | Source/output agree on continuous vs categorical |
+| C11 | Variable Type Consistency | Source/harmonized agree on continuous vs categorical |
 
 Notes:
 
 - C7 translates YAML `value_mappings` before comparison and aggregates many source
-    categories that map to the same harmonized output category.
-- C7 report sections include a full source/output distribution table for every
+    categories that map to the same harmonized category.
+- C7 report sections include a full source/harmonized distribution table for every
     compared categorical variable.
 - C9 annotates violations with `[out+src]`, `[out only]`, or `[src only]` when the
     source summary contains min/max values for the same range.
@@ -96,11 +96,11 @@ Exit code is `1` if any `FAIL` result exists, `0` otherwise.
 
 ## Variable Crosswalk Strategy
 
-When `--yaml-dir` is provided, the engine builds a source-to-output crosswalk
+When `--yaml-dir` is provided, the engine builds a source-to-harmonized crosswalk
 by parsing YAML transform files:
 
 1. For each `class_derivations` block, extracts:
-   - `observation_type` / `condition_concept` value → output entity key
+   - `observation_type` / `condition_concept` value → harmonized entity key
    - `populated_from` PHV accessions → resolved to variable names via dbGaP cache
    - `value_mappings` → used for C7 categorical translation
     - `method_type` → retained as crosswalk metadata when present
@@ -144,15 +144,11 @@ The custom file only needs to include the keys you want to override.
 
 Format:
 ```yaml
-variable_name:
-  unit: "mg/dL"
-  plausible_lo: 20
-  plausible_hi: 600
-  red_flag_lo: 5
-  red_flag_hi: 1000
-  oba_codes: ["OBA:VT0000188"]
-  omop_codes: []
-  common_phv_names: ["GLUCOSE", "FASTING_GLUCOSE"]
+c4:
+    pass_rel: 0.001
+    warn_rel: 0.01
+c7:
+    pass_pct: 0.5
 ```
 
 ---

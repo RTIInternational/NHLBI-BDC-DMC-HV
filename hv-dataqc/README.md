@@ -11,8 +11,8 @@ ranges, visit structure, and cross-variable consistency.
 | Folder | Script | Purpose | Runs where |
 |--------|--------|---------|-----------|
 | `extract-source/` | `extract_source_summaries.py` | Summarize raw dbGaP TSVs | **Inside enclave** |
-| `extract-harmonized/` | `extract_output_summaries.py` | Summarize dm-bip harmonized output | **Inside enclave** |
-| `compare/` | `compare_source_output.py` | Compare both summaries; run checks C1-C11 | Outside enclave |
+| `extract-harmonized/` | `extract_harmonized_summaries.py` | Summarize dm-bip harmonized output | **Inside enclave** |
+| `compare/` | `compare_source_harmonized.py` | Compare both summaries; run checks C1-C11 | Outside enclave |
 
 ---
 
@@ -28,9 +28,9 @@ ranges, visit structure, and cross-variable consistency.
    concept codes that are already baked into the pipeline output. Visit UUIDs
    are resolved to human-readable labels from `Visit.tsv` at extraction time.
 
-3. **Comparison uses live YAMLs.** The crosswalk (source PHV → output concept
+3. **Comparison uses live YAMLs.** The crosswalk (source PHV → harmonized concept
    code) is built fresh from the current HV YAML checkout on every compare run.
-   Re-run `compare_source_output.py` as often as needed as YAMLs evolve — no
+   Re-run `compare_source_harmonized.py` as often as needed as YAMLs evolve — no
    re-entry to the enclave required.
 
 ---
@@ -48,18 +48,18 @@ ENCLAVE (run once per source study version)
   → exports: spiromics_source_<timestamp>.json
 
 ENCLAVE (run after each dm-bip pipeline execution)
-  # output-root must contain DMC_* run directories
-  # defaults to . (current directory) if --output-root is omitted
-  python extract-harmonized/extract_output_summaries.py \
+  # harmonized-root must contain DMC_* run directories
+  # defaults to . (current directory) if --harmonized-root is omitted
+  python extract-harmonized/extract_harmonized_summaries.py \
       --cohort SPIROMICS \
-      --output-root /path/to/dmbip_output/ \
+      --harmonized-root /path/to/dmbip_output/ \
       --output-dir ./dataqc-runs/
   → exports: spiromics_harmonized_<timestamp>.json
 
 OUTSIDE ENCLAVE (re-run freely as YAMLs evolve)
-  python compare/compare_source_output.py \
+  python compare/compare_source_harmonized.py \
       --source  spiromics_source_<timestamp>.json \
-      --output  spiromics_harmonized_<timestamp>.json \
+      --harmonized  spiromics_harmonized_<timestamp>.json \
       --cohort  SPIROMICS \
       --yaml-dir /path/to/HV-repo/priority_variables_transform/SPIROMICS-ingest/ \
       --cache-dir /path/to/data/dbgap-cache/spiromics/
@@ -69,7 +69,7 @@ OUTSIDE ENCLAVE (re-run freely as YAMLs evolve)
 
 ## Exported JSON Format (both extracts)
 
-Both `extract_source_summaries.py` and `extract_output_summaries.py` write
+Both `extract_source_summaries.py` and `extract_harmonized_summaries.py` write
 **aggregate-only** JSON — no individual participant rows.
 
 ```json
@@ -106,13 +106,13 @@ Both `extract_source_summaries.py` and `extract_output_summaries.py` write
 | C6 | Standard deviation preserved |
 | C7 | Categorical distributions match (with value_mappings translation) |
 | C8 | Visit N distribution preserved |
-| C9 | Output values within clinical plausible range |
+| C9 | Harmonized values within clinical plausible range |
 | C10 | Cross-variable consistency (SBP > DBP, FEV1 < FVC) |
-| C11 | Source/output type consistency (continuous vs categorical) |
+| C11 | Source/harmonized type consistency (continuous vs categorical) |
 
 Recent comparison report details:
 
-- C7 includes full source/output categorical distribution tables, with many-to-one
+- C7 includes full source/harmonized categorical distribution tables, with many-to-one
   YAML value mappings aggregated before percentages are compared.
 - C9 annotates range findings as `[out+src]`, `[out only]`, or `[src only]` when
   source min/max context is available.
