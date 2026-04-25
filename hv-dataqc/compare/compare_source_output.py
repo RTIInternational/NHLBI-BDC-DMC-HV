@@ -855,10 +855,29 @@ def check_c7_categorical_distribution(
         out_pct = out_dist[cat].get("pct", 0)
         diff = abs(out_pct - src_pct)
         if diff > tolerance_pct:
-            mismatches.append({"category": cat, "source_pct": src_pct,
-                               "output_pct": out_pct, "diff": diff})
+            mismatches.append({
+                "category": cat,
+                "source_n": src_dist[cat].get("n"),
+                "source_pct": src_pct,
+                "output_n": out_dist[cat].get("n"),
+                "output_pct": out_pct,
+                "diff": diff,
+            })
 
-    detail: dict = {}
+    # Build full per-category distribution table for report rendering
+    all_cats = sorted(src_keys | out_keys)
+    full_table: list[dict] = []
+    for cat in all_cats:
+        row: dict = {"category": cat}
+        if cat in src_dist:
+            row["source_n"] = src_dist[cat].get("n")
+            row["source_pct"] = src_dist[cat].get("pct")
+        if cat in out_dist:
+            row["output_n"] = out_dist[cat].get("n")
+            row["output_pct"] = out_dist[cat].get("pct")
+        full_table.append(row)
+
+    detail: dict = {"distribution_table": full_table}
     if missing:
         detail["missing_categories"] = missing
     if extra:
@@ -866,9 +885,9 @@ def check_c7_categorical_distribution(
     if mismatches:
         detail["mismatches"] = mismatches
 
-    if not detail:
+    if not missing and not extra and not mismatches:
         return CheckResult("C7", var_name, "PASS",
-                           f"Distribution matches ({len(src_dist)} categories)")
+                           f"Distribution matches ({len(src_dist)} categories)", detail)
     if not mismatches and not missing:
         return CheckResult("C7", var_name, "INFO",
                            f"Extra output categories: {extra}", detail)
@@ -942,10 +961,37 @@ def check_c8_visit_distribution(source: dict, output: dict) -> list[CheckResult]
     return results
 
 
+def _range_violations(val_min, val_max, matched: dict) -> list[str]:
+    """Return list of range violation strings for a given min/max against a matched range def."""
+    issues: list[str] = []
+    red_lo = matched.get("red_flag_lo")
+    red_hi = matched.get("red_flag_hi")
+    plaus_lo = matched.get("plausible_lo")
+    plaus_hi = matched.get("plausible_hi")
+    if val_min is not None:
+        if red_lo is not None and val_min < red_lo:
+            issues.append(f"min={val_min} below red_flag {red_lo}")
+        elif plaus_lo is not None and val_min < plaus_lo:
+            issues.append(f"min={val_min} below plausible {plaus_lo}")
+    if val_max is not None:
+        if red_hi is not None and val_max > red_hi:
+            issues.append(f"max={val_max} above red_flag {red_hi}")
+        elif plaus_hi is not None and val_max > plaus_hi:
+            issues.append(f"max={val_max} above plausible {plaus_hi}")
+    return issues
+
+
 def check_c9_clinical_range(
     out_var: dict, var_name: str, clinical_ranges: dict,
+    src_var: dict | None = None,
 ) -> CheckResult:
-    """C9: Output values within defined clinical plausible range."""
+    """C9: Output values within defined clinical plausible range.
+
+    When src_var is provided, each violation message is annotated with:
+      [out+src]  — both source and output exceed the bound
+      [out only] — only the output exceeds the bound (transformation may have introduced issue)
+      [src only] — only the source exceeds the bound (pre-existing in raw data)
+    """
     if out_var.get("type") != "continuous":
         return CheckResult("C9", var_name, "SKIP", "Not continuous")
 
@@ -963,7 +1009,11 @@ def check_c9_clinical_range(
         if obs_type and obs_type in codes:
             matched = rng
             break
-        if range_name.upper() in var_name.upper() and len(range_name) > best_len:
+        # Word-boundary substring fallback: treat underscores as separators to prevent
+        # e.g. range_name="wbc" matching var_name="wbc_pct_basophils".
+        _wb_pattern = (r'(?<![A-Za-z0-9_])' + re.escape(range_name.upper())
+                       + r'(?![A-Za-z0-9_])')
+        if re.search(_wb_pattern, var_name.upper()) and len(range_name) > best_len:
             matched = rng
             best_len = len(range_name)
 
@@ -975,25 +1025,40 @@ def check_c9_clinical_range(
     if out_min is None or out_max is None:
         return CheckResult("C9", var_name, "SKIP", "No min/max in output")
 
-    issues: list[str] = []
-    red_lo = matched.get("red_flag_lo")
-    red_hi = matched.get("red_flag_hi")
-    plaus_lo = matched.get("plausible_lo")
-    plaus_hi = matched.get("plausible_hi")
+    out_issues = _range_violations(out_min, out_max, matched)
 
-    if red_lo is not None and out_min < red_lo:
-        issues.append(f"min={out_min} below red_flag {red_lo}")
-    elif plaus_lo is not None and out_min < plaus_lo:
-        issues.append(f"min={out_min} below plausible {plaus_lo}")
-
-    if red_hi is not None and out_max > red_hi:
-        issues.append(f"max={out_max} above red_flag {red_hi}")
-    elif plaus_hi is not None and out_max > plaus_hi:
-        issues.append(f"max={out_max} above plausible {plaus_hi}")
-
-    if not issues:
+    if not out_issues:
+        plaus_lo = matched.get("plausible_lo")
+        plaus_hi = matched.get("plausible_hi")
         return CheckResult("C9", var_name, "PASS",
                            f"Range OK: [{out_min}, {out_max}] within [{plaus_lo}, {plaus_hi}]")
+
+    # Annotate each issue with source context when src_var is available
+    if src_var and src_var.get("type") == "continuous":
+        src_min = src_var.get("min")
+        src_max = src_var.get("max")
+        src_issues = _range_violations(src_min, src_max, matched)
+        # Build annotated messages
+        annotated: list[str] = []
+        for issue in out_issues:
+            # Determine if the same bound appears in src_issues
+            in_src = any(
+                ("below" in issue and "below" in s) or ("above" in issue and "above" in s)
+                for s in src_issues
+            )
+            tag = "[out+src]" if in_src else "[out only]"
+            annotated.append(f"{issue} {tag}")
+        # Also report src-only violations so reviewer knows raw data pre-condition
+        for s_issue in src_issues:
+            in_out = any(
+                ("below" in s_issue and "below" in o) or ("above" in s_issue and "above" in o)
+                for o in out_issues
+            )
+            if not in_out:
+                annotated.append(f"{s_issue} [src only]")
+        issues = annotated
+    else:
+        issues = out_issues
 
     has_red = any("red_flag" in i for i in issues)
     return CheckResult("C9", var_name, "FAIL" if has_red else "WARN",
@@ -1001,38 +1066,99 @@ def check_c9_clinical_range(
                        {"min": out_min, "max": out_max})
 
 
+# Detects simple 2-variable directional checks: "mean(X) > mean(Y)" or "mean(X) < mean(Y)".
+# Rules using >=, <=, ≈, or multi-variable formulas do not match and are emitted as SKIP.
+_C10_SIMPLE_RE = re.compile(r"mean\([^)]+\)\s*([<>])\s*mean\([^)]+\)")
+
+
 def check_c10_cross_variable(
     output_vars: dict, clinical_ranges: dict,
 ) -> list[CheckResult]:
-    """C10: Cross-variable consistency (SBP > DBP, FEV1 < FVC, etc.)."""
+    """C10: Cross-variable consistency driven by _cross_variable_rules in clinical_ranges.
+
+    Rules with exactly 2 variables and a simple mean(X) > mean(Y) or mean(X) < mean(Y)
+    check expression are executed automatically.  Complex rules (>=, ≈, multi-variable
+    formulas) emit SKIP and are intended for future implementation.
+
+    Concept codes are resolved from the per-range definitions in clinical_ranges —
+    no concept IDs are hardcoded in this function.
+    """
     results: list[CheckResult] = []
     rules = clinical_ranges.get("_cross_variable_rules", {})
 
-    if "sbp_gt_dbp" in rules:
-        sbp = next((v for v in output_vars.values() if v.get("observation_type") == "OMOP:4152194"), None)
-        dbp = next((v for v in output_vars.values() if v.get("observation_type") == "OMOP:4154790"), None)
-        if sbp and dbp:
-            s, d = sbp.get("mean", 0), dbp.get("mean", 0)
-            if s and d:
-                if s > d:
-                    results.append(CheckResult("C10", "sbp_gt_dbp", "PASS",
-                                               f"SBP mean ({s}) > DBP mean ({d})"))
-                else:
-                    results.append(CheckResult("C10", "sbp_gt_dbp", "FAIL",
-                                               f"SBP mean ({s}) <= DBP mean ({d}) -- possible swap"))
+    for rule_id, rule in rules.items():
+        check_expr = rule.get("check", "")
+        variables = rule.get("variables", [])
+        severity = "FAIL" if rule.get("severity", "").upper() == "ERROR" else "WARN"
+        description = rule.get("description", rule_id)
 
-    if "fev1_lt_fvc" in rules:
-        fev1 = next((v for v in output_vars.values() if v.get("observation_type") == "OMOP:4051332"), None)
-        fvc  = next((v for v in output_vars.values() if v.get("observation_type") == "OMOP:4217326"), None)
-        if fev1 and fvc:
-            f1, fc = fev1.get("mean", 0), fvc.get("mean", 0)
-            if f1 and fc:
-                if f1 <= fc:
-                    results.append(CheckResult("C10", "fev1_lt_fvc", "PASS",
-                                               f"FEV1 mean ({f1}) <= FVC mean ({fc})"))
-                else:
-                    results.append(CheckResult("C10", "fev1_lt_fvc", "FAIL",
-                                               f"FEV1 mean ({f1}) > FVC mean ({fc}) -- possible swap"))
+        m = _C10_SIMPLE_RE.search(check_expr)
+        if not m or len(variables) != 2:
+            results.append(CheckResult(
+                "C10", rule_id, "SKIP",
+                f"Multi-variable or formula rule (not yet implemented): {description}"
+            ))
+            continue
+
+        operator = m.group(1)  # "<" or ">"
+
+        # Resolve concept codes from config — no hardcoded IDs here (A2)
+        range_a = clinical_ranges.get(variables[0])
+        range_b = clinical_ranges.get(variables[1])
+        if not range_a or not range_b:
+            results.append(CheckResult(
+                "C10", rule_id, "SKIP",
+                f"Range definition not found for {variables[0]!r} or {variables[1]!r}"
+            ))
+            continue
+
+        codes_a = set(range_a.get("omop_codes", []) + range_a.get("oba_codes", []))
+        codes_b = set(range_b.get("omop_codes", []) + range_b.get("oba_codes", []))
+
+        if not codes_a or not codes_b:
+            results.append(CheckResult(
+                "C10", rule_id, "SKIP",
+                f"No concept codes defined for {variables[0]!r} or {variables[1]!r}"
+            ))
+            continue
+
+        var_a = next((v for v in output_vars.values()
+                      if v.get("observation_type") in codes_a), None)
+        var_b = next((v for v in output_vars.values()
+                      if v.get("observation_type") in codes_b), None)
+
+        if not var_a or not var_b:
+            # Variables not present in this cohort's output — silent skip
+            continue
+
+        mean_a = var_a.get("mean")
+        mean_b = var_b.get("mean")
+        if mean_a is None or mean_b is None:
+            results.append(CheckResult(
+                "C10", rule_id, "SKIP",
+                f"Mean missing for one or both variables in rule {rule_id!r}"
+            ))
+            continue
+
+        label_a = variables[0].replace("_", " ")
+        label_b = variables[1].replace("_", " ")
+
+        if operator == ">":
+            passed = mean_a > mean_b
+        else:  # "<"
+            passed = mean_a <= mean_b
+
+        if passed:
+            results.append(CheckResult(
+                "C10", rule_id, "PASS",
+                f"{label_a} mean ({mean_a:.4g}) {operator} {label_b} mean ({mean_b:.4g})"
+            ))
+        else:
+            results.append(CheckResult(
+                "C10", rule_id, severity,
+                f"{label_a} mean ({mean_a:.4g}) NOT {operator} {label_b} mean ({mean_b:.4g})"
+                f" -- {description}"
+            ))
 
     if not results:
         results.append(CheckResult("C10", "_cross", "SKIP",
@@ -1091,15 +1217,60 @@ def generate_markdown_report(
     }
 
     _sort_key = {"FAIL": 0, "WARN": 1, "PASS": 2, "INFO": 3, "SKIP": 4}
+
+    def _render_c7_detail(r: CheckResult) -> list[str]:
+        """Render C7 distribution table and mismatch detail as indented markdown."""
+        sub: list[str] = []
+        table = r.detail.get("distribution_table", [])
+        if not table:
+            return sub
+        sub.append("")
+        sub.append("  | Category | Src N | Src % | Out N | Out % | Δ% |")
+        sub.append("  |----------|------:|------:|------:|------:|---:|")
+        mismatch_cats = {m["category"] for m in r.detail.get("mismatches", [])}
+        missing_cats = set(r.detail.get("missing_categories", []))
+        extra_cats = set(r.detail.get("extra_categories", []))
+        for row in table:
+            cat = row["category"]
+            src_n = row.get("source_n", "")
+            src_pct = f"{row['source_pct']:.1f}" if row.get("source_pct") is not None else ""
+            out_n = row.get("output_n", "")
+            out_pct = f"{row['output_pct']:.1f}" if row.get("output_pct") is not None else ""
+            if row.get("source_pct") is not None and row.get("output_pct") is not None:
+                delta = f"{row['output_pct'] - row['source_pct']:+.1f}"
+            else:
+                delta = ""
+            flag = " ⚠" if cat in mismatch_cats else (
+                   " ✗" if cat in missing_cats else (
+                   " ＋" if cat in extra_cats else ""))
+            sub.append(f"  | `{cat}`{flag} | {src_n} | {src_pct} | {out_n} | {out_pct} | {delta} |")
+        return sub
+
+    _check_notes = {
+        "C9": (
+            "> **Annotation key:** `[out+src]` = violation present in both source and output "
+            "(pre-existing in raw data, faithfully preserved); "
+            "`[out only]` = output exceeds bound but source did not "
+            "(transformation may have introduced the issue); "
+            "`[src only]` = source exceeds bound but output does not "
+            "(pipeline corrected or filtered the value)."
+        ),
+    }
+
     for check_id in ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11"]:
         check_results = [r for r in results if r.check_id == check_id]
         if not check_results:
             continue
         lines.append(f"## {check_id}: {check_names.get(check_id, check_id)}")
         lines.append("")
+        if check_id in _check_notes:
+            lines.append(_check_notes[check_id])
+            lines.append("")
         for r in sorted(check_results, key=lambda x: _sort_key.get(x.status, 9)):
             icon = _STATUS_ICONS.get(r.status, r.status)
             lines.append(f"- {icon} **{r.variable}**: {r.message}")
+            if check_id == "C7" and r.status in ("PASS", "WARN", "FAIL", "INFO"):
+                lines.extend(_render_c7_detail(r))
         lines.append("")
 
     return "\n".join(lines)
@@ -1240,7 +1411,7 @@ def main(argv: list[str] | None = None) -> None:
         all_results.append(check_c6_sd_preservation(src_var, out_var, display_name))
         all_results.append(check_c7_categorical_distribution(src_var, out_var, display_name,
                                                                value_map=value_map))
-        all_results.append(check_c9_clinical_range(out_var, display_name, clinical_ranges))
+        all_results.append(check_c9_clinical_range(out_var, display_name, clinical_ranges, src_var=src_var))
         all_results.append(check_c11_type_consistency(src_var, out_var, display_name))
 
     all_results.extend(check_c8_visit_distribution(source, output))
