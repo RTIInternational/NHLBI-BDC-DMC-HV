@@ -203,7 +203,7 @@ def infer_variable_type(
 # Source directory discovery
 # ---------------------------------------------------------------------------
 
-_CONSENT_GROUP_RE = re.compile(r"_c\d+$", re.IGNORECASE)
+_CONSENT_GROUP_RE = re.compile(r"[-_]c\d+$", re.IGNORECASE)
 _PHT_RE = re.compile(r"\bpht(\d{6,7})\b", re.IGNORECASE)
 
 
@@ -220,15 +220,16 @@ def _extract_pht_id(filename: str) -> str:
 def discover_source_dirs(root: Path, cohort: str) -> list[Path]:
     """Walk *root* and return consent-group directories for this cohort.
 
-    Expected BDC enclave layout::
+    Expected BDC enclave layout (either naming convention)::
 
         <source_root>/
-            <cohort_lower>_phs<accession>_c1/
+            <cohort_lower>_phs<accession>_c1/          <- short form
             <cohort_lower>_phs<accession>_c2/
+            nih-nhlbi-topmed-parent-<cohort>-phs...-c1/ <- full BDC form
             dataqc-runs/   <- skipped
 
-    Matches subdirectories whose names start with the cohort name
-    (case-insensitive) and end with ``_c<N>``.
+    Matches subdirectories whose names contain the cohort name
+    (case-insensitive) and end with ``_c<N>`` or ``-c<N>``.
     """
     cohort_lower = cohort.lower()
     dirs: list[Path] = []
@@ -238,7 +239,9 @@ def discover_source_dirs(root: Path, cohort: str) -> list[Path]:
         name = d.name.lower()
         if name == "dataqc-runs":
             continue
-        if name.startswith(cohort_lower) and _CONSENT_GROUP_RE.search(d.name):
+        # Match both short form (aric_phs..._c1) and full BDC enclave form
+        # (nih-nhlbi-topmed-parent-aric-phs...-v8-r1-c1).
+        if cohort_lower in name and _CONSENT_GROUP_RE.search(d.name):
             dirs.append(d)
     return dirs
 
