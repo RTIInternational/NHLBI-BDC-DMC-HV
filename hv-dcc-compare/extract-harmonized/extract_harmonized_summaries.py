@@ -111,6 +111,7 @@ from config import (
     COHORT_CANONICAL_TO_ALIASES,
     normalize_cohort_name,
     resolve_baseline_visits,
+    BASELINE_VISIT_CONFIG,
     BASELINE_VISIT_PREFS,
     SMOKING_VISIT_OVERRIDE,
     CONDITION_PROCEDURE_VISIT_OVERRIDE,
