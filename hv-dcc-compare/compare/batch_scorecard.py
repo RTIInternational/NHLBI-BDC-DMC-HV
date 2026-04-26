@@ -22,8 +22,8 @@ USAGE:
     # Process only specific cohorts
     python batch_scorecard.py --cohorts ARIC CHS FHS
 
-    # Use latest BDC JSON per cohort (default) vs. specific timestamp
-    python batch_scorecard.py --use-latest
+    # Score all matched variables instead of the core comparison scope
+    python batch_scorecard.py --all-vars
 """
 
 from __future__ import annotations
@@ -34,6 +34,10 @@ import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 from match_quality_table import CORE_VARIABLES, KNOWN_METHODOLOGICAL_DIFFS
 

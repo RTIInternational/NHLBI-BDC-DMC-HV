@@ -12,7 +12,8 @@ This validates the hypothesis that TOPMed's 12,895 count includes ~375-400
 enrollment-only subjects with no measured phenotype data, while BDC's 11,831
 count reflects only participants with actual exam records.
 
-OUTPUT: JSON + console report (aggregate only — NO participant IDs written).
+OUTPUT: JSON + console report (aggregate only — NO participant IDs or raw
+participant-level values written).
 
 USAGE:
     # TOPMed side (from enclave with EAV files):
@@ -53,6 +54,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 # Add the hv-dcc-compare root to path so config.py is importable
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -363,8 +368,8 @@ def compute_completeness(
             "source": source_name,
             "cohort": cohort,
             "generated": datetime.now(timezone.utc).isoformat(),
-            "script": "validate_participant_completeness.py",
-            "note": "Anonymized phenotype completeness profile — no participant IDs.",
+            "script": "validate_completeness.py",
+            "note": "Anonymized phenotype completeness profile — no participant IDs or raw participant-level values.",
         },
         "total_participants": n_total,
         "exam_variables_available": available_exam_vars,

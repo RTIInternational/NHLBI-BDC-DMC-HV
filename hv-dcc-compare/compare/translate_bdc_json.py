@@ -20,6 +20,10 @@ import json
 import sys
 from pathlib import Path
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 # Add the hv-dcc-compare root to path so config.py is importable
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import BDC_MEASUREMENT_MAP, BDC_CONDITION_MAP, BDC_PROCEDURE_MAP

@@ -23,7 +23,8 @@ OUTPUT FORMAT (bdc_<cohort>_summary.json):
           continuous  → {n_valid, n_missing, mean, sd, median, q1, q3, min, max, ...}
       dq_flags           — data quality observations
 
-    NO participant IDs or individual rows are written. Safe to export from enclave.
+    NO participant IDs, raw source values, or individual rows are written to JSON,
+    stdout, or logs. Safe to export from enclave.
 
 USAGE:
     # Simplest: auto-discover all consent groups from current directory
@@ -60,6 +61,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -430,10 +435,8 @@ def process_demography(
                 seen |= cg_ids
             if cross_consent_dups:
                 n_dups = len(cross_consent_dups)
-                sample = sorted(cross_consent_dups)[:5]
                 print(f"    WARNING: {n_dups:,} participant(s) appear in multiple "
-                      f"consent groups — deduplicating (keeping first occurrence).")
-                print(f"      Sample IDs: {sample}")
+                    f"consent groups — deduplicating (keeping first occurrence).")
                 print(f"      Consent groups: {sorted(all_cg_ids.index.tolist())}")
 
     # DEFENSIVE: Coalesce duplicate rows per participant.
@@ -820,11 +823,10 @@ def process_measurements(
             print(f"    [ObservationSet] Format B: found {n_set:,} rows with serialized "
                   f"'observations' column — parsing child observations...")
 
-            # Sample to determine format
-            sample_vals = df.loc[set_rows, "observations"].head(3).tolist()
-            for i, sv in enumerate(sample_vals[:2]):
-                preview = str(sv)[:200]
-                print(f"      Sample {i+1}: {preview}...")
+            non_null_lengths = df.loc[set_rows, "observations"].astype(str).str.len()
+            print(f"      Serialized observations length: min={int(non_null_lengths.min())}, "
+                f"max={int(non_null_lengths.max())}, "
+                f"median={float(non_null_lengths.median()):.0f} characters")
 
             import ast
             child_rows = []
@@ -886,7 +888,8 @@ def process_measurements(
                       f"({parse_errors} parse errors)")
             elif parse_errors > 0:
                 print(f"    [ObservationSet] WARNING: Could not parse {parse_errors:,} "
-                      f"Set rows — BP will be missing. Check sample output above.")
+                      f"Set rows — BP will be missing. Serialized values were not printed "
+                      f"to keep logs aggregate-only.")
             else:
                 print(f"    [ObservationSet] WARNING: Parsed {n_set:,} Set rows but "
                       f"found 0 child observations — unexpected format.")
@@ -1006,11 +1009,10 @@ def process_measurements(
 
         if value_col in baseline.columns:
             values = pd.to_numeric(baseline[value_col], errors="coerce")
-            # Debug: if we have rows but all values are NaN, show raw samples
+            # Debug: if we have rows but all values are NaN, report aggregate-only diagnostics
             if len(baseline) > 0 and values.notna().sum() == 0:
-                raw_sample = baseline[value_col].head(5).tolist()
                 print(f"    [debug] {spec['bdc_label']}: {len(baseline)} rows but 0 valid numeric values. "
-                      f"Raw samples: {raw_sample}")
+                      f"Raw values were not printed to keep logs aggregate-only.")
         else:
             values = pd.Series(dtype=float)
 
@@ -1538,18 +1540,16 @@ def process_procedures(
         marker = f" → {mapped}" if mapped else ""
         print(f"      {pt}: {cnt:,} rows{marker}")
 
-    # Debug: check participant ID overlap
+    # Debug: check participant ID overlap using counts only
     id_col = "associated_participant"
     if id_col in df.columns and participant_ids:
         proc_pids = set(df[id_col].dropna().unique())
         overlap = len(proc_pids & participant_ids)
-        print(f"    [debug] Procedure participant IDs: {len(proc_pids):,}, "
+        print(f"    [debug] Procedure participant count: {len(proc_pids):,}, "
               f"overlap with Demography: {overlap:,}")
         if overlap == 0 and proc_pids and participant_ids:
-            sample_proc = list(proc_pids)[:3]
-            sample_demo = list(participant_ids)[:3]
-            print(f"    [debug] Sample procedure IDs: {sample_proc}")
-            print(f"    [debug] Sample demography IDs: {sample_demo}")
+            print("    [debug] No overlap between procedure and demography participant "
+                  "identifier sets; IDs were not printed to keep logs aggregate-only.")
 
     found_vars = []
 

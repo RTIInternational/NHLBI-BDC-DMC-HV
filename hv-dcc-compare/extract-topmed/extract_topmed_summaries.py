@@ -18,7 +18,8 @@ OUTPUT FORMAT (per cohort: topmed_<cohort>_summary.json):
           continuous  → {n_valid, n_missing, mean, sd, median, q1, q3, min, max, ...}
       dq_flags          — data quality observations
 
-    NO participant IDs or individual rows are written. Safe to export from enclave.
+    NO participant IDs, raw source values, or individual rows are written to JSON,
+    stdout, or logs. Safe to export from enclave.
 
 USAGE:
     # Minimal: just demographics
@@ -70,6 +71,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 # Add the hv-dcc-compare root to the path so config.py is importable
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))

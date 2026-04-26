@@ -26,8 +26,9 @@ PHASE 2 (run anywhere — consumes aggregate JSON summaries only)
                                    compare/batch_scorecard.py
 ```
 
-All outputs are **aggregate-only** — no participant IDs or individual-level data
-are written, making results safe for export from restricted enclaves.
+All outputs are **aggregate-only** — no participant IDs, raw source values, or
+individual-level rows are written to JSON, stdout, stderr, or log files, making
+results safe for export from restricted enclaves.
 
 ---
 
@@ -38,6 +39,8 @@ ARIC · CARDIA · CHS · COPDGene · FHS · HCHS-SOL · JHS · MESA · WHI
 ---
 
 ## Setup
+
+Requires Python 3.9+.
 
 ```bash
 pip install -r requirements.txt
@@ -140,6 +143,23 @@ python compare/translate_bdc_json.py ./runs/bdc/bdc_aric_summary_old.json
 | `compare/translate_bdc_json.py` | Post-processes a BDC JSON to rename raw concept codes to canonical TOPMed variable names |
 | `compare/core_variable_coverage_table.py` | Cross-cohort 19 Core Variable coverage matrix (requires HV repo path) |
 | `CHANGELOG.md` | Change log for all scripts in this directory |
+
+Note: the deprecated legacy `mapping-quality-table.py` wrapper was not carried
+forward. Use `compare/match_quality_table.py` for per-variable grading.
+
+---
+
+## Safety and tests
+
+Before running on restricted data, run the synthetic smoke tests:
+
+```bash
+python -m unittest discover -s tests
+```
+
+The tests verify CLI startup, config imports, aggregate-only TOPMed extraction,
+concept-code translation, and absence of known participant-level debug print
+patterns. Test fixtures are synthetic only.
 
 ---
 

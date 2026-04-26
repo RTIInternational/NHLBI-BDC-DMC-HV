@@ -5,7 +5,9 @@ Generates a presence/absence table for the 19 Core Variables across all 9 cohort
 showing both TOPMed DCC reference coverage and BDC YAML mapping coverage.
 
 Usage:
-    python scripts/topmed_compare/core_variable_coverage_table.py
+    python compare/core_variable_coverage_table.py \
+        --hv-repo /path/to/NHLBI-BDC-DMC-HV \
+        --topmed-dir ./runs/topmed/
 
 Output:
     Prints the coverage matrix to stdout.
@@ -25,7 +27,12 @@ Legend:
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 # ---------------------------------------------------------------------------
 # 19 CORE VARIABLES — validated comparison scope (2026-04-01)
