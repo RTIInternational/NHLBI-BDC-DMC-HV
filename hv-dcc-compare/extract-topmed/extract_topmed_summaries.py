@@ -22,12 +22,31 @@ OUTPUT FORMAT (per cohort: topmed_<cohort>_summary.json):
     stdout, or logs. Safe to export from enclave.
 
 USAGE:
-    # Minimal: just demographics
+    # Simplest: point at the directory containing the tar.gz bundles and let
+    # the script discover everything (base files + upload_2020-05-21 updates).
     python extract_topmed_summaries.py \\
-        --demographics-file /path/to/topmed_dcc_harmonized_demographic_v4_eav.txt \\
+        --base-dir   /path/to/TOPMed_DCC_harmonization/ \\
         --output-dir /path/to/output/
 
-    # Full: all available data sets
+    # Same, but restrict to specific cohorts
+    python extract_topmed_summaries.py \\
+        --base-dir   /path/to/TOPMed_DCC_harmonization/ \\
+        --output-dir /path/to/output/ \\
+        --cohorts ARIC FHS WHI
+
+    # With an explicit upload directory (if it has a non-default name)
+    python extract_topmed_summaries.py \\
+        --base-dir   /path/to/TOPMed_DCC_harmonization/ \\
+        --upload-dir /path/to/TOPMed_DCC_harmonization/upload_2020-05-21/ \\
+        --output-dir /path/to/output/
+
+    # Override a single file (all others still auto-discovered from --base-dir)
+    python extract_topmed_summaries.py \\
+        --base-dir           /path/to/TOPMed_DCC_harmonization/ \\
+        --demographics-file  /other/path/demographic_eav.txt \\
+        --output-dir         /path/to/output/
+
+    # Manual: supply each EAV file path explicitly (no --base-dir needed)
     python extract_topmed_summaries.py \\
         --demographics-file      /path/to/demographic_eav.txt \\
         --baseline-covariates-file /path/to/baseline_common_covariates_eav.txt \\
@@ -42,15 +61,9 @@ USAGE:
         --output-dir             /path/to/output/ \\
         --cohorts ARIC FHS WHI
 
-    # Restrict to specific cohorts
+    # First run -- use --verbose to see all studies and variables in each file
     python extract_topmed_summaries.py \\
-        --demographics-file /path/to/demographic_eav.txt \\
-        --output-dir /path/to/output/ \\
-        --cohorts FHS WHI
-
-    # First run — use --verbose to see all studies and variables in each file
-    python extract_topmed_summaries.py \\
-        --demographics-file /path/to/demographic_eav.txt \\
+        --base-dir /path/to/TOPMed_DCC_harmonization/ \\
         --output-dir /path/to/output/ \\
         --verbose
 
@@ -67,6 +80,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import tarfile
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -86,6 +100,105 @@ from config import (
 
 # Track which files have already been profiled (one-time diagnostic per file)
 _profiled_files: set[str] = set()
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# BASE-DIR AUTO-DISCOVERY
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Maps filename substrings → DATASETS keys.  ORDER MATTERS: the more specific
+# "atherosclerosis_events_*" patterns must come before bare "atherosclerosis".
+_DATASET_FILENAME_PATTERNS: list[tuple[str, str]] = [
+    ("atherosclerosis_events_incident", "atherosclerosis_events_incident"),
+    ("atherosclerosis_events_prior",    "atherosclerosis_events_prior"),
+    ("atherosclerosis",                 "atherosclerosis"),
+    ("baseline_common_covariates",      "baseline_covariates"),
+    ("blood_cell_count",                "blood_cell_count"),
+    ("blood_pressure",                  "blood_pressure"),
+    ("demographic",                     "demographics"),
+    ("lipids",                          "lipids"),
+    ("vte",                             "vte"),
+    ("inflammation",                    "inflammation"),
+    ("sleep",                           "sleep"),
+]
+
+
+def _classify_tgz(filename: str) -> str | None:
+    """Return the DATASETS key that matches this tar.gz filename, or None."""
+    lower = filename.lower()
+    for pattern, key in _DATASET_FILENAME_PATTERNS:
+        if pattern in lower:
+            return key
+    return None
+
+
+def discover_tgz_files(
+    base_dir: Path,
+    upload_dir: Path | None = None,
+) -> dict[str, Path]:
+    """
+    Scan base_dir (and optional upload_dir) for TOPMed DCC *.tar.gz files and
+    map each to a DATASETS key.  upload_dir files take precedence over base_dir
+    for the same key (they carry higher version numbers and supersede the base).
+
+    If upload_dir is None, checks for a 'upload_2020-05-21' subdirectory of
+    base_dir automatically.
+
+    Returns: {dataset_key: Path_to_tar_gz}
+    """
+    found: dict[str, Path] = {}
+
+    for tgz in sorted(base_dir.glob("*.tar.gz")):
+        key = _classify_tgz(tgz.name)
+        if key:
+            found[key] = tgz
+
+    if upload_dir is None:
+        candidate = base_dir / "upload_2020-05-21"
+        if candidate.is_dir():
+            upload_dir = candidate
+
+    if upload_dir is not None and upload_dir.is_dir():
+        for tgz in sorted(upload_dir.glob("*.tar.gz")):
+            key = _classify_tgz(tgz.name)
+            if key:
+                found[key] = tgz  # overrides base dir for same key
+
+    return found
+
+
+def extract_eav_from_tgz(tgz_path: Path, extract_root: Path) -> Path | None:
+    """
+    Extract a TOPMed DCC tar.gz and return the path to the *_eav.txt file
+    inside it.  Extraction is skipped when the EAV file is already present.
+
+    The extracted files land in:  extract_root / <archive-stem> /
+    Returns None if no *_eav.txt is found after extraction.
+    """
+    stem = tgz_path.name
+    if stem.endswith(".tar.gz"):
+        stem = stem[:-7]
+    dest = extract_root / stem
+
+    # Re-use existing extraction if the EAV file is already there
+    if dest.is_dir():
+        existing = list(dest.rglob("*_eav.txt"))
+        if existing:
+            return existing[0]
+
+    print(f"    Extracting: {tgz_path.name} ...", file=sys.stderr)
+    dest.mkdir(parents=True, exist_ok=True)
+    with tarfile.open(tgz_path, "r:gz") as tf:
+        tf.extractall(dest)  # noqa: S202 — files are from a trusted local bundle
+
+    eav_files = list(dest.rglob("*_eav.txt"))
+    if not eav_files:
+        print(
+            f"    WARNING: No *_eav.txt found inside {tgz_path.name}",
+            file=sys.stderr,
+        )
+        return None
+    return eav_files[0]
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -479,13 +592,38 @@ def parse_args() -> argparse.Namespace:
         epilog=__doc__,
     )
 
-    # One argument per TOPMed data set file
+    # ── Auto-discovery shortcut ─────────────────────────────────────────────
+    parser.add_argument(
+        "--base-dir",
+        default=None,
+        metavar="DIR",
+        help=(
+            "Root directory that contains the TOPMed DCC tar.gz bundles. "
+            "The script scans this directory for all recognised dataset archives "
+            "and also checks for a 'upload_2020-05-21' subdirectory, whose files "
+            "take precedence over same-dataset files in the base directory. "
+            "Archives are extracted automatically into <base-dir>/extracted/. "
+            "Explicit --*-file arguments override auto-discovered paths."
+        ),
+    )
+    parser.add_argument(
+        "--upload-dir",
+        default=None,
+        metavar="DIR",
+        help=(
+            "Explicit path to the upload subdirectory that contains newer-version "
+            "tar.gz files (overrides the default 'upload_2020-05-21' subdirectory "
+            "of --base-dir).  Only used when --base-dir is also given."
+        ),
+    )
+
+    # ── Per-dataset file overrides ───────────────────────────────────────────
+    # Not required at parse time — validated in main() after auto-discovery.
     for ds_key, ds_info in DATASETS.items():
         arg_name = f"--{ds_key.replace('_', '-')}-file"
-        required = ds_key == "demographics"
         parser.add_argument(
             arg_name,
-            required=required,
+            required=False,
             default=None,
             metavar="FILE",
             help=f"{ds_info['description']} EAV file. "
@@ -532,18 +670,57 @@ def main() -> None:
     else:
         cohort_list = list(COHORTS.keys())
 
-    # Build file_args dict (dataset_key + "_file" → filepath)
+    # ── Auto-discovery from --base-dir ────────────────────────────────────────
+    auto_discovered: dict[str, str] = {}  # dataset_key → eav txt path
+    if args.base_dir:
+        base_dir = Path(args.base_dir)
+        if not base_dir.is_dir():
+            print(f"ERROR: --base-dir does not exist: {base_dir}", file=sys.stderr)
+            sys.exit(1)
+
+        upload_dir: Path | None = Path(args.upload_dir) if args.upload_dir else None
+        tgz_map = discover_tgz_files(base_dir, upload_dir)
+
+        extract_root = base_dir / "extracted"
+        n_found = 0
+        print(f"  Auto-discovery from: {base_dir}")
+        if not tgz_map:
+            print("  WARNING: No recognised *.tar.gz archives found.", file=sys.stderr)
+        for ds_key, tgz_path in sorted(tgz_map.items()):
+            eav_path = extract_eav_from_tgz(tgz_path, extract_root)
+            if eav_path:
+                auto_discovered[ds_key] = str(eav_path)
+                n_found += 1
+                print(f"    {ds_key:<38} <- {tgz_path.name}")
+            else:
+                print(
+                    f"    WARNING: Could not extract EAV from {tgz_path.name}",
+                    file=sys.stderr,
+                )
+        print(f"  Auto-discovered {n_found} dataset(s).")
+
+    # ── Build file_args: auto-discovered paths, then explicit CLI overrides ───
     file_args: dict[str, str | None] = {}
     input_files_summary: dict[str, str] = {}
     for ds_key in DATASETS:
         arg_key = ds_key + "_file"
-        filepath = args_dict.get(arg_key.replace("-", "_"))
+        # Explicit CLI arg takes precedence over auto-discovery
+        filepath = args_dict.get(ds_key.replace("-", "_") + "_file")
         if filepath is None:
-            # Try the CLI-style arg name
-            filepath = args_dict.get(ds_key.replace("-", "_") + "_file")
+            filepath = auto_discovered.get(ds_key)
         file_args[arg_key] = filepath
         if filepath:
             input_files_summary[ds_key] = filepath
+
+    # Validate: demographics is required (it anchors participant counts)
+    if not file_args.get("demographics_file"):
+        print(
+            "ERROR: demographics EAV file is required. "
+            "Supply --demographics-file or use --base-dir pointing to a directory "
+            "that contains topmed_dcc_harmonized_demographic_*.tar.gz.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
