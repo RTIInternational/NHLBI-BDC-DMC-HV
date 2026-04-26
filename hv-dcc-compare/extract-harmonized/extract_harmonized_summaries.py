@@ -124,6 +124,7 @@ from config import (
     SMOKING_OBSERVATION_TYPE,
     OMOP_SMOKING_MAP,
 )
+_HAS_CONFIG = True
 
 def _ci_glob_processed_dirs(base: Path, cohort: str) -> list[Path]:
     """Find DMC_*_{cohort}_Processed_* directories with case-insensitive cohort matching.
