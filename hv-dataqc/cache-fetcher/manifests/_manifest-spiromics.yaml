@@ -1,0 +1,130 @@
+# SPIROMICS Variable Mapping Manifest
+# Single source of truth for SPIROMICS harmonization versioning
+# This file evolves with each SPIROMICS data version update
+
+# =============================================================================
+# CURRENT VERSION (Active Work)
+# =============================================================================
+current_version:
+  study_id: "phs001119"
+  study_name: "Subpopulations and Intermediate Outcome Measures in COPD Study (SPIROMICS)"
+  data_version: "v1.p1"
+  last_updated: "2026-03-08"
+  
+  # dbGaP Documentation Links (AI tooling can reference these directly)
+  dbgap_references:
+    study_homepage: 
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs001119.v1.p1"
+      description: "Main study page with metadata, documentation, and access info"
+      
+    variable_dictionary:
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/GetListOfAllObjects.cgi?study_id=phs001119.v1.p1&object_type=variable"
+      description: "Complete listing of all variables with definitions and metadata"
+      cached_file: "data/dbgap-cache/spiromics/variables.xml"
+      
+    study_documents:
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/GetListOfAllObjects.cgi?study_id=phs001119.v1.p1&object_type=document"
+      description: "Study protocols, data collection procedures, codebooks"
+      cached_file: "data/dbgap-cache/spiromics/documents.xml"
+
+    pheno_variable_summaries:
+      ftp_url: "https://ftp.ncbi.nlm.nih.gov/dbgap/studies/phs001119/phs001119.v1.p1/pheno_variable_summaries/"
+      description: "Per-dataset data dictionaries (XML) with variable IDs, descriptions, types, units, coded values"
+      cached_dir: "data/dbgap-cache/spiromics/pheno_variable_summaries/"
+      file_count: 4
+
+    gap_exchange:
+      ftp_url: "https://ftp.ncbi.nlm.nih.gov/dbgap/studies/phs001119/phs001119.v1.p1/GapExchange_phs001119.v1.p1.xml"
+      description: "Study-level GapExchange XML with dataset inventory and study structure"
+      cached_file: "data/dbgap-cache/spiromics/GapExchange_phs001119.v1.p1.xml"
+  
+  # Current harmonization work
+  harmonization:
+    bdchm_schema: "v0.1.0"
+    transform_version: "SPIROMICS-2026.03.1"
+    repository_location: "https://github.com/RTIInternational/NHLBI-BDC-DMC-HV/tree/main/priority_variables_transform/SPIROMICS-ingest"    
+    
+  # Status tracking
+  status:
+    mapping_progress: "planned"
+    lead: "TBD"
+    started: "TBD"
+
+# =============================================================================
+# VERSION HISTORY (Previous Versions)
+# =============================================================================
+version_history:
+  # Previous SPIROMICS versions will be added here as data updates occur
+  # Pattern: move current_version to history when new version arrives
+  
+# =============================================================================
+# STUDY-SPECIFIC NOTES
+# =============================================================================
+study_characteristics:
+  focus: "COPD subpopulation identification and intermediate outcome measure validation"
+  design: "Prospective multi-center longitudinal cohort (12 clinical centers)"
+  population: "~2,981 participants: never-smokers, smokers without COPD, mild/moderate COPD, severe COPD"
+  enrollment_strata:
+    - stratum: 1
+      label: "Never-Smokers"
+      criteria: "<1 pack-year, FEV1/FVC>0.7, FVC>LLN"
+      target_n: 200
+    - stratum: 2
+      label: "Smokers without COPD"
+      criteria: ">20 pack-years, post-BD FEV1/FVC>0.7, FVC>LLN"
+      target_n: 900
+    - stratum: 3
+      label: "Mild/Moderate COPD"
+      criteria: ">20 pack-years, post-BD FEV1/FVC<0.7, FEV1>50% pred"
+      target_n: 1500
+    - stratum: 4
+      label: "Severe COPD"
+      criteria: ">20 pack-years, post-BD FEV1/FVC<0.7, FEV1<50% pred"
+      target_n: 600
+  key_strengths: 
+    - "Stratified enrollment across full COPD severity spectrum"
+    - "Deep molecular fingerprinting and phenotyping for subpopulation identification"
+    - "Standardized multi-center CT imaging with centralized reading"
+    - "Bronchoscopy substudy (n=251) with BAL, brushings, biopsies"
+    - "EXACT-PRO exacerbation monitoring in dedicated substudy (n=204)"
+    - "Repeatability substudy (n=98) for measurement reliability"
+  substudies:
+    - name: "Bronchoscopy and Immunophenotyping"
+      participants: 251
+      description: "BAL, epithelial brushings, bronchial biopsies across all strata"
+    - name: "Repeatability"
+      participants: 98
+      description: "Full baseline visit repeated for measurement reliability"
+    - name: "Exacerbation"
+      participants: 204
+      description: "Prospective observation with EXACT-PRO diary and event-triggered visits"
+    - name: "SPIROMICS Genetic and Genomics"
+      phs: "phs002399.v1.p1"
+      description: "Genomic substudy with WGS data"
+  clinical_centers:
+    - "Columbia University"
+    - "Temple University"
+    - "Johns Hopkins University"
+    - "Wake Forest University"
+    - "University of Michigan"
+    - "University of Illinois at Chicago"
+    - "University of Iowa"
+    - "University of Utah"
+    - "National Jewish Health"
+    - "University of Alabama at Birmingham"
+    - "University of California at San Francisco"
+    - "University of California at Los Angeles"
+  reading_centers:
+    radiology: "University of Iowa"
+    pft: "University of California at Los Angeles"
+    genomics_informatics: "University of North Carolina at Chapel Hill"
+    
+harmonization_considerations:
+  - "Stratified enrollment (not population-based) affects prevalence/distribution comparisons"
+  - "Disease-focused cohort enriched for COPD severity"
+  - "Small never-smoker control arm (n≈200)"
+  - "Substudy-specific variables have different sample sizes and visit schedules"
+  - "Multi-site CT scanner heterogeneity requires QC attention"
+  - "Close alignment with COPDGene design but different enrollment criteria (>20 vs >10 pack-years)"
+  - "COPD-specific exclusions (BMI>40, prior lung surgery/transplant) affect comparability"
+  - "Visit structure: Baseline + 3 annual visits (not all procedures at every visit)"

@@ -286,8 +286,19 @@ def _extract_crosswalk_from_class_derivations(
     yaml_filename: str,
     phv_names: dict[str, str],
     crosswalk: list[dict],
+    inside_mos: bool = False,
 ) -> None:
-    """Recursively extract crosswalk entries from a class_derivations block."""
+    """Recursively extract crosswalk entries from a class_derivations block.
+
+    When *inside_mos* is True, the caller is iterating nested
+    MeasurementObservation blocks inside a MeasurementObservationSet's
+    ``observations`` list.  In that case method_type — when present on the
+    inner block — is appended to the harmonized_key as ``|<method_type>``,
+    mirroring how ``process_measurement_observation_sets()`` in the harmonized
+    extractor groups MOS rows.  Standalone MeasurementObservation files keep
+    bare ``measurement_<concept>`` keys because the standalone extractor path
+    does not include method_type in its grouping.
+    """
     ENTITY_PREFIX = {
         "Condition": "condition_",
         "MeasurementObservation": "measurement_",
@@ -373,7 +384,11 @@ def _extract_crosswalk_from_class_derivations(
                         inner_cd = od.get("class_derivations")
                         if inner_cd and isinstance(inner_cd, dict):
                             _extract_crosswalk_from_class_derivations(
-                                inner_cd, yaml_filename, phv_names, crosswalk
+                                inner_cd,
+                                yaml_filename,
+                                phv_names,
+                                crosswalk,
+                                inside_mos=True,
                             )
             continue
 
@@ -457,7 +472,12 @@ def _extract_crosswalk_from_class_derivations(
         if not primary_phvs or not concept_code:
             continue
 
-        # method_type creates a compound harmonized key (e.g. MO spirometry legs)
+        # method_type creates a compound harmonized key only for MO blocks
+        # nested inside a MeasurementObservationSet — the MOS path in the
+        # harmonized extractor groups by (observation_type, method_type) and
+        # emits keys like ``measurement_OMOP:XXX|<method_type>``.  Standalone
+        # MeasurementObservation files (bdy_hgt, bmi, hrt_rt, ...) are grouped
+        # by observation_type alone and keep bare keys.
         method_type_val: str | None = None
         if entity_class == "MeasurementObservation" and "method_type" in slots:
             mt = slots["method_type"]
@@ -468,10 +488,10 @@ def _extract_crosswalk_from_class_derivations(
                 )
 
         prefix = ENTITY_PREFIX.get(entity_class, f"{entity_class.lower()}_")
-        # Use bare concept code as key — the harmonized extractor groups MeasurementObservation
-        # rows by observation_type only (no method_type suffix), so the crosswalk key must
-        # match that form.  method_type_val is retained as metadata only.
-        harmonized_key = f"{prefix}{concept_code}"
+        if inside_mos and method_type_val:
+            harmonized_key = f"{prefix}{concept_code}|{method_type_val}"
+        else:
+            harmonized_key = f"{prefix}{concept_code}"
 
         value_phvs = [p for p in primary_phvs if p["is_value_slot"]]
         primary = value_phvs[0] if value_phvs else primary_phvs[0]
@@ -587,30 +607,190 @@ def _normalize_harmonized_vars(raw: dict) -> dict:
     return result
 
 
+# ---------------------------------------------------------------------------
+# Multi-PHT source aggregation
+# ---------------------------------------------------------------------------
+
+def _aggregate_source_summaries(per_pht: list[dict]) -> dict:
+    """Combine per-PHT source variable summaries into a single pooled summary.
+
+    A YAML transform commonly maps a single harmonized variable (e.g.
+    ``measurement_OBA:2045381`` for hematocrit) to source columns drawn from
+    several dbGaP tables (one per visit / hospital form / etc.).  The
+    harmonized extractor concatenates all rows across visits into a single
+    long-format frame, so its ``n_valid`` reflects the full pool.  To
+    compare apples to apples, the source side must also be pooled.
+
+    Inputs are summary dicts produced by ``compute_variable_summary`` in
+    ``extract_source_summaries.py``.  This helper:
+
+      * Sums ``n_valid``, ``n_total``, ``n_missing`` across all PHTs.
+      * Recomputes ``pct_missing`` against the pooled denominator.
+      * For continuous variables, computes the n_valid-weighted mean and the
+        pooled SD using the standard parallel-sample formula:
+            SD_pooled = sqrt( ( sum_i (n_i - 1) * SD_i^2
+                                + sum_i n_i * (mean_i - mean_pool)^2 ) / (N - 1) )
+        and reports the min of mins, max of maxes.
+      * For categorical variables, sums per-value counts and recomputes
+        per-value ``pct`` against the pooled n_valid.
+      * Preserves ``name``, ``type``, and ``_col_original`` from the first
+        non-empty contributor.
+
+    Returns an empty dict if *per_pht* is empty.
+    """
+    if not per_pht:
+        return {}
+    if len(per_pht) == 1:
+        return dict(per_pht[0])
+
+    # Pooled counts
+    n_valid = sum(int(p.get("n_valid", 0) or 0) for p in per_pht)
+    n_total = sum(int(p.get("n_total", 0) or 0) for p in per_pht)
+    n_missing = sum(int(p.get("n_missing", 0) or 0) for p in per_pht)
+
+    # Take the most common type; fall back to the first non-empty
+    types = [p.get("type") for p in per_pht if p.get("type")]
+    pooled_type: str | None = None
+    if types:
+        # All same → use it; otherwise prefer the type from the largest contributor
+        if len(set(types)) == 1:
+            pooled_type = types[0]
+        else:
+            largest = max(per_pht, key=lambda p: int(p.get("n_valid", 0) or 0))
+            pooled_type = largest.get("type")
+
+    pooled: dict = {
+        "type": pooled_type,
+        "n_total": n_total,
+        "n_valid": n_valid,
+        "n_missing": n_missing,
+        "pct_missing": (
+            round(n_missing / n_total * 100, 2) if n_total > 0 else 0.0
+        ),
+    }
+
+    # Carry through the first available human-readable name / original column
+    for key in ("name", "_col_original"):
+        for p in per_pht:
+            v = p.get(key)
+            if v:
+                pooled[key] = v
+                break
+
+    if pooled_type == "continuous":
+        # n_valid-weighted mean over PHTs that report a mean
+        mean_contribs = [
+            (int(p.get("n_valid", 0) or 0), p.get("mean"))
+            for p in per_pht
+            if p.get("mean") is not None and int(p.get("n_valid", 0) or 0) > 0
+        ]
+        if mean_contribs:
+            n_w = sum(n for n, _ in mean_contribs)
+            mean_pool = (
+                sum(n * float(m) for n, m in mean_contribs) / n_w
+                if n_w > 0 else None
+            )
+            pooled["mean"] = round(mean_pool, 6) if mean_pool is not None else None
+        else:
+            pooled["mean"] = None
+
+        # Pooled SD via parallel-samples formula.  Contributors with n=1 have
+        # no within-group SD, but still contribute to between-group variance.
+        sd_contribs = [
+            (int(p.get("n_valid", 0) or 0), p.get("mean"), p.get("sd"))
+            for p in per_pht
+            if p.get("mean") is not None and int(p.get("n_valid", 0) or 0) > 0
+        ]
+        if sd_contribs and pooled.get("mean") is not None:
+            mean_pool_val = pooled["mean"]
+            n_total_for_sd = sum(n for n, _, _ in sd_contribs)
+            if n_total_for_sd > 1:
+                within = sum(
+                    (n - 1) * float(sd) ** 2
+                    for n, _, sd in sd_contribs
+                    if sd is not None and n > 1
+                )
+                between = sum(
+                    n * (float(m) - mean_pool_val) ** 2
+                    for n, m, _ in sd_contribs
+                )
+                pooled_var = (within + between) / (n_total_for_sd - 1)
+                pooled["sd"] = (
+                    round(math.sqrt(pooled_var), 6) if pooled_var >= 0 else None
+                )
+            else:
+                pooled["sd"] = None
+        else:
+            pooled["sd"] = None
+
+        # Min-of-mins, max-of-maxes
+        mins = [p.get("min") for p in per_pht if p.get("min") is not None]
+        maxs = [p.get("max") for p in per_pht if p.get("max") is not None]
+        if mins:
+            pooled["min"] = min(float(x) for x in mins)
+        if maxs:
+            pooled["max"] = max(float(x) for x in maxs)
+
+    elif pooled_type == "categorical":
+        # Sum per-value counts across PHTs, then recompute pct.  The source
+        # extractor emits distribution: {code: {n, pct}}; accept legacy
+        # values/count defensively, but write the canonical distribution schema
+        # consumed by check_c7_categorical_distribution().
+        merged_distribution: dict[str, dict] = {}
+        for p in per_pht:
+            dist = p.get("distribution") or p.get("values") or {}
+            if not isinstance(dist, dict):
+                continue
+            for code, info in dist.items():
+                if not isinstance(info, dict):
+                    continue
+                cnt = int(info.get("n", info.get("count", 0)) or 0)
+                slot = merged_distribution.setdefault(code, {"n": 0})
+                slot["n"] += cnt
+        for code, slot in merged_distribution.items():
+            slot["pct"] = (
+                round(slot["n"] / n_valid * 100, 2) if n_valid > 0 else 0.0
+            )
+        pooled["distribution"] = merged_distribution
+
+    return pooled
+
+
 def build_variable_crosswalk(
     source_vars: dict,
     harmonized_vars: dict,
     yaml_dir: Path | None = None,
     cache_dir: Path | None = None,
     source_doc: dict | None = None,
+    diagnostics_out: dict | None = None,
 ) -> list[dict]:
     """Build source <-> harmonized variable crosswalk.
 
     Strategy (in priority order):
-    1. YAML-driven: PHV -> concept code -> entity key.
+    1. YAML-driven: PHV -> concept code -> entity key.  When multiple YAML
+       blocks (typically one per visit / source PHT) emit the SAME
+       harmonized key, all per-PHT source summaries are pooled into one
+       combined summary so the C2/C3/C4/C6/C7 comparisons see the same
+       longitudinal pool the harmonized extractor produces.
     2. PHV ID match: source key starts with "phv", check harmonized metadata.
     3. Name match: source ``name`` == harmonized ``bdc_label``.
 
     When *source_doc* contains ``variables_by_pht`` and *cache_dir* provides a
     PHV->PHT map, each YAML-matched entry gains a ``_resolved_src`` field with
-    stats drawn from the correct PHT table.  This eliminates false C2/C3
-    failures caused by the same variable appearing in multiple PHT files.
+    pooled stats drawn from every contributing PHT.  ``_source_phts`` lists
+    the PHTs that contributed and ``_per_pht_src`` retains the individual
+    per-PHT summaries for audit / diagnostic reporting.
+
+    If *diagnostics_out* is supplied, it is populated with details of YAML
+    entries the parser produced that could not be matched (missing source
+    column or missing harmonized key) — keyed by harmonized_key for use by
+    the unmatched-harmonized FAIL reporter.
     """
     matches: list[dict] = []
     matched_src: set[str] = set()
     matched_harmonized: set[str] = set()
 
-    # --- Strategy 1: YAML-driven ---
+    # --- Strategy 1: YAML-driven (with multi-PHT aggregation) ---
     if yaml_dir and yaml_dir.exists():
         phv_names: dict[str, str] = {}
         phv_to_pht: dict[str, str] = {}
@@ -618,63 +798,188 @@ def build_variable_crosswalk(
             phv_names = load_phv_name_map(cache_dir)
             phv_to_pht = load_phv_to_pht_map(cache_dir)
 
+        # Hard-fail when the cache directory was supplied but produced no
+        # PHV->name mappings.  This catches typo'd paths, wrong-cohort caches,
+        # and caches that exist but lack pheno_variable_summaries/*.data_dict.xml.
+        if cache_dir and cache_dir.exists() and not phv_names:
+            print(
+                f"ERROR: --cache-dir produced 0 PHV-to-name mappings: {cache_dir}. "
+                f"Expected layout: {cache_dir}/pheno_variable_summaries/*.data_dict.xml. "
+                "Aborting because the YAML crosswalk would be empty.",
+                file=sys.stderr,
+            )
+            sys.exit(2)
+
         variables_by_pht: dict[str, dict] = (
             source_doc.get("variables_by_pht", {}) if source_doc else {}
         )
 
         yaml_cw = build_yaml_crosswalk(yaml_dir, phv_names)
+        if not yaml_cw:
+            print(
+                f"ERROR: YAML crosswalk produced 0 entries from {yaml_dir.name}. "
+                "This usually means the PHV->name map is empty or every YAML "
+                "block references PHVs absent from the cache. Check --cache-dir "
+                "matches the cohort and contains pheno_variable_summaries/*.data_dict.xml.",
+                file=sys.stderr,
+            )
+            sys.exit(2)
         print(f"  YAML crosswalk: {len(yaml_cw)} entries from {yaml_dir.name}")
+
+        # Group YAML entries by harmonized_key, normalising source/harmonized
+        # keys against the actual extract dicts.  Track which entries failed to
+        # resolve so we can surface diagnostics for the matching FAIL.
+        grouped: dict[str, list[dict]] = {}
+        unresolved: dict[str, list[dict]] = {}
 
         for entry in yaml_cw:
             src_key = entry["source_key"]
             harmonized_key = entry["harmonized_key"]
 
             # Case-insensitive fallback for source key
-            if src_key not in source_vars:
+            resolved_src_key: str | None = None
+            if src_key in source_vars:
+                resolved_src_key = src_key
+            else:
                 for sk in source_vars:
                     if sk.upper() == src_key.upper():
-                        src_key = sk
-                        entry["source_key"] = sk
+                        resolved_src_key = sk
                         break
-                else:
-                    continue
 
             # Case-insensitive fallback for harmonized key
-            if harmonized_key not in harmonized_vars:
+            resolved_harmonized_key: str | None = None
+            if harmonized_key in harmonized_vars:
+                resolved_harmonized_key = harmonized_key
+            else:
                 for ok in harmonized_vars:
                     if ok.upper() == harmonized_key.upper():
-                        harmonized_key = ok
-                        entry["harmonized_key"] = ok
+                        resolved_harmonized_key = ok
                         break
-                else:
-                    continue
 
-            if src_key in matched_src:
+            if resolved_harmonized_key is None or resolved_src_key is None:
+                # Stash diagnostic — at minimum we still know the YAML claims
+                # there is a harmonized key here, even if resolution failed.
+                stash_key = resolved_harmonized_key or harmonized_key
+                unresolved.setdefault(stash_key, []).append(
+                    {
+                        "yaml_file": entry.get("yaml_file"),
+                        "phv_id": entry.get("phv_id"),
+                        "concept_code": entry.get("concept_code"),
+                        "entity_class": entry.get("entity_class"),
+                        "source_key_in_yaml": entry.get("source_key"),
+                        "missing_source_column": resolved_src_key is None,
+                        "missing_harmonized_key": resolved_harmonized_key is None,
+                    }
+                )
                 continue
+
+            entry["source_key"] = resolved_src_key
+            entry["harmonized_key"] = resolved_harmonized_key
+            grouped.setdefault(resolved_harmonized_key, []).append(entry)
+
+        for harmonized_key, entries in grouped.items():
             if harmonized_key in matched_harmonized:
-                # Multi-source MOS: another source column already claimed this key
                 continue
 
-            # Resolve per-PHT source stats to avoid multi-table inflation.
-            phv_id = entry.get("phv_id", "")
-            if phv_id and variables_by_pht:
-                pht_id = phv_to_pht.get(phv_id)
-                if pht_id and pht_id in variables_by_pht:
-                    pht_vars = variables_by_pht[pht_id]
-                    # Try exact match first, then case-insensitive.
-                    resolved = pht_vars.get(src_key)
-                    if resolved is None:
-                        for k, v in pht_vars.items():
-                            if k.upper() == src_key.upper():
-                                resolved = v
-                                break
-                    if resolved is not None:
-                        entry["_resolved_src"] = resolved
-                        entry["_resolved_pht"] = pht_id
+            # Resolve per-PHT source stats for every contributing entry.
+            per_pht_summaries: list[dict] = []
+            source_phts: list[str] = []
+            source_keys_used: list[str] = []
+            source_flat_keys_used: list[str] = []
+            phv_ids: list[str] = []
 
-            matches.append(entry)
-            matched_src.add(src_key)
+            for entry in entries:
+                src_key = entry["source_key"]
+                phv_id = entry.get("phv_id", "")
+                if phv_id:
+                    phv_ids.append(phv_id)
+
+                resolved_summary: dict | None = None
+                resolved_pht: str | None = None
+                if phv_id and variables_by_pht:
+                    pht_id = phv_to_pht.get(phv_id)
+                    if pht_id and pht_id in variables_by_pht:
+                        pht_vars = variables_by_pht[pht_id]
+                        resolved_summary = pht_vars.get(src_key)
+                        if resolved_summary is None:
+                            for k, v in pht_vars.items():
+                                if k.upper() == src_key.upper():
+                                    resolved_summary = v
+                                    break
+                        if resolved_summary is not None:
+                            resolved_pht = pht_id
+
+                if resolved_summary is None:
+                    # Fall back to the flat source_vars dict (first-PHT-wins).
+                    resolved_summary = source_vars.get(src_key)
+
+                if resolved_summary is not None:
+                    per_pht_summaries.append(dict(resolved_summary))
+                    if resolved_pht and resolved_pht not in source_phts:
+                        source_phts.append(resolved_pht)
+                    if src_key not in source_keys_used:
+                        source_keys_used.append(src_key)
+                    if src_key in source_vars and src_key not in source_flat_keys_used:
+                        source_flat_keys_used.append(src_key)
+                    if resolved_pht:
+                        namespaced_key = f"{resolved_pht}.{src_key.lower()}"
+                        if (
+                            namespaced_key in source_vars
+                            and namespaced_key not in source_flat_keys_used
+                        ):
+                            source_flat_keys_used.append(namespaced_key)
+
+            if not per_pht_summaries:
+                # Couldn't resolve a single contributing summary.
+                unresolved.setdefault(harmonized_key, []).extend(
+                    [
+                        {
+                            "yaml_file": e.get("yaml_file"),
+                            "phv_id": e.get("phv_id"),
+                            "concept_code": e.get("concept_code"),
+                            "entity_class": e.get("entity_class"),
+                            "source_key_in_yaml": e.get("source_key"),
+                            "missing_source_column": True,
+                            "missing_harmonized_key": False,
+                        }
+                        for e in entries
+                    ]
+                )
+                continue
+
+            # Build the merged crosswalk match using the first entry as a
+            # template (preserves yaml_file, phv_id of the first contributor,
+            # concept_code, entity_class, value_map, method_type) and overlay
+            # the pooled fields.
+            merged = dict(entries[0])
+            merged["_resolved_src"] = _aggregate_source_summaries(per_pht_summaries)
+            merged["_per_pht_src"] = per_pht_summaries
+            merged["_source_phts"] = source_phts
+            merged["_source_keys"] = source_keys_used
+            merged["_source_flat_keys"] = source_flat_keys_used
+            merged["_phv_ids"] = phv_ids
+            if source_phts:
+                # Keep _resolved_pht populated for backward-compat in the
+                # console crosswalk listing; show comma-joined list when many.
+                merged["_resolved_pht"] = ",".join(source_phts)
+            merged["match_method"] = (
+                "yaml+pooled" if len(per_pht_summaries) > 1 else "yaml"
+            )
+
+            matches.append(merged)
             matched_harmonized.add(harmonized_key)
+            for sk in source_keys_used:
+                matched_src.add(sk)
+
+        if diagnostics_out is not None:
+            diagnostics_out["unresolved_yaml_entries"] = unresolved
+            # Record every harmonized key the YAML parser proposed (resolved or
+            # not).  The unmatched-FAIL reporter can use this to distinguish
+            # "YAML claims this exists but couldn't link source" from "YAML
+            # never proposed this key at all".
+            diagnostics_out["yaml_proposed_harmonized_keys"] = sorted(
+                set(grouped.keys()) | set(unresolved.keys())
+            )
 
     # --- Strategy 2: PHV ID match ---
     for src_key, src_info in source_vars.items():
@@ -1344,6 +1649,7 @@ def generate_markdown_report(
     cohort: str,
     source_meta: dict,
     harmonized_meta: dict,
+    crosswalk: list[dict] | None = None,
 ) -> str:
     """Generate a human-readable Markdown report."""
     lines = [
@@ -1368,6 +1674,35 @@ def generate_markdown_report(
             lines.append(f"| {_STATUS_ICONS[status]} {status} | {counts[status]} |")
     lines.append(f"| **Total** | **{sum(counts.values())}** |")
     lines.append("")
+
+    # Multi-PHT pooled-source crosswalk audit section.  Lists every harmonized
+    # variable whose source side was aggregated across multiple dbGaP tables
+    # (typical for longitudinal measurements that appear once per visit).
+    if crosswalk:
+        pooled_entries = [m for m in crosswalk if len(m.get("_source_phts") or []) > 1]
+        if pooled_entries:
+            lines.append("## Pooled Source Crosswalk (multi-PHT aggregation)")
+            lines.append("")
+            lines.append(
+                "Harmonized variables whose source side was pooled across multiple "
+                "dbGaP tables.  The compare tool reports a single combined `n_valid`, "
+                "weighted mean, pooled SD and merged value distribution against the "
+                "harmonized longitudinal output."
+            )
+            lines.append("")
+            lines.append(
+                "| Harmonized key | Source column(s) | Contributing PHTs | Pooled n_valid |"
+            )
+            lines.append(
+                "|----------------|------------------|-------------------|---------------:|"
+            )
+            for m in pooled_entries:
+                hkey = _md_escape(m.get("harmonized_key", ""))
+                src_keys = ", ".join(_md_escape(s) for s in (m.get("_source_keys") or []))
+                phts = ", ".join(m.get("_source_phts") or [])
+                pooled_n = (m.get("_resolved_src") or {}).get("n_valid", 0)
+                lines.append(f"| {hkey} | {src_keys} | {phts} | {pooled_n:,} |")
+            lines.append("")
 
     check_names = {
         "C1": "N Preservation", "C2": "N Loss Detection",
@@ -1462,7 +1797,10 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--cache-dir", metavar="DIR",
                    help="dbGaP cache directory for the cohort, used to resolve PHV->name "
                         "(e.g. data/dbgap-cache/spiromics/). "
-                        "Optional — PHV IDs are used as labels when not provided.")
+                        "REQUIRED when --yaml-dir is supplied (must contain "
+                        "pheno_variable_summaries/*.data_dict.xml). Without it the "
+                        "YAML-driven crosswalk cannot resolve PHV IDs to source column "
+                        "names and would be empty.")
 
     p.add_argument("--clinical-ranges", metavar="YAML",
                    help=f"Clinical ranges YAML (default: {_CONFIG_DIR / 'clinical_ranges.yaml'})")
@@ -1497,7 +1835,27 @@ def main(argv: list[str] | None = None) -> None:
         print(f"WARNING: --yaml-dir not found: {yaml_dir}")
         yaml_dir = None
 
+    # --cache-dir is required when --yaml-dir is supplied: without the PHV->name
+    # map produced from the cache, _extract_crosswalk_from_class_derivations()
+    # silently skips every YAML entry (missing src_name) and the YAML-driven
+    # crosswalk ends up empty, producing a useless report.
+    if yaml_dir and not cache_dir:
+        print(
+            "ERROR: --cache-dir is required when --yaml-dir is supplied. "
+            "Without it the PHV->name map cannot be built and the YAML "
+            "crosswalk will be empty.",
+            file=sys.stderr,
+        )
+        sys.exit(2)
+
     if cache_dir and not cache_dir.exists():
+        if yaml_dir:
+            print(
+                f"ERROR: --cache-dir not found: {cache_dir}. "
+                "Required when --yaml-dir is supplied.",
+                file=sys.stderr,
+            )
+            sys.exit(2)
         print(f"WARNING: --cache-dir not found: {cache_dir}")
         cache_dir = None
 
@@ -1550,11 +1908,13 @@ def main(argv: list[str] | None = None) -> None:
 
     # Build crosswalk
     print("\nBuilding variable crosswalk...")
+    yaml_diagnostics: dict = {}
     crosswalk = build_variable_crosswalk(
         source_vars, harmonized_vars,
         yaml_dir=yaml_dir,
         cache_dir=cache_dir,
         source_doc=source,
+        diagnostics_out=yaml_diagnostics,
     )
     print(f"Matched {len(crosswalk)} variable pairs")
     for m in crosswalk:
@@ -1562,9 +1922,20 @@ def main(argv: list[str] | None = None) -> None:
         yaml_f = m.get("yaml_file", "")
         phv = m.get("phv_id", "")
         resolved_pht = m.get("_resolved_pht", "")
+        source_phts = m.get("_source_phts") or []
+        per_pht = m.get("_per_pht_src") or []
+        resolved = m.get("_resolved_src") or {}
         extra = f" [{yaml_f}]" if yaml_f else ""
         extra += f" ({phv})" if phv else ""
-        extra += f" -> {resolved_pht}" if resolved_pht else ""
+        if len(source_phts) > 1:
+            phts_str = "+".join(source_phts)
+            extra += (
+                f" -> [{phts_str}] pooled n_valid="
+                f"{resolved.get('n_valid', 0):,} "
+                f"({len(per_pht)} PHTs)"
+            )
+        elif resolved_pht:
+            extra += f" -> {resolved_pht}"
         print(f"  {m['source_key']:<30} -> {m['harmonized_key']:<40} [{method}]{extra}")
 
     # Run checks
@@ -1619,17 +1990,73 @@ def main(argv: list[str] | None = None) -> None:
     ))
     all_results.extend(check_c10_cross_variable(harmonized_vars, clinical_ranges))
 
-    # Flag unmatched variables
-    matched_src = {m["source_key"] for m in crosswalk}
+    # Flag unmatched variables.  A pooled YAML match contributes ALL of its
+    # contributing source columns to matched_src (not just the first), so
+    # subsequent strategies and the INFO unmatched-source reporter behave
+    # correctly when a harmonized key was satisfied by multiple PHTs.
+    matched_src: set[str] = set()
+    for m in crosswalk:
+        if m.get("_source_keys"):
+            matched_src.update(m["_source_keys"])
+            matched_src.update(m.get("_source_flat_keys") or [])
+        else:
+            matched_src.add(m["source_key"])
     matched_harmonized = {m["harmonized_key"] for m in crosswalk}
     for sk in source_vars:
         if sk not in matched_src and "error" not in source_vars[sk]:
             all_results.append(CheckResult(
                 "C2", source_vars[sk].get("name", sk), "INFO", "Source variable not matched in harmonized"
             ))
+
+    unresolved_yaml = (yaml_diagnostics.get("unresolved_yaml_entries") or {})
+    yaml_proposed = set(yaml_diagnostics.get("yaml_proposed_harmonized_keys") or [])
     for ok in harmonized_vars:
-        if ok not in matched_harmonized:
-            all_results.append(CheckResult("C2", ok, "FAIL", "Harmonized variable not matched in source — no source PHV traceable"))
+        if ok in matched_harmonized:
+            continue
+        diag_entries = unresolved_yaml.get(ok, [])
+        detail: dict = {
+            "harmonized_key": ok,
+            "yaml_proposed_harmonized_key": ok in yaml_proposed,
+        }
+        if diag_entries:
+            yaml_files = sorted({e.get("yaml_file") for e in diag_entries if e.get("yaml_file")})
+            phvs = sorted({e.get("phv_id") for e in diag_entries if e.get("phv_id")})
+            concept_codes = sorted(
+                {e.get("concept_code") for e in diag_entries if e.get("concept_code")}
+            )
+            entity_classes = sorted(
+                {e.get("entity_class") for e in diag_entries if e.get("entity_class")}
+            )
+            missing_src = [
+                e.get("source_key_in_yaml")
+                for e in diag_entries
+                if e.get("missing_source_column") and e.get("source_key_in_yaml")
+            ]
+            detail.update(
+                {
+                    "yaml_files": yaml_files,
+                    "phv_ids_in_yaml": phvs,
+                    "concept_codes": concept_codes,
+                    "entity_classes": entity_classes,
+                    "missing_source_columns": sorted(set(missing_src)),
+                }
+            )
+            msg_parts = ["Harmonized variable not matched in source"]
+            if missing_src:
+                msg_parts.append(
+                    f"YAML proposed PHV(s) {', '.join(phvs) or '?'} -> source column(s) "
+                    f"{', '.join(sorted(set(missing_src)))} but they are absent from the source extract"
+                )
+            else:
+                msg_parts.append(
+                    f"YAML proposed PHV(s) {', '.join(phvs) or '?'} but no contributing PHT had stats"
+                )
+            message = " — ".join(msg_parts)
+        else:
+            message = (
+                "Harmonized variable not matched in source — no YAML block proposed this concept"
+            )
+        all_results.append(CheckResult("C2", ok, "FAIL", message, detail))
 
     # Summary
     counts: dict[str, int] = {}
@@ -1639,7 +2066,9 @@ def main(argv: list[str] | None = None) -> None:
     print(f"Results: {counts}")
 
     # Write Markdown
-    md = generate_markdown_report(all_results, cohort, source_meta, harmonized_meta)
+    md = generate_markdown_report(
+        all_results, cohort, source_meta, harmonized_meta, crosswalk=crosswalk
+    )
     report_path = Path(args.report or f"{cohort.lower()}_comparison_report.md")
     _write_text_atomic(report_path, md)
     print(f"\nMarkdown report : {report_path}")
@@ -1654,7 +2083,14 @@ def main(argv: list[str] | None = None) -> None:
             "thresholds_file": str(thresholds_path),
         },
         "summary": counts,
-        "crosswalk": crosswalk,
+        "crosswalk": [
+            # Strip verbose per-PHT raw summaries from the JSON crosswalk to
+            # keep file size manageable; the pooled _resolved_src and the list
+            # of contributing PHTs (_source_phts / _source_keys) remain.
+            {k: v for k, v in m.items() if k != "_per_pht_src"}
+            for m in crosswalk
+        ],
+        "yaml_diagnostics": yaml_diagnostics,
         "results": [r.to_dict() for r in all_results],
     }
     json_path = Path(args.json_report or f"{cohort.lower()}_comparison_results.json")

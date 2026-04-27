@@ -1,0 +1,77 @@
+# JHS Variable Mapping Manifest
+# Single source of truth for JHS harmonization versioning
+# This file evolves with each JHS data version update
+
+# =============================================================================
+# CURRENT VERSION (Active Work)
+# =============================================================================
+current_version:
+  study_id: "phs000286"
+  study_name: "Jackson Heart Study (JHS)"
+  data_version: "v7.p2"
+  last_updated: "2026-02-24"
+  
+  # dbGaP Documentation Links (AI tooling can reference these directly)
+  dbgap_references:
+    study_homepage: 
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000286.v7.p2"
+      description: "Main study page with metadata, documentation, and access info"
+      
+    variable_dictionary:
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/GetListOfAllObjects.cgi?study_id=phs000286.v7.p2&object_type=variable"
+      description: "Complete listing of all variables with definitions and metadata"
+      cached_file: "data/dbgap-cache/jhs/variables.xml"
+      
+    study_documents:
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/GetListOfAllObjects.cgi?study_id=phs000286.v7.p2&object_type=document"
+      description: "Study protocols, data collection procedures, codebooks"
+      cached_file: "data/dbgap-cache/jhs/documents.xml"
+
+    pheno_variable_summaries:
+      ftp_url: "https://ftp.ncbi.nlm.nih.gov/dbgap/studies/phs000286/phs000286.v7.p2/pheno_variable_summaries/"
+      description: "Per-dataset data dictionaries (XML) with variable IDs, descriptions, types, units, coded values"
+      cached_dir: "data/dbgap-cache/jhs/pheno_variable_summaries/"
+      file_count: 114
+
+    gap_exchange:
+      ftp_url: "https://ftp.ncbi.nlm.nih.gov/dbgap/studies/phs000286/phs000286.v7.p2/GapExchange_phs000286.v7.p2.xml"
+      description: "Study-level GapExchange XML with dataset inventory and study structure"
+      cached_file: "data/dbgap-cache/jhs/GapExchange_phs000286.v7.p2.xml"
+  
+  # Current harmonization work
+  harmonization:
+    bdchm_schema: "v0.1.0"
+    transform_version: "JHS-2026.02.1"
+    repository_location: "https://github.com/RTIInternational/NHLBI-BDC-DMC-HV/tree/main/priority_variables_transform/JHS-ingest"    
+    
+  # Status tracking
+  status:
+    mapping_progress: "planned"
+    lead: "TBD"
+    started: "TBD"
+
+# =============================================================================
+# VERSION HISTORY (Previous Versions)
+# =============================================================================
+version_history:
+  # Previous JHS versions will be added here as data updates occur
+  # Pattern: move current_version to history when new version arrives
+  
+# =============================================================================
+# STUDY-SPECIFIC NOTES
+# =============================================================================
+study_characteristics:
+  focus: "Cardiovascular disease risk factors and outcomes in African Americans"
+  design: "Single-site prospective longitudinal cohort in Jackson, Mississippi"
+  population: "~5,306 African American adults aged 21-84"
+  key_strengths: 
+    - "Largest single-site epidemiologic study of CVD in African Americans"
+    - "Deep cardiovascular phenotyping with echocardiography and cardiac CT"
+    - "Unique psychosocial, discrimination, and community context measures"
+    - "ARIC Jackson site overlap enabling cross-study linkage"
+    
+harmonization_considerations:
+  - "Single-race (African American) cohort design"
+  - "ARIC Jackson site participant overlap (~30% shared)"
+  - "Population-specific clinical thresholds and reference ranges"
+  - "Unique psychosocial and discrimination variables"

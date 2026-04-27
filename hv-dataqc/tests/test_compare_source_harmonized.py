@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import sys
 import unittest
+import math
 from pathlib import Path
 
 
@@ -14,6 +15,7 @@ COMPARE_DIR = Path(__file__).resolve().parents[1] / "compare"
 sys.path.insert(0, str(COMPARE_DIR))
 
 from compare_source_harmonized import (  # noqa: E402
+    _aggregate_source_summaries,
     _json_safe,
     check_c4_mean_preservation,
     check_c10_cross_variable,
@@ -24,6 +26,100 @@ from compare_source_harmonized import (  # noqa: E402
 
 
 class CompareSourceHarmonizedTests(unittest.TestCase):
+    def test_aggregate_source_summaries_pools_continuous_stats(self) -> None:
+        pooled = _aggregate_source_summaries(
+            [
+                {
+                    "type": "continuous",
+                    "n_total": 2,
+                    "n_valid": 2,
+                    "n_missing": 0,
+                    "mean": 2.0,
+                    "sd": math.sqrt(2.0),
+                    "min": 1.0,
+                    "max": 3.0,
+                },
+                {
+                    "type": "continuous",
+                    "n_total": 3,
+                    "n_valid": 3,
+                    "n_missing": 0,
+                    "mean": 6.0,
+                    "sd": 2.0,
+                    "min": 4.0,
+                    "max": 8.0,
+                },
+            ]
+        )
+
+        self.assertEqual(pooled["n_valid"], 5)
+        self.assertEqual(pooled["mean"], 4.4)
+        self.assertAlmostEqual(pooled["sd"], 2.701851, places=6)
+        self.assertEqual(pooled["min"], 1.0)
+        self.assertEqual(pooled["max"], 8.0)
+
+    def test_aggregate_source_summaries_categorical_uses_distribution_schema(self) -> None:
+        pooled = _aggregate_source_summaries(
+            [
+                {
+                    "type": "categorical",
+                    "n_total": 5,
+                    "n_valid": 5,
+                    "n_missing": 0,
+                    "distribution": {
+                        "1": {"n": 2, "pct": 40.0},
+                        "2": {"n": 3, "pct": 60.0},
+                    },
+                },
+                {
+                    "type": "categorical",
+                    "n_total": 5,
+                    "n_valid": 5,
+                    "n_missing": 0,
+                    "distribution": {
+                        "1": {"n": 1, "pct": 20.0},
+                        "3": {"n": 4, "pct": 80.0},
+                    },
+                },
+            ]
+        )
+
+        self.assertIn("distribution", pooled)
+        self.assertNotIn("values", pooled)
+        self.assertEqual(pooled["distribution"]["1"], {"n": 3, "pct": 30.0})
+        self.assertEqual(pooled["distribution"]["2"], {"n": 3, "pct": 30.0})
+        self.assertEqual(pooled["distribution"]["3"], {"n": 4, "pct": 40.0})
+
+        out = {"type": "categorical", "distribution": pooled["distribution"]}
+        result = check_c7_categorical_distribution(pooled, out, "pooled categorical")
+        self.assertEqual(result.status, "PASS")
+
+    def test_aggregate_source_summaries_sd_includes_singleton_between_variance(self) -> None:
+        pooled = _aggregate_source_summaries(
+            [
+                {
+                    "type": "continuous",
+                    "n_total": 1,
+                    "n_valid": 1,
+                    "n_missing": 0,
+                    "mean": 10.0,
+                    "sd": None,
+                },
+                {
+                    "type": "continuous",
+                    "n_total": 2,
+                    "n_valid": 2,
+                    "n_missing": 0,
+                    "mean": 1.5,
+                    "sd": math.sqrt(0.5),
+                },
+            ]
+        )
+
+        self.assertEqual(pooled["n_valid"], 3)
+        self.assertEqual(pooled["mean"], 4.333333)
+        self.assertAlmostEqual(pooled["sd"], 4.932883, places=6)
+
     def test_c7_aggregates_many_source_categories_to_one_harmonized_category(self) -> None:
         src = {
             "type": "categorical",

@@ -1,0 +1,80 @@
+# HCHS/SOL Variable Mapping Manifest
+# Single source of truth for HCHS/SOL harmonization versioning
+# This file evolves with each HCHS/SOL data version update
+
+# =============================================================================
+# CURRENT VERSION (Active Work)
+# =============================================================================
+current_version:
+  study_id: "phs000810"
+  study_name: "Hispanic Community Health Study/Study of Latinos (HCHS/SOL)"
+  data_version: "v2.p2"
+  last_updated: "2026-02-24"
+  
+  # dbGaP Documentation Links (AI tooling can reference these directly)
+  dbgap_references:
+    study_homepage: 
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000810.v2.p2"
+      description: "Main study page with metadata, documentation, and access info"
+      
+    variable_dictionary:
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/GetListOfAllObjects.cgi?study_id=phs000810.v2.p2&object_type=variable"
+      description: "Complete listing of all variables with definitions and metadata"
+      cached_file: "data/dbgap-cache/hchs_sol/variables.xml"
+      
+    study_documents:
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/GetListOfAllObjects.cgi?study_id=phs000810.v2.p2&object_type=document"
+      description: "Study protocols, data collection procedures, codebooks"
+      cached_file: "data/dbgap-cache/hchs_sol/documents.xml"
+
+    pheno_variable_summaries:
+      ftp_url: "https://ftp.ncbi.nlm.nih.gov/dbgap/studies/phs000810/phs000810.v2.p2/pheno_variable_summaries/"
+      description: "Per-dataset data dictionaries (XML) with variable IDs, descriptions, types, units, coded values"
+      cached_dir: "data/dbgap-cache/hchs_sol/pheno_variable_summaries/"
+      file_count: 5
+
+    gap_exchange:
+      ftp_url: "https://ftp.ncbi.nlm.nih.gov/dbgap/studies/phs000810/phs000810.v2.p2/GapExchange_phs000810.v2.p2.xml"
+      description: "Study-level GapExchange XML with dataset inventory and study structure"
+      cached_file: "data/dbgap-cache/hchs_sol/GapExchange_phs000810.v2.p2.xml"
+  
+  # Current harmonization work
+  harmonization:
+    bdchm_schema: "v0.1.0"
+    transform_version: "HCHS_SOL-2026.02.1"
+    repository_location: "https://github.com/RTIInternational/NHLBI-BDC-DMC-HV/tree/main/priority_variables_transform/HCHS_SOL-ingest"    
+    
+  # Status tracking
+  status:
+    mapping_progress: "in_review"
+    lead: "HCHS/SOL Study Expert + Data Curator"
+    started: "2025-08-01"  # Initial HCHS-ingest work ~7 months ago
+    review_date: "2026-02-26"
+    review_session: "MAD-2026-02-26-01"
+    review_report: "memory/cohorts/HCHS-SOL/HCHS-SOL-Mapping-Review-Report.md"
+
+# =============================================================================
+# VERSION HISTORY (Previous Versions)
+# =============================================================================
+version_history:
+  # Previous HCHS/SOL versions will be added here as data updates occur
+  # Pattern: move current_version to history when new version arrives
+  
+# =============================================================================
+# STUDY-SPECIFIC NOTES
+# =============================================================================
+study_characteristics:
+  focus: "Cardiovascular and pulmonary disease risk factors in Hispanic/Latino populations"
+  design: "Multi-center, community-based prospective cohort with probability sampling"
+  population: "~16,415 Hispanic/Latino adults aged 18-74, diverse heritage groups"
+  key_strengths: 
+    - "Largest and most comprehensive study of Hispanic/Latino health in the US"
+    - "Diverse heritage group representation (Cuban, Dominican, Mexican, Puerto Rican, Central/South American)"
+    - "Bilingual (English/Spanish) data collection protocols"
+    - "Probability sampling design enabling population-level estimates"
+    
+harmonization_considerations:
+  - "Complex race/ethnicity and heritage group coding vs. broad categories"
+  - "Probability sampling design requiring appropriate weighting"
+  - "Bilingual data collection with potential language-related variations"
+  - "Ethnic-specific reference ranges and clinical thresholds"

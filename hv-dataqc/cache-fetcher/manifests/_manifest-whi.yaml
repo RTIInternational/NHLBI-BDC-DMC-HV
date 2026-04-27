@@ -1,0 +1,77 @@
+# WHI Variable Mapping Manifest
+# Single source of truth for WHI harmonization versioning
+# This file evolves with each WHI data version update
+
+# =============================================================================
+# CURRENT VERSION (Active Work)
+# =============================================================================
+current_version:
+  study_id: "phs000200"
+  study_name: "Women's Health Initiative (WHI)"
+  data_version: "v12.p3"
+  last_updated: "2026-02-24"
+  
+  # dbGaP Documentation Links (AI tooling can reference these directly)
+  dbgap_references:
+    study_homepage: 
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000200.v12.p3"
+      description: "Main study page with metadata, documentation, and access info"
+      
+    variable_dictionary:
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/GetListOfAllObjects.cgi?study_id=phs000200.v12.p3&object_type=variable"
+      description: "Complete listing of all variables with definitions and metadata"
+      cached_file: "data/dbgap-cache/whi/variables.xml"
+      
+    study_documents:
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/GetListOfAllObjects.cgi?study_id=phs000200.v12.p3&object_type=document"
+      description: "Study protocols, data collection procedures, codebooks"
+      cached_file: "data/dbgap-cache/whi/documents.xml"
+
+    pheno_variable_summaries:
+      ftp_url: "https://ftp.ncbi.nlm.nih.gov/dbgap/studies/phs000200/phs000200.v12.p3/pheno_variable_summaries/"
+      description: "Per-dataset data dictionaries (XML) with variable IDs, descriptions, types, units, coded values"
+      cached_dir: "data/dbgap-cache/whi/pheno_variable_summaries/"
+      file_count: 100
+
+    gap_exchange:
+      ftp_url: "https://ftp.ncbi.nlm.nih.gov/dbgap/studies/phs000200/phs000200.v12.p3/GapExchange_phs000200.v12.p3.xml"
+      description: "Study-level GapExchange XML with dataset inventory and study structure"
+      cached_file: "data/dbgap-cache/whi/GapExchange_phs000200.v12.p3.xml"
+  
+  # Current harmonization work
+  harmonization:
+    bdchm_schema: "v0.1.0"
+    transform_version: "WHI-2026.02.1"
+    repository_location: "https://github.com/RTIInternational/NHLBI-BDC-DMC-HV/tree/main/priority_variables_transform/WHI-ingest"    
+    
+  # Status tracking
+  status:
+    mapping_progress: "planned"
+    lead: "TBD"
+    started: "TBD"
+
+# =============================================================================
+# VERSION HISTORY (Previous Versions)
+# =============================================================================
+version_history:
+  # Previous WHI versions will be added here as data updates occur
+  # Pattern: move current_version to history when new version arrives
+  
+# =============================================================================
+# STUDY-SPECIFIC NOTES
+# =============================================================================
+study_characteristics:
+  focus: "Major causes of death, disability, and poor quality of life in postmenopausal women"
+  design: "Multi-component study with randomized clinical trials and observational study"
+  population: "~161,808 postmenopausal women aged 50-79 from 40 US clinical centers"
+  key_strengths: 
+    - "Largest women's health study ever conducted"
+    - "Both clinical trial and observational components"
+    - "Hormone therapy, dietary modification, and calcium/vitamin D interventions"
+    - "Long-term follow-up through extension studies"
+    
+harmonization_considerations:
+  - "All-female cohort vs. mixed-sex studies"
+  - "Clinical trial intervention effects on biomarker variables"
+  - "Massive scale (~161K participants) with complex multi-arm design"
+  - "CT vs. OS component distinction for variable interpretation"
