@@ -3,6 +3,9 @@
 Scripts that run **inside the Seven Bridges enclave**. These wrap the core
 extract scripts with the right paths for SB project file layouts.
 
+**Assumed layout:** This repo is cloned at `/sbgenomics/workspace/NHLBI-BDC-DMC-HV`.
+All commands below assume you are running from `/sbgenomics/workspace/`.
+
 ## Scripts
 
 ### `find_participant_gap.py`

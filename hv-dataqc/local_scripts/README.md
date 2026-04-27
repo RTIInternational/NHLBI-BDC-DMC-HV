@@ -3,6 +3,10 @@
 Convenience wrappers that run **outside the enclave** (your laptop).
 They resolve repo paths automatically so commands are copy-paste ready.
 
+**Assumed working directory:** Run these scripts from within
+`NHLBI-BDC-DMC-HV/hv-dataqc/local_scripts/`. The scripts derive the
+repo root from their own location, so no hardcoded paths are needed.
+
 ## Scripts
 
 ### `compare.sh <cohort> [extra flags...]`
