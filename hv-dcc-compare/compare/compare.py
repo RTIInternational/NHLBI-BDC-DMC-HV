@@ -43,18 +43,38 @@ if hasattr(sys.stdout, "reconfigure"):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# REPORT FORMAT CONTROL
+# Internal switch used while rendering TXT and Markdown reports.
+# ─────────────────────────────────────────────────────────────────────────────
+
+_REPORT_FMT: str = "txt"  # "txt" | "md"
+
+
+def _md_cell(value: object) -> str:
+    """Escape a value for use in a Markdown table cell."""
+    text = str(value)
+    return text.replace("\\", "\\\\").replace("|", "\\|").replace("\n", "<br>")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # REPORT FORMATTING
 # ─────────────────────────────────────────────────────────────────────────────
 
 def section(title: str, width: int = 76) -> None:
-    print()
-    print("=" * width)
-    print(f"  {title}")
-    print("=" * width)
+    if _REPORT_FMT == "md":
+        print(f"\n---\n\n## {title}")
+    else:
+        print()
+        print("=" * width)
+        print(f"  {title}")
+        print("=" * width)
 
 
 def subsection(title: str) -> None:
-    print(f"\n  ── {title} ──")
+    if _REPORT_FMT == "md":
+        print(f"\n### {title}")
+    else:
+        print(f"\n  ── {title} ──")
 
 
 def print_categorical_comparison(
@@ -71,6 +91,28 @@ def print_categorical_comparison(
     t_total = (t_stats or {}).get("n_total", 0)
     b_total = (b_stats or {}).get("n_total", 0)
 
+    tM = (t_stats or {}).get("n_missing", 0)
+    tMP = (t_stats or {}).get("pct_missing", 0.0)
+    bM = (b_stats or {}).get("n_missing", 0)
+    bMP = (b_stats or {}).get("pct_missing", 0.0)
+    delta_m = bM - tM
+    delta_m_str = f"{delta_m:+,}" if delta_m != 0 else "0"
+
+    if _REPORT_FMT == "md":
+        print(f"\n#### {_md_cell(bdc_label)} (`{_md_cell(var_name)}`)\n")
+        print("| Category | TOPMed N | TOPMed % | BDC N | BDC % | Delta |")
+        print("|:---|---:|---:|---:|---:|---:|")
+        for cat in all_cats:
+            tN = t_dist.get(cat, {}).get("n", 0)
+            tP = t_dist.get(cat, {}).get("pct", 0.0)
+            bN = b_dist.get(cat, {}).get("n", 0)
+            bP = b_dist.get(cat, {}).get("pct", 0.0)
+            delta = bN - tN
+            delta_str = f"{delta:+,}" if delta != 0 else "0"
+            print(f"| {_md_cell(cat)} | {tN:,} | {tP:.1f}% | {bN:,} | {bP:.1f}% | {delta_str} |")
+        print(f"| *Missing / Null* | {tM:,} | {tMP:.1f}% | {bM:,} | {bMP:.1f}% | {delta_m_str} |")
+        return
+
     print(f"\n    {bdc_label} ({var_name})")
     print(f"    {'Category':<40} {'TOPMed N':>10} {'%':>7}  {'BDC N':>10} {'%':>7}  {'Delta':>8}")
     print("    " + "-" * 85)
@@ -84,13 +126,6 @@ def print_categorical_comparison(
         delta_str = f"{delta:+,}" if delta != 0 else "0"
         print(f"    {cat:<40} {tN:>10,} {tP:>6.1f}%  {bN:>10,} {bP:>6.1f}%  {delta_str:>8}")
 
-    # Missing row
-    tM = (t_stats or {}).get("n_missing", 0)
-    tMP = (t_stats or {}).get("pct_missing", 0.0)
-    bM = (b_stats or {}).get("n_missing", 0)
-    bMP = (b_stats or {}).get("pct_missing", 0.0)
-    delta_m = bM - tM
-    delta_m_str = f"{delta_m:+,}" if delta_m != 0 else "0"
     print(f"    {'Missing / Null':<40} {tM:>10,} {tMP:>6.1f}%  {bM:>10,} {bMP:>6.1f}%  {delta_m_str:>8}")
 
 
@@ -107,15 +142,7 @@ def print_continuous_comparison(
     t_visit = t.get("visit_label", "baseline")
     b_visit = b.get("visit_label", "")
 
-    print(f"\n    {bdc_label} ({var_name})")
     unit = t.get("unit") or b.get("unit") or ""
-    if unit:
-        print(f"    Unit: {unit}")
-    if b_visit:
-        print(f"    BDC visit: {b_visit}")
-
-    print(f"    {'Statistic':<25} {'TOPMed':>15} {'BDC':>15} {'Delta':>12}")
-    print("    " + "-" * 70)
 
     stat_keys = [
         ("N (valid)", "n_valid", True),
@@ -130,6 +157,36 @@ def print_continuous_comparison(
         ("Max", "max", False),
         ("N implausible", "n_implausible", True),
     ]
+
+    if _REPORT_FMT == "md":
+        print(f"\n#### {_md_cell(bdc_label)} (`{_md_cell(var_name)}`)")
+        if unit:
+            print(f"\n*Unit: {_md_cell(unit)}*")
+        if b_visit:
+            print(f"*BDC visit: {_md_cell(b_visit)}*")
+        print("\n| Statistic | TOPMed | BDC | Delta |")
+        print("|:---|---:|---:|---:|")
+        for display, key, is_int in stat_keys:
+            tv = t.get(key)
+            bv = b.get(key)
+            tv_str = (f"{tv:,}" if is_int else f"{tv:.4f}") if tv is not None else "—"
+            bv_str = (f"{bv:,}" if is_int else f"{bv:.4f}") if bv is not None else "—"
+            if tv is not None and bv is not None:
+                delta = bv - tv
+                delta_str = f"{delta:+,}" if is_int else f"{delta:+.4f}"
+            else:
+                delta_str = "—"
+            print(f"| {display} | {tv_str} | {bv_str} | {delta_str} |")
+        return
+
+    print(f"\n    {bdc_label} ({var_name})")
+    if unit:
+        print(f"    Unit: {unit}")
+    if b_visit:
+        print(f"    BDC visit: {b_visit}")
+
+    print(f"    {'Statistic':<25} {'TOPMed':>15} {'BDC':>15} {'Delta':>12}")
+    print("    " + "-" * 70)
 
     for display, key, is_int in stat_keys:
         tv = t.get(key)
@@ -151,6 +208,53 @@ def print_continuous_comparison(
             delta_str = "—"
 
         print(f"    {display:<25} {tv_str:>15} {bv_str:>15} {delta_str:>12}")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# TIER ASSIGNMENT HELPERS
+# Thresholds match match_quality_table.py for cross-tool consistency.
+# ─────────────────────────────────────────────────────────────────────────────
+
+def _assign_value_tier_continuous(norm_delta: float) -> str:
+    """Tier based on |delta| / TOPMed SD (T1=near-exact ... T5=substantial)."""
+    if norm_delta < 0.005:
+        return "T1"
+    elif norm_delta < 0.02:
+        return "T2"
+    elif norm_delta < 0.05:
+        return "T3"
+    elif norm_delta < 0.1:
+        return "T4"
+    else:
+        return "T5"
+
+
+def _assign_value_tier_categorical(max_pct_diff: float) -> str:
+    """Tier based on max category pct-point difference."""
+    if max_pct_diff < 0.5:
+        return "T1"
+    elif max_pct_diff < 1.0:
+        return "T2"
+    elif max_pct_diff < 3.0:
+        return "T3"
+    elif max_pct_diff < 10.0:
+        return "T4"
+    else:
+        return "T5"
+
+
+def _assign_miss_tier(miss_diff_pp: float) -> str:
+    """Tier based on abs missingness pct-point difference."""
+    if miss_diff_pp < 1.0:
+        return "M1"
+    elif miss_diff_pp < 3.0:
+        return "M2"
+    elif miss_diff_pp < 8.0:
+        return "M3"
+    elif miss_diff_pp < 20.0:
+        return "M4"
+    else:
+        return "M5"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -193,12 +297,20 @@ def run_comparison(topmed: dict, bdc: dict) -> dict:
 
     # ── Header ──
     section(f"{t_cohort} HARMONIZATION COMPARISON: TOPMed DCC vs. BDC DMC")
-    print(f"  Cohort: {topmed.get('cohort', {}).get('full_name', t_cohort)}")
-    print(f"  TOPMed participants: {topmed.get('total_participants', 0):,}")
-    print(f"  BDC participants:    {bdc.get('total_participants', 0):,}")
-    print(f"  TOPMed variables:    {len(t_vars)}")
-    print(f"  BDC variables:       {len(b_vars)}")
-    print(f"  Matched variables:   {len(set(t_vars) & set(b_vars))}")
+    if _REPORT_FMT == "md":
+        print(f"- **Cohort:** {_md_cell(topmed.get('cohort', {}).get('full_name', t_cohort))}")
+        print(f"- **TOPMed participants:** {topmed.get('total_participants', 0):,}")
+        print(f"- **BDC participants:** {bdc.get('total_participants', 0):,}")
+        print(f"- **TOPMed variables:** {len(t_vars)}")
+        print(f"- **BDC variables:** {len(b_vars)}")
+        print(f"- **Matched variables:** {len(set(t_vars) & set(b_vars))}")
+    else:
+        print(f"  Cohort: {topmed.get('cohort', {}).get('full_name', t_cohort)}")
+        print(f"  TOPMed participants: {topmed.get('total_participants', 0):,}")
+        print(f"  BDC participants:    {bdc.get('total_participants', 0):,}")
+        print(f"  TOPMed variables:    {len(t_vars)}")
+        print(f"  BDC variables:       {len(b_vars)}")
+        print(f"  Matched variables:   {len(set(t_vars) & set(b_vars))}")
 
     # ── Participant count check ──
     n_t = topmed.get("total_participants", 0)
@@ -212,25 +324,40 @@ def run_comparison(topmed: dict, bdc: dict) -> dict:
 
     # ── Coverage matrix ──
     section("VARIABLE COVERAGE MATRIX")
-    print(f"  {'Variable':<40} {'TOPMed':^8} {'BDC':^8} {'Match':^8}")
-    print("  " + "-" * 65)
     n_matched = 0
     n_topmed_only = 0
     n_bdc_only = 0
+    _cov_rows: list[tuple[str, bool, bool]] = []
     for var in sorted(all_vars):
-        in_t = "✓" if var in t_vars else "—"
-        in_b = "✓" if var in b_vars else "—"
-        match = "✓" if var in t_vars and var in b_vars else "—"
+        in_t = var in t_vars
+        in_b = var in b_vars
         label = (t_vars.get(var) or b_vars.get(var, {})).get("bdc_label", var)
-        print(f"  {label:<40} {in_t:^8} {in_b:^8} {match:^8}")
-        if var in t_vars and var in b_vars:
+        _cov_rows.append((label, in_t, in_b))
+        if in_t and in_b:
             n_matched += 1
-        elif var in t_vars:
+        elif in_t:
             n_topmed_only += 1
         else:
             n_bdc_only += 1
 
-    print(f"\n  Matched: {n_matched}  |  TOPMed only: {n_topmed_only}  |  BDC only: {n_bdc_only}")
+    if _REPORT_FMT == "md":
+        print("| Variable | TOPMed | BDC | Match |")
+        print("|:---|:---:|:---:|:---:|")
+        for label, in_t, in_b in _cov_rows:
+            t_s = "Y" if in_t else "—"
+            b_s = "Y" if in_b else "—"
+            m_s = "Y" if in_t and in_b else "—"
+            print(f"| {_md_cell(label)} | {t_s} | {b_s} | {m_s} |")
+        print(f"\nMatched: **{n_matched}** | TOPMed only: {n_topmed_only} | BDC only: {n_bdc_only}")
+    else:
+        print(f"  {'Variable':<40} {'TOPMed':^8} {'BDC':^8} {'Match':^8}")
+        print("  " + "-" * 65)
+        for label, in_t, in_b in _cov_rows:
+            t_s = "✓" if in_t else "—"
+            b_s = "✓" if in_b else "—"
+            m_s = "✓" if in_t and in_b else "—"
+            print(f"  {label:<40} {t_s:^8} {b_s:^8} {m_s:^8}")
+        print(f"\n  Matched: {n_matched}  |  TOPMed only: {n_topmed_only}  |  BDC only: {n_bdc_only}")
 
     # ── BDC-only variable inventory (discovered variables not in TOPMed) ──
     bdc_only_vars = sorted(set(b_vars) - set(t_vars))
@@ -282,6 +409,8 @@ def run_comparison(topmed: dict, bdc: dict) -> dict:
         ds = (t_vars.get(var) or b_vars.get(var, {})).get("dataset", "other")
         var_by_dataset.setdefault(ds, []).append(var)
 
+    tier_rows: list[dict] = []  # collected during per-variable loops for scorecard
+
     for ds in datasets_order:
         if ds not in var_by_dataset:
             continue
@@ -298,6 +427,46 @@ def run_comparison(topmed: dict, bdc: dict) -> dict:
             else:
                 print_continuous_comparison(var, t_stat, b_stat, label)
 
+            # Collect tier data for scorecard
+            t_pm = t_stat.get("pct_missing", 0) or 0
+            b_pm = b_stat.get("pct_missing", 0) or 0
+            miss_tier = _assign_miss_tier(abs(b_pm - t_pm))
+            if var_type == "categorical":
+                t_dist = t_stat.get("distribution", {})
+                b_dist = b_stat.get("distribution", {})
+                all_cats = set(list(t_dist.keys()) + list(b_dist.keys()))
+                max_pct_diff = max(
+                    (abs(t_dist.get(c, {}).get("pct", 0) - b_dist.get(c, {}).get("pct", 0))
+                     for c in all_cats),
+                    default=0.0,
+                )
+                val_tier = _assign_value_tier_categorical(max_pct_diff)
+                val_delta_str = f"max+-{max_pct_diff:.1f}pp"
+            else:
+                t_mean = t_stat.get("mean")
+                b_mean = b_stat.get("mean")
+                t_sd = t_stat.get("sd") or 1
+                if t_mean is not None and b_mean is not None and t_sd > 0:
+                    norm_delta = abs(b_mean - t_mean) / t_sd
+                    val_tier = _assign_value_tier_continuous(norm_delta)
+                    val_delta_str = f"{norm_delta:.4f} SD"
+                else:
+                    val_tier = "?"
+                    val_delta_str = "—"
+            tier_rows.append({
+                "dataset": ds,
+                "var": var,
+                "label": label,
+                "type": var_type[:4],
+                "t_n": t_stat.get("n_valid", t_stat.get("n_total", 0)),
+                "b_n": b_stat.get("n_valid", b_stat.get("n_total", 0)),
+                "val_delta_str": val_delta_str,
+                "t_pm": t_pm,
+                "b_pm": b_pm,
+                "val_tier": val_tier,
+                "miss_tier": miss_tier,
+            })
+
     # Handle any remaining datasets
     remaining = set(var_by_dataset.keys()) - set(datasets_order)
     for ds in sorted(remaining):
@@ -312,26 +481,146 @@ def run_comparison(topmed: dict, bdc: dict) -> dict:
             else:
                 print_continuous_comparison(var, t_stat, b_stat, label)
 
+            # Collect tier data for scorecard
+            t_pm = t_stat.get("pct_missing", 0) or 0
+            b_pm = b_stat.get("pct_missing", 0) or 0
+            miss_tier = _assign_miss_tier(abs(b_pm - t_pm))
+            if var_type == "categorical":
+                t_dist = t_stat.get("distribution", {})
+                b_dist = b_stat.get("distribution", {})
+                all_cats = set(list(t_dist.keys()) + list(b_dist.keys()))
+                max_pct_diff = max(
+                    (abs(t_dist.get(c, {}).get("pct", 0) - b_dist.get(c, {}).get("pct", 0))
+                     for c in all_cats),
+                    default=0.0,
+                )
+                val_tier = _assign_value_tier_categorical(max_pct_diff)
+                val_delta_str = f"max+-{max_pct_diff:.1f}pp"
+            else:
+                t_mean = t_stat.get("mean")
+                b_mean = b_stat.get("mean")
+                t_sd = t_stat.get("sd") or 1
+                if t_mean is not None and b_mean is not None and t_sd > 0:
+                    norm_delta = abs(b_mean - t_mean) / t_sd
+                    val_tier = _assign_value_tier_continuous(norm_delta)
+                    val_delta_str = f"{norm_delta:.4f} SD"
+                else:
+                    val_tier = "?"
+                    val_delta_str = "—"
+            tier_rows.append({
+                "dataset": ds,
+                "var": var,
+                "label": label,
+                "type": var_type[:4],
+                "t_n": t_stat.get("n_valid", t_stat.get("n_total", 0)),
+                "b_n": b_stat.get("n_valid", b_stat.get("n_total", 0)),
+                "val_delta_str": val_delta_str,
+                "t_pm": t_pm,
+                "b_pm": b_pm,
+                "val_tier": val_tier,
+                "miss_tier": miss_tier,
+            })
+
+    # ── Match Quality Scorecard ──
+    section("MATCH QUALITY SCORECARD")
+    val_tier_counts: dict[str, int] = {"T1": 0, "T2": 0, "T3": 0, "T4": 0, "T5": 0}
+    miss_tier_counts: dict[str, int] = {"M1": 0, "M2": 0, "M3": 0, "M4": 0, "M5": 0}
+    for row in tier_rows:
+        val_tier_counts[row["val_tier"]] = val_tier_counts.get(row["val_tier"], 0) + 1
+        if row["miss_tier"] in miss_tier_counts:
+            miss_tier_counts[row["miss_tier"]] += 1
+    t1, t2, t3, t4, t5 = (
+        val_tier_counts["T1"], val_tier_counts["T2"], val_tier_counts["T3"],
+        val_tier_counts["T4"], val_tier_counts["T5"],
+    )
+    m1, m2, m3, m4, m5 = (
+        miss_tier_counts["M1"], miss_tier_counts["M2"], miss_tier_counts["M3"],
+        miss_tier_counts["M4"], miss_tier_counts["M5"],
+    )
+    attention = [r for r in tier_rows if r["val_tier"] in ("T4", "T5")]
+
+    if _REPORT_FMT == "md":
+        print("| Variable | Type | T_N | B_N | Val Delta | T M% | B M% | Val | Miss |")
+        print("|:---|:---:|---:|---:|---:|---:|---:|:---:|:---:|")
+        current_ds = None
+        for row in tier_rows:
+            if row["dataset"] != current_ds:
+                current_ds = row["dataset"]
+                print(f"| ***{current_ds}*** | | | | | | | | |")
+            print(
+                f"| {_md_cell(row['label'])} | {_md_cell(row['type'])} | {row['t_n']:,} | {row['b_n']:,}"
+                f" | {_md_cell(row['val_delta_str'])} | {row['t_pm']:.1f}% | {row['b_pm']:.1f}%"
+                f" | **{row['val_tier']}** | {row['miss_tier']} |"
+            )
+        print()
+        print(f"**Value tiers:** T1={t1} T2={t2} T3={t3} T4={t4} T5={t5}  "
+              f"| **Miss tiers:** M1={m1} M2={m2} M3={m3} M4={m4} M5={m5}")
+        print()
+        print("> T1=near-exact | T2=high similarity | T3=moderate diff | T4=notable diff | T5=substantial diff  ")
+        print("> M1=<1pp | M2=<3pp | M3=<8pp | M4=<20pp | M5>=20pp")
+        if attention:
+            print()
+            print("**Attention items (T4/T5):**")
+            for row in attention:
+                print(f"- **[{row['val_tier']}]** {_md_cell(row['label'])} (`{_md_cell(row['var'])}`) -- {_md_cell(row['val_delta_str'])}  miss: {row['miss_tier']}")
+    else:
+        print(f"  {'Variable':<38} {'Type':<5} {'T_N':>8} {'B_N':>8} {'Val_Delta':>12}  {'T_M%':>5} {'B_M%':>5}  {'Val':>3}  {'Miss':>4}")
+        print("  " + "-" * 100)
+        current_ds = None
+        for row in tier_rows:
+            if row["dataset"] != current_ds:
+                current_ds = row["dataset"]
+                print(f"\n  -- {current_ds} --")
+            print(
+                f"  {row['label']:<38} {row['type']:<5} {row['t_n']:>8,} {row['b_n']:>8,}"
+                f" {row['val_delta_str']:>12}  {row['t_pm']:>4.1f}%  {row['b_pm']:>4.1f}%"
+                f"  {row['val_tier']:>3}  {row['miss_tier']:>4}"
+            )
+        print()
+        print(f"  Value tier summary:  T1={t1}  T2={t2}  T3={t3}  T4={t4}  T5={t5}")
+        print(f"  Miss. tier summary:  M1={m1}  M2={m2}  M3={m3}  M4={m4}  M5={m5}")
+        print("  T1=near-exact  T2=high similarity  T3=moderate diff  T4=notable diff  T5=substantial diff")
+        print("  M1=<1pp  M2=<3pp  M3=<8pp  M4=<20pp  M5>=20pp")
+        if attention:
+            print()
+            print("  Attention items (T4/T5 value tier):")
+            for row in attention:
+                print(f"    [{row['val_tier']}] {row['label']} ({row['var']}) -- {row['val_delta_str']}  miss: {row['miss_tier']}")
+
     # ── DQ Flags ──
     section("DATA QUALITY FLAGS")
     for label, data in [("TOPMed", topmed), ("BDC", bdc)]:
         flags = data.get("dq_flags", [])
-        print(f"\n  {label}:")
-        if flags:
-            for f in flags:
-                print(f"    • {f}")
+        if _REPORT_FMT == "md":
+            print(f"\n**{label}:**")
+            if flags:
+                for f in flags:
+                    print(f"- {f}")
+            else:
+                print("*No flags.*")
         else:
-            print("    No flags.")
+            print(f"\n  {label}:")
+            if flags:
+                for f in flags:
+                    print(f"    • {f}")
+            else:
+                print("    No flags.")
 
     # ── Summary ──
     section("SUMMARY")
-    print(f"  Cohort: {t_cohort}")
-    print(f"  Variables compared: {n_matched}")
-    print(f"  TOPMed N: {n_t:,}  |  BDC N: {n_b:,}")
-    print()
-    print("=" * 76)
-    print("  END OF COMPARISON REPORT")
-    print("=" * 76)
+    if _REPORT_FMT == "md":
+        print(f"- **Cohort:** {t_cohort}")
+        print(f"- **Variables compared:** {n_matched}")
+        print(f"- **TOPMed N:** {n_t:,} | **BDC N:** {n_b:,}")
+        print("\n---\n\n*End of report*")
+    else:
+        print(f"  Cohort: {t_cohort}")
+        print(f"  Variables compared: {n_matched}")
+        print(f"  TOPMed N: {n_t:,}  |  BDC N: {n_b:,}")
+        print()
+        print("=" * 76)
+        print("  END OF COMPARISON REPORT")
+        print("=" * 76)
 
     # ── Build structured summary for cross-cohort rollup ────────────────────
     per_var_summary: dict[str, dict] = {}
@@ -455,37 +744,48 @@ def compare_one_cohort(
 ) -> dict:
     """Run comparison for a single cohort pair. Returns structured summary.
 
-    If quiet=True, the full report is written to file only (not echoed to
-    console).  Useful in batch mode to avoid flooding the terminal.
+    Always produces both a .txt and .md report when output_path is given.
+    The output_path extension is ignored — both files are derived from the stem.
+    Console output (unless quiet=True) shows the plain-text report.
     """
-    print("=" * 60)
-    print("  TOPMed DCC vs. BDC DMC Comparison Report")
-    print("=" * 60)
-    print()
+    global _REPORT_FMT
 
     topmed = load_json(str(topmed_path), "TOPMed")
     bdc = load_json(str(bdc_path), "BDC")
 
-    if output_path:
+    def _capture(fmt: str) -> tuple[str, dict]:
+        global _REPORT_FMT
+        _REPORT_FMT = fmt
         buf = io.StringIO()
-        _stdout = sys.stdout
+        old = sys.stdout
         sys.stdout = buf
+        try:
+            res = run_comparison(topmed, bdc)
+        finally:
+            sys.stdout = old
+            _REPORT_FMT = "txt"
+        return buf.getvalue(), res
 
-    try:
-        result = run_comparison(topmed, bdc)
-    finally:
-        if output_path:
-            sys.stdout = _stdout
-            report_text = buf.getvalue()
-            if not quiet:
-                try:
-                    print(report_text)
-                except UnicodeEncodeError:
-                    # Windows cp1252 can't render some Unicode chars — skip echo
-                    pass
-            Path(output_path).parent.mkdir(parents=True, exist_ok=True)
-            Path(output_path).write_text(report_text, encoding="utf-8")
-            print(f"\n  Report saved to: {output_path}", file=sys.stderr)
+    txt_text, result = _capture("txt")
+    md_text = ""
+    if output_path:
+        md_text, _ = _capture("md")
+
+    if not quiet:
+        try:
+            print(txt_text)
+        except UnicodeEncodeError:
+            # Windows cp1252 can't render some Unicode chars — skip echo
+            pass
+
+    if output_path:
+        base = Path(output_path).with_suffix("")
+        txt_path = base.with_suffix(".txt")
+        md_path = base.with_suffix(".md")
+        txt_path.parent.mkdir(parents=True, exist_ok=True)
+        txt_path.write_text(txt_text, encoding="utf-8")
+        md_path.write_text(md_text, encoding="utf-8")
+        print(f"  Reports saved: {txt_path.name}  +  {md_path.name}", file=sys.stderr)
 
     return result
 
@@ -498,7 +798,7 @@ def generate_cross_cohort_summary(
     cohort_results: dict[str, dict],
     output_path: Path | None = None,
 ) -> None:
-    """Generate a cross-cohort summary report from per-cohort comparison results."""
+    """Generate cross-cohort summary reports from per-cohort comparison results."""
 
     buf = io.StringIO()
     _stdout = sys.stdout
@@ -513,9 +813,19 @@ def generate_cross_cohort_summary(
     print(report_text)
 
     if output_path:
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text(report_text, encoding="utf-8")
-        print(f"\n  Cross-cohort summary saved to: {output_path}", file=sys.stderr)
+        base = output_path.with_suffix("")
+        txt_path = base.with_suffix(".txt")
+        md_path = base.with_suffix(".md")
+        txt_path.parent.mkdir(parents=True, exist_ok=True)
+        txt_path.write_text(report_text, encoding="utf-8")
+        md_path.write_text(
+            "# Cross-Cohort Harmonization Comparison Summary\n\n"
+            "```text\n"
+            f"{report_text}"
+            "```\n",
+            encoding="utf-8",
+        )
+        print(f"\n  Cross-cohort summaries saved: {txt_path.name}  +  {md_path.name}", file=sys.stderr)
 
 
 def _write_cross_cohort_summary(cohort_results: dict[str, dict]) -> None:
