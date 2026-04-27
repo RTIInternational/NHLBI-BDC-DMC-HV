@@ -44,11 +44,22 @@ the corresponding manifest file's `current_version:` block and re-run with
 - Python 3.10+
 - `pip install requests pyyaml`
 
-## Usage
+## Quick start
+
+Use the convenience wrapper in `local_scripts/` which writes to the
+standard `local_output/dbgap-cache/` location:
+
+```bash
+cd ../local_scripts/
+./fetch_cache.sh --cohort copdgene
+./fetch_cache.sh --list
+```
+
+## Usage (direct)
 
 List available cohorts:
 
-```powershell
+```bash
 python fetch_dbgap_cache.py --list
 ```
 

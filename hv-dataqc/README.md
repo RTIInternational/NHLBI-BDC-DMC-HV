@@ -14,6 +14,10 @@ ranges, visit structure, and cross-variable consistency.
 | `extract-harmonized/` | `extract_harmonized_summaries.py` | Summarize dm-bip harmonized output | **Inside enclave** |
 | `compare/` | `compare_source_harmonized.py` | Compare both summaries; run checks C1-C11 | Outside enclave |
 | `cache-fetcher/` | `fetch_dbgap_cache.py` | Download dbGaP data dictionaries for PHV resolution | Outside enclave |
+| `sb_scripts/` | Runner/analysis scripts | Ad-hoc scripts for enclave work | **Inside enclave** |
+| `local_scripts/` | `compare.sh`, `fetch_cache.sh` | Convenience wrappers (auto-resolve paths) | Outside enclave |
+| `sb_output/` | *(gitignored)* | Output produced on Seven Bridges | **Inside enclave** |
+| `local_output/` | *(gitignored)* | Downloaded JSONs, dbgap-cache, comparison reports | Outside enclave |
 
 ---
 
@@ -43,10 +47,25 @@ ranges, visit structure, and cross-variable consistency.
 
 ## Workflow
 
+### Quick start (using convenience scripts)
+
+```bash
+cd hv-dataqc/local_scripts/
+
+# 1. Fetch dbGaP cache (once per cohort)
+./fetch_cache.sh --cohort copdgene
+
+# 2. Download extract JSONs from SB into local_output/
+#    (scp, sb download, or manual copy)
+
+# 3. Run comparison (auto-finds latest JSONs, YAML dir, cache)
+./compare.sh COPDGene
+```
+
+### Full manual workflow
+
 ```
 ENCLAVE (run once per source study version)
-  # source-root must contain <cohort>_..._c<N>/ consent-group dirs
-  # defaults to ./<COHORT> if --source-root is omitted
   python extract-source/extract_source_summaries.py \
       --cohort SPIROMICS \
       --source-root /path/to/raw/spiromics/ \
@@ -54,11 +73,10 @@ ENCLAVE (run once per source study version)
   → exports: spiromics_source_<timestamp>.json
 
 ENCLAVE (run after each dm-bip pipeline execution)
-  # harmonized-root must contain DMC_* run directories
-  # defaults to . (current directory) if --harmonized-root is omitted
+  # Use --mapped-data-dirs instead of --harmonized-root to avoid OOM
   python extract-harmonized/extract_harmonized_summaries.py \
       --cohort SPIROMICS \
-      --harmonized-root /path/to/dmbip_output/ \
+      --mapped-data-dirs /path/to/consent_c1/mapped-data /path/to/consent_c2/mapped-data \
       --output-dir ./dataqc-runs/
   → exports: spiromics_harmonized_<timestamp>.json
 
@@ -70,6 +88,9 @@ OUTSIDE ENCLAVE (re-run freely as YAMLs evolve)
       --yaml-dir /path/to/HV-repo/priority_variables_transform/SPIROMICS-ingest/ \
       --cache-dir /path/to/data/dbgap-cache/spiromics/
 ```
+
+See [local_scripts/README.md](local_scripts/README.md) and
+[sb_scripts/README.md](sb_scripts/README.md) for more details.
 
 ---
 

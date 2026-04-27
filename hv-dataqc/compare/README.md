@@ -9,7 +9,17 @@ and the current HV YAML checkout are required.
 
 ---
 
-## Usage
+## Quick start
+
+Use the convenience wrapper in `local_scripts/` which auto-finds the latest
+JSONs, YAML dir, and cache:
+
+```bash
+cd ../local_scripts/
+./compare.sh COPDGene
+```
+
+## Usage (direct)
 
 ```bash
 # Full run with YAML-driven crosswalk
