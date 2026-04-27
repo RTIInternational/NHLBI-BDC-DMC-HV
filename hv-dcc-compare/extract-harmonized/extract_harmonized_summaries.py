@@ -868,6 +868,9 @@ def process_measurements(
                             if key in child:
                                 row["observation_type"] = child[key]
                                 break
+                        # Extract method_type from child (needed for BP method filter)
+                        if "method_type" in child:
+                            row["method_type"] = child["method_type"]
                         # Extract value_decimal from nested value_quantity
                         vq = child.get("value_quantity", {})
                         if isinstance(vq, dict):
