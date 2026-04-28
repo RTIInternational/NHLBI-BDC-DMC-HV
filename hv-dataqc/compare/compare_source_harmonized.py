@@ -160,10 +160,15 @@ def load_thresholds(path: Path | None = None) -> dict:
     """
     effective_path = path or _THRESHOLDS_PATH
     if effective_path.exists():
-        with effective_path.open("r", encoding="utf-8") as fh:
-            cfg = yaml.safe_load(fh) or {}
-        print(f"Loaded thresholds from {effective_path.name}")
-        return cfg
+        try:
+            with effective_path.open("r", encoding="utf-8") as fh:
+                cfg = yaml.safe_load(fh) or {}
+            print(f"Loaded thresholds from {effective_path.name}")
+            return cfg
+        except yaml.YAMLError as exc:
+            print(f"WARNING: Malformed thresholds YAML {effective_path.name}: {exc} -- using built-in defaults",
+                  file=sys.stderr)
+            return {}
     if path is not None:
         print(f"WARNING: Thresholds file not found: {effective_path} -- using built-in defaults")
     return {}
@@ -307,6 +312,58 @@ def _extract_value_mappings(slot_body: dict) -> dict | None:
     return {str(k): str(v) for k, v in vm.items()}
 
 
+# Matches a quoted CURIE-like string inside case() expressions or bare values:
+# e.g.  'OMOP:4041720'  "MONDO:0013792"  OBA:2045443  HP:0002140
+_CURIE_QUOTED_RE = re.compile(r"['\"]([A-Z][A-Z0-9]+:[A-Za-z0-9.:_-]+)['\"]")
+# Matches a bare (unquoted) CURIE value as-is (for value_mappings dict values):
+_CURIE_BARE_RE = re.compile(r"^[A-Z][A-Z0-9]+:[A-Za-z0-9.:_-]+$")
+
+
+def _concept_codes_from_expr(expr: str) -> list[str]:
+    """Extract all unique CURIE-like concept codes quoted inside a case() or similar expression.
+
+    Returns a deduplicated list preserving order of first occurrence.
+    Returns an empty list if the expression contains no recognizable CURIEs,
+    in which case the caller should fall back to treating *expr* as a literal.
+    """
+    codes = _CURIE_QUOTED_RE.findall(expr)
+    # Deduplicate while preserving order
+    seen: set[str] = set()
+    out: list[str] = []
+    for c in codes:
+        if c not in seen:
+            seen.add(c)
+            out.append(c)
+    return out
+
+
+def _concept_codes_from_value_mappings(slot_body: dict) -> list[str]:
+    """Extract unique CURIE-like concept codes from a slot's value_mappings values.
+
+    Used when a concept slot (observation_type, condition_concept, …) is driven
+    by a source-coded column via ``value_mappings``, e.g.::
+
+        condition_concept:
+          populated_from: phv00106406
+          value_mappings:
+            '1': MONDO:0005015
+            '2': MONDO:0006920
+
+    Returns deduplicated codes in order of first occurrence.
+    """
+    vm = slot_body.get("value_mappings")
+    if not vm or not isinstance(vm, dict):
+        return []
+    seen: set[str] = set()
+    out: list[str] = []
+    for v in vm.values():
+        sv = str(v).strip()
+        if _CURIE_BARE_RE.match(sv) and sv not in seen:
+            seen.add(sv)
+            out.append(sv)
+    return out
+
+
 def _extract_crosswalk_from_class_derivations(
     class_derivations: dict,
     yaml_filename: str,
@@ -359,22 +416,41 @@ def _extract_crosswalk_from_class_derivations(
         if not isinstance(slots, dict):
             continue
 
-        # Find the concept code for this derivation
-        concept_code: str | None = None
+        # Find the concept code(s) for this derivation.
+        # A slot may yield MULTIPLE concept codes when:
+        #   - observation_type / condition_concept uses a case() expression with
+        #     different CURIEs in each branch (e.g. hdl.yaml, stroke.yaml)
+        #   - condition_concept uses value_mappings whose values are CURIEs
+        #     (e.g. diabetes.yaml pht001490 block)
+        # We emit one crosswalk entry per unique code so every possible
+        # harmonized key gets a source-side match.
+        concept_codes: list[str] = []
         concept_slot_name = CONCEPT_SLOTS.get(entity_class)
         if concept_slot_name and concept_slot_name in slots:
             slot = slots[concept_slot_name]
             if isinstance(slot, dict):
                 val = slot.get("value")
                 if val and isinstance(val, str):
-                    concept_code = val.strip()
+                    concept_codes = [val.strip()]
                 else:
                     expr = slot.get("expr", "")
                     pf = slot.get("populated_from", "")
                     if expr and not pf:
-                        concept_code = expr.strip("'\" ")
+                        # Try to extract CURIEs from a case() or compound expr.
+                        codes = _concept_codes_from_expr(expr)
+                        if codes:
+                            concept_codes = codes
+                        else:
+                            # Treat as a literal (e.g. a plain string value)
+                            concept_codes = [expr.strip("'\" ")]
                     elif pf and not str(pf).startswith("phv"):
-                        concept_code = str(pf).strip()
+                        concept_codes = [str(pf).strip()]
+                    # Fallback: value_mappings values on the concept slot
+                    # (e.g. condition_concept: populated_from: phv…  value_mappings: …)
+                    if not concept_codes:
+                        vm_codes = _concept_codes_from_value_mappings(slot)
+                        if vm_codes:
+                            concept_codes = vm_codes
 
         # --- Demography: each slot maps a separate PHV → demog_<slot> ---
         if entity_class == "Demography":
@@ -476,7 +552,8 @@ def _extract_crosswalk_from_class_derivations(
                                         "phv": inner_pf,
                                         "slot": f"{slot_name}.{inner_slot}",
                                         "is_value_slot": inner_slot in (
-                                            "value_decimal", "value_integer", "value_coded"
+                                            "value_decimal", "value_integer",
+                                            "value_coded", "value_concept",
                                         ),
                                         "value_map": _extract_value_mappings(inner_slot_body),
                                     }
@@ -489,13 +566,14 @@ def _extract_crosswalk_from_class_derivations(
                                             "phv": phv,
                                             "slot": f"{slot_name}.{inner_slot}",
                                             "is_value_slot": inner_slot in (
-                                                "value_decimal", "value_integer"
+                                                "value_decimal", "value_integer",
+                                                "value_coded", "value_concept",
                                             ),
                                             "value_map": None,
                                         }
                                     )
 
-        if not primary_phvs or not concept_code:
+        if not primary_phvs or not concept_codes:
             continue
 
         # method_type creates a compound harmonized key only for MO blocks
@@ -514,10 +592,6 @@ def _extract_crosswalk_from_class_derivations(
                 )
 
         prefix = ENTITY_PREFIX.get(entity_class, f"{entity_class.lower()}_")
-        if inside_mos and method_type_val:
-            harmonized_key = f"{prefix}{concept_code}|{method_type_val}"
-        else:
-            harmonized_key = f"{prefix}{concept_code}"
 
         value_phvs = [p for p in primary_phvs if p["is_value_slot"]]
         primary = value_phvs[0] if value_phvs else primary_phvs[0]
@@ -526,19 +600,29 @@ def _extract_crosswalk_from_class_derivations(
         if not src_name:
             continue
 
-        crosswalk.append(
-            {
-                "source_key": src_name,
-                "harmonized_key": harmonized_key,
-                "match_method": "yaml",
-                "yaml_file": yaml_filename,
-                "phv_id": primary["phv"],
-                "concept_code": concept_code,
-                "entity_class": entity_class,
-                "value_map": primary["value_map"],
-                "method_type": method_type_val,
-            }
-        )
+        # Emit one crosswalk entry per unique concept code.  Case() exprs and
+        # value_mappings-driven concept slots may produce multiple codes (e.g.
+        # hdl.yaml: OMOP:4041720 & OBA:VT0000184, stroke.yaml: HP:0002140 &
+        # MONDO:0013792, diabetes.yaml pht001490: MONDO:0005015 & MONDO:0006920).
+        for concept_code in concept_codes:
+            if inside_mos and method_type_val:
+                harmonized_key = f"{prefix}{concept_code}|{method_type_val}"
+            else:
+                harmonized_key = f"{prefix}{concept_code}"
+
+            crosswalk.append(
+                {
+                    "source_key": src_name,
+                    "harmonized_key": harmonized_key,
+                    "match_method": "yaml",
+                    "yaml_file": yaml_filename,
+                    "phv_id": primary["phv"],
+                    "concept_code": concept_code,
+                    "entity_class": entity_class,
+                    "value_map": primary["value_map"],
+                    "method_type": method_type_val,
+                }
+            )
 
 
 def build_yaml_crosswalk(
@@ -931,9 +1015,11 @@ def build_variable_crosswalk(
                 )
                 continue
 
-            entry["source_key"] = resolved_src_key
-            entry["harmonized_key"] = resolved_harmonized_key
-            grouped.setdefault(resolved_harmonized_key, []).append(entry)
+            # Use a shallow copy so the original yaml_cw entries are not mutated;
+            # callers that reuse yaml_cw (e.g. tests) see the original PHV/source keys.
+            grouped.setdefault(resolved_harmonized_key, []).append(
+                {**entry, "source_key": resolved_src_key, "harmonized_key": resolved_harmonized_key}
+            )
 
         for harmonized_key, entries in grouped.items():
             if harmonized_key in matched_harmonized:
@@ -1048,7 +1134,7 @@ def build_variable_crosswalk(
         for harmonized_key, out_info in harmonized_vars.items():
             if harmonized_key in matched_harmonized:
                 continue
-            if src_key in harmonized_key or src_key in str(out_info):
+            if src_key in harmonized_key:
                 matches.append(
                     {"source_key": src_key, "harmonized_key": harmonized_key, "match_method": "phv_id"}
                 )
@@ -1083,14 +1169,19 @@ def build_variable_crosswalk(
 # ---------------------------------------------------------------------------
 
 def check_c1_n_preservation(
-    source: dict, harmonized: dict, fail_pct: float = 1.0
+    source: dict, harmonized: dict, fail_pct: float = 1.0,
+    mapped_phts: set | None = None,
 ) -> list[CheckResult]:
     """C1: Total participant count comparison.
 
-    If the source summary includes ``participants_by_pht``, include the largest
-    single-PHT participant count in the result details for diagnostics.  The
-    pass/fail denominator remains ``total_participants``; the per-PHT breakdown
-    is not enough by itself to infer the correct YAML-scoped source universe.
+    If the source summary includes ``participants_by_pht`` and ``mapped_phts``
+    is provided (PHTs actually referenced by YAML), the message shows both:
+      - max across mapped PHTs (the YAML-scoped universe ceiling)
+      - all-PHT union (total_participants, the pass/fail denominator)
+
+    If ``mapped_phts`` is not provided, falls back to showing the global max
+    single PHT for diagnostics.  The pass/fail denominator always remains
+    ``total_participants``.
     """
     src_n = source.get("total_participants", 0)
     harmonized_n = harmonized.get("total_participants", 0)
@@ -1106,14 +1197,33 @@ def check_c1_n_preservation(
     if participants_by_pht:
         max_pht_n = max(participants_by_pht.values())
         max_pht_key = max(participants_by_pht, key=participants_by_pht.get)
-        pht_note = (
-            f" [max single-PHT: {max_pht_key}={max_pht_n};"
-            f" cross-PHT union={src_n}]"
-        )
         detail_base.update({
             "max_single_pht": max_pht_key,
             "max_single_pht_n": max_pht_n,
         })
+        if mapped_phts:
+            mapped_counts = {
+                pht: n for pht, n in participants_by_pht.items()
+                if pht in mapped_phts
+            }
+            if mapped_counts:
+                mapped_max_n = max(mapped_counts.values())
+                mapped_max_key = max(mapped_counts, key=mapped_counts.get)
+                pht_note = (
+                    f" [mapped-PHT max: {mapped_max_key}={mapped_max_n};"
+                    f" all-PHT union={src_n}]"
+                )
+                detail_base.update({
+                    "mapped_pht_max": mapped_max_key,
+                    "mapped_pht_max_n": mapped_max_n,
+                })
+            else:
+                pht_note = f" [cross-PHT union={src_n}]"
+        else:
+            pht_note = (
+                f" [max single-PHT: {max_pht_key}={max_pht_n};"
+                f" cross-PHT union={src_n}]"
+            )
 
     if harmonized_n == src_n:
         return [CheckResult("C1", "_total", "PASS",
@@ -1697,8 +1807,8 @@ def check_c10_cross_variable(
             passed = mean_a > mean_b
             display_operator = ">"
         else:  # "<"
-            passed = mean_a <= mean_b
-            display_operator = "<="
+            passed = mean_a < mean_b
+            display_operator = "<"
 
         if passed:
             results.append(CheckResult(
@@ -1952,11 +2062,15 @@ def main(argv: list[str] | None = None) -> None:
     )
     clinical_ranges: dict = {}
     if cr_path.exists():
-        with cr_path.open("r", encoding="utf-8") as fh:
-            clinical_ranges = yaml.safe_load(fh) or {}
-        print(f"Loaded {len(clinical_ranges)} clinical range definitions from {cr_path.name}")
-        for warning in validate_clinical_ranges_config(clinical_ranges):
-            print(f"WARNING: clinical ranges config: {warning}")
+        try:
+            with cr_path.open("r", encoding="utf-8") as fh:
+                clinical_ranges = yaml.safe_load(fh) or {}
+            print(f"Loaded {len(clinical_ranges)} clinical range definitions from {cr_path.name}")
+            for warning in validate_clinical_ranges_config(clinical_ranges):
+                print(f"WARNING: clinical ranges config: {warning}")
+        except yaml.YAMLError as exc:
+            print(f"ERROR: Malformed clinical ranges YAML {cr_path.name}: {exc} -- C9/C10 will SKIP",
+                  file=sys.stderr)
     else:
         print(f"NOTE: Clinical ranges file not found: {cr_path} -- C9/C10 will SKIP")
 
@@ -2026,8 +2140,17 @@ def main(argv: list[str] | None = None) -> None:
     # Run checks
     all_results: list[CheckResult] = []
 
+    # Collect all PHTs referenced by any YAML mapping so C1 can show the
+    # YAML-scoped participant ceiling alongside the all-PHT union.
+    mapped_phts: set[str] = {
+        pht
+        for m in crosswalk
+        for pht in (m.get("_source_phts") or [])
+    }
     all_results.extend(check_c1_n_preservation(
-        source, harmonized, fail_pct=c1_t.get("fail_pct", 1.0),
+        source, harmonized,
+        fail_pct=c1_t.get("fail_pct", 1.0),
+        mapped_phts=mapped_phts or None,
     ))
 
     for match in crosswalk:
@@ -2055,6 +2178,7 @@ def main(argv: list[str] | None = None) -> None:
         ))
         all_results.append(check_c5_mean_after_conversion(
             src_var, harmonized_var, display_name,
+            conversion_factor=match.get("conversion_factor") or c5_t.get("conversion_factor"),
             pass_rel=c5_t.get("pass_rel", 0.001),
         ))
         all_results.append(check_c6_sd_preservation(

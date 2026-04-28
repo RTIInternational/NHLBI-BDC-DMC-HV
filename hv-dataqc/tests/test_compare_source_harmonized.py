@@ -271,7 +271,7 @@ class C1NPreservationTests(unittest.TestCase):
         self.assertEqual(result[0].status, "WARN")
         self.assertIn("MORE participants", result[0].message)
 
-    # --- With participants_by_pht ---
+    # --- With participants_by_pht, no mapped_phts (legacy/fallback path) ---
 
     def test_c1_keeps_union_denominator_with_pht_breakdown(self) -> None:
         """participants_by_pht is diagnostic-only; total_participants remains denominator."""
@@ -314,6 +314,219 @@ class C1NPreservationTests(unittest.TestCase):
         self.assertEqual(result[0].detail["source_n"], 7380)
         self.assertEqual(result[0].detail["max_single_pht"], "pht001467")
         self.assertEqual(result[0].detail["max_single_pht_n"], 5800)
+
+    # --- With participants_by_pht AND mapped_phts ---
+
+    def test_c1_shows_mapped_pht_max_and_all_pht_union(self) -> None:
+        """CHS scenario: message shows mapped-PHT max and all-PHT union separately."""
+        # pht001447 is mapped (5612), pht001467 is unmapped (inflates union to 7380)
+        by_pht = {"pht001447": 5612, "pht001450": 5531, "pht001467": 4752}
+        mapped = {"pht001447", "pht001450"}
+        result = check_c1_n_preservation(
+            self._src(total=7380, by_pht=by_pht), self._harm(5531),
+            mapped_phts=mapped,
+        )
+        self.assertEqual(result[0].status, "FAIL")
+        self.assertEqual(result[0].detail["source_n"], 7380)
+        self.assertEqual(result[0].detail["mapped_pht_max"], "pht001447")
+        self.assertEqual(result[0].detail["mapped_pht_max_n"], 5612)
+        self.assertIn("mapped-PHT max: pht001447=5612", result[0].message)
+        self.assertIn("all-PHT union=7380", result[0].message)
+
+    def test_c1_mapped_phts_detail_has_both_max_fields(self) -> None:
+        """detail carries both max_single_pht (global) and mapped_pht_max (scoped)."""
+        by_pht = {"pht001447": 5612, "pht001467": 9000}
+        mapped = {"pht001447"}
+        result = check_c1_n_preservation(
+            self._src(total=9500, by_pht=by_pht), self._harm(4000),
+            mapped_phts=mapped,
+        )
+        detail = result[0].detail
+        self.assertEqual(detail["max_single_pht"], "pht001467")  # global max
+        self.assertEqual(detail["max_single_pht_n"], 9000)
+        self.assertEqual(detail["mapped_pht_max"], "pht001447")  # mapped max
+        self.assertEqual(detail["mapped_pht_max_n"], 5612)
+
+    def test_c1_mapped_phts_empty_intersection_falls_back(self) -> None:
+        """If none of the mapped_phts appear in participants_by_pht, note is minimal."""
+        by_pht = {"pht001447": 5612}
+        mapped = {"pht999999"}  # no overlap
+        result = check_c1_n_preservation(
+            self._src(total=5612, by_pht=by_pht), self._harm(4000),
+            mapped_phts=mapped,
+        )
+        # Should not crash; note falls back to just union
+        self.assertIn("cross-PHT union=5612", result[0].message)
+        self.assertNotIn("mapped_pht_max", result[0].detail)
+
+    def test_c1_pass_with_mapped_phts(self) -> None:
+        """PASS when harmonized matches total_participants even with mapped_phts."""
+        by_pht = {"pht001450": 5531, "pht001467": 4000}
+        mapped = {"pht001450"}
+        result = check_c1_n_preservation(
+            self._src(total=5531, by_pht=by_pht), self._harm(5531),
+            mapped_phts=mapped,
+        )
+        self.assertEqual(result[0].status, "PASS")
+
+
+# ---------------------------------------------------------------------------
+# Crosswalk extraction: case() and value_mappings concept code improvements
+# ---------------------------------------------------------------------------
+
+from compare_source_harmonized import (  # noqa: E402
+    _concept_codes_from_expr,
+    _concept_codes_from_value_mappings,
+    _extract_crosswalk_from_class_derivations,
+)
+
+
+class CrosswalkConceptExtractionTests(unittest.TestCase):
+    """Tests for case()-expr and value_mappings-driven concept code extraction."""
+
+    def test_case_expr_single_quotes_extracts_curies(self) -> None:
+        """case() with single-quoted CURIEs (hdl.yaml style) → two codes."""
+        expr = "case(({phv00099923} >= 12, 'OMOP:4041720'), (True, 'OBA:VT0000184'))"
+        self.assertEqual(_concept_codes_from_expr(expr), ["OMOP:4041720", "OBA:VT0000184"])
+
+    def test_case_expr_double_quotes_extracts_curies(self) -> None:
+        """case() with double-quoted CURIEs (stroke.yaml style) → two codes."""
+        expr = 'case(({phv00100830} == 1, "HP:0002140"), (True, "MONDO:0013792"))'
+        self.assertEqual(_concept_codes_from_expr(expr), ["HP:0002140", "MONDO:0013792"])
+
+    def test_case_expr_deduplicates(self) -> None:
+        expr = "case(({p} == 1, 'OBA:2045443'), ({p} == 2, 'OBA:2045443'), (True, 'OMOP:0'))"
+        self.assertEqual(_concept_codes_from_expr(expr), ["OBA:2045443", "OMOP:0"])
+
+    def test_case_expr_no_curies_returns_empty(self) -> None:
+        """Non-CURIE case() expression returns empty list."""
+        self.assertEqual(_concept_codes_from_expr("case(({phv} > 0, 'high'), (True, 'low'))"), [])
+
+    def test_value_mappings_extracts_curie_values(self) -> None:
+        """value_mappings with CURIE values (diabetes.yaml pht001490 style)."""
+        slot = {
+            "populated_from": "phv00106406",
+            "value_mappings": {
+                "1": "MONDO:0005015",
+                "2": "MONDO:0006920",
+                "3": "MONDO:0005015",
+                "4": "MONDO:0005015",
+            },
+        }
+        self.assertEqual(
+            _concept_codes_from_value_mappings(slot), ["MONDO:0005015", "MONDO:0006920"]
+        )
+
+    def test_value_mappings_filters_non_curie_values(self) -> None:
+        """value_mappings with non-CURIE values (ABSENT/PRESENT) returns empty."""
+        slot = {"value_mappings": {"0": "ABSENT", "1": "PRESENT"}}
+        self.assertEqual(_concept_codes_from_value_mappings(slot), [])
+
+    def test_value_concept_inner_slot_picks_measurement_phv(self) -> None:
+        """value_concept inside object_derivations is treated as is_value_slot,
+        so the measurement PHV (not the participant PHV) is selected as primary.
+        Regression: spo2.yaml block 1 was previously picking Individual_ID."""
+        cd = {
+            "MeasurementObservation": {
+                "populated_from": "pht001495",
+                "slot_derivations": {
+                    "associated_participant": {
+                        "expr": 'uuid5("x", str({phv00109768}))'  # Individual_ID
+                    },
+                    "observation_type": {"value": "OBA:2045443"},
+                    "value_quantity": {
+                        "object_derivations": [
+                            {
+                                "class_derivations": {
+                                    "Quantity": {
+                                        "slot_derivations": {
+                                            "value_concept": {
+                                                "populated_from": "phv00110401",  # SPLT9069
+                                                "value_mappings": {"0": "<90", "1": ">90"},
+                                            },
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                },
+            }
+        }
+        phv_names = {"phv00110401": "SPLT9069", "phv00109768": "Individual_ID"}
+        cw: list[dict] = []
+        _extract_crosswalk_from_class_derivations(cd, "spo2.yaml", phv_names, cw)
+        self.assertEqual(len(cw), 1)
+        self.assertEqual(cw[0]["phv_id"], "phv00110401",
+                         "Should pick SPLT9069 (value_concept), not Individual_ID")
+        self.assertEqual(cw[0]["source_key"], "SPLT9069")
+
+    def test_case_expr_observation_type_generates_multiple_entries(self) -> None:
+        """case() on observation_type generates one crosswalk entry per CURIE.
+        Regression: hdl.yaml was silently producing no matched entries."""
+        cd = {
+            "MeasurementObservation": {
+                "populated_from": "pht001451",
+                "slot_derivations": {
+                    "associated_participant": {"expr": 'uuid5("x", str({phv00098771}))'},
+                    "observation_type": {
+                        "expr": "case(({phv00099923} >= 12, 'OMOP:4041720'), (True, 'OBA:VT0000184'))"
+                    },
+                    "value_quantity": {
+                        "object_derivations": [
+                            {
+                                "class_derivations": {
+                                    "Quantity": {
+                                        "slot_derivations": {
+                                            "value_decimal": {"populated_from": "phv00100042"},
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                },
+            }
+        }
+        phv_names = {"phv00100042": "HDL44", "phv00098771": "SUBJECT_ID", "phv00099923": "FASTED"}
+        cw: list[dict] = []
+        _extract_crosswalk_from_class_derivations(cd, "hdl.yaml", phv_names, cw)
+        hkeys = {e["harmonized_key"] for e in cw}
+        self.assertIn("measurement_OMOP:4041720", hkeys)
+        self.assertIn("measurement_OBA:VT0000184", hkeys)
+        for e in cw:
+            self.assertEqual(e["phv_id"], "phv00100042",
+                             "Both entries should use value_decimal PHV (HDL44)")
+
+    def test_value_mappings_condition_concept_generates_multiple_entries(self) -> None:
+        """condition_concept with CURIE value_mappings emits one entry per CURIE.
+        Regression: diabetes.yaml pht001490 block was silently dropped."""
+        cd = {
+            "Condition": {
+                "populated_from": "pht001490",
+                "slot_derivations": {
+                    "associated_participant": {"expr": 'uuid5("x", str({phv00105099}))'},
+                    "condition_concept": {
+                        "populated_from": "phv00106406",
+                        "value_mappings": {
+                            "1": "MONDO:0005015",
+                            "2": "MONDO:0006920",
+                            "3": "MONDO:0005015",
+                        },
+                    },
+                    "condition_status": {
+                        "populated_from": "phv00106406",
+                        "value_mappings": {"1": "ABSENT", "2": "PRESENT", "3": "PRESENT"},
+                    },
+                },
+            }
+        }
+        phv_names = {"phv00106406": "DIAB_STAT", "phv00105099": "SUBJECT_ID"}
+        cw: list[dict] = []
+        _extract_crosswalk_from_class_derivations(cd, "diabetes.yaml", phv_names, cw)
+        hkeys = {e["harmonized_key"] for e in cw}
+        self.assertIn("condition_MONDO:0005015", hkeys)
+        self.assertIn("condition_MONDO:0006920", hkeys)
 
 
 if __name__ == "__main__":
