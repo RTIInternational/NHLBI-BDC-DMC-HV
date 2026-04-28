@@ -43,7 +43,6 @@ from __future__ import annotations
 import argparse
 import ast
 import json
-import math
 import re
 import sys
 from datetime import datetime, timezone
@@ -51,6 +50,17 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
+import yaml
+
+_HV_DATAQC_ROOT = Path(__file__).resolve().parents[1]
+if str(_HV_DATAQC_ROOT) not in sys.path:
+    sys.path.insert(0, str(_HV_DATAQC_ROOT))
+
+from hv_dataqc_common import (  # noqa: E402
+    categorical_stats,
+    continuous_stats,
+    write_json_atomic,
+)
 
 # Entity TSV files produced by dm-bip
 ENTITY_FILES = {
@@ -66,28 +76,52 @@ ENTITY_FILES = {
     "Observation": "Observation.tsv",
 }
 
+DEMOGRAPHY_COLUMNS: list[tuple[str, str]] = [
+    ("sex", "sex"),
+    ("race", "race"),
+    ("ethnicity", "ethnicity"),
+]
 
-def _json_safe(value: Any) -> Any:
-    """Recursively convert non-finite floats to None before strict JSON writing."""
-    if isinstance(value, dict):
-        return {str(k): _json_safe(v) for k, v in value.items()}
-    if isinstance(value, (list, tuple, set)):
-        return [_json_safe(v) for v in value]
-    if isinstance(value, float):
-        return value if math.isfinite(value) else None
-    return value
+_DEFAULT_EXTRACT_CONFIG = Path(__file__).resolve().parent / "config" / "harmonized_extract.yaml"
+
+
+def load_harmonized_extract_config(path: Path | None = None) -> dict[str, Any]:
+    """Load optional harmonized-extractor config for entity files and demography columns."""
+    effective_path = path or _DEFAULT_EXTRACT_CONFIG
+    if not effective_path.exists():
+        return {}
+    try:
+        with effective_path.open("r", encoding="utf-8") as fh:
+            config = yaml.safe_load(fh) or {}
+        return config if isinstance(config, dict) else {}
+    except yaml.YAMLError as exc:
+        print(f"WARNING: Malformed harmonized extractor config {effective_path}: {exc}")
+        return {}
+
+
+def apply_harmonized_extract_config(config: dict[str, Any]) -> None:
+    """Apply entity-file and demography-column overrides from config."""
+    entity_files = config.get("entity_files")
+    if isinstance(entity_files, dict):
+        for entity, filename in entity_files.items():
+            if entity and filename:
+                ENTITY_FILES[str(entity)] = str(filename)
+
+    demography_columns = config.get("demography_columns")
+    if isinstance(demography_columns, dict):
+        DEMOGRAPHY_COLUMNS[:] = [(str(col), str(label)) for col, label in demography_columns.items()]
+    elif isinstance(demography_columns, list):
+        parsed: list[tuple[str, str]] = []
+        for item in demography_columns:
+            if isinstance(item, dict) and item.get("column"):
+                parsed.append((str(item["column"]), str(item.get("label", item["column"]))))
+        if parsed:
+            DEMOGRAPHY_COLUMNS[:] = parsed
 
 
 def _write_json_atomic(path: Path, data: Any) -> None:
     """Write strict JSON via temp file then atomic replace."""
-    tmp_path = path.with_name(f"{path.name}.tmp")
-    try:
-        with tmp_path.open("w", encoding="utf-8") as fh:
-            json.dump(_json_safe(data), fh, indent=2, default=str, allow_nan=False)
-        tmp_path.replace(path)
-    finally:
-        if tmp_path.exists():
-            tmp_path.unlink()
+    write_json_atomic(path, data, ensure_ascii=False, default=str)
 
 
 # ---------------------------------------------------------------------------
@@ -257,63 +291,6 @@ def participant_count_from_entity(df: pd.DataFrame, preferred_cols: tuple[str, .
 # Summary statistics
 # ---------------------------------------------------------------------------
 
-def categorical_stats(series: pd.Series) -> dict:
-    n_total = int(len(series))
-    n_missing = int(series.isna().sum())
-    n_valid = n_total - n_missing
-    counts = series.value_counts(dropna=True).sort_index()
-    distribution: dict = {}
-    for val, cnt in counts.items():
-        distribution[str(val)] = {
-            "n": int(cnt),
-            "pct": round(int(cnt) / n_valid * 100, 2) if n_valid > 0 else 0.0,
-        }
-    return {
-        "type": "categorical",
-        "n_total": n_total,
-        "n_valid": n_valid,
-        "n_missing": n_missing,
-        "pct_missing": round(n_missing / n_total * 100, 2) if n_total > 0 else 0.0,
-        "n_distinct": int(series.nunique(dropna=True)),
-        "distribution": distribution,
-    }
-
-
-def continuous_stats(series: pd.Series) -> dict:
-    numeric = pd.to_numeric(series, errors="coerce")
-    n_total = int(len(numeric))
-    s = numeric.dropna()
-    n_valid = int(len(s))
-    n_missing = n_total - n_valid
-    result: dict = {
-        "type": "continuous",
-        "n_total": n_total,
-        "n_valid": n_valid,
-        "n_missing": n_missing,
-        "pct_missing": round(n_missing / n_total * 100, 2) if n_total > 0 else 0.0,
-        "n_distinct": int(s.nunique()),
-    }
-    if n_valid > 0:
-        result.update(
-            {
-                "mean": round(float(s.mean()), 4),
-                "sd": round(float(s.std()), 4),
-                "min": round(float(s.min()), 4),
-                "q1": round(float(s.quantile(0.25)), 4),
-                "median": round(float(s.quantile(0.50)), 4),
-                "q3": round(float(s.quantile(0.75)), 4),
-                "max": round(float(s.max()), 4),
-                "p5": round(float(s.quantile(0.05)), 4),
-                "p95": round(float(s.quantile(0.95)), 4),
-            }
-        )
-    else:
-        result.update(
-            {k: None for k in ["mean", "sd", "min", "q1", "median", "q3", "max", "p5", "p95"]}
-        )
-    return result
-
-
 # ---------------------------------------------------------------------------
 # Entity processors
 # ---------------------------------------------------------------------------
@@ -321,7 +298,7 @@ def continuous_stats(series: pd.Series) -> dict:
 def process_demography(df: pd.DataFrame) -> dict[str, dict]:
     """Extract sex, race, ethnicity summaries from Demography entity."""
     variables: dict[str, dict] = {}
-    for col, label in [("sex", "sex"), ("race", "race"), ("ethnicity", "ethnicity")]:
+    for col, label in DEMOGRAPHY_COLUMNS:
         if col in df.columns:
             summary = categorical_stats(df[col])
             summary["entity"] = "Demography"
@@ -688,6 +665,8 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
                    help="Output directory. Defaults to <harmonized-root>/dataqc-runs/.")
     p.add_argument("--output", metavar="FILE",
                    help="Override output JSON filename.")
+    p.add_argument("--extract-config", metavar="YAML",
+                   help=f"Harmonized extractor config YAML (default: {_DEFAULT_EXTRACT_CONFIG})")
     return p.parse_args(argv)
 
 
@@ -696,6 +675,10 @@ def main(argv: list[str] | None = None) -> None:
 
     cohort = args.cohort.upper()
     run_ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    extract_config_path = Path(args.extract_config) if args.extract_config else _DEFAULT_EXTRACT_CONFIG
+    extract_config = load_harmonized_extract_config(extract_config_path)
+    apply_harmonized_extract_config(extract_config)
 
     # Resolve mapped-data directories
     if args.mapped_data_dirs:
@@ -732,6 +715,7 @@ def main(argv: list[str] | None = None) -> None:
     print(f"  Run timestamp : {run_ts}")
     print(f"  Output JSON   : {output_path}")
     print(f"  Log file      : {log_path}")
+    print(f"  Extract config: {extract_config_path if extract_config else 'built-in defaults'}")
     print(f"  mapped-data dirs ({len(mapped_dirs)}):")
     for d in mapped_dirs:
         print(f"    {d}")
@@ -915,6 +899,10 @@ def main(argv: list[str] | None = None) -> None:
             "uuid_map_size": len(visit_id_to_label),
             "participant_count_candidates": participant_count_candidates,
             "extraction_warnings": extraction_warnings,
+            "extract_config": {
+                "entity_files": ENTITY_FILES,
+                "demography_columns": dict(DEMOGRAPHY_COLUMNS),
+            },
         },
         "total_participants": n_participants,
         "total_rows": sum(entity_counts.values()),

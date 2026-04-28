@@ -48,37 +48,29 @@ from xml.etree import ElementTree as ET
 
 import yaml
 
+_HV_DATAQC_ROOT = Path(__file__).resolve().parents[1]
+if str(_HV_DATAQC_ROOT) not in sys.path:
+    sys.path.insert(0, str(_HV_DATAQC_ROOT))
+
+from hv_dataqc_common import (  # noqa: E402
+    canonical_phv_id,
+    json_safe,
+    load_phv_name_map as _shared_load_phv_name_map,
+    normalize_category_key,
+    write_json_atomic,
+)
+
 # Default clinical ranges config (relative to this script)
 _CONFIG_DIR = Path(__file__).resolve().parent / "config"
 _THRESHOLDS_PATH = _CONFIG_DIR / "thresholds.yaml"
 
-
-def _canonical_phv_id(raw_id: str) -> str:
-    """Return canonical PHV accession: lower-case, version suffix stripped."""
-    return str(raw_id or "").split(".")[0].lower()
-
-
-def _json_safe(value: Any) -> Any:
-    """Recursively convert non-finite floats to None before strict JSON writing."""
-    if isinstance(value, dict):
-        return {str(k): _json_safe(v) for k, v in value.items()}
-    if isinstance(value, (list, tuple)):
-        return [_json_safe(v) for v in value]
-    if isinstance(value, float):
-        return value if math.isfinite(value) else None
-    return value
+_canonical_phv_id = canonical_phv_id
+_json_safe = json_safe
 
 
 def _write_json_atomic(path: Path, data: Any) -> None:
     """Write strict JSON via temp file then atomic replace."""
-    tmp_path = path.with_name(f"{path.name}.tmp")
-    try:
-        with tmp_path.open("w", encoding="utf-8") as fh:
-            json.dump(_json_safe(data), fh, indent=2, default=str, allow_nan=False)
-        tmp_path.replace(path)
-    finally:
-        if tmp_path.exists():
-            tmp_path.unlink()
+    write_json_atomic(path, data, ensure_ascii=False, default=str)
 
 
 def _write_text_atomic(path: Path, text: str) -> None:
@@ -219,27 +211,11 @@ def load_phv_name_map(cache_dir: Path) -> dict[str, str]:
     Reads ``*.data_dict.xml`` under ``<cache_dir>/pheno_variable_summaries/``.
     Returns empty dict if path not found (graceful degradation).
     """
-    phv_names: dict[str, str] = {}
-    pheno_dir = cache_dir / "pheno_variable_summaries"
-    if not pheno_dir.exists():
-        print(f"  NOTE: cache pheno_variable_summaries/ not found at {pheno_dir} — PHV names unavailable")
-        return phv_names
-
-    files = list(pheno_dir.glob("*.data_dict.xml"))
-    print(f"  Loading PHV names from {len(files)} data_dict.xml files...")
-    for dd_file in files:
-        try:
-            tree = ET.parse(dd_file)
-            for var in tree.getroot().findall(".//variable"):
-                phv_id = _canonical_phv_id(var.get("id", ""))
-                name = (var.findtext("name") or "").strip()
-                if phv_id and name:
-                    phv_names[phv_id] = name
-        except ET.ParseError as exc:
-            print(f"  WARNING: Could not parse PHV name XML {dd_file.name}: {exc}")
-
-    print(f"  PHV name map: {len(phv_names)} entries")
-    return phv_names
+    return _shared_load_phv_name_map(
+        cache_dir,
+        info=lambda msg: print(f"  {msg}"),
+        warning=lambda msg: print(f"  WARNING: {msg}"),
+    )
 
 
 def load_phv_to_pht_map(cache_dir: Path) -> dict[str, str]:
@@ -1227,21 +1203,34 @@ def build_variable_crosswalk(
             )
 
     # --- Strategy 2: PHV ID match ---
+    # Build a PHV -> harmonized-key index once, instead of scanning every
+    # harmonized key for every source PHV.  This preserves the old substring
+    # behavior but makes the fallback O(n + m) rather than O(n*m).
+    phv_harmonized_index: dict[str, list[str]] = {}
+    for harmonized_key, out_info in harmonized_vars.items():
+        haystacks = [harmonized_key]
+        if isinstance(out_info, dict):
+            for value in out_info.values():
+                if isinstance(value, str):
+                    haystacks.append(value)
+        for haystack in haystacks:
+            for phv_id in re.findall(r"phv\d+", haystack, flags=re.IGNORECASE):
+                phv_harmonized_index.setdefault(_canonical_phv_id(phv_id), []).append(harmonized_key)
+
     for src_key, src_info in source_vars.items():
         if "error" in src_info or src_key in matched_src:
             continue
         if not src_key.startswith("phv"):
             continue
-        for harmonized_key, out_info in harmonized_vars.items():
+        for harmonized_key in phv_harmonized_index.get(_canonical_phv_id(src_key), []):
             if harmonized_key in matched_harmonized:
                 continue
-            if src_key in harmonized_key:
-                matches.append(
-                    {"source_key": src_key, "harmonized_key": harmonized_key, "match_method": "phv_id"}
-                )
-                matched_src.add(src_key)
-                matched_harmonized.add(harmonized_key)
-                break
+            matches.append(
+                {"source_key": src_key, "harmonized_key": harmonized_key, "match_method": "phv_id"}
+            )
+            matched_src.add(src_key)
+            matched_harmonized.add(harmonized_key)
+            break
 
     # --- Strategy 3: Name match ---
     for src_key, src_info in source_vars.items():
@@ -1598,21 +1587,23 @@ def check_c7_categorical_distribution(
     if value_map:
         translated: dict[str, Any] = {}
         translated_total = 0
+        normalized_value_map = {normalize_category_key(k): v for k, v in value_map.items()}
         for cat, stats in src_dist.items():
-            mapped = value_map.get(cat)
+            norm_cat = normalize_category_key(cat)
+            mapped = normalized_value_map.get(norm_cat)
             if not mapped:
                 try:
-                    mapped = value_map.get(str(int(float(cat))))
+                    mapped = normalized_value_map.get(str(int(float(norm_cat))))
                 except (ValueError, OverflowError):
                     pass
-            new_cat = mapped if mapped else cat
+            new_cat = normalize_category_key(mapped if mapped else norm_cat)
             existing = translated.setdefault(
                 new_cat,
                 {"n": 0, "pct": 0.0, "source_categories": []},
             )
             count = int(stats.get("n", 0) or 0)
             existing["n"] += count
-            existing["source_categories"].append(cat)
+            existing["source_categories"].append(norm_cat)
             translated_total += count
         for stats in translated.values():
             stats["pct"] = round(stats["n"] / translated_total * 100, 2) if translated_total else 0.0
@@ -1620,13 +1611,11 @@ def check_c7_categorical_distribution(
                 stats.pop("source_categories", None)
         src_dist = translated
 
-    # Normalize harmonized keys — pipeline may serialize lists as "['OMOP:8527']"
+    # Normalize harmonized keys — pipeline may serialize values as JSON arrays
+    # or Python reprs such as "['OMOP:8527']" / "('OMOP:8527',)".
     normalized_out: dict[str, Any] = {}
     for ok, stats in harmonized_dist.items():
-        key = ok.strip()
-        if key.startswith("[") and key.endswith("]"):
-            key = key[1:-1].strip().strip("'\"")
-        normalized_out[key] = stats
+        normalized_out[normalize_category_key(ok)] = stats
     harmonized_dist = normalized_out
 
     src_keys = set(src_dist)
@@ -1854,11 +1843,12 @@ def check_c9_clinical_range(
                        {"min": out_min, "max": out_max})
 
 
-# Detects simple 2-variable directional checks: "mean(X) > mean(Y)" or "mean(X) < mean(Y)".
+# Detects simple 2-variable directional checks: "mean(X) > mean(Y)",
+# "mean(X) >= mean(Y)", "mean(X) < mean(Y)", or "mean(X) <= mean(Y)".
 # These directional rules are interpreted as non-strict clinical expectations
 # (>= / <=) because equal means at aggregate precision should not fail a
-# population-level plausibility check.
-_C10_SIMPLE_RE = re.compile(r"mean\([^)]+\)\s*([<>])\s*mean\([^)]+\)")
+# population-level plausibility check when the config uses the strict forms.
+_C10_SIMPLE_RE = re.compile(r"mean\([^)]+\)\s*(<=|>=|<|>)\s*mean\([^)]+\)")
 
 
 def check_c10_cross_variable(
@@ -1882,6 +1872,13 @@ def check_c10_cross_variable(
         severity = "FAIL" if rule.get("severity", "").upper() == "ERROR" else "WARN"
         description = rule.get("description", rule_id)
 
+        if str(rule.get("type", "simple")).lower() == "complex":
+            results.append(CheckResult(
+                "C10", rule_id, "SKIP",
+                f"Complex cross-variable rule declared in config; manual or future rule-engine review required: {description}"
+            ))
+            continue
+
         m = _C10_SIMPLE_RE.search(check_expr)
         if not m or len(variables) != 2:
             results.append(CheckResult(
@@ -1890,7 +1887,7 @@ def check_c10_cross_variable(
             ))
             continue
 
-        operator = m.group(1)  # "<" or ">"
+        operator = m.group(1)  # "<", "<=", ">", or ">="
 
         # Resolve concept codes from config - no hardcoded IDs here (A2)
         range_a = clinical_ranges.get(variables[0])
@@ -1965,10 +1962,10 @@ def check_c10_cross_variable(
         label_a = variables[0].replace("_", " ")
         label_b = variables[1].replace("_", " ")
 
-        if operator == ">":
+        if operator in (">", ">="):
             passed = mean_a >= mean_b
             display_operator = ">="
-        else:  # "<"
+        else:  # "<" or "<="
             passed = mean_a <= mean_b
             display_operator = "<="
 

@@ -13,9 +13,12 @@ import importlib.util
 from pathlib import Path
 
 
-COMPARE_DIR = Path(__file__).resolve().parents[1] / "compare"
-sys.path.insert(0, str(COMPARE_DIR))
 HV_DATAQC_DIR = Path(__file__).resolve().parents[1]
+COMPARE_DIR = HV_DATAQC_DIR / "compare"
+sys.path.insert(0, str(HV_DATAQC_DIR))
+sys.path.insert(0, str(COMPARE_DIR))
+
+from hv_dataqc_common import normalize_category_key  # noqa: E402
 
 from compare_source_harmonized import (  # noqa: E402
     CrosswalkBuildError,
@@ -224,6 +227,46 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
             ["measurement_OMOP:FEV1_pre", "measurement_OMOP:FEV1_post"],
         )
 
+    def test_c10_supports_explicit_greater_or_equal_operator(self) -> None:
+        clinical_ranges = {
+            "sbp": {"omop_codes": ["OMOP:SBP"], "oba_codes": []},
+            "dbp": {"omop_codes": ["OMOP:DBP"], "oba_codes": []},
+            "_cross_variable_rules": {
+                "sbp_ge_dbp": {
+                    "description": "SBP should be at least DBP",
+                    "check": "mean(SBP) >= mean(DBP)",
+                    "variables": ["sbp", "dbp"],
+                    "severity": "ERROR",
+                }
+            },
+        }
+        harmonized_vars = {
+            "measurement_OMOP:SBP": {"observation_type": "OMOP:SBP", "mean": 120.0},
+            "measurement_OMOP:DBP": {"observation_type": "OMOP:DBP", "mean": 120.0},
+        }
+
+        results = check_c10_cross_variable(harmonized_vars, clinical_ranges)
+
+        self.assertEqual(results[0].status, "PASS")
+        self.assertIn(">=", results[0].message)
+
+    def test_c10_complex_rule_type_is_explicit_skip(self) -> None:
+        clinical_ranges = {
+            "_cross_variable_rules": {
+                "ratio_rule": {
+                    "type": "complex",
+                    "description": "Ratio formula requires rule-engine support",
+                    "check": "mean(A) / mean(B) < 0.7",
+                    "variables": ["a", "b"],
+                }
+            }
+        }
+
+        results = check_c10_cross_variable({}, clinical_ranges)
+
+        self.assertEqual(results[0].status, "SKIP")
+        self.assertIn("Complex", results[0].message)
+
     def test_clinical_ranges_validation_warns_on_bad_cross_rule_reference(self) -> None:
         warnings = validate_clinical_ranges_config(
             {
@@ -271,6 +314,62 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         self.assertFalse(should_run_c5_conversion_check({}, {}))
         self.assertTrue(should_run_c5_conversion_check({"conversion_factor": 2.54}, {}))
         self.assertTrue(should_run_c5_conversion_check({}, {"conversion_factor": 2.54}))
+
+    def test_category_key_normalization_handles_json_and_python_repr(self) -> None:
+        self.assertEqual(normalize_category_key('["OMOP:8527"]'), "OMOP:8527")
+        self.assertEqual(normalize_category_key("('OMOP:8527',)"), "OMOP:8527")
+        self.assertEqual(normalize_category_key("1.0"), "1")
+
+    def test_c7_normalizes_array_repr_category_keys(self) -> None:
+        src = {
+            "type": "categorical",
+            "distribution": {"1.0": {"n": 10, "pct": 100.0}},
+        }
+        out = {
+            "type": "categorical",
+            "distribution": {"['OMOP:8527']": {"n": 10, "pct": 100.0}},
+        }
+
+        result = check_c7_categorical_distribution(
+            src,
+            out,
+            "race",
+            value_map={"1": "OMOP:8527"},
+        )
+
+        self.assertEqual(result.status, "PASS")
+
+    def test_source_extract_config_loads_infer_type_threshold(self) -> None:
+        module_path = HV_DATAQC_DIR / "extract-source" / "extract_source_summaries.py"
+        spec = importlib.util.spec_from_file_location("extract_source_summaries", module_path)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            cfg = Path(tmp) / "thresholds.yaml"
+            cfg.write_text("source_extract:\n  infer_type_distinct_threshold: 7\n", encoding="utf-8")
+            loaded = module.load_source_extract_config(cfg)
+
+        self.assertEqual(loaded["source_extract"]["infer_type_distinct_threshold"], 7)
+
+    def test_harmonized_extract_config_overrides_demography_columns(self) -> None:
+        module_path = HV_DATAQC_DIR / "extract-harmonized" / "extract_harmonized_summaries.py"
+        spec = importlib.util.spec_from_file_location("extract_harmonized_summaries_cfg", module_path)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        original = list(module.DEMOGRAPHY_COLUMNS)
+        try:
+            module.apply_harmonized_extract_config(
+                {"demography_columns": {"annotated_sex": "sex"}}
+            )
+            self.assertEqual(module.DEMOGRAPHY_COLUMNS, [("annotated_sex", "sex")])
+        finally:
+            module.DEMOGRAPHY_COLUMNS[:] = original
 
     def test_normalize_code_strips_integer_float_suffix(self) -> None:
         self.assertEqual(_normalize_code("1.0"), "1")

@@ -18,6 +18,11 @@
 # All relative tolerances are decimal fractions (0.001 = 0.1%), NOT percentages.
 # Percentage-point values (miss rate, categorical pct) are plain numbers.
 
+# -- Source extractor type inference ---------------------------------------
+# Numeric variables with <= this many distinct values are treated as categorical.
+source_extract:
+  infer_type_distinct_threshold: 20
+
 # -- C1: Total participant count -------------------------------------------
 # Any participant loss triggers WARN; >fail_pct% triggers FAIL.
 # Exact match always = PASS regardless of this threshold.

@@ -35,9 +35,7 @@ Usage examples:
 from __future__ import annotations
 
 import argparse
-import json
 import logging
-import math
 import os
 import re
 import sys
@@ -46,6 +44,19 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
+import yaml
+
+_HV_DATAQC_ROOT = Path(__file__).resolve().parents[1]
+if str(_HV_DATAQC_ROOT) not in sys.path:
+    sys.path.insert(0, str(_HV_DATAQC_ROOT))
+
+from hv_dataqc_common import (  # noqa: E402
+    canonical_phv_id,
+    categorical_stats,
+    continuous_stats,
+    load_phv_name_map as _shared_load_phv_name_map,
+    write_json_atomic,
+)
 
 # ---------------------------------------------------------------------------
 # Logging helpers
@@ -66,33 +77,30 @@ log.propagate = False
 
 _file_handler: logging.FileHandler | None = None
 
+_DEFAULT_THRESHOLDS_PATH = _HV_DATAQC_ROOT / "compare" / "config" / "thresholds.yaml"
+
 
 def _canonical_phv_id(raw_id: str) -> str:
     """Return canonical PHV accession: lower-case, version suffix stripped."""
-    return str(raw_id or "").split(".")[0].lower()
-
-
-def _json_safe(value: Any) -> Any:
-    """Recursively convert non-finite floats to None before strict JSON writing."""
-    if isinstance(value, dict):
-        return {str(k): _json_safe(v) for k, v in value.items()}
-    if isinstance(value, (list, tuple, set)):
-        return [_json_safe(v) for v in value]
-    if isinstance(value, float):
-        return value if math.isfinite(value) else None
-    return value
+    return canonical_phv_id(raw_id)
 
 
 def _write_json_atomic(path: Path, data: Any) -> None:
     """Write strict JSON via temp file then atomic replace."""
-    tmp_path = path.with_name(f"{path.name}.tmp")
+    write_json_atomic(path, data, ensure_ascii=True, default=str)
+
+
+def load_source_extract_config(path: Path | None = None) -> dict[str, Any]:
+    """Load source-extractor configuration from thresholds.yaml if available."""
+    effective_path = path or _DEFAULT_THRESHOLDS_PATH
+    if not effective_path.exists():
+        return {}
     try:
-        with tmp_path.open("w", encoding="utf-8") as fh:
-            json.dump(_json_safe(data), fh, indent=2, ensure_ascii=True, allow_nan=False)
-        tmp_path.replace(path)
-    finally:
-        if tmp_path.exists():
-            tmp_path.unlink()
+        with effective_path.open("r", encoding="utf-8") as fh:
+            return yaml.safe_load(fh) or {}
+    except yaml.YAMLError as exc:
+        log.warning("Malformed thresholds config %s: %s", effective_path, exc)
+        return {}
 
 
 def _add_file_logging(log_path: Path) -> None:
@@ -348,65 +356,6 @@ def load_source_data(
 # Statistics
 # ---------------------------------------------------------------------------
 
-def categorical_stats(series: pd.Series) -> dict[str, Any]:
-    """Return value distribution for a categorical series."""
-    total = len(series)
-    n_valid = int(series.notna().sum())
-    n_missing = int(series.isna().sum())
-    n_total = n_valid + n_missing
-
-    counts = series.value_counts(dropna=True, sort=True)
-    distribution: dict[str, dict] = {}
-    for val, cnt in counts.items():
-        distribution[str(val)] = {
-            "n": int(cnt),
-            "pct": round(100.0 * int(cnt) / n_valid, 2) if n_valid > 0 else 0.0,
-        }
-
-    return {
-        "type": "categorical",
-        "n_total": n_total,
-        "n_valid": n_valid,
-        "n_missing": n_missing,
-        "pct_missing": round(n_missing / n_total * 100, 2) if n_total > 0 else 0.0,
-        "n_distinct": int(series.nunique(dropna=True)),
-        "distribution": distribution,
-    }
-
-
-def continuous_stats(series: pd.Series) -> dict[str, Any]:
-    """Return descriptive statistics for a continuous (numeric) series."""
-    numeric = pd.to_numeric(series, errors="coerce")
-    n_valid = int(numeric.notna().sum())
-    n_missing = int(numeric.isna().sum())
-    n_total = n_valid + n_missing
-
-    stats: dict[str, Any] = {
-        "type": "continuous",
-        "n_total": n_total,
-        "n_valid": n_valid,
-        "n_missing": n_missing,
-        "pct_missing": round(n_missing / n_total * 100, 2) if n_total > 0 else 0.0,
-    }
-
-    if n_valid > 0:
-        stats.update(
-            {
-                "mean": round(float(numeric.mean()), 4),
-                "sd": round(float(numeric.std()), 4),
-                "median": round(float(numeric.median()), 4),
-                "p5": round(float(numeric.quantile(0.05)), 4),
-                "p25": round(float(numeric.quantile(0.25)), 4),
-                "p75": round(float(numeric.quantile(0.75)), 4),
-                "p95": round(float(numeric.quantile(0.95)), 4),
-                "min": round(float(numeric.min()), 4),
-                "max": round(float(numeric.max()), 4),
-            }
-        )
-
-    return stats
-
-
 def compute_variable_summary(
     series: pd.Series,
     forced_type: str | None = None,
@@ -429,33 +378,11 @@ def load_phv_name_map(cache_dir: Path) -> dict[str, str]:
     Reads all ``*.data_dict.xml`` files under *cache_dir*/pheno_variable_summaries/.
     Returns empty dict if the path doesn't exist (graceful degradation).
     """
-    name_map: dict[str, str] = {}
-    summary_dir = cache_dir / "pheno_variable_summaries"
-    if not summary_dir.exists():
-        log.debug("Cache dir %s not found — PHV names unavailable", summary_dir)
-        return name_map
-
-    try:
-        import xml.etree.ElementTree as ET  # stdlib only
-
-        xml_files = list(summary_dir.glob("*.data_dict.xml"))
-        log.info("Loading PHV names from %d data_dict.xml files in %s", len(xml_files), summary_dir)
-        for xml_path in xml_files:
-            try:
-                tree = ET.parse(xml_path)
-                root = xml_path.name  # for error messages only
-                for var_el in tree.getroot().findall(".//variable"):
-                    phv = _canonical_phv_id(var_el.get("id", ""))
-                    name_el = var_el.find("name")
-                    if phv and name_el is not None and name_el.text:
-                        name_map[phv] = name_el.text.strip()
-            except Exception as exc:
-                log.warning("Skipping PHV name XML %s: %s", xml_path.name, exc)
-    except Exception as exc:
-        log.warning("Could not load PHV names: %s", exc)
-
-    log.info("Loaded %d PHV name mappings", len(name_map))
-    return name_map
+    return _shared_load_phv_name_map(
+        cache_dir,
+        info=lambda msg: log.info(msg),
+        warning=lambda msg: log.warning(msg),
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -505,8 +432,11 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
                         "(e.g. pht002239). Substring match on filename.")
     p.add_argument("--phv-list", metavar="PHV", nargs="+",
                    help="If set, only summarize these specific columns (PHV accession IDs or column names).")
-    p.add_argument("--n-distinct-threshold", type=int, default=20, metavar="N",
-                   help="Max n_distinct to treat numeric variable as categorical (default: 20).")
+    p.add_argument("--n-distinct-threshold", type=int, default=None, metavar="N",
+                   help="Max n_distinct to treat numeric variable as categorical "
+                        "(default: source_extract.infer_type_distinct_threshold in thresholds.yaml, else 20).")
+    p.add_argument("--thresholds", metavar="YAML",
+                   help="Optional thresholds/config YAML. Defaults to compare/config/thresholds.yaml.")
     p.add_argument("--cache-dir", metavar="DIR",
                    help="Optional: path to dbGaP cache dir for a cohort, used to resolve PHV→name.")
 
@@ -528,6 +458,14 @@ def main(argv: list[str] | None = None) -> None:
     if args.verbose:
         log.setLevel(logging.DEBUG)
 
+    config = load_source_extract_config(Path(args.thresholds) if args.thresholds else None)
+    source_cfg = config.get("source_extract", {}) if isinstance(config, dict) else {}
+    n_distinct_threshold = (
+        args.n_distinct_threshold
+        if args.n_distinct_threshold is not None
+        else int(source_cfg.get("infer_type_distinct_threshold", 20))
+    )
+
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     cohort_lower = args.cohort.lower()
 
@@ -535,6 +473,7 @@ def main(argv: list[str] | None = None) -> None:
         log.info("=== HV-DataQC Source Extractor ===")
         log.info("Cohort:    %s", args.cohort)
         log.info("Timestamp: %s", timestamp)
+        log.info("Infer-type distinct threshold: %d", n_distinct_threshold)
 
         # ------------------------------------------------------------------
         # 1. Resolve source directories
@@ -679,7 +618,7 @@ def main(argv: list[str] | None = None) -> None:
 
                 summary = compute_variable_summary(
                     df[col],
-                    n_distinct_threshold=args.n_distinct_threshold,
+                    n_distinct_threshold=n_distinct_threshold,
                 )
                 summary["_col_original"] = col
                 summary["_pht"] = pht_label
@@ -712,7 +651,7 @@ def main(argv: list[str] | None = None) -> None:
                 "extracted_at": timestamp,
                 "n_source_dirs": len(loaded),
                 "source_dirs": [pht for pht, _ in loaded],
-                "n_distinct_threshold": args.n_distinct_threshold,
+                "n_distinct_threshold": n_distinct_threshold,
             },
             "total_rows": total_rows_all,
             "total_rows_by_pht": total_rows_by_pht,
