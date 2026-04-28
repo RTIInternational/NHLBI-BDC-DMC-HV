@@ -43,7 +43,11 @@ def write_json_atomic(
     ensure_ascii: bool = False,
     default: Callable[[Any], Any] | None = str,
 ) -> None:
-    """Write strict JSON via temp file then atomic replace."""
+    """Write strict JSON via temp file then atomic replace.
+
+    Creates parent directories as needed.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
     tmp_path = path.with_name(f"{path.name}.tmp")
     try:
         with tmp_path.open("w", encoding="utf-8") as fh:

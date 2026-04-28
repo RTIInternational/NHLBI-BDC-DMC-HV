@@ -18,7 +18,7 @@ COMPARE_DIR = HV_DATAQC_DIR / "compare"
 sys.path.insert(0, str(HV_DATAQC_DIR))
 sys.path.insert(0, str(COMPARE_DIR))
 
-from hv_dataqc_common import normalize_category_key  # noqa: E402
+from hv_dataqc_common import normalize_category_key, write_json_atomic  # noqa: E402
 
 from compare_source_harmonized import (  # noqa: E402
     CrosswalkBuildError,
@@ -27,6 +27,7 @@ from compare_source_harmonized import (  # noqa: E402
     _json_safe,
     _normalize_code,
     _to_discovered_key,
+    _write_text_atomic,
     build_variable_crosswalk,
     check_c1_n_preservation,
     check_c2_n_loss,
@@ -757,6 +758,24 @@ class CrosswalkConceptExtractionTests(unittest.TestCase):
         hkeys = {e["harmonized_key"] for e in cw}
         self.assertIn("condition_MONDO:0005015", hkeys)
         self.assertIn("condition_MONDO:0006920", hkeys)
+
+
+class AtomicWriteTests(unittest.TestCase):
+    """Atomic writers must create missing parent directories."""
+
+    def test_write_json_atomic_creates_missing_parents(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "missing" / "nested" / "out.json"
+            write_json_atomic(target, {"k": 1})
+            self.assertTrue(target.exists())
+            self.assertEqual(target.read_text(encoding="utf-8").strip()[0], "{")
+
+    def test_write_text_atomic_creates_missing_parents(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "missing" / "report.md"
+            _write_text_atomic(target, "hello")
+            self.assertTrue(target.exists())
+            self.assertEqual(target.read_text(encoding="utf-8"), "hello")
 
 
 if __name__ == "__main__":
