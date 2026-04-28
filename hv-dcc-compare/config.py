@@ -544,7 +544,8 @@ DATASETS: dict[str, dict] = {
                 "unit": "pg/mL",
                 "plausible_lo": 0.0,
                 "plausible_hi": 50000.0,
-            },        },
+            },
+        },
     },
     # ── Atherosclerosis / Imaging ───────────────────────────────────────────
     "atherosclerosis": {

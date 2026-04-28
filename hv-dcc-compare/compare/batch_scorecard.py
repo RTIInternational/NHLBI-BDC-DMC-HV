@@ -325,18 +325,18 @@ def format_cross_cohort_summary(results: list[dict], timestamp: str) -> str:
     lines.append(f"  {'-'*80}")
 
     # Totals
+    total_aplus = sum(r["grades"]["A+"] for r in results)
     total_a = sum(r["grades"]["A"] for r in results)
     total_b = sum(r["grades"]["B"] for r in results)
     total_c = sum(r["grades"]["C"] for r in results)
     total_d = sum(r["grades"]["D"] for r in results)
-    total_m = sum(r["grades"].get("M", 0) for r in results)
-    total_q = sum(r["grades"]["?"] for r in results)
-    total_graded = total_a + total_b + total_c + total_d
-    total_pct = ((total_a + total_b) / total_graded * 100) if total_graded > 0 else 0
+    total_noted = sum(r.get("n_noted", 0) for r in results)
+    total_graded = total_aplus + total_a + total_b + total_c + total_d
+    total_pct = ((total_aplus + total_a + total_b) / total_graded * 100) if total_graded > 0 else 0
 
     lines.append(
         f"  {'TOTAL':<12} {'':>10} {'':>10} "
-        f"{'':>5} {total_a:>4} {total_b:>4} {total_c:>4} {total_d:>4} {total_m:>4} {total_q:>4} "
+        f"{'':>5} {total_aplus:>4} {total_a:>4} {total_b:>4} {total_c:>4} {total_d:>4} {total_noted:>4} "
         f"{total_pct:>5.0f}%"
     )
     lines.append("")

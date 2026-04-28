@@ -28,13 +28,17 @@ class HvDccCompareSmokeTests(unittest.TestCase):
         )
 
     def test_config_imports(self) -> None:
-        sys.path.insert(0, str(ROOT))
-        import config  # type: ignore  # noqa: PLC0415
+        original_sys_path = sys.path.copy()
+        try:
+            sys.path.insert(0, str(ROOT))
+            import config  # type: ignore  # noqa: PLC0415
 
-        self.assertIn("ARIC", config.COHORTS)
-        self.assertIn("demographics", config.DATASETS)
-        self.assertGreaterEqual(len(config.BDC_MEASUREMENT_MAP), 1)
-        self.assertEqual(config.normalize_cohort_name("HCHS"), "HCHS_SOL")
+            self.assertIn("ARIC", config.COHORTS)
+            self.assertIn("demographics", config.DATASETS)
+            self.assertGreaterEqual(len(config.BDC_MEASUREMENT_MAP), 1)
+            self.assertEqual(config.normalize_cohort_name("HCHS"), "HCHS_SOL")
+        finally:
+            sys.path[:] = original_sys_path
 
     def test_cli_help_starts(self) -> None:
         scripts = [

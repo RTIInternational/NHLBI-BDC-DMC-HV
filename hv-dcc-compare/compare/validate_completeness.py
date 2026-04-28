@@ -1,5 +1,5 @@
 """
-validate_participant_completeness.py — Definitive validation of participant count gaps
+validate_completeness.py — Definitive validation of participant count gaps
 ======================================================================================
 Runs on per-participant data from BOTH TOPMed DCC and BDC extracts and produces an
 anonymized **phenotype completeness profile** for each system:
@@ -245,7 +245,11 @@ def load_bdc_wide(dirs: list[str], verbose: bool = False) -> pd.DataFrame:
 
             for code, spec in BDC_MEASUREMENT_MAP.items():
                 topmed_var = spec["topmed_var"]
-                code_rows = meas[meas["observation_type"] == code]
+                aliases = spec.get("aliases", [])
+                if isinstance(aliases, str):
+                    aliases = [aliases]
+                observation_types = [code, *aliases]
+                code_rows = meas[meas["observation_type"].isin(observation_types)]
                 if code_rows.empty:
                     continue
                 # Take first value per participant — try known column names

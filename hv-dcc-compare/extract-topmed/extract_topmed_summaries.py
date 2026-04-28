@@ -189,7 +189,12 @@ def extract_eav_from_tgz(tgz_path: Path, extract_root: Path) -> Path | None:
     print(f"    Extracting: {tgz_path.name} ...", file=sys.stderr)
     dest.mkdir(parents=True, exist_ok=True)
     with tarfile.open(tgz_path, "r:gz") as tf:
-        tf.extractall(dest)  # noqa: S202 — files are from a trusted local bundle
+        dest_resolved = dest.resolve()
+        for member in tf.getmembers():
+            member_path = (dest / member.name).resolve()
+            if not str(member_path).startswith(str(dest_resolved)):
+                raise ValueError(f"Unsafe tar member path rejected: {member.name!r}")
+        tf.extractall(dest)
 
     eav_files = list(dest.rglob("*_eav.txt"))
     if not eav_files:
@@ -324,7 +329,7 @@ def categorical_stats(series: pd.Series, value_map: dict | None) -> dict:
     # Normalize values through the value map
     if value_map:
         normalized = series.map(
-            lambda x: value_map.get(str(x), f"UNMAPPED:{x}") if pd.notna(x) else None
+            lambda x: value_map.get(str(x), "UNMAPPED") if pd.notna(x) else None
         )
     else:
         normalized = series.copy()

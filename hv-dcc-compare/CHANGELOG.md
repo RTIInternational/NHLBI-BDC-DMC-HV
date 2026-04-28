@@ -18,6 +18,37 @@ the full rule and example format.
 
 ---
 
+## 2026-04-28
+
+### Multiple files — Address Copilot PR #572 review comments (7 issues)
+
+- **`compare/batch_scorecard.py`** — Fixed `KeyError` in `format_cross_cohort_summary()`
+  totals row: removed non-existent `grades["?"]` and `grades.get("M", 0)` references;
+  added `total_aplus` and `total_noted` (summing `n_noted`) to match the actual A+/A/B/C/D/*
+  grade model. A+ now included in A+B% total calculation.
+- **`compare/validate_completeness.py`** — Fixed silent miss of BDC measurements keyed
+  under alias concept codes: `load_bdc_wide()` now builds `observation_types = [code, *aliases]`
+  from `spec.get("aliases", [])` and uses `.isin()` instead of `== code`. Measurements for
+  height, weight, BMI, and several labs that use aliases were previously silently dropped,
+  producing incorrect completeness profiles.
+- **`compare/validate_completeness.py`** — Fixed stale module docstring: filename reference
+  changed from `validate_participant_completeness.py` to `validate_completeness.py`.
+- **`extract-topmed/extract_topmed_summaries.py`** — Fixed `UNMAPPED:{x}` raw value leak:
+  `categorical_stats()` now maps unmapped source values to the constant string `"UNMAPPED"`
+  instead of embedding the raw EAV value in the key, maintaining the aggregate-only safety
+  contract.
+- **`extract-topmed/extract_topmed_summaries.py`** — Fixed `tarfile.extractall()` path
+  traversal vulnerability (OWASP): now validates each member path against the destination
+  directory before extraction, rejecting any `../` or absolute-path members.
+- **`tests/test_smoke.py`** — Fixed `sys.path` mutation in `test_config_imports()`: added
+  `try/finally` to restore `sys.path[:] = original_sys_path` after the test, preventing
+  order-dependent failures in expanded test suites.
+- **`config.py`** — Fixed oddly formatted `},        },` on a single line (around the
+  TNFR2 entry in the inflammation dataset); split into properly indented separate lines.
+- **Cohorts affected**: All 9 cohorts (logic fixes in shared comparison/extraction scripts).
+
+---
+
 ## 2026-04-20
 
 ### `match_quality_table.py` -- Add group headers to `--all-vars` output
