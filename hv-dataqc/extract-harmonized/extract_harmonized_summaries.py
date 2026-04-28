@@ -416,6 +416,7 @@ def process_conditions(
     df: pd.DataFrame,
     visit_id_to_label: dict[str, str],
     by_visit: bool = False,
+    diagnostics_out: dict | None = None,
 ) -> dict[str, dict]:
     """Extract per-condition_concept summaries from Condition entity.
 
@@ -431,6 +432,17 @@ def process_conditions(
 
     if not concept_col:
         return variables
+
+    if status_col is None:
+        msg = (
+            "Condition.tsv has no condition_status column; condition summaries "
+            "count rows as valid but mark condition_status_missing_assumption=True"
+        )
+        print(f"    WARNING: {msg}")
+        if diagnostics_out is not None:
+            diagnostics_out["condition_status_missing"] = True
+            diagnostics_out["condition_status_missing_rows"] = int(len(df))
+            diagnostics_out["condition_status_missing_message"] = msg
 
     if by_visit and "associated_visit" in df.columns:
         df = df.copy()
@@ -448,6 +460,7 @@ def process_conditions(
                 "n_valid": int(len(group)),
                 "n_missing": 0,
                 "pct_missing": 0.0,
+                "condition_status_missing_assumption": True,
             }
 
         summary["entity"] = "Condition"
@@ -842,7 +855,9 @@ def main(argv: list[str] | None = None) -> None:
         participant_count_candidates["Condition"] = participant_count_from_entity(
             cond_df, ("associated_participant", "participant", "participant_id")
         )
-        cond_vars = process_conditions(cond_df, visit_id_to_label, args.by_visit)
+        cond_vars = process_conditions(
+            cond_df, visit_id_to_label, args.by_visit, diagnostics_out=extraction_warnings
+        )
         variables.update(cond_vars)
         print(f"    Total: {len(cond_df):,} rows | {len(cond_vars)} condition concepts")
     else:

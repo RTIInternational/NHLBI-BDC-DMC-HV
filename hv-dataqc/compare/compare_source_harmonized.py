@@ -1513,6 +1513,16 @@ def check_c5_mean_after_conversion(
                        {"expected": expected, "actual": harmonized_mean, "factor": conversion_factor})
 
 
+def should_run_c5_conversion_check(match: dict, c5_thresholds: dict) -> bool:
+    """Return True only when C5 has an explicit conversion factor to validate.
+
+    C5 is intentionally active-only: without a declared scalar conversion
+    factor, emitting one SKIP per variable makes the report look like a real
+    unit-conversion check ran when it did not.
+    """
+    return (match.get("conversion_factor") or c5_thresholds.get("conversion_factor")) is not None
+
+
 def check_c11_type_consistency(src_var: dict, harmonized_var: dict, var_name: str) -> CheckResult:
     """C11: Variable type consistency between source and harmonized.
 
@@ -1902,10 +1912,34 @@ def check_c10_cross_variable(
             ))
             continue
 
-        var_a = next((v for v in harmonized_vars.values()
-                      if v.get("observation_type") in codes_a), None)
-        var_b = next((v for v in harmonized_vars.values()
-                      if v.get("observation_type") in codes_b), None)
+        matches_a = [
+            (key, v) for key, v in harmonized_vars.items()
+            if v.get("observation_type") in codes_a
+        ]
+        matches_b = [
+            (key, v) for key, v in harmonized_vars.items()
+            if v.get("observation_type") in codes_b
+        ]
+
+        ambiguous: list[str] = []
+        detail: dict = {}
+        if len(matches_a) > 1:
+            ambiguous.append(variables[0])
+            detail[f"{variables[0]}_matches"] = [key for key, _ in matches_a]
+        if len(matches_b) > 1:
+            ambiguous.append(variables[1])
+            detail[f"{variables[1]}_matches"] = [key for key, _ in matches_b]
+        if ambiguous:
+            results.append(CheckResult(
+                "C10", rule_id, "WARN",
+                "Ambiguous cross-variable rule: multiple harmonized variables match "
+                f"{', '.join(ambiguous)}; rule not evaluated",
+                detail,
+            ))
+            continue
+
+        var_a = matches_a[0][1] if matches_a else None
+        var_b = matches_b[0][1] if matches_b else None
 
         if not var_a or not var_b:
             missing = []
@@ -2311,11 +2345,12 @@ def main(argv: list[str] | None = None) -> None:
             src_var, harmonized_var, display_name,
             pass_rel=c4_t.get("pass_rel", 0.001), warn_rel=c4_t.get("warn_rel", 0.01),
         ))
-        all_results.append(check_c5_mean_after_conversion(
-            src_var, harmonized_var, display_name,
-            conversion_factor=match.get("conversion_factor") or c5_t.get("conversion_factor"),
-            pass_rel=c5_t.get("pass_rel", 0.001),
-        ))
+        if should_run_c5_conversion_check(match, c5_t):
+            all_results.append(check_c5_mean_after_conversion(
+                src_var, harmonized_var, display_name,
+                conversion_factor=match.get("conversion_factor") or c5_t.get("conversion_factor"),
+                pass_rel=c5_t.get("pass_rel", 0.001),
+            ))
         all_results.append(check_c6_sd_preservation(
             src_var, harmonized_var, display_name,
             pass_rel=c6_t.get("pass_rel", 0.002), warn_rel=c6_t.get("warn_rel", 0.01),
@@ -2349,7 +2384,9 @@ def main(argv: list[str] | None = None) -> None:
     for sk in source_vars:
         if sk not in matched_src and "error" not in source_vars[sk]:
             all_results.append(CheckResult(
-                "C2", source_vars[sk].get("name", sk), "INFO", "Source variable not matched in harmonized"
+                "C2", source_vars[sk].get("name", sk), "INFO",
+                "Source variable not matched in harmonized",
+                {"direction": "source_unmatched", "source_key": sk},
             ))
 
     unresolved_yaml = (yaml_diagnostics.get("unresolved_yaml_entries") or {})
@@ -2359,6 +2396,7 @@ def main(argv: list[str] | None = None) -> None:
             continue
         diag_entries = unresolved_yaml.get(ok, [])
         detail: dict = {
+            "direction": "harmonized_unmatched",
             "harmonized_key": ok,
             "yaml_proposed_harmonized_key": ok in yaml_proposed,
         }

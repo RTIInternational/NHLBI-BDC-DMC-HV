@@ -9,11 +9,13 @@ import sys
 import unittest
 import math
 import tempfile
+import importlib.util
 from pathlib import Path
 
 
 COMPARE_DIR = Path(__file__).resolve().parents[1] / "compare"
 sys.path.insert(0, str(COMPARE_DIR))
+HV_DATAQC_DIR = Path(__file__).resolve().parents[1]
 
 from compare_source_harmonized import (  # noqa: E402
     CrosswalkBuildError,
@@ -29,6 +31,7 @@ from compare_source_harmonized import (  # noqa: E402
     check_c10_cross_variable,
     check_c7_categorical_distribution,
     load_thresholds,
+    should_run_c5_conversion_check,
     validate_clinical_ranges_config,
 )
 
@@ -193,6 +196,34 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         self.assertEqual(results[0].status, "PASS")
         self.assertIn("<=", results[0].message)
 
+    def test_c10_warns_on_ambiguous_observation_type_match(self) -> None:
+        clinical_ranges = {
+            "fev1": {"omop_codes": ["OMOP:FEV1"], "oba_codes": []},
+            "fvc": {"omop_codes": ["OMOP:FVC"], "oba_codes": []},
+            "_cross_variable_rules": {
+                "fev1_lt_fvc": {
+                    "description": "FEV1 is generally less than FVC",
+                    "check": "mean(FEV1) < mean(FVC)",
+                    "variables": ["fev1", "fvc"],
+                    "severity": "WARNING",
+                }
+            },
+        }
+        harmonized_vars = {
+            "measurement_OMOP:FEV1_pre": {"observation_type": "OMOP:FEV1", "mean": 2.0},
+            "measurement_OMOP:FEV1_post": {"observation_type": "OMOP:FEV1", "mean": 2.5},
+            "measurement_OMOP:FVC": {"observation_type": "OMOP:FVC", "mean": 3.0},
+        }
+
+        results = check_c10_cross_variable(harmonized_vars, clinical_ranges)
+
+        self.assertEqual(results[0].status, "WARN")
+        self.assertIn("Ambiguous", results[0].message)
+        self.assertEqual(
+            results[0].detail["fev1_matches"],
+            ["measurement_OMOP:FEV1_pre", "measurement_OMOP:FEV1_post"],
+        )
+
     def test_clinical_ranges_validation_warns_on_bad_cross_rule_reference(self) -> None:
         warnings = validate_clinical_ranges_config(
             {
@@ -235,6 +266,11 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         result = load_thresholds(Path("/nonexistent/thresholds.yaml"))
         self.assertIsInstance(result, dict)
         self.assertEqual(len(result), 0)
+
+    def test_c5_runs_only_with_explicit_conversion_factor(self) -> None:
+        self.assertFalse(should_run_c5_conversion_check({}, {}))
+        self.assertTrue(should_run_c5_conversion_check({"conversion_factor": 2.54}, {}))
+        self.assertTrue(should_run_c5_conversion_check({}, {"conversion_factor": 2.54}))
 
     def test_normalize_code_strips_integer_float_suffix(self) -> None:
         self.assertEqual(_normalize_code("1.0"), "1")
@@ -301,6 +337,29 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
                     yaml_dir=yaml_dir,
                     cache_dir=cache_dir,
                 )
+
+    def test_process_conditions_marks_missing_status_assumption(self) -> None:
+        import pandas as pd
+
+        module_path = HV_DATAQC_DIR / "extract-harmonized" / "extract_harmonized_summaries.py"
+        spec = importlib.util.spec_from_file_location("extract_harmonized_summaries", module_path)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        diagnostics: dict = {}
+        variables = module.process_conditions(
+            pd.DataFrame({"condition_concept": ["MONDO:1", "MONDO:1"]}),
+            visit_id_to_label={},
+            diagnostics_out=diagnostics,
+        )
+
+        self.assertTrue(diagnostics["condition_status_missing"])
+        self.assertEqual(diagnostics["condition_status_missing_rows"], 2)
+        self.assertTrue(
+            variables["condition_MONDO:1"]["condition_status_missing_assumption"]
+        )
 
 
 class C1NPreservationTests(unittest.TestCase):

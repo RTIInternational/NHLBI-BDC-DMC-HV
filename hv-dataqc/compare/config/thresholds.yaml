@@ -57,8 +57,9 @@ c4:
   warn_rel: 0.01        # <=1.0% -> WARN   (was 5.0%)
 
 # -- C5: Mean after unit conversion (relative difference) -------------------
+# Active-only check. C5 runs only when a YAML crosswalk match or this config
+# supplies conversion_factor; otherwise no per-variable C5 SKIP is emitted.
 # No WARN tier -- any deviation beyond pass_rel is a FAIL.
-# Used for variables that undergo a known scalar unit conversion in the pipeline.
 c5:
   pass_rel: 0.001       # <=0.1% -> PASS   (was 1.0%)
 
