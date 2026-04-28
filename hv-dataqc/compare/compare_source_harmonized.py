@@ -425,6 +425,13 @@ def _extract_crosswalk_from_class_derivations(
         # We emit one crosswalk entry per unique code so every possible
         # harmonized key gets a source-side match.
         concept_codes: list[str] = []
+        # When the concept slot (e.g. condition_concept) routes one source
+        # column to MULTIPLE concept CURIEs via value_mappings, we capture the
+        # raw {source_code: CURIE} dict here.  Threaded onto each emitted
+        # crosswalk entry as ``concept_value_map`` so C2 can compute the
+        # expected harmonized N as the sum of source rows whose code routes to
+        # *this* concept (instead of the full source n_valid).
+        concept_value_map: dict | None = None
         concept_slot_name = CONCEPT_SLOTS.get(entity_class)
         if concept_slot_name and concept_slot_name in slots:
             slot = slots[concept_slot_name]
@@ -451,6 +458,12 @@ def _extract_crosswalk_from_class_derivations(
                         vm_codes = _concept_codes_from_value_mappings(slot)
                         if vm_codes:
                             concept_codes = vm_codes
+                            vm_raw = slot.get("value_mappings")
+                            if isinstance(vm_raw, dict):
+                                concept_value_map = {
+                                    str(k): str(v).strip()
+                                    for k, v in vm_raw.items()
+                                }
 
         # --- Demography: each slot maps a separate PHV → demog_<slot> ---
         if entity_class == "Demography":
@@ -620,6 +633,7 @@ def _extract_crosswalk_from_class_derivations(
                     "concept_code": concept_code,
                     "entity_class": entity_class,
                     "value_map": primary["value_map"],
+                    "concept_value_map": concept_value_map,
                     "method_type": method_type_val,
                 }
             )
@@ -720,6 +734,75 @@ def _normalize_harmonized_vars(raw: dict) -> dict:
 # ---------------------------------------------------------------------------
 # Multi-PHT source aggregation
 # ---------------------------------------------------------------------------
+
+def _normalize_code(c) -> str:
+    """Normalise a coded value for cross-source matching.
+
+    Distribution keys from the source extractor often arrive as float-typed
+    strings (e.g. ``'1.0'``) because pandas read the column as numeric, while
+    YAML value_mappings keys are typically integer strings (``'1'``).  This
+    function trims trailing ``.0`` from integer-valued floats and strips
+    surrounding whitespace so the two representations compare equal.
+    """
+    s = str(c).strip()
+    # Drop trailing .0 for integer-valued floats: '1.0' -> '1', '12.0' -> '12'
+    if s.endswith(".0") and s[:-2].lstrip("-").isdigit():
+        return s[:-2]
+    return s
+
+
+def _expected_harmonized_n(match: dict, src_var: dict) -> int | None:
+    """Compute expected harmonized n_valid for a crosswalk match.
+
+    Generalises C2's denominator to handle one-source-to-many-concepts
+    routing (e.g. ``condition_concept`` with value_mappings that route
+    different source codes to different MONDO/HP CURIEs).
+
+    Behaviour:
+
+      * If the entry has no ``concept_value_map`` (continuous, 1:1 categorical,
+        or any non-routing case): returns None — caller falls back to the
+        pooled source ``n_valid``, preserving today's behaviour.
+      * If the entry has a ``concept_value_map`` AND the source is categorical
+        with a per-code distribution: returns the sum of source rows whose
+        code maps to *this* match's ``concept_code``.  This is the row count
+        we expect to see materialised under the harmonized concept, and
+        therefore the correct denominator for source-to-harmonized
+        alignment checks.
+      * If we have ``concept_value_map`` but no usable distribution (e.g.
+        type='unknown'): returns None — caller falls back to ``n_valid``.
+
+    Cohort-agnostic; depends only on YAML-declared mappings + source
+    distribution emitted by the source extractor.
+    """
+    cvm = match.get("concept_value_map")
+    if not cvm or not isinstance(cvm, dict):
+        return None
+    target_code = match.get("concept_code")
+    if not target_code:
+        return None
+    matching_codes = {
+        _normalize_code(code) for code, target in cvm.items()
+        if str(target).strip() == str(target_code).strip()
+    }
+    if not matching_codes:
+        return 0
+    dist = (src_var or {}).get("distribution") or (src_var or {}).get("values")
+    if not isinstance(dist, dict) or not dist:
+        return None
+    expected = 0
+    for code, info in dist.items():
+        if _normalize_code(code) not in matching_codes:
+            continue
+        if isinstance(info, dict):
+            expected += int(info.get("n", info.get("count", 0)) or 0)
+        else:
+            try:
+                expected += int(info)
+            except (TypeError, ValueError):
+                pass
+    return expected
+
 
 def _aggregate_source_summaries(per_pht: list[dict]) -> dict:
     """Combine per-PHT source variable summaries into a single pooled summary.
@@ -1102,6 +1185,17 @@ def build_variable_crosswalk(
             merged["_source_keys"] = source_keys_used
             merged["_source_flat_keys"] = source_flat_keys_used
             merged["_phv_ids"] = phv_ids
+            # Preserve concept_value_map from ANY contributing entry that
+            # has one.  Different visit blocks for the same harmonized_key
+            # may use a static ``value:`` (no cvm) while one block uses
+            # ``value_mappings`` (cvm present); we must not lose the cvm
+            # by defaulting to entries[0].
+            if not merged.get("concept_value_map"):
+                for e in entries:
+                    cvm = e.get("concept_value_map")
+                    if cvm:
+                        merged["concept_value_map"] = cvm
+                        break
             if source_phts:
                 # Keep _resolved_pht populated for backward-compat in the
                 # console crosswalk listing; show comma-joined list when many.
@@ -1248,32 +1342,50 @@ def check_c1_n_preservation(
 def check_c2_n_loss(
     src_var: dict, harmonized_var: dict, var_name: str,
     pass_pct: float = 0.5, warn_pct: float = 2.0,
+    expected_n: int | None = None,
 ) -> CheckResult:
-    """C2: Per-variable valid-N comparison."""
-    src_n = src_var.get("n_valid", 0)
+    """C2: Per-variable valid-N comparison.
+
+    When *expected_n* is provided (typically by ``_expected_harmonized_n``
+    for value_mappings-routed concept slots), it is used as the denominator
+    in place of the raw source ``n_valid``.  This makes the check correctly
+    handle one-source-to-many-concepts routing where the full source row
+    count is not the right comparison target for a single harmonized concept.
+    """
+    src_n_raw = src_var.get("n_valid", 0)
+    src_n = expected_n if expected_n is not None else src_n_raw
     harmonized_n = harmonized_var.get("n_valid", 0)
 
+    detail_base = {
+        "source_n": src_n,
+        "harmonized_n": harmonized_n,
+    }
+    if expected_n is not None:
+        detail_base["source_n_raw"] = src_n_raw
+        detail_base["expected_n_for_concept"] = expected_n
+
     if src_n == 0:
-        return CheckResult("C2", var_name, "SKIP", "No valid source values")
+        return CheckResult("C2", var_name, "SKIP", "No valid source values", detail_base)
     if harmonized_n == src_n:
-        return CheckResult("C2", var_name, "PASS", f"N preserved: {src_n}")
+        return CheckResult("C2", var_name, "PASS", f"N preserved: {src_n}", detail_base)
 
     loss_pct = round((src_n - harmonized_n) / src_n * 100, 1) if src_n > 0 else 0
+    detail_base["loss_pct"] = loss_pct
     if abs(loss_pct) <= pass_pct:
         return CheckResult("C2", var_name, "PASS",
                            f"N within {pass_pct}%: {src_n} -> {harmonized_n}",
-                           {"source_n": src_n, "harmonized_n": harmonized_n, "loss_pct": loss_pct})
+                           detail_base)
     if 0 < loss_pct <= warn_pct:
         return CheckResult("C2", var_name, "WARN",
                            f"Moderate N loss: {src_n} -> {harmonized_n} ({loss_pct}%)",
-                           {"source_n": src_n, "harmonized_n": harmonized_n, "loss_pct": loss_pct})
+                           detail_base)
     if loss_pct > warn_pct:
         return CheckResult("C2", var_name, "FAIL",
                            f"Significant N loss: {src_n} -> {harmonized_n} ({loss_pct}%)",
-                           {"source_n": src_n, "harmonized_n": harmonized_n, "loss_pct": loss_pct})
+                           detail_base)
     return CheckResult("C2", var_name, "WARN",
                        f"N gain: {src_n} -> {harmonized_n}",
-                       {"source_n": src_n, "harmonized_n": harmonized_n})
+                       detail_base)
 
 
 def check_c3_missing_accounting(
@@ -2165,6 +2277,7 @@ def main(argv: list[str] | None = None) -> None:
         all_results.append(check_c2_n_loss(
             src_var, harmonized_var, display_name,
             pass_pct=c2_t.get("pass_pct", 0.5), warn_pct=c2_t.get("warn_pct", 2.0),
+            expected_n=_expected_harmonized_n(match, src_var),
         ))
         all_results.append(check_c3_missing_accounting(
             src_var, harmonized_var, display_name,
