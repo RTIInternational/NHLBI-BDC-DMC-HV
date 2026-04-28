@@ -15,9 +15,12 @@ COHORT="${1:?Usage: ./compare.sh <cohort> [extra flags...]}"
 shift
 COHORT_LOWER="$(echo "$COHORT" | tr '[:upper:]' '[:lower:]')"
 
-# Find the most recent source and harmonized JSONs
-SOURCE=$(ls -t "$OUT/${COHORT_LOWER}_source_"*.json 2>/dev/null | head -1)
-HARMONIZED=$(ls -t "$OUT/${COHORT_LOWER}_harmonized_"*.json 2>/dev/null | head -1)
+# Find the most recent source and harmonized JSONs.
+# Append `|| true` so that under `set -euo pipefail`, an empty match (ls
+# returning non-zero) does not abort the script before the `-z` checks below
+# can emit a friendly error message.
+SOURCE=$(ls -t "$OUT/${COHORT_LOWER}_source_"*.json 2>/dev/null | head -1 || true)
+HARMONIZED=$(ls -t "$OUT/${COHORT_LOWER}_harmonized_"*.json 2>/dev/null | head -1 || true)
 
 if [ -z "$SOURCE" ]; then
     echo "ERROR: No source JSON found matching $OUT/${COHORT_LOWER}_source_*.json" >&2

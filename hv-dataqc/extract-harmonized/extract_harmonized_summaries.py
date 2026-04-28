@@ -736,11 +736,41 @@ def main(argv: list[str] | None = None) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     base_stem = f"{cohort.lower()}_harmonized_{run_ts}"
-    output_path = Path(args.output) if args.output else output_dir / f"{base_stem}.json"
+    # `--output` is treated as a filename only and is always placed inside
+    # `output_dir`, mirroring the source extractor's behaviour. This prevents
+    # `--output foo.json` from silently writing outside `--output-dir`.
+    output_path = (output_dir / Path(args.output).name) if args.output else output_dir / f"{base_stem}.json"
     log_path = output_dir / f"{base_stem}.log"
 
     tee = _Tee(log_path)
+    try:
+        _run_extract(
+            args=args,
+            cohort=cohort,
+            run_ts=run_ts,
+            mapped_dirs=mapped_dirs,
+            output_path=output_path,
+            log_path=log_path,
+            extract_config=extract_config,
+            extract_config_path=extract_config_path,
+        )
+    finally:
+        # Ensure stdout is restored and the log file is closed even if an
+        # exception or sys.exit() interrupts extraction.
+        tee.close()
 
+
+def _run_extract(
+    *,
+    args: argparse.Namespace,
+    cohort: str,
+    run_ts: str,
+    mapped_dirs: list[Path],
+    output_path: Path,
+    log_path: Path,
+    extract_config: dict | None,
+    extract_config_path: Path,
+) -> None:
     print("=" * 60)
     print(f"  HV-DataQC Harmonized Extractor: {cohort}")
     print("=" * 60)
@@ -955,8 +985,6 @@ def main(argv: list[str] | None = None) -> None:
     print(f"    Entities loaded: {', '.join(datasets_loaded)}")
     print("  AGGREGATE SUMMARIES ONLY -- safe to export from enclave")
     print("=" * 60)
-
-    tee.close()
 
 
 if __name__ == "__main__":

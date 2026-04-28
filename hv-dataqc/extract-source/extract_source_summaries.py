@@ -121,16 +121,6 @@ def _close_file_logging() -> None:
         _file_handler = None
 
 
-class _Tee:
-    """Write to both stdout and a log file simultaneously (for plain print() output)."""
-
-    def __init__(self, log_path: Path) -> None:
-        _add_file_logging(log_path)
-
-    def close(self) -> None:
-        _close_file_logging()
-
-
 # ---------------------------------------------------------------------------
 # System / metadata column detection
 # ---------------------------------------------------------------------------
@@ -182,8 +172,7 @@ def infer_variable_type(
       1. String / object dtype → categorical
       2. Boolean dtype → categorical
       3. n_distinct <= threshold → categorical
-      4. All distinct integer values <= threshold → categorical
-      5. Otherwise → continuous
+            4. Otherwise → continuous
     """
     if series.dtype.kind in _CATEGORICAL_DTYPE_KINDS:
         return "categorical"
@@ -196,15 +185,14 @@ def infer_variable_type(
     if n_distinct <= n_distinct_threshold:
         return "categorical"
 
-    # Numeric but few distinct values that are small integers → likely codes
-    try:
-        int_vals = non_null.astype(int)
-        if (int_vals == non_null).all() and n_distinct <= n_distinct_threshold:
-            return "categorical"
-    except (ValueError, TypeError):
-        pass
+    # NOTE: A previous block here re-checked `n_distinct <= n_distinct_threshold`
+    # for integer-coded columns, which was unreachable dead code (the early
+    # return above already covers it). Removed; if a tighter integer-code
+    # threshold is wanted in the future, introduce a separate threshold
+    # rather than reusing `n_distinct_threshold`.
 
     return "continuous"
+
 
 
 # ---------------------------------------------------------------------------
@@ -508,7 +496,9 @@ def main(argv: list[str] | None = None) -> None:
         log.info("Output dir: %s", output_dir)
 
         log_path = output_dir / f"{cohort_lower}_source_extract_{timestamp}.log"
-        tee = _Tee(log_path)
+        # File logging only — no stdout redirection. The matching
+        # `_close_file_logging()` call lives in the outer `finally` block.
+        _add_file_logging(log_path)
 
         # ------------------------------------------------------------------
         # 2. Load all TSVs
@@ -649,8 +639,9 @@ def main(argv: list[str] | None = None) -> None:
                 "source": "raw_dbgap",
                 "cohort": args.cohort,
                 "extracted_at": timestamp,
-                "n_source_dirs": len(loaded),
-                "source_dirs": [pht for pht, _ in loaded],
+                "n_source_dirs": len(source_dirs),
+                "source_dirs": [str(d) for d in source_dirs],
+                "phts_loaded": [pht for pht, _ in loaded],
                 "n_distinct_threshold": n_distinct_threshold,
             },
             "total_rows": total_rows_all,
