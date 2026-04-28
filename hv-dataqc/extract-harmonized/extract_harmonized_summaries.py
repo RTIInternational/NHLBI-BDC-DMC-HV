@@ -351,9 +351,10 @@ def process_measurements(
     if "observation_type" not in df.columns:
         return variables
 
-    DECIMAL_COL = "value_quantity__value_decimal"
-    INTEGER_COL = "value_quantity__value_integer"
-    CODED_COL   = "value_quantity__value_coded"
+    DECIMAL_COL       = "value_quantity__value_decimal"
+    INTEGER_COL       = "value_quantity__value_integer"
+    CODED_COL         = "value_quantity__value_coded"
+    VALUE_CONCEPT_COL = "value_concept"
 
     obs_cols = [
         c for c in df.columns
@@ -371,15 +372,18 @@ def process_measurements(
     for obs_type, group in df.groupby("observation_type", dropna=False):
         key = str(obs_type) if pd.notna(obs_type) else "MISSING_OBS_TYPE"
 
-        has_decimal = DECIMAL_COL in df.columns and group[DECIMAL_COL].notna().any()
-        has_integer = INTEGER_COL in df.columns and group[INTEGER_COL].notna().any()
-        has_coded   = CODED_COL   in df.columns and group[CODED_COL].notna().any()
+        has_decimal       = DECIMAL_COL       in df.columns and group[DECIMAL_COL].notna().any()
+        has_integer       = INTEGER_COL       in df.columns and group[INTEGER_COL].notna().any()
+        has_coded         = CODED_COL         in df.columns and group[CODED_COL].notna().any()
+        has_value_concept = VALUE_CONCEPT_COL in df.columns and group[VALUE_CONCEPT_COL].notna().any()
 
         if has_decimal or has_integer:
             value_col = DECIMAL_COL if has_decimal else INTEGER_COL
             summary = continuous_stats(group[value_col])
         elif has_coded:
             summary = categorical_stats(group[CODED_COL])
+        elif has_value_concept:
+            summary = categorical_stats(group[VALUE_CONCEPT_COL])
         else:
             summary = {
                 "type": "unknown",
@@ -399,6 +403,8 @@ def process_measurements(
                     by_visit_stats[vlabel] = continuous_stats(vgroup[value_col])
                 elif has_coded:
                     by_visit_stats[vlabel] = categorical_stats(vgroup[CODED_COL])
+                elif has_value_concept:
+                    by_visit_stats[vlabel] = categorical_stats(vgroup[VALUE_CONCEPT_COL])
             summary["by_visit"] = by_visit_stats
 
         variables[f"measurement_{key}"] = summary
