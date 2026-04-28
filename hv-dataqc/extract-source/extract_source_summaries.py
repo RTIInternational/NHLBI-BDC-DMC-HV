@@ -605,6 +605,7 @@ def main(argv: list[str] | None = None) -> None:
         total_rows_by_pht: dict[str, int] = {}
         total_participants: int | None = None
         participant_ids: set[str] = set()
+        participants_by_pht: dict[str, int] = {}   # unique participant count per PHT
         rows_per_visit_combined: dict[str, int] = {}
 
         for pht_label, df in loaded:
@@ -648,6 +649,8 @@ def main(argv: list[str] | None = None) -> None:
             if part_col and part_col in df.columns:
                 n_unique_here = int(df[part_col].nunique(dropna=True))
                 participant_ids.update(str(v) for v in df[part_col].dropna().unique())
+                participants_by_pht[pht_label] = n_unique_here
+                log.info("  Unique participants in %s: %d", pht_label, n_unique_here)
                 if total_participants is None:
                     total_participants = n_unique_here
                 else:
@@ -694,6 +697,10 @@ def main(argv: list[str] | None = None) -> None:
 
         if participant_ids:
             total_participants = len(participant_ids)
+            log.info("Unique participants (cross-PHT union): %d", total_participants)
+            if participants_by_pht:
+                max_pht = max(participants_by_pht, key=participants_by_pht.get)
+                log.info("  Largest single-PHT count: %s (%d)", max_pht, participants_by_pht[max_pht])
 
         # ------------------------------------------------------------------
         # 6. Build output document
@@ -710,6 +717,7 @@ def main(argv: list[str] | None = None) -> None:
             "total_rows": total_rows_all,
             "total_rows_by_pht": total_rows_by_pht,
             "rows_per_visit": rows_per_visit_combined,
+            "participants_by_pht": participants_by_pht,
             "variables_by_pht": variables_by_pht,
             "variables": variables,
         }

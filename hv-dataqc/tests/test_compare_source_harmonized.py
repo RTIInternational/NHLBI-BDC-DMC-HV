@@ -17,6 +17,8 @@ sys.path.insert(0, str(COMPARE_DIR))
 from compare_source_harmonized import (  # noqa: E402
     _aggregate_source_summaries,
     _json_safe,
+    _to_discovered_key,
+    check_c1_n_preservation,
     check_c4_mean_preservation,
     check_c10_cross_variable,
     check_c7_categorical_distribution,
@@ -26,6 +28,19 @@ from compare_source_harmonized import (  # noqa: E402
 
 
 class CompareSourceHarmonizedTests(unittest.TestCase):
+    def test_to_discovered_key_converts_supported_prefixes(self) -> None:
+        self.assertEqual(
+            _to_discovered_key("condition_MONDO:0004981"),
+            "discovered:condition:MONDO:0004981",
+        )
+        self.assertEqual(
+            _to_discovered_key("measurement_OBA:VT0001259"),
+            "discovered:measurement:OBA:VT0001259",
+        )
+
+    def test_to_discovered_key_ignores_demography_keys(self) -> None:
+        self.assertIsNone(_to_discovered_key("demog_annotated_sex"))
+
     def test_aggregate_source_summaries_pools_continuous_stats(self) -> None:
         pooled = _aggregate_source_summaries(
             [
@@ -214,6 +229,91 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         result = load_thresholds(Path("/nonexistent/thresholds.yaml"))
         self.assertIsInstance(result, dict)
         self.assertEqual(len(result), 0)
+
+
+class C1NPreservationTests(unittest.TestCase):
+    """Tests for check_c1_n_preservation, including participants_by_pht logic."""
+
+    @staticmethod
+    def _src(total: int, by_pht: dict | None = None) -> dict:
+        doc: dict = {"total_participants": total}
+        if by_pht is not None:
+            doc["participants_by_pht"] = by_pht
+        return doc
+
+    @staticmethod
+    def _harm(total: int) -> dict:
+        return {"total_participants": total}
+
+    # --- No participants_by_pht (legacy path) ---
+
+    def test_c1_pass_exact_match_no_pht(self) -> None:
+        result = check_c1_n_preservation(self._src(5531), self._harm(5531))
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0].status, "PASS")
+
+    def test_c1_fail_large_loss_no_pht(self) -> None:
+        result = check_c1_n_preservation(self._src(7380), self._harm(5531))
+        self.assertEqual(result[0].status, "FAIL")
+        self.assertIn("Participant loss", result[0].message)
+        self.assertAlmostEqual(result[0].detail["loss_pct"], 25.1, places=1)
+
+    def test_c1_skip_no_source(self) -> None:
+        result = check_c1_n_preservation({"total_participants": 0}, self._harm(5531))
+        self.assertEqual(result[0].status, "SKIP")
+
+    def test_c1_fail_no_harmonized(self) -> None:
+        result = check_c1_n_preservation(self._src(5531), {"total_participants": 0})
+        self.assertEqual(result[0].status, "FAIL")
+
+    def test_c1_warn_harmonized_exceeds_source(self) -> None:
+        result = check_c1_n_preservation(self._src(5000), self._harm(5100))
+        self.assertEqual(result[0].status, "WARN")
+        self.assertIn("MORE participants", result[0].message)
+
+    # --- With participants_by_pht ---
+
+    def test_c1_keeps_union_denominator_with_pht_breakdown(self) -> None:
+        """participants_by_pht is diagnostic-only; total_participants remains denominator."""
+        by_pht = {"pht001450": 5531, "pht001467": 7200}  # union would be >5531
+        result = check_c1_n_preservation(
+            self._src(total=7380, by_pht=by_pht), self._harm(7200)
+        )
+        self.assertEqual(result[0].status, "FAIL")
+        self.assertEqual(result[0].detail["source_n"], 7380)
+        self.assertEqual(result[0].detail["max_single_pht_n"], 7200)
+        self.assertIn("pht001467=7200", result[0].message)
+
+    def test_c1_reports_pht_diagnostics_without_masking_union_loss(self) -> None:
+        """CHS scenario stays visible as loss but reports max single-PHT context."""
+        by_pht = {"pht001450": 5531, "pht001466": 5000, "pht001467": 5531}
+        result = check_c1_n_preservation(
+            self._src(total=7380, by_pht=by_pht), self._harm(5531)
+        )
+        self.assertEqual(result[0].status, "FAIL")
+        self.assertEqual(result[0].detail["source_n"], 7380)
+        self.assertEqual(result[0].detail["max_single_pht_n"], 5531)
+        self.assertIn("cross-PHT union=7380", result[0].message)
+
+    def test_c1_fail_real_loss_with_pht(self) -> None:
+        """Even with pht breakdown, genuine loss is still FAIL."""
+        by_pht = {"pht001450": 5531, "pht001467": 5531}
+        result = check_c1_n_preservation(
+            self._src(total=6000, by_pht=by_pht), self._harm(4000)
+        )
+        self.assertEqual(result[0].status, "FAIL")
+        loss = result[0].detail["loss_pct"]
+        self.assertGreater(loss, 1.0)
+
+    def test_c1_detail_carries_pht_diagnostics(self) -> None:
+        """detail dict must include max single-PHT diagnostics when present."""
+        by_pht = {"pht001450": 5531, "pht001467": 5800}
+        result = check_c1_n_preservation(
+            self._src(total=7380, by_pht=by_pht), self._harm(4000)
+        )
+        self.assertEqual(result[0].detail["source_n"], 7380)
+        self.assertEqual(result[0].detail["max_single_pht"], "pht001467")
+        self.assertEqual(result[0].detail["max_single_pht_n"], 5800)
 
 
 if __name__ == "__main__":

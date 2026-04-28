@@ -273,6 +273,32 @@ def load_phv_to_pht_map(cache_dir: Path) -> dict[str, str]:
 # YAML crosswalk construction
 # ---------------------------------------------------------------------------
 
+# Mapping from crosswalk entity prefix (e.g. "condition_") to the
+# "discovered:" namespace used by newer BDC extractor builds
+# (e.g. "discovered:condition:").  Older extractor builds used the bare
+# "condition_X" format; newer ones prefix with "discovered:".  The compare
+# tool tries both forms when resolving a harmonized key.
+_CROSSWALK_TO_DISCOVERED: dict[str, str] = {
+    "condition_": "discovered:condition:",
+    "measurement_": "discovered:measurement:",
+    "observation_": "discovered:observation:",
+    "drug_": "discovered:drug:",
+    "procedure_": "discovered:procedure:",
+}
+
+
+def _to_discovered_key(harmonized_key: str) -> str | None:
+    """Convert a bare crosswalk key to its discovered: equivalent, or None.
+
+    ``condition_MONDO:0004981`` -> ``discovered:condition:MONDO:0004981``
+    ``demog_annotated_sex``     -> None (demography uses different naming)
+    """
+    for old_prefix, new_prefix in _CROSSWALK_TO_DISCOVERED.items():
+        if harmonized_key.startswith(old_prefix):
+            return new_prefix + harmonized_key[len(old_prefix):]
+    return None
+
+
 def _extract_value_mappings(slot_body: dict) -> dict | None:
     """Extract value_mappings dict from a slot body, or None."""
     vm = slot_body.get("value_mappings")
@@ -856,6 +882,38 @@ def build_variable_crosswalk(
                         resolved_harmonized_key = ok
                         break
 
+            # Fallback 1: newer BDC extractors prefix YAML-mapped concept keys
+            # with "discovered:" (e.g. "discovered:condition:MONDO:0004981")
+            # while the crosswalk generates bare keys ("condition_MONDO:...").
+            # Try the discovered: form when the bare form wasn't found.
+            if resolved_harmonized_key is None:
+                disc_key = _to_discovered_key(harmonized_key)
+                if disc_key is not None:
+                    if disc_key in harmonized_vars:
+                        resolved_harmonized_key = disc_key
+                    else:
+                        for ok in harmonized_vars:
+                            if ok.upper() == disc_key.upper():
+                                resolved_harmonized_key = ok
+                                break
+
+            # Fallback 2: Demography slots are emitted by the BDC extractor as
+            # "<slot_name>_<visit_N>" (e.g. "annotated_sex_1").  Try stripping
+            # the "demog_" prefix and matching against "<slot>_1" then bare
+            # "<slot>".
+            if resolved_harmonized_key is None and harmonized_key.startswith("demog_"):
+                slot_bare = harmonized_key[len("demog_"):]
+                for candidate in (f"{slot_bare}_1", slot_bare):
+                    if candidate in harmonized_vars:
+                        resolved_harmonized_key = candidate
+                        break
+                    for ok in harmonized_vars:
+                        if ok.upper() == candidate.upper():
+                            resolved_harmonized_key = ok
+                            break
+                    if resolved_harmonized_key is not None:
+                        break
+
             if resolved_harmonized_key is None or resolved_src_key is None:
                 # Stash diagnostic — at minimum we still know the YAML claims
                 # there is a harmonized key here, even if resolution failed.
@@ -1027,7 +1085,13 @@ def build_variable_crosswalk(
 def check_c1_n_preservation(
     source: dict, harmonized: dict, fail_pct: float = 1.0
 ) -> list[CheckResult]:
-    """C1: Total participant count comparison."""
+    """C1: Total participant count comparison.
+
+    If the source summary includes ``participants_by_pht``, include the largest
+    single-PHT participant count in the result details for diagnostics.  The
+    pass/fail denominator remains ``total_participants``; the per-PHT breakdown
+    is not enough by itself to infer the correct YAML-scoped source universe.
+    """
     src_n = source.get("total_participants", 0)
     harmonized_n = harmonized.get("total_participants", 0)
 
@@ -1035,19 +1099,40 @@ def check_c1_n_preservation(
         return [CheckResult("C1", "_total", "SKIP", "No source participant count")]
     if harmonized_n == 0:
         return [CheckResult("C1", "_total", "FAIL", "No harmonized participants found")]
+
+    detail_base: dict = {"source_n": src_n, "harmonized_n": harmonized_n}
+    pht_note = ""
+    participants_by_pht: dict[str, int] = source.get("participants_by_pht", {})
+    if participants_by_pht:
+        max_pht_n = max(participants_by_pht.values())
+        max_pht_key = max(participants_by_pht, key=participants_by_pht.get)
+        pht_note = (
+            f" [max single-PHT: {max_pht_key}={max_pht_n};"
+            f" cross-PHT union={src_n}]"
+        )
+        detail_base.update({
+            "max_single_pht": max_pht_key,
+            "max_single_pht_n": max_pht_n,
+        })
+
     if harmonized_n == src_n:
-        return [CheckResult("C1", "_total", "PASS", f"Participant count matches: {src_n}")]
+        return [CheckResult("C1", "_total", "PASS",
+                             f"Participant count matches: {src_n}{pht_note}",
+                             detail_base)]
 
     if harmonized_n < src_n:
         loss_pct = round((src_n - harmonized_n) / src_n * 100, 1)
         status = "FAIL" if loss_pct > fail_pct else "WARN"
+        detail = {**detail_base, "loss_pct": loss_pct}
         return [CheckResult("C1", "_total", status,
-                             f"Participant loss: {src_n} -> {harmonized_n} ({loss_pct}%)",
-                             {"source_n": src_n, "harmonized_n": harmonized_n, "loss_pct": loss_pct})]
+                             f"Participant loss: {src_n} -> {harmonized_n}"
+                             f" ({loss_pct}%){pht_note}",
+                             detail)]
 
     return [CheckResult("C1", "_total", "WARN",
-                         f"Harmonized has MORE participants than source: {src_n} -> {harmonized_n}",
-                         {"source_n": src_n, "harmonized_n": harmonized_n})]
+                         f"Harmonized has MORE participants than source:"
+                         f" {src_n} -> {harmonized_n}{pht_note}",
+                         detail_base)]
 
 
 def check_c2_n_loss(
