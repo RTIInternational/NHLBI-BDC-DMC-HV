@@ -460,24 +460,56 @@ def process_observations(df: pd.DataFrame) -> dict[str, dict]:
     """Extract per-observation_type summaries from Observation entity.
 
     Checks multiple candidate value column names — different YAML slot names
-    produce different column names in the output TSV.
+    produce different column names in the output TSV. Includes nested
+    Quantity columns (value_quantity__*) emitted by dm-bip when the YAML
+    uses an object_derivation for value_quantity (e.g., fam_income.yaml).
     """
     variables: dict[str, dict] = {}
 
     if "observation_type" not in df.columns:
         return variables
 
+    # Nested Quantity columns produced by dm-bip when value_quantity is an
+    # object derivation. Mirror the MeasurementObservation handler so that
+    # Observation rows whose value lives inside Quantity are not misreported
+    # as n_valid=0.
+    DECIMAL_COL       = "value_quantity__value_decimal"
+    INTEGER_COL       = "value_quantity__value_integer"
+    CODED_COL         = "value_quantity__value_coded"
+    Q_VALUE_CONCEPT   = "value_quantity__value_concept"
+
+    # Flat (non-nested) candidate columns, in priority order.
+    FLAT_CATEGORICAL_CANDIDATES = [
+        "value_enum",
+        "value_coded",
+        "value_concept",
+        "value_as_string",
+        "value_as_concept_name",
+    ]
+
     for obs_type, group in df.groupby("observation_type", dropna=False):
         key = str(obs_type) if pd.notna(obs_type) else "MISSING_OBS_TYPE"
 
-        value_col: str | None = None
-        for candidate in ["value_enum", "value_coded", "value_as_string", "value_as_concept_name"]:
+        has_decimal       = DECIMAL_COL     in group.columns and group[DECIMAL_COL].notna().any()
+        has_integer       = INTEGER_COL     in group.columns and group[INTEGER_COL].notna().any()
+        has_q_coded       = CODED_COL       in group.columns and group[CODED_COL].notna().any()
+        has_q_concept     = Q_VALUE_CONCEPT in group.columns and group[Q_VALUE_CONCEPT].notna().any()
+
+        flat_col: str | None = None
+        for candidate in FLAT_CATEGORICAL_CANDIDATES:
             if candidate in group.columns and group[candidate].notna().any():
-                value_col = candidate
+                flat_col = candidate
                 break
 
-        if value_col:
-            summary = categorical_stats(group[value_col])
+        if has_decimal or has_integer:
+            value_col = DECIMAL_COL if has_decimal else INTEGER_COL
+            summary = continuous_stats(group[value_col])
+        elif has_q_coded:
+            summary = categorical_stats(group[CODED_COL])
+        elif has_q_concept:
+            summary = categorical_stats(group[Q_VALUE_CONCEPT])
+        elif flat_col:
+            summary = categorical_stats(group[flat_col])
         else:
             summary = {"type": "categorical", "n_total": int(len(group)), "n_valid": 0}
 
