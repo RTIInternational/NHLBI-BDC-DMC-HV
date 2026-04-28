@@ -2,7 +2,7 @@
 compare_source_harmonized.py — HV-DataQC Component 3
 
 Compare aggregate summaries from extract_source_summaries.py (raw dbGaP source)
-and extract_harmonized_summaries.py (dm-bip harmonized output). Runs checks C1–C10
+and extract_harmonized_summaries.py (dm-bip harmonized output). Runs checks C1–C11
 and produces a Markdown + JSON report.
 
 No hardcoded paths. All paths are explicit CLI arguments.
@@ -2138,7 +2138,7 @@ def generate_markdown_report(
 
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(
-        description="Compare source vs. harmonized summaries (C1-C10 checks).",
+        description="Compare source vs. harmonized summaries (C1-C11 checks).",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     p.add_argument("--source", required=True, metavar="JSON",

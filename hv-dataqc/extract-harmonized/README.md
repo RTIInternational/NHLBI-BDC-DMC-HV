@@ -11,6 +11,13 @@ Run this **inside the data enclave** after each pipeline execution.
 - Reads entity TSVs from dm-bip mapped-data directories:
   `Demography.tsv`, `MeasurementObservation.tsv`, `MeasurementObservationSet.tsv`,
   `Condition.tsv`, `Observation.tsv`, `Visit.tsv`, and others
+- For `Observation.tsv`, detects value columns in this priority order: nested
+  `value_quantity__value_decimal` / `__value_integer` (continuous), then
+  `value_quantity__value_coded` / `__value_concept` (categorical Quantity — e.g.
+  income bracket mappings via `fam_income.yaml`), then flat columns (`value_enum`,
+  `value_coded`, `value_concept`, `value_as_string`, `value_as_concept_name`).
+  This mirrors the MeasurementObservation handler to avoid false `n_valid=0` when
+  the YAML uses an `object_derivation` for `value_quantity`.
 - **Loads Visit.tsv first** and builds a UUID → visit_label map. This resolves
   UUID values in `associated_visit` columns (produced when `visit.yaml` uses
   `id: expr: uuid5(...)`) to human-readable labels before building per-visit stats.
