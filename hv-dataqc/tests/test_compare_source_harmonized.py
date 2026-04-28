@@ -8,6 +8,7 @@ from __future__ import annotations
 import sys
 import unittest
 import math
+import tempfile
 from pathlib import Path
 
 
@@ -15,10 +16,15 @@ COMPARE_DIR = Path(__file__).resolve().parents[1] / "compare"
 sys.path.insert(0, str(COMPARE_DIR))
 
 from compare_source_harmonized import (  # noqa: E402
+    CrosswalkBuildError,
     _aggregate_source_summaries,
+    _expected_harmonized_n,
     _json_safe,
+    _normalize_code,
     _to_discovered_key,
+    build_variable_crosswalk,
     check_c1_n_preservation,
+    check_c2_n_loss,
     check_c4_mean_preservation,
     check_c10_cross_variable,
     check_c7_categorical_distribution,
@@ -229,6 +235,72 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         result = load_thresholds(Path("/nonexistent/thresholds.yaml"))
         self.assertIsInstance(result, dict)
         self.assertEqual(len(result), 0)
+
+    def test_normalize_code_strips_integer_float_suffix(self) -> None:
+        self.assertEqual(_normalize_code("1.0"), "1")
+        self.assertEqual(_normalize_code(" 12.0 "), "12")
+        self.assertEqual(_normalize_code("1.5"), "1.5")
+
+    def test_expected_harmonized_n_sums_codes_for_target_concept(self) -> None:
+        match = {
+            "concept_code": "MONDO:0005015",
+            "concept_value_map": {
+                "1": "MONDO:0005015",
+                "2": "MONDO:0006920",
+                "3": "MONDO:0005015",
+            },
+        }
+        src_var = {
+            "type": "categorical",
+            "n_valid": 10,
+            "distribution": {
+                "1.0": {"n": 4, "pct": 40.0},
+                "2.0": {"n": 3, "pct": 30.0},
+                "3.0": {"n": 3, "pct": 30.0},
+            },
+        }
+
+        self.assertEqual(_expected_harmonized_n(match, src_var), 7)
+
+    def test_c2_uses_expected_n_for_concept_allocated_source(self) -> None:
+        src = {"n_valid": 10}
+        out = {"n_valid": 7}
+
+        result = check_c2_n_loss(src, out, "diabetes", expected_n=7)
+
+        self.assertEqual(result.status, "PASS")
+        self.assertEqual(result.detail["source_n_raw"], 10)
+        self.assertEqual(result.detail["expected_n_for_concept"], 7)
+
+    def test_c2_large_n_gain_escalates_to_fail(self) -> None:
+        src = {"n_valid": 100}
+        out = {"n_valid": 125}
+
+        result = check_c2_n_loss(
+            src,
+            out,
+            "fanout",
+            gain_warn_pct=2.0,
+            gain_fail_pct=10.0,
+        )
+
+        self.assertEqual(result.status, "FAIL")
+        self.assertEqual(result.detail["gain_pct"], 25.0)
+
+    def test_build_variable_crosswalk_raises_on_empty_cache_mapping(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            cache_dir = Path(tmp)
+            (cache_dir / "pheno_variable_summaries").mkdir()
+            yaml_dir = cache_dir / "yaml"
+            yaml_dir.mkdir()
+
+            with self.assertRaises(CrosswalkBuildError):
+                build_variable_crosswalk(
+                    source_vars={},
+                    harmonized_vars={},
+                    yaml_dir=yaml_dir,
+                    cache_dir=cache_dir,
+                )
 
 
 class C1NPreservationTests(unittest.TestCase):

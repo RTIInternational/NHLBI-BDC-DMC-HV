@@ -502,6 +502,7 @@ def process_measurement_observation_sets(
     df: pd.DataFrame,
     visit_id_to_label: dict[str, str],
     by_visit: bool = False,
+    diagnostics_out: dict | None = None,
 ) -> dict[str, dict]:
     """Extract per-observation_type summaries from MeasurementObservationSet entity.
 
@@ -599,6 +600,9 @@ def process_measurement_observation_sets(
 
     if parse_errors:
         print(f"    WARNING: MeasurementObservationSet — {parse_errors} rows could not be parsed")
+    if diagnostics_out is not None:
+        diagnostics_out["measurement_observation_set_parse_errors"] = parse_errors
+        diagnostics_out["measurement_observation_set_rows_examined"] = int(len(df))
 
     if not rows:
         return variables
@@ -728,6 +732,7 @@ def main(argv: list[str] | None = None) -> None:
     entity_counts: dict[str, int] = {}
     rows_per_visit: dict[str, int] = {}
     participant_count_candidates: dict[str, int] = {}
+    extraction_warnings: dict[str, Any] = {}
 
     # ------------------------------------------------------------------
     # 1. Visit — MUST be loaded first to build UUID→label map
@@ -813,7 +818,9 @@ def main(argv: list[str] | None = None) -> None:
         participant_count_candidates["MeasurementObservationSet"] = participant_count_from_entity(
             meas_set_df, ("associated_participant", "participant", "participant_id")
         )
-        mos_vars = process_measurement_observation_sets(meas_set_df, visit_id_to_label, args.by_visit)
+        mos_vars = process_measurement_observation_sets(
+            meas_set_df, visit_id_to_label, args.by_visit, diagnostics_out=extraction_warnings
+        )
         variables.update(mos_vars)
         print(f"    Total: {len(meas_set_df):,} rows | {len(mos_vars)} observation types extracted")
         for key in sorted(mos_vars):
@@ -892,6 +899,7 @@ def main(argv: list[str] | None = None) -> None:
             "by_visit": args.by_visit,
             "uuid_map_size": len(visit_id_to_label),
             "participant_count_candidates": participant_count_candidates,
+            "extraction_warnings": extraction_warnings,
         },
         "total_participants": n_participants,
         "total_rows": sum(entity_counts.values()),

@@ -205,6 +205,10 @@ class CheckResult:
         }
 
 
+class CrosswalkBuildError(RuntimeError):
+    """Raised when a YAML-driven variable crosswalk cannot be built safely."""
+
+
 # ---------------------------------------------------------------------------
 # PHV name map (from dbGaP data dict XML)
 # ---------------------------------------------------------------------------
@@ -412,6 +416,13 @@ def _extract_crosswalk_from_class_derivations(
             continue
 
         entity_class = class_name
+        if entity_class not in ENTITY_PREFIX:
+            print(
+                f"  WARNING: Unknown entity class {entity_class!r} in {yaml_filename}; "
+                f"using fallback prefix {entity_class.lower()}_. Add this class to "
+                "ENTITY_PREFIX/CONCEPT_SLOTS/VALUE_SLOTS if it should be crosswalked.",
+                file=sys.stderr,
+            )
         slots = class_body.get("slot_derivations", {})
         if not isinstance(slots, dict):
             continue
@@ -995,13 +1006,11 @@ def build_variable_crosswalk(
         # PHV->name mappings.  This catches typo'd paths, wrong-cohort caches,
         # and caches that exist but lack pheno_variable_summaries/*.data_dict.xml.
         if cache_dir and cache_dir.exists() and not phv_names:
-            print(
+            raise CrosswalkBuildError(
                 f"ERROR: --cache-dir produced 0 PHV-to-name mappings: {cache_dir}. "
                 f"Expected layout: {cache_dir}/pheno_variable_summaries/*.data_dict.xml. "
-                "Aborting because the YAML crosswalk would be empty.",
-                file=sys.stderr,
+                "Aborting because the YAML crosswalk would be empty."
             )
-            sys.exit(2)
 
         variables_by_pht: dict[str, dict] = (
             source_doc.get("variables_by_pht", {}) if source_doc else {}
@@ -1009,14 +1018,12 @@ def build_variable_crosswalk(
 
         yaml_cw = build_yaml_crosswalk(yaml_dir, phv_names)
         if not yaml_cw:
-            print(
+            raise CrosswalkBuildError(
                 f"ERROR: YAML crosswalk produced 0 entries from {yaml_dir.name}. "
                 "This usually means the PHV->name map is empty or every YAML "
                 "block references PHVs absent from the cache. Check --cache-dir "
-                "matches the cohort and contains pheno_variable_summaries/*.data_dict.xml.",
-                file=sys.stderr,
+                "matches the cohort and contains pheno_variable_summaries/*.data_dict.xml."
             )
-            sys.exit(2)
         print(f"  YAML crosswalk: {len(yaml_cw)} entries from {yaml_dir.name}")
 
         # Group YAML entries by harmonized_key, normalising source/harmonized
@@ -1342,6 +1349,7 @@ def check_c1_n_preservation(
 def check_c2_n_loss(
     src_var: dict, harmonized_var: dict, var_name: str,
     pass_pct: float = 0.5, warn_pct: float = 2.0,
+    gain_warn_pct: float | None = None, gain_fail_pct: float | None = None,
     expected_n: int | None = None,
 ) -> CheckResult:
     """C2: Per-variable valid-N comparison.
@@ -1383,8 +1391,14 @@ def check_c2_n_loss(
         return CheckResult("C2", var_name, "FAIL",
                            f"Significant N loss: {src_n} -> {harmonized_n} ({loss_pct}%)",
                            detail_base)
-    return CheckResult("C2", var_name, "WARN",
-                       f"N gain: {src_n} -> {harmonized_n}",
+    gain_pct = round(-loss_pct, 1)
+    gain_warn = warn_pct if gain_warn_pct is None else gain_warn_pct
+    gain_fail = gain_warn if gain_fail_pct is None else gain_fail_pct
+    detail_base["gain_pct"] = gain_pct
+    status = "FAIL" if gain_pct > gain_fail else "WARN"
+    severity = "Large" if status == "FAIL" else "Moderate"
+    return CheckResult("C2", var_name, status,
+                       f"{severity} N gain: {src_n} -> {harmonized_n} ({gain_pct}%)",
                        detail_base)
 
 
@@ -1831,7 +1845,9 @@ def check_c9_clinical_range(
 
 
 # Detects simple 2-variable directional checks: "mean(X) > mean(Y)" or "mean(X) < mean(Y)".
-# Rules using >=, <=, approximate equality, or multi-variable formulas do not match and are emitted as SKIP.
+# These directional rules are interpreted as non-strict clinical expectations
+# (>= / <=) because equal means at aggregate precision should not fail a
+# population-level plausibility check.
 _C10_SIMPLE_RE = re.compile(r"mean\([^)]+\)\s*([<>])\s*mean\([^)]+\)")
 
 
@@ -1916,11 +1932,11 @@ def check_c10_cross_variable(
         label_b = variables[1].replace("_", " ")
 
         if operator == ">":
-            passed = mean_a > mean_b
-            display_operator = ">"
+            passed = mean_a >= mean_b
+            display_operator = ">="
         else:  # "<"
-            passed = mean_a < mean_b
-            display_operator = "<"
+            passed = mean_a <= mean_b
+            display_operator = "<="
 
         if passed:
             results.append(CheckResult(
@@ -2220,13 +2236,17 @@ def main(argv: list[str] | None = None) -> None:
     # Build crosswalk
     print("\nBuilding variable crosswalk...")
     yaml_diagnostics: dict = {}
-    crosswalk = build_variable_crosswalk(
-        source_vars, harmonized_vars,
-        yaml_dir=yaml_dir,
-        cache_dir=cache_dir,
-        source_doc=source,
-        diagnostics_out=yaml_diagnostics,
-    )
+    try:
+        crosswalk = build_variable_crosswalk(
+            source_vars, harmonized_vars,
+            yaml_dir=yaml_dir,
+            cache_dir=cache_dir,
+            source_doc=source,
+            diagnostics_out=yaml_diagnostics,
+        )
+    except CrosswalkBuildError as exc:
+        print(str(exc), file=sys.stderr)
+        sys.exit(2)
     print(f"Matched {len(crosswalk)} variable pairs")
     for m in crosswalk:
         method = m.get("match_method", "?")
@@ -2277,6 +2297,8 @@ def main(argv: list[str] | None = None) -> None:
         all_results.append(check_c2_n_loss(
             src_var, harmonized_var, display_name,
             pass_pct=c2_t.get("pass_pct", 0.5), warn_pct=c2_t.get("warn_pct", 2.0),
+            gain_warn_pct=c2_t.get("gain_warn_pct"),
+            gain_fail_pct=c2_t.get("gain_fail_pct"),
             expected_n=_expected_harmonized_n(match, src_var),
         ))
         all_results.append(check_c3_missing_accounting(
