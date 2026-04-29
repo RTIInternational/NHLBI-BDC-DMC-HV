@@ -191,6 +191,8 @@ def extract_eav_from_tgz(tgz_path: Path, extract_root: Path) -> Path | None:
     with tarfile.open(tgz_path, "r:gz") as tf:
         dest_resolved = dest.resolve()
         for member in tf.getmembers():
+            if member.issym() or member.islnk():
+                raise ValueError(f"Unsafe tar link member rejected: {member.name!r}")
             member_path = (dest / member.name).resolve()
             if not str(member_path).startswith(str(dest_resolved)):
                 raise ValueError(f"Unsafe tar member path rejected: {member.name!r}")
@@ -434,7 +436,7 @@ def run_dq_checks(
     for var_name, stats in variable_stats.items():
         if stats.get("type") == "categorical":
             dist = stats.get("distribution", {})
-            unmapped = [k for k in dist if k.startswith("UNMAPPED:")]
+            unmapped = [k for k in dist if k == "UNMAPPED" or k.startswith("UNMAPPED:")]
             if unmapped:
                 flags.append(
                     f"WARNING: {var_name} has unmapped values: {unmapped}"
@@ -666,12 +668,13 @@ def main() -> None:
 
     # Determine which cohorts to process
     if args.cohorts:
-        cohort_list = [c.upper() for c in args.cohorts]
-        invalid = [c for c in cohort_list if c not in COHORTS]
+        cohort_key_map = {key.casefold(): key for key in COHORTS}
+        invalid = [c for c in args.cohorts if c.casefold() not in cohort_key_map]
         if invalid:
             print(f"ERROR: Unknown cohort(s): {invalid}", file=sys.stderr)
             print(f"Valid cohorts: {list(COHORTS.keys())}", file=sys.stderr)
             sys.exit(1)
+        cohort_list = [cohort_key_map[c.casefold()] for c in args.cohorts]
     else:
         cohort_list = list(COHORTS.keys())
 

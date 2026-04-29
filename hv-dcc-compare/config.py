@@ -1482,10 +1482,15 @@ for _alias, _canon in COHORT_FOLDER_TO_CANONICAL.items():
 def normalize_cohort_name(name: str) -> str:
     """Normalize a cohort name to its canonical config key.
 
-    E.g., 'HCHS' -> 'HCHS_SOL', 'aric' -> 'ARIC'.
+    E.g., 'HCHS' -> 'HCHS_SOL', 'aric' -> 'ARIC', 'copdgene' -> 'COPDGene'.
     """
     upper = name.upper()
-    return COHORT_FOLDER_TO_CANONICAL.get(upper, upper)
+    # Check alias map first (e.g., HCHS -> HCHS_SOL)
+    if upper in COHORT_FOLDER_TO_CANONICAL:
+        return COHORT_FOLDER_TO_CANONICAL[upper]
+    # Case-insensitive lookup against canonical COHORTS keys to preserve casing
+    cohort_key_map = {k.upper(): k for k in COHORTS}
+    return cohort_key_map.get(upper, upper)
 
 
 def resolve_baseline_visits(cohort: str, available_visits: set[str]) -> list[str]:

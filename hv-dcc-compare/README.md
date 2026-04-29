@@ -40,7 +40,7 @@ ARIC · CARDIA · CHS · COPDGene · FHS · HCHS-SOL · JHS · MESA · WHI
 
 ## Setup
 
-Requires Python 3.9+.
+Requires Python 3.10+.
 
 ```bash
 pip install -r requirements.txt

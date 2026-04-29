@@ -18,6 +18,44 @@ the full rule and example format.
 
 ---
 
+## 2026-04-29
+
+### Multiple files -- Address Copilot PR #572 review comments from 2026-04-28 (7 issues)
+
+- **`README.md`** -- Fixed stated Python minimum version from 3.9 to 3.10; the
+  codebase uses `str | None` union types and `list[str]` generics which require
+  Python 3.10+.
+- **`compare/batch_scorecard.py`** -- Fixed per-cohort progress status line:
+  replaced `M={g.get('M',0)}` (always 0, not a real grade) with
+  `A+={g['A+']} ... *={result.get('n_noted',0)}`, correctly reflecting the
+  A+/A/B/C/D grade model with `*` for methodologically noted variables.
+  Note: `batch_scorecard.py` uses its own internal A+/A/B/C/D grade model
+  separate from `match_quality_table.py`'s T1-T5/M1-M5 tier model.
+- **`extract-topmed/extract_topmed_summaries.py`** -- Fixed `--cohorts` CLI
+  handler: replaced `.upper()` + exact match with case-insensitive lookup
+  (`c.casefold()` against `COHORTS` keys) that preserves canonical casing.
+  `COPDGene` was being rejected because `.upper()` produced `COPDGENE`.
+- **`extract-topmed/extract_topmed_summaries.py`** -- Hardened tarfile path
+  traversal guard: now also rejects members where `member.issym()` or
+  `member.islnk()` is true, closing the symlink/hardlink escape vector
+  that was not covered by the previous `../` path check.
+- **`extract-topmed/extract_topmed_summaries.py`** -- Fixed DQ check regression:
+  `run_dq_checks()` was looking for distribution keys starting with `"UNMAPPED:"`
+  but a prior fix changed the sentinel in `categorical_stats()` to the flat string
+  `"UNMAPPED"`. DQ check now matches both `k == "UNMAPPED"` and
+  `k.startswith("UNMAPPED:")` to handle both old and new output files.
+- **`config.py`** -- Fixed `normalize_cohort_name()`: replaced `.upper()` fallback
+  with a case-insensitive lookup against `COHORTS` keys, so the function returns
+  the canonical stored casing (e.g., `"COPDGene"` not `"COPDGENE"`). Alias map
+  (`COHORT_FOLDER_TO_CANONICAL`) is still checked first for HCHS -> HCHS_SOL.
+- **`compare/validate_completeness.py`** -- Fixed remaining stale filename
+  references: three usage examples in the module docstring still referenced
+  `validate_participant_completeness.py`; all updated to `validate_completeness.py`.
+- **Cohorts affected**: All 9 cohorts (shared comparison/extraction scripts).
+  COPDGene specifically was broken for `--cohorts` and `normalize_cohort_name`.
+
+---
+
 ## 2026-04-28
 
 ### Multiple files — Address Copilot PR #572 review comments (7 issues)

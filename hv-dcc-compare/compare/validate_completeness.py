@@ -17,7 +17,7 @@ participant-level values written).
 
 USAGE:
     # TOPMed side (from enclave with EAV files):
-    python validate_participant_completeness.py topmed \\
+    python validate_completeness.py topmed \\
         --demographics-file /path/to/demographic_eav.txt \\
         --baseline-covariates-file /path/to/baseline_covariates_eav.txt \\
         --inflammation-file /path/to/inflammation_eav.txt \\
@@ -26,13 +26,13 @@ USAGE:
         --output-dir ./validation_output/
 
     # BDC side (from enclave with dm-bip output):
-    python validate_participant_completeness.py bdc \\
+    python validate_completeness.py bdc \\
         --cohort HCHS \\
         --base-dir /path/to/bdc/output/ \\
         --output-dir ./validation_output/
 
     # Compare two previously-generated validation JSONs:
-    python validate_participant_completeness.py compare \\
+    python validate_completeness.py compare \\
         --topmed-json ./validation_output/topmed_HCHS_SOL_completeness.json \\
         --bdc-json ./validation_output/bdc_HCHS_completeness.json
 

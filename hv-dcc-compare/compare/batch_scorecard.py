@@ -439,7 +439,7 @@ def main():
         result = run_cohort_scorecard(topmed_path, bdc_path, all_vars=args.all_vars)
         results.append(result)
         g = result["grades"]
-        print(f"A={g['A']} B={g['B']} C={g['C']} D={g['D']} M={g.get('M',0)}  ({result['pct_ab']:.0f}% A+B)")
+        print(f"A+={g['A+']} A={g['A']} B={g['B']} C={g['C']} D={g['D']} *={result.get('n_noted', 0)}  ({result['pct_ab']:.0f}% A+B)")
 
     if not results:
         print("\nERROR: No cohorts could be scored.", file=sys.stderr)
