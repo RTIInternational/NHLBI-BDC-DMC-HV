@@ -2368,39 +2368,60 @@ def main(argv: list[str] | None = None) -> None:
         display_name = src_var.get("name", src_key)
         value_map = match.get("value_map")
 
+        # Build an enriched label for C2-C9 that includes PHV + PHT refs so
+        # reviewers can trace each finding back to the source data dictionary.
+        # Format (single PHT):  ath07 [phv00099087 / pht001450]
+        # Format (pooled):      alcoh [phv00100084 / pht001451+pht001452+…]
+        _phv = match.get("phv_id", "")
+        _phts: list[str] = match.get("_source_phts") or (
+            [match["_resolved_pht"]] if match.get("_resolved_pht") else []
+        )
+        if _phts:
+            _pht_str = "+".join(_phts[:3]) + ("…" if len(_phts) > 3 else "")
+        else:
+            _pht_str = ""
+        if _phv and _pht_str:
+            var_label = f"{display_name} [{_phv} / {_pht_str}]"
+        elif _phv:
+            var_label = f"{display_name} [{_phv}]"
+        elif _pht_str:
+            var_label = f"{display_name} [{_pht_str}]"
+        else:
+            var_label = display_name
+
         all_results.append(check_c2_n_loss(
-            src_var, harmonized_var, display_name,
+            src_var, harmonized_var, var_label,
             pass_pct=c2_t.get("pass_pct", 0.5), warn_pct=c2_t.get("warn_pct", 2.0),
             gain_warn_pct=c2_t.get("gain_warn_pct"),
             gain_fail_pct=c2_t.get("gain_fail_pct"),
             expected_n=_expected_harmonized_n(match, src_var),
         ))
         all_results.append(check_c3_missing_accounting(
-            src_var, harmonized_var, display_name,
+            src_var, harmonized_var, var_label,
             pass_pp=c3_t.get("pass_pp", 0.5), warn_pp=c3_t.get("warn_pp", 3.0),
             n_valid_pass_pct=c3_t.get("n_valid_pass_pct", 0.5),
             n_valid_warn_pct=c3_t.get("n_valid_warn_pct", 3.0),
         ))
         all_results.append(check_c4_mean_preservation(
-            src_var, harmonized_var, display_name,
+            src_var, harmonized_var, var_label,
             pass_rel=c4_t.get("pass_rel", 0.001), warn_rel=c4_t.get("warn_rel", 0.01),
         ))
         if should_run_c5_conversion_check(match, c5_t):
             all_results.append(check_c5_mean_after_conversion(
-                src_var, harmonized_var, display_name,
+                src_var, harmonized_var, var_label,
                 conversion_factor=match.get("conversion_factor") or c5_t.get("conversion_factor"),
                 pass_rel=c5_t.get("pass_rel", 0.001),
             ))
         all_results.append(check_c6_sd_preservation(
-            src_var, harmonized_var, display_name,
+            src_var, harmonized_var, var_label,
             pass_rel=c6_t.get("pass_rel", 0.002), warn_rel=c6_t.get("warn_rel", 0.01),
         ))
         all_results.append(check_c7_categorical_distribution(
-            src_var, harmonized_var, display_name,
+            src_var, harmonized_var, var_label,
             pass_pct=c7_t.get("pass_pct", 0.5), value_map=value_map,
         ))
-        all_results.append(check_c9_clinical_range(harmonized_var, display_name, clinical_ranges, src_var=src_var))
-        all_results.append(check_c11_type_consistency(src_var, harmonized_var, display_name))
+        all_results.append(check_c9_clinical_range(harmonized_var, var_label, clinical_ranges, src_var=src_var))
+        all_results.append(check_c11_type_consistency(src_var, harmonized_var, var_label))
 
     all_results.extend(check_c8_visit_distribution(
         source, harmonized,
