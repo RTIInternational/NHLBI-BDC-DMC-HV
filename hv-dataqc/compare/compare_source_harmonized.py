@@ -259,6 +259,57 @@ def load_phv_to_pht_map(cache_dir: Path) -> dict[str, str]:
     return phv_to_pht
 
 
+# dbGaP <type> text values that map unambiguously to continuous / categorical.
+# Anything not in these sets is left as None (keep heuristic result).
+_DBGAP_CONTINUOUS_TYPES: frozenset[str] = frozenset({"integer", "decimal", "float", "num"})
+_DBGAP_CATEGORICAL_TYPES: frozenset[str] = frozenset({"encoded", "string", "char", "character"})
+
+
+def load_phv_type_map(cache_dir: Path) -> dict[str, str]:
+    """Build PHV-accession -> inferred-type map from dbGaP data-dict XML files.
+
+    For each ``<variable>`` element the ``<type>`` child text is mapped to
+    either ``"continuous"`` or ``"categorical"`` using the dbGaP vocabulary:
+
+    * ``integer`` / ``decimal`` / ``float`` / ``num``  → ``"continuous"``
+    * ``encoded`` / ``string`` / ``char``              → ``"categorical"``
+
+    PHVs whose dbGaP ``<type>`` is absent or unrecognized are omitted; the
+    heuristic in the source extractor applies for them.
+
+    Returns ``{phv_id: "continuous" | "categorical"}``.
+    Returns empty dict when cache is unavailable.
+    """
+    phv_type: dict[str, str] = {}
+    pheno_dir = cache_dir / "pheno_variable_summaries"
+    if not pheno_dir.exists():
+        return phv_type
+
+    for dd_file in sorted(pheno_dir.glob("*.data_dict.xml")):
+        try:
+            tree = ET.parse(dd_file)
+            for var in tree.getroot().findall(".//variable"):
+                phv_id = _canonical_phv_id(var.get("id", ""))
+                if not phv_id.startswith("phv"):
+                    continue
+                type_el = var.find("type")
+                if type_el is None or not type_el.text:
+                    continue
+                raw = type_el.text.strip().lower()
+                if raw in _DBGAP_CONTINUOUS_TYPES:
+                    phv_type[phv_id] = "continuous"
+                elif raw in _DBGAP_CATEGORICAL_TYPES:
+                    phv_type[phv_id] = "categorical"
+                # else: unrecognized type — omit, keep source-extractor heuristic
+        except ET.ParseError as exc:
+            print(f"  WARNING: Could not parse PHV-type XML {dd_file.name}: {exc}")
+
+    print(f"  PHV-type map: {len(phv_type)} entries "
+          f"({sum(1 for v in phv_type.values() if v == 'continuous')} continuous, "
+          f"{sum(1 for v in phv_type.values() if v == 'categorical')} categorical)")
+    return phv_type
+
+
 # ---------------------------------------------------------------------------
 # YAML crosswalk construction
 # ---------------------------------------------------------------------------
@@ -347,6 +398,57 @@ def _concept_codes_from_value_mappings(slot_body: dict) -> list[str]:
             seen.add(sv)
             out.append(sv)
     return out
+
+
+# Matches simple scalar arithmetic on a single PHV placeholder:
+#   '{phv00105771} * 7'   -> factor 7.0
+#   '{phv00098799} * 365' -> factor 365.0
+#   '{phv00012345} / 1000'-> factor 0.001  (stored as reciprocal)
+# Compound exprs (multiple PHVs, additions, etc.) are intentionally NOT matched.
+_SCALAR_MULT_RE = re.compile(
+    r"""
+    (?:                              # PHV * scalar
+        \{phv\d+\}\s*([*/])\s*(\d+(?:\.\d+)?)
+    )
+    |
+    (?:                              # scalar * PHV
+        (\d+(?:\.\d+)?)\s*([*/])\s*\{phv\d+\}
+    )
+    """,
+    re.VERBOSE,
+)
+
+
+def _extract_conversion_factor(expr: str) -> float | None:
+    """Extract a scalar conversion factor from a simple PHV arithmetic expression.
+
+    Detects patterns where a single PHV is multiplied or divided by a literal
+    scalar, e.g.::
+
+        ``{phv00105771} * 7``      → 7.0
+        ``{phv00098799} * 365``    → 365.0
+        ``{phv00012345} / 1000``   → 0.001  (reciprocal stored as factor)
+
+    Returns None for compound expressions involving multiple PHVs, additions,
+    or any pattern that cannot be expressed as a single scalar factor.
+    """
+    # Require exactly one PHV — compound exprs don't produce a single factor
+    if len(re.findall(r"phv\d+", expr)) != 1:
+        return None
+    m = _SCALAR_MULT_RE.search(expr)
+    if not m:
+        return None
+    # Group layout: (op1, scalar1) for PHV*scalar, (scalar2, op2) for scalar*PHV
+    if m.group(1) and m.group(2):          # PHV op scalar
+        op, scalar_str = m.group(1), m.group(2)
+    elif m.group(3) and m.group(4):        # scalar op PHV
+        op, scalar_str = m.group(4), m.group(3)
+    else:
+        return None
+    scalar = float(scalar_str)
+    if scalar == 0:
+        return None
+    return (1.0 / scalar) if op == "/" else scalar
 
 
 def _extract_crosswalk_from_class_derivations(
@@ -518,11 +620,17 @@ def _extract_crosswalk_from_class_derivations(
                             or slot_name.startswith("value")
                         ),
                         "value_map": _extract_value_mappings(slot_body),
+                        "conversion_factor": None,
                     }
                 )
             # PHVs referenced inside case() expressions
             expr = slot_body.get("expr", "")
             if isinstance(expr, str):
+                cf = (
+                    _extract_conversion_factor(expr)
+                    if slot_name in ("value_decimal", "value_integer")
+                    else None
+                )
                 for phv in re.findall(r"(phv\d+)", expr):
                     primary_phvs.append(
                         {
@@ -530,6 +638,7 @@ def _extract_crosswalk_from_class_derivations(
                             "slot": slot_name,
                             "is_value_slot": slot_name == value_slot_name,
                             "value_map": _extract_value_mappings(slot_body),
+                            "conversion_factor": cf,
                         }
                     )
 
@@ -561,10 +670,16 @@ def _extract_crosswalk_from_class_derivations(
                                             "value_coded", "value_concept",
                                         ),
                                         "value_map": _extract_value_mappings(inner_slot_body),
+                                        "conversion_factor": None,
                                     }
                                 )
                             inner_expr = inner_slot_body.get("expr", "")
                             if isinstance(inner_expr, str):
+                                inner_cf = (
+                                    _extract_conversion_factor(inner_expr)
+                                    if inner_slot in ("value_decimal", "value_integer")
+                                    else None
+                                )
                                 for phv in re.findall(r"(phv\d+)", inner_expr):
                                     primary_phvs.append(
                                         {
@@ -575,6 +690,7 @@ def _extract_crosswalk_from_class_derivations(
                                                 "value_coded", "value_concept",
                                             ),
                                             "value_map": None,
+                                            "conversion_factor": inner_cf,
                                         }
                                     )
 
@@ -627,6 +743,7 @@ def _extract_crosswalk_from_class_derivations(
                     "value_map": primary["value_map"],
                     "concept_value_map": concept_value_map,
                     "method_type": method_type_val,
+                    "conversion_factor": primary.get("conversion_factor"),
                 }
             )
 
@@ -2466,6 +2583,13 @@ def main(argv: list[str] | None = None) -> None:
             extra += f" -> {resolved_pht}"
         print(f"  {m['source_key']:<30} -> {m['harmonized_key']:<40} [{method}]{extra}")
 
+    # Load dbGaP authoritative type map for source-type override (fixes heuristic
+    # misclassification of true-integer count variables as categorical when
+    # n_distinct ≤ 20, e.g. fruitf25 "how many fruits per day" range 0-20).
+    phv_type_map: dict[str, str] = (
+        load_phv_type_map(cache_dir) if cache_dir and cache_dir.exists() else {}
+    )
+
     # Run checks
     all_results: list[CheckResult] = []
 
@@ -2488,6 +2612,16 @@ def main(argv: list[str] | None = None) -> None:
         # Use per-PHT stats when available (eliminates multi-table inflation).
         src_var = match.get("_resolved_src") or source_vars.get(src_key, {})
         harmonized_var = harmonized_vars[harmonized_key]
+
+        # Override source type with dbGaP authoritative type when available.
+        # The source extractor's n_distinct ≤ 20 heuristic misclassifies true
+        # integer/count variables (e.g. fruitf25 range 0-20) as categorical.
+        # dbGaP <type>integer</type> with no coded value list is unambiguously
+        # continuous; <type>encoded</type> is unambiguously categorical.
+        _dbgap_type = phv_type_map.get(match.get("phv_id", ""))
+        if _dbgap_type and src_var.get("type") != _dbgap_type:
+            src_var = {**src_var, "type": _dbgap_type}
+
         display_name = src_var.get("name", src_key)
         value_map = match.get("value_map")
 
