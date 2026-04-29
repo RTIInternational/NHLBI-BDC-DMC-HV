@@ -261,18 +261,42 @@ def load_phv_to_pht_map(cache_dir: Path) -> dict[str, str]:
 
 # dbGaP <type> text values that map unambiguously to continuous / categorical.
 # Anything not in these sets is left as None (keep heuristic result).
-_DBGAP_CONTINUOUS_TYPES: frozenset[str] = frozenset({"integer", "decimal", "float", "num"})
-_DBGAP_CATEGORICAL_TYPES: frozenset[str] = frozenset({"encoded", "string", "char", "character"})
+# Covers both simple vocabulary (CHS, MESA, …) and compound vocabulary (ARIC, FHS, …).
+_DBGAP_CONTINUOUS_TYPES: frozenset[str] = frozenset({
+    # simple vocabulary
+    "integer", "decimal", "float", "num",
+    # compound vocabulary (ARIC / FHS style)
+    "continuous integer", "continuous decimal", "continuous",
+    "numeric", "integer decimal",
+})
+_DBGAP_CATEGORICAL_TYPES: frozenset[str] = frozenset({
+    # simple vocabulary
+    "encoded", "string", "char", "character",
+    # compound vocabulary (ARIC / FHS style)
+    "enumerated integer", "encoded value", "text",
+})
+# Keyword fallback: if the raw type string contains any of these words it maps
+# unambiguously to continuous/categorical — covers multi-word variants and
+# compound strings like "string, encoded value" or "encoded values" without
+# requiring exhaustive enumeration.  Typos ("sting", "strin") intentionally
+# left unrecognized so we don't over-infer from garbled data.
+_DBGAP_CONTINUOUS_KEYWORDS: frozenset[str] = frozenset(
+    {"continuous", "numeric", "decimal", "float"}
+)
+_DBGAP_CATEGORICAL_KEYWORDS: frozenset[str] = frozenset(
+    {"encoded", "string", "text", "character", "char"}
+)
 
 
 def load_phv_type_map(cache_dir: Path) -> dict[str, str]:
     """Build PHV-accession -> inferred-type map from dbGaP data-dict XML files.
 
     For each ``<variable>`` element the ``<type>`` child text is mapped to
-    either ``"continuous"`` or ``"categorical"`` using the dbGaP vocabulary:
-
-    * ``integer`` / ``decimal`` / ``float`` / ``num``  → ``"continuous"``
-    * ``encoded`` / ``string`` / ``char``              → ``"categorical"``
+    either ``"continuous"`` or ``"categorical"`` using the dbGaP vocabulary.
+    Covers both the simple vocabulary (CHS/MESA/WHI: ``integer``, ``decimal``,
+    ``encoded``, …) and the compound vocabulary (ARIC/FHS: ``continuous integer``,
+    ``continuous decimal``, ``enumerated integer``, ``encoded value``, ``numeric``,
+    ``text``, …).
 
     PHVs whose dbGaP ``<type>`` is absent or unrecognized are omitted; the
     heuristic in the source extractor applies for them.
@@ -299,6 +323,10 @@ def load_phv_type_map(cache_dir: Path) -> dict[str, str]:
                 if raw in _DBGAP_CONTINUOUS_TYPES:
                     phv_type[phv_id] = "continuous"
                 elif raw in _DBGAP_CATEGORICAL_TYPES:
+                    phv_type[phv_id] = "categorical"
+                elif any(kw in raw for kw in _DBGAP_CONTINUOUS_KEYWORDS):
+                    phv_type[phv_id] = "continuous"
+                elif any(kw in raw for kw in _DBGAP_CATEGORICAL_KEYWORDS):
                     phv_type[phv_id] = "categorical"
                 # else: unrecognized type — omit, keep source-extractor heuristic
         except ET.ParseError as exc:
