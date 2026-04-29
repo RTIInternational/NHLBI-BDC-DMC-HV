@@ -73,7 +73,7 @@ python compare_source_harmonized.py \
 | C5 | Mean After Conversion | Mean correct after known unit conversion factor |
 | C6 | SD Preservation | Standard deviation within tolerance |
 | C7 | Categorical Distribution | Category percentages match (respects value_mappings from YAML) |
-| C8 | Visit N Distribution | Per-visit row counts preserved; UUID namespace fallback to totals |
+| C8 | Visit N Distribution | Per-visit row counts preserved; UUID namespace fallback to totals. For table-based cohorts (CHS, ARIC, etc.) where source TSVs have no visit column, source visit counts are synthesized from `total_rows_by_pht` + `visit.yaml` mappings. PHTs absent from `visit.yaml` (not being harmonized) are reported as a single INFO item. |
 | C9 | Clinical Range | Harmonized min/max within clinically plausible bounds |
 | C10 | Cross-Variable Consistency | SBP > DBP, FEV1 < FVC, etc. |
 | C11 | Variable Type Consistency | Source/harmonized agree on continuous vs categorical |
@@ -84,6 +84,11 @@ Notes:
     categories that map to the same harmonized category.
 - C7 report sections include a full source/harmonized distribution table for every
     compared categorical variable.
+- C8 synthesizes source visit counts for table-based cohorts by combining
+    `total_rows_by_pht` from the source summary with the `populated_from` + `name`
+    slot in `visit.yaml`. PHTs present in the source data but absent from `visit.yaml`
+    (i.e., tables not being harmonized in the current scope) are not FAILed — they
+    appear as a single INFO entry listing the PHT IDs and total row count.
 - C9 annotates violations with `[out+src]`, `[out only]`, or `[src only]` when the
     source summary contains min/max values for the same range.
 - C10 is driven by `_cross_variable_rules` in `clinical_ranges.yaml`. Simple

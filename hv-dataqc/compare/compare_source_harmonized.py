@@ -15,7 +15,8 @@ CHECKS:
   C5  Mean After Conversion  — mean with unit-conversion factor
   C6  SD Preservation        — standard deviation within tolerance
   C7  Categorical Distribution — distribution match (with value_mappings)
-  C8  Visit N Distribution   — per-visit row counts
+  C8  Visit N Distribution   — per-visit row counts; for table-based cohorts synthesizes
+                               source counts from total_rows_by_pht + visit.yaml
   C9  Clinical Range         — harmonized values within clinical_ranges.yaml bounds
   C10 Cross-Variable Consistency — SBP > DBP, FEV1 < FVC, etc.
   C11 Variable Type Consistency  — source/harmonized agree on continuous vs. categorical
@@ -1703,23 +1704,117 @@ def check_c7_categorical_distribution(
                        f"{len(mismatches)} categories with >+/-{pass_pct}% shift", detail)
 
 
+def _synthesize_source_visit_counts(
+    source: dict, yaml_dir: Path,
+) -> tuple[dict[str, int], list[str]]:
+    """Build a {visit_label: participant_count} dict for table-based cohorts.
+
+    Table-based cohorts (CHS, ARIC, CARDIA, FHS, etc.) encode visit structure
+    through PHT identity rather than a dedicated visit column within each TSV.
+    For these cohorts the source extractor cannot auto-detect a visit column, so
+    ``rows_per_visit`` stays empty.
+
+    This function derives visit counts from two pieces that are always present:
+      - ``total_rows_by_pht`` in the source summary (one row per participant)
+      - ``visit.yaml`` in the YAML directory (maps each populated_from PHT to a
+        canonical visit ``name`` label)
+
+    If multiple YAML blocks share the same PHT (e.g. pht001451 appears for both
+    "CHS BASELINE 2" self-report and ECG blocks), only the *Visit* class
+    derivation is used to avoid double-counting.  If the same PHT maps to
+    multiple distinct visit labels (pooled tables are rare) the rows are split
+    evenly with a note in the label.
+
+    Returns a tuple of:
+      - synthesized {visit_label: count} (PHTs mapped in visit.yaml only)
+      - uncovered_phts: list of PHT IDs present in source but absent from visit.yaml
+    """
+    visit_yaml = yaml_dir / "visit.yaml"
+    if not visit_yaml.exists():
+        return {}, []
+
+    rows_by_pht: dict[str, int] = source.get("total_rows_by_pht", {})
+    if not rows_by_pht:
+        return {}, []
+
+    # Parse visit.yaml: each YAML document is a single-element list whose only
+    # item is {"class_derivations": {"Visit": {populated_from, slot_derivations}}}
+    pht_to_labels: dict[str, list[str]] = {}
+    try:
+        docs = list(yaml.safe_load_all(visit_yaml.read_text(encoding="utf-8")))
+    except yaml.YAMLError:
+        return {}, []
+
+    for doc in docs:
+        if not isinstance(doc, list):
+            continue
+        for block in doc:
+            if not isinstance(block, dict):
+                continue
+            cd = block.get("class_derivations", {})
+            visit_def = cd.get("Visit")
+            if not visit_def:
+                continue
+            pht = visit_def.get("populated_from", "")
+            if not pht:
+                continue
+            slot_defs = visit_def.get("slot_derivations", {}) or {}
+            name_slot = slot_defs.get("name", {}) or {}
+            label = name_slot.get("value", "")
+            if not label:
+                continue
+            pht_to_labels.setdefault(pht, [])
+            if label not in pht_to_labels[pht]:
+                pht_to_labels[pht].append(label)
+
+    synthesized: dict[str, int] = {}
+    uncovered: list[str] = []
+    for pht, n in rows_by_pht.items():
+        labels = pht_to_labels.get(pht)
+        if not labels:
+            # PHT present in source but absent from visit.yaml — not being harmonized (by design)
+            uncovered.append(pht)
+        else:
+            for label in labels:
+                synthesized[label] = synthesized.get(label, 0) + n
+
+    return synthesized, uncovered
+
+
 def check_c8_visit_distribution(
     source: dict, harmonized: dict,
     warn_lo_ratio: float = 0.95, warn_hi_ratio: float = 1.05,
+    yaml_dir: Path | None = None,
 ) -> list[CheckResult]:
     """C8: Visit-stratified row count comparison.
 
-    When source and harmonized use incompatible visit label namespaces (zero overlap),
-    falls back to total-count comparison.
+    For column-based cohorts (SPIROMICS, COPDGene) the source extractor
+    auto-detects a visit column and populates ``rows_per_visit`` directly.
+    For table-based cohorts (CHS, ARIC, CARDIA, FHS) ``rows_per_visit`` is
+    empty; when *yaml_dir* is provided this function synthesizes source visit
+    counts from ``total_rows_by_pht`` + ``visit.yaml``.
+
+    When source and harmonized use incompatible visit label namespaces (zero
+    overlap), falls back to total-count comparison.
     """
     results: list[CheckResult] = []
     src_visits = source.get("rows_per_visit", {})
     harmonized_visits = harmonized.get("rows_per_visit", {})
 
+    # For table-based cohorts: synthesize source visit counts from PHT rows + visit.yaml
+    synthesized = False
+    uncovered_phts: list[str] = []
+    if not src_visits and yaml_dir:
+        src_visits, uncovered_phts = _synthesize_source_visit_counts(source, yaml_dir)
+        if src_visits:
+            synthesized = True
+
     if not src_visits and not harmonized_visits:
         return [CheckResult("C8", "_visits", "SKIP", "No visit data in either summary")]
     if not src_visits:
         return [CheckResult("C8", "_visits", "SKIP", "No source visit data")]
+
+    src_label = "synthesized from total_rows_by_pht + visit.yaml" if synthesized else "source"
 
     src_keys = set(src_visits) - {"_MISSING"}
     harmonized_keys = set(harmonized_visits) - {"_MISSING"}
@@ -1736,6 +1831,11 @@ def check_c8_visit_distribution(
             "source_total": src_total,
             "harmonized_total": harmonized_total,
         }
+        if synthesized:
+            detail["synthesis_note"] = (
+                "Source visit counts derived from total_rows_by_pht + visit.yaml. "
+                "A FAIL may indicate a visit.yaml label mismatch rather than a pipeline issue."
+            )
         if harmonized_total == src_total:
             return [CheckResult("C8", "visit_TOTAL", "PASS",
                                 f"Total visits match: N={src_total} (label namespace fallback)",
@@ -1746,25 +1846,48 @@ def check_c8_visit_distribution(
                              f"Total visits: {src_total} -> {harmonized_total} (label namespace fallback)",
                              detail)]
 
+    synthesis_note = (
+        "Source visit counts derived from total_rows_by_pht + visit.yaml. "
+        "A FAIL may indicate a visit.yaml label mismatch rather than a pipeline issue."
+        if synthesized else None
+    )
+
     # Normal label-keyed comparison
     for visit, src_n in sorted(src_visits.items()):
         harmonized_n = harmonized_visits.get(visit, 0)
+        detail: dict = {}
+        if synthesis_note:
+            detail["synthesis_note"] = synthesis_note
         if harmonized_n == src_n:
             results.append(CheckResult("C8", f"visit_{visit}", "PASS",
-                                       f"Visit {visit}: N={src_n}"))
+                                       f"Visit {visit}: N={src_n} ({src_label})",
+                                       detail or None))
         elif harmonized_n == 0:
             results.append(CheckResult("C8", f"visit_{visit}", "FAIL",
-                                       f"Visit {visit}: missing in harmonized (source N={src_n})"))
+                                       f"Visit {visit}: missing in harmonized (source N={src_n}, {src_label})",
+                                       detail or None))
         else:
             ratio = harmonized_n / src_n if src_n > 0 else 0
             status = "WARN" if warn_lo_ratio <= ratio <= warn_hi_ratio else "FAIL"
+            detail.update({"source_n": src_n, "harmonized_n": harmonized_n, "ratio": ratio})
             results.append(CheckResult("C8", f"visit_{visit}", status,
-                                       f"Visit {visit}: {src_n} -> {harmonized_n}",
-                                       {"source_n": src_n, "harmonized_n": harmonized_n, "ratio": ratio}))
+                                       f"Visit {visit}: {src_n} -> {harmonized_n} ({src_label})",
+                                       detail))
 
     for visit in sorted(set(harmonized_visits) - set(src_visits)):
         results.append(CheckResult("C8", f"visit_{visit}", "INFO",
                                    f"Visit {visit}: only in harmonized (N={harmonized_visits[visit]})"))
+
+    # Uncovered PHTs: in source data but not in visit.yaml — not being harmonized, by design
+    if uncovered_phts:
+        rows_by_pht = source.get("total_rows_by_pht", {})
+        total_uncovered_rows = sum(rows_by_pht.get(p, 0) for p in uncovered_phts)
+        results.append(CheckResult(
+            "C8", "_uncovered_phts", "INFO",
+            f"{len(uncovered_phts)} source table(s) not in visit.yaml (not being harmonized): "
+            f"{', '.join(sorted(uncovered_phts))} — {total_uncovered_rows:,} rows not covered",
+            {"uncovered_phts": sorted(uncovered_phts), "total_rows": total_uncovered_rows},
+        ))
 
     return results
 
@@ -2427,6 +2550,7 @@ def main(argv: list[str] | None = None) -> None:
         source, harmonized,
         warn_lo_ratio=c8_t.get("warn_lo_ratio", 0.95),
         warn_hi_ratio=c8_t.get("warn_hi_ratio", 1.05),
+        yaml_dir=yaml_dir,
     ))
     all_results.extend(check_c10_cross_variable(harmonized_vars, clinical_ranges))
 
