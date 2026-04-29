@@ -1471,9 +1471,36 @@ def check_c4_mean_preservation(
         return CheckResult("C4", var_name, "WARN",
                            f"Mean shifted: {src_mean} -> {harmonized_mean} (d={rel_diff:.4f})",
                            {"source_mean": src_mean, "harmonized_mean": harmonized_mean})
+    # --- Unit-conversion detection ---
+    # If the observed ratio matches a well-known unit conversion factor (±2%),
+    # demote to WARN and annotate rather than FAIL.  The comparison cannot be
+    # done accurately without knowing the expected factor; a C5 entry with an
+    # explicit conversion_factor will give a definitive verdict.
+    _KNOWN_FACTORS = [
+        (0.001, "×0.001"), (0.01, "×0.01"), (0.1, "×0.1"),
+        (10.0, "×10"), (100.0, "×100"), (1000.0, "×1000"),
+        (0.453592, "lbs→kg"), (2.20462, "kg→lbs"),
+        (2.54, "in→cm"), (0.393701, "cm→in"),
+        (0.02586, "mg/dL→mmol/L cholesterol"), (38.67, "mmol/L→mg/dL cholesterol"),
+        (0.0555, "mg/dL→mmol/L glucose"), (18.018, "mmol/L→mg/dL glucose"),
+        (0.01129, "mg/dL→mmol/L triglycerides"), (88.57, "mmol/L→mg/dL triglycerides"),
+        (6.0, "μIU→pmol/L insulin (approx)"), (0.1667, "pmol/L→μIU insulin (approx)"),
+    ]
+    _FACTOR_TOL = 0.02  # ±2 % tolerance
+    ratio = harmonized_mean / src_mean
+    for factor, label in _KNOWN_FACTORS:
+        if abs(ratio - factor) / factor <= _FACTOR_TOL:
+            return CheckResult(
+                "C4", var_name, "WARN",
+                f"Mean mismatch likely due to unit conversion ({label}, ratio={ratio:.4f}): "
+                f"{src_mean} -> {harmonized_mean} (d={rel_diff:.4f}) — add conversion_factor to C5 for precise check",
+                {"source_mean": src_mean, "harmonized_mean": harmonized_mean,
+                 "observed_ratio": ratio, "suspected_conversion": label},
+            )
     return CheckResult("C4", var_name, "FAIL",
-                       f"Mean mismatch: {src_mean} -> {harmonized_mean} (d={rel_diff:.4f})",
-                       {"source_mean": src_mean, "harmonized_mean": harmonized_mean})
+                       f"Mean mismatch: {src_mean} -> {harmonized_mean} (d={rel_diff:.4f}, ratio={ratio:.4f})",
+                       {"source_mean": src_mean, "harmonized_mean": harmonized_mean,
+                        "observed_ratio": ratio})
 
 
 def check_c5_mean_after_conversion(
@@ -1841,8 +1868,17 @@ def check_c9_clinical_range(
     else:
         issues = out_issues
 
-    has_red = any("red_flag" in i for i in issues)
-    return CheckResult("C9", var_name, "FAIL" if has_red else "WARN",
+    red_issues = [i for i in issues if "red_flag" in i]
+    has_red = bool(red_issues)
+    # Demote FAIL -> WARN when every red_flag violation is also present in the
+    # source data ([out+src]): the raw data already contained the extreme value
+    # so the harmonized output faithfully preserved it rather than introducing it.
+    all_red_in_src = has_red and all("[out+src]" in i for i in red_issues)
+    if has_red and not all_red_in_src:
+        status = "FAIL"
+    else:
+        status = "WARN"
+    return CheckResult("C9", var_name, status,
                        "; ".join(issues),
                        {"min": out_min, "max": out_max})
 
@@ -2170,6 +2206,9 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--json-report", metavar="FILE",
                    help="JSON report output path "
                         "(default: <cohort>_comparison_results.json)")
+    p.add_argument("--show-unmatched-source", action="store_true", default=False,
+                   help="Include INFO rows for source variables not present in the harmonized "
+                        "output (default: hidden; only a summary count is shown).")
     return p.parse_args(argv)
 
 
@@ -2382,12 +2421,26 @@ def main(argv: list[str] | None = None) -> None:
         else:
             matched_src.add(m["source_key"])
     matched_harmonized = {m["harmonized_key"] for m in crosswalk}
-    for sk in source_vars:
-        if sk not in matched_src and "error" not in source_vars[sk]:
+    _unmatched_src_keys = [
+        sk for sk in source_vars
+        if sk not in matched_src and "error" not in source_vars[sk]
+    ]
+    if _unmatched_src_keys:
+        count = len(_unmatched_src_keys)
+        if args.show_unmatched_source:
+            for sk in _unmatched_src_keys:
+                all_results.append(CheckResult(
+                    "C2", source_vars[sk].get("name", sk), "INFO",
+                    "Source variable not matched in harmonized",
+                    {"direction": "source_unmatched", "source_key": sk},
+                ))
+        else:
+            # Emit a single summary INFO instead of one row per variable
             all_results.append(CheckResult(
-                "C2", source_vars[sk].get("name", sk), "INFO",
-                "Source variable not matched in harmonized",
-                {"direction": "source_unmatched", "source_key": sk},
+                "C2", "_unmatched_source_vars", "INFO",
+                f"{count} source variable(s) not matched in harmonized (use --show-unmatched-source to list)",
+                {"direction": "source_unmatched_summary", "count": count,
+                 "source_keys": _unmatched_src_keys},
             ))
 
     unresolved_yaml = (yaml_diagnostics.get("unresolved_yaml_entries") or {})
