@@ -11,6 +11,8 @@
             uuid5('https://w3id.org/bdchm/Visit', str({phv00159568}) + ':COPDGene P3B')))
         associated_participant:
           populated_from: phv00159568
+        age_at_condition_start:
+          expr: case(({phv00159729} == 1, {phv00169347} * 365))
         condition_concept:
           value: MONDO:0004848
         condition_status:
