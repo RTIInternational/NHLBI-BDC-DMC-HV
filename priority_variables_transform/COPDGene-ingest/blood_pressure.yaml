@@ -3,7 +3,7 @@
       populated_from: pht002239
       slot_derivations:
         associated_participant:
-          populated_from: phv00159568
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00159568}) + ":COPDGene")'
         associated_visit:
           expr: case(({phv00568798} == 'P1', uuid5('https://w3id.org/bdchm/Visit',
             str({phv00159568}) + ':COPDGene P1')), ({phv00568798} == 'P2',
