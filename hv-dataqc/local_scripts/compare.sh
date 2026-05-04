@@ -48,7 +48,7 @@ done
 
 if [ -z "$YAML_DIR" ]; then
     echo "WARNING: No YAML dir found for $COHORT in priority_variables_transform/. Running without crosswalk." >&2
-    python "$HV/hv-dataqc/compare/compare_source_harmonized.py" \
+    uv run python "$HV/hv-dataqc/compare/compare_source_harmonized.py" \
         --source "$SOURCE" \
         --harmonized "$HARMONIZED" \
         --cohort "$COHORT" \
@@ -60,7 +60,7 @@ else
         echo "  Run: ./fetch_cache.sh --cohort $COHORT_LOWER" >&2
         exit 1
     fi
-    python "$HV/hv-dataqc/compare/compare_source_harmonized.py" \
+    uv run python "$HV/hv-dataqc/compare/compare_source_harmonized.py" \
         --source "$SOURCE" \
         --harmonized "$HARMONIZED" \
         --cohort "$COHORT" \

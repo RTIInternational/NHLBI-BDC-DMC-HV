@@ -52,7 +52,7 @@ The CSV groups comparisons in blocks separated by blank columns (`_1`, `_2`, `_3
 ## Usage
 
 ```bash
-poetry run python concept_id_validation/validate_concept_ids.py
+uv run python concept_id_validation/validate_concept_ids.py
 ```
 
 ## What to look for in the output
