@@ -6,6 +6,6 @@
 #   ./fetch_cache.sh --cohort mesa --dry-run
 cd "$(dirname "$0")"
 HV="$(cd ../.. && pwd)"
-python "$HV/hv-dataqc/cache-fetcher/fetch_dbgap_cache.py" \
+uv run python "$HV/hv-dataqc/cache-fetcher/fetch_dbgap_cache.py" \
     --output-dir ../local_output/dbgap-cache \
     "$@"
