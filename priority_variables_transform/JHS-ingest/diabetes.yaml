@@ -214,6 +214,8 @@
           populated_from: phv00402777
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00402777}) + ":JHS Exam 2")'
+        age_at_condition_start:
+          expr: case(({phv00402803} == '1', {phv00402804} * 365))
         condition_concept:
           value: MONDO:0005015
           range: string
@@ -289,6 +291,8 @@
           populated_from: phv00403624
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403624}) + ":JHS Exam 3")'
+        age_at_condition_start:
+          expr: case(({phv00403636} == 'Yes', {phv00403637} * 365))
         condition_concept:
           value: MONDO:0005015
           range: string

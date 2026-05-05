@@ -285,6 +285,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00402777}) + ":JHS Exam 2")'
           range: string
+        age_at_condition_start:
+          expr: case(({phv00402801} == '1', {phv00402802} * 365))
         condition_concept:
           value: HP:0001297
           range: string
@@ -387,6 +389,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403624}) + ":JHS Exam 3")'
           range: string
+        age_at_condition_start:
+          expr: case(({phv00403634} == 'Yes', {phv00403635} * 365))
         condition_concept:
           value: HP:0001297
           range: string
