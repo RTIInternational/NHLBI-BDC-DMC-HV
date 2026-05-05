@@ -11,6 +11,9 @@
         observation_type:
           value: OMOP:37208635
           range: string
+        method_type:
+          value: "calculated from serum creatinine"
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -34,6 +37,9 @@
           expr: '{phv00226251} * 365'
         observation_type:
           value: OMOP:37208635
+          range: string
+        method_type:
+          value: "calculated from serum creatinine"
           range: string
         value_quantity:
           object_derivations:
