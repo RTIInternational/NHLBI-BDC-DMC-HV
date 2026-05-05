@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00175794
         associated_visit:
-          value: MESA LUNG CT
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00175794}) + ":MESA LUNG CT")'
         age_at_observation:
           expr: '{phv00175854} * 365'
         observation_type:

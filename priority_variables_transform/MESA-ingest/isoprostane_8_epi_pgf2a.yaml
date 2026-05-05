@@ -5,8 +5,9 @@
         associated_participant:
           populated_from: phv00084441
         associated_visit:
-          value: MESA CLASSIC EXAM 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
+        age_at_observation:
+          expr: '{phv00084442} * 365'
         observation_type:
           value: OMOP:3011888
           range: string

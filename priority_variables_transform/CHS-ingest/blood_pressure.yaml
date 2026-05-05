@@ -1,0 +1,802 @@
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht001450
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00098771
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
+        observations:
+          object_derivations:
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001450
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4152194'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00098799} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001450
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00099441
+                            unit:
+                              value: mm[Hg]
+                              range: string
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001450
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4154790'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00098799} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001450
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00099442
+                            unit:
+                              value: mm[Hg]
+                              range: string
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht001452
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00100285
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100285}) + ":CHS BASELINE BOTH")'
+        observations:
+          object_derivations:
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001452
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4152194'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00100487} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001452
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00100435
+                            unit:
+                              value: mm[Hg]
+                              range: string
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001452
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4154790'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00100487} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001452
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00100436
+                            unit:
+                              value: mm[Hg]
+                              range: string
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht001488
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00103781
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00103781}) + ":CHS YEAR 3")'
+        observations:
+          object_derivations:
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001488
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4152194'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00104377} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001488
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00104020
+                            unit:
+                              value: mm[Hg]
+                              range: string
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001488
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4154790'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00104377} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001488
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00104021
+                            unit:
+                              value: mm[Hg]
+                              range: string
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht001489
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00104468
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00104468}) + ":CHS YEAR 4")'
+        observations:
+          object_derivations:
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001489
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4152194'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00104783} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001489
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00104697
+                            unit:
+                              value: mm[Hg]
+                              range: string
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001489
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4154790'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00104783} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001489
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00104698
+                            unit:
+                              value: mm[Hg]
+                              range: string
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht001490
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00105099
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS BASELINE 2")'
+        observations:
+          object_derivations:
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001490
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4152194'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00105622} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001490
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00105432
+                            unit:
+                              value: mm[Hg]
+                              range: string
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001490
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4154790'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00105622} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001490
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00105433
+                            unit:
+                              value: mm[Hg]
+                              range: string
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht001491
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00106520
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00106520}) + ":CHS YEAR 5 OLD")'
+        observations:
+          object_derivations:
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001491
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4152194'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00106844} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001491
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00106794
+                            unit:
+                              value: mm[Hg]
+                              range: string
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001491
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4154790'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00106844} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001491
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00106795
+                            unit:
+                              value: mm[Hg]
+                              range: string
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht001492
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00107443
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00107443}) + ":CHS YEAR 6")'
+        observations:
+          object_derivations:
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001492
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4152194'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00107780} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001492
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00107774
+                            unit:
+                              value: mm[Hg]
+                              range: string
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001492
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4154790'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00107780} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001492
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00107775
+                            unit:
+                              value: mm[Hg]
+                              range: string
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht001493
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00108303
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00108303}) + ":CHS YEAR 7")'
+        observations:
+          object_derivations:
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001493
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4152194'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00108813} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001493
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00108830
+                            unit:
+                              value: mm[Hg]
+                              range: string
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001493
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4154790'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00108813} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001493
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00108831
+                            unit:
+                              value: mm[Hg]
+                              range: string
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht001474
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00101324
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00101324}) + ":CHS YEAR 10")'
+        observations:
+          object_derivations:
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001474
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4152194'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00102006} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001474
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00101961
+                            unit:
+                              value: mm[Hg]
+                              range: string
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001474
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4154790'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00102006} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001474
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00101960
+                            unit:
+                              value: mm[Hg]
+                              range: string
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht001475
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00102174
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00102174}) + ":CHS YEAR 11")'
+        observations:
+          object_derivations:
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001475
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4152194'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00102583} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001475
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00102574
+                            unit:
+                              value: mm[Hg]
+                              range: string
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001475
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4154790'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00102583} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001475
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00102575
+                            unit:
+                              value: mm[Hg]
+                              range: string
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht001495
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00109768
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109768}) + ":CHS YEAR 9")'
+        observations:
+          object_derivations:
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001495
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4152194'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00109855} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001495
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00110337
+                            unit:
+                              value: mm[Hg]
+                              range: string
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001495
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4154790'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00109855} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001495
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00110338
+                            unit:
+                              value: mm[Hg]
+                              range: string
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht003699
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00197394
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197394}) + ":CHS PSG 1")'
+        observations:
+          object_derivations:
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht003699
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4152194'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht003699
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00197434
+                            unit:
+                              value: mm[Hg]
+                              range: string
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht003699
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4154790'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht003699
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00197435
+                            unit:
+                              value: mm[Hg]
+                              range: string
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht003700
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00198805
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
+        observations:
+          object_derivations:
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht003700
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4152194'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00198807} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht003700
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00198928
+                            unit:
+                              value: mm[Hg]
+                              range: string
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht003700
+                slot_derivations:
+                  observation_type:
+                    value: 'OMOP:4154790'
+                    range: string
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00198807} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht003700
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00198929
+                            unit:
+                              value: mm[Hg]
+                              range: string

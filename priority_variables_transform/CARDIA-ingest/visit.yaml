@@ -1,9 +1,29 @@
 - class_derivations:
     Visit:
+      populated_from: pht001559
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00112417}) + ":CARDIA YEAR 0")'
+        name:
+          value: CARDIA YEAR 0
+        visit_category:
+          value: HEALTH_EXAMINATION
+        associated_participant:
+          populated_from: phv00112417
+        age_at_visit_start:
+          expr: '{phv00112421} * 365'
+        age_at_visit_end:
+          expr: '{phv00112421} * 365'
+- class_derivations:
+    Visit:
       populated_from: pht001626
       slot_derivations:
         id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00114583}) + ":CARDIA YEAR 2")'
+        name:
           value: CARDIA YEAR 2
+        visit_category:
+          value: HEALTH_EXAMINATION
         associated_participant:
           populated_from: phv00114583
         age_at_visit_start:
@@ -12,10 +32,30 @@
           expr: '{phv00114610} * 365'
 - class_derivations:
     Visit:
+      populated_from: pht001667
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00115618}) + ":CARDIA YEAR 5")'
+        name:
+          value: CARDIA YEAR 5
+        visit_category:
+          value: HEALTH_EXAMINATION
+        associated_participant:
+          populated_from: phv00115618
+        age_at_visit_start:
+          expr: '{phv00115705} * 365'
+        age_at_visit_end:
+          expr: '{phv00115705} * 365'
+- class_derivations:
+    Visit:
       populated_from: pht001706
       slot_derivations:
         id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116476}) + ":CARDIA YEAR 7")'
+        name:
           value: CARDIA YEAR 7
+        visit_category:
+          value: HEALTH_EXAMINATION
         associated_participant:
           populated_from: phv00116476
         age_at_visit_start:
@@ -27,7 +67,11 @@
       populated_from: pht001781
       slot_derivations:
         id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00118837}) + ":CARDIA YEAR 10")'
+        name:
           value: CARDIA YEAR 10
+        visit_category:
+          value: HEALTH_EXAMINATION
         associated_participant:
           populated_from: phv00118837
         age_at_visit_start:
@@ -36,13 +80,59 @@
           expr: '{phv00118959} * 365'
 - class_derivations:
     Visit:
-      populated_from: pht001795
+      populated_from: pht001851
       slot_derivations:
         id:
-          value: CARDIA YEAR 10
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120733}) + ":CARDIA YEAR 15")'
+        name:
+          value: CARDIA YEAR 15
+        visit_category:
+          value: HEALTH_EXAMINATION
         associated_participant:
-          populated_from: phv00119471
+          populated_from: phv00120733
         age_at_visit_start:
-          expr: '{phv00119507} * 365'
+          expr: '{phv00120748} * 365'
         age_at_visit_end:
-          expr: '{phv00119507} * 365'          
+          expr: '{phv00120748} * 365'
+# CARDIA Medical History visit: pht001869 (Y1MORB06) and pht001871 (YM106) are
+# companion hospitalization-review tables representing the same conceptual visit.
+# Both use Individual_ID as participant key, so uuid5 produces the same Visit ID
+# for any given participant across both tables — intentional deduplication by design.
+# Both blocks are retained so coverage is not lost for participants appearing in
+# only one of the two tables.
+- class_derivations:
+    Visit:
+      populated_from: pht001869
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121257}) + ":CARDIA MEDICAL HISTORY")'
+        name:
+          value: CARDIA MEDICAL HISTORY
+        visit_category:
+          value: UNKNOWN
+        associated_participant:
+          populated_from: phv00121257
+- class_derivations:
+    Visit:
+      populated_from: pht001871
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121473}) + ":CARDIA MEDICAL HISTORY")'
+        name:
+          value: CARDIA MEDICAL HISTORY
+        visit_category:
+          value: UNKNOWN
+        associated_participant:
+          populated_from: phv00121473
+- class_derivations:
+    Visit:
+      populated_from: pht001870
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121454}) + ":CARDIA HOSPITALIZATIONS DIAGNOSIS")'
+        name:
+          value: CARDIA HOSPITALIZATIONS DIAGNOSIS
+        visit_category:
+          value: UNKNOWN
+        associated_participant:
+          populated_from: phv00121454

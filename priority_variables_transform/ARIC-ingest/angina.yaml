@@ -5,15 +5,15 @@
         associated_participant:
           populated_from: phv00203808
         associated_visit:
-          value: ARIC Coroner Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203808}) + ":ARIC Death Event")'
         condition_concept:
           value: HP:0001681
         condition_status:
           populated_from: phv00203789
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '8': UNKNOWN
+            N: ABSENT
+            Y: PRESENT
+            U: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:
@@ -25,15 +25,15 @@
         associated_participant:
           populated_from: phv00204295
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204295}) + ":ARIC Hospital Form")'
         condition_concept:
           value: HP:0001681
         condition_status:
           populated_from: phv00203904
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '8': UNKNOWN
+            N: ABSENT
+            Y: PRESENT
+            U: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:
@@ -45,14 +45,14 @@
         associated_participant:
           populated_from: phv00204812
         associated_visit:
-          value: ARIC Exam 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
         condition_concept:
           value: HP:0001681
         condition_status:
           populated_from: phv00204724
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            '1': ABSENT
+            '4': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:
@@ -64,14 +64,14 @@
         associated_participant:
           populated_from: phv00207055
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         condition_concept:
           value: HP:0001681
         condition_status:
           populated_from: phv00206789
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            N: ABSENT
+            Y: PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:
@@ -83,14 +83,14 @@
         associated_participant:
           populated_from: phv00207055
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         condition_concept:
           value: HP:0001681
         condition_status:
           populated_from: phv00207018
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            N: ABSENT
+            Y: PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:
@@ -102,15 +102,14 @@
         associated_participant:
           populated_from: phv00207191
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207191}) + ":ARIC EXAM 3")'
         condition_concept:
           value: HP:0001681
         condition_status:
           populated_from: phv00207159
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '8': UNKNOWN
+            N: ABSENT
+            Y: PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:
@@ -122,14 +121,14 @@
         associated_participant:
           populated_from: phv00207252
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207252}) + ":ARIC EXAM 4")'
         condition_concept:
           value: HP:0001681
         condition_status:
           populated_from: phv00207199
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            N: ABSENT
+            Y: PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:
@@ -141,14 +140,14 @@
         associated_participant:
           populated_from: phv00208956
         associated_visit:
-          value: ARIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00208956}) + ":ARIC EXAM 2")'
         condition_concept:
           value: HP:0001681
         condition_status:
           populated_from: phv00208905
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            N: ABSENT
+            Y: PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:
@@ -160,15 +159,15 @@
         associated_participant:
           populated_from: phv00294620
         associated_visit:
-          value: ARIC Annual Follow-Up Questionnaire Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00294620}) + ":ARIC AFQ")'
         condition_concept:
           value: HP:0001681
         condition_status:
           populated_from: phv00294727
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '8': UNKNOWN
+            N: ABSENT
+            Y: PRESENT
+            U: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:
@@ -180,15 +179,15 @@
         associated_participant:
           populated_from: phv00294620
         associated_visit:
-          value: ARIC Annual Follow-Up Questionnaire Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00294620}) + ":ARIC AFQ")'
         condition_concept:
           value: HP:0001681
         condition_status:
           populated_from: phv00294787
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '8': UNKNOWN
+            N: ABSENT
+            Y: PRESENT
+            U: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         relationship_to_participant:

@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00098771
         associated_visit:
-          value: CHS BASELINE 2
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
         age_at_observation:
           expr: '{phv00098799} * 365' 
         observation_type:
@@ -20,33 +19,12 @@
             '3': OMOP:40766945
 - class_derivations:
     Observation:
-      populated_from: pht001452
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00100285
-        associated_visit:
-          value: CHS BASELINE BOTH
-          range: string
-        age_at_observation:
-          expr: '{phv00100487} * 365' 
-        observation_type:
-          value: OMOP:4282779
-          range: string
-        value_enum:
-          populated_from: phv00100466
-          value_mappings:
-            '1': OMOP:45883458
-            '2': OMOP:40766945
-            '3': OMOP:40766945
-- class_derivations:
-    Observation:
       populated_from: pht001474
       slot_derivations:
         associated_participant:
           populated_from: phv00101324
         associated_visit:
-          value: CHS YEAR 10
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00101324}) + ":CHS YEAR 10")'
         age_at_observation:
           expr: '{phv00102006} * 365'
         observation_type:
@@ -66,8 +44,7 @@
         associated_participant:
           populated_from: phv00102174
         associated_visit:
-          value: CHS YEAR 11
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00102174}) + ":CHS YEAR 11")'
         age_at_observation:
           expr: '{phv00102583} * 365' 
         observation_type:
@@ -87,8 +64,7 @@
         associated_participant:
           populated_from: phv00103781
         associated_visit:
-          value: CHS YEAR 3
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00103781}) + ":CHS YEAR 3")'
         observation_type:
           value: OMOP:4282779
           range: string
@@ -105,8 +81,7 @@
         associated_participant:
           populated_from: phv00104468
         associated_visit:
-          value: CHS YEAR 4
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00104468}) + ":CHS YEAR 4")'
         age_at_observation:
           expr: '{phv00104783} * 365'     
         observation_type:
@@ -125,10 +100,9 @@
         associated_participant:
           populated_from: phv00105099
         associated_visit:
-          value: CHS YEAR 5 NEW
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS BASELINE 2")'
         age_at_observation:
-          expr: '({phv00105116} * 365) + 1825'  
+          expr: '{phv00105622} * 365'
         observation_type:
           value: OMOP:4282779
           range: string
@@ -145,8 +119,7 @@
         associated_participant:
           populated_from: phv00106520
         associated_visit:
-          value: CHS YEAR 5 OLD
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00106520}) + ":CHS YEAR 5 OLD")'
         age_at_observation:
           expr: '{phv00106844} * 365'
         observation_type:
@@ -166,8 +139,7 @@
         associated_participant:
           populated_from: phv00107443
         associated_visit:
-          value: CHS YEAR 6
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00107443}) + ":CHS YEAR 6")'
         age_at_observation:
           expr: '{phv00107780} * 365'
         observation_type:
@@ -187,8 +159,7 @@
         associated_participant:
           populated_from: phv00108303
         associated_visit:
-          value: CHS YEAR 7
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00108303}) + ":CHS YEAR 7")'
         age_at_observation:
           expr: '{phv00108813} * 365' 
         observation_type:
@@ -208,8 +179,7 @@
         associated_participant:
           populated_from: phv00109056
         associated_visit:
-          value: CHS YEAR 8
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109056}) + ":CHS YEAR 8")'
         age_at_observation:
           expr: '{phv00109604} * 365'   
         observation_type:
@@ -229,8 +199,7 @@
         associated_participant:
           populated_from: phv00109768
         associated_visit:
-          value: CHS YEAR 9
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109768}) + ":CHS YEAR 9")'
         age_at_observation:
           expr: '{phv00109855} * 365'
         observation_type:
@@ -250,8 +219,7 @@
         associated_participant:
           populated_from: phv00197394
         associated_visit:
-          value: CHS PSG 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197394}) + ":CHS PSG 1")'
         observation_type:
           value: OMOP:4282779
           range: string
@@ -264,8 +232,7 @@
         associated_participant:
           populated_from: phv00198805
         associated_visit:
-          value: CHS PSG 2
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OMOP:4282779
           range: string

@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00203808
         associated_visit:
-          value: ARIC Death Event
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203808}) + ":ARIC Death Event")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -26,7 +26,7 @@
         associated_participant:
           populated_from: phv00203808
         associated_visit:
-          value: ARIC Death Event
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203808}) + ":ARIC Death Event")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -47,7 +47,7 @@
         associated_participant:
           populated_from: phv00203808
         associated_visit:
-          value: ARIC Death Event
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203808}) + ":ARIC Death Event")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -68,7 +68,7 @@
         associated_participant:
           populated_from: phv00203808
         associated_visit:
-          value: ARIC Death Event
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203808}) + ":ARIC Death Event")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -89,7 +89,7 @@
         associated_participant:
           populated_from: phv00203808
         associated_visit:
-          value: ARIC Death Event
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203808}) + ":ARIC Death Event")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -110,7 +110,7 @@
         associated_participant:
           populated_from: phv00203808
         associated_visit:
-          value: ARIC Death Event
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203808}) + ":ARIC Death Event")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -132,7 +132,7 @@
         associated_participant:
           populated_from: phv00203808
         associated_visit:
-          value: ARIC Death Event
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203808}) + ":ARIC Death Event")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -154,7 +154,7 @@
         associated_participant:
           populated_from: phv00204295
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204295}) + ":ARIC Hospital Form")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -175,7 +175,7 @@
         associated_participant:
           populated_from: phv00204295
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204295}) + ":ARIC Hospital Form")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -197,7 +197,7 @@
         associated_participant:
           populated_from: phv00204295
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204295}) + ":ARIC Hospital Form")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -219,7 +219,7 @@
         associated_participant:
           populated_from: phv00204350
         associated_visit:
-          value: ARIC Death Event
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204350}) + ":ARIC Death Event")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -241,7 +241,7 @@
         associated_participant:
           populated_from: phv00204350
         associated_visit:
-          value: ARIC Death Event
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204350}) + ":ARIC Death Event")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -263,7 +263,7 @@
         associated_participant:
           populated_from: phv00204350
         associated_visit:
-          value: ARIC Death Event
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204350}) + ":ARIC Death Event")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -285,7 +285,7 @@
         associated_participant:
           populated_from: phv00204606
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204606}) + ":ARIC Hospital Form")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -307,7 +307,7 @@
         associated_participant:
           populated_from: phv00204919
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204919}) + ":ARIC EXAM 3")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -328,14 +328,14 @@
         associated_participant:
           populated_from: phv00206746
         associated_visit:
-          value: ARIC Cohort
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00206746}) + ":ARIC Cohort")'
         condition_concept:
           value: HP:0001297
         condition_status:
           populated_from: phv00206672
           value_mappings:
-            '0': ABSENT
-            '1': HISTORICAL
+            'N': ABSENT
+            'Y': HISTORICAL
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
@@ -349,14 +349,14 @@
         associated_participant:
           populated_from: phv00206746
         associated_visit:
-          value: ARIC Cohort
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00206746}) + ":ARIC Cohort")'
         condition_concept:
           value: HP:0001297
         condition_status:
           populated_from: phv00206673
           value_mappings:
-            '0': ABSENT
-            '1': HISTORICAL
+            'N': ABSENT
+            'Y': HISTORICAL
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
@@ -370,14 +370,14 @@
         associated_participant:
           populated_from: phv00206746
         associated_visit:
-          value: ARIC Cohort
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00206746}) + ":ARIC Cohort")'
         condition_concept:
           value: HP:0001297
         condition_status:
           populated_from: phv00206674
           value_mappings:
-            '0': ABSENT
-            '1': HISTORICAL
+            'N': ABSENT
+            'Y': HISTORICAL
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
@@ -391,14 +391,14 @@
         associated_participant:
           populated_from: phv00207055
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         condition_concept:
           value: HP:0001297
         condition_status:
           populated_from: phv00206814
           value_mappings:
-            '0': ABSENT
-            '1': HISTORICAL
+            'N': ABSENT
+            'Y': HISTORICAL
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
@@ -412,14 +412,14 @@
         associated_participant:
           populated_from: phv00207055
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         condition_concept:
           value: HP:0001297
         condition_status:
           populated_from: phv00206998
           value_mappings:
-            '0': ABSENT
-            '1': HISTORICAL
+            'N': ABSENT
+            'Y': HISTORICAL
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
@@ -433,14 +433,14 @@
         associated_participant:
           populated_from: phv00207055
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         condition_concept:
           value: HP:0001297
         condition_status:
           populated_from: phv00207025
           value_mappings:
-            '0': ABSENT
-            '1': HISTORICAL
+            'N': ABSENT
+            'Y': HISTORICAL
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
@@ -454,7 +454,7 @@
         associated_participant:
           populated_from: phv00207407
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207407}) + ":ARIC EXAM 1")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -476,7 +476,7 @@
         associated_participant:
           populated_from: phv00210411
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210411}) + ":ARIC EXAM 1")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -498,7 +498,7 @@
         associated_participant:
           populated_from: phv00210411
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210411}) + ":ARIC EXAM 1")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -520,7 +520,7 @@
         associated_participant:
           populated_from: phv00210411
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210411}) + ":ARIC EXAM 1")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -542,7 +542,7 @@
         associated_participant:
           populated_from: phv00210411
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210411}) + ":ARIC EXAM 1")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -564,7 +564,7 @@
         associated_participant:
           populated_from: phv00210411
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210411}) + ":ARIC EXAM 1")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -586,7 +586,7 @@
         associated_participant:
           populated_from: phv00210411
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210411}) + ":ARIC EXAM 1")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -608,7 +608,7 @@
         associated_participant:
           populated_from: phv00210411
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210411}) + ":ARIC EXAM 1")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -630,7 +630,7 @@
         associated_participant:
           populated_from: phv00210411
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210411}) + ":ARIC EXAM 1")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -652,7 +652,7 @@
         associated_participant:
           populated_from: phv00210411
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210411}) + ":ARIC EXAM 1")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -674,7 +674,7 @@
         associated_participant:
           populated_from: phv00210411
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210411}) + ":ARIC EXAM 1")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -696,7 +696,7 @@
         associated_participant:
           populated_from: phv00210411
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210411}) + ":ARIC EXAM 1")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -718,7 +718,7 @@
         associated_participant:
           populated_from: phv00210411
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210411}) + ":ARIC EXAM 1")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -740,7 +740,7 @@
         associated_participant:
           populated_from: phv00210430
         associated_visit:
-          value: ARIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210430}) + ":ARIC EXAM 2")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -763,7 +763,7 @@
         associated_participant:
           populated_from: phv00210430
         associated_visit:
-          value: ARIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210430}) + ":ARIC EXAM 2")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -786,7 +786,7 @@
         associated_participant:
           populated_from: phv00210430
         associated_visit:
-          value: ARIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210430}) + ":ARIC EXAM 2")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -809,7 +809,7 @@
         associated_participant:
           populated_from: phv00210430
         associated_visit:
-          value: ARIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210430}) + ":ARIC EXAM 2")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -832,7 +832,7 @@
         associated_participant:
           populated_from: phv00210430
         associated_visit:
-          value: ARIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210430}) + ":ARIC EXAM 2")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -855,7 +855,7 @@
         associated_participant:
           populated_from: phv00210430
         associated_visit:
-          value: ARIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210430}) + ":ARIC EXAM 2")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -878,7 +878,7 @@
         associated_participant:
           populated_from: phv00210430
         associated_visit:
-          value: ARIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210430}) + ":ARIC EXAM 2")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -901,7 +901,7 @@
         associated_participant:
           populated_from: phv00210430
         associated_visit:
-          value: ARIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210430}) + ":ARIC EXAM 2")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -924,7 +924,7 @@
         associated_participant:
           populated_from: phv00210430
         associated_visit:
-          value: ARIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210430}) + ":ARIC EXAM 2")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -947,7 +947,7 @@
         associated_participant:
           populated_from: phv00210430
         associated_visit:
-          value: ARIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210430}) + ":ARIC EXAM 2")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -970,7 +970,7 @@
         associated_participant:
           populated_from: phv00210430
         associated_visit:
-          value: ARIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210430}) + ":ARIC EXAM 2")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -993,7 +993,7 @@
         associated_participant:
           populated_from: phv00210430
         associated_visit:
-          value: ARIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210430}) + ":ARIC EXAM 2")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1016,7 +1016,7 @@
         associated_participant:
           populated_from: phv00210449
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210449}) + ":ARIC EXAM 3")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1039,7 +1039,7 @@
         associated_participant:
           populated_from: phv00210449
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210449}) + ":ARIC EXAM 3")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1062,7 +1062,7 @@
         associated_participant:
           populated_from: phv00210449
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210449}) + ":ARIC EXAM 3")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1085,7 +1085,7 @@
         associated_participant:
           populated_from: phv00210449
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210449}) + ":ARIC EXAM 3")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1108,7 +1108,7 @@
         associated_participant:
           populated_from: phv00210449
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210449}) + ":ARIC EXAM 3")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1131,7 +1131,7 @@
         associated_participant:
           populated_from: phv00210449
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210449}) + ":ARIC EXAM 3")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1154,7 +1154,7 @@
         associated_participant:
           populated_from: phv00210449
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210449}) + ":ARIC EXAM 3")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1177,7 +1177,7 @@
         associated_participant:
           populated_from: phv00210449
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210449}) + ":ARIC EXAM 3")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1200,7 +1200,7 @@
         associated_participant:
           populated_from: phv00210449
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210449}) + ":ARIC EXAM 3")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1223,7 +1223,7 @@
         associated_participant:
           populated_from: phv00210449
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210449}) + ":ARIC EXAM 3")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1246,7 +1246,7 @@
         associated_participant:
           populated_from: phv00210449
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210449}) + ":ARIC EXAM 3")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1269,7 +1269,7 @@
         associated_participant:
           populated_from: phv00210468
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210468}) + ":ARIC EXAM 4")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1292,7 +1292,7 @@
         associated_participant:
           populated_from: phv00210468
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210468}) + ":ARIC EXAM 4")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1315,7 +1315,7 @@
         associated_participant:
           populated_from: phv00210468
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210468}) + ":ARIC EXAM 4")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1338,7 +1338,7 @@
         associated_participant:
           populated_from: phv00210468
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210468}) + ":ARIC EXAM 4")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1361,7 +1361,7 @@
         associated_participant:
           populated_from: phv00210468
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210468}) + ":ARIC EXAM 4")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1384,7 +1384,7 @@
         associated_participant:
           populated_from: phv00210468
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210468}) + ":ARIC EXAM 4")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1407,7 +1407,7 @@
         associated_participant:
           populated_from: phv00210468
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210468}) + ":ARIC EXAM 4")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1430,7 +1430,7 @@
         associated_participant:
           populated_from: phv00210468
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210468}) + ":ARIC EXAM 4")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1453,7 +1453,7 @@
         associated_participant:
           populated_from: phv00210468
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210468}) + ":ARIC EXAM 4")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1476,7 +1476,7 @@
         associated_participant:
           populated_from: phv00210468
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210468}) + ":ARIC EXAM 4")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1499,7 +1499,7 @@
         associated_participant:
           populated_from: phv00210468
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210468}) + ":ARIC EXAM 4")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1522,7 +1522,7 @@
         associated_participant:
           populated_from: phv00210468
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210468}) + ":ARIC EXAM 4")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1545,7 +1545,7 @@
         associated_participant:
           populated_from: phv00210593
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210593}) + ":ARIC EXAM 1")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1566,7 +1566,7 @@
         associated_participant:
           populated_from: phv00210717
         associated_visit:
-          value: ARIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210717}) + ":ARIC EXAM 2")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1587,7 +1587,7 @@
         associated_participant:
           populated_from: phv00210839
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210839}) + ":ARIC EXAM 1")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1608,7 +1608,7 @@
         associated_participant:
           populated_from: phv00210895
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210895}) + ":ARIC EXAM 1")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1629,7 +1629,7 @@
         associated_participant:
           populated_from: phv00294620
         associated_visit:
-          value: Annual Follow-Up Questionnaire Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00294620}) + ":ARIC AFQ")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1651,7 +1651,7 @@
         associated_participant:
           populated_from: phv00295710
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00295710}) + ":ARIC EXAM 5")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1672,7 +1672,7 @@
         associated_participant:
           populated_from: phv00296598
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00296598}) + ":ARIC EXAM 5")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1695,7 +1695,7 @@
         age_at_condition_start:
           expr: case(({phv00297378} == "Y", {phv00297379} * 365))
         associated_visit:
-          value: ARIC Cohort
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00297336}) + ":ARIC Cohort")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1716,7 +1716,7 @@
         associated_participant:
           populated_from: phv00296689
         associated_visit:
-          value: ARIC Cohort
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00296689}) + ":ARIC Cohort")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1737,7 +1737,7 @@
         associated_participant:
           populated_from: phv00296689
         associated_visit:
-          value: ARIC Cohort
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00296689}) + ":ARIC Cohort")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1758,7 +1758,7 @@
         associated_participant:
           populated_from: phv00296689
         associated_visit:
-          value: ARIC Cohort
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00296689}) + ":ARIC Cohort")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1779,7 +1779,7 @@
         associated_participant:
           populated_from: phv00296689
         associated_visit:
-          value: ARIC Cohort
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00296689}) + ":ARIC Cohort")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1800,7 +1800,7 @@
         associated_participant:
           populated_from: phv00296689
         associated_visit:
-          value: ARIC Cohort
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00296689}) + ":ARIC Cohort")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1821,7 +1821,7 @@
         associated_participant:
           populated_from: phv00507300
         associated_visit:
-          value: ARIC EXAM 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1842,7 +1842,7 @@
         associated_participant:
           populated_from: phv00507300
         associated_visit:
-          value: ARIC EXAM 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1864,7 +1864,7 @@
         associated_participant:
           populated_from: phv00507300
         associated_visit:
-          value: ARIC EXAM 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1886,29 +1886,7 @@
         associated_participant:
           populated_from: phv00507808
         associated_visit:
-          value: ARIC EXAM 7
-        condition_concept:
-          value: HP:0001297
-        condition_status:
-          populated_from: phv00507819
-          value_mappings:
-            '0': ABSENT
-            '1': HISTORICAL
-            T: UNKNOWN
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht012518
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00507808
-        associated_visit:
-          value: ARIC EXAM 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507808}) + ":ARIC EXAM 7")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1930,7 +1908,7 @@
         associated_participant:
           populated_from: phv00511942
         associated_visit:
-          value: ARIC EXAM 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511942}) + ":ARIC EXAM 4")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1951,7 +1929,7 @@
         associated_participant:
           populated_from: phv00512039
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1972,7 +1950,7 @@
         associated_participant:
           populated_from: phv00512039
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -1993,7 +1971,7 @@
         associated_participant:
           populated_from: phv00512222
         associated_visit:
-          value: ARIC EXAM 6
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -2014,7 +1992,7 @@
         associated_participant:
           populated_from: phv00512222
         associated_visit:
-          value: ARIC EXAM 6
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -2022,7 +2000,6 @@
           value_mappings:
             '0': ABSENT
             '1': HISTORICAL
-            T: MISSING
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
@@ -2036,15 +2013,14 @@
         associated_participant:
           populated_from: phv00512410
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512410}) + ":ARIC EXAM 5")'
         condition_concept:
           value: HP:0001297
         condition_status:
           populated_from: phv00512446
           value_mappings:
-            '0': ABSENT
-            '1': HISTORICAL
-            T: MISSING
+            'N': ABSENT
+            'Y': HISTORICAL
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
@@ -2058,7 +2034,7 @@
         associated_participant:
           populated_from: phv00516796
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00516796}) + ":ARIC EXAM 5")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -2066,7 +2042,6 @@
           value_mappings:
             '0': ABSENT
             '1': HISTORICAL
-            T: MISSING
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
@@ -2080,7 +2055,7 @@
         associated_participant:
           populated_from: phv00516885
         associated_visit:
-          value: ARIC EXAM 6
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00516885}) + ":ARIC EXAM 6")'
         condition_concept:
           value: HP:0001297
         condition_status:
@@ -2088,9 +2063,8 @@
           value_mappings:
             '0': ABSENT
             '1': HISTORICAL
-            T: MISSING
         condition_provenance:
-          value: SELF_REPORTED
+          value: PATIENT_SELF-REPORTED_CONDITION
           range: string
         relationship_to_participant:
           value: ONESELF

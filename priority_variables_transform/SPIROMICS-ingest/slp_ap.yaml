@@ -1,0 +1,24 @@
+- class_derivations:
+    Condition:
+      populated_from: pht013308
+      slot_derivations:
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00528692}) + ":" + case(({phv00528696}
+            == ''VISIT_1'', ''SPIROMICS Visit 1''), ({phv00528696} == ''VISIT_2'', ''SPIROMICS
+            Visit 2''), ({phv00528696} == ''VISIT_3'', ''SPIROMICS Visit 3''), ({phv00528696}
+            == ''VISIT_4'', ''SPIROMICS Visit 4'')))'
+        associated_participant:
+          populated_from: phv00528692
+        condition_concept:
+          value: HP:0010535
+        condition_status:
+          populated_from: phv00528710
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': UNKNOWN
+            'Missing': UNKNOWN
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+        relationship_to_participant:
+          value: ONESELF

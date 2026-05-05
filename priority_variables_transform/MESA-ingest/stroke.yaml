@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00085751
         associated_visit:
-          value: MESA CLASSIC EXAM 2
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085751}) + ":MESA CLASSIC EXAM 2")'
         age_at_condition_start:
           expr: case(({phv00085760} == 1, {phv00085761} * 365))
         age_at_condition_end:
@@ -34,8 +33,7 @@
         associated_participant:
           populated_from: phv00087070
         associated_visit:
-          value: MESA FAMILY
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         condition_concept:
           value: HP:0001297
           range: string
@@ -58,8 +56,7 @@
         associated_participant:
           populated_from: phv00087070
         associated_visit:
-          value: MESA FAMILY
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         condition_concept:
           value: HP:0001297
           range: string
@@ -82,8 +79,7 @@
         associated_participant:
           populated_from: phv00087848
         associated_visit:
-          value: MESA CLASSIC CVE
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087848}) + ":MESA CLASSIC CVE")'
         condition_concept:
           value: HP:0001297
           range: string
@@ -93,7 +89,7 @@
             '0': ABSENT
             '1': HISTORICAL
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: CLINICAL_DIAGNOSIS
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -105,22 +101,23 @@
         associated_participant:
           populated_from: phv00087848
         associated_visit:
-          value: MESA CLASSIC CVE
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087848}) + ":MESA CLASSIC CVE")'
         condition_concept:
           populated_from: phv00087877
           value_mappings:
             '1': MONDO:0005099
             '2': MONDO:0013792
+            '3': MONDO:1060199
             '4': MONDO:0005394
+            '5': HP:0001297
             '9': HP:0001297
         condition_status:
-          populated_from: phv00087877
+          populated_from: phv00087876
           value_mappings:
             '0': ABSENT
             '1': HISTORICAL
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: CLINICAL_DIAGNOSIS
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -132,8 +129,7 @@
         associated_participant:
           populated_from: phv00087848
         associated_visit:
-          value: MESA CLASSIC CVE
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087848}) + ":MESA CLASSIC CVE")'
         condition_concept:
           value: MONDO:0005264
           range: string
@@ -143,7 +139,7 @@
             '0': ABSENT
             '1': HISTORICAL
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: CLINICAL_DIAGNOSIS
           range: string
         relationship_to_participant:
           value: ONESELF

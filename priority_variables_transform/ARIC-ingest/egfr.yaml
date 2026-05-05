@@ -5,9 +5,7 @@
         associated_participant:
           populated_from: phv00507453
         associated_visit:
-          value: ARIC LAB FORM
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507453}) + ":ARIC Lab Form")'
         observation_type:
           value: OMOP:37208635
         value_quantity:
@@ -27,7 +25,7 @@
         associated_participant:
           populated_from: phv00512222
         associated_visit:
-          value: ARIC EXAM 6
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
         age_at_observation:
           expr: "{phv00512229} * 365"
         observation_type:
@@ -49,9 +47,9 @@
         associated_participant:
           populated_from: phv00519789
         associated_visit:
-          value: ARIC COHORT
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519789}) + ":ARIC EXAM 2")'
+        age_at_observation:
+          expr: "{phv00519796} * 365"
         observation_type:
           value: OMOP:37208635
         value_quantity:
@@ -71,9 +69,9 @@
         associated_participant:
           populated_from: phv00519789
         associated_visit:
-          value: ARIC COHORT
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519789}) + ":ARIC EXAM 5")'
+        age_at_observation:
+          expr: "{phv00519799} * 365"
         observation_type:
           value: OMOP:37208635
         value_quantity:
@@ -93,7 +91,7 @@
         associated_participant:
           populated_from: phv00512039
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
         age_at_observation:
           expr: "{phv00512050} * 365"
         observation_type:
@@ -115,9 +113,9 @@
         associated_participant:
           populated_from: phv00519789
         associated_visit:
-          value: ARIC COHORT
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519789}) + ":ARIC EXAM 4")'
+        age_at_observation:
+          expr: "{phv00519798} * 365"
         observation_type:
           value: OMOP:37208635
         value_quantity:
@@ -137,7 +135,7 @@
         associated_participant:
           populated_from: phv00507300
         associated_visit:
-          value: ARIC EXAM 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
         age_at_observation:
           expr: "{phv00507307} * 365"
         observation_type:
@@ -159,9 +157,9 @@
         associated_participant:
           populated_from: phv00519789
         associated_visit:
-          value: ARIC COHORT
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519789}) + ":ARIC EXAM 4")'
+        age_at_observation:
+          expr: "{phv00519798} * 365"
         observation_type:
           value: OMOP:37208635
         value_quantity:
@@ -181,9 +179,9 @@
         associated_participant:
           populated_from: phv00519789
         associated_visit:
-          value: ARIC COHORT
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519789}) + ":ARIC EXAM 2")'
+        age_at_observation:
+          expr: "{phv00519796} * 365"
         observation_type:
           value: OMOP:37208635
         value_quantity:
@@ -203,9 +201,9 @@
         associated_participant:
           populated_from: phv00519789
         associated_visit:
-          value: ARIC COHORT
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519789}) + ":ARIC EXAM 2")'
+        age_at_observation:
+          expr: "{phv00519796} * 365"
         observation_type:
           value: OMOP:37208635
         value_quantity:
@@ -225,9 +223,9 @@
         associated_participant:
           populated_from: phv00519789
         associated_visit:
-          value: ARIC COHORT
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519789}) + ":ARIC EXAM 5")'
+        age_at_observation:
+          expr: "{phv00519799} * 365"
         observation_type:
           value: OMOP:37208635
         value_quantity:
@@ -247,7 +245,7 @@
         associated_participant:
           populated_from: phv00507300
         associated_visit:
-          value: ARIC EXAM 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
         age_at_observation:
           expr: "{phv00507307} * 365"
         observation_type:
@@ -269,7 +267,7 @@
         associated_participant:
           populated_from: phv00512039
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
         age_at_observation:
           expr: "{phv00512050} * 365"
         observation_type:
@@ -291,7 +289,7 @@
         associated_participant:
           populated_from: phv00507300
         associated_visit:
-          value: ARIC EXAM 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
         age_at_observation:
           expr: "{phv00507307} * 365"
         observation_type:
@@ -313,9 +311,7 @@
         associated_participant:
           populated_from: phv00506823
         associated_visit:
-          value: ARIC COHORT
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00506823}) + ":ARIC EXAM 7")'
         observation_type:
           value: OMOP:37208635
         value_quantity:
@@ -335,9 +331,9 @@
         associated_participant:
           populated_from: phv00519789
         associated_visit:
-          value: ARIC COHORT
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519789}) + ":ARIC EXAM 4")'
+        age_at_observation:
+          expr: "{phv00519798} * 365"
         observation_type:
           value: OMOP:37208635
         value_quantity:
@@ -357,7 +353,7 @@
         associated_participant:
           populated_from: phv00512222
         associated_visit:
-          value: ARIC EXAM 6
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
         age_at_observation:
           expr: "{phv00512229} * 365"
         observation_type:
@@ -379,7 +375,7 @@
         associated_participant:
           populated_from: phv00512039
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
         age_at_observation:
           expr: "{phv00512050} * 365"
         observation_type:
@@ -401,7 +397,7 @@
         associated_participant:
           populated_from: phv00512222
         associated_visit:
-          value: ARIC EXAM 6
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
         age_at_observation:
           expr: "{phv00512229} * 365"
         observation_type:
@@ -423,9 +419,9 @@
         associated_participant:
           populated_from: phv00519789
         associated_visit:
-          value: ARIC COHORT
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519789}) + ":ARIC EXAM 5")'
+        age_at_observation:
+          expr: "{phv00519799} * 365"
         observation_type:
           value: OMOP:37208635
         value_quantity:
@@ -445,9 +441,9 @@
         associated_participant:
           populated_from: phv00519789
         associated_visit:
-          value: ARIC COHORT
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519789}) + ":ARIC EXAM 1")'
+        age_at_observation:
+          expr: "{phv00519795} * 365"
         observation_type:
           value: OMOP:37208635
         value_quantity:

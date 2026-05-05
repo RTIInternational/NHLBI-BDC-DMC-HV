@@ -5,14 +5,14 @@
         associated_participant:
           populated_from: phv00207055
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         condition_concept:
           value: MONDO:0005002
         condition_status:
           populated_from: phv00206784
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            'N': ABSENT
+            'Y': PRESENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
         relationship_to_participant:
@@ -26,7 +26,7 @@
         age_at_condition_start:
           expr: case(({phv00298000} == 1, {phv00298001} * 365))
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00297979}) + ":ARIC EXAM 5")'
         condition_concept:
           value: MONDO:0005002
         condition_status:
@@ -42,7 +42,7 @@
         associated_participant:
           populated_from: phv00515894
         associated_visit:
-          value: ARIC COHORT
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00515894}) + ":ARIC Cohort")'
         condition_concept:
           value: MONDO:0005002
         condition_status:

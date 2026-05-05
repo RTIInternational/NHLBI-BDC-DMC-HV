@@ -1,23 +1,6 @@
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001451
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00099663
-        associated_visit:
-          value: CHS BASELINE 2
-          range: string
-        observation_type:
-          value: OBA:2045301
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001451
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00100046
-                  unit:
-                    value: pg/{cell}
-                    range: string
+# CHS does not include MCH (mean corpuscular hemoglobin) as a CBC analyte.
+# CHS standard CBC reports only WBC, Hgb (HEMOGL23), Hct (HEMATO23), and
+# Platelet (PLATE23). Exhaustive search of all 65 CHS data dictionaries
+# confirmed no MCH variable exists. File intentionally empty.
+# See: CHS-fix-chs-chr-20260330-Detailed-Changelog-2026-03-30.md, Fix 9.
+[]
