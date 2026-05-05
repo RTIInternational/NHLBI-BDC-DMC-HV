@@ -3,7 +3,7 @@
       populated_from: pht001967
       slot_derivations:
         associated_participant:
-          populated_from: phv00128084
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00128084}) + ":JHS")'
         age_at_condition_start:
           expr: case(({phv00128103} == 'Yes', {phv00128104} * 365))
         associated_visit:
@@ -30,7 +30,7 @@
       populated_from: pht001973
       slot_derivations:
         associated_participant:
-          populated_from: phv00128330
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00128330}) + ":JHS")'
         age_at_condition_start:
           expr: case(({phv00128344} == "Yes", {phv00128353} * 365))
         age_at_condition_end:
@@ -59,7 +59,7 @@
       populated_from: pht008725
       slot_derivations:
         associated_participant:
-          populated_from: phv00400849
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00400849}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400849}) + ":JHS AFU")'
           range: string
@@ -81,7 +81,7 @@
       populated_from: pht008729
       slot_derivations:
         associated_participant:
-          populated_from: phv00401078
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401078}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
           range: string
@@ -106,7 +106,7 @@
       populated_from: pht008753
       slot_derivations:
         associated_participant:
-          populated_from: phv00402777
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00402777}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00402777}) + ":JHS Exam 2")'
           range: string
@@ -134,7 +134,7 @@
       populated_from: pht008778
       slot_derivations:
         associated_participant:
-          populated_from: phv00403624
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00403624}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403624}) + ":JHS Exam 3")'
           range: string
