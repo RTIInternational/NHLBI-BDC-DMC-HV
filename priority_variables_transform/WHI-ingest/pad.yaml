@@ -27,6 +27,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00192476
+        age_at_condition_start:
+          expr: 'case(({phv00192510} == 1, ({phv00078437} * 365) + {phv00192511}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00192476}) + ":WHI CAD")'
           range: string
@@ -144,6 +146,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00193141
+        age_at_condition_start:
+          expr: 'case(({phv00193190} == 1, ({phv00078437} * 365) + {phv00193191}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193141}) + ":WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED")'
           range: string
@@ -167,6 +171,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00193686
+        age_at_condition_start:
+          expr: 'case(({phv00193719} == 1, ({phv00078437} * 365) + {phv00193720}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
           range: string
@@ -190,6 +196,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00193686
+        age_at_condition_start:
+          expr: 'case(({phv00193721} == 1, ({phv00078437} * 365) + {phv00193722}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
           range: string
@@ -213,6 +221,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00283451
+        age_at_condition_start:
+          expr: 'case(({phv00283704} == 1, ({phv00078437} * 365) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
           range: string

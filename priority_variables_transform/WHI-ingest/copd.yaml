@@ -4,6 +4,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00193628
+        age_at_condition_start:
+          expr: 'case(({phv00193631} == 1, ({phv00078437} * 365) + {phv00193632}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193628}) + ":WHI EXTENSION STUDY 2 MRC")'
         condition_concept:
@@ -23,11 +25,10 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00193686
+        age_at_condition_start:
+          expr: 'case(({phv00193741} == 1, ({phv00078437} * 365) + {phv00193742}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
-        # age_at_condition_start:
-        #  expr: case(({phv00193741} == 1, age_at_enrollment + {phv00193742}))
-        #  #need to figure out how to get age at enrollment and then update
         condition_concept:
           value: MONDO:0005002
         condition_status:
@@ -45,6 +46,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00283451
+        age_at_condition_start:
+          expr: 'case(({phv00283510} == 1, ({phv00078437} * 365) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
         condition_concept:

@@ -196,6 +196,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00193141
+        age_at_condition_start:
+          expr: 'case(({phv00193154} == 1, ({phv00078437} * 365) + {phv00193155}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193141}) + ":WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED")'
         condition_concept:
@@ -215,6 +217,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00193686
+        age_at_condition_start:
+          expr: 'case(({phv00193727} == 1, ({phv00078437} * 365) + {phv00193728}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
         condition_concept:
@@ -234,6 +238,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00283451
+        age_at_condition_start:
+          expr: 'case(({phv00283695} == 1, ({phv00078437} * 365) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
         condition_concept:

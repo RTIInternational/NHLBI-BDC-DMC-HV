@@ -16,6 +16,8 @@
       slot_derivations:
         associated_participant:
           populated_from: phv00193141
+        age_at_procedure:
+          expr: '({phv00078437} * 365) + {phv00193200}'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193141}) + ":WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED")'
         procedure_concept:
