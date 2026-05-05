@@ -29,13 +29,19 @@ source NHLBI-BDC-DMC-HV/hv-dataqc/sb_scripts/vi_defaults.sh
 
 ### `find_participant_gap.py`
 
-Investigates participant count discrepancies between source PHT tables.
-For COPDGene, this checks whether participants missing from
-`Demographics_Baseline` (pht016246) appear in other PHT tables
-(Subject, Subject_Phenotypes, Subject_Images).
+One-off investigation script written to diagnose the 12-participant gap
+found in the first COPDGene source-vs-harmonized comparison (C1 check).
+It loads participant IDs from each PHT table across consent groups and
+reports which tables contain participants that are missing from the
+anchor table (Demographics_Baseline / pht016246).
+
+Currently hardcoded for COPDGene's PHT tables. If a similar participant
+count gap appears for another cohort, edit the `PHT_LABELS` dict at the
+top of the script to map that cohort's PHT IDs and table names, and
+update the `--source-root` default.
 
 ```bash
-# Default: COPDGene source root on SB
+# COPDGene (default source root)
 uv run python find_participant_gap.py
 
 # Custom source root
@@ -46,15 +52,34 @@ Output is aggregate-only (counts + PHT membership patterns) — safe to export.
 
 ## Running extracts on SB
 
-The core extract scripts live in `extract-source/` and `extract-harmonized/`.
-Run them from the SB workspace:
+### `run_extracts.sh <cohort>` (recommended)
+
+Runs both source and harmonized extracts in one command. Auto-discovers
+the latest `DataRun_*` directory containing mapped-data for the cohort.
+Packages output into a tgz for download.
+
+```bash
+./NHLBI-BDC-DMC-HV/hv-dataqc/sb_scripts/run_extracts.sh COPDGene
+```
+
+Output goes to `/sbgenomics/workspace/QC-output-files/<COHORT>/` with
+timestamped subdirectories and `latest_source`/`latest_harmonized` symlinks.
+The packaged tgz lands at `/sbgenomics/workspace/dataqc_<cohort>_output.tgz`
+— right-click it in the JupyterLab file browser to download.
+
+If multiple `DataRun_*` directories contain data for the cohort, the script
+uses the latest one and prints a note about the choice.
+
+### Manual extract commands
+
+If you need more control (e.g., a specific DataRun or custom output dir):
 
 ```bash
 # Source extract
 uv run python NHLBI-BDC-DMC-HV/hv-dataqc/extract-source/extract_source_summaries.py \
     --cohort COPDGene \
     --source-root /sbgenomics/project-files/PilotParentStudies_NoDRS/COPDGene \
-    --output-dir /sbgenomics/workspace/COPDGene/dataqc-runs
+    --output-dir /sbgenomics/workspace/QC-output-files/COPDGene
 
 # Harmonized extract (use --mapped-data-dirs to avoid OOM)
 uv run python NHLBI-BDC-DMC-HV/hv-dataqc/extract-harmonized/extract_harmonized_summaries.py \
@@ -62,7 +87,7 @@ uv run python NHLBI-BDC-DMC-HV/hv-dataqc/extract-harmonized/extract_harmonized_s
     --mapped-data-dirs \
       /sbgenomics/project-files/DataRun_.../DMC_copdgene_..._c1_.../mapped-data \
       /sbgenomics/project-files/DataRun_.../DMC_copdgene_..._c2_.../mapped-data \
-    --output-dir /sbgenomics/workspace/COPDGene/dataqc-runs
+    --output-dir /sbgenomics/workspace/QC-output-files/COPDGene
 ```
 
 **Note:** Use `--mapped-data-dirs` instead of `--harmonized-root` for the

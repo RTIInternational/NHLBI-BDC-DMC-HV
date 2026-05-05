@@ -741,12 +741,21 @@ def main(argv: list[str] | None = None) -> None:
     output_dir = Path(args.output_dir) if args.output_dir else (resolved_root / "dataqc-runs")
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    # Create a timestamped run subdirectory and a latest_harmonized symlink
+    run_dir = output_dir / f"harmonized_{run_ts}"
+    run_dir.mkdir(exist_ok=True)
+    latest_link = output_dir / "latest_harmonized"
+    latest_link.unlink(missing_ok=True)
+    latest_link.symlink_to(run_dir.name)
+    print(f"Output dir: {run_dir}")
+    print(f"Symlink:    {latest_link} -> {run_dir.name}")
+
     base_stem = f"{cohort.lower()}_harmonized_{run_ts}"
     # `--output` is treated as a filename only and is always placed inside
-    # `output_dir`, mirroring the source extractor's behaviour. This prevents
-    # `--output foo.json` from silently writing outside `--output-dir`.
-    output_path = (output_dir / Path(args.output).name) if args.output else output_dir / f"{base_stem}.json"
-    log_path = output_dir / f"{base_stem}.log"
+    # `run_dir`, mirroring the source extractor's behaviour. This prevents
+    # `--output foo.json` from silently writing outside the run directory.
+    output_path = (run_dir / Path(args.output).name) if args.output else run_dir / f"{base_stem}.json"
+    log_path = run_dir / f"{base_stem}.log"
 
     tee = _Tee(log_path)
     try:

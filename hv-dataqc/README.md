@@ -49,48 +49,39 @@ ranges, visit structure, and cross-variable consistency.
 
 ### Quick start (using convenience scripts)
 
+**On Seven Bridges** (run extracts):
+```bash
+source NHLBI-BDC-DMC-HV/hv-dataqc/sb_scripts/setup.sh   # once per session
+./NHLBI-BDC-DMC-HV/hv-dataqc/sb_scripts/run_extracts.sh COPDGene
+# → auto-discovers DataRun, runs both extracts, packages output.tgz for download
+```
+
+**Locally** (fetch cache, unpack, compare):
 ```bash
 cd hv-dataqc/local_scripts/
+./fetch_cache.sh --cohort copdgene        # once per cohort
+./unpack.sh                                # unpacks ~/Downloads/dataqc_*_output.tgz
+./compare.sh COPDGene                      # auto-finds latest JSONs, YAML dir, cache
+```
 
-# 1. Fetch dbGaP cache (once per cohort)
-./fetch_cache.sh --cohort copdgene
+### Output layout
 
-# 2. Download extract JSONs from SB into local_output/
-#    (scp, sb download, or manual copy)
+Both extract scripts write into timestamped subdirectories with `latest_*`
+symlinks, so you never need to type timestamps:
 
-# 3. Run comparison (auto-finds latest JSONs, YAML dir, cache)
-./compare.sh COPDGene
+```
+QC-output-files/<COHORT>/
+  source_<ts>/copdgene_source_<ts>.json
+  harmonized_<ts>/copdgene_harmonized_<ts>.json
+  latest_source -> source_<ts>
+  latest_harmonized -> harmonized_<ts>
 ```
 
 ### Full manual workflow
 
-```
-ENCLAVE (run once per source study version)
-  python extract-source/extract_source_summaries.py \
-      --cohort SPIROMICS \
-      --source-root /path/to/raw/spiromics/ \
-      --output-dir ./dataqc-runs/
-  → exports: spiromics_source_<timestamp>.json
-
-ENCLAVE (run after each dm-bip pipeline execution)
-  # Use --mapped-data-dirs instead of --harmonized-root to avoid OOM
-  python extract-harmonized/extract_harmonized_summaries.py \
-      --cohort SPIROMICS \
-      --mapped-data-dirs /path/to/consent_c1/mapped-data /path/to/consent_c2/mapped-data \
-      --output-dir ./dataqc-runs/
-  → exports: spiromics_harmonized_<timestamp>.json
-
-OUTSIDE ENCLAVE (re-run freely as YAMLs evolve)
-  python compare/compare_source_harmonized.py \
-      --source  spiromics_source_<timestamp>.json \
-      --harmonized  spiromics_harmonized_<timestamp>.json \
-      --cohort  SPIROMICS \
-      --yaml-dir /path/to/HV-repo/priority_variables_transform/SPIROMICS-ingest/ \
-      --cache-dir /path/to/data/dbgap-cache/spiromics/
-```
-
 See [local_scripts/README.md](local_scripts/README.md) and
-[sb_scripts/README.md](sb_scripts/README.md) for more details.
+[sb_scripts/README.md](sb_scripts/README.md) for details on running
+individual steps or without the convenience wrappers.
 
 ---
 
@@ -157,4 +148,4 @@ pyyaml >= 5.4
 requests >= 2.25  # cache-fetcher only
 ```
 
-Install: `pip install pandas pyyaml requests`
+Install: `uv sync` (from repo root)

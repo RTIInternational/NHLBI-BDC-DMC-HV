@@ -66,6 +66,22 @@ python extract_source_summaries.py \
 
 ---
 
+## Output Layout
+
+Output is written into a timestamped subdirectory with a `latest_source` symlink:
+
+```
+<output-dir>/
+  source_20260504_120000/
+    copdgene_source_20260504_120000.json
+    copdgene_source_extract_20260504_120000.log
+  latest_source -> source_20260504_120000
+```
+
+Re-running creates a new dated directory and updates the symlink.
+
+---
+
 ## Output JSON Format
 
 ```json

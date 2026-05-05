@@ -493,9 +493,17 @@ def main(argv: list[str] | None = None) -> None:
         # ------------------------------------------------------------------
         output_dir = Path(args.output_dir) if args.output_dir else (resolved_root / "dataqc-runs")
         output_dir.mkdir(parents=True, exist_ok=True)
-        log.info("Output dir: %s", output_dir)
 
-        log_path = output_dir / f"{cohort_lower}_source_extract_{timestamp}.log"
+        # Create a timestamped run subdirectory and a latest_source symlink
+        run_dir = output_dir / f"source_{timestamp}"
+        run_dir.mkdir(exist_ok=True)
+        latest_link = output_dir / "latest_source"
+        latest_link.unlink(missing_ok=True)
+        latest_link.symlink_to(run_dir.name)
+        log.info("Output dir: %s", run_dir)
+        log.info("Symlink:    %s -> %s", latest_link, run_dir.name)
+
+        log_path = run_dir / f"{cohort_lower}_source_extract_{timestamp}.log"
         # File logging only — no stdout redirection. The matching
         # `_close_file_logging()` call lives in the outer `finally` block.
         _add_file_logging(log_path)
@@ -658,9 +666,9 @@ def main(argv: list[str] | None = None) -> None:
         # 7. Write JSON
         # ------------------------------------------------------------------
         if args.output:
-            out_path = output_dir / args.output
+            out_path = run_dir / args.output
         else:
-            out_path = output_dir / f"{cohort_lower}_source_{timestamp}.json"
+            out_path = run_dir / f"{cohort_lower}_source_{timestamp}.json"
 
         log.info("Writing %d variable summaries to %s", len(variables), out_path)
         _write_json_atomic(out_path, output_doc)

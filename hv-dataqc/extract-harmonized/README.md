@@ -96,6 +96,22 @@ python extract_harmonized_summaries.py \
 
 ---
 
+## Output Layout
+
+Output is written into a timestamped subdirectory with a `latest_harmonized` symlink:
+
+```
+<output-dir>/
+  harmonized_20260504_130000/
+    copdgene_harmonized_20260504_130000.json
+    copdgene_harmonized_20260504_130000.log
+  latest_harmonized -> harmonized_20260504_130000
+```
+
+Re-running creates a new dated directory and updates the symlink.
+
+---
+
 ## Output JSON Format
 
 ```json
