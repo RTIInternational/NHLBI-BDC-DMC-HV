@@ -3,7 +3,7 @@
       populated_from: pht000998
       slot_derivations:
         associated_participant:
-          populated_from: phv00078435
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078435}) + ":WHI")'
         age_at_condition_start:
           expr: case((phv00078482 == 1, {phv00078483} * 365))
         associated_visit:
@@ -28,7 +28,7 @@
       populated_from: pht003407
       slot_derivations:
         associated_participant:
-          populated_from: phv00193141
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
         age_at_condition_start:
           expr: 'case(({phv00193169} == 1, ({phv00078437} * 365) + {phv00193170}))'
         associated_visit:
@@ -53,7 +53,7 @@
       populated_from: pht006223
       slot_derivations:
         associated_participant:
-          populated_from: phv00283451
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283451}) + ":WHI")'
         age_at_condition_start:
           expr: 'case(({phv00283527} == 1, ({phv00078437} * 365) + {phv00283452}))'
         associated_visit:

@@ -3,7 +3,7 @@
       populated_from: pht000990
       slot_derivations:
         associated_participant:
-          populated_from: phv00077450
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00077450}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00077450}) + ":WHI YEAR 3")'
         condition_concept:
@@ -24,7 +24,7 @@
       populated_from: pht000991
       slot_derivations:
         associated_participant:
-          populated_from: phv00077671
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00077671}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00077671}) + ":WHI YEAR 4")'
         condition_concept:
@@ -43,7 +43,7 @@
       populated_from: pht000992
       slot_derivations:
         associated_participant:
-          populated_from: phv00077797
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00077797}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00077797}) + ":WHI YEAR 5")'
         condition_concept:
@@ -62,7 +62,7 @@
       populated_from: pht000993
       slot_derivations:
         associated_participant:
-          populated_from: phv00077907
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00077907}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00077907}) + ":WHI YEAR 6")'
         condition_concept:
@@ -81,7 +81,7 @@
       populated_from: pht000994
       slot_derivations:
         associated_participant:
-          populated_from: phv00078109
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078109}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078109}) + ":WHI YEAR 7")'
         condition_concept:
@@ -100,7 +100,7 @@
       populated_from: pht000995
       slot_derivations:
         associated_participant:
-          populated_from: phv00078233
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078233}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078233}) + ":WHI YEAR 8")'
         condition_concept:
@@ -119,7 +119,7 @@
       populated_from: pht000999
       slot_derivations:
         associated_participant:
-          populated_from: phv00078506
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078506}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078506}) + ":WHI SCREENING")'
         condition_concept:
@@ -138,7 +138,7 @@
       populated_from: pht002118
       slot_derivations:
         associated_participant:
-          populated_from: phv00154925
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00154925}) + ":WHI")'
         associated_visit:
           expr: "case(({phv00154926} == 1, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI SCREENING')), ({phv00154926} == 2 and {phv00154927} == 1, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI SEMI-ANNUAL VISIT YEAR 1')), ({phv00154926} == 3 and {phv00154927} == 1, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 1')), ({phv00154926} == 3 and {phv00154927} == 2, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 2')), ({phv00154926} == 3 and {phv00154927} == 3, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 3')), ({phv00154926} == 3 and {phv00154927} == 4, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 4')), ({phv00154926} == 3 and {phv00154927} == 5, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 5')), ({phv00154926} == 3 and {phv00154927} == 6, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 6')), ({phv00154926} == 3 and {phv00154927} == 7, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 7')), ({phv00154926} == 3 and {phv00154927} == 8, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 8')), ({phv00154926} == 3 and {phv00154927} == 9, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 9')), ({phv00154926} == 3 and {phv00154927} == 10, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 10')), ({phv00154926} == 3 and {phv00154927} == 11, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 11')), (True, None))"
         condition_concept:
@@ -157,7 +157,7 @@
       populated_from: pht003406
       slot_derivations:
         associated_participant:
-          populated_from: phv00193046
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193046}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193046}) + ":WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP")'
         condition_concept:
@@ -175,7 +175,7 @@
       populated_from: pht003406
       slot_derivations:
         associated_participant:
-          populated_from: phv00193046
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193046}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193046}) + ":WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP")'
         condition_concept:
@@ -195,7 +195,7 @@
       populated_from: pht003407
       slot_derivations:
         associated_participant:
-          populated_from: phv00193141
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
         age_at_condition_start:
           expr: 'case(({phv00193154} == 1, ({phv00078437} * 365) + {phv00193155}))'
         associated_visit:
@@ -216,7 +216,7 @@
       populated_from: pht003414
       slot_derivations:
         associated_participant:
-          populated_from: phv00193686
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_condition_start:
           expr: 'case(({phv00193727} == 1, ({phv00078437} * 365) + {phv00193728}))'
         associated_visit:
@@ -237,7 +237,7 @@
       populated_from: pht006223
       slot_derivations:
         associated_participant:
-          populated_from: phv00283451
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283451}) + ":WHI")'
         age_at_condition_start:
           expr: 'case(({phv00283695} == 1, ({phv00078437} * 365) + {phv00283452}))'
         associated_visit:
