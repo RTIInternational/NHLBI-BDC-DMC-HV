@@ -51,13 +51,14 @@ ranges, visit structure, and cross-variable consistency.
 
 **On Seven Bridges** (run extracts):
 ```bash
-source NHLBI-BDC-DMC-HV/hv-dataqc/sb_scripts/setup.sh   # once per session
+cd NHLBI-BDC-DMC-HV && git pull && source hv-dataqc/sb_scripts/setup.sh && cd ..
 ./NHLBI-BDC-DMC-HV/hv-dataqc/sb_scripts/run_extracts.sh COPDGene
 # → auto-discovers DataRun, runs both extracts, packages output.tgz for download
 ```
 
 **Locally** (fetch cache, unpack, compare):
 ```bash
+git pull
 cd hv-dataqc/local_scripts/
 ./fetch_cache.sh --cohort copdgene        # once per cohort
 ./unpack.sh                                # unpacks ~/Downloads/dataqc_*_output.tgz

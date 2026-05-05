@@ -8,12 +8,13 @@ All commands below assume you are running from `/sbgenomics/workspace/`.
 
 ## Setup
 
-### `setup.sh`
-
-Run once per SB session to install `uv` and sync project dependencies:
+At the start of each SB session:
 
 ```bash
-source NHLBI-BDC-DMC-HV/hv-dataqc/sb_scripts/setup.sh
+cd /sbgenomics/workspace/NHLBI-BDC-DMC-HV
+git pull
+source hv-dataqc/sb_scripts/setup.sh
+cd /sbgenomics/workspace
 ```
 
 ### `vi_defaults.sh`
