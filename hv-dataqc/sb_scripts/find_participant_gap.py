@@ -36,7 +36,7 @@ def load_ids(path: Path, id_col: str = "dbGaP_Subject_ID") -> set[str]:
         header: list[str] | None = None
         idx: int | None = None
         for line in fh:
-            if line.startswith("#"):
+            if line.startswith("#") or not line.strip():
                 continue
             if header is None:
                 header = line.rstrip("\n").split("\t")
