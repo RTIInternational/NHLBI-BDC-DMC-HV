@@ -13,6 +13,7 @@ if [ -z "$TGZ" ]; then
     exit 1
 fi
 
+mkdir -p ../local_output
 echo "Unpacking: $TGZ"
 tar xzf "$TGZ" -C ../local_output/
 echo "Unpacked to hv-dataqc/local_output/"
