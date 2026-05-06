@@ -1,0 +1,106 @@
+- class_derivations:
+    Person:
+      populated_from: pht001440
+      joins:
+        pht004049:
+          source_key: phv00098579
+          lookup_key: phv00203839
+      slot_derivations:
+        identity:
+          expr: 'uuid5("https://w3id.org/bdchm/Person", str({dbGaP_Subject_ID}))'
+        species:
+          value: NCBITaxon:9606
+        vital_status:
+          expr: 'case(({pht004049.phv00203832} is not None, "OMOP:434489"))'
+        age_at_death:
+          expr: 'case(({pht004049.phv00203832} is not None, {pht004049.phv00203832} * 365))'
+        cause_of_death:
+          object_derivations:
+          - class_derivations:
+              CauseOfDeath:
+                populated_from: pht001440
+                slot_derivations:
+                  cause:
+                    expr: 'case(({pht004049.phv00420047} is not None, "ICD10CM:" + str({pht004049.phv00420047})))'
+                  order:
+                    value: 1
+          - class_derivations:
+              CauseOfDeath:
+                populated_from: pht001440
+                slot_derivations:
+                  cause:
+                    expr: 'case(({pht004049.phv00203820} is not None, "ICD10CM:" + str({pht004049.phv00203820})))'
+                  order:
+                    value: 2
+          - class_derivations:
+              CauseOfDeath:
+                populated_from: pht001440
+                slot_derivations:
+                  cause:
+                    expr: 'case(({pht004049.phv00203822} is not None, "ICD10CM:" + str({pht004049.phv00203822})))'
+                  order:
+                    value: 3
+          - class_derivations:
+              CauseOfDeath:
+                populated_from: pht001440
+                slot_derivations:
+                  cause:
+                    expr: 'case(({pht004049.phv00203824} is not None, "ICD10CM:" + str({pht004049.phv00203824})))'
+                  order:
+                    value: 4
+          - class_derivations:
+              CauseOfDeath:
+                populated_from: pht001440
+                slot_derivations:
+                  cause:
+                    expr: 'case(({pht004049.phv00203826} is not None, "ICD10CM:" + str({pht004049.phv00203826})))'
+                  order:
+                    value: 5
+          - class_derivations:
+              CauseOfDeath:
+                populated_from: pht001440
+                slot_derivations:
+                  cause:
+                    expr: 'case(({pht004049.phv00203828} is not None, "ICD10CM:" + str({pht004049.phv00203828})))'
+                  order:
+                    value: 6
+          - class_derivations:
+              CauseOfDeath:
+                populated_from: pht001440
+                slot_derivations:
+                  cause:
+                    expr: 'case(({pht004049.phv00203829} is not None, "ICD10CM:" + str({pht004049.phv00203829})))'
+                  order:
+                    value: 7
+          - class_derivations:
+              CauseOfDeath:
+                populated_from: pht001440
+                slot_derivations:
+                  cause:
+                    expr: 'case(({pht004049.phv00203821} is not None, "ICD10CM:" + str({pht004049.phv00203821})))'
+                  order:
+                    value: 8
+          - class_derivations:
+              CauseOfDeath:
+                populated_from: pht001440
+                slot_derivations:
+                  cause:
+                    expr: 'case(({pht004049.phv00203823} is not None, "ICD10CM:" + str({pht004049.phv00203823})))'
+                  order:
+                    value: 9
+          - class_derivations:
+              CauseOfDeath:
+                populated_from: pht001440
+                slot_derivations:
+                  cause:
+                    expr: 'case(({pht004049.phv00203825} is not None, "ICD10CM:" + str({pht004049.phv00203825})))'
+                  order:
+                    value: 10
+          - class_derivations:
+              CauseOfDeath:
+                populated_from: pht001440
+                slot_derivations:
+                  cause:
+                    expr: 'case(({pht004049.phv00203827} is not None, "ICD10CM:" + str({pht004049.phv00203827})))'
+                  order:
+                    value: 11

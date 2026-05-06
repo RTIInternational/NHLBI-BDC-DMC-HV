@@ -3,11 +3,13 @@
       populated_from: pht004124
       slot_derivations:
         associated_participant:
-          populated_from: phv00207685
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207685}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207685}) + ":ARIC EXAM 4")'
         observation_type:
           value: OMOP:4156660
+        method_type:
+          value: "blood assay"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -23,11 +25,13 @@
       populated_from: pht006444
       slot_derivations:
         associated_participant:
-          populated_from: phv00296690
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00296690}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00296690}) + ":ARIC EXAM 5")'
         observation_type:
           value: OMOP:4156660
+        method_type:
+          value: "blood assay"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -43,13 +47,15 @@
       populated_from: pht012814
       slot_derivations:
         associated_participant:
-          populated_from: phv00512039
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512039}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
         age_at_observation:
           expr: "{phv00512050} * 365"
         observation_type:
           value: OMOP:4156660
+        method_type:
+          value: "blood assay"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -63,13 +69,15 @@
       populated_from: pht012813
       slot_derivations:
         associated_participant:
-          populated_from: phv00511942
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00511942}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511942}) + ":ARIC EXAM 4")'
         age_at_observation:
           expr: "{phv00511996} * 365"
         observation_type:
           value: OMOP:4156660
+        method_type:
+          value: "blood assay"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -83,13 +91,15 @@
       populated_from: pht012504
       slot_derivations:
         associated_participant:
-          populated_from: phv00507300
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00507300}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
         age_at_observation:
           expr: "{phv00507307} * 365"
         observation_type:
           value: OMOP:4156660
+        method_type:
+          value: "blood assay"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -103,13 +113,15 @@
       populated_from: pht012815
       slot_derivations:
         associated_participant:
-          populated_from: phv00512222
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512222}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
         age_at_observation:
           expr: "{phv00512229} * 365"
         observation_type:
           value: OMOP:4156660
+        method_type:
+          value: "blood assay"
         value_quantity:
           object_derivations:
           - class_derivations:

@@ -3,11 +3,13 @@
       populated_from: pht004139
       slot_derivations:
         associated_participant:
-          populated_from: phv00208660
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00208660}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00208660}) + ":ARIC EXAM 3")'
         observation_type:
           value: OMOP:606729
+        method_type:
+          value: "Food Frequency Questionnaire"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -23,11 +25,13 @@
       populated_from: pht004036
       slot_derivations:
         associated_participant:
-          populated_from: phv00203302
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00203302}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203302}) + ":ARIC EXAM 1")'
         observation_type:
           value: OMOP:606729
+        method_type:
+          value: "Food Frequency Questionnaire"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -43,11 +47,13 @@
       populated_from: pht004137
       slot_derivations:
         associated_participant:
-          populated_from: phv00208436
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00208436}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00208436}) + ":ARIC EXAM 2")'
         observation_type:
           value: OMOP:606729
+        method_type:
+          value: "Food Frequency Questionnaire"
         value_quantity:
           object_derivations:
           - class_derivations:
