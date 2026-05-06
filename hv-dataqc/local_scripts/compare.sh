@@ -43,17 +43,10 @@ echo "Harmonized: $(basename "$HARMONIZED")"
 REPORT="$OUT/${COHORT_LOWER}_comparison_report.md"
 JSON_REPORT="$OUT/${COHORT_LOWER}_comparison_results.json"
 
-# Determine YAML dir — try common casing patterns
-YAML_DIR=""
-for candidate in \
-    "$HV/priority_variables_transform/${COHORT}-ingest" \
-    "$HV/priority_variables_transform/${COHORT_LOWER}-ingest" \
-    "$HV/priority_variables_transform/$(echo "$COHORT" | sed 's/.*/\u&/')-ingest"; do
-    if [ -d "$candidate" ]; then
-        YAML_DIR="$candidate"
-        break
-    fi
-done
+# Determine YAML dir with a case-insensitive lookup so
+# casing does not matter and the script remains portable
+# across sed variants.
+YAML_DIR="$(find "$HV/priority_variables_transform" -maxdepth 1 -type d -iname "${COHORT}-ingest" -print -quit)"
 
 if [ -z "$YAML_DIR" ]; then
     echo "WARNING: No YAML dir found for $COHORT in priority_variables_transform/. Running without crosswalk." >&2

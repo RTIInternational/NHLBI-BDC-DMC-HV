@@ -1405,6 +1405,39 @@ def build_variable_crosswalk(
 
 
 # ---------------------------------------------------------------------------
+# Report formatting helpers — used by check functions
+# ---------------------------------------------------------------------------
+
+def _n(val: int | float) -> str:
+    """Format a number with commas for integers, leave floats as-is."""
+    if isinstance(val, int):
+        return f"{val:,}"
+    if isinstance(val, float) and val == int(val) and abs(val) >= 1000:
+        return f"{int(val):,}"
+    return str(val)
+
+
+def _cmp(src, dst, unit: str = "") -> str:
+    """Format a comparison. If src == dst, show once; otherwise 'src -> dst'."""
+    s, d = _n(src), _n(dst)
+    u = unit
+    if s == d:
+        return f"{s}{u}"
+    return f"{s}{u} -> {d}{u}"
+
+
+def _cmp_stat(label: str, src, dst, rel_diff: float) -> str:
+    """Format 'Label: value (d=X)' or 'Label: src -> dst (d=X)'.
+
+    Omits the delta when values are identical.
+    """
+    s, d = _n(src), _n(dst)
+    if s == d:
+        return f"{label}: {s}"
+    return f"{label}: {s} -> {d} (d={rel_diff:.4f})"
+
+
+# ---------------------------------------------------------------------------
 # Check implementations
 # ---------------------------------------------------------------------------
 
@@ -1467,7 +1500,7 @@ def check_c1_n_preservation(
 
     if harmonized_n == src_n:
         return [CheckResult("C1", "_total", "PASS",
-                             f"Participant count matches: {src_n}{pht_note}",
+                             f"Participant count matches: {_n(src_n)}{pht_note}",
                              detail_base)]
 
     if harmonized_n < src_n:
@@ -1475,13 +1508,13 @@ def check_c1_n_preservation(
         status = "FAIL" if loss_pct > fail_pct else "WARN"
         detail = {**detail_base, "loss_pct": loss_pct}
         return [CheckResult("C1", "_total", status,
-                             f"Participant loss: {src_n} -> {harmonized_n}"
+                             f"Participant loss: {_n(src_n)} -> {_n(harmonized_n)}"
                              f" ({loss_pct}%){pht_note}",
                              detail)]
 
     return [CheckResult("C1", "_total", "WARN",
                          f"Harmonized has MORE participants than source:"
-                         f" {src_n} -> {harmonized_n}{pht_note}",
+                         f" {_n(src_n)} -> {_n(harmonized_n)}{pht_note}",
                          detail_base)]
 
 
@@ -1514,21 +1547,21 @@ def check_c2_n_loss(
     if src_n == 0:
         return CheckResult("C2", var_name, "SKIP", "No valid source values", detail_base)
     if harmonized_n == src_n:
-        return CheckResult("C2", var_name, "PASS", f"N preserved: {src_n}", detail_base)
+        return CheckResult("C2", var_name, "PASS", f"N preserved: {_n(src_n)}", detail_base)
 
     loss_pct = round((src_n - harmonized_n) / src_n * 100, 1) if src_n > 0 else 0
     detail_base["loss_pct"] = loss_pct
     if abs(loss_pct) <= pass_pct:
         return CheckResult("C2", var_name, "PASS",
-                           f"N within {pass_pct}%: {src_n} -> {harmonized_n}",
+                           f"N within {pass_pct}%: {_n(src_n)} -> {_n(harmonized_n)}",
                            detail_base)
     if 0 < loss_pct <= warn_pct:
         return CheckResult("C2", var_name, "WARN",
-                           f"Moderate N loss: {src_n} -> {harmonized_n} ({loss_pct}%)",
+                           f"Moderate N loss: {_n(src_n)} -> {_n(harmonized_n)} ({loss_pct}%)",
                            detail_base)
     if loss_pct > warn_pct:
         return CheckResult("C2", var_name, "FAIL",
-                           f"Significant N loss: {src_n} -> {harmonized_n} ({loss_pct}%)",
+                           f"Significant N loss: {_n(src_n)} -> {_n(harmonized_n)} ({loss_pct}%)",
                            detail_base)
     gain_pct = round(-loss_pct, 1)
     gain_warn = warn_pct if gain_warn_pct is None else gain_warn_pct
@@ -1537,7 +1570,7 @@ def check_c2_n_loss(
     status = "FAIL" if gain_pct > gain_fail else "WARN"
     severity = "Large" if status == "FAIL" else "Moderate"
     return CheckResult("C2", var_name, status,
-                       f"{severity} N gain: {src_n} -> {harmonized_n} ({gain_pct}%)",
+                       f"{severity} N gain: {_n(src_n)} -> {_n(harmonized_n)} ({gain_pct}%)",
                        detail_base)
 
 
@@ -1564,16 +1597,16 @@ def check_c3_missing_accounting(
                                    "No valid source values (denominator mismatch)")
             if harmonized_valid == src_valid:
                 return CheckResult("C3", var_name, "PASS",
-                                   f"n_valid preserved: {src_valid}")
+                                   f"n_valid preserved: {_n(src_valid)}")
             diff_pct = abs(harmonized_valid - src_valid) / src_valid * 100
             if diff_pct <= n_valid_pass_pct:
                 return CheckResult("C3", var_name, "PASS",
-                                   f"n_valid within {n_valid_pass_pct}%: {src_valid} -> {harmonized_valid}")
+                                   f"n_valid within {n_valid_pass_pct}%: {_n(src_valid)} -> {_n(harmonized_valid)}")
             if diff_pct <= n_valid_warn_pct:
                 return CheckResult("C3", var_name, "WARN",
-                                   f"n_valid shifted: {src_valid} -> {harmonized_valid} ({diff_pct:.1f}%)")
+                                   f"n_valid shifted: {_n(src_valid)} -> {_n(harmonized_valid)} ({diff_pct:.1f}%)")
             return CheckResult("C3", var_name, "FAIL",
-                               f"n_valid mismatch: {src_valid} -> {harmonized_valid} ({diff_pct:.1f}%)",
+                               f"n_valid mismatch: {_n(src_valid)} -> {_n(harmonized_valid)} ({diff_pct:.1f}%)",
                                {"source_n_valid": src_valid, "harmonized_n_valid": harmonized_valid})
 
     src_pct = src_var.get("pct_missing", 0)
@@ -1582,7 +1615,7 @@ def check_c3_missing_accounting(
 
     if diff <= pass_pp:
         return CheckResult("C3", var_name, "PASS",
-                           f"Missing rate stable: {src_pct}% -> {harmonized_pct}%")
+                           f"Missing rate: {_cmp(src_pct, harmonized_pct, '%')}")
     if diff <= warn_pp:
         return CheckResult("C3", var_name, "WARN",
                            f"Missing rate changed: {src_pct}% -> {harmonized_pct}% (d={diff:.1f}%)")
@@ -1612,10 +1645,10 @@ def check_c4_mean_preservation(
     rel_diff = abs(harmonized_mean - src_mean) / abs(src_mean)
     if rel_diff <= pass_rel:
         return CheckResult("C4", var_name, "PASS",
-                           f"Mean preserved: {src_mean} -> {harmonized_mean} (d={rel_diff:.4f})")
+                           _cmp_stat("Mean preserved", src_mean, harmonized_mean, rel_diff))
     if rel_diff <= warn_rel:
         return CheckResult("C4", var_name, "WARN",
-                           f"Mean shifted: {src_mean} -> {harmonized_mean} (d={rel_diff:.4f})",
+                           _cmp_stat("Mean shifted", src_mean, harmonized_mean, rel_diff),
                            {"source_mean": src_mean, "harmonized_mean": harmonized_mean})
     # --- Unit-conversion detection ---
     # If the observed ratio matches a well-known unit conversion factor (±2%),
@@ -1639,12 +1672,12 @@ def check_c4_mean_preservation(
             return CheckResult(
                 "C4", var_name, "WARN",
                 f"Mean mismatch likely due to unit conversion ({label}, ratio={ratio:.4f}): "
-                f"{src_mean} -> {harmonized_mean} (d={rel_diff:.4f}) — add conversion_factor to C5 for precise check",
+                f"{_n(src_mean)} -> {_n(harmonized_mean)} (d={rel_diff:.4f}) — add conversion_factor to C5 for precise check",
                 {"source_mean": src_mean, "harmonized_mean": harmonized_mean,
                  "observed_ratio": ratio, "suspected_conversion": label},
             )
     return CheckResult("C4", var_name, "FAIL",
-                       f"Mean mismatch: {src_mean} -> {harmonized_mean} (d={rel_diff:.4f}, ratio={ratio:.4f})",
+                       f"Mean mismatch: {_n(src_mean)} -> {_n(harmonized_mean)} (d={rel_diff:.4f}, ratio={ratio:.4f})",
                        {"source_mean": src_mean, "harmonized_mean": harmonized_mean,
                         "observed_ratio": ratio})
 
@@ -1733,12 +1766,12 @@ def check_c6_sd_preservation(
     rel_diff = abs(harmonized_sd - src_sd) / abs(src_sd)
     if rel_diff <= pass_rel:
         return CheckResult("C6", var_name, "PASS",
-                           f"SD preserved: {src_sd} -> {harmonized_sd} (d={rel_diff:.4f})")
+                           _cmp_stat("SD preserved", src_sd, harmonized_sd, rel_diff))
     if rel_diff <= warn_rel:
         return CheckResult("C6", var_name, "WARN",
-                           f"SD shifted: {src_sd} -> {harmonized_sd} (d={rel_diff:.4f})")
+                           _cmp_stat("SD shifted", src_sd, harmonized_sd, rel_diff))
     return CheckResult("C6", var_name, "FAIL",
-                       f"SD mismatch: {src_sd} -> {harmonized_sd} (d={rel_diff:.4f})",
+                       f"SD mismatch: {_n(src_sd)} -> {_n(harmonized_sd)} (d={rel_diff:.4f})",
                        {"source_sd": src_sd, "harmonized_sd": harmonized_sd})
 
 
@@ -1983,12 +2016,12 @@ def check_c8_visit_distribution(
             )
         if harmonized_total == src_total:
             return [CheckResult("C8", "visit_TOTAL", "PASS",
-                                f"Total visits match: N={src_total} (label namespace fallback)",
+                                f"Total visits match: N={_n(src_total)} (label namespace fallback)",
                                 detail)]
         ratio = harmonized_total / src_total if src_total > 0 else 0
         status = "WARN" if warn_lo_ratio <= ratio <= warn_hi_ratio else "FAIL"
         return [CheckResult("C8", "visit_TOTAL", status,
-                             f"Total visits: {src_total} -> {harmonized_total} (label namespace fallback)",
+                             f"Total visits: {_n(src_total)} -> {_n(harmonized_total)} (label namespace fallback)",
                              detail)]
 
     synthesis_note = (
@@ -2005,23 +2038,23 @@ def check_c8_visit_distribution(
             detail["synthesis_note"] = synthesis_note
         if harmonized_n == src_n:
             results.append(CheckResult("C8", f"visit_{visit}", "PASS",
-                                       f"Visit {visit}: N={src_n} ({src_label})",
+                                       f"Visit {visit}: N={_n(src_n)} ({src_label})",
                                        detail or None))
         elif harmonized_n == 0:
             results.append(CheckResult("C8", f"visit_{visit}", "FAIL",
-                                       f"Visit {visit}: missing in harmonized (source N={src_n}, {src_label})",
+                                       f"Visit {visit}: missing in harmonized (source N={_n(src_n)}, {src_label})",
                                        detail or None))
         else:
             ratio = harmonized_n / src_n if src_n > 0 else 0
             status = "WARN" if warn_lo_ratio <= ratio <= warn_hi_ratio else "FAIL"
             detail.update({"source_n": src_n, "harmonized_n": harmonized_n, "ratio": ratio})
             results.append(CheckResult("C8", f"visit_{visit}", status,
-                                       f"Visit {visit}: {src_n} -> {harmonized_n} ({src_label})",
+                                       f"Visit {visit}: {_n(src_n)} -> {_n(harmonized_n)} ({src_label})",
                                        detail))
 
     for visit in sorted(set(harmonized_visits) - set(src_visits)):
         results.append(CheckResult("C8", f"visit_{visit}", "INFO",
-                                   f"Visit {visit}: only in harmonized (N={harmonized_visits[visit]})"))
+                                   f"Visit {visit}: only in harmonized (N={_n(harmonized_visits[visit])})"))
 
     # Uncovered PHTs: in source data but not in visit.yaml — not being harmonized, by design
     if uncovered_phts:
@@ -2384,26 +2417,39 @@ def generate_markdown_report(
         if not table:
             return sub
         sub.append("")
-        sub.append("  | Category | Src N | Src % | Harmonized N | Harmonized % | Δ% |")
-        sub.append("  |----------|------:|------:|------:|------:|---:|")
         mismatch_cats = {m["category"] for m in r.detail.get("mismatches", [])}
         missing_cats = set(r.detail.get("missing_categories", []))
         extra_cats = set(r.detail.get("extra_categories", []))
+        # Check if all rows are identical (src == harmonized) to simplify the table
+        all_identical = all(
+            row.get("source_n") == row.get("harmonized_n")
+            and row.get("source_pct") == row.get("harmonized_pct")
+            for row in table
+        )
+        if all_identical:
+            sub.append("  | Category | N | % |")
+            sub.append("  |----------|------:|------:|")
+        else:
+            sub.append("  | Category | Src N | Src % | Harmonized N | Harmonized % | Δ% |")
+            sub.append("  |----------|------:|------:|------:|------:|---:|")
         for row in table:
             cat = row["category"]
             cat_label = _md_escape(cat)
-            src_n = row.get("source_n", "")
+            src_n = f"{row['source_n']:,}" if isinstance(row.get("source_n"), (int, float)) else str(row.get("source_n", ""))
             src_pct = f"{row['source_pct']:.1f}" if row.get("source_pct") is not None else ""
-            harmonized_n = row.get("harmonized_n", "")
-            harmonized_pct = f"{row['harmonized_pct']:.1f}" if row.get("harmonized_pct") is not None else ""
-            if row.get("source_pct") is not None and row.get("harmonized_pct") is not None:
-                delta = f"{row['harmonized_pct'] - row['source_pct']:+.1f}"
-            else:
-                delta = ""
             flag = " ⚠" if cat in mismatch_cats else (
                    " ✗" if cat in missing_cats else (
                    " ＋" if cat in extra_cats else ""))
-            sub.append(f"  | {cat_label}{flag} | {src_n} | {src_pct} | {harmonized_n} | {harmonized_pct} | {delta} |")
+            if all_identical:
+                sub.append(f"  | {cat_label}{flag} | {src_n} | {src_pct} |")
+            else:
+                harmonized_n = f"{row['harmonized_n']:,}" if isinstance(row.get("harmonized_n"), (int, float)) else str(row.get("harmonized_n", ""))
+                harmonized_pct = f"{row['harmonized_pct']:.1f}" if row.get("harmonized_pct") is not None else ""
+                if row.get("source_pct") is not None and row.get("harmonized_pct") is not None:
+                    delta = f"{row['harmonized_pct'] - row['source_pct']:+.1f}"
+                else:
+                    delta = ""
+                sub.append(f"  | {cat_label}{flag} | {src_n} | {src_pct} | {harmonized_n} | {harmonized_pct} | {delta} |")
         return sub
 
     _check_descriptions = {
