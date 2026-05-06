@@ -63,5 +63,4 @@ are forwarded.
 ./compare.sh COPDGene
 ```
 
-Output reports land in the current directory (compare script default).
-Move them to `../local_output/` to keep things tidy.
+Comparison reports are written to `../local_output/`.

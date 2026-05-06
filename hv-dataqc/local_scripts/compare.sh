@@ -39,6 +39,10 @@ fi
 echo "Source:     $(basename "$SOURCE")"
 echo "Harmonized: $(basename "$HARMONIZED")"
 
+# Report output goes into local_output/
+REPORT="$OUT/${COHORT_LOWER}_comparison_report.md"
+JSON_REPORT="$OUT/${COHORT_LOWER}_comparison_results.json"
+
 # Determine YAML dir — try common casing patterns
 YAML_DIR=""
 for candidate in \
@@ -57,6 +61,8 @@ if [ -z "$YAML_DIR" ]; then
         --source "$SOURCE" \
         --harmonized "$HARMONIZED" \
         --cohort "$COHORT" \
+        --report "$REPORT" \
+        --json-report "$JSON_REPORT" \
         "$@"
 else
     CACHE_DIR="$OUT/dbgap-cache/$COHORT_LOWER"
@@ -71,5 +77,11 @@ else
         --cohort "$COHORT" \
         --yaml-dir "$YAML_DIR" \
         --cache-dir "$CACHE_DIR" \
+        --report "$REPORT" \
+        --json-report "$JSON_REPORT" \
         "$@"
 fi
+
+echo
+echo "Reports: $REPORT"
+echo "         $JSON_REPORT"
