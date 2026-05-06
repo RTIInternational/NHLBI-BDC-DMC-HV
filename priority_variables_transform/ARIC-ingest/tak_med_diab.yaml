@@ -3,7 +3,7 @@
       populated_from: pht004096
       slot_derivations:
         associated_participant:
-          populated_from: phv00206634
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00206634}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00206634}) + ":ARIC EXAM 4")'
         drug_concept:
@@ -15,7 +15,7 @@
       populated_from: pht004097
       slot_derivations:
         associated_participant:
-          populated_from: phv00206643
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00206643}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00206643}) + ":ARIC EXAM 4")'
         drug_concept:

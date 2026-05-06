@@ -3,11 +3,13 @@
       populated_from: pht004099
       slot_derivations:
         associated_participant:
-          populated_from: phv00206665
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00206665}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00206665}) + ":ARIC EXAM 3")'
         observation_type:
           value: OBA:0000061
+        method_type:
+          value: "blood assay"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -23,11 +25,13 @@
       populated_from: pht004098
       slot_derivations:
         associated_participant:
-          populated_from: phv00206655
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00206655}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00206655}) + ":ARIC EXAM 1")'
         observation_type:
           value: OBA:0000061
+        method_type:
+          value: "blood assay"
         value_quantity:
           object_derivations:
           - class_derivations:

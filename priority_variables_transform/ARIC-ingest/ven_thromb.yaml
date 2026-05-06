@@ -3,7 +3,7 @@
       populated_from: pht004053
       slot_derivations:
         associated_participant:
-          populated_from: phv00204295
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204295}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204295}) + ":ARIC Hospital Form")'
         condition_concept:
@@ -15,6 +15,8 @@
             'Y': PRESENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -22,7 +24,7 @@
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from: phv00207055
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         condition_concept:
@@ -34,6 +36,8 @@
             'Y': PRESENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -41,7 +45,7 @@
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from: phv00207055
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         condition_concept:
@@ -53,6 +57,8 @@
             'Y': PRESENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -60,7 +66,9 @@
       populated_from: pht004125
       slot_derivations:
         associated_participant:
-          populated_from: phv00207742
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207742}) + ":ARIC")'
+        age_at_condition_start:
+          expr: "case(({phv00207698} == 'Y', {phv00207733} * 365))"
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207742}) + ":ARIC EXAM 4")'
         condition_concept:
@@ -72,6 +80,8 @@
             'Y': PRESENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -79,7 +89,9 @@
       populated_from: pht004125
       slot_derivations:
         associated_participant:
-          populated_from: phv00207742
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207742}) + ":ARIC")'
+        age_at_condition_start:
+          expr: "case(({phv00207699} == 'Y', {phv00207734} * 365))"
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207742}) + ":ARIC EXAM 4")'
         condition_concept:
@@ -91,6 +103,8 @@
             'Y': PRESENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -98,7 +112,7 @@
       populated_from: pht006416
       slot_derivations:
         associated_participant:
-          populated_from: phv00294620
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00294620}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00294620}) + ":ARIC AFQ")'
         condition_concept:
@@ -110,5 +124,7 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
         relationship_to_participant:
           value: ONESELF

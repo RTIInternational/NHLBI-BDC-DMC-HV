@@ -3,7 +3,7 @@
       populated_from: pht004063
       slot_derivations:
         associated_participant:
-          populated_from: phv00204812
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204812}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
           range: string
@@ -13,11 +13,12 @@
         condition_status:
           populated_from: phv00204697
           value_mappings:
-            Y: PRESENT
-            N: ABSENT
-            U: UNKNOWN
+            '0': ABSENT
+            '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -27,7 +28,7 @@
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from: phv00207055
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
@@ -41,6 +42,8 @@
             'N': ABSENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -50,7 +53,7 @@
       populated_from: pht004063
       slot_derivations:
         associated_participant:
-          populated_from: phv00204812
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204812}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
           range: string
@@ -64,6 +67,8 @@
             '0': ABSENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -73,7 +78,7 @@
       populated_from: pht006416
       slot_derivations:
         associated_participant:
-          populated_from: phv00294620
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00294620}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00294620}) + ":ARIC AFQ")'
           range: string
@@ -88,6 +93,8 @@
             U: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -97,9 +104,9 @@
       populated_from: pht009477
       slot_derivations:
         associated_participant:
-          populated_from: phv00419825
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00419825}) + ":ARIC")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00419825}) + ":ARIC Cohort")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00419825}) + ":ARIC Hospital Form")'
           range: string
         condition_concept:
           value: MONDO:0005252
@@ -112,6 +119,8 @@
             U: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -121,7 +130,7 @@
       populated_from: pht009479
       slot_derivations:
         associated_participant:
-          populated_from: phv00419900
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00419900}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00419900}) + ":ARIC Medical Conditions Update Form")'
           range: string
@@ -136,6 +145,8 @@
             U: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -145,7 +156,7 @@
       populated_from: pht006443
       slot_derivations:
         associated_participant:
-          populated_from: phv00296689
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00296689}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00296689}) + ":ARIC Cohort")'
           range: string
@@ -159,6 +170,8 @@
             '0': ABSENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -168,7 +181,7 @@
       populated_from: pht006443
       slot_derivations:
         associated_participant:
-          populated_from: phv00296689
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00296689}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00296689}) + ":ARIC Cohort")'
           range: string
@@ -182,6 +195,8 @@
             '0': ABSENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -191,7 +206,7 @@
       populated_from: pht012504
       slot_derivations:
         associated_participant:
-          populated_from: phv00507300
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00507300}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
           range: string
@@ -205,6 +220,8 @@
             '0': ABSENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -214,7 +231,7 @@
       populated_from: pht012504
       slot_derivations:
         associated_participant:
-          populated_from: phv00507300
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00507300}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
           range: string
@@ -228,6 +245,8 @@
             '0': ABSENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -237,7 +256,7 @@
       populated_from: pht012518
       slot_derivations:
         associated_participant:
-          populated_from: phv00507808
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00507808}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507808}) + ":ARIC EXAM 7")'
           range: string
@@ -251,6 +270,8 @@
             '0': ABSENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -260,7 +281,7 @@
       populated_from: pht012814
       slot_derivations:
         associated_participant:
-          populated_from: phv00512039
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512039}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
           range: string
@@ -274,6 +295,8 @@
             '0': ABSENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -283,7 +306,7 @@
       populated_from: pht012814
       slot_derivations:
         associated_participant:
-          populated_from: phv00512039
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512039}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
           range: string
@@ -297,6 +320,8 @@
             '0': ABSENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -306,7 +331,7 @@
       populated_from: pht012814
       slot_derivations:
         associated_participant:
-          populated_from: phv00512039
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512039}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
           range: string
@@ -320,6 +345,8 @@
             '0': ABSENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -329,7 +356,7 @@
       populated_from: pht012815
       slot_derivations:
         associated_participant:
-          populated_from: phv00512222
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512222}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
           range: string
@@ -343,6 +370,8 @@
             '0': ABSENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -352,7 +381,7 @@
       populated_from: pht012815
       slot_derivations:
         associated_participant:
-          populated_from: phv00512222
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512222}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
           range: string
@@ -366,6 +395,8 @@
             '0': ABSENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -375,7 +406,7 @@
       populated_from: pht012825
       slot_derivations:
         associated_participant:
-          populated_from: phv00515894
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00515894}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00515894}) + ":ARIC Cohort")'
           range: string
@@ -389,6 +420,8 @@
             '0': ABSENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -398,7 +431,7 @@
       populated_from: pht012839
       slot_derivations:
         associated_participant:
-          populated_from: phv00516796
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00516796}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00516796}) + ":ARIC EXAM 5")'
           range: string
@@ -412,6 +445,8 @@
             '0': ABSENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -421,7 +456,7 @@
       populated_from: pht012839
       slot_derivations:
         associated_participant:
-          populated_from: phv00516796
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00516796}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00516796}) + ":ARIC EXAM 5")'
           range: string
@@ -435,6 +470,8 @@
             '0': ABSENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -444,7 +481,7 @@
       populated_from: pht012839
       slot_derivations:
         associated_participant:
-          populated_from: phv00516796
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00516796}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00516796}) + ":ARIC EXAM 5")'
           range: string
@@ -458,6 +495,8 @@
             '0': ABSENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -467,7 +506,7 @@
       populated_from: pht012840
       slot_derivations:
         associated_participant:
-          populated_from: phv00516885
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00516885}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00516885}) + ":ARIC EXAM 6")'
           range: string
@@ -481,6 +520,8 @@
             '0': ABSENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: self-report questionnaire
           range: string
         relationship_to_participant:
           value: ONESELF

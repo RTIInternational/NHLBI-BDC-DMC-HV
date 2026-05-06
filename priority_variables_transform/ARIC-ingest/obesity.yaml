@@ -1,19 +1,26 @@
 - class_derivations:
-    MeasurementObservation:
+    Condition:
       populated_from: pht006415
       slot_derivations:
         associated_participant:
-          populated_from: phv00294559
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00294559}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00294559}) + ":ARIC EXAM 5")'
           range: string
-        age_at_observation:
-          expr: "{phv00294561} * 365"
-        value_enum:
+        condition_concept:
+          value: MONDO:0005139
+          range: string
+        condition_status:
           populated_from: phv00294619
           value_mappings:
             '0': ABSENT
             '1': PRESENT
-        observation_type:
-          value: OMOP:433736
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: "BMI >= 40"
+          range: string
+        relationship_to_participant:
+          value: ONESELF
           range: string
