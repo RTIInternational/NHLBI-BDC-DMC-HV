@@ -2406,16 +2406,83 @@ def generate_markdown_report(
             sub.append(f"  | {cat_label}{flag} | {src_n} | {src_pct} | {harmonized_n} | {harmonized_pct} | {delta} |")
         return sub
 
-    _check_notes = {
+    _check_descriptions = {
+        "C1": (
+            "Checks whether the total number of unique participants is preserved "
+            "from source to harmonized. A small loss may indicate that the pipeline's "
+            "anchor table (e.g. Demographics_Baseline) excludes participants who appear "
+            "in other source tables. Investigate with `find_participant_gap.py` on SB."
+        ),
+        "C2": (
+            "Checks per-variable valid-N counts. PASS means the harmonized output has "
+            "the same number of non-missing values as the source for that variable. "
+            "FAIL means rows were silently lost or gained during transformation."
+        ),
+        "C3": (
+            "Checks that missing-value rates are stable between source and harmonized. "
+            "A shift suggests the pipeline is introducing or removing nulls."
+        ),
+        "C4": (
+            "Checks that continuous variable means are preserved (no unit conversion). "
+            "Deviations close to zero (d<0.001) are rounding artifacts. Larger deviations "
+            "suggest data corruption or unintended filtering."
+        ),
+        "C5": (
+            "Checks continuous means after a known unit conversion factor "
+            "(e.g. inches to cm). Skipped when no conversion is expected."
+        ),
+        "C6": (
+            "Checks that standard deviations are preserved. A shift in SD without a "
+            "corresponding shift in mean suggests outlier filtering or truncation."
+        ),
+        "C7": (
+            "Compares categorical value distributions after applying YAML value_mappings "
+            "(e.g. source code 1/2 mapped to PRESENT/ABSENT). Categories are aggregated "
+            "when multiple source values map to one harmonized category."
+        ),
+        "C8": (
+            "Checks that per-visit row counts are preserved. For table-based cohorts "
+            "where source files have no visit column, source visit counts are synthesized "
+            "from total_rows_by_pht + visit.yaml mappings."
+        ),
         "C9": (
-            "> **Annotation key:** `[out+src]` = violation present in both source and harmonized "
-            "(pre-existing in raw data, faithfully preserved); "
+            "Checks whether harmonized min/max values fall within clinically plausible "
+            "ranges defined in `clinical_ranges.yaml`. This catches sentinel values "
+            "(e.g. 0 or 999) that should have been mapped to missing, as well as unit "
+            "conversion errors that produce impossible values.\n\n"
+            "> **Annotations:** `[out+src]` = outlier exists in both source and harmonized "
+            "(pre-existing in raw data, faithfully preserved — not a pipeline bug). "
             "`[out only]` = harmonized exceeds bound but source did not "
-            "(transformation may have introduced the issue); "
+            "(the pipeline may have introduced the issue). "
             "`[src only]` = source exceeds bound but harmonized does not "
             "(pipeline corrected or filtered the value)."
         ),
+        "C10": (
+            "Checks cross-variable consistency rules (e.g. SBP > DBP, FEV1 < FVC). "
+            "Rules are defined in `clinical_ranges.yaml`. Formula-based rules "
+            "(e.g. BMI consistency) are not yet implemented."
+        ),
+        "C11": (
+            "Checks that source and harmonized agree on variable type "
+            "(continuous vs categorical). A mismatch suggests the YAML transform "
+            "or the source type inference needs attention."
+        ),
     }
+
+    def _render_unmatched_source(r: CheckResult) -> list[str]:
+        """Render unmatched source variables as a collapsed block."""
+        sub: list[str] = []
+        keys = r.detail.get("source_keys", [])
+        if not keys:
+            return sub
+        sub.append("")
+        sub.append(f"<details><summary>{len(keys)} unmatched source variables</summary>")
+        sub.append("")
+        for sk in sorted(keys):
+            sub.append(f"- `{sk}`")
+        sub.append("")
+        sub.append("</details>")
+        return sub
 
     for check_id in ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11"]:
         check_results = [r for r in results if r.check_id == check_id]
@@ -2423,14 +2490,58 @@ def generate_markdown_report(
             continue
         lines.append(f"## {check_id}: {check_names.get(check_id, check_id)}")
         lines.append("")
-        if check_id in _check_notes:
-            lines.append(_check_notes[check_id])
+        if check_id in _check_descriptions:
+            lines.append(_check_descriptions[check_id])
             lines.append("")
-        for r in sorted(check_results, key=lambda x: _sort_key.get(x.status, 9)):
+
+        # Separate results by status for collapsing
+        fails = [r for r in check_results if r.status == "FAIL"]
+        warns = [r for r in check_results if r.status == "WARN"]
+        infos = [r for r in check_results if r.status == "INFO"]
+        passes = [r for r in check_results if r.status == "PASS"]
+        skips = [r for r in check_results if r.status == "SKIP"]
+
+        # FAIL and WARN always shown expanded
+        for r in fails + warns:
             icon = _STATUS_ICONS.get(r.status, r.status)
             lines.append(f"- {icon} **{_md_escape(r.variable)}**: {_md_escape(r.message)}")
-            if check_id == "C7" and r.status in ("PASS", "WARN", "FAIL", "INFO"):
+            if check_id == "C7":
                 lines.extend(_render_c7_detail(r))
+
+        # INFO items
+        for r in infos:
+            icon = _STATUS_ICONS.get(r.status, r.status)
+            lines.append(f"- {icon} **{_md_escape(r.variable)}**: {_md_escape(r.message)}")
+            if r.detail.get("direction") == "source_unmatched_summary":
+                lines.extend(_render_unmatched_source(r))
+
+        # PASS collapsed if there are also FAIL/WARN/INFO items, or if > 5
+        if passes:
+            show_collapsed = len(passes) > 5 or fails or warns
+            if show_collapsed:
+                lines.append("")
+                lines.append(f"<details><summary>{len(passes)} PASS results</summary>")
+                lines.append("")
+            for r in passes:
+                icon = _STATUS_ICONS.get(r.status, r.status)
+                lines.append(f"- {icon} **{_md_escape(r.variable)}**: {_md_escape(r.message)}")
+                if check_id == "C7":
+                    lines.extend(_render_c7_detail(r))
+            if show_collapsed:
+                lines.append("")
+                lines.append("</details>")
+
+        # SKIP always collapsed
+        if skips:
+            lines.append("")
+            lines.append(f"<details><summary>{len(skips)} SKIP results</summary>")
+            lines.append("")
+            for r in skips:
+                icon = _STATUS_ICONS.get(r.status, r.status)
+                lines.append(f"- {icon} **{_md_escape(r.variable)}**: {_md_escape(r.message)}")
+            lines.append("")
+            lines.append("</details>")
+
         lines.append("")
 
     return "\n".join(lines)
@@ -2734,21 +2845,14 @@ def main(argv: list[str] | None = None) -> None:
     ]
     if _unmatched_src_keys:
         count = len(_unmatched_src_keys)
-        if args.show_unmatched_source:
-            for sk in _unmatched_src_keys:
-                all_results.append(CheckResult(
-                    "C2", source_vars[sk].get("name", sk), "INFO",
-                    "Source variable not matched in harmonized",
-                    {"direction": "source_unmatched", "source_key": sk},
-                ))
-        else:
-            # Emit a single summary INFO instead of one row per variable
-            all_results.append(CheckResult(
-                "C2", "_unmatched_source_vars", "INFO",
-                f"{count} source variable(s) not matched in harmonized (use --show-unmatched-source to list)",
-                {"direction": "source_unmatched_summary", "count": count,
-                 "source_keys": _unmatched_src_keys},
-            ))
+        # Always include the full list of unmatched source variables in the
+        # detail dict so the report can render them in a collapsed block.
+        all_results.append(CheckResult(
+            "C2", "_unmatched_source_vars", "INFO",
+            f"{count} source variable(s) not matched in harmonized",
+            {"direction": "source_unmatched_summary", "count": count,
+             "source_keys": _unmatched_src_keys},
+        ))
 
     unresolved_yaml = (yaml_diagnostics.get("unresolved_yaml_entries") or {})
     yaml_proposed = set(yaml_diagnostics.get("yaml_proposed_harmonized_keys") or [])
