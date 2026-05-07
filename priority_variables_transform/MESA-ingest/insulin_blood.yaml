@@ -11,6 +11,9 @@
         observation_type:
           value: OBA:2060174
           range: string
+        method_type:
+          value: "blood assay"
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -32,6 +35,9 @@
           expr: 'case(({phv00160529} == 2, uuid5("https://w3id.org/bdchm/Visit", str({phv00159198}) + ":MESA CLASSIC EXAM 2")), ({phv00160529} == 3, uuid5("https://w3id.org/bdchm/Visit", str({phv00159198}) + ":MESA CLASSIC EXAM 3")))'
         observation_type:
           value: OBA:2060174
+          range: string
+        method_type:
+          value: "blood assay"
           range: string
         value_quantity:
           object_derivations:
@@ -57,6 +63,9 @@
         observation_type:
           value: OBA:2060174
           range: string
+        method_type:
+          value: "blood assay"
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -80,6 +89,9 @@
           expr: '{phv00176011} * 365'
         observation_type:
           value: OBA:2060174
+          range: string
+        method_type:
+          value: "blood assay"
           range: string
         value_quantity:
           object_derivations:

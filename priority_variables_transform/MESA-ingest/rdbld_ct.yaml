@@ -9,6 +9,9 @@
         observation_type:
           value: OMOP:4030871
           range: string
+        method_type:
+          value: "blood assay"
+          range: string
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -30,6 +33,9 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00218989}) + ":MESA EPIGENOMICS")'
         observation_type:
           value: OMOP:4030871
+          range: string
+        method_type:
+          value: "blood assay"
           range: string
         value_quantity:
           object_derivations:
