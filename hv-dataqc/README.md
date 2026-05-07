@@ -58,7 +58,7 @@ hv-dataqc/sb_scripts/run_extracts.sh COPDGene
 # → auto-discovers DataRun, runs both extracts, packages output.tgz for download
 ```
 
-***Note, if the most recent version is running on the branch, then you will need to pull from a specific branch to run the latest QC code which has not been merged to the main.
+***Note: if the latest QC code is on a feature branch that hasn't been merged to main yet, you'll need to check out that branch instead:
 ```
 # 1. Go into the repo
 cd NHLBI-BDC-DMC-HV
@@ -77,7 +77,7 @@ git pull origin <feature branch name>
 ```bash
 git pull
 cd hv-dataqc/local_scripts/
-./fetch_cache.sh --cohort copdgene        # once per cohort
+./fetch_cache.sh copdgene                  # once per cohort
 ./unpack.sh                                # unpacks ~/Downloads/dataqc_*_output.tgz
 ./compare.sh COPDGene                      # auto-finds latest JSONs, YAML dir, cache
 ```

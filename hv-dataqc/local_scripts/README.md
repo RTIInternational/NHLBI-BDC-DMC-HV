@@ -37,24 +37,23 @@ Automatically locates the YAML transform dir and dbGaP cache.
 1. Source and harmonized JSONs in `../local_output/` (via `unpack.sh` or manual copy)
 2. dbGaP cache fetched (see `fetch_cache.sh`)
 
-### `fetch_cache.sh [flags...]`
+### `fetch_cache.sh <cohort> [flags...]`
 
 Wrapper for `cache-fetcher/fetch_dbgap_cache.py` that writes to
-`local_output/dbgap-cache/` instead of the default location. All flags
-are forwarded.
+`local_output/dbgap-cache/` instead of the default location. Extra
+flags are forwarded.
 
 ```bash
-./fetch_cache.sh --list
-./fetch_cache.sh --cohort copdgene
-./fetch_cache.sh --cohort mesa --dry-run
-./fetch_cache.sh                          # all cohorts
+./fetch_cache.sh copdgene
+./fetch_cache.sh mesa --dry-run
+./fetch_cache.sh --list                   # list available cohorts
 ```
 
 ## Typical local workflow
 
 ```bash
 # 1. Fetch dbGaP cache (once per cohort)
-./fetch_cache.sh --cohort copdgene
+./fetch_cache.sh copdgene
 
 # 2. Download dataqc_<cohort>_output.tgz from SB and unpack
 ./unpack.sh
