@@ -1,0 +1,10 @@
+- class_derivations:
+    Participant:
+      populated_from: pht001116
+      slot_derivations:
+        identity:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
+        member_of_research_study:
+          value: 'Multi-Ethnic Study of Atherosclerosis (MESA)'
+        associated_person:
+          expr: 'uuid5("https://w3id.org/bdchm/Person", str({dbGaP_Subject_ID}))'
