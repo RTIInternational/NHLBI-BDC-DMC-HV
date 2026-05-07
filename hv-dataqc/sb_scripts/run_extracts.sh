@@ -8,12 +8,22 @@
 # discovers DataRun_* files under the top level subfolder, _QC_STAGING in order to flag data run files that are ready for QC vs. not
 set -euo pipefail
 
-COHORT="${1:?Usage: ./run_extracts.sh <cohort>}"
-COHORT_LOWER="$(echo "$COHORT" | tr '[:upper:]' '[:lower:]')"
+COHORT_INPUT="${1:?Usage: ./run_extracts.sh <cohort>}"
+COHORT_LOWER="$(echo "$COHORT_INPUT" | tr '[:upper:]' '[:lower:]')"
+COHORT_UPPER="$(echo "$COHORT_INPUT" | tr '[:lower:]' '[:upper:]')"
 # Derive repo root from this script's location (sb_scripts/ -> hv-dataqc/ -> repo root)
 HV="$(cd "$(dirname "$0")/../.." && pwd)"
+
+# Discover the actual source directory name (case-insensitive)
+SOURCE_ROOT="$(find /sbgenomics/project-files/PilotParentStudies_NoDRS -maxdepth 1 -type d -iname "$COHORT_INPUT" -print -quit 2>/dev/null)"
+if [ -z "$SOURCE_ROOT" ]; then
+    echo "ERROR: No source directory found matching '$COHORT_INPUT' under PilotParentStudies_NoDRS/" >&2
+    exit 1
+fi
+
+# Use the discovered directory name as the canonical cohort name for output paths
+COHORT="$(basename "$SOURCE_ROOT")"
 OUTPUT_DIR="/sbgenomics/workspace/QC-output-files/$COHORT"
-SOURCE_ROOT="/sbgenomics/project-files/PilotParentStudies_NoDRS/$COHORT"
 
 # --- Auto-discover latest DataRun with mapped-data for this cohort ---
 MAPPED_DIRS=""
