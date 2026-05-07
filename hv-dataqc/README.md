@@ -56,6 +56,21 @@ cd NHLBI-BDC-DMC-HV && git pull && source hv-dataqc/sb_scripts/setup.sh && cd ..
 # → auto-discovers DataRun, runs both extracts, packages output.tgz for download
 ```
 
+***Note, if the most recent version is running on the branch, then you will need to pull from a specific branch to run the latest QC code which has not been merged to the main.
+```
+# 1. Go into the repo
+cd NHLBI-BDC-DMC-HV
+
+# 2. Fetch all remote branches
+git fetch origin
+
+# 3. Switch to the target branch
+git checkout <feature branch name>
+
+# 4. Pull latest from that branch
+git pull origin <feature branch name>
+```
+
 **Locally** (fetch cache, unpack, compare):
 ```bash
 git pull
