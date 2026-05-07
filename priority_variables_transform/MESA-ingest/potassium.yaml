@@ -3,7 +3,7 @@
       populated_from: pht001120
       slot_derivations:
         associated_participant:
-          populated_from: phv00086726
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086726}) + ":MESA")'
         associated_visit:
           expr: 'case(({phv00191192} == 3, uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 3")), ({phv00191192} == 4, uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")))'
         age_at_observation:
@@ -27,7 +27,7 @@
       populated_from: pht003089
       slot_derivations:
         associated_participant:
-          populated_from: phv00175973
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00175973}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00175973}) + ":MESA ANCILLARY")'
         observation_type:

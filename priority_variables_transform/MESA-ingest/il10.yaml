@@ -3,7 +3,7 @@
       populated_from: pht002099
       slot_derivations:
         associated_participant:
-          populated_from: phv00142665
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00142665}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00142665}) + ":MESA IL-10")'
         observation_type:
@@ -49,7 +49,7 @@
       populated_from: pht002105
       slot_derivations:
         associated_participant:
-          populated_from: phv00150369
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00150369}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00150369}) + ":MESA STRESS")'
         observation_type:

@@ -3,7 +3,7 @@
       populated_from: pht001114
       slot_derivations:
         associated_participant:
-          populated_from: phv00083675
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00083675}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00083675}) + ":MESA LUNG SPIROMETRY")'
         age_at_observation:

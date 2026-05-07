@@ -3,7 +3,7 @@
       populated_from: pht001112
       slot_derivations:
         associated_participant:
-          populated_from: phv00083440
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00083440}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00083440}) + ":MESA AIR SPIROMETRY")'
         age_at_observation:
@@ -27,7 +27,7 @@
       populated_from: pht001114
       slot_derivations:
         associated_participant:
-          populated_from: phv00083675
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00083675}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00083675}) + ":MESA LUNG SPIROMETRY")'
         age_at_observation:
@@ -51,7 +51,7 @@
       populated_from: pht001122
       slot_derivations:
         associated_participant:
-          populated_from: phv00087666
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087666}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087666}) + ":MESA FAMILY SPIROMETRY")'
         age_at_observation:
