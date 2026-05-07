@@ -3,7 +3,7 @@
       populated_from: pht002239
       slot_derivations:
         associated_participant:
-          populated_from: phv00159568
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00159568}) + ":COPDGene")'
         associated_visit:
           expr: case(({phv00568798} == 'P1', uuid5('https://w3id.org/bdchm/Visit',
             str({phv00159568}) + ':COPDGene P1')), ({phv00568798} == 'P2',
@@ -19,6 +19,10 @@
                 slot_derivations:
                   observation_type:
                     value: OMOP:4152194
+                  body_position:
+                    value: SITTING_POSITION
+                  method_type:
+                    value: automated sphygmomanometer
                   age_at_observation:
                     expr: '{phv00568808} * 365'
                   value_quantity:
@@ -37,6 +41,10 @@
                 slot_derivations:
                   observation_type:
                     value: OMOP:4154790
+                  body_position:
+                    value: SITTING_POSITION
+                  method_type:
+                    value: automated sphygmomanometer
                   age_at_observation:
                     expr: '{phv00568808} * 365'
                   value_quantity:

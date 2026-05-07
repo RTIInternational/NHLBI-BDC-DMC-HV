@@ -24,14 +24,14 @@
                     range: string
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht000024
+      populated_from: pht000012
       slot_derivations:
         associated_participant:
-          populated_from: phv00005557
+          populated_from: phv00001558
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005557}) + ":FHS ORIGINAL EXAM 22")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001558}) + ":FHS ORIGINAL EXAM 10")'
         age_at_observation:
-          expr: '{pht003099.phv00177972} * 365'
+          expr: '{pht003099.phv00177948} * 365'
         observation_type:
           value: OBA:0000061
           range: string
@@ -190,6 +190,30 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00227093
+                  unit:
+                    value: mg/dL
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht006013
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00275427
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275427}) + ":FHS OFFSPRING EXAM 5")'
+        age_at_observation:
+          expr: '{pht003099.phv00177938} * 365'
+        observation_type:
+          value: OBA:0000061
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht006013
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00421971
                   unit:
                     value: mg/dL
                     range: string

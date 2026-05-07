@@ -3,7 +3,7 @@
       populated_from: pht001977
       slot_derivations:
         associated_participant:
-          populated_from: phv00128494
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00128494}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128494}) + ":JHS Exam 1")'
           range: string
@@ -17,7 +17,7 @@
       populated_from: pht008729
       slot_derivations:
         associated_participant:
-          populated_from: phv00401078
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401078}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
           range: string

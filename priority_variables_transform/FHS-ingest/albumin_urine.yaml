@@ -20,7 +20,7 @@
                   value_decimal:
                     expr: 'case(
                              ({phv00071895} > 3, {phv00071895}),
-                             (True, None)
+                             (True, "LLOD")
                           )'
                   unit:
                     value: mg/L
@@ -200,7 +200,7 @@
                   value_concept:
                     expr: 'case(
                              ({phv00172161} > 3.0, {phv00172161}),
-                             ({phv00227069} == 1, None),
+                             ({phv00227069} == 1, "LLOD"),
                              (True, {phv00172161})
                           )'
                   unit:
@@ -240,7 +240,7 @@
                   value_decimal:
                     expr: 'case(
                              ({phv00071895} > 3, {phv00071895}),
-                             (True, None)
+                             (True, "LLOD")
                           )'
                   unit:
                     value: mg/L
@@ -279,7 +279,7 @@
                   value_decimal:
                     expr: 'case(
                             ({phv00227045} > 3.0, {phv00227045}),
-                            ({phv00227069} == 1, None),
+                            ({phv00227069} == 1, "LLOD"),
                             (True, {phv00227045})
                           )'                  
                   unit:
@@ -307,7 +307,7 @@
                   value_concept:
                     expr: 'case(
                             ({phv00219547} > 3.0, {phv00219547}),
-                            ({phv00219549} == 1, None),
+                            ({phv00219549} == 1, "LLOD"),
                             (True, {phv00219547})
                           )'
                   unit:

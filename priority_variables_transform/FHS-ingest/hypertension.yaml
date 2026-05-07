@@ -60,10 +60,11 @@
           value: HP:0000822
           range: string
         condition_status:
-          populated_from: phv00254023
+          populated_from: phv00002180
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
@@ -289,7 +290,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010138}) + ":FHS OFFSPRING EXAM 6")'
         condition_concept:
-          value: HP:0000822
+          value: NCIT:C3117
           range: string
         condition_status:
           populated_from: phv00010093
@@ -315,10 +316,10 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":" + case(({phv00056607} == 1, ''FHS OFFSPRING SHHS EXAM 1''), ({phv00056607} == 7, ''FHS OMNI 1 SHHS EXAM 1''), (True, ''FHS UNKNOWN VISIT EXAM 1'')))'
         condition_concept:
-          value: HP:0000822
+          value: NCIT:C3117
           range: string
         condition_status:
-          populated_from: phv00056590
+          populated_from: phv00010093
           value_mappings:
             '0': ABSENT
             '1': PRESENT

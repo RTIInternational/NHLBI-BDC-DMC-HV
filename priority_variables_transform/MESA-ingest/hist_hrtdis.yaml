@@ -3,7 +3,7 @@
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         condition_concept:
@@ -21,12 +21,15 @@
         relationship_to_participant:
           value: ONESELF
           range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         condition_concept:
@@ -44,12 +47,15 @@
         relationship_to_participant:
           value: ONESELF
           range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht001117
       slot_derivations:
         associated_participant:
-          populated_from: phv00085751
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00085751}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085751}) + ":MESA CLASSIC EXAM 2")'
         age_at_condition_start:
@@ -70,12 +76,15 @@
         relationship_to_participant:
           value: ONESELF
           range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht001118
       slot_derivations:
         associated_participant:
-          populated_from: phv00085772
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00085772}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         condition_concept:
@@ -93,12 +102,15 @@
         relationship_to_participant:
           value: ONESELF
           range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht001119
       slot_derivations:
         associated_participant:
-          populated_from: phv00086258
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086258}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         condition_concept:
@@ -116,12 +128,15 @@
         relationship_to_participant:
           value: ONESELF
           range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht001121
       slot_derivations:
         associated_participant:
-          populated_from: phv00087070
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         condition_concept:
@@ -138,4 +153,7 @@
           range: string
         relationship_to_participant:
           value: ONESELF
+          range: string
+        associated_evidence:
+          value: "self-report questionnaire"
           range: string

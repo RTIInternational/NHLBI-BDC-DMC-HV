@@ -7,7 +7,7 @@
         name:
           value: HCHS EXAM
         associated_participant:
-          populated_from: phv00226250
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
         age_at_visit_start:
           expr: '{phv00226251} * 365'
         age_at_visit_end:

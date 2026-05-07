@@ -44,7 +44,7 @@
                   value_decimal:
                     expr: 'case(
                           ({phv00201991} > 1.39, {phv00201991}),
-                          (True, None)
+                          (True, "LLOD")
                          )'
                   unit:
                     value: pmol/L
@@ -71,7 +71,7 @@
                   value_decimal:
                     expr: 'case(
                           ({phv00201995} > 1.39, {phv00201995}),
-                          (True, None)
+                          (True, "LLOD")
                          )'
                   unit:
                     value: pmol/L
@@ -122,8 +122,32 @@
                   value_decimal:
                     expr: 'case(
                           ({phv00227085} > 1.39, {phv00227085}),
-                          (True, None)
+                          (True, "LLOD")
                          )'
+                  unit:
+                    value: pmol/L
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht006013
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00275427
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275427}) + ":FHS OFFSPRING EXAM 5")'
+        age_at_observation:
+          expr: '{pht003099.phv00177938} * 365'
+        observation_type:
+          value: OBA:2060174
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht006013
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00422701
                   unit:
                     value: pmol/L
                     range: string

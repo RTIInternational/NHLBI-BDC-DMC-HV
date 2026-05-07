@@ -3,13 +3,15 @@
       populated_from: pht001948
       slot_derivations:
         associated_participant:
-          populated_from: phv00126001
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00126001}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00126001}) + ":JHS Exam 2")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OMOP:42872742
+        method_type:
+          value: "CT scan"
         value_quantity:
           object_derivations:
           - class_derivations:

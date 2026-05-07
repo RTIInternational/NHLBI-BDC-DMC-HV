@@ -3,11 +3,14 @@
       populated_from: pht004317
       slot_derivations:
         associated_participant:
-          populated_from: phv00218303
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00218303}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00218303}) + ":MESA DIET EXAM 5")'
         observation_type:
           value: OMOP:606729
+          range: string
+        method_type:
+          value: "Food Frequency Questionnaire"
           range: string
         value_quantity:
           object_derivations:

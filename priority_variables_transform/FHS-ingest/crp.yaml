@@ -120,7 +120,7 @@
                 populated_from: pht002889
                 slot_derivations:
                   value_decimal:
-                    expr: case(({phv00172177} > 0.15, {phv00172177}), ({phv00462201} == 1, None), (True, {phv00172177}))
+                    expr: case(({phv00172177} > 0.15, {phv00172177}), ({phv00462201} == 1, "LLOD"), (True, {phv00172177}))
                   unit:
                     value: mg/L
                     range: string
@@ -156,7 +156,7 @@
                 populated_from: pht004802
                 slot_derivations:
                   value_decimal:
-                    expr: case(({phv00227060} > 0.15, {phv00227060}), ({phv00227067} == 1, None), (True, {phv00227060}))
+                    expr: case(({phv00227060} > 0.15, {phv00227060}), ({phv00227067} == 1, "'LLOD'"), (True, {phv00227060}))
                   unit:
                     value: mg/L
                     range: string
@@ -174,14 +174,14 @@
                     range: string
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht012880
+      populated_from: pht006013
       slot_derivations:
         associated_participant:
-          populated_from: phv00520362
+          populated_from: phv00275427
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00520362}) + ":" + case(({phv00520363} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 1''), ({phv00520363} == ''3'', ''FHS GENERATION 3 EXAM 1''), ({phv00520363} == ''72'', ''FHS OMNI 2 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275427}) + ":FHS OFFSPRING EXAM 5")'
         age_at_observation:
-          expr: '{pht003099.phv00177930} * 365'
+          expr: '{pht003099.phv00177938} * 365'  
         observation_type:
           value: OMOP:4208414
           range: string
@@ -189,106 +189,10 @@
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht012880
+                populated_from: pht006013
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00520365
-                  unit:
-                    value: mg/L
-                    range: string
-        range_low:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012880
-                slot_derivations:
-                  value_decimal:
-                    value: '0.15'
-                    range: string
-                  unit:
-                    value: mg/L
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht010726
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00462185
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00462185}) + ":" + case(({phv00462186} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 3''), ({phv00462186} == ''3'', ''FHS GENERATION 3 EXAM 3''), ({phv00462186} == ''72'', ''FHS OMNI 2 EXAM 3''), (True, ''FHS UNKNOWN VISIT'')))'
-        age_at_observation:
-          expr: '{pht003099.phv00177934} * 365'
-        observation_type:
-          value: OMOP:4208414
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht010726
-                slot_derivations:
-                  value_decimal:
-                    expr: case(({phv00462196} > 0.15, {phv00462196}), ({phv00462201} == 1, None), (True, {phv00462196}))
-                  unit:
-                    value: mg/L
-                    range: string
-        range_low:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht010726
-                slot_derivations:
-                  value_decimal:
-                    value: '0.15'
-                    range: string
-                  unit:
-                    value: mg/L
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht012881
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00520376
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00520376}) + ":" + case(({phv00520377} == ''1'', ''FHS OFFSPRING EXAM 7''), ({phv00520377} == ''7'', ''FHS OMNI 1 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
-        age_at_observation:
-          expr: 'case(({phv00520377} == ''1'', {pht003099.phv00177942} * 365), ({phv00520377} == ''7'', {pht003099.phv00177932} * 365))'
-        observation_type:
-          value: OMOP:4208414
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012881
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00520381
-                  unit:
-                    value: mg/L
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht012882
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00520395
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00520395}) + ":" + case(({phv00520396} == ''1'', ''FHS OFFSPRING EXAM 8''), ({phv00520396} == ''7'', ''FHS OMNI 1 EXAM 3''), (True, ''FHS UNKNOWN VISIT'')))'
-        age_at_observation:
-          expr: 'case(({phv00520396} == ''1'', {pht003099.phv00177944} * 365), ({phv00520396} == ''7'', {pht003099.phv00177934} * 365))'
-        observation_type:
-          value: OMOP:4208414
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012882
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00520398
+                    populated_from: phv00422577
                   unit:
                     value: mg/L
                     range: string

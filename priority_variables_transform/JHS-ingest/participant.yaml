@@ -1,0 +1,10 @@
+- class_derivations:
+    Participant:
+      populated_from: pht008729
+      slot_derivations:
+        identity:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401078}) + ":JHS")'
+        member_of_research_study:
+          value: 'Jackson Heart Study (JHS)'
+        associated_person:
+          expr: 'uuid5("https://w3id.org/bdchm/Person", str({dbGaP_Subject_ID}))'

@@ -3,9 +3,8 @@
       populated_from: pht000998
       slot_derivations:
         associated_participant:
-          populated_from: phv00078435
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078435}) + ":WHI")'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078435}) + ":WHI SCREENING")'
           range: string
         condition_concept:
@@ -19,6 +18,8 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -27,9 +28,8 @@
       populated_from: pht000998
       slot_derivations:
         associated_participant:
-          populated_from: phv00078435
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078435}) + ":WHI")'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078435}) + ":WHI SCREENING")'
           range: string
         condition_concept:
@@ -43,6 +43,8 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -51,9 +53,10 @@
       populated_from: pht003402
       slot_derivations:
         associated_participant:
-          populated_from: phv00192476
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00192476}) + ":WHI")'
+        age_at_condition_start:
+          expr: 'case(({phv00192504} == 1, ({phv00078437} * 365) + {phv00192505}))'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00192476}) + ":WHI CAD")'
           range: string
         condition_concept:
@@ -75,9 +78,10 @@
       populated_from: pht003402
       slot_derivations:
         associated_participant:
-          populated_from: phv00192476
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00192476}) + ":WHI")'
+        age_at_condition_start:
+          expr: 'case(({phv00192522} == 1, ({phv00078437} * 365) + {phv00192523}))'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00192476}) + ":WHI CAD")'
           range: string
         condition_concept:
@@ -99,9 +103,10 @@
       populated_from: pht003402
       slot_derivations:
         associated_participant:
-          populated_from: phv00192476
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00192476}) + ":WHI")'
+        age_at_condition_start:
+          expr: 'case(({phv00192525} == 1, ({phv00078437} * 365) + {phv00192526}))'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00192476}) + ":WHI CAD")'
           range: string
         condition_concept:
@@ -123,9 +128,10 @@
       populated_from: pht003402
       slot_derivations:
         associated_participant:
-          populated_from: phv00192476
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00192476}) + ":WHI")'
+        age_at_condition_start:
+          expr: 'case(({phv00192507} == 1, ({phv00078437} * 365) + {phv00192508}))'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00192476}) + ":WHI CAD")'
           range: string
         condition_concept:
@@ -147,9 +153,8 @@
       populated_from: pht003406
       slot_derivations:
         associated_participant:
-          populated_from: phv00193046
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193046}) + ":WHI")'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193046}) + ":WHI CAD 121")'
           range: string
         condition_concept:
@@ -164,6 +169,8 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -172,9 +179,10 @@
       populated_from: pht003407
       slot_derivations:
         associated_participant:
-          populated_from: phv00193141
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
+        age_at_condition_start:
+          expr: 'case(({phv00193205} == 1, ({phv00078437} * 365) + {phv00193206}))'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193141}) + ":WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED")'
           range: string
         condition_concept:
@@ -188,6 +196,8 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "adjudicated event"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -196,9 +206,10 @@
       populated_from: pht003407
       slot_derivations:
         associated_participant:
-          populated_from: phv00193141
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
+        age_at_condition_start:
+          expr: 'case(({phv00193184} == 1, ({phv00078437} * 365) + {phv00193185}))'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193141}) + ":WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED")'
           range: string
         condition_concept:
@@ -212,6 +223,8 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "adjudicated event"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -220,9 +233,10 @@
       populated_from: pht003407
       slot_derivations:
         associated_participant:
-          populated_from: phv00193141
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
+        age_at_condition_start:
+          expr: 'case(({phv00193187} == 1, ({phv00078437} * 365) + {phv00193188}))'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193141}) + ":WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED")'
           range: string
         condition_concept:
@@ -236,6 +250,8 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "adjudicated event"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -244,9 +260,10 @@
       populated_from: pht003407
       slot_derivations:
         associated_participant:
-          populated_from: phv00193141
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
+        age_at_condition_start:
+          expr: 'case(({phv00193202} == 1, ({phv00078437} * 365) + {phv00193203}))'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193141}) + ":WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED")'
           range: string
         condition_concept:
@@ -260,6 +277,8 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "adjudicated event"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -268,9 +287,10 @@
       populated_from: pht003414
       slot_derivations:
         associated_participant:
-          populated_from: phv00193686
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
+        age_at_condition_start:
+          expr: 'case(({phv00193735} == 1, ({phv00078437} * 365) + {phv00193736}))'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
           range: string
         condition_concept:
@@ -284,6 +304,8 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -292,9 +314,10 @@
       populated_from: pht003414
       slot_derivations:
         associated_participant:
-          populated_from: phv00193686
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
+        age_at_condition_start:
+          expr: 'case(({phv00193737} == 1, ({phv00078437} * 365) + {phv00193738}))'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
           range: string
         condition_concept:
@@ -308,6 +331,8 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -316,9 +341,8 @@
       populated_from: pht003415
       slot_derivations:
         associated_participant:
-          populated_from: phv00193798
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193798}) + ":WHI")'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193798}) + ":WHI SCAD")'
           range: string
         condition_concept:
@@ -340,9 +364,8 @@
       populated_from: pht003415
       slot_derivations:
         associated_participant:
-          populated_from: phv00193798
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193798}) + ":WHI")'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193798}) + ":WHI SCAD")'
           range: string
         condition_concept:
@@ -364,9 +387,8 @@
       populated_from: pht003415
       slot_derivations:
         associated_participant:
-          populated_from: phv00193798
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193798}) + ":WHI")'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193798}) + ":WHI SCAD")'
           range: string
         condition_concept:
@@ -388,9 +410,8 @@
       populated_from: pht003415
       slot_derivations:
         associated_participant:
-          populated_from: phv00193798
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193798}) + ":WHI")'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193798}) + ":WHI SCAD")'
           range: string
         condition_concept:
@@ -412,9 +433,8 @@
       populated_from: pht003415
       slot_derivations:
         associated_participant:
-          populated_from: phv00193798
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193798}) + ":WHI")'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193798}) + ":WHI SCAD")'
           range: string
         condition_concept:
@@ -436,9 +456,8 @@
       populated_from: pht003415
       slot_derivations:
         associated_participant:
-          populated_from: phv00193798
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193798}) + ":WHI")'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193798}) + ":WHI SCAD")'
           range: string
         condition_concept:
@@ -462,9 +481,8 @@
       populated_from: pht003416
       slot_derivations:
         associated_participant:
-          populated_from: phv00193819
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193819}) + ":WHI")'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193819}) + ":WHI SCAD 4")'
           range: string
         condition_concept:
@@ -486,9 +504,8 @@
       populated_from: pht003416
       slot_derivations:
         associated_participant:
-          populated_from: phv00193819
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193819}) + ":WHI")'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193819}) + ":WHI SCAD 4")'
           range: string
         condition_concept:
@@ -510,9 +527,8 @@
       populated_from: pht003416
       slot_derivations:
         associated_participant:
-          populated_from: phv00193819
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193819}) + ":WHI")'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193819}) + ":WHI SCAD 4")'
           range: string
         condition_concept:
@@ -534,9 +550,8 @@
       populated_from: pht003416
       slot_derivations:
         associated_participant:
-          populated_from: phv00193819
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193819}) + ":WHI")'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193819}) + ":WHI SCAD 4")'
           range: string
         condition_concept:
@@ -560,9 +575,10 @@
       populated_from: pht006223
       slot_derivations:
         associated_participant:
-          populated_from: phv00283451
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283451}) + ":WHI")'
+        age_at_condition_start:
+          expr: 'case(({phv00283533} == 1, ({phv00078437} * 365) + {phv00283452}))'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
           range: string
         condition_concept:
@@ -576,6 +592,8 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -584,9 +602,10 @@
       populated_from: pht006223
       slot_derivations:
         associated_participant:
-          populated_from: phv00283451
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283451}) + ":WHI")'
+        age_at_condition_start:
+          expr: 'case(({phv00283705} == 1, ({phv00078437} * 365) + {phv00283452}))'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
           range: string
         condition_concept:
@@ -600,6 +619,8 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
           range: string

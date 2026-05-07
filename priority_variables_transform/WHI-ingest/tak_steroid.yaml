@@ -3,9 +3,8 @@
       populated_from: pht002754
       slot_derivations:
         associated_participant:
-          populated_from: phv00169602
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00169602}) + ":WHI")'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00169602}) + ":WHI MAIN 44")'
           range: string
         drug_concept:

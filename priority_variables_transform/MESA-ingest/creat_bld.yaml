@@ -3,13 +3,16 @@
       populated_from: pht003086
       slot_derivations:
         associated_participant:
-          populated_from: phv00174584
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         age_at_observation:
           expr: '{phv00174588} * 365'
         observation_type:
           value: OMOP:2212294
+          range: string
+        method_type:
+          value: "blood assay"
           range: string
         value_quantity:
           object_derivations:
@@ -27,13 +30,16 @@
       populated_from: pht003091
       slot_derivations:
         associated_participant:
-          populated_from: phv00176007
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00176007}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         age_at_observation:
           expr: '{phv00176011} * 365'
         observation_type:
           value: OMOP:2212294
+          range: string
+        method_type:
+          value: "blood assay"
           range: string
         value_quantity:
           object_derivations:

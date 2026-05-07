@@ -3,9 +3,9 @@
       populated_from: pht000009
       slot_derivations:
         associated_participant:
-          populated_from: phv00001036
+          populated_from: phv00001035
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001036}) + ":FHS ORIGINAL EXAM 1")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001035}) + ":FHS ORIGINAL EXAM 1")'
         condition_concept:
           value: MONDO:0005068
           range: string
@@ -103,9 +103,9 @@
       populated_from: pht000009
       slot_derivations:
         associated_participant:
-          populated_from: phv00001036
+          populated_from: phv00001035
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001036}) + ":FHS ORIGINAL EXAM 2")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001035}) + ":FHS ORIGINAL EXAM 2")'
         condition_concept:
           value: MONDO:0005068
           range: string
@@ -131,9 +131,9 @@
       populated_from: pht000009
       slot_derivations:
         associated_participant:
-          populated_from: phv00001036
+          populated_from: phv00001035
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001036}) + ":FHS ORIGINAL EXAM 3")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001035}) + ":FHS ORIGINAL EXAM 3")'
         condition_concept:
           value: MONDO:0005068
           range: string
@@ -158,9 +158,9 @@
       populated_from: pht000009
       slot_derivations:
         associated_participant:
-          populated_from: phv00001036
+          populated_from: phv00001035
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001036}) + ":FHS ORIGINAL EXAM 4")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001035}) + ":FHS ORIGINAL EXAM 4")'
         condition_concept:
           value: MONDO:0005068
           range: string
@@ -188,9 +188,9 @@
       populated_from: pht000009
       slot_derivations:
         associated_participant:
-          populated_from: phv00001036
+          populated_from: phv00001035
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001036}) + ":FHS ORIGINAL EXAM 5")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001035}) + ":FHS ORIGINAL EXAM 5")'
         condition_concept:
           value: MONDO:0005068
           range: string
@@ -218,9 +218,9 @@
       populated_from: pht000009
       slot_derivations:
         associated_participant:
-          populated_from: phv00001036
+          populated_from: phv00001035
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001036}) + ":FHS ORIGINAL EXAM 6")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001035}) + ":FHS ORIGINAL EXAM 6")'
         condition_concept:
           value: MONDO:0005068
           range: string
@@ -250,9 +250,9 @@
       populated_from: pht000009
       slot_derivations:
         associated_participant:
-          populated_from: phv00001036
+          populated_from: phv00001035
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001036}) + ":FHS ORIGINAL EXAM 7")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001035}) + ":FHS ORIGINAL EXAM 7")'
         condition_concept:
           value: MONDO:0005068
           range: string
@@ -2644,114 +2644,6 @@
           range: string
         associated_evidence:
           value: Medical History
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht006006
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00274193
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00274193}) + ":FHS OMNI 2 EXAM 1")'
-        condition_concept:
-          value: MONDO:0005068
-          range: string
-        condition_status:
-          populated_from: phv00566033
-          value_mappings:
-            '0': ABSENT
-            '1': HISTORICAL
-            '2': UNKNOWN
-            .: UNKNOWN
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-          range: string
-        associated_evidence:
-          value: Medical History
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht004813
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00250282
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00250282}) + ":FHS OMNI 1 EXAM 1")'
-        condition_concept:
-          value: MONDO:0005068
-          range: string
-        condition_status:
-          populated_from: phv00565817
-          value_mappings:
-            '0': ABSENT
-            '1': HISTORICAL
-            '2': UNKNOWN
-            .: UNKNOWN
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-          range: string
-        associated_evidence:
-          value: Electrocardiogram
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht004813
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00250282
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00250282}) + ":FHS OMNI 1 EXAM 1")'
-        condition_concept:
-          value: MONDO:0006803
-          range: string
-        condition_status:
-          populated_from: phv00565818
-          value_mappings:
-            '0': ABSENT
-            '1': HISTORICAL
-            '2': UNKNOWN
-            .: UNKNOWN
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-          range: string
-        associated_evidence:
-          value: Electrocardiogram
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht004813
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00250282
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00250282}) + ":FHS OMNI 1 EXAM 1")'
-        condition_concept:
-          value: MONDO:0005068
-          range: string
-        condition_status:
-          populated_from: phv00565819
-          value_mappings:
-            '0': ABSENT
-            '1': HISTORICAL
-            '2': UNKNOWN
-            .: UNKNOWN
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-          range: string
-        associated_evidence:
-          value: Electrocardiogram
           range: string
         relationship_to_participant:
           value: ONESELF

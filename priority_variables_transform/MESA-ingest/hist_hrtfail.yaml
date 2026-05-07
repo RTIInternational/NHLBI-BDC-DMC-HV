@@ -3,7 +3,7 @@
       populated_from: pht001121
       slot_derivations:
         associated_participant:
-          populated_from: phv00087070
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         condition_concept:
@@ -21,12 +21,15 @@
         relationship_to_participant:
           value: ONESELF
           range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht001123
       slot_derivations:
         associated_participant:
-          populated_from: phv00087848
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087848}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087848}) + ":MESA CLASSIC CVE")'
         condition_concept:
@@ -38,8 +41,11 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: CLINICAL_DIAGNOSIS
           range: string
         relationship_to_participant:
           value: ONESELF
+          range: string
+        associated_evidence:
+          value: "event adjudication"
           range: string

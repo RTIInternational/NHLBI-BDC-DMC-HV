@@ -3,13 +3,14 @@
       populated_from: pht001517
       slot_derivations:
         associated_participant:
-          populated_from: phv00111654
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00111654}) + ":WHI")'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00111654}) + ":WHI SCREENING")'
           range: string
         observation_type:
           value: OMOP:4042886
+        method_type:
+          value: "questionnaire"
           range: string
         value_quantity:
           object_derivations:
@@ -27,13 +28,14 @@
       populated_from: pht006218
       slot_derivations:
         associated_participant:
-          populated_from: phv00283348
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283348}) + ":WHI")'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283348}) + ":WHI SCREENING")'
           range: string
         observation_type:
           value: OMOP:4042886
+        method_type:
+          value: "questionnaire"
           range: string
         value_quantity:
           object_derivations:

@@ -3,9 +3,11 @@
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
+        age_at_exposure_start:
+          expr: case(({phv00083154} == 1, {phv00082999} * 365))
         drug_concept:
           expr: 'case(({phv00083154} == 1, "ATC:C01D"))'
         exposure_provenance:
@@ -16,9 +18,11 @@
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
+        age_at_exposure_start:
+          expr: case(({phv00083155} == 1, {phv00082999} * 365))
         drug_concept:
           expr: 'case(({phv00083155} == 1, "ATC:C02L"))'
         exposure_provenance:
@@ -29,9 +33,11 @@
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
+        age_at_exposure_start:
+          expr: case(({phv00083144} == 1, {phv00082999} * 365))
         drug_concept:
           expr: 'case(({phv00083144} == 1, "ATC:C04"))'
         exposure_provenance:
@@ -42,9 +48,11 @@
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
+        age_at_exposure_start:
+          expr: case(({phv00085389} == 1, {phv00085237} * 365))
         drug_concept:
           expr: 'case(({phv00085389} == 1, "ATC:C04"))'
         exposure_provenance:
@@ -55,9 +63,11 @@
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
+        age_at_exposure_start:
+          expr: case(({phv00085399} == 1, {phv00085237} * 365))
         drug_concept:
           expr: 'case(({phv00085399} == 1, "ATC:C01D"))'
         exposure_provenance:
@@ -68,9 +78,11 @@
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
+        age_at_exposure_start:
+          expr: case(({phv00085400} == 1, {phv00085237} * 365))
         drug_concept:
           expr: 'case(({phv00085400} == 1, "ATC:C02L"))'
         exposure_provenance:
@@ -81,7 +93,7 @@
       populated_from: pht001118
       slot_derivations:
         associated_participant:
-          populated_from: phv00085772
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00085772}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         drug_concept:
@@ -94,7 +106,7 @@
       populated_from: pht001118
       slot_derivations:
         associated_participant:
-          populated_from: phv00085772
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00085772}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         drug_concept:
@@ -107,7 +119,7 @@
       populated_from: pht001118
       slot_derivations:
         associated_participant:
-          populated_from: phv00085772
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00085772}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         drug_concept:
@@ -120,7 +132,7 @@
       populated_from: pht001119
       slot_derivations:
         associated_participant:
-          populated_from: phv00086258
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086258}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         drug_concept:
@@ -133,7 +145,7 @@
       populated_from: pht001119
       slot_derivations:
         associated_participant:
-          populated_from: phv00086258
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086258}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         drug_concept:
@@ -146,7 +158,7 @@
       populated_from: pht001119
       slot_derivations:
         associated_participant:
-          populated_from: phv00086258
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086258}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         drug_concept:
@@ -159,7 +171,7 @@
       populated_from: pht001120
       slot_derivations:
         associated_participant:
-          populated_from: phv00086726
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086726}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         drug_concept:
@@ -172,7 +184,7 @@
       populated_from: pht001120
       slot_derivations:
         associated_participant:
-          populated_from: phv00086726
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086726}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         drug_concept:
@@ -185,7 +197,7 @@
       populated_from: pht001120
       slot_derivations:
         associated_participant:
-          populated_from: phv00086726
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086726}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         drug_concept:
@@ -198,9 +210,11 @@
       populated_from: pht001121
       slot_derivations:
         associated_participant:
-          populated_from: phv00087070
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
+        age_at_exposure_start:
+          expr: case(({phv00087364} == 1, {phv00087154} * 365))
         drug_concept:
           expr: 'case(({phv00087364} == 1, "ATC:C04"))'
         exposure_provenance:
@@ -211,9 +225,11 @@
       populated_from: pht001121
       slot_derivations:
         associated_participant:
-          populated_from: phv00087070
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
+        age_at_exposure_start:
+          expr: case(({phv00087374} == 1, {phv00087154} * 365))
         drug_concept:
           expr: 'case(({phv00087374} == 1, "ATC:C01D"))'
         exposure_provenance:
@@ -224,9 +240,11 @@
       populated_from: pht001121
       slot_derivations:
         associated_participant:
-          populated_from: phv00087070
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
+        age_at_exposure_start:
+          expr: case(({phv00087375} == 1, {phv00087154} * 365))
         drug_concept:
           expr: 'case(({phv00087375} == 1, "ATC:C02L"))'
         exposure_provenance:
@@ -237,7 +255,7 @@
       populated_from: pht003086
       slot_derivations:
         associated_participant:
-          populated_from: phv00174584
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         drug_concept:
@@ -250,7 +268,7 @@
       populated_from: pht003086
       slot_derivations:
         associated_participant:
-          populated_from: phv00174584
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         drug_concept:
@@ -263,7 +281,7 @@
       populated_from: pht003086
       slot_derivations:
         associated_participant:
-          populated_from: phv00174584
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         drug_concept:
@@ -276,7 +294,7 @@
       populated_from: pht003091
       slot_derivations:
         associated_participant:
-          populated_from: phv00176007
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00176007}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         drug_concept:
@@ -289,7 +307,7 @@
       populated_from: pht003091
       slot_derivations:
         associated_participant:
-          populated_from: phv00176007
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00176007}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         drug_concept:
@@ -302,7 +320,7 @@
       populated_from: pht003091
       slot_derivations:
         associated_participant:
-          populated_from: phv00176007
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00176007}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         drug_concept:

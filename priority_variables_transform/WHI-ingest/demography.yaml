@@ -3,9 +3,8 @@
       populated_from: pht000998
       slot_derivations:
         associated_participant:
-          populated_from: phv00078435
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078435}) + ":WHI")'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078435}) + ":WHI SCREENING")'
         sex:
           value: OMOP:8532
@@ -27,9 +26,8 @@
       populated_from: pht001009
       slot_derivations:
         associated_participant:
-          populated_from: phv00079312
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00079312}) + ":WHI")'
         associated_visit:
-
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00079312}) + ":WHI SCREENING")'
         sex:
           value: OMOP:8532

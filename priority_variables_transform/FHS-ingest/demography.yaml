@@ -14,8 +14,8 @@
         ethnicity:
           populated_from: phv00021245
           value_mappings:
-            '1': OMOP:38003563
-            '0': OMOP:38003564
+            '1': HISPANIC_OR_LATINO
+            '0': NOT_HISPANIC_OR_LATINO
         race:
           expr: >
             case(
@@ -38,17 +38,7 @@
                   ({phv00021251} == 1, "OMOP:8552")
                 )
               ),
-              (
-                case(({phv00021244} == 1, 1), (True, 0)) +
-                case(({phv00021246} == 1, 1), (True, 0)) +
-                case(({phv00021247} == 1, 1), (True, 0)) +
-                case(({phv00021248} == 1, 1), (True, 0)) +
-                case(({phv00021249} == 1, 1), (True, 0)) +
-                case(({phv00021250} == 1, 1), (True, 0)) +
-                case(({phv00021251} == 1, 1), (True, 0))
-                > 1,
-                "OMOP:45880900"
-              )
+              (True, "OMOP:45880900")
             )
 # - class_derivations:
 #     Demography:
@@ -106,16 +96,7 @@
                   ({phv00072537} == 1, "OMOP:8552"),
                 )
               ),
-              (
-                case(({phv00072530} == 1, 1), (True, 0)) +
-                case(({phv00072531} == 1, 1), (True, 0)) +
-                case(({phv00072532} == 1, 1), (True, 0)) +
-                case(({phv00072533} == 1, 1), (True, 0)) +
-                case(({phv00072534} == 1, 1), (True, 0)) +
-                case(({phv00072537} == 1, 1), (True, 0))
-                > 1,
-                "OMOP:45880900"
-              )
+              (True, "OMOP:45880900")
             )
 - class_derivations:
     Demography:
@@ -152,16 +133,7 @@
                   ({phv00177603} == 1, "OMOP:8552"),
                 )
               ),
-              (
-                case(({phv00177598} == 1, 1), (True, 0)) +
-                case(({phv00177599} == 1, 1), (True, 0)) +
-                case(({phv00177600} == 1, 1), (True, 0)) +
-                case(({phv00177601} == 1, 1), (True, 0)) +
-                case(({phv00177602} == 1, 1), (True, 0)) +
-                case(({phv00177603} == 1, 1), (True, 0))
-                > 1,
-                "OMOP:45880900"
-              )
+              (True, "OMOP:45880900")
             )
 - class_derivations:
     Demography:
@@ -170,7 +142,7 @@
         associated_participant:
           populated_from: phv00177926
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 4''), ({phv00177928} == 1, ''FHS OFFSPRING EXAM 1''), ({phv00177928} == 2, ''FHS NEW OFFSPRING SPOUSE EXAM 1''), ({phv00177928} == 3, ''FHS GENERATION 3 EXAM 1''), ({phv00177928} == 7, ''FHS OMNI 1 EXAM 1''), ({phv00177928} == 72, ''FHS OMNI 2 EXAM 1''), (True, ''FHS UNKNOWN VISIT EXAM 1'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL''), ({phv00177928} == 1, ''FHS OFFSPRING''), ({phv00177928} == 2, ''FHS NEW OFFSPRING SPOUSE''), ({phv00177928} == 3, ''FHS GENERATION 3''), ({phv00177928} == 7, ''FHS OMNI 1''), ({phv00177928} == 72, ''FHS OMNI 2''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 1'')'
         sex:
           populated_from: phv00177929
           value_mappings:
@@ -183,7 +155,7 @@
         associated_participant:
           populated_from: phv00220821
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00220821}) + ":" + case(({phv00220822} == ''0'', ''FHS ORIGINAL EXAM 4''), ({phv00220822} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00220822} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 1''), ({phv00220822} == ''3'', ''FHS GENERATION 3 EXAM 1''), ({phv00220822} == ''7'', ''FHS OMNI 1 EXAM 1''), ({phv00220822} == ''72'', ''FHS OMNI 2 EXAM 1''), (True, ''FHS UNKNOWN VISIT EXAM 1'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00220821}) + ":" + case(({phv00220822} == ''0'', ''FHS ORIGINAL''), ({phv00220822} == ''1'', ''FHS OFFSPRING''), ({phv00220822} == ''2'', ''FHS NEW OFFSPRING SPOUSE''), ({phv00220822} == ''3'', ''FHS GENERATION 3''), ({phv00220822} == ''7'', ''FHS OMNI 1''), ({phv00220822} == ''72'', ''FHS OMNI 2''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 1'')'
         sex:
           populated_from: phv00253990
           value_mappings:
@@ -219,16 +191,7 @@
                   ({phv00251753} == 1, "OMOP:8552"),
                 )
               ),
-              (
-                case(({phv00251748} == 1, 1), (True, 0)) +
-                case(({phv00251749} == 1, 1), (True, 0)) +
-                case(({phv00251750} == 1, 1), (True, 0)) +
-                case(({phv00251751} == 1, 1), (True, 0)) +
-                case(({phv00251752} == 1, 1), (True, 0)) +
-                case(({phv00251753} == 1, 1), (True, 0))
-                > 1,
-                "OMOP:45880900"
-              )
+              (True, "OMOP:45880900")
             )
 - class_derivations:
     Demography:
@@ -253,8 +216,18 @@
           value_mappings:
             '1': OMOP:8507
             '2': OMOP:8532
-# Removed: duplicate pht000074 block with associated_participant: UNKNOWN
-# The first pht000074 block (above) has complete race/ethnicity/sex + proper participant ID (phv00021427)
+- class_derivations:
+    Demography:
+      populated_from: pht000074
+      slot_derivations:
+        associated_participant:
+          value: UNKNOWN
+          range: string
+        sex:
+          populated_from: phv00021228
+          value_mappings:
+            '1': OMOP:8507
+            '2': OMOP:8532
 - class_derivations:
     Demography:
       populated_from: pht007777
@@ -262,7 +235,7 @@
         associated_participant:
           populated_from: phv00369651
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 4")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 1")'
         sex:
           populated_from: phv00369653
           value_mappings:
@@ -275,7 +248,7 @@
         associated_participant:
           populated_from: phv00423847
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423847}) + ":" + case(({phv00423848} == ''0'', ''FHS ORIGINAL EXAM 4''), ({phv00423848} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00423848} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 1''), ({phv00423848} == ''3'', ''FHS GENERATION 3 EXAM 1''), ({phv00423848} == ''7'', ''FHS OMNI 1 EXAM 1''), ({phv00423848} == ''72'', ''FHS OMNI 2 EXAM 1''), (True, ''FHS UNKNOWN VISIT EXAM 1'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423847}) + ":" + case(({phv00423848} == ''0'', ''FHS ORIGINAL''), ({phv00423848} == ''1'', ''FHS OFFSPRING''), ({phv00423848} == ''2'', ''FHS NEW OFFSPRING SPOUSE''), ({phv00423848} == ''3'', ''FHS GENERATION 3''), ({phv00423848} == ''7'', ''FHS OMNI 1''), ({phv00423848} == ''72'', ''FHS OMNI 2''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 1'')'
 #         sex:
 #           populated_from: phv00024071
 #           value_mappings:
@@ -303,16 +276,7 @@
                   ({phv00423855} == 1, "OMOP:8552"),
                 )
               ),
-              (
-                case(({phv00423850} == 1, 1), (True, 0)) +
-                case(({phv00423851} == 1, 1), (True, 0)) +
-                case(({phv00423852} == 1, 1), (True, 0)) +
-                case(({phv00423853} == 1, 1), (True, 0)) +
-                case(({phv00423854} == 1, 1), (True, 0)) +
-                case(({phv00423855} == 1, 1), (True, 0))
-                > 1,
-                "OMOP:45880900"
-              )
+              (True, "OMOP:45880900")
             )
 - class_derivations:
     Demography:
@@ -321,14 +285,14 @@
         associated_participant:
           populated_from: phv00423847
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423847}) + ":" + case(({phv00423848} == ''0'', ''FHS ORIGINAL EXAM 4''), ({phv00423848} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00423848} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 1''), ({phv00423848} == ''3'', ''FHS GENERATION 3 EXAM 1''), ({phv00423848} == ''7'', ''FHS OMNI 1 EXAM 1''), ({phv00423848} == ''72'', ''FHS OMNI 2 EXAM 1''), (True, ''FHS UNKNOWN VISIT EXAM 1'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423847}) + ":" + case(({phv00423848} == ''0'', ''FHS ORIGINAL''), ({phv00423848} == ''1'', ''FHS OFFSPRING''), ({phv00423848} == ''2'', ''FHS NEW OFFSPRING SPOUSE''), ({phv00423848} == ''3'', ''FHS GENERATION 3''), ({phv00423848} == ''7'', ''FHS OMNI 1''), ({phv00423848} == ''72'', ''FHS OMNI 2''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 1'')'
 #         sex:
 #           populated_from: phv00024071
 #           value_mappings:
 #             '1': OMOP:8507
 #             '2': OMOP:8532
         ethnicity:
-          expr: 'case(({phv00423859} == 1, "OMOP:38003563"))'
+          expr: 'case(({phv00423859} == 1, "OMOP:38003563"), (True, "OMOP:38003564"))'
         race:
           expr: >
             case(
@@ -351,17 +315,7 @@
                   ({phv00423865} == 1, "OMOP:8552"),
                 )
               ),
-              (
-                case(({phv00423858} == 1, 1), (True, 0)) +
-                case(({phv00423860} == 1, 1), (True, 0)) +
-                case(({phv00423861} == 1, 1), (True, 0)) +
-                case(({phv00423862} == 1, 1), (True, 0)) +
-                case(({phv00423863} == 1, 1), (True, 0)) +
-                case(({phv00423864} == 1, 1), (True, 0)) +
-                case(({phv00423865} == 1, 1), (True, 0))
-                > 1,
-                "OMOP:45880900"
-              )
+              (True, "OMOP:45880900")
             )
 - class_derivations:
     Demography:
@@ -376,26 +330,3 @@
           value_mappings:
             '1': OMOP:8507
             '2': OMOP:8532
-- class_derivations:
-    Demography:
-      populated_from: pht016162
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00568188
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00568188}) + ":" + case(({phv00568189} == 0, ''FHS ORIGINAL EXAM 4''), ({phv00568189} == 1, ''FHS OFFSPRING EXAM 1''), ({phv00568189} == 2, ''FHS NEW OFFSPRING SPOUSE EXAM 1''), ({phv00568189} == 3, ''FHS GENERATION 3 EXAM 1''), ({phv00568189} == 7, ''FHS OMNI 1 EXAM 1''), ({phv00568189} == 72, ''FHS OMNI 2 EXAM 1''), (True, ''FHS UNKNOWN VISIT EXAM 1'')))'
-        ethnicity:
-          populated_from: phv00568195
-          value_mappings:
-            '0': OMOP:38003564
-            '1': OMOP:38003563
-            '88': OMOP:38003564
-        race:
-          populated_from: phv00568194
-          value_mappings:
-            '2': OMOP:8515
-            '3': OMOP:8516
-            '5': OMOP:8527
-            '6': OMOP:45880900
-            '10': OMOP:8552
-            '88': OMOP:8527
