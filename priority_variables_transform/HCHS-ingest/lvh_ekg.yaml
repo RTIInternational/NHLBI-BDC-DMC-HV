@@ -1,0 +1,28 @@
+- class_derivations:
+    Condition:
+      populated_from: pht004715
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
+        condition_concept:
+          value: HP:0001714
+          range: string
+        condition_status:
+          populated_from: phv00526416
+          value_mappings:
+            '0': ABSENT
+            '6.0': ABSENT
+            '6': ABSENT
+            '6.1.0': PRESENT
+            '6.1.1': PRESENT
+        condition_provenance:
+          value: CLINICAL_FINDING
+          range: string
+        associated_evidence:
+          value: "12-lead ECG"
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
