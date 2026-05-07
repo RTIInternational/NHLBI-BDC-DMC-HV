@@ -228,6 +228,18 @@
           value: HEALTH_EXAMINATION
 - class_derivations:
     Visit:
+      populated_from: pht001204
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00090014}) + ":MESA AORTIC CT EXAM 3")'
+        name:
+          value: MESA AORTIC CT EXAM 3
+        associated_participant:
+          populated_from: phv00090014
+        visit_category:
+          value: HEALTH_EXAMINATION
+- class_derivations:
+    Visit:
       populated_from: pht001205
       slot_derivations:
         id:

@@ -984,6 +984,27 @@
                     range: string
 - class_derivations:
     MeasurementObservation:
+      populated_from: pht001204
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00090014
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00090014}) + ":MESA AORTIC CT EXAM 3")'
+        observation_type:
+          value: OMOP:4166120
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001204
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00090025
+                  unit:
+                    value: '#reported_units: "Hounsfield units (HU)'
+- class_derivations:
+    MeasurementObservation:
       populated_from: pht001205
       slot_derivations:
         associated_participant:

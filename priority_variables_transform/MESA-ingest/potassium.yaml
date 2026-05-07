@@ -5,10 +5,7 @@
         associated_participant:
           populated_from: phv00086726
         associated_visit:
-          populated_from: phv00191192
-          value_mappings:
-            '3': MESA CLASSIC EXAM 3
-            '4': MESA CLASSIC EXAM 4
+          expr: 'case(({phv00191192} == 3, uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 3")), ({phv00191192} == 4, uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")))'
         age_at_observation:
           expr: case(({phv00191192} == 4, {phv00086727} * 365), ({phv00191192} == 3, {phv00086259} * 365))
         observation_type:
