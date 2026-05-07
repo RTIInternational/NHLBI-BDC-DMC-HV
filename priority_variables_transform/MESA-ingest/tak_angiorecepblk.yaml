@@ -6,6 +6,8 @@
           populated_from: phv00082638
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
+        age_at_exposure_start:
+          expr: case(({phv00083081} == 1, {phv00082999} * 365))
         drug_concept:
           expr: 'case(({phv00083081} == 1, "ATC:C09C"))'
         exposure_provenance:
@@ -19,6 +21,8 @@
           populated_from: phv00082638
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
+        age_at_exposure_start:
+          expr: case(({phv00083082} == 1, {phv00082999} * 365))
         drug_concept:
           expr: 'case(({phv00083082} == 1, "ATC:C09DA"))'
         exposure_provenance:
@@ -32,6 +36,8 @@
           populated_from: phv00084441
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
+        age_at_exposure_start:
+          expr: case(({phv00085326} == 1, {phv00085237} * 365))
         drug_concept:
           expr: 'case(({phv00085326} == 1, "ATC:C09C"))'
         exposure_provenance:
@@ -45,6 +51,8 @@
           populated_from: phv00084441
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
+        age_at_exposure_start:
+          expr: case(({phv00085326} == 1, {phv00085237} * 365))
         drug_concept:
           expr: 'case(({phv00085326} == 1, "ATC:C09DA"))'
         exposure_provenance:
@@ -136,6 +144,8 @@
           populated_from: phv00087070
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
+        age_at_exposure_start:
+          expr: case(({phv00087302} == 1, {phv00087154} * 365))
         drug_concept:
           expr: 'case(({phv00087302} == 1, "ATC:C09C"))'
         exposure_provenance:
@@ -149,6 +159,8 @@
           populated_from: phv00087070
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
+        age_at_exposure_start:
+          expr: case(({phv00087303} == 1, {phv00087154} * 365))
         drug_concept:
           expr: 'case(({phv00087303} == 1, "ATC:C09DA"))'
         exposure_provenance:

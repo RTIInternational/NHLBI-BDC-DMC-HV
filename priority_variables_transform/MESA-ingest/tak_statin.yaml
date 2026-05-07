@@ -6,6 +6,8 @@
           populated_from: phv00082638
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
+        age_at_exposure_start:
+          expr: case(({phv00083162} == 1, {phv00083003} * 365))
         drug_concept:
           expr: 'case(({phv00083162} == 1, "ATC:C10A"))'
         exposure_provenance:
@@ -34,6 +36,8 @@
           populated_from: phv00084441
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
+        age_at_exposure_start:
+          expr: case(({phv00085407} == 1, {phv00085240} * 365))
         drug_concept:
           expr: 'case(({phv00085407} == 1, "ATC:C10A"))'
         exposure_provenance:

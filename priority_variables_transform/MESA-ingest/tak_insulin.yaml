@@ -6,6 +6,8 @@
           populated_from: phv00082638
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
+        age_at_exposure_start:
+          expr: case(({phv00083119} == 1, {phv00083008} * 365))
         drug_concept:
           expr: 'case(({phv00083119} == 1, "MeSH:D007328"))'
         exposure_provenance:
@@ -19,6 +21,8 @@
           populated_from: phv00082638
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
+        age_at_exposure_start:
+          expr: case(({phv00083302} == 1, {phv00083008} * 365))
         drug_concept:
           expr: 'case(({phv00083302} == 1, "VANDF:HS500"))'
         exposure_provenance:
@@ -32,6 +36,8 @@
           populated_from: phv00084441
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
+        age_at_exposure_start:
+          expr: case(({phv00084979} == 1, {phv00085244} * 365))
         drug_concept:
           expr: 'case(({phv00084979} == 1, "VANDF:HS500"))'
         exposure_provenance:
@@ -45,6 +51,8 @@
           populated_from: phv00084441
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
+        age_at_exposure_start:
+          expr: case(({phv00085364} == 1, {phv00085244} * 365))
         drug_concept:
           expr: 'case(({phv00085364} == 1, "MeSH:D007328"))'
         exposure_provenance:
