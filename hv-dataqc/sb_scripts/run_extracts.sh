@@ -5,6 +5,7 @@
 # Usage:
 #   ./run_extracts.sh COPDGene
 #   ./run_extracts.sh ARIC
+# discovers DataRun_* files under the top level subfolder, _QC_STAGING in order to flag data run files that are ready for QC vs. not
 set -euo pipefail
 
 COHORT="${1:?Usage: ./run_extracts.sh <cohort>}"
@@ -17,7 +18,7 @@ SOURCE_ROOT="/sbgenomics/project-files/PilotParentStudies_NoDRS/$COHORT"
 MAPPED_DIRS=""
 CHOSEN_DATARUN=""
 CANDIDATE_COUNT=0
-for dr in $(ls -dr /sbgenomics/project-files/DataRun_* 2>/dev/null); do
+for dr in $(ls -dr /sbgenomics/project-files/_QC_STAGING/DataRun_* 2>/dev/null); do
     found=$(find "$dr" -path "*${COHORT_LOWER}*BDCHM/mapped-data" -type d 2>/dev/null | sort)
     if [ -n "$found" ]; then
         CANDIDATE_COUNT=$((CANDIDATE_COUNT + 1))
@@ -30,7 +31,7 @@ done
 
 if [ "$CANDIDATE_COUNT" -eq 0 ]; then
     echo "ERROR: No DataRun_* dirs found containing mapped-data for $COHORT" >&2
-    echo "  Looked under /sbgenomics/project-files/DataRun_*" >&2
+    echo "  Looked under /sbgenomics/project-files/_QC_STAGING/DataRun_*" >&2
     exit 1
 elif [ "$CANDIDATE_COUNT" -gt 1 ]; then
     echo "NOTE: Found $CANDIDATE_COUNT DataRun dirs with $COHORT data; using latest: $CHOSEN_DATARUN"
