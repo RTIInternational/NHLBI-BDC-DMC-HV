@@ -10,7 +10,8 @@ set -euo pipefail
 
 COHORT="${1:?Usage: ./run_extracts.sh <cohort>}"
 COHORT_LOWER="$(echo "$COHORT" | tr '[:upper:]' '[:lower:]')"
-HV="/sbgenomics/workspace/NHLBI-BDC-DMC-HV"
+# Derive repo root from this script's location (sb_scripts/ -> hv-dataqc/ -> repo root)
+HV="$(cd "$(dirname "$0")/../.." && pwd)"
 OUTPUT_DIR="/sbgenomics/workspace/QC-output-files/$COHORT"
 SOURCE_ROOT="/sbgenomics/project-files/PilotParentStudies_NoDRS/$COHORT"
 

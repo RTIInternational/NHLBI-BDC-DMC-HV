@@ -3,18 +3,17 @@
 Scripts that run **inside the Seven Bridges enclave**. These wrap the core
 extract scripts with the right paths for SB project file layouts.
 
-**Assumed layout:** This repo is cloned at `/sbgenomics/workspace/NHLBI-BDC-DMC-HV`.
-All commands below assume you are running from `/sbgenomics/workspace/`.
+The scripts derive the repo root from their own location, so the repo
+can be cloned anywhere on SB.
 
 ## Setup
 
 At the start of each SB session:
 
 ```bash
-cd /sbgenomics/workspace/NHLBI-BDC-DMC-HV
+cd <path-to>/NHLBI-BDC-DMC-HV
 git pull
 source hv-dataqc/sb_scripts/setup.sh
-cd /sbgenomics/workspace
 ```
 
 ### `vi_defaults.sh`
