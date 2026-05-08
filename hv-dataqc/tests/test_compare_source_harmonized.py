@@ -1003,6 +1003,7 @@ from compare_source_harmonized import (  # noqa: E402
     _concept_codes_from_expr,
     _concept_codes_from_value_mappings,
     _extract_crosswalk_from_class_derivations,
+    _normalize_harmonized_vars,
 )
 
 
@@ -1152,6 +1153,169 @@ class CrosswalkConceptExtractionTests(unittest.TestCase):
         hkeys = {e["harmonized_key"] for e in cw}
         self.assertIn("condition_MONDO:0005015", hkeys)
         self.assertIn("condition_MONDO:0006920", hkeys)
+
+
+# ---------------------------------------------------------------------------
+# Harmonized key normalization and crosswalk resolution fallbacks
+# ---------------------------------------------------------------------------
+
+
+class HarmonizedKeyNormalizationTests(unittest.TestCase):
+    """Tests for tuple-notation cleanup (_normalize_harmonized_vars) and
+    the method_type suffix fallback in build_variable_crosswalk."""
+
+    def test_tuple_key_notation_is_stripped(self) -> None:
+        """Keys like measurement_('OMOP:4152194',) are normalised to measurement_OMOP:4152194."""
+        raw = {
+            "measurement_('OMOP:4152194',)": {"n_valid": 50},
+            "measurement_('OMOP:4154790',)": {"n_valid": 50},
+            "measurement_OMOP:4241837": {"n_valid": 100},
+        }
+        result = _normalize_harmonized_vars(raw)
+        self.assertIn("measurement_OMOP:4152194", result)
+        self.assertIn("measurement_OMOP:4154790", result)
+        self.assertNotIn("measurement_('OMOP:4152194',)", result)
+        self.assertNotIn("measurement_('OMOP:4154790',)", result)
+        # Already-clean key is preserved
+        self.assertIn("measurement_OMOP:4241837", result)
+
+    def test_method_type_suffix_fallback_resolves_bare_harmonized_key(self) -> None:
+        """Crosswalk key with |method_type suffix matches bare harmonized key.
+
+        Regression: COPDGene spirometry.yaml MOS blocks produce crosswalk keys
+        like ``measurement_OMOP:4241837|Pre-bronchodilator, spirometry`` but
+        the COPDGene harmonized extract emits bare ``measurement_OMOP:4241837``.
+        Fallback 3 should resolve this so the entry appears in the crosswalk
+        rather than falling into unresolved diagnostics.
+        """
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+
+            # Minimal pheno_variable_summaries cache
+            pheno_dir = tmp_path / "pheno_variable_summaries"
+            pheno_dir.mkdir()
+            dd_xml = pheno_dir / "phs000179.v7.pht002239.v8.p2.COPDGene.data_dict.xml"
+            dd_xml.write_text(
+                '<?xml version="1.0"?>\n'
+                "<data_table>\n"
+                '  <variable id="phv00159853.v5">\n'
+                "    <name>FEV1_pre</name>\n"
+                "  </variable>\n"
+                "</data_table>\n",
+                encoding="utf-8",
+            )
+
+            # Minimal MOS YAML
+            yaml_dir = tmp_path / "yaml"
+            yaml_dir.mkdir()
+            (yaml_dir / "spirometry.yaml").write_text(
+                "- class_derivations:\n"
+                "    MeasurementObservationSet:\n"
+                "      populated_from: pht002239\n"
+                "      slot_derivations:\n"
+                "        observations:\n"
+                "          object_derivations:\n"
+                "          - class_derivations:\n"
+                "              MeasurementObservation:\n"
+                "                populated_from: pht002239\n"
+                "                slot_derivations:\n"
+                "                  observation_type:\n"
+                "                    value: OMOP:4241837\n"
+                "                  method_type:\n"
+                "                    value: Pre-bronchodilator, spirometry\n"
+                "                  value_quantity:\n"
+                "                    object_derivations:\n"
+                "                    - class_derivations:\n"
+                "                        Quantity:\n"
+                "                          populated_from: pht002239\n"
+                "                          slot_derivations:\n"
+                "                            value_decimal:\n"
+                "                              populated_from: phv00159853\n",
+                encoding="utf-8",
+            )
+
+            source_vars = {"FEV1_pre": {"type": "continuous", "n_valid": 100, "n_total": 100}}
+            # Harmonized extract has bare key — no |method_type suffix
+            harmonized_vars = {"measurement_OMOP:4241837": {"n_valid": 100}}
+
+            matches = build_variable_crosswalk(
+                source_vars=source_vars,
+                harmonized_vars=harmonized_vars,
+                yaml_dir=yaml_dir,
+                cache_dir=tmp_path,
+            )
+
+            matched_keys = {m["harmonized_key"] for m in matches}
+            self.assertIn(
+                "measurement_OMOP:4241837",
+                matched_keys,
+                "Fallback 3 should resolve |method_type-suffixed key to bare harmonized key",
+            )
+
+    def test_tuple_key_normalization_then_method_type_suffix_fallback(self) -> None:
+        """Tuple-form harmonized key normalizes, then resolves a suffixed MOS crosswalk key.
+
+        Regression: COPDGene blood_pressure.yaml yielded crosswalk keys like
+        ``measurement_OMOP:4152194|automated sphygmomanometer`` while the
+        harmonized extract key serialized as ``measurement_('OMOP:4152194',)``.
+        """
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+
+            pheno_dir = tmp_path / "pheno_variable_summaries"
+            pheno_dir.mkdir()
+            dd_xml = pheno_dir / "phs000179.v7.pht002239.v8.p2.COPDGene.data_dict.xml"
+            dd_xml.write_text(
+                '<?xml version="1.0"?>\n'
+                "<data_table>\n"
+                '  <variable id="phv00159590.v5">\n'
+                "    <name>sysBP</name>\n"
+                "  </variable>\n"
+                "</data_table>\n",
+                encoding="utf-8",
+            )
+
+            yaml_dir = tmp_path / "yaml"
+            yaml_dir.mkdir()
+            (yaml_dir / "blood_pressure.yaml").write_text(
+                "- class_derivations:\n"
+                "    MeasurementObservationSet:\n"
+                "      populated_from: pht002239\n"
+                "      slot_derivations:\n"
+                "        observations:\n"
+                "          object_derivations:\n"
+                "          - class_derivations:\n"
+                "              MeasurementObservation:\n"
+                "                populated_from: pht002239\n"
+                "                slot_derivations:\n"
+                "                  observation_type:\n"
+                "                    value: OMOP:4152194\n"
+                "                  method_type:\n"
+                "                    value: automated sphygmomanometer\n"
+                "                  value_quantity:\n"
+                "                    object_derivations:\n"
+                "                    - class_derivations:\n"
+                "                        Quantity:\n"
+                "                          populated_from: pht002239\n"
+                "                          slot_derivations:\n"
+                "                            value_decimal:\n"
+                "                              populated_from: phv00159590\n",
+                encoding="utf-8",
+            )
+
+            source_vars = {"sysBP": {"type": "continuous", "n_valid": 100, "n_total": 100}}
+            raw_harmonized_vars = {"measurement_('OMOP:4152194',)": {"n_valid": 100}}
+
+            matches = build_variable_crosswalk(
+                source_vars=source_vars,
+                harmonized_vars=_normalize_harmonized_vars(raw_harmonized_vars),
+                yaml_dir=yaml_dir,
+                cache_dir=tmp_path,
+            )
+
+            self.assertEqual(len(matches), 1)
+            self.assertEqual(matches[0]["harmonized_key"], "measurement_OMOP:4152194")
+            self.assertEqual(matches[0]["source_key"], "sysBP")
 
 
 class AtomicWriteTests(unittest.TestCase):

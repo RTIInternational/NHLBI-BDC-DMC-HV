@@ -1795,6 +1795,29 @@ def build_variable_crosswalk(
                     if resolved_harmonized_key is not None:
                         break
 
+            # Fallback 3: MeasurementObservation blocks nested inside a
+            # MeasurementObservationSet generate a crosswalk key with a
+            # ``|<method_type>`` suffix (e.g.
+            # ``measurement_OMOP:4241837|Pre-bronchodilator, spirometry``).
+            # Some cohort harmonized extractors group by observation_type alone
+            # and emit bare keys without the method_type component (e.g.
+            # COPDGene spirometry.yaml and blood_pressure.yaml).  Fall back to
+            # the bare key when the suffixed form is absent from harmonized_vars.
+            if (
+                resolved_harmonized_key is None
+                and entry.get("entity_class") == "MeasurementObservation"
+                and entry.get("method_type")
+                and "|" in harmonized_key
+            ):
+                bare_key = harmonized_key.split("|", 1)[0]
+                if bare_key in harmonized_vars:
+                    resolved_harmonized_key = bare_key
+                else:
+                    for ok in harmonized_vars:
+                        if ok.upper() == bare_key.upper():
+                            resolved_harmonized_key = ok
+                            break
+
             if resolved_harmonized_key is None or resolved_src_key is None:
                 # Stash diagnostic — at minimum we still know the YAML claims
                 # there is a harmonized key here, even if resolution failed.
