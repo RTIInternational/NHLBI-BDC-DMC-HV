@@ -39,8 +39,11 @@ from compare_source_harmonized import (  # noqa: E402
     check_c2_n_loss,
     check_c4_mean_preservation,
     check_c10_cross_variable,
+    check_c11_type_consistency,
     check_c12_value_mapping_coverage,
     check_c7_categorical_distribution,
+    check_c8_visit_distribution,
+    check_c9_clinical_range,
     load_thresholds,
     should_run_c5_conversion_check,
     validate_clinical_ranges_config,
@@ -530,6 +533,39 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         self.assertEqual(expected["distribution"]["PRESENT"]["n"], 4)
         self.assertEqual(expected["_comparison_basis"], "yaml_value_mappings")
 
+    def test_build_expected_summary_merges_raw_status_aliases(self) -> None:
+        entries = [
+            {
+                "entity_class": "Condition",
+                "phv_id": "phv1",
+                "value_map": {"N": "ABSENT", "Y": "PRESENT"},
+                "_source_summary": {
+                    "type": "categorical",
+                    "n_total": 3,
+                    "n_valid": 3,
+                    "distribution": {"N": {"n": 2}, "Y": {"n": 1}},
+                },
+            },
+            {
+                "entity_class": "Condition",
+                "phv_id": "phv2",
+                "_source_summary": {
+                    "type": "categorical",
+                    "n_total": 7,
+                    "n_valid": 7,
+                    "distribution": {"N": {"n": 3}, "Y": {"n": 4}},
+                },
+            },
+        ]
+
+        expected = build_expected_summary(entries, {})
+
+        self.assertIsNotNone(expected)
+        self.assertEqual(expected["distribution"]["ABSENT"]["n"], 5)
+        self.assertEqual(expected["distribution"]["PRESENT"]["n"], 5)
+        self.assertNotIn("N", expected["distribution"])
+        self.assertTrue(expected["_comparison_status_aliases_applied"])
+
     def test_expected_summary_from_concept_value_map_preserves_status_distribution(self) -> None:
         entry = {
             "phv_id": "phv1",
@@ -611,6 +647,83 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
 
         self.assertEqual(results[0].status, "WARN")
         self.assertIn("9", results[0].detail["missing_codes"])
+        self.assertIn("semantic", results[0].message)
+
+    def test_c12_reports_only_sentinel_gap_as_info(self) -> None:
+        match = {
+            "_yaml_entries": [
+                {
+                    "yaml_file": "demo.yaml",
+                    "phv_id": "phv1",
+                    "value_map": {"0": "ABSENT", "1": "PRESENT"},
+                    "source_summary": {
+                        "type": "categorical",
+                        "distribution": {"0": {"n": 10}, "1": {"n": 2}, ".": {"n": 1}},
+                    },
+                }
+            ]
+        }
+
+        results = check_c12_value_mapping_coverage(match, {"phv1": {"0", "1", "."}})
+
+        self.assertEqual(results[0].status, "INFO")
+        self.assertIn("missing_sentinel_codes", results[0].detail)
+
+    def test_c11_treats_numeric_encoded_source_as_info(self) -> None:
+        src = {
+            "type": "categorical",
+            "distribution": {"1.0": {"n": 2}, "2.5": {"n": 3}, ".": {"n": 1}},
+        }
+        out = {"type": "continuous"}
+
+        result = check_c11_type_consistency(src, out, "encoded numeric")
+
+        self.assertEqual(result.status, "INFO")
+
+    def test_c8_namespace_mismatch_warns_unsupported_not_fail(self) -> None:
+        source = {"rows_per_visit": {"SOURCE VISIT": 10}}
+        harmonized = {"rows_per_visit": {"uuid:VISIT": 100}}
+
+        results = check_c8_visit_distribution(source, harmonized)
+
+        self.assertEqual(results[0].status, "WARN")
+        self.assertEqual(results[0].detail["comparison_confidence"], "unsupported")
+
+    def test_c9_source_carried_red_flag_warns(self) -> None:
+        ranges = {
+            "weight": {
+                "common_phv_names": ["weight"],
+                "plausible_lo": 15,
+                "plausible_hi": 350,
+                "red_flag_lo": 15,
+                "red_flag_hi": 350,
+            }
+        }
+        src = {"type": "continuous", "min": 0.0, "max": 415.0}
+        out = {"type": "continuous", "min": 0.0, "max": 415.0}
+
+        result = check_c9_clinical_range(out, "weight", ranges, src_var=src)
+
+        self.assertEqual(result.status, "WARN")
+        self.assertIn("[out+src]", result.message)
+
+    def test_c9_uses_min_max_from_numeric_encoded_source(self) -> None:
+        ranges = {
+            "weight": {
+                "common_phv_names": ["weight"],
+                "plausible_lo": 15,
+                "plausible_hi": 350,
+                "red_flag_lo": 15,
+                "red_flag_hi": 350,
+            }
+        }
+        src = {"type": "categorical", "min": 0.0, "max": 415.0}
+        out = {"type": "continuous", "min": 0.0, "max": 415.0}
+
+        result = check_c9_clinical_range(out, "weight", ranges, src_var=src)
+
+        self.assertEqual(result.status, "WARN")
+        self.assertIn("[out+src]", result.message)
 
     def test_c2_large_n_gain_escalates_to_fail(self) -> None:
         src = {"n_valid": 100}

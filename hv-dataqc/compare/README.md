@@ -1,7 +1,7 @@
 # compare — Source vs. Harmonized Comparison Engine
 
 Compares aggregate JSON summaries produced by `extract-source/` and
-`extract-harmonized/`. Runs checks C1-C11 and produces a Markdown + JSON
+`extract-harmonized/`. Runs checks C1-C12 and produces a Markdown + JSON
 report. Runs **outside the enclave** — no participant-level data.
 
 Re-run as often as needed as HV YAMLs evolve. Only the two JSON summary files
@@ -72,12 +72,12 @@ python compare_source_harmonized.py \
 | C4 | Mean Preservation | Continuous mean within tolerance (no unit conversion) |
 | C5 | Mean After Conversion | Mean correct after known unit conversion factor |
 | C6 | SD Preservation | Standard deviation within tolerance |
-| C7 | Categorical Distribution | Category percentages match (respects value_mappings from YAML) |
-| C8 | Visit N Distribution | Per-visit row counts preserved; UUID namespace fallback to totals. For table-based cohorts (CHS, ARIC, etc.) where source TSVs have no visit column, source visit counts are synthesized from `total_rows_by_pht` + `visit.yaml` mappings. PHTs absent from `visit.yaml` (not being harmonized) are reported as a single INFO item. |
+| C7 | Categorical Distribution | Category percentages match after YAML-derived expected-summary normalization, including status aliases such as `N`/`Y` → `ABSENT`/`PRESENT` when the transform emits status values. |
+| C8 | Visit N Distribution | Per-visit row counts preserved when source and harmonized labels share a namespace. For table-based cohorts (CHS, ARIC, etc.) where source TSVs have no visit column, source visit counts are synthesized from `total_rows_by_pht` + `visit.yaml` mappings. Incompatible label namespaces are WARN/unsupported rather than hard FAIL because aggregate totals cannot prove visit semantics. PHTs absent from `visit.yaml` (not being harmonized) are reported as a single INFO item. |
 | C9 | Clinical Range | Harmonized min/max within clinically plausible bounds |
 | C10 | Cross-Variable Consistency | SBP > DBP, FEV1 < FVC, etc. |
-| C11 | Variable Type Consistency | Source/harmonized agree on continuous vs categorical |
-| C12 | Value Mapping Coverage | YAML value_mappings cover dbGaP coded values and observed source categories |
+| C11 | Variable Type Consistency | Source/harmonized agree on continuous vs categorical; numeric-coded dbGaP `encoded` sources compared to continuous outputs are INFO rather than WARN. |
+| C12 | Value Mapping Coverage | YAML value_mappings cover dbGaP coded values and observed source categories, distinguishing semantic codes from null/sentinel codes. |
 
 Notes:
 
@@ -86,22 +86,30 @@ Notes:
     summary may account for value_mappings, concept routing, case() expressions,
     scalar unit conversion, static YAML values, and pooled multi-block transforms.
 - C7 translates YAML `value_mappings` before comparison and aggregates many source
-    categories that map to the same harmonized category.
+    categories that map to the same harmonized category. For status-like transforms,
+    pooled expected summaries normalize raw source aliases (`N`, `Y`, `T`, etc.) into
+    harmonized status labels when the YAML entries indicate the output is status-valued.
 - C7 report sections include a full source/harmonized distribution table for every
     compared categorical variable.
 - C8 synthesizes source visit counts for table-based cohorts by combining
     `total_rows_by_pht` from the source summary with the `populated_from` + `name`
     slot in `visit.yaml`. PHTs present in the source data but absent from `visit.yaml`
     (i.e., tables not being harmonized in the current scope) are not FAILed — they
-    appear as a single INFO entry listing the PHT IDs and total row count.
+    appear as a single INFO entry listing the PHT IDs and total row count. When source
+    and harmonized visit labels have no overlap, the result is WARN/unsupported instead
+    of FAIL because aggregate label totals cannot establish harmonization correctness.
 - C9 annotates violations with `[out+src]`, `[out only]`, or `[src only]` when the
     source summary contains min/max values for the same range.
 - C10 is driven by `_cross_variable_rules` in `clinical_ranges.yaml`. Simple
     two-variable mean comparisons run automatically; formula rules are emitted as
     `SKIP` with an explanatory message until implemented.
+- C11 demotes categorical→continuous mismatches to INFO when the source is encoded as
+    categorical but all observed non-sentinel values are numeric. This prevents ARIC-like
+    dbGaP type metadata from drowning out real comparison findings.
 - C12 is deliberately separate from before/after preservation checks. An unmapped
     source code can be expected transform behavior, but still indicate a YAML
-    completeness issue that should be reviewed.
+    completeness issue that should be reviewed. Null/sentinel-only gaps are INFO;
+    missing semantic source codes remain WARN.
 
 ### Status Codes
 

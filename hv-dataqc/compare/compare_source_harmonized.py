@@ -583,6 +583,122 @@ def _distribution_count_map(summary: dict | None) -> dict[str, int]:
     return counts
 
 
+_STATUS_CATEGORY_ALIASES: dict[str, str] = {
+    "NO": "ABSENT",
+    "N": "ABSENT",
+    "FALSE": "ABSENT",
+    "F": "ABSENT",
+    "YES": "PRESENT",
+    "Y": "PRESENT",
+    "TRUE": "PRESENT",
+    "T": "PRESENT",
+    "U": "UNKNOWN",
+    "UNK": "UNKNOWN",
+    "UNKNOWN": "UNKNOWN",
+}
+
+_NULL_SENTINEL_CODES: set[str] = {
+    "",
+    ".",
+    "*",
+    "**",
+    "***",
+    "****",
+    "*****",
+    "******",
+    "*******",
+    "********",
+    "*********",
+    "NA",
+    "N/A",
+    "NULL",
+    "NONE",
+    "MISSING",
+}
+
+
+def _status_alias_map(entries: list[dict]) -> dict[str, str]:
+    """Return canonical status aliases implied by the YAML entries."""
+    aliases = dict(_STATUS_CATEGORY_ALIASES)
+    for entry in entries:
+        value_map = entry.get("value_map")
+        if not isinstance(value_map, dict):
+            continue
+        for raw_code, mapped_value in value_map.items():
+            mapped = normalize_category_key(mapped_value).upper()
+            if mapped in {"PRESENT", "ABSENT", "UNKNOWN", "HISTORICAL"}:
+                aliases[normalize_category_key(_normalize_code(raw_code)).upper()] = mapped
+    return aliases
+
+
+def _is_status_transform_entry(entry: dict) -> bool:
+    """Whether an entry is expected to emit status-like categorical values."""
+    if entry.get("entity_class") == "Condition":
+        return True
+    value_map = entry.get("value_map")
+    if isinstance(value_map, dict):
+        mapped_values = {normalize_category_key(v).upper() for v in value_map.values()}
+        if mapped_values & {"PRESENT", "ABSENT", "UNKNOWN", "HISTORICAL"}:
+            return True
+    for expr in entry.get("value_exprs") or []:
+        for _, output in _case_branches(expr):
+            if normalize_category_key(output).upper() in {"PRESENT", "ABSENT", "UNKNOWN", "HISTORICAL"}:
+                return True
+    return False
+
+
+def _normalize_status_distribution(summary: dict, entries: list[dict]) -> dict:
+    """Merge raw Y/N/T/0/1 status codes into PRESENT/ABSENT/UNKNOWN when appropriate."""
+    if summary.get("type") != "categorical" or not any(_is_status_transform_entry(e) for e in entries):
+        return summary
+    dist = summary.get("distribution")
+    if not isinstance(dist, dict) or not dist:
+        return summary
+
+    aliases = _status_alias_map(entries)
+    merged_counts: dict[str, int] = {}
+    changed = False
+    for category, stats in dist.items():
+        mapped = aliases.get(normalize_category_key(_normalize_code(category)).upper())
+        output_category = mapped or normalize_category_key(category)
+        if mapped and mapped != normalize_category_key(category):
+            changed = True
+        count = int((stats or {}).get("n", 0) or 0) if isinstance(stats, dict) else 0
+        merged_counts[output_category] = merged_counts.get(output_category, 0) + count
+    if not changed:
+        return summary
+    normalized = _categorical_summary_from_counts(
+        merged_counts,
+        basis=summary.get("_comparison_basis", "yaml_status_aliases"),
+        confidence=summary.get("_comparison_confidence", "exact"),
+        raw={**summary, "n_total": summary.get("n_total", sum(merged_counts.values()))},
+        limitations=summary.get("_comparison_limitations") or [],
+    ) or summary
+    normalized["_comparison_status_aliases_applied"] = True
+    return normalized
+
+
+def _is_null_sentinel_code(code: Any) -> bool:
+    """Return True for common dbGaP/SAS/suppression sentinels, not semantic categories."""
+    normalized = normalize_category_key(_normalize_code(code)).upper()
+    if normalized in _NULL_SENTINEL_CODES:
+        return True
+    return bool(re.fullmatch(r"\*{2,}", normalized))
+
+
+def _codes_are_numeric_or_sentinel(codes: set[str]) -> bool:
+    """Whether all observed categorical keys are parseable numeric values or null sentinels."""
+    meaningful = [code for code in codes if not _is_null_sentinel_code(code)]
+    if not meaningful:
+        return False
+    for code in meaningful:
+        try:
+            float(str(code))
+        except (TypeError, ValueError):
+            return False
+    return True
+
+
 def _categorical_summary_from_counts(
     counts: dict[str, int], *, basis: str, confidence: str = "exact", raw: dict | None = None,
     limitations: list[str] | None = None,
@@ -788,6 +904,7 @@ def build_expected_summary(entries: list[dict], summaries_by_phv: dict[str, dict
     expected["_comparison_basis"] = basis
     expected["_comparison_confidence"] = confidence
     expected["_comparison_limitations"] = limitations
+    expected = _normalize_status_distribution(expected, entries)
     return expected
 
 
@@ -1850,8 +1967,11 @@ def build_variable_crosswalk(
                     "phv_id": e.get("phv_id"),
                     "concept_phv": e.get("concept_phv"),
                     "concept_code": e.get("concept_code"),
+                    "entity_class": e.get("entity_class"),
+                    "harmonized_key": e.get("harmonized_key"),
                     "value_map": e.get("value_map"),
                     "concept_value_map": e.get("concept_value_map"),
+                    "value_exprs": e.get("value_exprs"),
                     "source_summary": e.get("_source_summary"),
                 }
                 for e in entries
@@ -2316,6 +2436,19 @@ def check_c11_type_consistency(src_var: dict, harmonized_var: dict, var_name: st
     if src_type == harmonized_type:
         return CheckResult("C11", var_name, "PASS", f"Type consistent: {src_type}")
 
+    if src_type == "categorical" and harmonized_type == "continuous":
+        observed_codes = set(_distribution_count_map(src_var))
+        if _codes_are_numeric_or_sentinel(observed_codes):
+            return CheckResult(
+                "C11", var_name, "INFO",
+                "Source is encoded/categorical but observed values are numeric; treating as numeric-coded source metadata, not a harmonization type error",
+                {
+                    "source_type": src_type,
+                    "harmonized_type": harmonized_type,
+                    "observed_codes_numeric_or_sentinel": True,
+                },
+            )
+
     return CheckResult(
         "C11", var_name, "WARN",
         f"Type mismatch: source={src_type}, harmonized={harmonized_type}",
@@ -2524,15 +2657,33 @@ def check_c12_value_mapping_coverage(match: dict, phv_value_codes: dict[str, set
             }
             if missing_codes:
                 detail["missing_codes"] = missing_codes
+                sentinel_missing = [code for code in missing_codes if _is_null_sentinel_code(code)]
+                semantic_missing = [code for code in missing_codes if code not in sentinel_missing]
+                if sentinel_missing:
+                    detail["missing_sentinel_codes"] = sentinel_missing
+                if semantic_missing:
+                    detail["missing_semantic_codes"] = semantic_missing
                 observed_bits = [
                     f"{code} (n={observed_counts[code]})"
                     for code in missing_codes
                     if observed_counts.get(code, 0) > 0
                 ]
                 suffix = f"; observed: {', '.join(observed_bits)}" if observed_bits else ""
+                if semantic_missing:
+                    message = (
+                        f"YAML mapping does not cover semantic source code(s): "
+                        f"{', '.join(semantic_missing)}{suffix}"
+                    )
+                    status = "WARN"
+                else:
+                    message = (
+                        f"YAML mapping does not explicitly handle null/sentinel code(s): "
+                        f"{', '.join(sentinel_missing)}{suffix}"
+                    )
+                    status = "INFO"
                 results.append(CheckResult(
-                    "C12", f"{phv_id} [{mapping_kind}]", "WARN",
-                    f"YAML mapping does not cover source code(s): {', '.join(missing_codes)}{suffix}",
+                    "C12", f"{phv_id} [{mapping_kind}]", status,
+                    message,
                     detail,
                 ))
             elif extra_codes:
@@ -2672,7 +2823,7 @@ def check_c8_visit_distribution(
         harmonized_total = sum(n for k, n in harmonized_visits.items() if k != "_MISSING")
         detail = {
             "note": "Source and harmonized use different visit label namespaces; "
-                    "comparing total counts only",
+                    "aggregate visit correctness cannot be evaluated safely",
             "source_labels": sorted(src_keys),
             "harmonized_labels": sorted(harmonized_keys),
             "source_total": src_total,
@@ -2685,13 +2836,14 @@ def check_c8_visit_distribution(
             )
         if harmonized_total == src_total:
             return [CheckResult("C8", "visit_TOTAL", "PASS",
-                                f"Total visits match: N={_n(src_total)} (label namespace fallback)",
+                                f"Total visits match: N={_n(src_total)} despite label namespace mismatch",
                                 detail)]
-        ratio = harmonized_total / src_total if src_total > 0 else 0
-        status = "WARN" if warn_lo_ratio <= ratio <= warn_hi_ratio else "FAIL"
-        return [CheckResult("C8", "visit_TOTAL", status,
-                             f"Total visits: {_n(src_total)} -> {_n(harmonized_total)} (label namespace fallback)",
-                             detail)]
+        detail["comparison_confidence"] = "unsupported"
+        return [CheckResult(
+            "C8", "visit_TOTAL", "WARN",
+            f"Visit labels use incompatible namespaces; totals differ {_n(src_total)} -> {_n(harmonized_total)} and row-level visit semantics are needed for an exact verdict",
+            detail,
+        )]
 
     synthesis_note = (
         "Source visit counts derived from total_rows_by_pht + visit.yaml. "
@@ -2812,7 +2964,7 @@ def check_c9_clinical_range(
                            f"Range OK: [{out_min}, {out_max}] within [{plaus_lo}, {plaus_hi}]")
 
     # Annotate each issue with source context when src_var is available
-    if src_var and src_var.get("type") == "continuous":
+    if src_var and src_var.get("min") is not None and src_var.get("max") is not None:
         src_min = src_var.get("min")
         src_max = src_var.get("max")
         src_issues = _range_violations(src_min, src_max, matched)
