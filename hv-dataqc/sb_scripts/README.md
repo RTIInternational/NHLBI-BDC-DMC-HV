@@ -59,7 +59,14 @@ the latest `DataRun_*` directory containing mapped-data for the cohort.
 Packages output into a tgz for download.
 
 ```bash
+# Use latest DataRun
 ./NHLBI-BDC-DMC-HV/hv-dataqc/sb_scripts/run_extracts.sh COPDGene
+
+# Pin to a specific DataRun (ensures source + harmonized use same data)
+./NHLBI-BDC-DMC-HV/hv-dataqc/sb_scripts/run_extracts.sh COPDGene --datarun DataRun_20260412_1830
+
+# List available DataRuns for a cohort
+./NHLBI-BDC-DMC-HV/hv-dataqc/sb_scripts/run_extracts.sh COPDGene --list-dataruns
 ```
 
 Output goes to `/sbgenomics/workspace/QC-output-files/<COHORT>/` with
@@ -67,12 +74,12 @@ timestamped subdirectories and `latest_source`/`latest_harmonized` symlinks.
 The packaged tgz lands at `/sbgenomics/workspace/dataqc_<cohort>_output.tgz`
 — right-click it in the JupyterLab file browser to download.
 
-If multiple `DataRun_*` directories contain data for the cohort, the script
-uses the latest one and prints a note about the choice.
+If multiple `DataRun_*` directories contain data for the cohort and no
+`--datarun` is specified, the script uses the latest one and prints a note.
 
 ### Manual extract commands
 
-If you need more control (e.g., a specific DataRun or custom output dir):
+If you need more control (e.g., a custom output dir):
 
 ```bash
 # Source extract
