@@ -77,9 +77,14 @@ python compare_source_harmonized.py \
 | C9 | Clinical Range | Harmonized min/max within clinically plausible bounds |
 | C10 | Cross-Variable Consistency | SBP > DBP, FEV1 < FVC, etc. |
 | C11 | Variable Type Consistency | Source/harmonized agree on continuous vs categorical |
+| C12 | Value Mapping Coverage | YAML value_mappings cover dbGaP coded values and observed source categories |
 
 Notes:
 
+- C2-C7 compare actual harmonized summaries against a YAML-derived expected
+    harmonized summary when transform semantics are available. This expected
+    summary may account for value_mappings, concept routing, case() expressions,
+    scalar unit conversion, static YAML values, and pooled multi-block transforms.
 - C7 translates YAML `value_mappings` before comparison and aggregates many source
     categories that map to the same harmonized category.
 - C7 report sections include a full source/harmonized distribution table for every
@@ -94,6 +99,9 @@ Notes:
 - C10 is driven by `_cross_variable_rules` in `clinical_ranges.yaml`. Simple
     two-variable mean comparisons run automatically; formula rules are emitted as
     `SKIP` with an explanatory message until implemented.
+- C12 is deliberately separate from before/after preservation checks. An unmapped
+    source code can be expected transform behavior, but still indicate a YAML
+    completeness issue that should be reviewed.
 
 ### Status Codes
 
@@ -118,12 +126,24 @@ by parsing YAML transform files:
    - `observation_type` / `condition_concept` value → harmonized entity key
    - `populated_from` PHV accessions → resolved to variable names via dbGaP cache
    - `value_mappings` → used for C7 categorical translation
+    - simple `case()` expressions in value slots → used to derive expected
+      categorical comparison distributions for split blocks without YAML changes
     - `method_type` → retained as crosswalk metadata when present
 
 2. For `MeasurementObservationSet` (blood pressure, spirometry), recurses into
    `observations.object_derivations` to extract each nested `MeasurementObservation`.
 
-3. Falls back to PHV ID match, then variable name match if YAML matching fails.
+3. Builds an expected post-transform source summary for each harmonized key.
+    Exact aggregate expectations are produced for direct copies, value_mappings,
+    concept routing where the concept and value PHVs align, simple case()
+    routing, scalar arithmetic, common `unit_conversion` blocks, static YAML
+    values, and pooled independent blocks. Cases that require row-level joint
+    counts are marked as partial/unsupported rather than guessed.
+
+4. Groups multiple YAML blocks that emit the same harmonized key and compares
+    against the pooled or YAML-derived source basis instead of a single first PHV.
+
+5. Falls back to PHV ID match, then variable name match if YAML matching fails.
 
 ---
 

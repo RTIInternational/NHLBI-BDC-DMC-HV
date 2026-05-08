@@ -23,16 +23,23 @@ from hv_dataqc_common import normalize_category_key, write_json_atomic  # noqa: 
 from compare_source_harmonized import (  # noqa: E402
     CrosswalkBuildError,
     _aggregate_source_summaries,
+    _case_branches,
     _expected_harmonized_n,
+    _expected_summary_from_concept_value_map,
+    _expected_summary_from_value_map,
+    _expected_summary_from_case_value_exprs,
+    _unit_conversion_factor,
     _json_safe,
     _normalize_code,
     _to_discovered_key,
     _write_text_atomic,
     build_variable_crosswalk,
+    build_expected_summary,
     check_c1_n_preservation,
     check_c2_n_loss,
     check_c4_mean_preservation,
     check_c10_cross_variable,
+    check_c12_value_mapping_coverage,
     check_c7_categorical_distribution,
     load_thresholds,
     should_run_c5_conversion_check,
@@ -398,6 +405,99 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
 
         self.assertEqual(_expected_harmonized_n(match, src_var), 7)
 
+    def test_case_branches_extracts_simple_value_routing(self) -> None:
+        expr = 'case(({phv00258106} == 0, "OMOP:45883537"), (True, None))'
+
+        self.assertEqual(
+            _case_branches(expr),
+            [("{phv00258106} == 0", "OMOP:45883537"), ("True", "None")],
+        )
+
+    def test_expected_summary_from_case_value_exprs_handles_split_skip_pattern(self) -> None:
+        entries = [
+            {
+                "value_exprs": [
+                    'case(({phv00258106} == 0, "OMOP:45883537"), (True, None))'
+                ]
+            },
+            {
+                "value_exprs": [
+                    'case(({phv00258106} == 1 and {phv00258107} == 1, "OMOP:40766945"), '
+                    '({phv00258106} == 1 and {phv00258107} == 2, "OMOP:40766945"), '
+                    '({phv00258106} == 1 and {phv00258107} == 3, "OMOP:45883458"), '
+                    '(True, None))'
+                ]
+            },
+        ]
+        summaries_by_phv = {
+            "phv00258106": {
+                "type": "categorical",
+                "distribution": {
+                    "0.0": {"n": 7, "pct": 58.33},
+                    "1.0": {"n": 5, "pct": 41.67},
+                },
+            },
+            "phv00258107": {
+                "type": "categorical",
+                "distribution": {
+                    "1.0": {"n": 2, "pct": 40.0},
+                    "2.0": {"n": 1, "pct": 20.0},
+                    "3.0": {"n": 2, "pct": 40.0},
+                },
+            },
+        }
+
+        expected = _expected_summary_from_case_value_exprs(entries, summaries_by_phv)
+
+        self.assertIsNotNone(expected)
+        self.assertEqual(expected["n_valid"], 12)
+        self.assertEqual(expected["_comparison_basis"], "yaml_case_value_expr")
+        self.assertEqual(expected["distribution"]["OMOP:45883537"]["n"], 7)
+        self.assertEqual(expected["distribution"]["OMOP:40766945"]["n"], 3)
+        self.assertEqual(expected["distribution"]["OMOP:45883458"]["n"], 2)
+
+    def test_expected_summary_from_case_value_exprs_skips_non_null_else_branch(self) -> None:
+        entries = [
+            {
+                "value_exprs": [
+                    "case(({phv00226270} == 'Atrial fibrillation', 'PRESENT'), (True, 'ABSENT'))"
+                ]
+            }
+        ]
+        summaries_by_phv = {
+            "phv00226270": {
+                "type": "categorical",
+                "distribution": {"Atrial fibrillation": {"n": 1, "pct": 10.0}},
+            }
+        }
+
+        self.assertIsNone(_expected_summary_from_case_value_exprs(entries, summaries_by_phv))
+
+    def test_c2_c7_pass_with_case_derived_expected_summary(self) -> None:
+        src = {
+            "type": "categorical",
+            "n_total": 12,
+            "n_valid": 12,
+            "n_missing": 0,
+            "pct_missing": 0.0,
+            "distribution": {
+                "OMOP:40766945": {"n": 3, "pct": 25.0},
+                "OMOP:45883458": {"n": 2, "pct": 16.67},
+                "OMOP:45883537": {"n": 7, "pct": 58.33},
+            },
+        }
+        out = {
+            "type": "categorical",
+            "n_total": 12,
+            "n_valid": 12,
+            "n_missing": 0,
+            "pct_missing": 0.0,
+            "distribution": src["distribution"],
+        }
+
+        self.assertEqual(check_c2_n_loss(src, out, "smoking").status, "PASS")
+        self.assertEqual(check_c7_categorical_distribution(src, out, "smoking").status, "PASS")
+
     def test_c2_uses_expected_n_for_concept_allocated_source(self) -> None:
         src = {"n_valid": 10}
         out = {"n_valid": 7}
@@ -407,6 +507,110 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         self.assertEqual(result.status, "PASS")
         self.assertEqual(result.detail["source_n_raw"], 10)
         self.assertEqual(result.detail["expected_n_for_concept"], 7)
+
+    def test_expected_summary_from_value_map_filters_unmapped_codes(self) -> None:
+        entry = {"value_map": {"0": "ABSENT", "1": "PRESENT"}}
+        src = {
+            "type": "categorical",
+            "n_total": 11,
+            "n_valid": 11,
+            "distribution": {
+                "0.0": {"n": 5, "pct": 45.45},
+                "1.0": {"n": 4, "pct": 36.36},
+                "9.0": {"n": 2, "pct": 18.18},
+            },
+        }
+
+        expected = _expected_summary_from_value_map(entry, src)
+
+        self.assertIsNotNone(expected)
+        self.assertEqual(expected["n_valid"], 9)
+        self.assertEqual(expected["n_missing"], 2)
+        self.assertEqual(expected["distribution"]["ABSENT"]["n"], 5)
+        self.assertEqual(expected["distribution"]["PRESENT"]["n"], 4)
+        self.assertEqual(expected["_comparison_basis"], "yaml_value_mappings")
+
+    def test_expected_summary_from_concept_value_map_preserves_status_distribution(self) -> None:
+        entry = {
+            "phv_id": "phv1",
+            "concept_phv": "phv1",
+            "concept_code": "MONDO:0005015",
+            "concept_value_map": {
+                "1": "MONDO:0005015",
+                "2": "HP:0040270",
+                "3": "MONDO:0005015",
+            },
+            "value_map": {"1": "ABSENT", "2": "PRESENT", "3": "PRESENT"},
+        }
+        src = {
+            "type": "categorical",
+            "n_total": 10,
+            "n_valid": 10,
+            "distribution": {
+                "1.0": {"n": 4, "pct": 40.0},
+                "2.0": {"n": 3, "pct": 30.0},
+                "3.0": {"n": 3, "pct": 30.0},
+            },
+        }
+
+        expected = _expected_summary_from_concept_value_map(entry, src)
+
+        self.assertIsNotNone(expected)
+        self.assertEqual(expected["n_valid"], 7)
+        self.assertEqual(expected["distribution"]["ABSENT"]["n"], 4)
+        self.assertEqual(expected["distribution"]["PRESENT"]["n"], 3)
+
+    def test_build_expected_summary_marks_joint_phv_concept_routing_partial(self) -> None:
+        entries = [
+            {
+                "phv_id": "phv_status",
+                "concept_phv": "phv_concept",
+                "concept_code": "MONDO:0005015",
+                "concept_value_map": {"1": "MONDO:0005015"},
+                "value_map": {"0": "ABSENT", "1": "PRESENT"},
+                "_source_summary": {
+                    "type": "categorical",
+                    "n_total": 10,
+                    "n_valid": 10,
+                    "distribution": {"0": {"n": 5}, "1": {"n": 5}},
+                },
+                "yaml_file": "diabetes.yaml",
+            }
+        ]
+
+        expected = build_expected_summary(entries, {})
+
+        self.assertIsNone(expected)
+
+    def test_unit_conversion_factor_reads_common_unit_conversion_block(self) -> None:
+        self.assertEqual(
+            _unit_conversion_factor({"source_unit": "[lb_av]", "target_unit": "kg"}),
+            0.453592,
+        )
+
+    def test_c12_warns_on_observed_unmapped_value(self) -> None:
+        match = {
+            "_yaml_entries": [
+                {
+                    "yaml_file": "copd.yaml",
+                    "phv_id": "phv1",
+                    "value_map": {"0": "ABSENT", "1": "PRESENT"},
+                    "source_summary": {
+                        "type": "categorical",
+                        "distribution": {
+                            "0": {"n": 10},
+                            "1": {"n": 2},
+                            "9": {"n": 1},
+                        },
+                    },
+                }
+            ]
+        }
+
+        results = check_c12_value_mapping_coverage(match, {"phv1": {"0", "1", "9"}})
+
+        self.assertEqual(results[0].status, "WARN")
+        self.assertIn("9", results[0].detail["missing_codes"])
 
     def test_c2_large_n_gain_escalates_to_fail(self) -> None:
         src = {"n_valid": 100}
@@ -422,6 +626,19 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
 
         self.assertEqual(result.status, "FAIL")
         self.assertEqual(result.detail["gain_pct"], 25.0)
+
+    def test_c2_skips_unsupported_expected_summary(self) -> None:
+        src = {
+            "n_valid": 100,
+            "_comparison_confidence": "unsupported",
+            "_comparison_limitations": ["joint counts required"],
+        }
+        out = {"n_valid": 125}
+
+        result = check_c2_n_loss(src, out, "joint")
+
+        self.assertEqual(result.status, "SKIP")
+        self.assertEqual(result.detail["comparison_confidence"], "unsupported")
 
     def test_build_variable_crosswalk_raises_on_empty_cache_mapping(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

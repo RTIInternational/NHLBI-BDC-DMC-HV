@@ -338,6 +338,34 @@ def load_phv_type_map(cache_dir: Path) -> dict[str, str]:
     return phv_type
 
 
+def load_phv_value_codes_map(cache_dir: Path) -> dict[str, set[str]]:
+    """Build PHV-accession -> coded value set from dbGaP data-dict XML files."""
+    phv_codes: dict[str, set[str]] = {}
+    pheno_dir = cache_dir / "pheno_variable_summaries"
+    if not pheno_dir.exists():
+        return phv_codes
+
+    for dd_file in sorted(pheno_dir.glob("*.data_dict.xml")):
+        try:
+            tree = ET.parse(dd_file)
+            for var in tree.getroot().findall(".//variable"):
+                phv_id = _canonical_phv_id(var.get("id", ""))
+                if not phv_id.startswith("phv"):
+                    continue
+                codes = {
+                    normalize_category_key(_normalize_code(value.get("code", "")))
+                    for value in var.findall("value")
+                    if value.get("code") is not None
+                }
+                if codes:
+                    phv_codes[phv_id] = codes
+        except ET.ParseError as exc:
+            print(f"  WARNING: Could not parse PHV codes XML {dd_file.name}: {exc}")
+
+    print(f"  PHV coded-value map: {len(phv_codes)} entries")
+    return phv_codes
+
+
 # ---------------------------------------------------------------------------
 # YAML crosswalk construction
 # ---------------------------------------------------------------------------
@@ -374,6 +402,393 @@ def _extract_value_mappings(slot_body: dict) -> dict | None:
     if not vm or not isinstance(vm, dict):
         return None
     return {str(k): str(v) for k, v in vm.items()}
+
+
+_CASE_BRANCH_RE = re.compile(
+    r"\((?P<condition>[^,]+),\s*"
+    r"(?P<value>None|True|False|'[^']*'|\"[^\"]*\"|[A-Za-z0-9_:.-]+)\)"
+)
+_PHV_EQ_RE = re.compile(
+    r"\{(?P<phv>phv\d+)\}\s*==\s*"
+    r"(?P<value>'[^']*'|\"[^\"]*\"|-?\d+(?:\.\d+)?|[A-Za-z0-9_:.-]+)",
+    re.IGNORECASE,
+)
+
+
+def _strip_expr_literal(value: str) -> str:
+    """Return a case() branch literal without surrounding quotes."""
+    text = str(value).strip()
+    if len(text) >= 2 and text[0] == text[-1] and text[0] in {'"', "'"}:
+        return text[1:-1]
+    return text
+
+
+def _case_branches(expr: str) -> list[tuple[str, str]]:
+    """Extract simple ``case((condition, value), ...)`` branches.
+
+    The compare engine only needs aggregate metadata, so this intentionally
+    supports the common YAML subset used for categorical routing: comma-free
+    boolean conditions and scalar string/number outputs.  Unsupported branches
+    are ignored by callers rather than guessed.
+    """
+    if not isinstance(expr, str) or "case" not in expr:
+        return []
+    branches: list[tuple[str, str]] = []
+    for match in _CASE_BRANCH_RE.finditer(expr):
+        branches.append(
+            (
+                match.group("condition").strip().strip("() "),
+                _strip_expr_literal(match.group("value")),
+            )
+        )
+    return branches
+
+
+def _distribution_count_for_code(summary: dict | None, code: str) -> int | None:
+    """Return the aggregate count for *code* in a source summary distribution."""
+    if not summary:
+        return None
+    dist = summary.get("distribution") or summary.get("values")
+    if not isinstance(dist, dict):
+        return None
+    target = normalize_category_key(_normalize_code(code))
+    for raw_code, info in dist.items():
+        if normalize_category_key(_normalize_code(raw_code)) != target:
+            continue
+        if isinstance(info, dict):
+            return int(info.get("n", info.get("count", 0)) or 0)
+        try:
+            return int(info)
+        except (TypeError, ValueError):
+            return None
+    return None
+
+
+def _expected_summary_from_case_value_exprs(
+    entries: list[dict], summaries_by_phv: dict[str, dict]
+) -> dict | None:
+    """Build expected harmonized categorical distribution from YAML case() values.
+
+    Some transforms intentionally split one harmonized variable across multiple
+    YAML blocks to avoid null propagation or to combine multiple source PHVs.
+    When those blocks use simple ``case()`` value expressions, aggregate source
+    distributions can provide the correct comparison basis without adding any
+    metadata to the YAML.  For multi-PHV conditions, prefer the last equality
+    test with a usable distribution; this captures common gated patterns such
+    as ``TBEA1 == 1 and TBEA3 == 3`` where TBEA1 selects the skip pattern and
+    TBEA3 supplies the emitted category.
+    """
+    expected_counts: dict[str, int] = {}
+    contributing_phvs: set[str] = set()
+
+    for entry in entries:
+        for expr in entry.get("value_exprs") or []:
+            for condition, output in _case_branches(expr):
+                output_key = normalize_category_key(output)
+                if output_key in {"", "None"}:
+                    continue
+                if condition == "True":
+                    # A non-null else/default branch requires row-level or
+                    # complement counts.  A partial distribution would make C2
+                    # look like a loss, so leave this comparison on the normal
+                    # pooled-source path.
+                    return None
+                eq_tests = list(_PHV_EQ_RE.finditer(condition))
+                if not eq_tests:
+                    return None
+                counted = False
+                for eq in reversed(eq_tests):
+                    phv = _canonical_phv_id(eq.group("phv"))
+                    code = _strip_expr_literal(eq.group("value"))
+                    count = _distribution_count_for_code(summaries_by_phv.get(phv), code)
+                    if count is None:
+                        continue
+                    expected_counts[output_key] = expected_counts.get(output_key, 0) + count
+                    contributing_phvs.add(phv)
+                    counted = True
+                    break
+                if not counted:
+                    return None
+
+    total = sum(expected_counts.values())
+    if total <= 0:
+        return None
+
+    distribution = {
+        category: {"n": count, "pct": round(count / total * 100, 2)}
+        for category, count in sorted(expected_counts.items())
+    }
+    return {
+        "type": "categorical",
+        "n_total": total,
+        "n_valid": total,
+        "n_missing": 0,
+        "pct_missing": 0.0,
+        "distribution": distribution,
+        "_comparison_basis": "yaml_case_value_expr",
+        "_comparison_phvs": sorted(contributing_phvs),
+    }
+
+
+_COMMON_UNIT_FACTORS: dict[tuple[str, str], float] = {
+    ("[lb_av]", "kg"): 0.453592,
+    ("lb", "kg"): 0.453592,
+    ("lbs", "kg"): 0.453592,
+    ("kg", "[lb_av]"): 2.20462,
+    ("kg", "lb"): 2.20462,
+    ("kg", "lbs"): 2.20462,
+    ("in", "cm"): 2.54,
+    ("[in_i]", "cm"): 2.54,
+    ("cm", "in"): 0.393701,
+    ("mg/dL", "mmol/L glucose"): 0.0555,
+    ("mg/dL", "mmol/L cholesterol"): 0.02586,
+    ("mg/dL", "mmol/L triglycerides"): 0.01129,
+}
+
+
+def _unit_conversion_factor(unit_conversion: dict | None) -> float | None:
+    """Return a known scalar factor for a YAML ``unit_conversion`` block."""
+    if not isinstance(unit_conversion, dict):
+        return None
+    source_unit = str(unit_conversion.get("source_unit", "")).strip()
+    target_unit = str(unit_conversion.get("target_unit", "")).strip()
+    if not source_unit or not target_unit:
+        return None
+    direct = _COMMON_UNIT_FACTORS.get((source_unit, target_unit))
+    if direct is not None:
+        return direct
+    # A few transforms use only the target dimensionality.  Keep these exact
+    # mappings conservative to avoid inventing conversion semantics.
+    if source_unit == "mg/dL" and target_unit == "mmol/L":
+        return None
+    return None
+
+
+def _distribution_count_map(summary: dict | None) -> dict[str, int]:
+    """Return normalized category -> count for a categorical summary."""
+    dist = (summary or {}).get("distribution") or (summary or {}).get("values") or {}
+    if not isinstance(dist, dict):
+        return {}
+    counts: dict[str, int] = {}
+    for raw_code, info in dist.items():
+        key = normalize_category_key(_normalize_code(raw_code))
+        if isinstance(info, dict):
+            count = int(info.get("n", info.get("count", 0)) or 0)
+        else:
+            try:
+                count = int(info)
+            except (TypeError, ValueError):
+                count = 0
+        counts[key] = counts.get(key, 0) + count
+    return counts
+
+
+def _categorical_summary_from_counts(
+    counts: dict[str, int], *, basis: str, confidence: str = "exact", raw: dict | None = None,
+    limitations: list[str] | None = None,
+) -> dict | None:
+    """Build a categorical aggregate summary from category counts."""
+    total = sum(counts.values())
+    if total <= 0:
+        return None
+    n_total = int((raw or {}).get("n_total", total) or total)
+    distribution = {
+        category: {"n": count, "pct": round(count / total * 100, 2)}
+        for category, count in sorted(counts.items())
+    }
+    return {
+        "type": "categorical",
+        "n_total": n_total,
+        "n_valid": total,
+        "n_missing": max(n_total - total, 0),
+        "pct_missing": round(max(n_total - total, 0) / n_total * 100, 2) if n_total else 0.0,
+        "distribution": distribution,
+        "_comparison_basis": basis,
+        "_comparison_confidence": confidence,
+        "_comparison_limitations": limitations or [],
+    }
+
+
+def _expected_summary_from_value_map(entry: dict, src_summary: dict) -> dict | None:
+    """Build exact expected categorical output for value_mappings on a value slot."""
+    value_map = entry.get("value_map")
+    if not isinstance(value_map, dict) or not value_map:
+        return None
+    src_counts = _distribution_count_map(src_summary)
+    if not src_counts:
+        return None
+    normalized_map = {
+        normalize_category_key(_normalize_code(code)): normalize_category_key(value)
+        for code, value in value_map.items()
+    }
+    expected_counts: dict[str, int] = {}
+    for code, count in src_counts.items():
+        mapped = normalized_map.get(code)
+        if mapped is None:
+            continue
+        expected_counts[mapped] = expected_counts.get(mapped, 0) + count
+    return _categorical_summary_from_counts(
+        expected_counts,
+        basis="yaml_value_mappings",
+        confidence="exact",
+        raw=src_summary,
+    )
+
+
+def _expected_summary_from_concept_value_map(entry: dict, src_summary: dict) -> dict | None:
+    """Build exact expected summary for concept-slot value_mappings when PHVs align."""
+    concept_value_map = entry.get("concept_value_map")
+    concept_code = entry.get("concept_code")
+    if not isinstance(concept_value_map, dict) or not concept_code:
+        return None
+    concept_phv = _canonical_phv_id(entry.get("concept_phv", ""))
+    primary_phv = _canonical_phv_id(entry.get("phv_id", ""))
+    if concept_phv and primary_phv and concept_phv != primary_phv:
+        return None
+    src_counts = _distribution_count_map(src_summary)
+    if not src_counts:
+        return None
+    value_map = entry.get("value_map") if isinstance(entry.get("value_map"), dict) else {}
+    expected_counts: dict[str, int] = {}
+    for code, target in concept_value_map.items():
+        if str(target).strip() != str(concept_code).strip():
+            continue
+        normalized_code = normalize_category_key(_normalize_code(code))
+        count = src_counts.get(normalized_code, 0)
+        if count <= 0:
+            continue
+        output = normalize_category_key(value_map.get(str(code), concept_code))
+        expected_counts[output] = expected_counts.get(output, 0) + count
+    return _categorical_summary_from_counts(
+        expected_counts,
+        basis="yaml_concept_value_mappings",
+        confidence="exact",
+        raw=src_summary,
+    )
+
+
+def _expected_summary_from_case_entry(entry: dict, src_summary: dict, summaries_by_phv: dict[str, dict]) -> dict | None:
+    """Build expected summary for a single value-slot case expression."""
+    counts: dict[str, int] = {}
+    explicit_count = 0
+    saw_branch = False
+    table_total = int(src_summary.get("n_total", 0) or src_summary.get("n_valid", 0) or 0)
+
+    for expr in entry.get("value_exprs") or []:
+        for condition, output in _case_branches(expr):
+            output_key = normalize_category_key(output)
+            if output_key in {"", "None"}:
+                continue
+            saw_branch = True
+            if condition == "True":
+                if table_total <= 0:
+                    return None
+                default_count = max(table_total - explicit_count, 0)
+                counts[output_key] = counts.get(output_key, 0) + default_count
+                continue
+            eq_tests = list(_PHV_EQ_RE.finditer(condition))
+            if not eq_tests:
+                return None
+            counted = False
+            for eq in reversed(eq_tests):
+                phv = _canonical_phv_id(eq.group("phv"))
+                code = _strip_expr_literal(eq.group("value"))
+                count = _distribution_count_for_code(summaries_by_phv.get(phv), code)
+                if count is None:
+                    continue
+                counts[output_key] = counts.get(output_key, 0) + count
+                explicit_count += count
+                counted = True
+                break
+            if not counted:
+                return None
+    if not saw_branch:
+        return None
+    return _categorical_summary_from_counts(
+        counts,
+        basis="yaml_case_value_expr",
+        confidence="exact",
+        raw={**src_summary, "n_total": table_total},
+    )
+
+
+def _apply_conversion_factor_to_summary(src_summary: dict, factor: float | None) -> dict:
+    """Return a continuous summary in expected harmonized units."""
+    if not factor or src_summary.get("type") != "continuous":
+        return src_summary
+    converted = dict(src_summary)
+    for key in ("mean", "min", "max"):
+        if converted.get(key) is not None:
+            converted[key] = round(float(converted[key]) * factor, 6)
+    if converted.get("sd") is not None:
+        converted["sd"] = round(abs(float(converted["sd"]) * factor), 6)
+    converted["_comparison_basis"] = "yaml_scalar_conversion"
+    converted["_comparison_confidence"] = "exact"
+    return converted
+
+
+def _expected_summary_for_entry(entry: dict, summaries_by_phv: dict[str, dict]) -> dict | None:
+    """Build the best available expected post-transform summary for one YAML block."""
+    src_summary = entry.get("_source_summary") or summaries_by_phv.get(_canonical_phv_id(entry.get("phv_id", "")))
+    if not src_summary:
+        return None
+
+    # Most specific first: value-slot case expressions, then concept routing,
+    # then value mappings, then scalar/unit conversion, then direct copy.
+    case_summary = _expected_summary_from_case_entry(entry, src_summary, summaries_by_phv)
+    if case_summary:
+        return case_summary
+
+    concept_summary = _expected_summary_from_concept_value_map(entry, src_summary)
+    if concept_summary:
+        return concept_summary
+    if entry.get("concept_value_map"):
+        concept_phv = _canonical_phv_id(entry.get("concept_phv", ""))
+        primary_phv = _canonical_phv_id(entry.get("phv_id", ""))
+        if concept_phv and primary_phv and concept_phv != primary_phv:
+            return None
+
+    value_summary = _expected_summary_from_value_map(entry, src_summary)
+    if value_summary:
+        return value_summary
+
+    converted = _apply_conversion_factor_to_summary(src_summary, entry.get("conversion_factor"))
+    if converted is src_summary:
+        copied = dict(src_summary)
+        copied.setdefault("_comparison_basis", "source_direct")
+        copied.setdefault("_comparison_confidence", "exact")
+        return copied
+    return converted
+
+
+def build_expected_summary(entries: list[dict], summaries_by_phv: dict[str, dict]) -> dict | None:
+    """Build expected harmonized aggregate summary from YAML transform semantics."""
+    expected_parts: list[dict] = []
+    limitations: list[str] = []
+    bases: set[str] = set()
+    confidences: set[str] = set()
+
+    for entry in entries:
+        part = _expected_summary_for_entry(entry, summaries_by_phv)
+        if part:
+            expected_parts.append(part)
+            bases.add(part.get("_comparison_basis", "source_direct"))
+            confidences.add(part.get("_comparison_confidence", "exact"))
+            limitations.extend(part.get("_comparison_limitations") or [])
+        else:
+            limitations.append(
+                f"Unsupported transform in {entry.get('yaml_file', '?')} for {entry.get('phv_id', '?')}"
+            )
+
+    if not expected_parts:
+        return None
+    expected = _aggregate_source_summaries(expected_parts)
+    basis = "+".join(sorted(bases)) if bases else "source_direct"
+    confidence = "exact" if confidences <= {"exact"} and not limitations else "partial"
+    expected["_comparison_basis"] = basis
+    expected["_comparison_confidence"] = confidence
+    expected["_comparison_limitations"] = limitations
+    return expected
 
 
 # Matches a quoted CURIE-like string inside case() expressions or bare values:
@@ -554,6 +969,7 @@ def _extract_crosswalk_from_class_derivations(
         # expected harmonized N as the sum of source rows whose code routes to
         # *this* concept (instead of the full source n_valid).
         concept_value_map: dict | None = None
+        concept_phv: str | None = None
         concept_slot_name = CONCEPT_SLOTS.get(entity_class)
         if concept_slot_name and concept_slot_name in slots:
             slot = slots[concept_slot_name]
@@ -564,6 +980,8 @@ def _extract_crosswalk_from_class_derivations(
                 else:
                     expr = slot.get("expr", "")
                     pf = slot.get("populated_from", "")
+                    if str(pf).startswith("phv"):
+                        concept_phv = _canonical_phv_id(str(pf))
                     if expr and not pf:
                         # Try to extract CURIEs from a case() or compound expr.
                         codes = _concept_codes_from_expr(expr)
@@ -593,23 +1011,43 @@ def _extract_crosswalk_from_class_derivations(
                 if not isinstance(slot_body, dict):
                     continue
                 pf = str(slot_body.get("populated_from", ""))
-                if not pf.startswith("phv"):
+                if pf.startswith("phv"):
+                    src_name = phv_names.get(pf, "")
+                    if not src_name:
+                        continue
+                    crosswalk.append(
+                        {
+                            "source_key": src_name,
+                            "harmonized_key": f"demog_{slot_name}",
+                            "match_method": "yaml",
+                            "yaml_file": yaml_filename,
+                            "phv_id": pf,
+                            "concept_code": None,
+                            "entity_class": entity_class,
+                            "value_map": _extract_value_mappings(slot_body),
+                            "is_static": False,
+                        }
+                    )
                     continue
-                src_name = phv_names.get(pf, "")
-                if not src_name:
-                    continue
-                crosswalk.append(
-                    {
-                        "source_key": src_name,
-                        "harmonized_key": f"demog_{slot_name}",
-                        "match_method": "yaml",
-                        "yaml_file": yaml_filename,
-                        "phv_id": pf,
-                        "concept_code": None,
-                        "entity_class": entity_class,
-                        "value_map": _extract_value_mappings(slot_body),
-                    }
-                )
+
+                static_value = slot_body.get("value")
+                static_expr = slot_body.get("expr")
+                if static_value is not None or static_expr is not None:
+                    crosswalk.append(
+                        {
+                            "source_key": "__static__",
+                            "harmonized_key": f"demog_{slot_name}",
+                            "match_method": "yaml+static",
+                            "yaml_file": yaml_filename,
+                            "phv_id": "",
+                            "concept_code": None,
+                            "entity_class": entity_class,
+                            "value_map": None,
+                            "is_static": True,
+                            "static_value": static_value if static_value is not None else static_expr,
+                            "static_pht": class_body.get("populated_from"),
+                        }
+                    )
             continue
 
         # --- MeasurementObservationSet: recurse into inner MO blocks ---
@@ -631,6 +1069,7 @@ def _extract_crosswalk_from_class_derivations(
 
         # --- Standard path: gather PHVs and concept code ---
         primary_phvs: list[dict] = []
+        value_exprs: list[str] = []
         value_slot_name = VALUE_SLOTS.get(entity_class, "")
 
         for slot_name, slot_body in slots.items():
@@ -654,6 +1093,13 @@ def _extract_crosswalk_from_class_derivations(
             # PHVs referenced inside case() expressions
             expr = slot_body.get("expr", "")
             if isinstance(expr, str):
+                is_value_expr = (
+                    slot_name == value_slot_name
+                    or slot_name in ("value_decimal", "value_integer", "value_coded")
+                    or slot_name.startswith("value")
+                )
+                if is_value_expr:
+                    value_exprs.append(expr)
                 cf = (
                     _extract_conversion_factor(expr)
                     if slot_name in ("value_decimal", "value_integer")
@@ -664,9 +1110,10 @@ def _extract_crosswalk_from_class_derivations(
                         {
                             "phv": phv,
                             "slot": slot_name,
-                            "is_value_slot": slot_name == value_slot_name,
+                            "is_value_slot": is_value_expr,
                             "value_map": _extract_value_mappings(slot_body),
                             "conversion_factor": cf,
+                            "expr": expr,
                         }
                     )
 
@@ -689,6 +1136,9 @@ def _extract_crosswalk_from_class_derivations(
                                 continue
                             inner_pf = str(inner_slot_body.get("populated_from", ""))
                             if inner_pf.startswith("phv"):
+                                inner_cf_from_block = _unit_conversion_factor(
+                                    inner_slot_body.get("unit_conversion")
+                                )
                                 primary_phvs.append(
                                     {
                                         "phv": inner_pf,
@@ -698,11 +1148,16 @@ def _extract_crosswalk_from_class_derivations(
                                             "value_coded", "value_concept",
                                         ),
                                         "value_map": _extract_value_mappings(inner_slot_body),
-                                        "conversion_factor": None,
+                                        "conversion_factor": inner_cf_from_block,
                                     }
                                 )
                             inner_expr = inner_slot_body.get("expr", "")
                             if isinstance(inner_expr, str):
+                                is_inner_value_expr = inner_slot in (
+                                    "value_decimal", "value_integer", "value_coded", "value_concept"
+                                )
+                                if is_inner_value_expr:
+                                    value_exprs.append(inner_expr)
                                 inner_cf = (
                                     _extract_conversion_factor(inner_expr)
                                     if inner_slot in ("value_decimal", "value_integer")
@@ -713,12 +1168,10 @@ def _extract_crosswalk_from_class_derivations(
                                         {
                                             "phv": phv,
                                             "slot": f"{slot_name}.{inner_slot}",
-                                            "is_value_slot": inner_slot in (
-                                                "value_decimal", "value_integer",
-                                                "value_coded", "value_concept",
-                                            ),
+                                            "is_value_slot": is_inner_value_expr,
                                             "value_map": None,
                                             "conversion_factor": inner_cf,
+                                            "expr": inner_expr,
                                         }
                                     )
 
@@ -767,11 +1220,20 @@ def _extract_crosswalk_from_class_derivations(
                     "yaml_file": yaml_filename,
                     "phv_id": primary["phv"],
                     "concept_code": concept_code,
+                    "concept_phv": concept_phv,
                     "entity_class": entity_class,
                     "value_map": primary["value_map"],
                     "concept_value_map": concept_value_map,
                     "method_type": method_type_val,
                     "conversion_factor": primary.get("conversion_factor"),
+                    "source_phvs": sorted(
+                        {
+                            _canonical_phv_id(p["phv"])
+                            for p in primary_phvs
+                            if p.get("phv")
+                        }
+                    ),
+                    "value_exprs": value_exprs,
                 }
             )
 
@@ -1164,7 +1626,9 @@ def build_variable_crosswalk(
 
             # Case-insensitive fallback for source key
             resolved_src_key: str | None = None
-            if src_key in source_vars:
+            if entry.get("is_static"):
+                resolved_src_key = "__static__"
+            elif src_key in source_vars:
                 resolved_src_key = src_key
             else:
                 for sk in source_vars:
@@ -1247,12 +1711,32 @@ def build_variable_crosswalk(
             source_keys_used: list[str] = []
             source_flat_keys_used: list[str] = []
             phv_ids: list[str] = []
+            summaries_by_phv: dict[str, dict] = {}
 
             for entry in entries:
                 src_key = entry["source_key"]
                 phv_id = entry.get("phv_id", "")
                 if phv_id:
                     phv_ids.append(phv_id)
+
+                if entry.get("is_static"):
+                    static_pht = entry.get("static_pht")
+                    rows_by_pht = (source_doc or {}).get("total_rows_by_pht", {})
+                    total = int(rows_by_pht.get(static_pht, 0) or 0)
+                    if not total:
+                        total = int((source_doc or {}).get("total_participants", 0) or 0)
+                    static_value = normalize_category_key(entry.get("static_value"))
+                    static_summary = _categorical_summary_from_counts(
+                        {static_value: total},
+                        basis="static_yaml_value",
+                        confidence="exact",
+                        raw={"n_total": total},
+                    ) or {}
+                    entry["_source_summary"] = static_summary
+                    per_pht_summaries.append(static_summary)
+                    if static_pht and static_pht not in source_phts:
+                        source_phts.append(static_pht)
+                    continue
 
                 resolved_summary: dict | None = None
                 resolved_pht: str | None = None
@@ -1274,6 +1758,9 @@ def build_variable_crosswalk(
                     resolved_summary = source_vars.get(src_key)
 
                 if resolved_summary is not None:
+                    entry["_source_summary"] = dict(resolved_summary)
+                    if phv_id:
+                        summaries_by_phv[_canonical_phv_id(phv_id)] = dict(resolved_summary)
                     per_pht_summaries.append(dict(resolved_summary))
                     if resolved_pht and resolved_pht not in source_phts:
                         source_phts.append(resolved_pht)
@@ -1288,6 +1775,31 @@ def build_variable_crosswalk(
                             and namespaced_key not in source_flat_keys_used
                         ):
                             source_flat_keys_used.append(namespaced_key)
+
+                # Also resolve every PHV referenced in value expressions.  This
+                # lets the compare derive an expected categorical distribution
+                # for split case() blocks without changing the transform YAML.
+                for expr_phv in entry.get("source_phvs") or []:
+                    expr_phv = _canonical_phv_id(expr_phv)
+                    if not expr_phv or expr_phv in summaries_by_phv:
+                        continue
+                    expr_src_key = phv_names.get(expr_phv, "")
+                    if not expr_src_key:
+                        continue
+                    expr_summary: dict | None = None
+                    expr_pht = phv_to_pht.get(expr_phv)
+                    if expr_pht and expr_pht in variables_by_pht:
+                        pht_vars = variables_by_pht[expr_pht]
+                        expr_summary = pht_vars.get(expr_src_key)
+                        if expr_summary is None:
+                            for k, v in pht_vars.items():
+                                if k.upper() == expr_src_key.upper():
+                                    expr_summary = v
+                                    break
+                    if expr_summary is None:
+                        expr_summary = source_vars.get(expr_src_key)
+                    if expr_summary is not None:
+                        summaries_by_phv[expr_phv] = dict(expr_summary)
 
             if not per_pht_summaries:
                 # Couldn't resolve a single contributing summary.
@@ -1312,12 +1824,44 @@ def build_variable_crosswalk(
             # concept_code, entity_class, value_map, method_type) and overlay
             # the pooled fields.
             merged = dict(entries[0])
-            merged["_resolved_src"] = _aggregate_source_summaries(per_pht_summaries)
+            expected_src = build_expected_summary(entries, summaries_by_phv)
+            merged["_resolved_src"] = expected_src or _aggregate_source_summaries(per_pht_summaries)
+            unsupported_joint = any(
+                e.get("concept_value_map")
+                and _canonical_phv_id(e.get("concept_phv", ""))
+                and _canonical_phv_id(e.get("phv_id", ""))
+                and _canonical_phv_id(e.get("concept_phv", "")) != _canonical_phv_id(e.get("phv_id", ""))
+                for e in entries
+            )
+            if unsupported_joint and not expected_src:
+                merged["_resolved_src"]["_comparison_basis"] = "source_pooled_raw"
+                merged["_resolved_src"]["_comparison_confidence"] = "unsupported"
+                merged["_resolved_src"]["_comparison_limitations"] = [
+                    "Concept routing and value mapping use different PHVs; aggregate summaries cannot compute joint counts"
+                ]
             merged["_per_pht_src"] = per_pht_summaries
             merged["_source_phts"] = source_phts
             merged["_source_keys"] = source_keys_used
             merged["_source_flat_keys"] = source_flat_keys_used
-            merged["_phv_ids"] = phv_ids
+            merged["_phv_ids"] = list(dict.fromkeys(phv_ids))
+            merged["_yaml_entries"] = [
+                {
+                    "yaml_file": e.get("yaml_file"),
+                    "phv_id": e.get("phv_id"),
+                    "concept_phv": e.get("concept_phv"),
+                    "concept_code": e.get("concept_code"),
+                    "value_map": e.get("value_map"),
+                    "concept_value_map": e.get("concept_value_map"),
+                    "source_summary": e.get("_source_summary"),
+                }
+                for e in entries
+            ]
+            if summaries_by_phv:
+                merged["_source_phvs"] = sorted(summaries_by_phv)
+            if expected_src:
+                merged["_comparison_basis"] = expected_src.get("_comparison_basis")
+                merged["_comparison_confidence"] = expected_src.get("_comparison_confidence")
+                merged["_comparison_limitations"] = expected_src.get("_comparison_limitations")
             # Preserve concept_value_map from ANY contributing entry that
             # has one.  Different visit blocks for the same harmonized_key
             # may use a static ``value:`` (no cvm) while one block uses
@@ -1535,17 +2079,29 @@ def check_c2_n_loss(
     src_n_raw = src_var.get("n_valid", 0)
     src_n = expected_n if expected_n is not None else src_n_raw
     harmonized_n = harmonized_var.get("n_valid", 0)
+    confidence = src_var.get("_comparison_confidence")
+    limitations = src_var.get("_comparison_limitations") or []
 
     detail_base = {
         "source_n": src_n,
         "harmonized_n": harmonized_n,
     }
+    if confidence:
+        detail_base["comparison_confidence"] = confidence
+    if limitations:
+        detail_base["comparison_limitations"] = limitations
     if expected_n is not None:
         detail_base["source_n_raw"] = src_n_raw
         detail_base["expected_n_for_concept"] = expected_n
 
     if src_n == 0:
         return CheckResult("C2", var_name, "SKIP", "No valid source values", detail_base)
+    if confidence == "unsupported":
+        return CheckResult(
+            "C2", var_name, "SKIP",
+            "Expected N requires row-level joint counts; aggregate comparison not attempted",
+            detail_base,
+        )
     if harmonized_n == src_n:
         return CheckResult("C2", var_name, "PASS", f"N preserved: {_n(src_n)}", detail_base)
 
@@ -1555,6 +2111,12 @@ def check_c2_n_loss(
         return CheckResult("C2", var_name, "PASS",
                            f"N within {pass_pct}%: {_n(src_n)} -> {_n(harmonized_n)}",
                            detail_base)
+    if confidence == "partial":
+        return CheckResult(
+            "C2", var_name, "WARN",
+            f"Partial expected N differs from harmonized: {_n(src_n)} -> {_n(harmonized_n)} ({abs(loss_pct)}%); row-level data needed for exact verdict",
+            detail_base,
+        )
     if 0 < loss_pct <= warn_pct:
         return CheckResult("C2", var_name, "WARN",
                            f"Moderate N loss: {_n(src_n)} -> {_n(harmonized_n)} ({loss_pct}%)",
@@ -1588,6 +2150,15 @@ def check_c3_missing_accounting(
     harmonized_total = harmonized_var.get("n_total", 0)
     src_valid = src_var.get("n_valid", 0)
     harmonized_valid = harmonized_var.get("n_valid", 0)
+    confidence = src_var.get("_comparison_confidence")
+    limitations = src_var.get("_comparison_limitations") or []
+
+    if confidence == "unsupported":
+        return CheckResult(
+            "C3", var_name, "SKIP",
+            "Expected missingness requires row-level joint counts; aggregate comparison not attempted",
+            {"comparison_confidence": confidence, "comparison_limitations": limitations},
+        )
 
     if src_total > 0 and harmonized_total > 0:
         denom_ratio = min(src_total, harmonized_total) / max(src_total, harmonized_total)
@@ -1599,6 +2170,13 @@ def check_c3_missing_accounting(
                 return CheckResult("C3", var_name, "PASS",
                                    f"n_valid preserved: {_n(src_valid)}")
             diff_pct = abs(harmonized_valid - src_valid) / src_valid * 100
+            if confidence == "partial":
+                return CheckResult(
+                    "C3", var_name, "WARN",
+                    f"Partial expected n_valid differs from harmonized: {_n(src_valid)} -> {_n(harmonized_valid)} ({diff_pct:.1f}%); row-level data needed for exact verdict",
+                    {"source_n_valid": src_valid, "harmonized_n_valid": harmonized_valid,
+                     "comparison_confidence": confidence, "comparison_limitations": limitations},
+                )
             if diff_pct <= n_valid_pass_pct:
                 return CheckResult("C3", var_name, "PASS",
                                    f"n_valid within {n_valid_pass_pct}%: {_n(src_valid)} -> {_n(harmonized_valid)}")
@@ -1787,6 +2365,14 @@ def check_c7_categorical_distribution(
     """
     if src_var.get("type") != "categorical" or harmonized_var.get("type") != "categorical":
         return CheckResult("C7", var_name, "SKIP", "Not both categorical")
+    confidence = src_var.get("_comparison_confidence")
+    limitations = src_var.get("_comparison_limitations") or []
+    if confidence == "unsupported":
+        return CheckResult(
+            "C7", var_name, "SKIP",
+            "Expected distribution requires row-level joint counts; aggregate comparison not attempted",
+            {"comparison_confidence": confidence, "comparison_limitations": limitations},
+        )
 
     src_dist = src_var.get("distribution", {})
     harmonized_dist = harmonized_var.get("distribution", {})
@@ -1876,10 +2462,93 @@ def check_c7_categorical_distribution(
         return CheckResult("C7", var_name, "INFO",
                            f"Extra harmonized categories: {extra}", detail)
     if missing:
+        if confidence == "partial":
+            detail["comparison_confidence"] = confidence
+            detail["comparison_limitations"] = limitations
+            return CheckResult("C7", var_name, "WARN",
+                               f"Partial expected distribution missing categories in harmonized: {missing}", detail)
         return CheckResult("C7", var_name, "FAIL",
                            f"Missing categories in harmonized: {missing}", detail)
+    if confidence == "partial":
+        detail["comparison_confidence"] = confidence
+        detail["comparison_limitations"] = limitations
+        return CheckResult("C7", var_name, "WARN",
+                           f"Partial expected distribution has {len(mismatches)} category shift(s); row-level data needed for exact verdict", detail)
     return CheckResult("C7", var_name, "WARN",
                        f"{len(mismatches)} categories with >+/-{pass_pct}% shift", detail)
+
+
+def check_c12_value_mapping_coverage(match: dict, phv_value_codes: dict[str, set[str]]) -> list[CheckResult]:
+    """C12: Verify YAML value_mappings cover dbGaP/observed source codes."""
+    results: list[CheckResult] = []
+    yaml_entries = match.get("_yaml_entries") or [match]
+    for entry in yaml_entries:
+        mapping_specs = []
+        if isinstance(entry.get("value_map"), dict) and entry.get("phv_id"):
+            mapping_specs.append(("value_mappings", entry.get("phv_id"), entry.get("value_map")))
+        if isinstance(entry.get("concept_value_map"), dict):
+            mapping_specs.append((
+                "concept_value_mappings",
+                entry.get("concept_phv") or entry.get("phv_id"),
+                entry.get("concept_value_map"),
+            ))
+
+        for mapping_kind, raw_phv, value_map in mapping_specs:
+            phv_id = _canonical_phv_id(raw_phv or "")
+            if not phv_id:
+                continue
+            mapped_codes = {
+                normalize_category_key(_normalize_code(code))
+                for code in value_map
+            }
+            dbgap_codes = phv_value_codes.get(phv_id, set())
+            observed_counts = _distribution_count_map(entry.get("source_summary"))
+            observed_codes = {code for code, count in observed_counts.items() if count > 0}
+            expected_codes = dbgap_codes | observed_codes
+            if not expected_codes:
+                results.append(CheckResult(
+                    "C12", f"{phv_id} [{mapping_kind}]", "SKIP",
+                    "No dbGaP or observed coded values available for mapping coverage check",
+                ))
+                continue
+
+            missing_codes = sorted(expected_codes - mapped_codes)
+            extra_codes = sorted(mapped_codes - expected_codes)
+            detail = {
+                "phv_id": phv_id,
+                "mapping_kind": mapping_kind,
+                "yaml_file": entry.get("yaml_file"),
+                "dbgap_codes": sorted(dbgap_codes),
+                "observed_codes": sorted(observed_codes),
+                "mapped_codes": sorted(mapped_codes),
+            }
+            if missing_codes:
+                detail["missing_codes"] = missing_codes
+                observed_bits = [
+                    f"{code} (n={observed_counts[code]})"
+                    for code in missing_codes
+                    if observed_counts.get(code, 0) > 0
+                ]
+                suffix = f"; observed: {', '.join(observed_bits)}" if observed_bits else ""
+                results.append(CheckResult(
+                    "C12", f"{phv_id} [{mapping_kind}]", "WARN",
+                    f"YAML mapping does not cover source code(s): {', '.join(missing_codes)}{suffix}",
+                    detail,
+                ))
+            elif extra_codes:
+                detail["extra_codes"] = extra_codes
+                results.append(CheckResult(
+                    "C12", f"{phv_id} [{mapping_kind}]", "INFO",
+                    f"YAML includes code(s) not present in dbGaP/observed values: {', '.join(extra_codes)}",
+                    detail,
+                ))
+            else:
+                results.append(CheckResult(
+                    "C12", f"{phv_id} [{mapping_kind}]", "PASS",
+                    f"Mapping covers {len(mapped_codes)} source code(s)",
+                    detail,
+                ))
+    return results
 
 
 def _synthesize_source_visit_counts(
@@ -2406,6 +3075,7 @@ def generate_markdown_report(
         "C7": "Categorical Distribution", "C8": "Visit N Distribution",
         "C9": "Clinical Range", "C10": "Cross-Variable Consistency",
         "C11": "Variable Type Consistency",
+        "C12": "Value Mapping Coverage",
     }
 
     _sort_key = {"FAIL": 0, "WARN": 1, "PASS": 2, "INFO": 3, "SKIP": 4}
@@ -2513,6 +3183,12 @@ def generate_markdown_report(
             "(continuous vs categorical). A mismatch suggests the YAML transform "
             "or the source type inference needs attention."
         ),
+        "C12": (
+            "Checks that YAML value_mappings cover dbGaP coded values and observed "
+            "source categories. This is separate from before/after preservation: an "
+            "unmapped code can be expected transform behavior while still being a "
+            "YAML completeness issue."
+        ),
     }
 
     def _render_unmatched_source(r: CheckResult) -> list[str]:
@@ -2530,7 +3206,7 @@ def generate_markdown_report(
         sub.append("</details>")
         return sub
 
-    for check_id in ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11"]:
+    for check_id in ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12"]:
         check_results = [r for r in results if r.check_id == check_id]
         if not check_results:
             continue
@@ -2774,6 +3450,9 @@ def main(argv: list[str] | None = None) -> None:
     phv_type_map: dict[str, str] = (
         load_phv_type_map(cache_dir) if cache_dir and cache_dir.exists() else {}
     )
+    phv_value_codes: dict[str, set[str]] = (
+        load_phv_value_codes_map(cache_dir) if cache_dir and cache_dir.exists() else {}
+    )
 
     # Run checks
     all_results: list[CheckResult] = []
@@ -2808,13 +3487,26 @@ def main(argv: list[str] | None = None) -> None:
             src_var = {**src_var, "type": _dbgap_type}
 
         display_name = src_var.get("name", src_key)
-        value_map = match.get("value_map")
+        expected_basis = src_var.get("_comparison_basis")
+        value_map = None if expected_basis and expected_basis != "source_direct" else match.get("value_map")
 
         # Build an enriched label for C2-C9 that includes PHV + PHT refs so
         # reviewers can trace each finding back to the source data dictionary.
         # Format (single PHT):  ath07 [phv00099087 / pht001450]
         # Format (pooled):      alcoh [phv00100084 / pht001451+pht001452+…]
-        _phv = match.get("phv_id", "")
+        _phv_ids = list(
+            dict.fromkeys(
+                (match.get("_source_phvs") or [])
+                + (match.get("_phv_ids") or [match.get("phv_id", "")])
+            )
+        )
+        _phv_ids = [p for p in _phv_ids if p]
+        if len(_phv_ids) > 1:
+            _phv = "+".join(_phv_ids[:3]) + ("…" if len(_phv_ids) > 3 else "")
+        elif _phv_ids:
+            _phv = _phv_ids[0]
+        else:
+            _phv = ""
         _phts: list[str] = match.get("_source_phts") or (
             [match["_resolved_pht"]] if match.get("_resolved_pht") else []
         )
@@ -2836,7 +3528,6 @@ def main(argv: list[str] | None = None) -> None:
             pass_pct=c2_t.get("pass_pct", 0.5), warn_pct=c2_t.get("warn_pct", 2.0),
             gain_warn_pct=c2_t.get("gain_warn_pct"),
             gain_fail_pct=c2_t.get("gain_fail_pct"),
-            expected_n=_expected_harmonized_n(match, src_var),
         ))
         all_results.append(check_c3_missing_accounting(
             src_var, harmonized_var, var_label,
@@ -2848,7 +3539,7 @@ def main(argv: list[str] | None = None) -> None:
             src_var, harmonized_var, var_label,
             pass_rel=c4_t.get("pass_rel", 0.001), warn_rel=c4_t.get("warn_rel", 0.01),
         ))
-        if should_run_c5_conversion_check(match, c5_t):
+        if expected_basis != "yaml_scalar_conversion" and should_run_c5_conversion_check(match, c5_t):
             all_results.append(check_c5_mean_after_conversion(
                 src_var, harmonized_var, var_label,
                 conversion_factor=match.get("conversion_factor") or c5_t.get("conversion_factor"),
@@ -2864,6 +3555,7 @@ def main(argv: list[str] | None = None) -> None:
         ))
         all_results.append(check_c9_clinical_range(harmonized_var, var_label, clinical_ranges, src_var=src_var))
         all_results.append(check_c11_type_consistency(src_var, harmonized_var, var_label))
+        all_results.extend(check_c12_value_mapping_coverage(match, phv_value_codes))
 
     all_results.extend(check_c8_visit_distribution(
         source, harmonized,
