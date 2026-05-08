@@ -34,6 +34,7 @@ from compare_source_harmonized import (  # noqa: E402
     _normalize_code,
     _to_discovered_key,
     _write_text_atomic,
+    authoritative_source_type_for_match,
     build_variable_crosswalk,
     build_expected_summary,
     check_c1_n_preservation,
@@ -46,6 +47,7 @@ from compare_source_harmonized import (  # noqa: E402
     check_c7_categorical_distribution,
     check_c8_visit_distribution,
     check_c9_clinical_range,
+    determine_comparison_type,
     load_thresholds,
     should_run_c5_conversion_check,
     validate_clinical_ranges_config,
@@ -53,6 +55,48 @@ from compare_source_harmonized import (  # noqa: E402
 
 
 class CompareSourceHarmonizedTests(unittest.TestCase):
+    def test_authoritative_source_type_for_pooled_match_requires_consensus(self) -> None:
+        phv_type_map = {
+            "phv000001": "continuous",
+            "phv000002": "continuous",
+            "phv000003": "categorical",
+        }
+
+        self.assertEqual(
+            authoritative_source_type_for_match(
+                {"_source_phvs": ["phv000001", "phv000002"]}, phv_type_map
+            ),
+            "continuous",
+        )
+        self.assertIsNone(
+            authoritative_source_type_for_match(
+                {"_source_phvs": ["phv000001", "phv000003"]}, phv_type_map
+            )
+        )
+
+    def test_determine_comparison_type_prefers_dbgap_over_extractor_heuristic(self) -> None:
+        comparison = determine_comparison_type(
+            {"_source_phvs": ["phv000001"]},
+            {"type": "categorical"},
+            {"phv000001": "continuous"},
+        )
+
+        self.assertEqual(comparison["expected_type"], "continuous")
+        self.assertEqual(comparison["basis"], "dbgap_phv_type_consensus")
+
+    def test_determine_comparison_type_uses_yaml_intent_when_dbgap_missing(self) -> None:
+        comparison = determine_comparison_type(
+            {
+                "entity_class": "Condition",
+                "concept_value_map": {"1": "MONDO:0000001"},
+            },
+            {"type": "continuous"},
+            {},
+        )
+
+        self.assertEqual(comparison["expected_type"], "categorical")
+        self.assertEqual(comparison["basis"], "yaml_transform_intent")
+
     def test_to_discovered_key_converts_supported_prefixes(self) -> None:
         self.assertEqual(
             _to_discovered_key("condition_MONDO:0004981"),
@@ -366,6 +410,33 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
             loaded = module.load_source_extract_config(cfg)
 
         self.assertEqual(loaded["source_extract"]["infer_type_distinct_threshold"], 7)
+
+    def test_source_extract_type_map_loads_phv_and_variable_name_keys(self) -> None:
+        module_path = HV_DATAQC_DIR / "extract-source" / "extract_source_summaries.py"
+        spec = importlib.util.spec_from_file_location("extract_source_summaries_types", module_path)
+        self.assertIsNotNone(spec)
+        self.assertIsNotNone(spec.loader)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            pheno_dir = Path(tmp) / "pheno_variable_summaries"
+            pheno_dir.mkdir()
+            (pheno_dir / "pht000001.data_dict.xml").write_text(
+                """
+                <data_table id="pht000001">
+                  <variable id="phv000001.v1"><name>fruitf25</name><type>integer</type></variable>
+                  <variable id="phv000002.v1"><name>status_code</name><type>encoded</type></variable>
+                </data_table>
+                """,
+                encoding="utf-8",
+            )
+            type_map = module.load_source_type_map(Path(tmp))
+
+        self.assertEqual(type_map["phv000001"], "continuous")
+        self.assertEqual(type_map["fruitf25"], "continuous")
+        self.assertEqual(type_map["phv000002"], "categorical")
+        self.assertEqual(type_map["status_code"], "categorical")
 
     def test_harmonized_extract_config_overrides_demography_columns(self) -> None:
         module_path = HV_DATAQC_DIR / "extract-harmonized" / "extract_harmonized_summaries.py"
@@ -681,6 +752,22 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         result = check_c11_type_consistency(src, out, "encoded numeric")
 
         self.assertEqual(result.status, "INFO")
+
+    def test_c11_reports_expected_type_basis(self) -> None:
+        src = {"type": "categorical", "distribution": {"1": {"n": 2}}}
+        out = {"type": "continuous"}
+
+        result = check_c11_type_consistency(
+            src,
+            out,
+            "source driven",
+            expected_type="categorical",
+            type_basis="dbgap_phv_type_consensus",
+        )
+
+        self.assertEqual(result.status, "INFO")
+        self.assertEqual(result.detail["expected_type"], "categorical")
+        self.assertEqual(result.detail["type_basis"], "dbgap_phv_type_consensus")
 
     def test_c8_namespace_mismatch_warns_unsupported_not_fail(self) -> None:
         source = {"rows_per_visit": {"SOURCE VISIT": 10}}

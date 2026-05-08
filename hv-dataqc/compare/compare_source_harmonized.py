@@ -338,6 +338,91 @@ def load_phv_type_map(cache_dir: Path) -> dict[str, str]:
     return phv_type
 
 
+def authoritative_source_type_for_match(match: dict, phv_type_map: dict[str, str]) -> str | None:
+    """Return dbGaP source type for a crosswalk match when all PHVs agree.
+
+    Pooled YAML matches can aggregate several source PHVs.  A single
+    ``match["phv_id"]`` may be only the first contributor, so use all resolved
+    source PHVs where available and override the observed source summary only
+    when the dbGaP types are unanimous.
+    """
+    phv_ids = list(
+        dict.fromkeys(
+            (match.get("_source_phvs") or [])
+            + (match.get("_phv_ids") or [])
+            + ([match.get("phv_id")] if match.get("phv_id") else [])
+        )
+    )
+    types = {
+        phv_type_map.get(_canonical_phv_id(phv_id))
+        for phv_id in phv_ids
+        if phv_type_map.get(_canonical_phv_id(phv_id))
+    }
+    if len(types) == 1:
+        return next(iter(types))
+    return None
+
+
+def _yaml_intent_type_for_match(match: dict) -> str | None:
+    """Infer comparison type from YAML semantics when dbGaP type is unavailable."""
+    entries = match.get("_yaml_entries") or [match]
+
+    if any(entry.get("is_static") for entry in entries):
+        return "categorical"
+    if any(entry.get("value_map") or entry.get("concept_value_map") for entry in entries):
+        return "categorical"
+
+    entity_classes = {entry.get("entity_class") for entry in entries if entry.get("entity_class")}
+    if entity_classes and entity_classes <= {"Condition", "Demography", "DrugExposure", "Procedure"}:
+        return "categorical"
+
+    if any(entry.get("conversion_factor") for entry in entries):
+        return "continuous"
+    if entity_classes and entity_classes <= {"MeasurementObservation", "MeasurementObservationSet"}:
+        return "continuous"
+
+    return None
+
+
+def determine_comparison_type(
+    match: dict,
+    src_var: dict,
+    phv_type_map: dict[str, str],
+) -> dict[str, Any]:
+    """Determine the source-driven type expected for a source/harmonized match.
+
+    The harmonized extractor's observed type is deliberately excluded from this
+    decision; it is what C11 validates against the expected source/YAML type.
+    """
+    dbgap_type = authoritative_source_type_for_match(match, phv_type_map)
+    yaml_type = _yaml_intent_type_for_match(match)
+    observed_source_type = src_var.get("type")
+
+    if dbgap_type:
+        expected_type = dbgap_type
+        basis = "dbgap_phv_type_consensus"
+    elif yaml_type:
+        expected_type = yaml_type
+        basis = "yaml_transform_intent"
+    elif observed_source_type in {"continuous", "categorical"}:
+        expected_type = observed_source_type
+        basis = "source_extract_observed_type"
+    else:
+        expected_type = None
+        basis = "unknown"
+
+    detail: dict[str, Any] = {
+        "expected_type": expected_type,
+        "basis": basis,
+        "dbgap_type": dbgap_type,
+        "yaml_intent_type": yaml_type,
+        "observed_source_type": observed_source_type,
+    }
+    if dbgap_type and yaml_type and dbgap_type != yaml_type:
+        detail["type_evidence_conflict"] = True
+    return detail
+
+
 def load_phv_value_codes_map(cache_dir: Path) -> dict[str, set[str]]:
     """Build PHV-accession -> coded value set from dbGaP data-dict XML files."""
     phv_codes: dict[str, set[str]] = {}
@@ -2443,39 +2528,48 @@ def should_run_c5_conversion_check(match: dict, c5_thresholds: dict) -> bool:
     return (match.get("conversion_factor") or c5_thresholds.get("conversion_factor")) is not None
 
 
-def check_c11_type_consistency(src_var: dict, harmonized_var: dict, var_name: str) -> CheckResult:
+def check_c11_type_consistency(
+    src_var: dict,
+    harmonized_var: dict,
+    var_name: str,
+    expected_type: str | None = None,
+    type_basis: str | None = None,
+) -> CheckResult:
     """C11: Variable type consistency between source and harmonized.
 
-    Flags when source and harmonized disagree on whether a variable is continuous
-    or categorical.  A mismatch usually means the pipeline recoded a continuous
-    value into buckets (or treated categorical codes as numbers), which is a
-    data-quality concern.
+    Flags when the harmonized observed type disagrees with the source-driven
+    expected type.  The harmonized extractor does not decide which comparison
+    family applies; it is validated against dbGaP/source/YAML intent.
     """
-    src_type = src_var.get("type")
+    src_type = expected_type or src_var.get("type")
     harmonized_type = harmonized_var.get("type")
+    detail_base = {
+        "expected_type": src_type,
+        "harmonized_type": harmonized_type,
+    }
+    if type_basis:
+        detail_base["type_basis"] = type_basis
 
     if not src_type or not harmonized_type:
-        return CheckResult("C11", var_name, "SKIP", "Type information missing")
+        return CheckResult("C11", var_name, "SKIP", "Type information missing", detail_base)
     if src_type == harmonized_type:
-        return CheckResult("C11", var_name, "PASS", f"Type consistent: {src_type}")
+        basis_msg = f" ({type_basis})" if type_basis else ""
+        return CheckResult("C11", var_name, "PASS", f"Type consistent: {src_type}{basis_msg}", detail_base)
 
     if src_type == "categorical" and harmonized_type == "continuous":
         observed_codes = set(_distribution_count_map(src_var))
         if _codes_are_numeric_or_sentinel(observed_codes):
+            detail = {**detail_base, "observed_codes_numeric_or_sentinel": True}
             return CheckResult(
                 "C11", var_name, "INFO",
                 "Source is encoded/categorical but observed values are numeric; treating as numeric-coded source metadata, not a harmonization type error",
-                {
-                    "source_type": src_type,
-                    "harmonized_type": harmonized_type,
-                    "observed_codes_numeric_or_sentinel": True,
-                },
+                detail,
             )
 
     return CheckResult(
         "C11", var_name, "WARN",
-        f"Type mismatch: source={src_type}, harmonized={harmonized_type}",
-        {"source_type": src_type, "harmonized_type": harmonized_type},
+        f"Type mismatch: expected={src_type}, harmonized={harmonized_type}",
+        detail_base,
     )
 
 
@@ -3767,14 +3861,16 @@ def main(argv: list[str] | None = None) -> None:
         src_var = match.get("_resolved_src") or source_vars.get(src_key, {})
         harmonized_var = harmonized_vars[harmonized_key]
 
-        # Override source type with dbGaP authoritative type when available.
-        # The source extractor's n_distinct ≤ 20 heuristic misclassifies true
-        # integer/count variables (e.g. fruitf25 range 0-20) as categorical.
-        # dbGaP <type>integer</type> with no coded value list is unambiguously
-        # continuous; <type>encoded</type> is unambiguously categorical.
-        _dbgap_type = phv_type_map.get(match.get("phv_id", ""))
-        if _dbgap_type and src_var.get("type") != _dbgap_type:
-            src_var = {**src_var, "type": _dbgap_type}
+        # Determine the expected comparison type from source/dbGaP/YAML intent.
+        # The harmonized observed type is validated against this via C11.
+        comparison_type_detail = determine_comparison_type(match, src_var, phv_type_map)
+        comparison_type = comparison_type_detail.get("expected_type")
+        if comparison_type and src_var.get("type") != comparison_type:
+            src_var = {
+                **src_var,
+                "type": comparison_type,
+                "_comparison_type_detail": comparison_type_detail,
+            }
 
         display_name = src_var.get("name", src_key)
         expected_basis = src_var.get("_comparison_basis")
@@ -3825,26 +3921,35 @@ def main(argv: list[str] | None = None) -> None:
             n_valid_pass_pct=c3_t.get("n_valid_pass_pct", 0.5),
             n_valid_warn_pct=c3_t.get("n_valid_warn_pct", 3.0),
         ))
-        all_results.append(check_c4_mean_preservation(
-            src_var, harmonized_var, var_label,
-            pass_rel=c4_t.get("pass_rel", 0.001), warn_rel=c4_t.get("warn_rel", 0.01),
-        ))
-        if expected_basis != "yaml_scalar_conversion" and should_run_c5_conversion_check(match, c5_t):
-            all_results.append(check_c5_mean_after_conversion(
+        harmonized_type = harmonized_var.get("type")
+        if comparison_type == "continuous" and harmonized_type == "continuous":
+            all_results.append(check_c4_mean_preservation(
                 src_var, harmonized_var, var_label,
-                conversion_factor=match.get("conversion_factor") or c5_t.get("conversion_factor"),
-                pass_rel=c5_t.get("pass_rel", 0.001),
+                pass_rel=c4_t.get("pass_rel", 0.001), warn_rel=c4_t.get("warn_rel", 0.01),
             ))
-        all_results.append(check_c6_sd_preservation(
-            src_var, harmonized_var, var_label,
-            pass_rel=c6_t.get("pass_rel", 0.002), warn_rel=c6_t.get("warn_rel", 0.01),
-        ))
-        all_results.append(check_c7_categorical_distribution(
-            src_var, harmonized_var, var_label,
-            pass_pct=c7_t.get("pass_pct", 0.5), value_map=value_map,
-        ))
+            if expected_basis != "yaml_scalar_conversion" and should_run_c5_conversion_check(match, c5_t):
+                all_results.append(check_c5_mean_after_conversion(
+                    src_var, harmonized_var, var_label,
+                    conversion_factor=match.get("conversion_factor") or c5_t.get("conversion_factor"),
+                    pass_rel=c5_t.get("pass_rel", 0.001),
+                ))
+            all_results.append(check_c6_sd_preservation(
+                src_var, harmonized_var, var_label,
+                pass_rel=c6_t.get("pass_rel", 0.002), warn_rel=c6_t.get("warn_rel", 0.01),
+            ))
+        elif comparison_type == "categorical" and harmonized_type == "categorical":
+            all_results.append(check_c7_categorical_distribution(
+                src_var, harmonized_var, var_label,
+                pass_pct=c7_t.get("pass_pct", 0.5), value_map=value_map,
+            ))
         all_results.append(check_c9_clinical_range(harmonized_var, var_label, clinical_ranges, src_var=src_var))
-        all_results.append(check_c11_type_consistency(src_var, harmonized_var, var_label))
+        all_results.append(check_c11_type_consistency(
+            src_var,
+            harmonized_var,
+            var_label,
+            expected_type=comparison_type,
+            type_basis=comparison_type_detail.get("basis"),
+        ))
         all_results.extend(check_c12_value_mapping_coverage(match, phv_value_codes))
 
     all_results.extend(check_c8_visit_distribution(

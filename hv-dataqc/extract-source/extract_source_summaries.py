@@ -42,6 +42,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+from xml.etree import ElementTree as ET
 
 import pandas as pd
 import yaml
@@ -373,6 +374,76 @@ def load_phv_name_map(cache_dir: Path) -> dict[str, str]:
     )
 
 
+_DBGAP_CONTINUOUS_TYPES: frozenset[str] = frozenset({
+    "integer", "decimal", "float", "num",
+    "continuous integer", "continuous decimal", "continuous",
+    "numeric", "integer decimal",
+})
+_DBGAP_CATEGORICAL_TYPES: frozenset[str] = frozenset({
+    "encoded", "string", "char", "character",
+    "enumerated integer", "encoded value", "text",
+})
+_DBGAP_CONTINUOUS_KEYWORDS: frozenset[str] = frozenset(
+    {"continuous", "numeric", "decimal", "float"}
+)
+_DBGAP_CATEGORICAL_KEYWORDS: frozenset[str] = frozenset(
+    {"encoded", "string", "text", "character", "char"}
+)
+
+
+def _normalize_dbgap_type(raw: str) -> str | None:
+    text = str(raw or "").strip().lower()
+    if text in _DBGAP_CONTINUOUS_TYPES:
+        return "continuous"
+    if text in _DBGAP_CATEGORICAL_TYPES:
+        return "categorical"
+    if any(kw in text for kw in _DBGAP_CONTINUOUS_KEYWORDS):
+        return "continuous"
+    if any(kw in text for kw in _DBGAP_CATEGORICAL_KEYWORDS):
+        return "categorical"
+    return None
+
+
+def load_source_type_map(cache_dir: Path) -> dict[str, str]:
+    """Load source column/PHV -> dbGaP-derived continuous/categorical type.
+
+    The source TSVs commonly use variable names as headers, while YAML and
+    dbGaP metadata use PHV accessions.  Store both keys so extraction can force
+    the correct aggregate shape before row-level values are reduced to JSON.
+    """
+    type_map: dict[str, str] = {}
+    pheno_dir = cache_dir / "pheno_variable_summaries"
+    if not pheno_dir.exists():
+        log.info("cache pheno_variable_summaries/ not found at %s -- source types unavailable", pheno_dir)
+        return type_map
+
+    files = list(pheno_dir.glob("*.data_dict.xml"))
+    log.info("Loading dbGaP source types from %d data_dict.xml files...", len(files))
+    for dd_file in files:
+        try:
+            tree = ET.parse(dd_file)
+            for var in tree.getroot().findall(".//variable"):
+                inferred_type = _normalize_dbgap_type(var.findtext("type") or "")
+                if not inferred_type:
+                    continue
+                phv_id = _canonical_phv_id(var.get("id", ""))
+                name = (var.findtext("name") or "").strip().lower()
+                if phv_id:
+                    type_map[phv_id] = inferred_type
+                if name:
+                    type_map[name] = inferred_type
+        except ET.ParseError as exc:
+            log.warning("Could not parse PHV type XML %s: %s", dd_file.name, exc)
+
+    log.info(
+        "dbGaP source type map: %d keys (%d continuous, %d categorical)",
+        len(type_map),
+        sum(1 for v in type_map.values() if v == "continuous"),
+        sum(1 for v in type_map.values() if v == "categorical"),
+    )
+    return type_map
+
+
 # ---------------------------------------------------------------------------
 # Visit-stratified row counts
 # ---------------------------------------------------------------------------
@@ -520,10 +591,12 @@ def main(argv: list[str] | None = None) -> None:
         # 3. Optional PHV name map
         # ------------------------------------------------------------------
         phv_name_map: dict[str, str] = {}
+        source_type_map: dict[str, str] = {}
         if args.cache_dir:
             cache_path = Path(args.cache_dir)
             if cache_path.is_dir():
                 phv_name_map = load_phv_name_map(cache_path)
+            source_type_map = load_source_type_map(cache_path)
 
         # ------------------------------------------------------------------
         # 4. Optional column filter
@@ -614,10 +687,14 @@ def main(argv: list[str] | None = None) -> None:
                     # Column appears in multiple pht → namespace it
                     entry_key = f"{pht_label}.{col_key}"
 
+                forced_type = source_type_map.get(col_key)
                 summary = compute_variable_summary(
                     df[col],
+                    forced_type=forced_type,
                     n_distinct_threshold=n_distinct_threshold,
                 )
+                if forced_type:
+                    summary["_type_source"] = "dbGaP_data_dictionary"
                 summary["_col_original"] = col
                 summary["_pht"] = pht_label
                 if col in phv_name_map:
