@@ -3191,14 +3191,38 @@ def generate_markdown_report(
     crosswalk: list[dict] | None = None,
 ) -> str:
     """Generate a human-readable Markdown report."""
+    import re as _re
+
+    # Extract dbGaP study ID (e.g. phs000280.v8.p2) from source directory names
+    study_id_full = ""
+    for sd in source_meta.get("source_dirs", []):
+        m = _re.search(r'(phs\d+)[-_]v(\d+)[-_]r\d+[-_]c\d+', sd)
+        if m:
+            study_id_full = f"{m.group(1)}.v{m.group(2)}.p2"
+            break
+    dbgap_datasets_url = (
+        f"https://dbgap.ncbi.nlm.nih.gov/beta/study/{study_id_full}/#phenotype-datasets"
+        if study_id_full else ""
+    )
+    dbgap_list_url = (
+        f"https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/GetListOfAllObjects.cgi?"
+        f"study_id={study_id_full}&object_type=dataset"
+        if study_id_full else ""
+    )
+
     lines = [
         f"# HV-DataQC Comparison Report: {cohort}",
         "",
         f"**Generated:** {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}",
         f"**Source:** {source_meta.get('source', '?')}",
         f"**Harmonized:** {harmonized_meta.get('source', '?')}",
-        "",
     ]
+    if study_id_full:
+        lines.append(
+            f"**dbGaP:** [{study_id_full}]({dbgap_datasets_url})"
+            f" ([dataset list]({dbgap_list_url}))"
+        )
+    lines.append("")
 
     counts: dict[str, int] = {}
     for r in results:
@@ -3224,24 +3248,47 @@ def generate_markdown_report(
             lines.append("")
             lines.append(
                 "Harmonized variables whose source side was pooled across multiple "
-                "dbGaP tables.  The compare tool reports a single combined `n_valid`, "
+                "dbGaP tables. The compare tool reports a single combined `n_valid`, "
                 "weighted mean, pooled SD and merged value distribution against the "
                 "harmonized longitudinal output."
             )
             lines.append("")
-            lines.append(
-                "| Harmonized key | Source column(s) | Contributing PHTs | Pooled n_valid |"
-            )
-            lines.append(
-                "|----------------|------------------|-------------------|---------------:|"
-            )
+
+            # Group by domain (prefix before the first underscore)
+            from collections import defaultdict as _defaultdict
+            domain_groups: dict[str, list[dict]] = _defaultdict(list)
             for m in pooled_entries:
-                hkey = _md_escape(m.get("harmonized_key", ""))
-                src_keys = ", ".join(_md_escape(s) for s in (m.get("_source_keys") or []))
-                phts = ", ".join(m.get("_source_phts") or [])
-                pooled_n = (m.get("_resolved_src") or {}).get("n_valid", 0)
-                lines.append(f"| {hkey} | {src_keys} | {phts} | {pooled_n:,} |")
-            lines.append("")
+                hkey = m.get("harmonized_key", "")
+                domain = hkey.split("_", 1)[0] if "_" in hkey else "other"
+                domain_groups[domain].append(m)
+
+            domain_labels = {
+                "measurement": "Measurement",
+                "condition": "Condition",
+                "observation": "Observation",
+                "demog": "Demography",
+            }
+
+            for domain in sorted(domain_groups):
+                entries = domain_groups[domain]
+                label = domain_labels.get(domain, domain.title())
+                lines.append(f"<details><summary>{label} ({len(entries)} pooled variables)</summary>")
+                lines.append("")
+                lines.append(
+                    "| Harmonized key | Source column(s) | Contributing PHTs | Pooled n_valid |"
+                )
+                lines.append(
+                    "|----------------|------------------|-------------------|---------------:|"
+                )
+                for m in entries:
+                    hkey = _md_escape(m.get("harmonized_key", ""))
+                    src_keys = ", ".join(_md_escape(s) for s in (m.get("_source_keys") or []))
+                    phts = ", ".join(sorted(set(m.get("_source_phts") or [])))
+                    pooled_n = (m.get("_resolved_src") or {}).get("n_valid", 0)
+                    lines.append(f"| {hkey} | {src_keys} | {phts} | {pooled_n:,} |")
+                lines.append("")
+                lines.append("</details>")
+                lines.append("")
 
     check_names = {
         "C1": "N Preservation", "C2": "N Loss Detection",
@@ -3398,46 +3445,33 @@ def generate_markdown_report(
         passes = [r for r in check_results if r.status == "PASS"]
         skips = [r for r in check_results if r.status == "SKIP"]
 
-        # FAIL and WARN always shown expanded
-        for r in fails + warns:
-            icon = _STATUS_ICONS.get(r.status, r.status)
-            lines.append(f"- {icon} **{_md_escape(r.variable)}**: {_md_escape(r.message)}")
-            if check_id == "C7":
-                lines.extend(_render_c7_detail(r))
+        _COLLAPSE_THRESHOLD = 4  # collapse a status group when it has more than this many items
 
-        # INFO items
-        for r in infos:
-            icon = _STATUS_ICONS.get(r.status, r.status)
-            lines.append(f"- {icon} **{_md_escape(r.variable)}**: {_md_escape(r.message)}")
-            if r.detail.get("direction") == "source_unmatched_summary":
-                lines.extend(_render_unmatched_source(r))
-
-        # PASS collapsed if there are also FAIL/WARN/INFO items, or if > 5
-        if passes:
-            show_collapsed = len(passes) > 5 or fails or warns
-            if show_collapsed:
+        def _render_group(group_results: list[CheckResult], label: str, always_collapse: bool = False) -> None:
+            """Render a group of results, collapsing if large or always_collapse."""
+            if not group_results:
+                return
+            collapse = always_collapse or len(group_results) > _COLLAPSE_THRESHOLD
+            if collapse:
                 lines.append("")
-                lines.append(f"<details><summary>{len(passes)} PASS results</summary>")
+                lines.append(f"<details><summary>{len(group_results)} {label} results</summary>")
                 lines.append("")
-            for r in passes:
+            for r in group_results:
                 icon = _STATUS_ICONS.get(r.status, r.status)
                 lines.append(f"- {icon} **{_md_escape(r.variable)}**: {_md_escape(r.message)}")
                 if check_id == "C7":
                     lines.extend(_render_c7_detail(r))
-            if show_collapsed:
+                if r.detail.get("direction") == "source_unmatched_summary":
+                    lines.extend(_render_unmatched_source(r))
+            if collapse:
                 lines.append("")
                 lines.append("</details>")
 
-        # SKIP always collapsed
-        if skips:
-            lines.append("")
-            lines.append(f"<details><summary>{len(skips)} SKIP results</summary>")
-            lines.append("")
-            for r in skips:
-                icon = _STATUS_ICONS.get(r.status, r.status)
-                lines.append(f"- {icon} **{_md_escape(r.variable)}**: {_md_escape(r.message)}")
-            lines.append("")
-            lines.append("</details>")
+        _render_group(fails, "FAIL")
+        _render_group(warns, "WARN")
+        _render_group(infos, "INFO")
+        _render_group(passes, "PASS")
+        _render_group(skips, "SKIP", always_collapse=True)
 
         lines.append("")
 
