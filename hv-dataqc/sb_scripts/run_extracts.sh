@@ -30,7 +30,9 @@ MAPPED_DIRS=""
 CHOSEN_DATARUN=""
 CANDIDATE_COUNT=0
 for dr in $(ls -dr /sbgenomics/project-files/_QC_STAGING/DataRun_* 2>/dev/null); do
-    found=$(find "$dr" -path "*${COHORT_LOWER}*BDCHM/mapped-data" -type d 2>/dev/null | sort)
+    found=$(find "$dr" -ipath "*${COHORT_INPUT}*BDCHM/mapped-data" -type d 2>/dev/null | sort)
+    # TODO: confirm fix against other cohorts. This was changed to get WHI working.
+    # found=$(find "$dr" -path "*${COHORT_LOWER}*BDCHM/mapped-data" -type d 2>/dev/null | sort)
     if [ -n "$found" ]; then
         CANDIDATE_COUNT=$((CANDIDATE_COUNT + 1))
         if [ -z "$MAPPED_DIRS" ]; then
