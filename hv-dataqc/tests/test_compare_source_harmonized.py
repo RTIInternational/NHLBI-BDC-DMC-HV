@@ -21,6 +21,7 @@ sys.path.insert(0, str(COMPARE_DIR))
 from hv_dataqc_common import normalize_category_key, write_json_atomic  # noqa: E402
 
 from compare_source_harmonized import (  # noqa: E402
+    CheckResult,
     CrosswalkBuildError,
     _aggregate_source_summaries,
     _case_branches,
@@ -36,6 +37,7 @@ from compare_source_harmonized import (  # noqa: E402
     build_variable_crosswalk,
     build_expected_summary,
     check_c1_n_preservation,
+    _dedup_check_results,
     check_c2_n_loss,
     check_c4_mean_preservation,
     check_c10_cross_variable,
@@ -790,6 +792,68 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         self.assertTrue(
             variables["condition_MONDO:1"]["condition_status_missing_assumption"]
         )
+
+
+class DedupCheckResultsTests(unittest.TestCase):
+    """Tests for _dedup_check_results: exact dedup and C9 consolidation."""
+
+    def test_exact_dedup_removes_identical_findings(self) -> None:
+        """Two identical C2 FAILs (shared-PHV pre/post bronchodilator) become one."""
+        r1 = CheckResult("C2", "ppfvc51 [phv1 / pht1]", "FAIL", "Significant N loss: 4,250 -> 0 (100.0%)")
+        r2 = CheckResult("C2", "ppfvc51 [phv1 / pht1]", "FAIL", "Significant N loss: 4,250 -> 0 (100.0%)")
+        r3 = CheckResult("C2", "fvc01 [phv2 / pht2]", "FAIL", "Significant N loss: 28,683 -> 0 (100.0%)")
+        result = _dedup_check_results([r1, r2, r3])
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0].variable, "ppfvc51 [phv1 / pht1]")
+        self.assertEqual(result[1].variable, "fvc01 [phv2 / pht2]")
+
+    def test_exact_dedup_keeps_different_messages_for_same_variable(self) -> None:
+        """Two C2 results for same variable but different messages are both kept."""
+        r1 = CheckResult("C2", "sbpa17", "FAIL", "Significant N loss: 100 -> 0 (100.0%)")
+        r2 = CheckResult("C2", "sbpa17", "WARN", "Moderate N loss: 100 -> 98 (2.0%)")
+        result = _dedup_check_results([r1, r2])
+        self.assertEqual(len(result), 2)
+
+    def test_c9_consolidation_merges_different_range_violations(self) -> None:
+        """Two C9 FAILs for the same variable (different range matches) are merged."""
+        r1 = CheckResult("C9", "sbpa17 [phv1 / pht1]", "FAIL",
+                         "min=0.0 below red_flag 40 [out+src]",
+                         {"min": 0.0, "max": 220.0})
+        r2 = CheckResult("C9", "sbpa17 [phv1 / pht1]", "FAIL",
+                         "min=0.0 below red_flag 15 [out+src]",
+                         {"min": 0.0, "max": 220.0})
+        result = _dedup_check_results([r1, r2])
+        c9_results = [r for r in result if r.check_id == "C9"]
+        self.assertEqual(len(c9_results), 1, "Two C9 entries for same variable should merge to one")
+        self.assertIn("min=0.0 below red_flag 40", c9_results[0].message)
+        self.assertIn("min=0.0 below red_flag 15", c9_results[0].message)
+        self.assertEqual(c9_results[0].status, "FAIL")
+
+    def test_c9_consolidation_uses_worst_status(self) -> None:
+        """When one C9 is FAIL and another WARN, merged result is FAIL."""
+        r1 = CheckResult("C9", "sbpa17", "WARN", "max=260 above plausible 250 [out+src]")
+        r2 = CheckResult("C9", "sbpa17", "FAIL", "min=0.0 below red_flag 40 [out only]")
+        result = _dedup_check_results([r1, r2])
+        c9_results = [r for r in result if r.check_id == "C9"]
+        self.assertEqual(len(c9_results), 1)
+        self.assertEqual(c9_results[0].status, "FAIL")
+
+    def test_c9_dedup_does_not_merge_different_variables(self) -> None:
+        """C9 results for different variables are not merged."""
+        r1 = CheckResult("C9", "sbp [phv1 / pht1]", "FAIL", "min=0 below red_flag 40 [out+src]")
+        r2 = CheckResult("C9", "dbp [phv2 / pht1]", "FAIL", "max=200 above red_flag 150 [out+src]")
+        result = _dedup_check_results([r1, r2])
+        c9_results = [r for r in result if r.check_id == "C9"]
+        self.assertEqual(len(c9_results), 2)
+
+    def test_c9_consolidation_deduplicates_identical_violation_strings(self) -> None:
+        """If two C9 results have the same violation string, it appears only once."""
+        r1 = CheckResult("C9", "sbpa17", "FAIL", "min=0.0 below red_flag 40 [out+src]")
+        r2 = CheckResult("C9", "sbpa17", "FAIL", "min=0.0 below red_flag 40 [out+src]")
+        result = _dedup_check_results([r1, r2])
+        c9_results = [r for r in result if r.check_id == "C9"]
+        self.assertEqual(len(c9_results), 1)
+        self.assertEqual(c9_results[0].message, "min=0.0 below red_flag 40 [out+src]")
 
 
 class C1NPreservationTests(unittest.TestCase):

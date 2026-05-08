@@ -3422,6 +3422,87 @@ def generate_markdown_report(
 
 
 # ---------------------------------------------------------------------------
+# Post-processing: dedup + consolidate check results
+# ---------------------------------------------------------------------------
+
+def _dedup_check_results(results: list[CheckResult]) -> list[CheckResult]:
+    """Deduplicate and consolidate check results before reporting.
+
+    Two passes:
+
+    1. **Exact dedup** — when the same ``(check_id, variable, status, message)``
+       tuple appears more than once (e.g. a source PHV is routed to both a
+       pre- and post-bronchodilator harmonized concept and both fire the same
+       C2/C3 finding), keep only the first occurrence.
+
+    2. **C9 consolidation** — when different harmonized concepts both match the
+       same source variable and fire C9 against *different* clinical range
+       definitions, merge the per-range violations into one ``CheckResult``
+       using the worst status and a joined message.  This prevents a variable
+       like ``sbpa17`` from appearing twice as FAIL when it matches both a
+       systolic and a diastolic range definition.
+    """
+    _STATUS_RANK = {"FAIL": 3, "WARN": 2, "INFO": 1, "PASS": 0, "SKIP": -1}
+
+    # Pass 1: exact dedup by (check_id, variable, status, message)
+    seen_exact: set[tuple] = set()
+    deduped: list[CheckResult] = []
+    for r in results:
+        key = (r.check_id, r.variable, r.status, r.message)
+        if key not in seen_exact:
+            seen_exact.add(key)
+            deduped.append(r)
+
+    # Pass 2: C9 consolidation — merge multiple C9 results for the same variable
+    # Collect C9 groups by variable, preserving insertion order
+    c9_groups: dict[str, list[CheckResult]] = {}
+    for r in deduped:
+        if r.check_id == "C9":
+            c9_groups.setdefault(r.variable, []).append(r)
+
+    # Variables with only one C9 result need no work; build merged map for others
+    c9_merged: dict[str, CheckResult] = {}
+    for var, group in c9_groups.items():
+        if len(group) == 1:
+            c9_merged[var] = group[0]
+            continue
+        actionable = [r for r in group if r.status not in ("SKIP", "PASS")]
+        if not actionable:
+            # All SKIP/PASS — keep the first (PASS wins over SKIP)
+            best = max(group, key=lambda r: _STATUS_RANK.get(r.status, -1))
+            c9_merged[var] = best
+            continue
+        worst = max(actionable, key=lambda r: _STATUS_RANK.get(r.status, 0))
+        # Deduplicate violation strings before joining (different range
+        # definitions may fire the same "min=0 below red_flag X" string)
+        seen_parts: set[str] = set()
+        msg_parts: list[str] = []
+        for r in actionable:
+            for part in r.message.split("; "):
+                if part and part not in seen_parts:
+                    seen_parts.add(part)
+                    msg_parts.append(part)
+        merged_detail = dict(worst.detail) if worst.detail else {}
+        c9_merged[var] = CheckResult(
+            "C9", var, worst.status, "; ".join(msg_parts), merged_detail
+        )
+
+    # Rebuild final list: replace first C9 occurrence with merged result;
+    # drop subsequent C9 occurrences for the same variable.
+    final: list[CheckResult] = []
+    c9_emitted: set[str] = set()
+    for r in deduped:
+        if r.check_id != "C9":
+            final.append(r)
+        elif r.variable not in c9_emitted:
+            c9_emitted.add(r.variable)
+            final.append(c9_merged[r.variable])
+        # else: second/third C9 for same variable — already merged, drop
+
+    return final
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -3794,6 +3875,11 @@ def main(argv: list[str] | None = None) -> None:
                 "Harmonized variable not matched in source — no YAML block proposed this concept"
             )
         all_results.append(CheckResult("C2", ok, "FAIL", message, detail))
+
+    # Dedup: remove exact-duplicate findings (same source PHV routed to
+    # multiple harmonized concepts) and consolidate per-variable C9 violations
+    # that fired against different range definitions.
+    all_results = _dedup_check_results(all_results)
 
     # Summary
     counts: dict[str, int] = {}
