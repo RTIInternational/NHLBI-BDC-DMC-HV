@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00401370
         associated_visit:
-          value: JHS EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
         age_at_observation:
           expr: "{phv00401379} * 365"
         observation_type:

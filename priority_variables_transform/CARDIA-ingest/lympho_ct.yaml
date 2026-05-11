@@ -5,11 +5,11 @@
         associated_participant:
           populated_from: phv00112654
         associated_visit:
-          value: CARDIA YEAR 0
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00112654}) + ":CARDIA YEAR 0")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
-          value: OBA:VT0000217
+          value: OBA:VT0000717
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -17,6 +17,6 @@
                 populated_from: pht001563
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00112691
+                    expr: "float({phv00112691}) / 100.0 * float({phv00112686})"
                   unit:
                     value: "10*3/uL"

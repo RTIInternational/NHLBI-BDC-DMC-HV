@@ -1,75 +1,192 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001112
+      populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00083440
+          populated_from: phv00082638
         associated_visit:
-          value: MESA_AirNRSpirometry
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_observation:
-          expr: '{phv00083452} * 365'
+          expr: '{phv00082639} * 365'
         observation_type:
-          value: OMOP:3038553
+          value: OBA:2045455
           range: string
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht001112
+                populated_from: pht001111
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00083481
+                    populated_from: phv00082691
                   unit:
                     value: kg/m2
                     range: string
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001114
+      populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00083675
+          populated_from: phv00084441
         associated_visit:
-          value: MESA_AncilMesaLungSpirometry
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         age_at_observation:
-          expr: '{phv00083687} * 365'
+          expr: '{phv00084442} * 365'
         observation_type:
-          value: OMOP:3038553
+          value: OBA:2045455
           range: string
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht001114
+                populated_from: pht001116
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00083716
+                    populated_from: phv00084490
                   unit:
                     value: kg/m2
                     range: string
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001122
+      populated_from: pht001118
       slot_derivations:
         associated_participant:
-          populated_from: phv00087666
+          populated_from: phv00085772
         associated_visit:
-          value: MESA_FamilySpirometry
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         age_at_observation:
-          expr: '{phv00087678} * 365'
+          expr: '{phv00085773} * 365'
         observation_type:
-          value: OMOP:3038553
+          value: OBA:2045455
           range: string
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-                populated_from: pht001122
+                populated_from: pht001118
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00087707
+                    populated_from: phv00085803
+                  unit:
+                    value: kg/m2
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001119
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00086258
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
+        age_at_observation:
+          expr: '{phv00086259} * 365'
+        observation_type:
+          value: OBA:2045455
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001119
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00086302
+                  unit:
+                    value: kg/m2
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001120
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00086726
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
+        age_at_observation:
+          expr: '{phv00086727} * 365'
+        observation_type:
+          value: OBA:2045455
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001120
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00086755
+                  unit:
+                    value: kg/m2
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001121
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087070
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
+        age_at_observation:
+          expr: '{phv00087071} * 365'
+        observation_type:
+          value: OBA:2045455
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001121
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00087080
+                  unit:
+                    value: kg/m2
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003086
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00174584
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
+        age_at_observation:
+          expr: '{phv00174588} * 365'
+        observation_type:
+          value: OBA:2045455
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003086
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00174644
+                  unit:
+                    value: kg/m2
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003091
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00176007
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
+        age_at_observation:
+          expr: '{phv00176011} * 365'
+        observation_type:
+          value: OBA:2045455
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003091
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00176067
                   unit:
                     value: kg/m2
                     range: string

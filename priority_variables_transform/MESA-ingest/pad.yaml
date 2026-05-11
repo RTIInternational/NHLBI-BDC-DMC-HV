@@ -1,0 +1,44 @@
+- class_derivations:
+    Condition:
+      populated_from: pht001123
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087848
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087848}) + ":MESA CLASSIC CVE")'
+        condition_concept:
+          value: MONDO:0005294
+          range: string
+        condition_status:
+          populated_from: phv00087873
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001123
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00087848
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087848}) + ":MESA CLASSIC CVE")'
+        condition_concept:
+          value: MONDO:0005294
+          range: string
+        condition_status:
+          populated_from: phv00087852
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string

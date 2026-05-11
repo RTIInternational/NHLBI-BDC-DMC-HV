@@ -1,0 +1,17 @@
+# Compressed indexes (*.json.gz) are committed (~4 MB total) so that
+# CI and contributors can run lint without fetching from NCBI.
+# Rebuild with: python hv-lint/update_data.py --build-only
+
+# Backup / scratch files
+*.bak
+
+# Source XML files fetched from NCBI (variables.xml, data_dict.xml)
+*/variables.xml
+*/documents.xml
+*/pheno_variable_summaries/
+
+# Visit cache extracts are committed so Phase 5 checks (5.3/5.5/5.7)
+# can run offline in fresh clones and CI.
+
+# HTTP response cache (SQLite)
+.http-cache.sqlite*

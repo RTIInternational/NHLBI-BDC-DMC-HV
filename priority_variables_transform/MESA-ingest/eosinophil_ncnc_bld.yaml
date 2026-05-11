@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00128699
         associated_visit:
-          value: MESA_AncilMesaInflammation
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128699}) + ":MESA INFLAMMATION")'
         observation_type:
           value: OMOP:3013115
           range: string
@@ -28,8 +27,7 @@
         associated_participant:
           populated_from: phv00218989
         associated_visit:
-          value: MESA_AncilMesaEpigenomicCBC
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00218989}) + ":MESA EPIGENOMICS")'
         observation_type:
           value: OMOP:3013115
           range: string

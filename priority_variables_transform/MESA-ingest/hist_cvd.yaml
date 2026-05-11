@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00087848
         associated_visit:
-          value: MESA CLASSIC CVE
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087848}) + ":MESA CLASSIC CVE")'
         condition_concept:
           value: MONDO:0005068
           range: string
@@ -17,7 +16,7 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
-          range: strong
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -28,8 +27,7 @@
         associated_participant:
           populated_from: phv00087848
         associated_visit:
-          value: MESA CLASSIC CVE
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087848}) + ":MESA CLASSIC CVE")'
         condition_concept:
           value: MONDO:0000745
           range: string
@@ -51,8 +49,7 @@
         associated_participant:
           populated_from: phv00087848
         associated_visit:
-          value: MESA CLASSIC CVE
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087848}) + ":MESA CLASSIC CVE")'
         condition_concept:
           value: HP:0002621
           range: string
@@ -74,8 +71,7 @@
         associated_participant:
           populated_from: phv00087848
         associated_visit:
-          value: MESA CLASSIC CVE
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087848}) + ":MESA CLASSIC CVE")'
         condition_concept:
           value: MONDO:0004995
           range: string
@@ -97,8 +93,7 @@
         associated_participant:
           populated_from: phv00165061
         associated_visit:
-          value: MESA ANCILLARY FET
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00165061}) + ":MESA ANCILLARY FET")'
         condition_concept:
           value: HP:0002621
           range: string

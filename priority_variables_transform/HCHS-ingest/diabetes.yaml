@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          value: HCHS EXAM
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         condition_concept:
           populated_from: phv00226261
           value_mappings:
@@ -32,8 +31,7 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          value: HCHS EXAM
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         condition_concept:
           value: MONDO:0005015
           range: string
@@ -55,18 +53,18 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          value: HCHS EXAM
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         condition_concept:
           value: MONDO:0005015
           range: string
         age_at_condition_start:
-          expr: case((phv00226357 == 0, {phv00226358} * 365))
+          expr: case(({phv00226357} == 1, {phv00226358} * 365))
         condition_status:
           populated_from: phv00226357
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            'Q': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -80,8 +78,7 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          value: HCHS EXAM
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         condition_concept:
           populated_from: phv00226261
           value_mappings:
@@ -107,8 +104,7 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          value: HCHS EXAM
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         condition_concept:
           value: MONDO:0005015
           range: string

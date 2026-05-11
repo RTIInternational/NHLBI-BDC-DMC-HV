@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00218303
         associated_visit:
-          value: MESA_exam5dietnutrients
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00218303}) + ":MESA DIET EXAM 5")'
         observation_type:
           value: OMOP:606729
           range: string

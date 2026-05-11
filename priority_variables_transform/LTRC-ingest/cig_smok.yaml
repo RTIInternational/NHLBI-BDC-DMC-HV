@@ -1,0 +1,18 @@
+- class_derivations:
+    Observation:
+      populated_from: pht010063
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00429450
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00429450}) + ":LTRC Baseline")'
+        observation_type:
+          # NOTE: OMOP:4282779 (tobacco smoking status) not in BaseObservationTypeEnum; matches pattern used by all cohorts
+          value: OMOP:4282779
+        value_enum:
+          populated_from: phv00429454
+          value_mappings:
+            '0': OMOP:45883537
+            '1': OMOP:45883458
+            '2': OMOP:40766945
+            '9': OMOP:45885135

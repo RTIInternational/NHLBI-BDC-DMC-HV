@@ -3,13 +3,13 @@
       populated_from: pht012503
       slot_derivations:
         associated_participant:
-          populated_from: phv00506928
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00506928}) + ":ARIC")'
         associated_visit:
-          value: ARIC CHEM 2
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00506928}) + ":ARIC CHEM 2")'
         observation_type:
           value: OBA:VT0010540
+        method_type:
+          value: "urine assay"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -25,13 +25,13 @@
       populated_from: pht006427
       slot_derivations:
         associated_participant:
-          populated_from: phv00295244
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00295244}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 5
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00295244}) + ":ARIC EXAM 5")'
         observation_type:
           value: OBA:VT0010540
+        method_type:
+          value: "urine assay"
         value_quantity:
           object_derivations:
           - class_derivations:

@@ -5,14 +5,14 @@
         associated_participant:
           populated_from: phv00082638
         associated_visit:
-          value: MESA AIR EXAM
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         category:
           value: EDUCATIONAL_ATTAINMENT
           range: string
         value_enum:
           populated_from: phv00083223
           value_mappings:
+            '0': NO SCHOOLING
             '1': GRADES 1-8
             '2': GRADES 9-11
             '3': COMPLETED HIGH SCHOOL/GED
@@ -28,8 +28,7 @@
         associated_participant:
           populated_from: phv00084441
         associated_visit:
-          value: MESA CLASSIC EXAM 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         category:
           value: EDUCATIONAL_ATTAINMENT
           range: string
@@ -52,8 +51,7 @@
         associated_participant:
           populated_from: phv00175794
         associated_visit:
-          value: MESA LUNG CT
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00175794}) + ":MESA LUNG CT")'
         age_at_observation:
           expr: '{phv00175854} * 365'
         category:
@@ -78,8 +76,7 @@
         associated_participant:
           populated_from: phv00219018
         associated_visit:
-          value: MESA STRESS
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00219018}) + ":MESA STRESS")'
         age_at_observation:
           expr: '{phv00219024} * 365'
         category:

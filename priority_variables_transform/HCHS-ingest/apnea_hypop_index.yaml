@@ -5,10 +5,9 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          value: HCHS EXAM
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         age_at_observation:
-          populated_from: phv00226251          
+          expr: '{phv00226251} * 365'
         observation_type:
           value: OMOP:37396400
           range: string

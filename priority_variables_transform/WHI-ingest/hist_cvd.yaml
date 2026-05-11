@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00078506
         associated_visit:
-          value: WHI SCREENING
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078506}) + ":WHI SCREENING")'
           range: value
         condition_concept:
           value: MONDO:0004995
@@ -28,7 +28,7 @@
         associated_participant:
           populated_from: phv00283451
         associated_visit:
-          value: WHI UNC HEART FAILURE DETAILS
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
           range: value
         condition_concept:
           value: MONDO:0005279
@@ -51,10 +51,10 @@
         associated_participant:
           populated_from: phv00283451
         associated_visit:
-          value: WHI UNC HEART FAILURE DETAILS
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
           range: value
         condition_concept:
-          value: MONDO:0004995
+          value: MONDO:0005010
           range: value
         condition_status:
           populated_from: phv00283524
@@ -74,10 +74,10 @@
         associated_participant:
           populated_from: phv00283451
         associated_visit:
-          value: WHI UNC HEART FAILURE DETAILS
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
           range: value
         condition_concept:
-          value: MONDO:0004995
+          value: MONDO:0005010
           range: value
         condition_status:
           populated_from: phv00283525
@@ -97,7 +97,7 @@
         associated_participant:
           populated_from: phv00283451
         associated_visit:
-          value: WHI UNC HEART FAILURE DETAILS
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
           range: value
         condition_concept:
           value: MONDO:0005294
@@ -120,7 +120,7 @@
         associated_participant:
           populated_from: phv00283451
         associated_visit:
-          value: WHI UNC HEART FAILURE DETAILS
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
           range: value
         condition_concept:
           value: MONDO:0002869

@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00142665
         associated_visit:
-          value: MESA CLASSIC 1-5
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00142665}) + ":MESA IL-10")'
         observation_type:
           value: OMOP:3004578
           range: string
@@ -52,8 +51,7 @@
         associated_participant:
           populated_from: phv00150369
         associated_visit:
-          value: MESA STRESS
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00150369}) + ":MESA STRESS")'
         observation_type:
           value: OMOP:3004578
           range: string

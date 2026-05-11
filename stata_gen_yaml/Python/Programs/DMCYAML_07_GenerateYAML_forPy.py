@@ -16,7 +16,7 @@ from pathlib import Path
 
 # Today's date in YYYY-MM-DD format
 #today = datetime.now().strftime("%Y-%m-%d")
-today = "2026-03-12"  # hardcoding for testing purposes - update as needed
+today = "2026-04-02"  # hardcoding for testing purposes - update as needed
 
 # Filepaths
 base_dir = r"C:\\Users\smccutchan\Documents\DMC\\NHLBI-BDC-DMC-HV\stata_gen_yaml"
@@ -98,7 +98,7 @@ measurement_observation_fhs = [
 
 # Configuration (change these values as needed)
 entity = "MeasurementObservation"
-cohort = "fhs"
+cohort = "whi"
 macroname = f"{entity}_{cohort}"
 print(macroname)
 
@@ -106,9 +106,11 @@ print(macroname)
 # The input file can be formatted as .csv instead of .dta
 input_file = os.path.join(der_dir, f"shortdata_{today}.csv")
 df = pd.read_csv(input_file)
+df.fillna(0, inplace=True) # Replace NaN with 0
 
 # check data loaded correctly 
 df.head()
+
 
 # ----- 0. PREPARE -----
 # Note that all this splitting into subfiles may not be needed. The overall logic is:
@@ -183,7 +185,7 @@ for bdchm in vars_list:
     good_data = pd.read_csv(good_file)
 
     if len(good_data) > 0:
-        # Create output directory
+        # Create output directory - change this path to cohort-ingest when ready to share output with Corey
         out_good_dir = os.path.join(out_dir, cohort, "good")
         os.makedirs(out_good_dir, exist_ok=True)
 

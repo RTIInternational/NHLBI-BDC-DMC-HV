@@ -3,9 +3,9 @@
       populated_from: pht004027
       slot_derivations:
         associated_participant:
-          populated_from: phv00202851
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00202851}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00202851}) + ":ARIC EXAM 1")'
         condition_concept:
           value: MONDO:0005386
         condition_status:
@@ -14,26 +14,10 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL DIAGNOSIS
-        relationship_to_participant:
-          value: ONESELF
-- class_derivations:
-    Condition:
-      populated_from: pht004027
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00202851
-        associated_visit:
-          value: ARIC EXAM 1
-        condition_concept:
-          value: MONDO:0005386
-        condition_status:
-          populated_from: phv00202848
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: CLINICAL DIAGNOSIS
+          value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Ankle-Brachial Index"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -41,9 +25,9 @@
       populated_from: pht004028
       slot_derivations:
         associated_participant:
-          populated_from: phv00202861
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00202861}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00202861}) + ":ARIC EXAM 3")'
         condition_concept:
           value: MONDO:0005386
         condition_status:
@@ -52,45 +36,10 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL DIAGNOSIS
-        relationship_to_participant:
-          value: ONESELF
-- class_derivations:
-    Condition:
-      populated_from: pht004028
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00202861
-        associated_visit:
-          value: ARIC EXAM 3
-        condition_concept:
-          value: MONDO:0005386
-        condition_status:
-          populated_from: phv00202857
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: CLINICAL DIAGNOSIS
-        relationship_to_participant:
-          value: ONESELF
-- class_derivations:
-    Condition:
-      populated_from: pht004028
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00202861
-        associated_visit:
-          value: ARIC EXAM 3
-        condition_concept:
-          value: MONDO:0005386
-        condition_status:
-          populated_from: phv00202860
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: CLINICAL DIAGNOSIS
+          value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Ankle-Brachial Index"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -98,9 +47,9 @@
       populated_from: pht004029
       slot_derivations:
         associated_participant:
-          populated_from: phv00202873
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00202873}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00202873}) + ":ARIC EXAM 4")'
         condition_concept:
           value: MONDO:0005386
         condition_status:
@@ -109,7 +58,54 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL DIAGNOSIS
+          value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Ankle-Brachial Index"
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+# ---------- Restored PAD blocks (Anne PR #544 review) ----------
+# ABI form: PAD definition 1 (gender-specific thresholds)
+- class_derivations:
+    Condition:
+      populated_from: pht004027
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00202851}) + ":ARIC")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00202851}) + ":ARIC EXAM 1")'
+        condition_concept:
+          value: MONDO:0005386
+        condition_status:
+          populated_from: phv00202848
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: ABI
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht004028
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00202861}) + ":ARIC")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00202861}) + ":ARIC EXAM 3")'
+        condition_concept:
+          value: MONDO:0005386
+        condition_status:
+          populated_from: phv00202857
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: ABI
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -117,9 +113,9 @@
       populated_from: pht004029
       slot_derivations:
         associated_participant:
-          populated_from: phv00202873
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00202873}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00202873}) + ":ARIC EXAM 4")'
         condition_concept:
           value: MONDO:0005386
         condition_status:
@@ -128,7 +124,31 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL DIAGNOSIS
+          value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: ABI
+        relationship_to_participant:
+          value: ONESELF
+# Incident PAD
+- class_derivations:
+    Condition:
+      populated_from: pht004028
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00202861}) + ":ARIC")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00202861}) + ":ARIC EXAM 3")'
+        condition_concept:
+          value: MONDO:0005386
+        condition_status:
+          populated_from: phv00202860
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: ABI
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -136,9 +156,9 @@
       populated_from: pht004029
       slot_derivations:
         associated_participant:
-          populated_from: phv00202873
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00202873}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00202873}) + ":ARIC EXAM 4")'
         condition_concept:
           value: MONDO:0005386
         condition_status:
@@ -148,17 +168,20 @@
             '1': PRESENT
             S: ABSENT
         condition_provenance:
-          value: CLINICAL DIAGNOSIS
+          value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: ABI
         relationship_to_participant:
           value: ONESELF
+# Cohort Visit Derived Variables
 - class_derivations:
     Condition:
       populated_from: pht004063
       slot_derivations:
         associated_participant:
-          populated_from: phv00204812
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204812}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
         condition_concept:
           value: MONDO:0005386
         condition_status:
@@ -167,7 +190,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL DIAGNOSIS
+          value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: ABI derived
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -175,9 +200,9 @@
       populated_from: pht004063
       slot_derivations:
         associated_participant:
-          populated_from: phv00204812
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204812}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
         condition_concept:
           value: MONDO:0005386
         condition_status:
@@ -186,7 +211,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL DIAGNOSIS
+          value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: ABI derived
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -194,9 +221,9 @@
       populated_from: pht004064
       slot_derivations:
         associated_participant:
-          populated_from: phv00204919
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204919}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204919}) + ":ARIC EXAM 3")'
         condition_concept:
           value: MONDO:0005386
         condition_status:
@@ -205,7 +232,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL DIAGNOSIS
+          value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: ABI derived
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -213,9 +242,9 @@
       populated_from: pht004064
       slot_derivations:
         associated_participant:
-          populated_from: phv00204919
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204919}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204919}) + ":ARIC EXAM 3")'
         condition_concept:
           value: MONDO:0005386
         condition_status:
@@ -224,7 +253,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL DIAGNOSIS
+          value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: ABI derived
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -232,9 +263,9 @@
       populated_from: pht004064
       slot_derivations:
         associated_participant:
-          populated_from: phv00204919
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204919}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204919}) + ":ARIC EXAM 3")'
         condition_concept:
           value: MONDO:0005386
         condition_status:
@@ -243,17 +274,20 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL DIAGNOSIS
+          value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: ABI derived
         relationship_to_participant:
           value: ONESELF
+# Derived Variable Dataset (Visit 4)
 - class_derivations:
     Condition:
       populated_from: pht012813
       slot_derivations:
         associated_participant:
-          populated_from: phv00511942
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00511942}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511942}) + ":ARIC EXAM 4")'
         condition_concept:
           value: MONDO:0005386
         condition_status:
@@ -262,7 +296,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL DIAGNOSIS
+          value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: ABI derived
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -270,9 +306,9 @@
       populated_from: pht012813
       slot_derivations:
         associated_participant:
-          populated_from: phv00511942
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00511942}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511942}) + ":ARIC EXAM 4")'
         condition_concept:
           value: MONDO:0005386
         condition_status:
@@ -281,7 +317,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL DIAGNOSIS
+          value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: ABI derived
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -289,9 +327,9 @@
       populated_from: pht012813
       slot_derivations:
         associated_participant:
-          populated_from: phv00511942
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00511942}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511942}) + ":ARIC EXAM 4")'
         condition_concept:
           value: MONDO:0005386
         condition_status:
@@ -300,7 +338,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL DIAGNOSIS
+          value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: ABI derived
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -308,9 +348,9 @@
       populated_from: pht012813
       slot_derivations:
         associated_participant:
-          populated_from: phv00511942
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00511942}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511942}) + ":ARIC EXAM 4")'
         condition_concept:
           value: MONDO:0005386
         condition_status:
@@ -320,6 +360,8 @@
             '1': PRESENT
             S: ABSENT
         condition_provenance:
-          value: CLINICAL DIAGNOSIS
+          value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: ABI derived
         relationship_to_participant:
           value: ONESELF

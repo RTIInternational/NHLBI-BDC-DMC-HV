@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00400849
         associated_visit:
-          value: JHS AFU
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400849}) + ":JHS AFU")'
         condition_concept:
           value: HP:0001681
           range: string
@@ -15,6 +15,8 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "Annual Follow-Up"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -25,7 +27,7 @@
         associated_participant:
           populated_from: phv00403315
         associated_visit:
-          value: JHS Exam 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403315}) + ":JHS Exam 2")'
         condition_concept:
           value: HP:0001681
           range: string
@@ -38,6 +40,8 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "Self-Report Questionnaire"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -48,7 +52,7 @@
         associated_participant:
           populated_from: phv00403369
         associated_visit:
-          value: JHS Exam 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403369}) + ":JHS Exam 3")'
         condition_concept:
           value: HP:0001681
           range: string
@@ -61,6 +65,8 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "Self-Report Questionnaire"
         relationship_to_participant:
           value: ONESELF
           range: string

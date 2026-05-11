@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00078435
         associated_visit:
-          value: WHI SCREENING
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078435}) + ":WHI SCREENING")'
         sex:
           value: OMOP:8532
         ethnicity:
@@ -28,7 +28,7 @@
         associated_participant:
           populated_from: phv00079312
         associated_visit:
-          value: WHI PI 41
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00079312}) + ":WHI SCREENING")'
         sex:
           value: OMOP:8532
         ethnicity:
