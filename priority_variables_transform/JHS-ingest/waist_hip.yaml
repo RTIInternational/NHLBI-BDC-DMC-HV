@@ -1,0 +1,88 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht008730
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401273}) + ":JHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401273}) + ":JHS Exam 2")'
+        observation_type:
+          value: OMOP:4087501
+        method_type:
+          value: "calculated"
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht008730
+                slot_derivations:
+                  value_decimal:
+                    expr: "{phv00401287} / {phv00401288}"
+                  unit:
+                    value: "{ratio}"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht008731
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401370}) + ":JHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
+        observation_type:
+          value: OMOP:4087501
+        method_type:
+          value: "calculated"
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht008731
+                slot_derivations:
+                  value_decimal:
+                    expr: "{phv00401388} / {phv00401389}"
+                  unit:
+                    value: "{ratio}"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht008737
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401588}) + ":JHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401588}) + ":JHS Exam 2")'
+        observation_type:
+          value: OMOP:4087501
+        method_type:
+          value: "calculated"
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht008737
+                slot_derivations:
+                  value_decimal:
+                    expr: "{phv00401613} / {phv00401614}"
+                  unit:
+                    value: "{ratio}"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht008738
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401621}) + ":JHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401621}) + ":JHS Exam 3")'
+        observation_type:
+          value: OMOP:4087501
+        method_type:
+          value: "calculated"
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht008738
+                slot_derivations:
+                  value_decimal:
+                    expr: "{phv00401628} / {phv00401629}"
+                  unit:
+                    value: "{ratio}"
