@@ -8,7 +8,7 @@
             Visit 2''), ({phv00528696} == ''VISIT_3'', ''SPIROMICS Visit 3''), ({phv00528696}
             == ''VISIT_4'', ''SPIROMICS Visit 4'')))'
         associated_participant:
-          populated_from: phv00528692
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00528692}) + ":SPIROMICS")'
         condition_concept:
           value: MONDO:0005010
         condition_status:
