@@ -57,7 +57,7 @@ hv_dataqc/compare/
 ├── __main__.py                # CLI entry, orchestration
 ├── compare.py                 # top-level run_comparison(...) function
 ├── crosswalk.py               # YAML parsing, mode detection, PHV resolution
-├── io.py                      # JSON read/write, schema versioning
+├── io.py                      # JSON read/write
 ├── render.py                  # MD rendering
 ├── checks/
 │   ├── __init__.py
@@ -72,16 +72,20 @@ hv_dataqc/compare/
 └── config/                    # existing config dir
 ```
 
-**Open question for Chris:** per-check files (C1.py, C2.py, …, ~12 small
-files) vs. per-family (above, ~7 files of moderate size). The per-family
-grouping above is a starting suggestion — we'd refine during the walkthrough
-of each check.
+Per-family file grouping, ~7 files of moderate size.
 
 **Targets:**
 - Each file under ~500 lines where practical.
 - Each check exposes `run(crosswalk, source, harmonized, config) -> CheckResult`.
 - No behavior changes in this phase. Tests must pass with bit-identical JSON
-  output. Add a snapshot test (compare pre/post JSON) before starting.
+  output.
+
+**Regression-safety approach:** before starting, capture the current JSON
+output for a representative cohort (e.g., COPDGene), then diff after each
+file-extraction step. Concrete: `jq -S . old.json > old.sorted` and same for
+new, then `diff` them. We don't currently have snapshot-test infrastructure
+in the repo, and `jq -S` diffing is enough for this kind of structural
+parity check. (Open to a more rigorous approach if Chris prefers.)
 
 ---
 
@@ -117,13 +121,23 @@ size. Consumers should always use `variables_by_pht`.
 | Currently hardcoded | Proposed home | Notes |
 |---|---|---|
 | Check descriptions (`_check_descriptions` dict) | `config/checks.yaml` | Descriptions, names, status order |
-| Domain grouping labels (`measurement_*`, `condition_*`, etc.) | `config/checks.yaml` or `config/domains.yaml` | Used in crosswalk grouping |
+| Domain grouping labels (`measurement_*`, `condition_*`, etc.) | `config/checks.yaml` | Used in crosswalk grouping |
 | Status icons (`_STATUS_ICONS`) | `config/report_format.yaml` | Renderer config |
 | Collapse threshold (currently `4`) | `config/report_format.yaml` | |
-| dbGaP URL patterns | `config/dbgap.yaml` | See Phase D links |
-| Ontology URL patterns (MONDO, OBA, etc.) | `config/ontologies.yaml` | See Phase D links |
+| dbGaP URL patterns | `config/links.yaml` | See Phase D links |
+| Ontology URL patterns (MONDO, OBA, etc.) | `config/links.yaml` | See Phase D links |
 | Check execution order (C1–C11) | `config/checks.yaml` | Also: which to run/skip |
 | Study ID extraction regex | Manifest files (already exist) | Replace fragile regex |
+
+**Two-file split:**
+- `config/checks.yaml` — *behavior*: which checks to run, in what order,
+  per-check descriptions, status order, domain grouping labels.
+- `config/report_format.yaml` — *cosmetics*: status icons, collapse
+  threshold, link-type toggles, anything purely visual.
+
+A separate `config/links.yaml` holds URL templates (see Phase D); kept
+distinct because link templates are reference data, not user-tunable
+formatting preferences.
 
 ### Already externalized (keep as-is)
 
@@ -174,20 +188,69 @@ work; this phase continues it.
 | PHV IDs | dbGaP `variable.cgi` |
 | PHT IDs | dbGaP `dataset.cgi` |
 | Study ID (header) | dbGaP study page |
-| Concept codes (MONDO, OBA, …) | OLS or BioPortal (per-ontology pattern) |
+| Concept codes (MONDO, OBA, …) | per-ontology, see table below |
 
 Design notes:
-- Each link type has an on/off toggle in `config/report_format.yaml` so
-  individual users can dial down visual noise.
-- URL templates live in `config/dbgap.yaml` and `config/ontologies.yaml`,
-  not hardcoded in renderer code.
-- Linking logic lives entirely in the renderer (Phase E preview). The JSON
-  always carries plain IDs; the renderer decides what (if anything) to wrap
-  them in. This makes the same comparison JSON re-renderable with different
-  link configs.
-- TBD before implementation: confirm OLS / BioPortal URL templates for the
-  concept-code families we use; figure out whether we need an API key for
-  any of them. Worth a quick spike.
+- Each link type has an on/off toggle in `config/report_format.yaml`.
+- URL templates live in `config/links.yaml`, not hardcoded in renderer code.
+- Linking logic lives entirely in the renderer. The JSON always carries plain
+  IDs; the renderer decides what (if anything) to wrap them in. This means
+  the same comparison JSON re-renders with different link configs.
+
+#### Ontology resolver options — example links for comparison
+
+All examples resolve `MONDO:0004981` ("atrial fibrillation"). For non-MONDO
+ontologies the table notes coverage caveats.
+
+| Option | Example URL | Coverage | Notes |
+|---|---|---|---|
+| **OBO PURL** (redirects → OLS4) | http://purl.obolibrary.org/obo/MONDO_0004981 | OBO ontologies only: MONDO, HP, OBA, GO, UBERON, CHEBI, EFO, VT, etc. | Trivial template: `{PREFIX}_{LOCAL_ID}` with underscore. No coverage for SNOMEDCT, LOINC, OMIM, RxNorm, CPT. **Recommended primary for OBO prefixes.** |
+| **OLS4 direct** | https://www.ebi.ac.uk/ols4/ontologies/mondo/classes/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FMONDO_0004981 | Same as OBO PURL | Same destination but uglier double-encoded URL. Skip unless you want to bypass the redirect. |
+| **BioPortal** | https://bioportal.bioontology.org/ontologies/MONDO?p=classes&conceptid=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FMONDO_0004981 | Universal: MONDO, OBA, SNOMEDCT, LOINC, HP, OMIM, RxNorm, CPT | No API key for browser URLs. Heavier UI than OLS. **Recommended as catch-all fallback.** |
+| **Monarch (MONDO/HP)** | https://monarchinitiative.org/disease/MONDO:0004981 | MONDO, HP | Nicer disease-focused UI than OLS. |
+| **LOINC** | https://loinc.org/8302-2/ | LOINC only | Clean per-code pages, loads cleanly. |
+| **OMIM** | https://omim.org/entry/600807 | OMIM only | Works in browsers. |
+| **SNOMED browser** | https://browser.ihtsdotools.org/?perspective=full&conceptId1=73211009 | SNOMEDCT only | Public IHTSDO browser. |
+| **RxNav** | https://mor.nlm.nih.gov/RxNav/search?searchBy=RXCUI&searchTerm=198440 | RxNorm only | NLM-hosted. |
+| **CPT** | — | n/a | AMA-licensed, no free public URL — render as plain code. |
+
+#### Proposed `config/links.yaml` (layered fallback)
+
+```yaml
+dbgap:
+  phv: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/variable.cgi?study_id={study}&phv={phv}"
+  pht: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/dataset.cgi?study_id={study}&pht={pht}"
+  study: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id={study}"
+
+ontologies:
+  # OBO Foundry prefixes → OBO PURL (redirects to OLS4)
+  MONDO: "http://purl.obolibrary.org/obo/{prefix}_{local_id}"
+  HP:    "http://purl.obolibrary.org/obo/{prefix}_{local_id}"
+  OBA:   "http://purl.obolibrary.org/obo/{prefix}_{local_id}"
+  GO:    "http://purl.obolibrary.org/obo/{prefix}_{local_id}"
+  UBERON: "http://purl.obolibrary.org/obo/{prefix}_{local_id}"
+  CHEBI: "http://purl.obolibrary.org/obo/{prefix}_{local_id}"
+  EFO:   "http://purl.obolibrary.org/obo/{prefix}_{local_id}"
+  VT:    "http://purl.obolibrary.org/obo/{prefix}_{local_id}"
+
+  # Non-OBO terminologies → per-source portals
+  OMIM:    "https://omim.org/entry/{local_id}"
+  LOINC:   "https://loinc.org/{local_id}/"
+  RXNORM:  "https://mor.nlm.nih.gov/RxNav/search?searchBy=RXCUI&searchTerm={local_id}"
+  SNOMEDCT: "https://browser.ihtsdotools.org/?perspective=full&conceptId1={local_id}"
+
+  # Fallback for anything not listed above
+  default: "https://bioportal.bioontology.org/ontologies/{prefix}?p=classes&conceptid={iri_url_encoded}"
+
+  # No public URL — render as plain text
+  no_link: [CPT]
+```
+
+**Why layered:** OBO PURL is the simplest template but only covers OBO
+ontologies. BioPortal covers everything but pages are heavier and the host
+blocks scripted fetches (irrelevant for human reviewers clicking links,
+but would break automated link-checking). The layered approach picks the
+best URL per prefix and uses BioPortal only as fallback.
 
 ### Surface PHVs in more places
 
@@ -226,24 +289,6 @@ self-describing JSON, the renderer becomes a free-standing script:
 
 ---
 
-## Open questions for Chris
-
-1. **Phase A grouping** — per-check files vs. per-family modules? Proposal
-   above is per-family, but happy to go per-check if you'd rather.
-2. **Phase B timing** — OK to land the JSON cleanup as a hard break (force
-   re-extraction), or do you want a one-release backward-compatible window
-   where compare can read either form?
-3. **Phase C config naming** — `config/checks.yaml` mixes "list of checks
-   to run" with "descriptions/icons/etc.". Should those be one file or two
-   (e.g., `checks.yaml` for behavior, `report_format.yaml` for cosmetics)?
-4. **Phase D ontology links** — which ontology registries should we
-   target as primary (OLS, BioPortal, OBO Foundry, ontology-specific
-   sites)? Any prior preference?
-5. **Phase A behavior parity test** — do you have a preferred way to do
-   snapshot tests for JSON output, or should we just diff with `jq -S`?
-
----
-
 ## Files most likely to change
 
 | File | Phase |
@@ -253,6 +298,5 @@ self-describing JSON, the renderer becomes a free-standing script:
 | `extract_source/extract_source_summaries.py` | B |
 | `compare/config/checks.yaml` (new) | C |
 | `compare/config/report_format.yaml` (new) | C, D |
-| `compare/config/dbgap.yaml` (new) | D |
-| `compare/config/ontologies.yaml` (new) | D |
+| `compare/config/links.yaml` (new) | D |
 | `tests/test_compare_source_harmonized.py` | A (split alongside), B, C |
