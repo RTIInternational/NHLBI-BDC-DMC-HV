@@ -13,6 +13,26 @@
                 populated_from: pht001575
                 slot_derivations:
                   observation_type:
+                    value: OMOP:4176265
+                  body_position:
+                    value: SITTING_POSITION
+                  method_type:
+                    value: spirometry
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht001575
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00113403
+                            unit:
+                              value: "L"
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht001575
+                slot_derivations:
+                  observation_type:
                     value: OMOP:4241837
                   body_position:
                     value: SITTING_POSITION
