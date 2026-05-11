@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00100690
         associated_visit:
-          value: CHS CAC
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100690}) + ":CHS CAC")'
         age_at_observation:
           expr: ({pht001452.phv00100487} * 365) + ({phv00100692} * 365)
         observation_type:

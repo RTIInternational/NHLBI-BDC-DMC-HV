@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00082638
         associated_visit:
-          value: MESA AIR EXAM
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         condition_concept:
           value: MONDO:0006955
           range: string
@@ -29,8 +28,7 @@
         associated_participant:
           populated_from: phv00084441
         associated_visit:
-          value: MESA CLASSIC EXAM 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         condition_concept:
           value: MONDO:0006955
           range: string
@@ -53,8 +51,7 @@
         associated_participant:
           populated_from: phv00085751
         associated_visit:
-          value: MESA CLASSIC EXAM 2
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085751}) + ":MESA CLASSIC EXAM 2")'
         age_at_condition_start:
           expr: case(({phv00085768} == 1, {phv00085769} * 365))
         condition_concept:
@@ -80,8 +77,7 @@
         associated_participant:
           populated_from: phv00085772
         associated_visit:
-          value: MESA CLASSIC EXAM 2
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         condition_concept:
           value: MONDO:0006955
           range: string
@@ -104,8 +100,7 @@
         associated_participant:
           populated_from: phv00086258
         associated_visit:
-          value: MESA CLASSIC EXAM 3
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         condition_concept:
           value: MONDO:0006955
           range: string
@@ -128,8 +123,7 @@
         associated_participant:
           populated_from: phv00087070
         associated_visit:
-          value: MESA FAMILY
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         condition_concept:
           value: MONDO:0006955
           range: string

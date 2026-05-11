@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00084441
         associated_visit:
-          value: MESA CLASSIC EXAM 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         condition_concept:
           value: HP:0001297
           range: string
@@ -29,8 +28,7 @@
         associated_participant:
           populated_from: phv00084441
         associated_visit:
-          value: MESA CLASSIC EXAM 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         condition_concept:
           value: HP:0001297
           range: string
@@ -54,8 +52,7 @@
         associated_participant:
           populated_from: phv00084441
         associated_visit:
-          value: MESA CLASSIC EXAM 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         condition_concept:
           value: HP:0001297
           range: string

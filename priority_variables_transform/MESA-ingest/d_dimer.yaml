@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00082638
         associated_visit:
-          value: MESA_AirNRExamMain
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_observation:
           expr: '{phv00082639} * 365'
         observation_type:
@@ -30,8 +29,7 @@
         associated_participant:
           populated_from: phv00084441
         associated_visit:
-          value: MESA_Exam1Main
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         age_at_observation:
           expr: '{phv00084442} * 365'
         observation_type:
@@ -55,8 +53,7 @@
         associated_participant:
           populated_from: phv00086726
         associated_visit:
-          value: MESA_Exam4Main
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         age_at_observation:
           expr: '{phv00086727} * 365'
         observation_type:
@@ -80,8 +77,7 @@
         associated_participant:
           populated_from: phv00087070
         associated_visit:
-          value: MESA_FamilyExamMain
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         age_at_observation:
           expr: '{phv00087071} * 365'    
         observation_type:
@@ -105,8 +101,7 @@
         associated_participant:
           populated_from: phv00150369
         associated_visit:
-          value: MESA_AncilMesaStressCortisol
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00150369}) + ":MESA STRESS")'
         observation_type:
           value: OMOP:37393605
           range: string

@@ -5,9 +5,9 @@
         associated_participant:
           populated_from: phv00127753
         associated_visit:
-          value: JHS Exam 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00127753}) + ":JHS Exam 1")'
         drug_concept:
-          value: case(({phv00127922} == 1, 'ATC:C02'))
+          expr: 'case(({phv00127922} == "Y", "ATC:C02"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
@@ -17,9 +17,9 @@
         associated_participant:
           populated_from: phv00400849
         associated_visit:
-          value: JHS AFU
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400849}) + ":JHS AFU")'
         drug_concept:
-          value: case(({phv00400884} == 1, 'ATC:C02'))
+          expr: 'case(({phv00400884} == "Y", "ATC:C02"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
@@ -29,9 +29,9 @@
         associated_participant:
           populated_from: phv00403792
         associated_visit:
-          value: JHS Exam 6
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403792}) + ":JHS Exam 6")'
         drug_concept:
-          value: case(({phv00403802} == 1, 'ATC:C02'))
+          expr: 'case(({phv00403802} == 1, "ATC:C02"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
 - class_derivations:
@@ -41,8 +41,8 @@
         associated_participant:
           populated_from: phv00403830
         associated_visit:
-          value: JHS Exam 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403830}) + ":JHS Exam 1")'
         drug_concept:
-          value: case(({phv00403802} == 1, 'ATC:C02'))
+          expr: 'case(({phv00403840} == 1, "ATC:C02"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION

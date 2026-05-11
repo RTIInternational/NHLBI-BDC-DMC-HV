@@ -3,9 +3,9 @@
       populated_from: pht004037
       slot_derivations:
         associated_participant:
-          populated_from: phv00203305
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00203305}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203305}) + ":ARIC EXAM 1")'
           range: string
         condition_concept:
           value: MONDO:0004981
@@ -26,9 +26,9 @@
       populated_from: pht004038
       slot_derivations:
         associated_participant:
-          populated_from: phv00203308
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00203308}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203308}) + ":ARIC EXAM 2")'
           range: string
         condition_concept:
           value: MONDO:0004981
@@ -49,9 +49,9 @@
       populated_from: pht004039
       slot_derivations:
         associated_participant:
-          populated_from: phv00203311
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00203311}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203311}) + ":ARIC EXAM 3")'
           range: string
         condition_concept:
           value: MONDO:0004981
@@ -72,9 +72,9 @@
       populated_from: pht004040
       slot_derivations:
         associated_participant:
-          populated_from: phv00203314
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00203314}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203314}) + ":ARIC EXAM 3")'
           range: string
         condition_concept:
           value: MONDO:0004981
@@ -95,9 +95,9 @@
       populated_from: pht004061
       slot_derivations:
         associated_participant:
-          populated_from: phv00204606
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204606}) + ":ARIC")'
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204606}) + ":ARIC Hospital Form")'
           range: string
         condition_concept:
           value: MONDO:0004981
@@ -105,10 +105,13 @@
         condition_status:
           populated_from: phv00204463
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            'N': ABSENT
+            'Y': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: "stroke abstraction form"
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -118,9 +121,9 @@
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from: phv00207055
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
         condition_concept:
           value: MONDO:0004981
@@ -128,10 +131,13 @@
         condition_status:
           populated_from: phv00206790
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            'N': ABSENT
+            'Y': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: "hospital record abstraction"
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -141,9 +147,9 @@
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from: phv00207055
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
         condition_concept:
           value: MONDO:0004981
@@ -151,10 +157,13 @@
         condition_status:
           populated_from: phv00206843
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            'N': ABSENT
+            'Y': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: "hospital record abstraction"
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -164,9 +173,9 @@
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from: phv00207055
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
         condition_concept:
           value: MONDO:0004981
@@ -174,10 +183,13 @@
         condition_status:
           populated_from: phv00207019
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            'N': ABSENT
+            'Y': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: "hospital record abstraction"
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -187,9 +199,9 @@
       populated_from: pht004231
       slot_derivations:
         associated_participant:
-          populated_from: phv00216043
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00216043}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00216043}) + ":ARIC EXAM 1")'
           range: string
         condition_concept:
           value: MONDO:0004981
@@ -202,6 +214,9 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "Electrocardiogram"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -210,9 +225,9 @@
       populated_from: pht004232
       slot_derivations:
         associated_participant:
-          populated_from: phv00216460
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00216460}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00216460}) + ":ARIC EXAM 2")'
           range: string
         condition_concept:
           value: MONDO:0004981
@@ -225,6 +240,9 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "Electrocardiogram"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -233,9 +251,9 @@
       populated_from: pht004233
       slot_derivations:
         associated_participant:
-          populated_from: phv00216877
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00216877}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00216877}) + ":ARIC EXAM 3")'
           range: string
         condition_concept:
           value: MONDO:0004981
@@ -248,6 +266,9 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "Electrocardiogram"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -256,9 +277,9 @@
       populated_from: pht004234
       slot_derivations:
         associated_participant:
-          populated_from: phv00217294
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00217294}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00217294}) + ":ARIC EXAM 4")'
           range: string
         condition_concept:
           value: MONDO:0004981
@@ -271,6 +292,9 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "Electrocardiogram"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -279,9 +303,9 @@
       populated_from: pht006436
       slot_derivations:
         associated_participant:
-          populated_from: phv00295776
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00295776}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00295776}) + ":ARIC EXAM 5")'
         condition_concept:
           value: MONDO:0004981
           range: string
@@ -293,6 +317,9 @@
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "Electrocardiogram"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -301,9 +328,9 @@
       populated_from: pht009479
       slot_derivations:
         associated_participant:
-          populated_from: phv00419900
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00419900}) + ":ARIC")'
         associated_visit:
-          value: Medical Conditions Update Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00419900}) + ":ARIC Medical Conditions Update Form")'
           range: string
         condition_concept:
           value: MONDO:0004981
@@ -316,6 +343,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -324,9 +354,9 @@
       populated_from: pht012518
       slot_derivations:
         associated_participant:
-          populated_from: phv00507808
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00507808}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507808}) + ":ARIC EXAM 7")'
           range: string
         condition_concept:
           value: MONDO:0004981
@@ -347,9 +377,9 @@
       populated_from: pht012839
       slot_derivations:
         associated_participant:
-          populated_from: phv00516796
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00516796}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00516796}) + ":ARIC EXAM 5")'
           range: string
         condition_concept:
           value: MONDO:0004981
@@ -370,9 +400,9 @@
       populated_from: pht012840
       slot_derivations:
         associated_participant:
-          populated_from: phv00516885
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00516885}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 6
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00516885}) + ":ARIC EXAM 6")'
           range: string
         condition_concept:
           value: MONDO:0004981

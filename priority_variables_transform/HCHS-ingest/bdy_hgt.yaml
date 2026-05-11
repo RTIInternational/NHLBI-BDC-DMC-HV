@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          value: HCHS EXAM
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         age_at_observation:
           expr: '{phv00226251} * 365'
         observation_type:
@@ -23,7 +22,7 @@
                   unit:
                     value: cm
                     range: string
-# Block 1: Recalled height at age 21 — uses WHEA2A_CM (phv00527446), the derived/unified
+# Block 2: Recalled height at age 21 -- uses WHEA2A_CM (phv00527446), the derived/unified
 # variable combining metric + imperial respondents (n=9,555). The raw metric-only variable
 # WHEA2A (phv00527433, n=3,232) was removed as a strict subset to avoid duplicate records.
 - class_derivations:
@@ -33,13 +32,15 @@
         associated_participant:
           populated_from: phv00226250
         associated_visit:
-          value: HCHS EXAM
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         age_at_observation:
           value: 7665
           range: integer
         observation_type:
           value: OBA:VT0001253
+          range: string
+        method_type:
+          value: height recalled at age 21
           range: string
         value_quantity:
           object_derivations:
@@ -51,4 +52,4 @@
                     populated_from: phv00527446
                   unit:
                     value: cm
-                    range: string                    
+                    range: string

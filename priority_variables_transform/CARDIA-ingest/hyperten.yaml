@@ -7,7 +7,7 @@
         age_at_condition_start:
           expr: case((phv00113020 == 2, {phv00113021} * 365))
         associated_visit:
-          value: CARDIA YEAR 0
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113019}) + ":CARDIA YEAR 0")'
           range: string
         condition_concept:
           value: HP:0000822
@@ -29,7 +29,7 @@
         age_at_condition_start:
           expr: case((phv00114385 == 2, {phv00114386} * 365))
         associated_visit:
-          value: CARDIA YEAR 0
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00114384}) + ":CARDIA YEAR 0")'
           range: string
         condition_concept:
           value: HP:0000822
@@ -51,7 +51,7 @@
         age_at_condition_start:
           expr: case((phv00115424 == 2, {phv00115425} * 365))
         associated_visit:
-          value: CARDIA YEAR 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00115423}) + ":CARDIA YEAR 5")'
           range: string
         condition_concept:
           value: HP:0000822
@@ -61,6 +61,7 @@
           value_mappings:
             '1': ABSENT
             '2': PRESENT
+            '8': UNKNOWN
             'M': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
@@ -77,7 +78,7 @@
         age_at_condition_start:
           expr: case((phv00115424 == 2, {phv00116956} * 365))
         associated_visit:
-          value: CARDIA YEAR 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116953}) + ":CARDIA YEAR 7")'
           range: string
         condition_concept:
           value: HP:0000822
@@ -103,7 +104,7 @@
         age_at_condition_start:
           expr: case((phv00117935 == 2, {phv00117936} * 365))
         associated_visit:
-          value: CARDIA YEAR 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00117898}) + ":CARDIA YEAR 7")'
           range: string
         condition_concept:
           value: HP:0000822
@@ -129,7 +130,7 @@
         age_at_condition_start:
           expr: case((phv00118428 == 2, {phv00118430} * 365))
         associated_visit:
-          value: CARDIA YEAR 10
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00118426}) + ":CARDIA YEAR 10")'
           range: string
         condition_concept:
           value: HP:0000822
@@ -155,7 +156,7 @@
         age_at_condition_start:
           expr: case((phv00119802 == 2, {phv00119807} * 365))
         associated_visit:
-          value: CARDIA YEAR 15
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119801}) + ":CARDIA YEAR 15")'
           range: string
         condition_concept:
           value: HP:0000822

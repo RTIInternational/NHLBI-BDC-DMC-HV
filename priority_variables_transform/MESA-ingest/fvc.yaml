@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00083440
         associated_visit:
-          value: MESA AIR SPIROMETRY
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00083440}) + ":MESA AIR SPIROMETRY")'
         age_at_observation:
           expr: '{phv00083452} * 365'
         observation_type:
@@ -30,8 +29,7 @@
         associated_participant:
           populated_from: phv00083675
         associated_visit:
-          value: MESA LUNG SPIROMETRY
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00083675}) + ":MESA LUNG SPIROMETRY")'
         age_at_observation:
           expr: '{phv00083687} * 365'
         observation_type:
@@ -55,8 +53,7 @@
         associated_participant:
           populated_from: phv00087666
         associated_visit:
-          value: MESA FAMILY SPIROMETRY
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087666}) + ":MESA FAMILY SPIROMETRY")'
         age_at_observation:
           expr: '{phv00087678} * 365'
         observation_type:

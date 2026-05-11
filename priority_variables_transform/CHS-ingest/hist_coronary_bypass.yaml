@@ -5,10 +5,14 @@
         associated_participant:
           populated_from: phv00098771
         associated_visit:
-          value: CHS BASELINE 2
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
         procedure_concept:
-          expr: 'case(({phv00099031} == 1, "OMOP:4336464"))'
+          value: OMOP:4336464
+        procedure_status:
+          populated_from: phv00099031
+          value_mappings:
+            '1': PRESENT
+            '0': ABSENT
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -17,12 +21,16 @@
       populated_from: pht001452
       slot_derivations:
         associated_participant:
-          populated_from: phv00100321
+          populated_from: phv00100285
         associated_visit:
-          value: CHS BASELINE BOTH
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100285}) + ":CHS BASELINE BOTH")'
         procedure_concept:
-          expr: 'case(({phv00100322} == 1, "OMOP:4336464"))'
+          value: OMOP:4336464
+        procedure_status:
+          populated_from: phv00100321
+          value_mappings:
+            '1': PRESENT
+            '0': ABSENT
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -33,10 +41,14 @@
         associated_participant:
           populated_from: phv00100773
         associated_visit:
-          value: CHS SUMMARY
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100773}) + ":CHS SUMMARY")'
         procedure_concept:
-          expr: 'case(({phv00100785} == 1, "OMOP:4336464"))'
+          value: OMOP:4336464
+        procedure_status:
+          populated_from: phv00100785
+          value_mappings:
+            '1': PRESENT
+            '0': ABSENT
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -47,10 +59,14 @@
         associated_participant:
           populated_from: phv00105099
         associated_visit:
-          value: CHS SUMMARY
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS BASELINE 2")'
         procedure_concept:
-          expr: 'case(({phv00105974} == 1, "OMOP:4336464"))'
+          value: OMOP:4336464
+        procedure_status:
+          populated_from: phv00105974
+          value_mappings:
+            '1': PRESENT
+            '0': ABSENT
         procedure_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string

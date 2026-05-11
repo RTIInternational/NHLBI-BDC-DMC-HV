@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00084441
         associated_visit:
-          value: MESA_Exam1Main
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         age_at_observation:
           expr: '{phv00084442} * 365'
         observation_type:
@@ -30,8 +29,7 @@
         associated_participant:
           populated_from: phv00085772
         associated_visit:
-          value: MESA_Exam2Main
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         age_at_observation:
           expr: '{phv00085773} * 365'
         observation_type:
@@ -55,8 +53,7 @@
         associated_participant:
           populated_from: phv00086258
         associated_visit:
-          value: MESA_Exam3Main
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         age_at_observation:
           expr: '{phv00086259} * 365'
         observation_type:
@@ -80,8 +77,9 @@
         associated_participant:
           populated_from: phv00087070
         associated_visit:
-          value: MESA_FamilyExamMain
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
+        age_at_observation:
+          expr: '{phv00087071} * 365'
         observation_type:
           value: OMOP:3007081
           range: string
@@ -103,8 +101,7 @@
         associated_participant:
           populated_from: phv00174584
         associated_visit:
-          value: MESA_AirNRExam5Main
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         age_at_observation:
           expr: '{phv00174588} * 365'
         observation_type:
@@ -128,8 +125,7 @@
         associated_participant:
           populated_from: phv00176007
         associated_visit:
-          value: MESA_Exam5Main
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         age_at_observation:
           expr: '{phv00176011} * 365'
         observation_type:

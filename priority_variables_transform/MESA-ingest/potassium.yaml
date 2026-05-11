@@ -32,8 +32,7 @@
         associated_participant:
           populated_from: phv00175973
         associated_visit:
-          value: MESA Ancillary
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00175973}) + ":MESA ANCILLARY")'
         observation_type:
           value: OBA:VT0002668
           range: string
