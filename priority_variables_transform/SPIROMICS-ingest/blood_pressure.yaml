@@ -3,7 +3,7 @@
       populated_from: pht013308
       slot_derivations:
         associated_participant:
-          populated_from: phv00528692
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00528692}) + ":SPIROMICS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00528692}) + ":" + case(({phv00528696}
             == ''VISIT_1'', ''SPIROMICS Visit 1''), ({phv00528696} == ''VISIT_2'', ''SPIROMICS
@@ -17,6 +17,10 @@
                 slot_derivations:
                   observation_type:
                     value: OMOP:4152194
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
                   method_type:
                     value: average
                   age_at_observation:
@@ -37,6 +41,10 @@
                 slot_derivations:
                   observation_type:
                     value: OMOP:4154790
+                  body_position:
+                    value: SITTING_POSITION
+                  body_site:
+                    value: Right arm
                   method_type:
                     value: average
                   age_at_observation:

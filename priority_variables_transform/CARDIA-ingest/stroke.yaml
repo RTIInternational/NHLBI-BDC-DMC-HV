@@ -3,7 +3,7 @@
       populated_from: pht001715
       slot_derivations:
         associated_participant:
-          populated_from: phv00116953
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00116953}) + ":CARDIA")'
         age_at_condition_start:
           expr: case((phv00117058 == 2, {phv00117059} * 365))
         associated_visit:
@@ -22,6 +22,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -30,7 +33,7 @@
       populated_from: pht001749
       slot_derivations:
         associated_participant:
-          populated_from: phv00117898
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00117898}) + ":CARDIA")'
         age_at_condition_start:
           expr: case((phv00117941 == 2, {phv00117942} * 365))
         associated_visit:
@@ -48,6 +51,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -56,7 +62,7 @@
       populated_from: pht001761
       slot_derivations:
         associated_participant:
-          populated_from: phv00118426
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00118426}) + ":CARDIA")'
         age_at_condition_start:
           expr: case((phv00118538 == 2, {phv00118539} * 365))
         associated_visit:
@@ -75,6 +81,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -83,7 +92,7 @@
       populated_from: pht001811
       slot_derivations:
         associated_participant:
-          populated_from: phv00119801
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00119801}) + ":CARDIA")'
         age_at_condition_start:
           expr: case((phv00119916 == 2, {phv00119926} * 365))
         associated_visit:
@@ -101,6 +110,9 @@
             M: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        associated_evidence:
+          value: "self-report questionnaire"
           range: string
         relationship_to_participant:
           value: ONESELF

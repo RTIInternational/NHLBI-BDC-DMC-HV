@@ -9,7 +9,7 @@
         visit_category:
           value: HEALTH_EXAMINATION
         associated_participant:
-          populated_from: phv00112417
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00112417}) + ":CARDIA")'
         age_at_visit_start:
           expr: '{phv00112421} * 365'
         age_at_visit_end:
@@ -25,7 +25,7 @@
         visit_category:
           value: HEALTH_EXAMINATION
         associated_participant:
-          populated_from: phv00114583
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00114583}) + ":CARDIA")'
         age_at_visit_start:
           expr: '{phv00114610} * 365'
         age_at_visit_end:
@@ -41,7 +41,7 @@
         visit_category:
           value: HEALTH_EXAMINATION
         associated_participant:
-          populated_from: phv00115618
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00115618}) + ":CARDIA")'
         age_at_visit_start:
           expr: '{phv00115705} * 365'
         age_at_visit_end:
@@ -57,7 +57,7 @@
         visit_category:
           value: HEALTH_EXAMINATION
         associated_participant:
-          populated_from: phv00116476
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00116476}) + ":CARDIA")'
         age_at_visit_start:
           expr: '{phv00116478} * 365'
         age_at_visit_end:
@@ -73,7 +73,7 @@
         visit_category:
           value: HEALTH_EXAMINATION
         associated_participant:
-          populated_from: phv00118837
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00118837}) + ":CARDIA")'
         age_at_visit_start:
           expr: '{phv00118959} * 365'
         age_at_visit_end:
@@ -89,7 +89,7 @@
         visit_category:
           value: HEALTH_EXAMINATION
         associated_participant:
-          populated_from: phv00120733
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120733}) + ":CARDIA")'
         age_at_visit_start:
           expr: '{phv00120748} * 365'
         age_at_visit_end:
@@ -111,7 +111,7 @@
         visit_category:
           value: UNKNOWN
         associated_participant:
-          populated_from: phv00121257
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121257}) + ":CARDIA")'
 - class_derivations:
     Visit:
       populated_from: pht001871
@@ -123,7 +123,7 @@
         visit_category:
           value: UNKNOWN
         associated_participant:
-          populated_from: phv00121473
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121473}) + ":CARDIA")'
 - class_derivations:
     Visit:
       populated_from: pht001870
@@ -135,4 +135,4 @@
         visit_category:
           value: UNKNOWN
         associated_participant:
-          populated_from: phv00121454
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121454}) + ":CARDIA")'

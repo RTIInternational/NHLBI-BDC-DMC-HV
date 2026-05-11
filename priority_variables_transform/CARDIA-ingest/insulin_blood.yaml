@@ -3,13 +3,15 @@
       populated_from: pht001587
       slot_derivations:
         associated_participant:
-          populated_from: phv00113697
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00113697}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113697}) + ":CARDIA YEAR 0")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OBA:2060174
+        method_type:
+          value: "blood assay"
 #        value_quantity:
 #          object_derivations:
 #          - class_derivations:
@@ -29,13 +31,15 @@
       populated_from: pht001740
       slot_derivations:
         associated_participant:
-          populated_from: phv00117564
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00117564}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00117564}) + ":CARDIA YEAR 7")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OBA:2060174
+        method_type:
+          value: "blood assay"
 #        value_quantity:
 #          object_derivations:
 #          - class_derivations:
@@ -55,13 +59,15 @@
       populated_from: pht001740
       slot_derivations:
         associated_participant:
-          populated_from: phv00117564
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00117564}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00117564}) + ":CARDIA YEAR 7")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OBA:2060174
+        method_type:
+          value: "blood assay"
 #        value_quantity:
 #          object_derivations:
 #          - class_derivations:

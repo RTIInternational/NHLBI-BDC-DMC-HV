@@ -6,7 +6,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401078}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
-        age_at_condition:
+        age_at_condition_start:
           expr: "{phv00401085} * 365"
         condition_concept:
           value: "HP:0001513"
@@ -17,13 +17,15 @@
             '1': PRESENT
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: CASE_REPORT_FORM
         associated_evidence:
           populated_from: phv00401099
           value_mappings:
             '0': "BMI < 25"
             '1': "BMI 25.0-29.9"
             '2': "BMI >= 30.0"
+        relationship_to_participant:
+          value: ONESELF
 - class_derivations:
     Condition:
       populated_from: pht008730
@@ -32,7 +34,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401273}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401273}) + ":JHS Exam 2")'
-        age_at_condition:
+        age_at_condition_start:
           expr: "{phv00401282} * 365"
         condition_concept:
           value: "HP:0001513"
@@ -43,13 +45,15 @@
             '1': PRESENT
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: CASE_REPORT_FORM
         associated_evidence:
           populated_from: phv00401291
           value_mappings:
             '0': "BMI < 25"
             '1': "BMI 25.0-29.9"
             '2': "BMI >= 30.0"
+        relationship_to_participant:
+          value: ONESELF
 - class_derivations:
     Condition:
       populated_from: pht008731
@@ -58,7 +62,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401370}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
-        age_at_condition:
+        age_at_condition_start:
           expr: "{phv00401379} * 365"
         condition_concept:
           value: "HP:0001513"
@@ -69,10 +73,12 @@
             '1': PRESENT
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: CASE_REPORT_FORM
         associated_evidence:
           populated_from: phv00401392
           value_mappings:
             '0': "BMI < 25"
             '1': "BMI 25.0-29.9"
             '2': "BMI >= 30.0"
+        relationship_to_participant:
+          value: ONESELF
