@@ -3,7 +3,7 @@
       populated_from: pht010060
       slot_derivations:
         associated_participant:
-          populated_from: phv00429124
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00429124}) + ":LTRC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00429124}) + ":LTRC Baseline")'
         condition_concept:
