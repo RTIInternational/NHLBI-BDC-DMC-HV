@@ -2,8 +2,8 @@
     MeasurementObservation:
       populated_from: pht001565
       slot_derivations:
-        associated_participant: 
-          populated_from: phv00112709
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00112709}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00112709}) + ":CARDIA YEAR 0")'
         observation_type: 
@@ -22,8 +22,8 @@
     MeasurementObservation:
       populated_from: pht001712
       slot_derivations:
-        associated_participant: 
-          populated_from: phv00116761 
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00116761}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116761}) + ":CARDIA YEAR 7")'
         observation_type: 

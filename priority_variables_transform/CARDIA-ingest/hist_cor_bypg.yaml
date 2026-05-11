@@ -3,7 +3,7 @@
       populated_from: pht001869
       slot_derivations:
         associated_participant:
-          populated_from: phv00121257
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121257}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121257}) + ":CARDIA MEDICAL HISTORY")'
           range: string
@@ -17,7 +17,7 @@
       populated_from: pht001871
       slot_derivations:
         associated_participant:
-          populated_from: phv00121473
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121473}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121473}) + ":CARDIA MEDICAL HISTORY")'
           range: string
