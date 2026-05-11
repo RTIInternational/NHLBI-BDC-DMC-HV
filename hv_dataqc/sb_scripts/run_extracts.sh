@@ -26,7 +26,7 @@ done
 
 COHORT_LOWER="$(echo "$COHORT_INPUT" | tr '[:upper:]' '[:lower:]')"
 COHORT_UPPER="$(echo "$COHORT_INPUT" | tr '[:lower:]' '[:upper:]')"
-# Derive repo root from this script's location (sb_scripts/ -> hv-dataqc/ -> repo root)
+# Derive repo root from this script's location (sb_scripts/ -> hv_dataqc/ -> repo root)
 HV="$(cd "$(dirname "$0")/../.." && pwd)"
 
 # Discover the actual source directory name (case-insensitive)
@@ -107,19 +107,19 @@ echo
 
 # --- Source extract ---
 echo "=== Running source extract ==="
-uv run python "$HV/hv-dataqc/extract-source/extract_source_summaries.py" \
+(cd "$HV" && uv run python -m hv_dataqc.extract_source.extract_source_summaries \
     --cohort "$COHORT" \
     --source-root "$SOURCE_ROOT" \
-    --output-dir "$OUTPUT_DIR"
+    --output-dir "$OUTPUT_DIR")
 
 echo
 
 # --- Harmonized extract ---
 echo "=== Running harmonized extract ==="
-uv run python "$HV/hv-dataqc/extract-harmonized/extract_harmonized_summaries.py" \
+(cd "$HV" && uv run python -m hv_dataqc.extract_harmonized.extract_harmonized_summaries \
     --cohort "$COHORT" \
     --mapped-data-dirs $MAPPED_DIRS \
-    --output-dir "$OUTPUT_DIR"
+    --output-dir "$OUTPUT_DIR")
 
 echo
 

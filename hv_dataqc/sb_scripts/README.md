@@ -13,7 +13,7 @@ At the start of each SB session:
 ```bash
 cd <path-to>/NHLBI-BDC-DMC-HV
 git pull
-source hv-dataqc/sb_scripts/setup.sh
+source hv_dataqc/sb_scripts/setup.sh
 ```
 
 ### `vi_defaults.sh`
@@ -22,7 +22,7 @@ SB doesn't persist dotfiles. Source this to set vi as editor and enable
 vi keybindings:
 
 ```bash
-source NHLBI-BDC-DMC-HV/hv-dataqc/sb_scripts/vi_defaults.sh
+source NHLBI-BDC-DMC-HV/hv_dataqc/sb_scripts/vi_defaults.sh
 ```
 
 ## Scripts
@@ -60,13 +60,13 @@ Packages output into a tgz for download.
 
 ```bash
 # Use latest DataRun
-./NHLBI-BDC-DMC-HV/hv-dataqc/sb_scripts/run_extracts.sh COPDGene
+./NHLBI-BDC-DMC-HV/hv_dataqc/sb_scripts/run_extracts.sh COPDGene
 
 # Pin to a specific DataRun (ensures source + harmonized use same data)
-./NHLBI-BDC-DMC-HV/hv-dataqc/sb_scripts/run_extracts.sh COPDGene --datarun DataRun_20260412_1830
+./NHLBI-BDC-DMC-HV/hv_dataqc/sb_scripts/run_extracts.sh COPDGene --datarun DataRun_20260412_1830
 
 # List available DataRuns for a cohort
-./NHLBI-BDC-DMC-HV/hv-dataqc/sb_scripts/run_extracts.sh COPDGene --list-dataruns
+./NHLBI-BDC-DMC-HV/hv_dataqc/sb_scripts/run_extracts.sh COPDGene --list-dataruns
 ```
 
 Output goes to `/sbgenomics/workspace/QC-output-files/<COHORT>/` with
@@ -83,13 +83,13 @@ If you need more control (e.g., a custom output dir):
 
 ```bash
 # Source extract
-uv run python NHLBI-BDC-DMC-HV/hv-dataqc/extract-source/extract_source_summaries.py \
+uv run python NHLBI-BDC-DMC-HV/hv_dataqc/extract_source/extract_source_summaries.py \
     --cohort COPDGene \
     --source-root /sbgenomics/project-files/PilotParentStudies_NoDRS/COPDGene \
     --output-dir /sbgenomics/workspace/QC-output-files/COPDGene
 
 # Harmonized extract (use --mapped-data-dirs to avoid OOM)
-uv run python NHLBI-BDC-DMC-HV/hv-dataqc/extract-harmonized/extract_harmonized_summaries.py \
+uv run python NHLBI-BDC-DMC-HV/hv_dataqc/extract_harmonized/extract_harmonized_summaries.py \
     --cohort COPDGene \
     --mapped-data-dirs \
       /sbgenomics/project-files/DataRun_.../DMC_copdgene_..._c1_.../mapped-data \

@@ -16,7 +16,7 @@ fi
 mkdir -p ../local_output
 echo "Unpacking: $TGZ"
 tar xzf "$TGZ" -C ../local_output/
-echo "Unpacked to hv-dataqc/local_output/"
+echo "Unpacked to hv_dataqc/local_output/"
 echo
 echo "Contents:"
 ls ../local_output/latest_source/ ../local_output/latest_harmonized/ 2>/dev/null || true

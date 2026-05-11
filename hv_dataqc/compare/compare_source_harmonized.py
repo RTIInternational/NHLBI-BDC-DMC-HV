@@ -49,11 +49,7 @@ from xml.etree import ElementTree as ET
 
 import yaml
 
-_HV_DATAQC_ROOT = Path(__file__).resolve().parents[1]
-if str(_HV_DATAQC_ROOT) not in sys.path:
-    sys.path.insert(0, str(_HV_DATAQC_ROOT))
-
-from hv_dataqc_common import (  # noqa: E402
+from hv_dataqc.hv_dataqc_common import (
     canonical_phv_id,
     json_safe,
     load_phv_name_map as _shared_load_phv_name_map,

@@ -1,7 +1,7 @@
 # compare — Source vs. Harmonized Comparison Engine
 
-Compares aggregate JSON summaries produced by `extract-source/` and
-`extract-harmonized/`. Runs checks C1-C12 and produces a Markdown + JSON
+Compares aggregate JSON summaries produced by `extract_source/` and
+`extract_harmonized/`. Runs checks C1-C12 and produces a Markdown + JSON
 report. Runs **outside the enclave** — no participant-level data.
 
 Re-run as often as needed as HV YAMLs evolve. Only the two JSON summary files
@@ -54,7 +54,7 @@ python compare_source_harmonized.py \
 | `--harmonized JSON` | Yes | Harmonized summary JSON from extract_harmonized_summaries.py |
 | `--cohort NAME` | Yes | Cohort name (used in report title) |
 | `--yaml-dir DIR` | Recommended | HV transform directory for YAML-driven crosswalk. Without this, C2–C7/C9 skip. |
-| `--cache-dir DIR` | **Required when --yaml-dir is set** | dbGaP cache dir for PHV→name resolution (`pheno_variable_summaries/*.data_dict.xml`). The tool exits with an error if `--yaml-dir` is supplied without this — without it the crosswalk would be empty. Build the cache with `../cache-fetcher/fetch_dbgap_cache.py`. |
+| `--cache-dir DIR` | **Required when --yaml-dir is set** | dbGaP cache dir for PHV→name resolution (`pheno_variable_summaries/*.data_dict.xml`). The tool exits with an error if `--yaml-dir` is supplied without this — without it the crosswalk would be empty. Build the cache with `../cache_fetcher/fetch_dbgap_cache.py`. |
 | `--clinical-ranges YAML` | No | Clinical ranges file (default: `config/clinical_ranges.yaml`) |
 | `--thresholds YAML` | No | Statistical thresholds file (default: `config/thresholds.yaml`) |
 | `--report FILE` | No | Markdown report output (default: `<cohort>_comparison_report.md`) |

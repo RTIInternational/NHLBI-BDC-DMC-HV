@@ -50,13 +50,13 @@ YAML_DIR="$(find "$HV/priority_variables_transform" -maxdepth 1 -type d -iname "
 
 if [ -z "$YAML_DIR" ]; then
     echo "WARNING: No YAML dir found for $COHORT in priority_variables_transform/. Running without crosswalk." >&2
-    uv run python "$HV/hv-dataqc/compare/compare_source_harmonized.py" \
+    (cd "$HV" && uv run python -m hv_dataqc.compare.compare_source_harmonized \
         --source "$SOURCE" \
         --harmonized "$HARMONIZED" \
         --cohort "$COHORT" \
         --report "$REPORT" \
         --json-report "$JSON_REPORT" \
-        "$@"
+        "$@")
 else
     CACHE_DIR="$OUT/dbgap-cache/$COHORT_LOWER"
     if [ ! -d "$CACHE_DIR" ]; then
@@ -64,7 +64,7 @@ else
         echo "  Run: ./fetch_cache.sh --cohort $COHORT_LOWER" >&2
         exit 1
     fi
-    uv run python "$HV/hv-dataqc/compare/compare_source_harmonized.py" \
+    (cd "$HV" && uv run python -m hv_dataqc.compare.compare_source_harmonized \
         --source "$SOURCE" \
         --harmonized "$HARMONIZED" \
         --cohort "$COHORT" \
@@ -72,7 +72,7 @@ else
         --cache-dir "$CACHE_DIR" \
         --report "$REPORT" \
         --json-report "$JSON_REPORT" \
-        "$@"
+        "$@")
 fi
 
 echo

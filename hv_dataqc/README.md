@@ -10,10 +10,10 @@ ranges, visit structure, and cross-variable consistency.
 
 | Folder | Script | Purpose | Runs where |
 |--------|--------|---------|-----------|
-| `extract-source/` | `extract_source_summaries.py` | Summarize raw dbGaP TSVs | **Inside enclave** |
-| `extract-harmonized/` | `extract_harmonized_summaries.py` | Summarize dm-bip harmonized output | **Inside enclave** |
+| `extract_source/` | `extract_source_summaries.py` | Summarize raw dbGaP TSVs | **Inside enclave** |
+| `extract_harmonized/` | `extract_harmonized_summaries.py` | Summarize dm-bip harmonized output | **Inside enclave** |
 | `compare/` | `compare_source_harmonized.py` | Compare both summaries; run checks C1-C11 | Outside enclave |
-| `cache-fetcher/` | `fetch_dbgap_cache.py` | Download dbGaP data dictionaries for PHV resolution | Outside enclave |
+| `cache_fetcher/` | `fetch_dbgap_cache.py` | Download dbGaP data dictionaries for PHV resolution | Outside enclave |
 | `sb_scripts/` | Runner/analysis scripts | Ad-hoc scripts for enclave work | **Inside enclave** |
 | `local_scripts/` | `compare.sh`, `fetch_cache.sh` | Convenience wrappers (auto-resolve paths) | Outside enclave |
 | `sb_output/` | *(gitignored)* | Output produced on Seven Bridges | **Inside enclave** |
@@ -40,7 +40,7 @@ ranges, visit structure, and cross-variable consistency.
 
 4. **dbGaP cache is required for YAML mode.** When `--yaml-dir` is supplied, a
    local dbGaP cache is also required (`--cache-dir`) to resolve PHV accessions to
-   source column names. Use `cache-fetcher/fetch_dbgap_cache.py` to build the cache
+   source column names. Use `cache_fetcher/fetch_dbgap_cache.py` to build the cache
    (deps: `requests`, `pyyaml`; one command per cohort, idempotent on re-runs).
 
 ---
@@ -53,8 +53,8 @@ ranges, visit structure, and cross-variable consistency.
 ```bash
 cd <path-to>/NHLBI-BDC-DMC-HV
 git pull
-source hv-dataqc/sb_scripts/setup.sh
-hv-dataqc/sb_scripts/run_extracts.sh COPDGene
+source hv_dataqc/sb_scripts/setup.sh
+hv_dataqc/sb_scripts/run_extracts.sh COPDGene
 # → auto-discovers DataRun, runs both extracts, packages output.tgz for download
 ```
 
@@ -76,7 +76,7 @@ git pull origin <feature branch name>
 **Locally** (fetch cache, unpack, compare):
 ```bash
 git pull
-cd hv-dataqc/local_scripts/
+cd hv_dataqc/local_scripts/
 ./fetch_cache.sh copdgene                  # once per cohort
 ./unpack.sh                                # unpacks ~/Downloads/dataqc_*_output.tgz
 ./compare.sh COPDGene                      # auto-finds latest JSONs, YAML dir, cache
@@ -163,7 +163,7 @@ Recent comparison report details:
 ```
 pandas >= 1.3
 pyyaml >= 5.4
-requests >= 2.25  # cache-fetcher only
+requests >= 2.25  # cache_fetcher only
 ```
 
 Install: `uv sync` (from repo root)

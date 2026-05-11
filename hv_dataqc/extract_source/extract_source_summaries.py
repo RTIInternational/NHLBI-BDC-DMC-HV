@@ -47,11 +47,7 @@ from xml.etree import ElementTree as ET
 import pandas as pd
 import yaml
 
-_HV_DATAQC_ROOT = Path(__file__).resolve().parents[1]
-if str(_HV_DATAQC_ROOT) not in sys.path:
-    sys.path.insert(0, str(_HV_DATAQC_ROOT))
-
-from hv_dataqc_common import (  # noqa: E402
+from hv_dataqc.hv_dataqc_common import (
     canonical_phv_id,
     categorical_stats,
     continuous_stats,
@@ -78,7 +74,7 @@ log.propagate = False
 
 _file_handler: logging.FileHandler | None = None
 
-_DEFAULT_THRESHOLDS_PATH = _HV_DATAQC_ROOT / "compare" / "config" / "thresholds.yaml"
+_DEFAULT_THRESHOLDS_PATH = Path(__file__).resolve().parents[1] / "compare" / "config" / "thresholds.yaml"
 
 
 def _canonical_phv_id(raw_id: str) -> str:

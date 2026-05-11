@@ -397,7 +397,7 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         self.assertEqual(result.status, "PASS")
 
     def test_source_extract_config_loads_infer_type_threshold(self) -> None:
-        module_path = HV_DATAQC_DIR / "extract-source" / "extract_source_summaries.py"
+        module_path = HV_DATAQC_DIR / "extract_source" / "extract_source_summaries.py"
         spec = importlib.util.spec_from_file_location("extract_source_summaries", module_path)
         self.assertIsNotNone(spec)
         self.assertIsNotNone(spec.loader)
@@ -412,7 +412,7 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         self.assertEqual(loaded["source_extract"]["infer_type_distinct_threshold"], 7)
 
     def test_source_extract_type_map_loads_phv_and_variable_name_keys(self) -> None:
-        module_path = HV_DATAQC_DIR / "extract-source" / "extract_source_summaries.py"
+        module_path = HV_DATAQC_DIR / "extract_source" / "extract_source_summaries.py"
         spec = importlib.util.spec_from_file_location("extract_source_summaries_types", module_path)
         self.assertIsNotNone(spec)
         self.assertIsNotNone(spec.loader)
@@ -439,7 +439,7 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         self.assertEqual(type_map["status_code"], "categorical")
 
     def test_harmonized_extract_config_overrides_demography_columns(self) -> None:
-        module_path = HV_DATAQC_DIR / "extract-harmonized" / "extract_harmonized_summaries.py"
+        module_path = HV_DATAQC_DIR / "extract_harmonized" / "extract_harmonized_summaries.py"
         spec = importlib.util.spec_from_file_location("extract_harmonized_summaries_cfg", module_path)
         self.assertIsNotNone(spec)
         self.assertIsNotNone(spec.loader)
@@ -860,7 +860,7 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
     def test_process_conditions_marks_missing_status_assumption(self) -> None:
         import pandas as pd
 
-        module_path = HV_DATAQC_DIR / "extract-harmonized" / "extract_harmonized_summaries.py"
+        module_path = HV_DATAQC_DIR / "extract_harmonized" / "extract_harmonized_summaries.py"
         spec = importlib.util.spec_from_file_location("extract_harmonized_summaries", module_path)
         self.assertIsNotNone(spec)
         self.assertIsNotNone(spec.loader)

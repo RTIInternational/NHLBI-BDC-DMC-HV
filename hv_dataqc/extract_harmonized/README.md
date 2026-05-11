@@ -1,4 +1,4 @@
-# extract-harmonized — dm-bip Harmonized Summarizer
+# extract_harmonized — dm-bip Harmonized Summarizer
 
 Extracts aggregate statistics from dm-bip harmonized output TSV files (entity
 files produced by the pipeline) and exports an aggregate-only JSON artifact.
@@ -175,4 +175,4 @@ Re-running creates a new dated directory and updates the symlink.
 pandas >= 1.3
 ```
 
-No YAML dependency. No dependency on any other hv-dataqc script.
+No YAML dependency. No dependency on any other hv_dataqc script.

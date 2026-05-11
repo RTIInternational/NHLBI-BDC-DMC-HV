@@ -1,4 +1,4 @@
-# extract-source — Raw dbGaP TSV Summarizer
+# extract_source — Raw dbGaP TSV Summarizer
 
 Extracts aggregate statistics from raw dbGaP phenotype TSV files and exports
 an aggregate-only JSON artifact. Run this **inside the data enclave**.
@@ -137,4 +137,4 @@ The following column patterns are always skipped (never summarized):
 pandas >= 1.3
 ```
 
-No YAML dependency. No dependency on any other hv-dataqc script.
+No YAML dependency. No dependency on any other hv_dataqc script.

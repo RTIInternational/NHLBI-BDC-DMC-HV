@@ -4,7 +4,7 @@ Convenience wrappers that run **outside the enclave** (your laptop).
 They resolve repo paths automatically so commands are copy-paste ready.
 
 **Assumed working directory:** Run these scripts from within
-`NHLBI-BDC-DMC-HV/hv-dataqc/local_scripts/`. The scripts derive the
+`NHLBI-BDC-DMC-HV/hv_dataqc/local_scripts/`. The scripts derive the
 repo root from their own location, so no hardcoded paths are needed.
 
 ## Scripts
@@ -39,7 +39,7 @@ Automatically locates the YAML transform dir and dbGaP cache.
 
 ### `fetch_cache.sh <cohort> [flags...]`
 
-Wrapper for `cache-fetcher/fetch_dbgap_cache.py` that writes to
+Wrapper for `cache_fetcher/fetch_dbgap_cache.py` that writes to
 `local_output/dbgap-cache/` instead of the default location. Extra
 flags are forwarded.
 

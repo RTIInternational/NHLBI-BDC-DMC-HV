@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Convenience wrapper for cache-fetcher with output to local_output/dbgap-cache.
+# Convenience wrapper for cache_fetcher with output to local_output/dbgap-cache.
 #
 # Usage:
 #   ./fetch_cache.sh copdgene              # positional cohort name
@@ -16,6 +16,7 @@ if [ $# -ge 1 ] && [[ "$1" != -* ]]; then
 fi
 
 mkdir -p ../local_output/dbgap-cache
-uv run python "$HV/hv-dataqc/cache-fetcher/fetch_dbgap_cache.py" \
-    --output-dir ../local_output/dbgap-cache \
-    "${ARGS[@]}"
+OUTDIR="$(cd ../local_output/dbgap-cache && pwd)"
+(cd "$HV" && uv run python -m hv_dataqc.cache_fetcher.fetch_dbgap_cache \
+    --output-dir "$OUTDIR" \
+    "${ARGS[@]}")

@@ -52,11 +52,7 @@ from typing import Any
 import pandas as pd
 import yaml
 
-_HV_DATAQC_ROOT = Path(__file__).resolve().parents[1]
-if str(_HV_DATAQC_ROOT) not in sys.path:
-    sys.path.insert(0, str(_HV_DATAQC_ROOT))
-
-from hv_dataqc_common import (  # noqa: E402
+from hv_dataqc.hv_dataqc_common import (
     categorical_stats,
     continuous_stats,
     write_json_atomic,
