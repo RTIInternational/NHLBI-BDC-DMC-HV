@@ -9,7 +9,8 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 HV="$(cd ../.. && pwd)"
-OUT=../local_output
+OUT="$(cd .. && pwd)/local_output"
+mkdir -p "$OUT"
 
 COHORT="${1:?Usage: ./compare.sh <cohort> [extra flags...]}"
 shift
