@@ -37,31 +37,15 @@ USAGE:
 from __future__ import annotations
 
 import argparse
-import ast
 import json
-import math
-import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
-from xml.etree import ElementTree as ET
 
 import yaml
 
-from hv_dataqc.hv_dataqc_common import (
-    canonical_phv_id,
-    json_safe,
-    load_phv_name_map as _shared_load_phv_name_map,
-    normalize_category_key,
-)
-from hv_dataqc.compare._common import (
-    CheckResult,
-    CrosswalkBuildError,
-    fmt_cmp as _cmp,
-    fmt_cmp_stat as _cmp_stat,
-    fmt_n as _n,
-)
+from hv_dataqc.hv_dataqc_common import json_safe
+from hv_dataqc.compare._common import CheckResult, CrosswalkBuildError
 from hv_dataqc.compare.crosswalk import (  # noqa: F401  (many symbols re-exported for tests)
     # Used internally by checks and main():
     _codes_are_numeric_or_sentinel,
@@ -119,7 +103,7 @@ from hv_dataqc.compare.report_io import (
 # Default clinical ranges config (relative to this script)
 _CONFIG_DIR = Path(__file__).resolve().parent / "config"
 
-_canonical_phv_id = canonical_phv_id
+# Backwards-compatible alias for tests that import _json_safe by name.
 _json_safe = json_safe
 
 
