@@ -313,9 +313,6 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--json-report", metavar="FILE",
                    help="JSON report output path "
                         "(default: <cohort>_comparison_results.json)")
-    p.add_argument("--show-unmatched-source", action="store_true", default=False,
-                   help="Include INFO rows for source variables not present in the harmonized "
-                        "output (default: hidden; only a summary count is shown).")
     return p.parse_args(argv)
 
 
