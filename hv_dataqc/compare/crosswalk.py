@@ -42,7 +42,7 @@ from xml.etree import ElementTree as ET
 
 import yaml
 
-from hv_dataqc.compare._common import CrosswalkBuildError
+from hv_dataqc.compare._common import AmbiguousColumnError, CrosswalkBuildError
 from hv_dataqc.hv_dataqc_common import (
     canonical_phv_id,
     load_phv_name_map as _shared_load_phv_name_map,
@@ -79,23 +79,26 @@ def _pick_single_pht_summary(
     variables_by_name: dict[str, dict[str, dict]],
     col: str,
 ) -> dict | None:
-    """Pick one PHT's summary for a column when caller can't disambiguate.
+    """Pick a single PHT's summary for a column when caller can't disambiguate.
 
-    Current behavior: return the first PHT's summary (Python dict insertion
-    order, matching the extractor's emission order). This preserves the
-    legacy "first-PHT-wins" semantics from when the source extractor emitted
-    a flat ``variables`` dict with the same rule.
+    - Returns the summary when the column appears in exactly one PHT.
+    - Returns None when the column is absent.
+    - Raises AmbiguousColumnError when the column appears in 2+ PHTs.
 
-    Step 5 of the Phase B refactor will replace this with a per-variable
-    FAIL CheckResult that lists all contributing PHTs so reviewers can fix
-    the YAML/cache rather than silently accepting one PHT's stats.
+    This helper exists because some YAML/cache edge cases (e.g., a PHV not
+    present in the dbGaP cache, or a YAML referencing a column under a PHT
+    different from where the extractor recorded it) leave the crosswalk
+    without an authoritative PHT for a source column. The caller is expected
+    to catch AmbiguousColumnError and surface it as a per-variable FAIL so
+    operators can fix the YAML/cache (or, eventually, opt into multi-PHT
+    aggregation for columns that legitimately pool).
     """
     pht_map = variables_by_name.get(col)
     if not pht_map:
         return None
-    # First inserted PHT wins.
-    first_pht = next(iter(pht_map))
-    return pht_map[first_pht]
+    if len(pht_map) > 1:
+        raise AmbiguousColumnError(col, pht_map)
+    return next(iter(pht_map.values()))
 
 
 # ---------------------------------------------------------------------------
@@ -1820,6 +1823,7 @@ def build_variable_crosswalk(
         source_keys_used: list[str] = []
         phv_ids: list[str] = []
         summaries_by_phv: dict[str, dict] = {}
+        ambiguous_columns: list[dict] = []  # {col, phts, role: "source"|"value_expr"}
 
         for entry in entries:
             src_key = entry["source_key"]
@@ -1862,12 +1866,21 @@ def build_variable_crosswalk(
                         resolved_pht = pht_id
 
             if resolved_summary is None:
-                # No PHV→PHT route worked. Fall back to "first PHT wins"
-                # by column name. Step 5 will replace this with a per-variable
-                # FAIL when the column appears in multiple PHTs.
-                resolved_summary = _pick_single_pht_summary(
-                    variables_by_name, src_key
-                )
+                # No PHV→PHT route worked. Try name-based lookup, but if the
+                # column appears in multiple PHTs we can't safely pick one —
+                # record the ambiguity and skip the summary so the caller
+                # surfaces a per-variable FAIL.
+                try:
+                    resolved_summary = _pick_single_pht_summary(
+                        variables_by_name, src_key
+                    )
+                except AmbiguousColumnError as exc:
+                    ambiguous_columns.append({
+                        "col": exc.col,
+                        "phts": sorted(exc.pht_map),
+                        "role": "source",
+                        "phv_id": phv_id or None,
+                    })
 
             if resolved_summary is not None:
                 entry["_source_summary"] = dict(resolved_summary)
@@ -1900,9 +1913,18 @@ def build_variable_crosswalk(
                                 expr_summary = v
                                 break
                 if expr_summary is None:
-                    expr_summary = _pick_single_pht_summary(
-                        variables_by_name, expr_src_key
-                    )
+                    try:
+                        expr_summary = _pick_single_pht_summary(
+                            variables_by_name, expr_src_key
+                        )
+                    except AmbiguousColumnError as exc:
+                        ambiguous_columns.append({
+                            "col": exc.col,
+                            "phts": sorted(exc.pht_map),
+                            "role": "value_expr",
+                            "phv_id": expr_phv,
+                        })
+                        continue
                 if expr_summary is not None:
                     summaries_by_phv[expr_phv] = dict(expr_summary)
 
@@ -1948,6 +1970,8 @@ def build_variable_crosswalk(
         merged["_source_phts"] = source_phts
         merged["_source_keys"] = source_keys_used
         merged["_phv_ids"] = list(dict.fromkeys(phv_ids))
+        if ambiguous_columns:
+            merged["_ambiguous_columns"] = ambiguous_columns
         merged["_yaml_entries"] = [
             {
                 "yaml_file": e.get("yaml_file"),

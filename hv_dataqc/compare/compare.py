@@ -44,7 +44,11 @@ from pathlib import Path
 import yaml
 
 from hv_dataqc.hv_dataqc_common import json_safe
-from hv_dataqc.compare._common import CheckResult, CrosswalkBuildError
+from hv_dataqc.compare._common import (
+    AmbiguousColumnError,
+    CheckResult,
+    CrosswalkBuildError,
+)
 from hv_dataqc.compare.crosswalk import (  # noqa: F401  (many symbols re-exported for tests)
     # Used internally by checks and main():
     _build_variables_by_name,
@@ -156,6 +160,60 @@ def validate_clinical_ranges_config(clinical_ranges: dict) -> list[str]:
 
     return warnings
 
+
+def _ambiguous_columns_fail(
+    match: dict,
+    ambiguous: list[dict],
+    variables_by_name: dict[str, dict[str, dict]],
+) -> CheckResult:
+    """Build a FAIL CheckResult describing one or more ambiguous column lookups.
+
+    A column is ambiguous when it appears in multiple source PHTs and the
+    YAML/cache route couldn't pin it to one. The FAIL message and detail
+    give the operator enough information to decide whether the YAML/cache
+    needs fixing, or whether the column should be aggregated across PHTs
+    (the deferred option B in the Phase B plan).
+    """
+    harmonized_key = match.get("harmonized_key", "?")
+    parts: list[str] = []
+    detail: dict = {
+        "harmonized_key": harmonized_key,
+        "yaml_file": match.get("yaml_file"),
+        "ambiguous_columns": [],
+    }
+    for amb in ambiguous:
+        col = amb["col"]
+        phts = amb["phts"]
+        role = amb.get("role", "source")
+        phv = amb.get("phv_id") or "?"
+        # Capture per-PHT stat summary (n_valid, mean, sd) so a reviewer can
+        # see whether the PHTs disagree materially or just need pooling.
+        pht_map = variables_by_name.get(col, {})
+        per_pht_stats = {
+            pht: {
+                k: v for k, v in (pht_map.get(pht) or {}).items()
+                if k in ("n_valid", "n_total", "mean", "sd", "n_distinct", "_pht")
+            }
+            for pht in phts
+        }
+        detail["ambiguous_columns"].append({
+            "col": col,
+            "role": role,
+            "phv_id": phv,
+            "phts": phts,
+            "per_pht_stats": per_pht_stats,
+        })
+        parts.append(
+            f"column {col!r} ({role}; phv={phv}) appears in {len(phts)} PHTs: "
+            f"{', '.join(phts)}"
+        )
+    msg = (
+        "Ambiguous source-column lookup; could not pick a single PHT. "
+        + " | ".join(parts)
+        + ". Fix the YAML to disambiguate the PHV→PHT mapping, "
+        "or add PHT aggregation if these summaries should be pooled."
+    )
+    return CheckResult("CROSSWALK", harmonized_key, "FAIL", msg, detail)
 
 
 # ---------------------------------------------------------------------------
@@ -434,11 +492,34 @@ def main(argv: list[str] | None = None) -> None:
     for match in crosswalk:
         src_key = match["source_key"]
         harmonized_key = match["harmonized_key"]
+
+        # If the crosswalk recorded an ambiguous column lookup (column appears
+        # in multiple PHTs and the YAML/cache couldn't pick one), surface a
+        # FAIL with diagnostic detail and skip the rest of the checks for this
+        # match — the source summary would be unreliable.
+        ambiguous = match.get("_ambiguous_columns") or []
+        if ambiguous:
+            all_results.append(_ambiguous_columns_fail(
+                match, ambiguous, variables_by_name
+            ))
+            continue
+
         # Use pooled per-PHT stats from the match when present; fall back
-        # to picking one PHT's summary by column name (legacy first-PHT-wins).
-        src_var = match.get("_resolved_src") or _pick_single_pht_summary(
-            variables_by_name, src_key
-        ) or {}
+        # to picking the only PHT's summary by column name. If the column
+        # is itself ambiguous, AmbiguousColumnError → caught above (the
+        # crosswalk already recorded it on the match).
+        try:
+            src_var = match.get("_resolved_src") or _pick_single_pht_summary(
+                variables_by_name, src_key
+            ) or {}
+        except AmbiguousColumnError as exc:
+            all_results.append(_ambiguous_columns_fail(
+                match,
+                [{"col": exc.col, "phts": sorted(exc.pht_map),
+                  "role": "source", "phv_id": match.get("phv_id")}],
+                variables_by_name,
+            ))
+            continue
         harmonized_var = harmonized_vars[harmonized_key]
 
         # Determine the expected comparison type from source/dbGaP/YAML intent.

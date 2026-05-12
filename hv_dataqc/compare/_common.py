@@ -41,6 +41,24 @@ class CrosswalkBuildError(RuntimeError):
     """Raised when a YAML-driven variable crosswalk cannot be built safely."""
 
 
+class AmbiguousColumnError(RuntimeError):
+    """Raised when a source column lookup can't be disambiguated across PHTs.
+
+    Carries the column name and a {pht: summary} dict so callers can surface
+    a per-variable FAIL CheckResult with enough context for an operator to
+    decide between fixing the YAML/cache or implementing PHT aggregation
+    (option B in the original Phase B plan).
+    """
+
+    def __init__(self, col: str, pht_map: dict[str, dict]) -> None:
+        super().__init__(
+            f"Source column {col!r} appears in {len(pht_map)} PHTs and the "
+            f"YAML+cache could not resolve which one to use: {sorted(pht_map)}"
+        )
+        self.col = col
+        self.pht_map = pht_map
+
+
 def md_escape(value: Any) -> str:
     """Escape values embedded in Markdown prose/tables."""
     text = str(value).replace("\r", " ").replace("\n", " ")

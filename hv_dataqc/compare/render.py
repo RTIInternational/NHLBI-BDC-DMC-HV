@@ -128,6 +128,7 @@ def generate_markdown_report(
                 lines.append("")
 
     check_names = {
+        "CROSSWALK": "Crosswalk Resolution Failures",
         "C1": "N Preservation", "C2": "N Loss Detection",
         "C3": "Missing Value Accounting", "C4": "Mean Preservation",
         "C5": "Mean After Conversion", "C6": "SD Preservation",
@@ -180,6 +181,16 @@ def generate_markdown_report(
         return sub
 
     _check_descriptions = {
+        "CROSSWALK": (
+            "Source-column lookups that the YAML/cache could not resolve to a "
+            "single PHT. When a column name appears in multiple source tables "
+            "and the YAML doesn't pin the PHV→PHT mapping, the comparison "
+            "can't pick one PHT's stats safely — so those variables are "
+            "marked FAIL here and skipped from the per-check matrix below. "
+            "Resolve by fixing the YAML's `populated_from` to disambiguate, "
+            "or by adding multi-PHT aggregation when the source data truly "
+            "should be pooled."
+        ),
         "C1": (
             "Checks whether the total number of unique participants is preserved "
             "from source to harmonized. A small loss may indicate that the pipeline's "
@@ -263,7 +274,7 @@ def generate_markdown_report(
         sub.append("</details>")
         return sub
 
-    for check_id in ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12"]:
+    for check_id in ["CROSSWALK", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12"]:
         check_results = [r for r in results if r.check_id == check_id]
         if not check_results:
             continue

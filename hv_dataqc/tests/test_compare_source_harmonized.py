@@ -54,6 +54,11 @@ from hv_dataqc.compare.report_io import (  # noqa: E402
     load_thresholds,
     write_text_atomic as _write_text_atomic,
 )
+from hv_dataqc.compare._common import AmbiguousColumnError  # noqa: E402
+from hv_dataqc.compare.crosswalk import (  # noqa: E402
+    _build_variables_by_name,
+    _pick_single_pht_summary,
+)
 
 
 class CompareSourceHarmonizedTests(unittest.TestCase):
@@ -881,6 +886,41 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         self.assertTrue(
             variables["condition_MONDO:1"]["condition_status_missing_assumption"]
         )
+
+
+class AmbiguousColumnTests(unittest.TestCase):
+    """Tests for the variables_by_name lookup and ambiguity handling."""
+
+    def test_build_variables_by_name_groups_by_column(self) -> None:
+        vbp = {
+            "pht1": {"age": {"mean": 50}, "sex": {"n_valid": 100}},
+            "pht2": {"age": {"mean": 60}},
+        }
+        vbn = _build_variables_by_name(vbp)
+        self.assertEqual(set(vbn), {"age", "sex"})
+        self.assertEqual(set(vbn["age"]), {"pht1", "pht2"})
+        self.assertEqual(vbn["age"]["pht1"]["mean"], 50)
+
+    def test_pick_single_pht_summary_returns_only_pht(self) -> None:
+        vbn = {"age": {"pht1": {"mean": 50, "n_valid": 100}}}
+        result = _pick_single_pht_summary(vbn, "age")
+        self.assertEqual(result, {"mean": 50, "n_valid": 100})
+
+    def test_pick_single_pht_summary_returns_none_for_missing(self) -> None:
+        vbn = {"age": {"pht1": {"mean": 50}}}
+        self.assertIsNone(_pick_single_pht_summary(vbn, "weight"))
+
+    def test_pick_single_pht_summary_raises_on_multi_pht(self) -> None:
+        vbn = {
+            "age": {
+                "pht1": {"mean": 50, "n_valid": 100},
+                "pht2": {"mean": 60, "n_valid": 200},
+            }
+        }
+        with self.assertRaises(AmbiguousColumnError) as ctx:
+            _pick_single_pht_summary(vbn, "age")
+        self.assertEqual(ctx.exception.col, "age")
+        self.assertEqual(set(ctx.exception.pht_map), {"pht1", "pht2"})
 
 
 class DedupCheckResultsTests(unittest.TestCase):
