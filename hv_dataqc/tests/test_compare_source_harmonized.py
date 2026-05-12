@@ -853,7 +853,7 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
 
             with self.assertRaises(CrosswalkBuildError):
                 build_variable_crosswalk(
-                    source_vars={},
+                    variables_by_name={},
                     harmonized_vars={},
                     yaml_dir=yaml_dir,
                     cache_dir=cache_dir,
@@ -1323,12 +1323,14 @@ class HarmonizedKeyNormalizationTests(unittest.TestCase):
                 encoding="utf-8",
             )
 
-            source_vars = {"FEV1_pre": {"type": "continuous", "n_valid": 100, "n_total": 100}}
+            variables_by_name = {
+                "FEV1_pre": {"pht000001": {"type": "continuous", "n_valid": 100, "n_total": 100}},
+            }
             # Harmonized extract has bare key — no |method_type suffix
             harmonized_vars = {"measurement_OMOP:4241837": {"n_valid": 100}}
 
             matches = build_variable_crosswalk(
-                source_vars=source_vars,
+                variables_by_name=variables_by_name,
                 harmonized_vars=harmonized_vars,
                 yaml_dir=yaml_dir,
                 cache_dir=tmp_path,
@@ -1392,11 +1394,13 @@ class HarmonizedKeyNormalizationTests(unittest.TestCase):
                 encoding="utf-8",
             )
 
-            source_vars = {"sysBP": {"type": "continuous", "n_valid": 100, "n_total": 100}}
+            variables_by_name = {
+                "sysBP": {"pht000001": {"type": "continuous", "n_valid": 100, "n_total": 100}},
+            }
             raw_harmonized_vars = {"measurement_('OMOP:4152194',)": {"n_valid": 100}}
 
             matches = build_variable_crosswalk(
-                source_vars=source_vars,
+                variables_by_name=variables_by_name,
                 harmonized_vars=_normalize_harmonized_vars(raw_harmonized_vars),
                 yaml_dir=yaml_dir,
                 cache_dir=tmp_path,

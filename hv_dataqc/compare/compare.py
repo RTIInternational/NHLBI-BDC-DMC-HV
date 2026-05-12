@@ -47,11 +47,13 @@ from hv_dataqc.hv_dataqc_common import json_safe
 from hv_dataqc.compare._common import CheckResult, CrosswalkBuildError
 from hv_dataqc.compare.crosswalk import (  # noqa: F401  (many symbols re-exported for tests)
     # Used internally by checks and main():
+    _build_variables_by_name,
     _codes_are_numeric_or_sentinel,
     _distribution_count_map,
     _is_null_sentinel_code,
     _normalize_code,
     _normalize_harmonized_vars,
+    _pick_single_pht_summary,
     build_variable_crosswalk,
     determine_comparison_type,
     load_phv_type_map,
@@ -106,27 +108,6 @@ _CONFIG_DIR = Path(__file__).resolve().parent / "config"
 _json_safe = json_safe
 
 
-def _build_flat_variables(variables_by_pht: dict[str, dict]) -> dict[str, dict]:
-    """Flatten variables_by_pht into a column-name-keyed dict.
-
-    First-PHT-wins collision rule: when the same column name appears in
-    multiple PHTs, the first PHT's entry claims the bare column name and
-    later PHTs get a ``pht.colname`` namespaced key. PHT iteration order is
-    the source-extract emission order (Python dict insertion order).
-
-    This replicates the legacy `variables` field that the source extractor
-    used to emit alongside `variables_by_pht` — we build it on the consumer
-    side now so the extract JSON no longer carries two parallel views of
-    the same data.
-    """
-    flat: dict[str, dict] = {}
-    for pht, pht_vars in variables_by_pht.items():
-        for col, summary in pht_vars.items():
-            if col in flat and flat[col].get("_pht") != pht:
-                flat[f"{pht}.{col}"] = summary
-            else:
-                flat[col] = summary
-    return flat
 
 
 def validate_clinical_ranges_config(clinical_ranges: dict) -> list[str]:
@@ -377,12 +358,14 @@ def main(argv: list[str] | None = None) -> None:
     with open(args.harmonized, "r", encoding="utf-8") as fh:
         harmonized: dict = json.load(fh)
 
-    source_vars = _build_flat_variables(source.get("variables_by_pht", {}))
+    variables_by_pht = source.get("variables_by_pht", {})
+    variables_by_name = _build_variables_by_name(variables_by_pht)
     harmonized_vars = _normalize_harmonized_vars(harmonized.get("variables", {}))
     source_meta = source.get("metadata", {})
     harmonized_meta = harmonized.get("metadata", {})
 
-    print(f"\nSource: {len(source_vars)} variables, "
+    print(f"\nSource: {len(variables_by_name)} variables across "
+          f"{len(variables_by_pht)} PHTs, "
           f"{source.get('total_participants', '?')} participants")
     print(f"Harmonized: {len(harmonized_vars)} variables, "
           f"{harmonized.get('total_participants', '?')} participants")
@@ -392,7 +375,7 @@ def main(argv: list[str] | None = None) -> None:
     yaml_diagnostics: dict = {}
     try:
         crosswalk = build_variable_crosswalk(
-            source_vars, harmonized_vars,
+            variables_by_name, harmonized_vars,
             yaml_dir=yaml_dir,
             cache_dir=cache_dir,
             source_doc=source,
@@ -451,8 +434,11 @@ def main(argv: list[str] | None = None) -> None:
     for match in crosswalk:
         src_key = match["source_key"]
         harmonized_key = match["harmonized_key"]
-        # Use per-PHT stats when available (eliminates multi-table inflation).
-        src_var = match.get("_resolved_src") or source_vars.get(src_key, {})
+        # Use pooled per-PHT stats from the match when present; fall back
+        # to picking one PHT's summary by column name (legacy first-PHT-wins).
+        src_var = match.get("_resolved_src") or _pick_single_pht_summary(
+            variables_by_name, src_key
+        ) or {}
         harmonized_var = harmonized_vars[harmonized_key]
 
         # Determine the expected comparison type from source/dbGaP/YAML intent.
@@ -562,13 +548,11 @@ def main(argv: list[str] | None = None) -> None:
     for m in crosswalk:
         if m.get("_source_keys"):
             matched_src.update(m["_source_keys"])
-            matched_src.update(m.get("_source_flat_keys") or [])
         else:
             matched_src.add(m["source_key"])
     matched_harmonized = {m["harmonized_key"] for m in crosswalk}
     _unmatched_src_keys = [
-        sk for sk in source_vars
-        if sk not in matched_src and "error" not in source_vars[sk]
+        col for col in variables_by_name if col not in matched_src
     ]
     if _unmatched_src_keys:
         count = len(_unmatched_src_keys)

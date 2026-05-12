@@ -51,6 +51,53 @@ from hv_dataqc.hv_dataqc_common import (
 
 _canonical_phv_id = canonical_phv_id
 
+
+# ---------------------------------------------------------------------------
+# Source-extract lookup helpers
+# ---------------------------------------------------------------------------
+
+def _build_variables_by_name(
+    variables_by_pht: dict[str, dict],
+) -> dict[str, dict[str, dict]]:
+    """Index the source extract by column name then PHT.
+
+    Returns ``{col_name: {pht: summary}}``. This is the canonical view used
+    when the crosswalk needs to look up a source column's stats by its bare
+    name and disambiguate across PHTs (multi-PHT longitudinal cohorts).
+
+    Distinct from ``variables_by_pht`` (the extractor's emission), which is
+    keyed PHT-first. Both views share the same underlying summary objects.
+    """
+    by_name: dict[str, dict[str, dict]] = {}
+    for pht, pht_vars in variables_by_pht.items():
+        for col, summary in pht_vars.items():
+            by_name.setdefault(col, {})[pht] = summary
+    return by_name
+
+
+def _pick_single_pht_summary(
+    variables_by_name: dict[str, dict[str, dict]],
+    col: str,
+) -> dict | None:
+    """Pick one PHT's summary for a column when caller can't disambiguate.
+
+    Current behavior: return the first PHT's summary (Python dict insertion
+    order, matching the extractor's emission order). This preserves the
+    legacy "first-PHT-wins" semantics from when the source extractor emitted
+    a flat ``variables`` dict with the same rule.
+
+    Step 5 of the Phase B refactor will replace this with a per-variable
+    FAIL CheckResult that lists all contributing PHTs so reviewers can fix
+    the YAML/cache rather than silently accepting one PHT's stats.
+    """
+    pht_map = variables_by_name.get(col)
+    if not pht_map:
+        return None
+    # First inserted PHT wins.
+    first_pht = next(iter(pht_map))
+    return pht_map[first_pht]
+
+
 # ---------------------------------------------------------------------------
 # PHV name map (from dbGaP data dict XML)
 # ---------------------------------------------------------------------------
@@ -1596,7 +1643,7 @@ def _aggregate_source_summaries(per_pht: list[dict]) -> dict:
 
 
 def build_variable_crosswalk(
-    source_vars: dict,
+    variables_by_name: dict[str, dict[str, dict]],
     harmonized_vars: dict,
     yaml_dir: Path,
     cache_dir: Path,
@@ -1667,10 +1714,10 @@ def build_variable_crosswalk(
         resolved_src_key: str | None = None
         if entry.get("is_static"):
             resolved_src_key = "__static__"
-        elif src_key in source_vars:
+        elif src_key in variables_by_name:
             resolved_src_key = src_key
         else:
-            for sk in source_vars:
+            for sk in variables_by_name:
                 if sk.upper() == src_key.upper():
                     resolved_src_key = sk
                     break
@@ -1771,7 +1818,6 @@ def build_variable_crosswalk(
         per_pht_summaries: list[dict] = []
         source_phts: list[str] = []
         source_keys_used: list[str] = []
-        source_flat_keys_used: list[str] = []
         phv_ids: list[str] = []
         summaries_by_phv: dict[str, dict] = {}
 
@@ -1816,8 +1862,12 @@ def build_variable_crosswalk(
                         resolved_pht = pht_id
 
             if resolved_summary is None:
-                # Fall back to the flat source_vars dict (first-PHT-wins).
-                resolved_summary = source_vars.get(src_key)
+                # No PHV→PHT route worked. Fall back to "first PHT wins"
+                # by column name. Step 5 will replace this with a per-variable
+                # FAIL when the column appears in multiple PHTs.
+                resolved_summary = _pick_single_pht_summary(
+                    variables_by_name, src_key
+                )
 
             if resolved_summary is not None:
                 entry["_source_summary"] = dict(resolved_summary)
@@ -1828,15 +1878,6 @@ def build_variable_crosswalk(
                     source_phts.append(resolved_pht)
                 if src_key not in source_keys_used:
                     source_keys_used.append(src_key)
-                if src_key in source_vars and src_key not in source_flat_keys_used:
-                    source_flat_keys_used.append(src_key)
-                if resolved_pht:
-                    namespaced_key = f"{resolved_pht}.{src_key.lower()}"
-                    if (
-                        namespaced_key in source_vars
-                        and namespaced_key not in source_flat_keys_used
-                    ):
-                        source_flat_keys_used.append(namespaced_key)
 
             # Also resolve every PHV referenced in value expressions.  This
             # lets the compare derive an expected categorical distribution
@@ -1859,7 +1900,9 @@ def build_variable_crosswalk(
                                 expr_summary = v
                                 break
                 if expr_summary is None:
-                    expr_summary = source_vars.get(expr_src_key)
+                    expr_summary = _pick_single_pht_summary(
+                        variables_by_name, expr_src_key
+                    )
                 if expr_summary is not None:
                     summaries_by_phv[expr_phv] = dict(expr_summary)
 
@@ -1904,7 +1947,6 @@ def build_variable_crosswalk(
         merged["_per_pht_src"] = per_pht_summaries
         merged["_source_phts"] = source_phts
         merged["_source_keys"] = source_keys_used
-        merged["_source_flat_keys"] = source_flat_keys_used
         merged["_phv_ids"] = list(dict.fromkeys(phv_ids))
         merged["_yaml_entries"] = [
             {
