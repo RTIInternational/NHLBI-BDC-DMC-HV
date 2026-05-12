@@ -268,6 +268,16 @@ Candidates for inline PHV inclusion:
 Implementation: each `CheckResult.detail` should carry the resolved PHV(s)
 from the crosswalk so the renderer can include them inline.
 
+### Idea parked: inferred corrections for unit-error patterns
+
+Stephanie suggested: when a clinical-range FAIL looks like a unit error
+(e.g., height in m vs. cm, °F vs. °C), surface an "inferred corrected"
+aggregate alongside the failing value so reviewers can see the likely
+hypothesis. Scope if revisited: C9 only, common unit conversions only,
+clearly labeled as hypotheses not corrections, computed in the renderer
+from existing aggregates (not stored in extract JSONs). Not in scope for
+current plan.
+
 ---
 
 ## Phase E (deferred): Standalone `render_report.py`
