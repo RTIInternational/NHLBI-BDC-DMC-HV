@@ -2666,7 +2666,7 @@ def check_c7_categorical_distribution(
     extra = sorted(harmonized_keys - src_keys)
 
     mismatches: list[dict] = []
-    for cat in src_keys & harmonized_keys:
+    for cat in sorted(src_keys & harmonized_keys):
         src_pct = src_dist[cat].get("pct", 0)
         harmonized_pct = harmonized_dist[cat].get("pct", 0)
         diff = abs(harmonized_pct - src_pct)
