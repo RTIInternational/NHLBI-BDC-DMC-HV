@@ -108,6 +108,29 @@ _CONFIG_DIR = Path(__file__).resolve().parent / "config"
 _json_safe = json_safe
 
 
+def _build_flat_variables(variables_by_pht: dict[str, dict]) -> dict[str, dict]:
+    """Flatten variables_by_pht into a column-name-keyed dict.
+
+    First-PHT-wins collision rule: when the same column name appears in
+    multiple PHTs, the first PHT's entry claims the bare column name and
+    later PHTs get a ``pht.colname`` namespaced key. PHT iteration order is
+    the source-extract emission order (Python dict insertion order).
+
+    This replicates the legacy `variables` field that the source extractor
+    used to emit alongside `variables_by_pht` — we build it on the consumer
+    side now so the extract JSON no longer carries two parallel views of
+    the same data.
+    """
+    flat: dict[str, dict] = {}
+    for pht, pht_vars in variables_by_pht.items():
+        for col, summary in pht_vars.items():
+            if col in flat and flat[col].get("_pht") != pht:
+                flat[f"{pht}.{col}"] = summary
+            else:
+                flat[col] = summary
+    return flat
+
+
 def validate_clinical_ranges_config(clinical_ranges: dict) -> list[str]:
     """Return non-fatal validation warnings for clinical_ranges.yaml."""
     warnings: list[str] = []
@@ -387,7 +410,7 @@ def main(argv: list[str] | None = None) -> None:
     with open(args.harmonized, "r", encoding="utf-8") as fh:
         harmonized: dict = json.load(fh)
 
-    source_vars = source.get("variables", {})
+    source_vars = _build_flat_variables(source.get("variables_by_pht", {}))
     harmonized_vars = _normalize_harmonized_vars(harmonized.get("variables", {}))
     source_meta = source.get("metadata", {})
     harmonized_meta = harmonized.get("metadata", {})
@@ -411,9 +434,12 @@ def main(argv: list[str] | None = None) -> None:
     except CrosswalkBuildError as exc:
         print(str(exc), file=sys.stderr)
         sys.exit(2)
-    print(f"Matched {len(crosswalk)} variable pairs")
+    method_counts: dict[str, int] = {}
     for m in crosswalk:
-        method = m.get("match_method", "?")
+        method_counts[m.get("match_method", "?")] = method_counts.get(m.get("match_method", "?"), 0) + 1
+    method_summary = ", ".join(f"{n} {k}" for k, n in sorted(method_counts.items()))
+    print(f"Matched {len(crosswalk)} variable pairs ({method_summary})")
+    for m in crosswalk:
         yaml_f = m.get("yaml_file", "")
         phv = m.get("phv_id", "")
         resolved_pht = m.get("_resolved_pht", "")
@@ -431,7 +457,7 @@ def main(argv: list[str] | None = None) -> None:
             )
         elif resolved_pht:
             extra += f" -> {resolved_pht}"
-        print(f"  {m['source_key']:<30} -> {m['harmonized_key']:<40} [{method}]{extra}")
+        print(f"  {m['source_key']:<30} -> {m['harmonized_key']:<40}{extra}")
 
     # Load dbGaP authoritative type map for source-type override (fixes heuristic
     # misclassification of true-integer count variables as categorical when
