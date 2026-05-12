@@ -40,9 +40,21 @@ fi
 echo "Source:     $(basename "$SOURCE")"
 echo "Harmonized: $(basename "$HARMONIZED")"
 
-# Report output goes into local_output/
-REPORT="$OUT/${COHORT_LOWER}_comparison_report.md"
-JSON_REPORT="$OUT/${COHORT_LOWER}_comparison_results.json"
+# Reports are archived by (commit, timestamp): the actual files live in
+# local_output/archive/<commit>_<YYYYMMDDTHHMMSS>/, and top-level paths
+# are symlinks to the most recent. Each archive dir has its own
+# manifest.json with the source/harmonized inputs and the git commit.
+GIT_COMMIT="$(cd "$HV" && git rev-parse --short HEAD 2>/dev/null || echo unknown)"
+RUN_TS="$(date -u +%Y%m%dT%H%M%SZ)"
+ARCHIVE_DIR="$OUT/archive/${GIT_COMMIT}_${RUN_TS}"
+mkdir -p "$ARCHIVE_DIR"
+
+REPORT="$ARCHIVE_DIR/${COHORT_LOWER}_comparison_report.md"
+JSON_REPORT="$ARCHIVE_DIR/${COHORT_LOWER}_comparison_results.json"
+
+# Top-level symlinks: <cohort>_comparison_{report.md,results.json}
+LATEST_REPORT="$OUT/${COHORT_LOWER}_comparison_report.md"
+LATEST_JSON="$OUT/${COHORT_LOWER}_comparison_results.json"
 
 # Determine YAML dir with a case-insensitive lookup so
 # casing does not matter and the script remains portable
@@ -60,6 +72,9 @@ if [ ! -d "$CACHE_DIR" ]; then
     exit 1
 fi
 
+# The compare run returns nonzero when FAILs are present, but we still want
+# to record the archive entry. Capture the exit code and re-raise after.
+COMPARE_RC=0
 (cd "$HV" && uv run python -m hv_dataqc.compare \
     --source "$SOURCE" \
     --harmonized "$HARMONIZED" \
@@ -68,8 +83,29 @@ fi
     --cache-dir "$CACHE_DIR" \
     --report "$REPORT" \
     --json-report "$JSON_REPORT" \
-    "$@")
+    "$@") || COMPARE_RC=$?
+
+# Manifest records the inputs used for this archive entry.
+cat > "$ARCHIVE_DIR/manifest.json" <<EOF
+{
+  "cohort": "$COHORT",
+  "git_commit": "$GIT_COMMIT",
+  "generated_at": "$RUN_TS",
+  "source_json": "$(basename "$SOURCE")",
+  "harmonized_json": "$(basename "$HARMONIZED")",
+  "yaml_dir": "$(basename "$YAML_DIR")"
+}
+EOF
+
+# Update top-level symlinks to point at the latest archived report.
+ln -sfn "archive/${GIT_COMMIT}_${RUN_TS}/${COHORT_LOWER}_comparison_report.md" "$LATEST_REPORT"
+ln -sfn "archive/${GIT_COMMIT}_${RUN_TS}/${COHORT_LOWER}_comparison_results.json" "$LATEST_JSON"
 
 echo
 echo "Reports: $REPORT"
 echo "         $JSON_REPORT"
+echo "Latest:  $LATEST_REPORT -> archive/${GIT_COMMIT}_${RUN_TS}/"
+
+# Preserve the compare exit code so callers (e.g., CI / regression-check)
+# can still detect FAILs even though we did extra work after the run.
+exit $COMPARE_RC

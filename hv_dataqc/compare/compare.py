@@ -161,6 +161,25 @@ def validate_clinical_ranges_config(clinical_ranges: dict) -> list[str]:
     return warnings
 
 
+def _current_git_commit() -> str | None:
+    """Return the short git commit hash for the repo containing this file,
+    or None if git isn't available or the lookup fails."""
+    import subprocess
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            capture_output=True,
+            text=True,
+            cwd=Path(__file__).resolve().parent,
+            timeout=2,
+        )
+        if result.returncode == 0:
+            return result.stdout.strip() or None
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        pass
+    return None
+
+
 def _ambiguous_columns_fail(
     match: dict,
     ambiguous: list[dict],
@@ -722,6 +741,7 @@ def main(argv: list[str] | None = None) -> None:
         "metadata": {
             "cohort": cohort,
             "generated_at": datetime.now(timezone.utc).isoformat(),
+            "git_commit": _current_git_commit(),
             "source_file": args.source,
             "harmonized_file": args.harmonized,
             "thresholds_file": str(thresholds_path),
