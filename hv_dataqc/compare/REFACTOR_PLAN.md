@@ -123,6 +123,46 @@ size. Consumers should always use `variables_by_pht`.
 
 ---
 
+## Phase C-prereq: De-entangle formatting from check logic
+
+**Finding from Phase A recon:** check functions currently produce
+pre-formatted strings for `CheckResult.message`, e.g.:
+
+```python
+CheckResult("C2", var, "WARN", f"N within {pct}%: {_n(src)} -> {_n(dst)}")
+```
+
+Helpers like `_n` (comma-separated integer), `_cmp` (`"src → dst"`), and
+`_cmp_stat` (`"Label: src → dst (d=delta)"`) are called inside check
+bodies, so the JSON output already contains pre-rendered, Markdown-flavored
+strings. Consequences:
+- The renderer cannot fully control formatting (locale, separators,
+  inline links, message restructuring).
+- Any consumer of the JSON receives formatting they didn't ask for.
+- Phase E (re-render from JSON without re-running checks) is undermined:
+  re-rendering with different formatting requires reverse-engineering
+  the message strings.
+
+**Target shape:** `CheckResult.message` becomes a template key
+(e.g., `"n_loss_moderate"`) plus structured `detail` data
+(`{"src_n": 1234, "harmonized_n": 1190, "loss_pct": 3.6}`). The renderer
+fills the template at render time. Templates live in
+`config/checks.yaml` alongside descriptions.
+
+**Belongs in Phase C** (not Phase A) because:
+- Changes the JSON output; breaks every consumer.
+- Needs template-language design choice (Python `.format`? Jinja?
+  ad-hoc?).
+- Easier to do cleanly after `render.py` is extracted — the existing
+  renderer's behavior tells us exactly what the structured replacement
+  must support.
+
+**Phase A interim placement:** `_n`, `_cmp`, `_cmp_stat` live in
+`_common.py` for now, reflecting their current shared use across checks
+and render. This is a temporary home, not an endorsement.
+
+---
+
 ## Phase C: Config externalization + mode-aware comparison dispatch
 
 ### Currently hardcoded → proposed config

@@ -14,7 +14,7 @@ import yaml
 
 from hv_dataqc.hv_dataqc_common import write_json_atomic
 
-_THRESHOLDS_PATH = Path(__file__).resolve().parent / "config" / "thresholds.yaml"
+THRESHOLDS_PATH = Path(__file__).resolve().parent / "config" / "thresholds.yaml"
 
 
 def write_json_atomic_strict(path: Path, data: Any) -> None:
@@ -42,7 +42,7 @@ def load_thresholds(path: Path | None = None) -> dict:
     isn't overridden; this loader returns whatever the YAML file specifies
     (or an empty dict if no file is present).
     """
-    effective_path = path or _THRESHOLDS_PATH
+    effective_path = path or THRESHOLDS_PATH
     if effective_path.exists():
         try:
             with effective_path.open("r", encoding="utf-8") as fh:

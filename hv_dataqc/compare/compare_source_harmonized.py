@@ -55,7 +55,16 @@ from hv_dataqc.hv_dataqc_common import (
     load_phv_name_map as _shared_load_phv_name_map,
     normalize_category_key,
 )
+from hv_dataqc.compare._common import (
+    CheckResult,
+    CrosswalkBuildError,
+    fmt_cmp as _cmp,
+    fmt_cmp_stat as _cmp_stat,
+    fmt_n as _n,
+    md_escape as _md_escape,
+)
 from hv_dataqc.compare.report_io import (
+    THRESHOLDS_PATH,
     load_thresholds,
     write_json_atomic_strict,
     write_text_atomic,
@@ -66,18 +75,6 @@ _CONFIG_DIR = Path(__file__).resolve().parent / "config"
 
 _canonical_phv_id = canonical_phv_id
 _json_safe = json_safe
-
-
-def _md_escape(value: Any) -> str:
-    """Escape values embedded in Markdown prose/tables."""
-    text = str(value).replace("\r", " ").replace("\n", " ")
-    return (
-        text.replace("\\", "\\\\")
-        .replace("|", "\\|")
-        .replace("`", "\\`")
-        .replace("*", "\\*")
-        .replace("_", "\\_")
-    )
 
 
 def validate_clinical_ranges_config(clinical_ranges: dict) -> list[str]:
@@ -125,41 +122,6 @@ def validate_clinical_ranges_config(clinical_ranges: dict) -> list[str]:
                     )
 
     return warnings
-
-
-# ---------------------------------------------------------------------------
-# Check result
-# ---------------------------------------------------------------------------
-
-class CheckResult:
-    """One check result for one variable."""
-
-    def __init__(
-        self,
-        check_id: str,
-        variable: str,
-        status: str,          # PASS | WARN | FAIL | SKIP | INFO
-        message: str,
-        detail: dict | None = None,
-    ) -> None:
-        self.check_id = check_id
-        self.variable = variable
-        self.status = status
-        self.message = message
-        self.detail = detail or {}
-
-    def to_dict(self) -> dict:
-        return {
-            "check_id": self.check_id,
-            "variable": self.variable,
-            "status": self.status,
-            "message": self.message,
-            "detail": self.detail,
-        }
-
-
-class CrosswalkBuildError(RuntimeError):
-    """Raised when a YAML-driven variable crosswalk cannot be built safely."""
 
 
 # ---------------------------------------------------------------------------
@@ -2133,39 +2095,6 @@ def build_variable_crosswalk(
 
 
 # ---------------------------------------------------------------------------
-# Report formatting helpers — used by check functions
-# ---------------------------------------------------------------------------
-
-def _n(val: int | float) -> str:
-    """Format a number with commas for integers, leave floats as-is."""
-    if isinstance(val, int):
-        return f"{val:,}"
-    if isinstance(val, float) and val == int(val) and abs(val) >= 1000:
-        return f"{int(val):,}"
-    return str(val)
-
-
-def _cmp(src, dst, unit: str = "") -> str:
-    """Format a comparison. If src == dst, show once; otherwise 'src -> dst'."""
-    s, d = _n(src), _n(dst)
-    u = unit
-    if s == d:
-        return f"{s}{u}"
-    return f"{s}{u} -> {d}{u}"
-
-
-def _cmp_stat(label: str, src, dst, rel_diff: float) -> str:
-    """Format 'Label: value (d=X)' or 'Label: src -> dst (d=X)'.
-
-    Omits the delta when values are identical.
-    """
-    s, d = _n(src), _n(dst)
-    if s == d:
-        return f"{label}: {s}"
-    return f"{label}: {s} -> {d} (d={rel_diff:.4f})"
-
-
-# ---------------------------------------------------------------------------
 # Check implementations
 # ---------------------------------------------------------------------------
 
@@ -3640,7 +3569,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--clinical-ranges", metavar="YAML",
                    help=f"Clinical ranges YAML (default: {_CONFIG_DIR / 'clinical_ranges.yaml'})")
     p.add_argument("--thresholds", metavar="YAML",
-                   help=f"Statistical thresholds YAML (default: {_THRESHOLDS_PATH})")
+                   help=f"Statistical thresholds YAML (default: {THRESHOLDS_PATH})")
     p.add_argument("--report", metavar="FILE",
                    help="Markdown report output path "
                         "(default: <cohort>_comparison_report.md)")
@@ -3718,7 +3647,7 @@ def main(argv: list[str] | None = None) -> None:
         print(f"NOTE: Clinical ranges file not found: {cr_path} -- C9/C10 will SKIP")
 
     # Load thresholds
-    thresholds_path = Path(args.thresholds) if args.thresholds else _THRESHOLDS_PATH
+    thresholds_path = Path(args.thresholds) if args.thresholds else THRESHOLDS_PATH
     thresholds = load_thresholds(thresholds_path)
     c1_t = thresholds.get("c1", {})
     c2_t = thresholds.get("c2", {})
