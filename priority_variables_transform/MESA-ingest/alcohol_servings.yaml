@@ -1,0 +1,223 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001111
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
+        age_at_observation:
+          expr: '{phv00082639} * 365'
+        observation_type:
+          value: OMOP:35609491
+          range: string
+        method_type:
+          value: "self-report questionnaire"
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001111
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00083279}'
+                  unit:
+                    value: '{#}/wk'
+                    range: string
+
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
+        age_at_observation:
+          expr: '{phv00084442} * 365'
+        observation_type:
+          value: OMOP:35609491
+          range: string
+        method_type:
+          value: "self-report questionnaire"
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001116
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00085609}'
+                  unit:
+                    value: '{#}/wk'
+                    range: string
+
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001118
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00085772}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
+        age_at_observation:
+          expr: '{phv00085773} * 365'
+        observation_type:
+          value: OMOP:35609491
+          range: string
+        method_type:
+          value: "self-report questionnaire"
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001118
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00086119} + {phv00086120} + {phv00086121} + {phv00086122}'
+                  unit:
+                    value: '{#}/wk'
+                    range: string
+
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001119
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086258}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
+        age_at_observation:
+          expr: '{phv00086259} * 365'
+        observation_type:
+          value: OMOP:35609491
+          range: string
+        method_type:
+          value: "self-report questionnaire"
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001119
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00086601} + {phv00086602} + {phv00086603} + {phv00086604}'
+                  unit:
+                    value: '{#}/wk'
+                    range: string
+
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001120
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086726}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
+        age_at_observation:
+          expr: '{phv00086727} * 365'
+        observation_type:
+          value: OMOP:35609491
+          range: string
+        method_type:
+          value: "self-report questionnaire"
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001120
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00087019} + {phv00087020} + {phv00087021} + {phv00087022}'
+                  unit:
+                    value: '{#}/wk'
+                    range: string
+
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001121
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
+        age_at_observation:
+          expr: '{phv00087071} * 365'
+        observation_type:
+          value: OMOP:35609491
+          range: string
+        method_type:
+          value: "self-report questionnaire"
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001121
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00087290}'
+                  unit:
+                    value: '{#}/wk'
+                    range: string
+
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003086
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
+        age_at_observation:
+          expr: '{phv00174588} * 365'
+        observation_type:
+          value: OMOP:35609491
+          range: string
+        method_type:
+          value: "self-report questionnaire"
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003086
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00175424} + {phv00175425} + {phv00175426} + {phv00175427}'
+                  unit:
+                    value: '{#}/wk'
+                    range: string
+
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003091
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00176007}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
+        age_at_observation:
+          expr: '{phv00176011} * 365'
+        observation_type:
+          value: OMOP:35609491
+          range: string
+        method_type:
+          value: "self-report questionnaire"
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003091
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00176858} + {phv00176859} + {phv00176860} + {phv00176861}'
+                  unit:
+                    value: '{#}/wk'
+                    range: string

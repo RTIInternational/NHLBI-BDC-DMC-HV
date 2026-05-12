@@ -1,0 +1,303 @@
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001111
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
+        drug_concept:
+          expr: 'case(({phv00083099} == 1, "ATC:C07A"))'
+        exposure_status:
+          populated_from: phv00083099
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        exposure_provenance:
+          value: PATIENT_SELF_REPORTED_MEDICATION
+          range: string
+
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001111
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
+        drug_concept:
+          expr: 'case(({phv00083100} == 1, "ATC:C07A"))'
+        exposure_status:
+          populated_from: phv00083100
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        exposure_provenance:
+          value: PATIENT_SELF_REPORTED_MEDICATION
+          range: string
+
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
+        drug_concept:
+          expr: 'case(({phv00085344} == 1, "ATC:C07A"))'
+        exposure_status:
+          populated_from: phv00085344
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        exposure_provenance:
+          value: PATIENT_SELF_REPORTED_MEDICATION
+          range: string
+
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
+        drug_concept:
+          expr: 'case(({phv00085345} == 1, "ATC:C07A"))'
+        exposure_status:
+          populated_from: phv00085345
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        exposure_provenance:
+          value: PATIENT_SELF_REPORTED_MEDICATION
+          range: string
+
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001118
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00085772}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
+        drug_concept:
+          expr: 'case(({phv00086004} == 1, "ATC:C07A"))'
+        exposure_status:
+          populated_from: phv00086004
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        exposure_provenance:
+          value: PATIENT_SELF_REPORTED_MEDICATION
+          range: string
+
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001118
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00085772}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
+        drug_concept:
+          expr: 'case(({phv00086005} == 1, "ATC:C07A"))'
+        exposure_status:
+          populated_from: phv00086005
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        exposure_provenance:
+          value: PATIENT_SELF_REPORTED_MEDICATION
+          range: string
+
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001119
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086258}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
+        drug_concept:
+          expr: 'case(({phv00086486} == 1, "ATC:C07A"))'
+        exposure_status:
+          populated_from: phv00086486
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        exposure_provenance:
+          value: PATIENT_SELF_REPORTED_MEDICATION
+          range: string
+
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001119
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086258}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
+        drug_concept:
+          expr: 'case(({phv00086487} == 1, "ATC:C07A"))'
+        exposure_status:
+          populated_from: phv00086487
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        exposure_provenance:
+          value: PATIENT_SELF_REPORTED_MEDICATION
+          range: string
+
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001120
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086726}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
+        drug_concept:
+          expr: 'case(({phv00086923} == 1, "ATC:C07A"))'
+        exposure_status:
+          populated_from: phv00086923
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        exposure_provenance:
+          value: PATIENT_SELF_REPORTED_MEDICATION
+          range: string
+
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001120
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086726}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
+        drug_concept:
+          expr: 'case(({phv00086924} == 1, "ATC:C07A"))'
+        exposure_status:
+          populated_from: phv00086924
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        exposure_provenance:
+          value: PATIENT_SELF_REPORTED_MEDICATION
+          range: string
+
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001121
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
+        drug_concept:
+          expr: 'case(({phv00087320} == 1, "ATC:C07A"))'
+        exposure_status:
+          populated_from: phv00087320
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        exposure_provenance:
+          value: PATIENT_SELF_REPORTED_MEDICATION
+          range: string
+
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001121
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
+        drug_concept:
+          expr: 'case(({phv00087321} == 1, "ATC:C07A"))'
+        exposure_status:
+          populated_from: phv00087321
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        exposure_provenance:
+          value: PATIENT_SELF_REPORTED_MEDICATION
+          range: string
+
+- class_derivations:
+    DrugExposure:
+      populated_from: pht003086
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
+        drug_concept:
+          expr: 'case(({phv00175345} == 1, "ATC:C07A"))'
+        exposure_status:
+          populated_from: phv00175345
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        exposure_provenance:
+          value: PATIENT_SELF_REPORTED_MEDICATION
+          range: string
+
+- class_derivations:
+    DrugExposure:
+      populated_from: pht003086
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
+        drug_concept:
+          expr: 'case(({phv00175346} == 1, "ATC:C07A"))'
+        exposure_status:
+          populated_from: phv00175346
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        exposure_provenance:
+          value: PATIENT_SELF_REPORTED_MEDICATION
+          range: string
+
+- class_derivations:
+    DrugExposure:
+      populated_from: pht003091
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00176007}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
+        drug_concept:
+          expr: 'case(({phv00176768} == 1, "ATC:C07A"))'
+        exposure_status:
+          populated_from: phv00176768
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        exposure_provenance:
+          value: PATIENT_SELF_REPORTED_MEDICATION
+          range: string
+
+- class_derivations:
+    DrugExposure:
+      populated_from: pht003091
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00176007}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
+        drug_concept:
+          expr: 'case(({phv00176769} == 1, "ATC:C07A"))'
+        exposure_status:
+          populated_from: phv00176769
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        exposure_provenance:
+          value: PATIENT_SELF_REPORTED_MEDICATION
+          range: string
