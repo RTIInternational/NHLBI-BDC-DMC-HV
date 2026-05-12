@@ -1,24 +1,33 @@
+# JHS PAD: Peripheral Arterial Disease from Ankle-Brachial Index (ABI)
+# Source: pht008729.v2 (analysis1), Visit 1 only
+# Variable: phv00401122.v1 (abi) — Ankle Brachial Index, numeric, range 0.44-2.17
+# PAD criterion: ABI < 0.9 (standard clinical diagnostic threshold per ACC/AHA)
+# All participants with a valid ABI measurement are emitted:
+#   - ABI < 0.9  → condition_status: PRESENT (PAD confirmed)
+#   - ABI >= 0.9 → condition_status: ABSENT (PAD ruled out)
+# Previous source (pht008725 phv00400971 PADEVER) removed: that variable is a
+# cumulative AFU self-report accumulating incident diagnoses over 10+ years of
+# follow-up, making it unsuitable as a baseline PAD prevalence indicator.
 - class_derivations:
     Condition:
-      populated_from: pht008725
+      populated_from: pht008729
       slot_derivations:
         associated_participant:
-          populated_from: phv00400849
+          populated_from: phv00401078
+        age_at_condition_start:
+          expr: '{phv00401085} * 365'
         associated_visit:
-          value: JHS AFU
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
         condition_concept:
-          value: MONDO:0005386
+          value: "MONDO:0005386"
           range: string
         condition_status:
-          populated_from: phv00400971
-          value_mappings:
-            N: ABSENT
-            Y: PRESENT
-            U: UNKNOWN
+          expr: 'case(({phv00401122} < 0.9, "PRESENT"), (True, "ABSENT"))'
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
+        associated_evidence:
+          value: "Analysis derived"
         relationship_to_participant:
           value: ONESELF
           range: string

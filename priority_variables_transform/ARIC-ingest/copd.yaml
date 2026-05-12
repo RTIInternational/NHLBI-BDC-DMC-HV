@@ -3,18 +3,21 @@
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from: phv00207055
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         condition_concept:
           value: MONDO:0005002
         condition_status:
           populated_from: phv00206784
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            'N': ABSENT
+            'Y': PRESENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: "hospital record abstraction"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -22,17 +25,20 @@
       populated_from: pht006479
       slot_derivations:
         associated_participant:
-          populated_from: phv00297979
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00297979}) + ":ARIC")'
         age_at_condition_start:
           expr: case(({phv00298000} == 1, {phv00298001} * 365))
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00297979}) + ":ARIC EXAM 5")'
         condition_concept:
           value: MONDO:0005002
         condition_status:
           expr: case(({phv00298000} == 0, 'ABSENT'), ({phv00298002} == 0, 'HISTORICAL'), (True, 'PRESENT'))
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -40,9 +46,9 @@
       populated_from: pht012825
       slot_derivations:
         associated_participant:
-          populated_from: phv00515894
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00515894}) + ":ARIC")'
         associated_visit:
-          value: ARIC COHORT
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00515894}) + ":ARIC Cohort")'
         condition_concept:
           value: MONDO:0005002
         condition_status:
@@ -52,5 +58,8 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: "Frailty deficit index item 33"
+          range: string
         relationship_to_participant:
           value: ONESELF

@@ -3,26 +3,26 @@
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from: phv00207055
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
         drug_concept:
           expr: case(({phv00206977} == 1, "ATC:C07A"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
 - class_derivations:
     DrugExposure:
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from: phv00207055
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
         drug_concept:
           expr: case(({phv00206978} == 1, "ATC:C07A"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string

@@ -3,9 +3,9 @@
       populated_from: pht004111
       slot_derivations:
         associated_participant:
-          populated_from: phv00207407
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207407}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207407}) + ":ARIC EXAM 1")'
           range: string
         observation_type:
           value: OMOP:4076114
@@ -35,9 +35,9 @@
       populated_from: pht004145
       slot_derivations:
         associated_participant:
-          populated_from: phv00209045
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00209045}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00209045}) + ":ARIC EXAM 3")'
           range: string
         observation_type:
           value: OMOP:4076114

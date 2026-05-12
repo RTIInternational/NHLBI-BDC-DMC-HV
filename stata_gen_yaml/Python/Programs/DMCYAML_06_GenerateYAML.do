@@ -1,0 +1,242 @@
+
+/* Note: change value of cohort local macro to desired cohort before running */
+local entity = "MeasurementObservation"
+local cohort = "fhs"
+local macroname = "`entity'_`cohort'"
+
+
+/* ----- 0. Prepare ----- */
+
+* -- Generate global macros of entity_cohort variable names -- *;
+use "$der\shortdata_$today.dta", clear
+keep if bdchm_entity=="`entity'"
+keep if cohort=="`cohort'"
+gen macroname=bdchm_entity+"_"+cohort
+keep macroname bdchm_varname
+sort bdchm_varname
+duplicates drop
+/* note: drop medication adherence */
+
+gen count=_n
+summ count
+local numvars = "bdchm_varname`r(max)'"
+reshape wide bdchm_varname, i(macroname) j(count)
+egen vars=concat(bdchm_varname1-`numvars'), p(" ")
+keep macroname vars
+gen code="global "+macroname+" "+vars
+keep code
+export delimited "$temp\\`cohort'\mcr_`entity'.txt", delimiter(tab) novarnames noquote replace
+
+
+* -- Check uniqueness of rows -- *;
+use "$der\shortdata_$today.dta", clear
+keep if bdchm_entity=="`entity'"
+keep if cohort=="`cohort'"
+sort phv bdchm_entity bdchm_varname
+gen pair_id=phv+bdchm_varname
+duplicates list pair_id /* Must be no duplicates. the same phv will get more than one code block per YAML file output if there are any duplicates of pairs */
+
+
+
+
+/* ----- 1. Split data rows into good/bad candidates for automation ----- */
+/* Note: output files must be one row per phv to work due to local macro counting */
+
+foreach bdchm in $`macroname' {	
+	use "$der\shortdata_$today.dta", clear
+	keep if bdchm_entity=="`entity'"
+	keep if cohort=="`cohort'"
+	keep if bdchm_varname=="`bdchm'"
+	keep if row_good==1
+	save "$temp\\`cohort'\good\\`bdchm'.dta", replace
+
+	use "$der\shortdata_$today.dta", clear
+	keep if bdchm_entity=="`entity'"
+	keep if cohort=="`cohort'"
+	keep if bdchm_varname=="`bdchm'"
+	keep if row_good!=1
+	count
+	save "$temp\\`cohort'\bad\\`bdchm'.dta", replace 
+}
+
+	
+
+
+/* ----- 2. Write good YAML codelines ----- */
+file close _all
+
+foreach bdchm in $`macroname' {	
+use "$temp\\`cohort'\good\\`bdchm'.dta", clear /* file must be one row per phv to work due to local macro counting */
+count
+if r(N) > 0 {
+
+file open `bdchm'_good using "$out\\`cohort'\good\\`bdchm'.yaml", write replace
+
+local nobs = _N
+forv i = 1/`nobs' { 
+	local phv=phv[`i']
+	local entity=bdchm_entity[`i']
+	local pht=pht[`i']
+	local onto=onto_id[`i']
+	local unit=bdchm_unit[`i']
+	local visit=associatedvisit[`i']
+	local participant=participantidphv[`i']
+	local age=ageinyearsphv[`i']
+	local convert=conversion_rule[`i']
+	local source_unit=source_unit[`i']
+	local target_unit=target_unit[`i']
+
+if unit_match[`i']==1 {
+file write `bdchm'_good "- class_derivations:" _n ///
+	_column(5) "`entity'" ":" _n ///
+			_column(7) "populated from: " "`pht'" _n ///
+			_column(7) "slot_derivations:" _n ///
+				_column(9) "associated_participant: " _n ///
+					_column(11) "populated_from: " "`participant'" _n ///
+				_column(9) "associated_visit: " _n ///		
+					_column(11) "value: " "`visit'" _n ///
+				_column(9) "age_at_observation: " _n ///
+					_column(11) "expr: {" "`age'" "} * 365" _n ///
+				_column(9) "observation_type: " _n ///
+					_column(11) "value: " "`onto'" _n ///
+				_column(9) "value_quantity:" _n ///
+					_column(11) "object_derivations:" _n ///
+					_column(11) "- class_derivations:" _n ///
+							_column(15) "Quantity:" _n ///
+								_column(17) "populated_from: " "`pht'" _n ///
+								_column(17) "slot_derivations:" _n ///
+									_column(19) "value_decimal:" _n ///
+										_column(21) "populated_from: " "`phv'" _n ///
+									_column(19) "unit: " _n ///
+										_column(21) "value: " _char(34) "`unit'" _char(34) _n	
+
+	}
+else if unit_convert[`i']==1 {
+file write `bdchm'_good "- class_derivations:" _n ///
+	_column(5) "`entity'" ":" _n ///
+			_column(7) "populated from: " "`pht'" _n ///
+			_column(7) "slot_derivations:" _n ///
+				_column(9) "associated_participant: " _n ///
+					_column(11) "populated_from: " "`participant'" _n ///
+				_column(9) "associated_visit: " _n ///		
+					_column(11) "value: " "`visit'" _n ///
+				_column(9) "age_at_observation: " _n ///
+					_column(11) "expr: {" "`age'" "} * 365" _n ///
+				_column(9) "observation_type: " _n ///
+					_column(11) "value: " "`onto'" _n ///
+				_column(9) "value_quantity:" _n ///
+					_column(11) "object_derivations:" _n ///
+					_column(11) "- class_derivations:" _n ///
+							_column(15) "Quantity:" _n ///
+								_column(17) "populated_from: " "`pht'" _n ///
+								_column(17) "slot_derivations:" _n ///
+									_column(19) "value_decimal:" _n ///
+										_column(21) "populated_from: " "`phv'" _n ///
+										_column(21)	"unit_conversion:" _n ///
+											_column(23)	"source_unit: " _char(34) "`source_unit'" _char(34) _n ///
+											_column(23) "target_unit: " _char(34) "`target_unit'" _char(34) _n ///
+									_column(19) "unit: " _n ///
+										_column(21) "value: " _char(34) "`unit'" _char(34) _n ///
+										_column(21)	"range: string" _n
+	
+	}
+else if unit_expr[`i']==1 {
+file write `bdchm'_good "- class_derivations:" _n ///
+	_column(5) "`entity'" ":" _n ///
+			_column(7) "populated from: " "`pht'" _n ///
+			_column(7) "slot_derivations:" _n ///
+				_column(9) "associated_participant: " _n ///
+					_column(11) "populated_from: " "`participant'" _n ///
+				_column(9) "associated_visit: " _n ///		
+					_column(11) "value: " "`visit'" _n ///
+				_column(9) "observation_type: " _n ///
+					_column(11) "value: " "`onto'" _n ///
+				_column(9) "value_quantity:" _n ///
+					_column(11) "object_derivations:" _n ///
+					_column(11) "- class derivations:" _n ///
+							_column(15) "Quantity:" _n ///
+								_column(17) "populated_from: " "`pht'" _n ///
+								_column(17) "slot_derivations:" _n ///
+									_column(19) "value_decimal:" _n ///
+										_column(21) "expr: {" "`phv'" "} " "`convert'" _n ///
+									_column(19) "unit: " _n ///
+										_column(21) "value: " "`unit'" _n ///
+										_column(21)	"range: string" _n
+}
+}
+file close `bdchm'_good
+}
+}
+
+
+
+
+
+
+
+
+
+/* ----- 3. Write bad YAML codelines ----- */
+file close _all
+
+foreach bdchm in $`macroname' {	
+use "$temp\\`cohort'\bad\\`bdchm'.dta", clear /* file must be one row per phv to work due to local macro counting */
+count
+if r(N) > 0 {
+
+file open `bdchm'_bad using "$out\\`cohort'\bad\\`bdchm'.yaml", write replace
+
+local nobs = _N
+forv i = 1/`nobs' { 
+	local phv=phv[`i']
+	local entity=bdchm_entity[`i']
+	local pht=pht[`i']
+	local onto=onto_id[`i']
+	local unit=bdchm_unit[`i']
+	local visit=associatedvisit[`i']
+	local participant=participantidphv[`i']
+	local age=ageinyearsphv[`i']
+	local convert=conversion_rule[`i']
+
+file write `bdchm'_bad "- class_derivations:" _n ///
+	_column(5) "`entity'" ":" _n ///
+			_column(7) "populated from: " "`pht'" _n ///
+			_column(7) "slot_derivations:" _n ///
+				_column(9) "associated_participant: " _n ///
+					_column(11) "populated_from: " "`participant'" " #CHECK" _n ///
+				_column(9) "associated_visit: " _n ///		
+					_column(11) "value: " "`visit'" _n ///
+				_column(9) "age_at_observation: " _n ///
+					_column(11) "expr: {" "`age'" "} * 365" _n ///
+				_column(9) "observation_type: " _n ///
+					_column(11) "value: " "`onto'" _n ///
+				_column(9) "value_quantity:" _n ///
+					_column(11) "object_derivations:" _n ///
+					_column(11) "- class_derivations:" _n ///
+							_column(15) "Quantity:" _n ///
+								_column(17) "populated_from: " "`pht'" _n ///
+								_column(17) "slot_derivations:" _n ///
+									_column(19) "value_decimal:" _n ///
+										_column(21) "populated_from: " "`phv'" " #CHECK" _n ///
+									_column(19) "unit: " _n ///
+										_column(21) "value: " _char(34) "`unit'" _char(34) " #CHECK" _n
+									
+	}		
+
+file close `bdchm'_bad
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+/* ARCHIVED 
+
+										/*_column(21) "expr: {" "`phv'" "} " "`convert'" _n /// */

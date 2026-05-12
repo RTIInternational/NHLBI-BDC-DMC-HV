@@ -3,18 +3,21 @@
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from: phv00207055
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
-          value: ARIC Hospital Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         condition_concept:
           value: MONDO:0004979
         condition_status:
           populated_from: phv00206783
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            'N': ABSENT
+            'Y': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "hospital record abstraction"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -22,19 +25,22 @@
       populated_from: pht004103
       slot_derivations:
         associated_participant:
-          populated_from: phv00207155
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207155}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 2
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207155}) + ":ARIC EXAM 2")'
         condition_concept:
           value: MONDO:0004979
         condition_status:
           populated_from: phv00207069
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '8': UNKNOWN
+            'N': ABSENT
+            'Y': PRESENT
+            'U': UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -42,19 +48,22 @@
       populated_from: pht004111
       slot_derivations:
         associated_participant:
-          populated_from: phv00207407
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207407}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207407}) + ":ARIC EXAM 1")'
         condition_concept:
           value: MONDO:0004979
         condition_status:
           populated_from: phv00207318
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '8': UNKNOWN
+            'N': ABSENT
+            'Y': PRESENT
+            'U': UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -62,19 +71,22 @@
       populated_from: pht004145
       slot_derivations:
         associated_participant:
-          populated_from: phv00209045
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00209045}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00209045}) + ":ARIC EXAM 3")'
         condition_concept:
           value: MONDO:0004979
         condition_status:
           populated_from: phv00208976
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '8': UNKNOWN
+            'N': ABSENT
+            'Y': PRESENT
+            'U': UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -82,19 +94,22 @@
       populated_from: pht004146
       slot_derivations:
         associated_participant:
-          populated_from: phv00209097
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00209097}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00209097}) + ":ARIC EXAM 4")'
         condition_concept:
           value: MONDO:0004979
         condition_status:
           populated_from: phv00209067
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '8': UNKNOWN
+            'N': ABSENT
+            'Y': PRESENT
+            'U': UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -102,19 +117,22 @@
       populated_from: pht004161
       slot_derivations:
         associated_participant:
-          populated_from: phv00209758
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00209758}) + ":ARIC")'
         age_at_condition_start:
           expr: case(({phv00209714} == 1, {phv00209716} * 365))
         age_at_condition_end:
           expr: case(({phv00209717} == 0, {phv00209716} * 365))
         associated_visit:
-          value: ARIC EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00209758}) + ":ARIC EXAM 1")'
         condition_concept:
           value: MONDO:0004979
         condition_status:
           expr: case(({phv00209714} == 0, 'ABSENT'), ({phv00209717} == 0, 'HISTORICAL'), (True, 'PRESENT'))
         condition_provenance:
           expr: case(({phv00209715} == 0, 'PATIENT_SELF-REPORTED_CONDITION'), (True, 'CLINICAL_DIAGNOSIS'))
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -122,19 +140,22 @@
       populated_from: pht006479
       slot_derivations:
         associated_participant:
-          populated_from: phv00297979
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00297979}) + ":ARIC")'
         age_at_condition_start:
           expr: case(({phv00298007} == 1, {phv00298009} * 365))
         age_at_condition_end:
           expr: case(({phv00298010} == 0, {phv00298011} * 365))          
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00297979}) + ":ARIC EXAM 5")'
         condition_concept:
           value: MONDO:0004979
         condition_status:
           expr: case(({phv00298007} == 0, 'ABSENT'), ({phv00298010} == 0, 'HISTORICAL'), (True, 'PRESENT'))
         condition_provenance:
           expr: case(({phv00298008} == 0, 'PATIENT_SELF-REPORTED_CONDITION'), (True, 'CLINICAL_DIAGNOSIS'))
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -142,18 +163,21 @@
       populated_from: pht009479
       slot_derivations:
         associated_participant:
-          populated_from: phv00419900
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00419900}) + ":ARIC")'
         associated_visit:
-          value: ARIC Medical Conditions Update Form
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00419900}) + ":ARIC Medical Conditions Update Form")'
         condition_concept:
           value: MONDO:0004979
         condition_status:
           populated_from: phv00419909
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            'N': ABSENT
+            'Y': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -161,9 +185,9 @@
       populated_from: pht012518
       slot_derivations:
         associated_participant:
-          populated_from: phv00507808
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00507808}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 7
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507808}) + ":ARIC EXAM 7")'
         condition_concept:
           value: MONDO:0004979
         condition_status:
@@ -180,9 +204,9 @@
       populated_from: pht012839
       slot_derivations:
         associated_participant:
-          populated_from: phv00516796
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00516796}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 5
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00516796}) + ":ARIC EXAM 5")'
         condition_concept:
           value: MONDO:0004979
         condition_status:
@@ -199,9 +223,9 @@
       populated_from: pht012840
       slot_derivations:
         associated_participant:
-          populated_from: phv00516885
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00516885}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 6
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00516885}) + ":ARIC EXAM 6")'
         condition_concept:
           value: MONDO:0004979
         condition_status:

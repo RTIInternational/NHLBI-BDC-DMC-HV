@@ -5,10 +5,10 @@
         associated_participant:
           populated_from: phv00119399
         associated_visit:
-          value: CARDIA EXAM 10
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119399}) + ":CARDIA YEAR 10")'
           range: string
         drug_concept:
           expr: case(({phv00119422} == 2, "ATC:C03"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string

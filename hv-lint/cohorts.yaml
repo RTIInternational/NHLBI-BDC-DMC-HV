@@ -1,0 +1,67 @@
+# HV-Lint Cohort Configuration
+# =============================
+# Minimal version pins for dbGaP data fetching and index building.
+# Update entries here when a cohort's dbGaP version is bumped.
+#
+# To add a new cohort:
+#   1. Add an entry below with study_id and data_version
+#   2. Run: python hv-lint/update_data.py --cohort <key>
+#
+# The key (e.g. "aric") must match the directory name used under
+# dbgap-cache/ and the --cohort argument to lint phases.
+
+cohorts:
+  aric:
+    study_id: phs000280
+    data_version: v8.p2
+    display_name: "Atherosclerosis Risk in Communities (ARIC)"
+
+  cardia:
+    study_id: phs000285
+    data_version: v3.p2
+    display_name: "Coronary Artery Risk Development in Young Adults (CARDIA)"
+
+  chs:
+    study_id: phs000287
+    data_version: v7.p1
+    display_name: "Cardiovascular Health Study (CHS)"
+
+  copdgene:
+    study_id: phs000179
+    data_version: v7.p2
+    display_name: "Genetic Epidemiology of COPD (COPDGene)"
+
+  fhs:
+    study_id: phs000007
+    data_version: v35.p16
+    display_name: "Framingham Heart Study (FHS)"
+
+  hchs_sol:
+    study_id: phs000810
+    data_version: v2.p2
+    display_name: "Hispanic Community Health Study / Study of Latinos (HCHS/SOL)"
+
+  jhs:
+    study_id: phs000286
+    data_version: v7.p2
+    display_name: "Jackson Heart Study (JHS)"
+
+  ltrc:
+    study_id: phs001662
+    data_version: v4.p2
+    display_name: "Lung Tissue Research Consortium (LTRC)"
+
+  mesa:
+    study_id: phs000209
+    data_version: v13.p3
+    display_name: "Multi-Ethnic Study of Atherosclerosis (MESA)"
+
+  spiromics:
+    study_id: phs001119
+    data_version: v1.p1
+    display_name: "SubPopulations and InteRmediate Outcome Measures In COPD Study (SPIROMICS)"
+
+  whi:
+    study_id: phs000200
+    data_version: v12.p3
+    display_name: "Women's Health Initiative (WHI)"

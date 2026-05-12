@@ -1,0 +1,53 @@
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht013308
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00528692
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00528692}) + ":" + case(({phv00528696}
+            == ''VISIT_1'', ''SPIROMICS Visit 1''), ({phv00528696} == ''VISIT_2'', ''SPIROMICS
+            Visit 2''), ({phv00528696} == ''VISIT_3'', ''SPIROMICS Visit 3''), ({phv00528696}
+            == ''VISIT_4'', ''SPIROMICS Visit 4'')))'
+        observations:
+          object_derivations:
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht013308
+                slot_derivations:
+                  observation_type:
+                    value: OMOP:4152194
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00528706} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht013308
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00528715
+                            unit:
+                              value: 'mm[Hg]'
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht013308
+                slot_derivations:
+                  observation_type:
+                    value: OMOP:4154790
+                  method_type:
+                    value: average
+                  age_at_observation:
+                    expr: '{phv00528706} * 365'
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht013308
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00528713
+                            unit:
+                              value: 'mm[Hg]'

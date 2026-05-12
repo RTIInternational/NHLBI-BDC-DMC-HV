@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00128197
         associated_visit:
-          value: JHS PULMONARY
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128197}) + ":JHS PULMONARY")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
@@ -27,7 +27,7 @@
         associated_participant:
           populated_from: phv00128197
         associated_visit:
-          value: JHS PULMONARY
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128197}) + ":JHS PULMONARY")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
@@ -49,7 +49,7 @@
         associated_participant:
           populated_from: phv00401078
         associated_visit:
-          value: JHS EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
         age_at_observation:
           expr: "{phv00401085} * 365"
         observation_type:
@@ -71,7 +71,7 @@
         associated_participant:
           populated_from: phv00128197
         associated_visit:
-          value: JHS PULMONARY
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128197}) + ":JHS PULMONARY")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:

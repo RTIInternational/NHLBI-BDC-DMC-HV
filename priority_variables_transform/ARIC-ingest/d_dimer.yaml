@@ -3,13 +3,13 @@
       populated_from: pht012826
       slot_derivations:
         associated_participant:
-          populated_from: phv00515956
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00515956}) + ":ARIC")'
         associated_visit:
-          value: ARIC LAB FORM
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00515956}) + ":ARIC Lab Form")'
         observation_type:
           value: OMOP:37393605
+        method_type:
+          value: "blood assay"
         value_quantity:
           object_derivations:
           - class_derivations:

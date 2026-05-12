@@ -5,8 +5,7 @@
         associated_participant:
           populated_from: phv00100693
         associated_visit:
-          value: CHS SHHS 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100693}) + ":CHS SHHS 1")'
         age_at_observation:
           expr: '{phv00100694} * 365'    
         observation_type:
@@ -30,8 +29,7 @@
         associated_participant:
           populated_from: phv00100693
         associated_visit:
-          value: CHS SHHS 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100693}) + ":CHS SHHS 1")'
         age_at_observation:
           expr: '{phv00100694} * 365'
         observation_type:
@@ -55,8 +53,7 @@
         associated_participant:
           populated_from: phv00197394
         associated_visit:
-          value: CHS PSG 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197394}) + ":CHS PSG 1")'
         observation_type:
           value: OBA:2040171
           range: string
@@ -78,8 +75,7 @@
         associated_participant:
           populated_from: phv00197394
         associated_visit:
-          value: CHS PSG 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197394}) + ":CHS PSG 1")'
         observation_type:
           value: OBA:2040171
           range: string
@@ -90,7 +86,7 @@
                 populated_from: pht003699
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00197658
+                    expr: "case(({phv00197658} == 9999, None), (True, {phv00197658}))"
                   unit:
                     value: h
                     range: string
@@ -101,8 +97,7 @@
         associated_participant:
           populated_from: phv00197394
         associated_visit:
-          value: CHS PSG 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197394}) + ":CHS PSG 1")'
         observation_type:
           value: OBA:2040171
           range: string
@@ -113,7 +108,7 @@
                 populated_from: pht003699
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00197659
+                    expr: "case(({phv00197659} == 9000, None), ({phv00197659} == 9999, None), (True, {phv00197659}))"
                   unit:
                     value: h
                     range: string
@@ -124,8 +119,7 @@
         associated_participant:
           populated_from: phv00197394
         associated_visit:
-          value: CHS PSG 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197394}) + ":CHS PSG 1")'
         observation_type:
           value: OBA:2040171
           range: string
@@ -147,8 +141,7 @@
         associated_participant:
           populated_from: phv00198805
         associated_visit:
-          value: CHS PSG 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OBA:2040171
           range: string
@@ -170,8 +163,7 @@
         associated_participant:
           populated_from: phv00198805
         associated_visit:
-          value: CHS PSG 1
-          range: string
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OBA:2040171
           range: string

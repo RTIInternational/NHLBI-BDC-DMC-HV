@@ -3,50 +3,62 @@
       populated_from: pht004067
       slot_derivations:
         associated_participant:
-          populated_from: phv00205057
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00205057}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00205057}) + ":ARIC EXAM 4")'
           range: string
         value_enum:
           populated_from: phv00205047
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            'N': ABSENT
+            'Y': PRESENT
             U: UNKNOWN
         observation_type:
           value: OMOP:45772840
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+        method_type:
+          value: "Electrocardiogram"
           range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from: phv00207055
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 4
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
         value_enum:
           populated_from: phv00206911
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            'N': ABSENT
+            'Y': PRESENT
         observation_type:
           value: OMOP:45772840
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+        method_type:
+          value: "Electrocardiogram"
           range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004128
       slot_derivations:
         associated_participant:
-          populated_from: phv00207836
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207836}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207836}) + ":ARIC EXAM 3")'
           range: string
         value_enum:
           populated_from: phv00207815
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            'N': ABSENT
+            'Y': PRESENT
         observation_type:
           value: OMOP:45772840
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+        method_type:
+          value: "Electrocardiogram"
           range: string

@@ -5,7 +5,7 @@
         associated_participant:
           populated_from: phv00401370
         associated_visit:
-          value: JHS EXAM 3
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
         age_at_observation:
           expr: "{phv00401379} * 365"
         observation_type:
@@ -27,7 +27,7 @@
         associated_participant:
           populated_from: phv00124667
         associated_visit:
-          value: JHS EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00124667}) + ":JHS Exam 1")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
@@ -49,7 +49,7 @@
         associated_participant:
           populated_from: phv00401078
         associated_visit:
-          value: JHS EXAM 1
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
         age_at_observation:
           expr: "{phv00401085} * 365"
         observation_type:
@@ -76,7 +76,7 @@
         associated_participant: 
           populated_from: phv00400740 
         associated_visit: 
-          value: JHS EXAM 9
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400740}) + ":JHS Exam 3")'
         observation_type: 
           value: OMOP:35609491
         value_quantity:
@@ -90,30 +90,6 @@
                       ({phv00400744} == 1, {phv00400745} * {phv00400743}),
                       ({phv00400744} == 2, {phv00400745} * {phv00400743} / 4),
                       ({phv00400744} == 3, {phv00400745} * {phv00400743} / 52)
-                      )"
-                  unit: 
-                    value: '{#}/wk'
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001926
-      slot_derivations:
-        associated_participant: 
-          populated_from: phv00124667
-        associated_visit: 
-          value: JHS EXAM 9
-        observation_type: 
-          value: OMOP:35609491
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001926
-                slot_derivations:
-                  value_decimal:
-                    expr: "case(
-                      ({phv00124671} == 'W', {phv00124670} * {phv00124672}),
-                      ({phv00124671} == 'M', {phv00124670} * {phv00124672} / 4),
-                      ({phv00124671} == 'Y', {phv00124670} * {phv00124672} / 52)
                       )"
                   unit: 
                     value: '{#}/wk'

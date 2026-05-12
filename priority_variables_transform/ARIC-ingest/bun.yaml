@@ -3,13 +3,13 @@
       populated_from: pht004051
       slot_derivations:
         associated_participant:
-          populated_from: phv00203875
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00203875}) + ":ARIC")'
         associated_visit:
-          value: ARIC EXAM 1
-        # age_at_observation:
-          # expr: "{nan} * 365"
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203875}) + ":ARIC EXAM 1")'
         observation_type:
           value: OBA:VT0005265
+        method_type:
+          value: "blood assay"
         value_quantity:
           object_derivations:
           - class_derivations:
