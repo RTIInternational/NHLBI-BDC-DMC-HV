@@ -48,33 +48,27 @@ JSON_REPORT="$OUT/${COHORT_LOWER}_comparison_results.json"
 # casing does not matter and the script remains portable
 # across sed variants.
 YAML_DIR="$(find "$HV/priority_variables_transform" -maxdepth 1 -type d -iname "${COHORT}-ingest" -print -quit)"
-
 if [ -z "$YAML_DIR" ]; then
-    echo "WARNING: No YAML dir found for $COHORT in priority_variables_transform/. Running without crosswalk." >&2
-    (cd "$HV" && uv run python -m hv_dataqc.compare \
-        --source "$SOURCE" \
-        --harmonized "$HARMONIZED" \
-        --cohort "$COHORT" \
-        --report "$REPORT" \
-        --json-report "$JSON_REPORT" \
-        "$@")
-else
-    CACHE_DIR="$OUT/dbgap-cache/$COHORT_LOWER"
-    if [ ! -d "$CACHE_DIR" ]; then
-        echo "ERROR: dbGaP cache not found at $CACHE_DIR" >&2
-        echo "  Run: ./fetch_cache.sh --cohort $COHORT_LOWER" >&2
-        exit 1
-    fi
-    (cd "$HV" && uv run python -m hv_dataqc.compare \
-        --source "$SOURCE" \
-        --harmonized "$HARMONIZED" \
-        --cohort "$COHORT" \
-        --yaml-dir "$YAML_DIR" \
-        --cache-dir "$CACHE_DIR" \
-        --report "$REPORT" \
-        --json-report "$JSON_REPORT" \
-        "$@")
+    echo "ERROR: No YAML dir found for $COHORT in priority_variables_transform/" >&2
+    exit 1
 fi
+
+CACHE_DIR="$OUT/dbgap-cache/$COHORT_LOWER"
+if [ ! -d "$CACHE_DIR" ]; then
+    echo "ERROR: dbGaP cache not found at $CACHE_DIR" >&2
+    echo "  Run: ./fetch_cache.sh --cohort $COHORT_LOWER" >&2
+    exit 1
+fi
+
+(cd "$HV" && uv run python -m hv_dataqc.compare \
+    --source "$SOURCE" \
+    --harmonized "$HARMONIZED" \
+    --cohort "$COHORT" \
+    --yaml-dir "$YAML_DIR" \
+    --cache-dir "$CACHE_DIR" \
+    --report "$REPORT" \
+    --json-report "$JSON_REPORT" \
+    "$@")
 
 echo
 echo "Reports: $REPORT"

@@ -30,8 +30,6 @@ USAGE:
       --yaml-dir /path/to/HV-repo/priority_variables_transform/SPIROMICS-ingest/ \\
       --cache-dir /path/to/data/dbgap-cache/spiromics/
 
-  # --yaml-dir and --cache-dir are optional; without them the variable crosswalk
-  # cannot be built and only C1 / C8 / C10 run.
   # --clinical-ranges defaults to compare/config/clinical_ranges.yaml.
 """
 
@@ -297,17 +295,13 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--cohort", required=True, metavar="NAME",
                    help="Cohort name (e.g. SPIROMICS, CARDIA)")
 
-    p.add_argument("--yaml-dir", metavar="DIR",
+    p.add_argument("--yaml-dir", metavar="DIR", required=True,
                    help="HV YAML transform directory for the cohort "
-                        "(e.g. .../priority_variables_transform/SPIROMICS-ingest/). "
-                        "Without this, only C1/C8/C10 run.")
-    p.add_argument("--cache-dir", metavar="DIR",
+                        "(e.g. .../priority_variables_transform/SPIROMICS-ingest/).")
+    p.add_argument("--cache-dir", metavar="DIR", required=True,
                    help="dbGaP cache directory for the cohort, used to resolve PHV->name "
-                        "(e.g. data/dbgap-cache/spiromics/). "
-                        "REQUIRED when --yaml-dir is supplied (must contain "
-                        "pheno_variable_summaries/*.data_dict.xml). Without it the "
-                        "YAML-driven crosswalk cannot resolve PHV IDs to source column "
-                        "names and would be empty.")
+                        "(e.g. data/dbgap-cache/spiromics/). Must contain "
+                        "pheno_variable_summaries/*.data_dict.xml.")
 
     p.add_argument("--clinical-ranges", metavar="YAML",
                    help=f"Clinical ranges YAML (default: {_CONFIG_DIR / 'clinical_ranges.yaml'})")
@@ -335,39 +329,15 @@ def main(argv: list[str] | None = None) -> None:
             print(f"ERROR: {label} file not found: {path_arg}", file=sys.stderr)
             sys.exit(1)
 
-    # Resolve optional paths
-    yaml_dir = Path(args.yaml_dir) if args.yaml_dir else None
-    cache_dir = Path(args.cache_dir) if args.cache_dir else None
-
-    if not yaml_dir:
-        print("NOTE: --yaml-dir not provided. YAML-driven crosswalk disabled; C4/C5/C6/C7/C9 will SKIP.")
-    elif not yaml_dir.exists():
-        print(f"WARNING: --yaml-dir not found: {yaml_dir}")
-        yaml_dir = None
-
-    # --cache-dir is required when --yaml-dir is supplied: without the PHV->name
-    # map produced from the cache, _extract_crosswalk_from_class_derivations()
-    # silently skips every YAML entry (missing src_name) and the YAML-driven
-    # crosswalk ends up empty, producing a useless report.
-    if yaml_dir and not cache_dir:
-        print(
-            "ERROR: --cache-dir is required when --yaml-dir is supplied. "
-            "Without it the PHV->name map cannot be built and the YAML "
-            "crosswalk will be empty.",
-            file=sys.stderr,
-        )
+    # Resolve required paths
+    yaml_dir = Path(args.yaml_dir)
+    cache_dir = Path(args.cache_dir)
+    if not yaml_dir.exists():
+        print(f"ERROR: --yaml-dir not found: {yaml_dir}", file=sys.stderr)
         sys.exit(2)
-
-    if cache_dir and not cache_dir.exists():
-        if yaml_dir:
-            print(
-                f"ERROR: --cache-dir not found: {cache_dir}. "
-                "Required when --yaml-dir is supplied.",
-                file=sys.stderr,
-            )
-            sys.exit(2)
-        print(f"WARNING: --cache-dir not found: {cache_dir}")
-        cache_dir = None
+    if not cache_dir.exists():
+        print(f"ERROR: --cache-dir not found: {cache_dir}", file=sys.stderr)
+        sys.exit(2)
 
     # Load clinical ranges
     cr_path = (
@@ -462,12 +432,8 @@ def main(argv: list[str] | None = None) -> None:
     # Load dbGaP authoritative type map for source-type override (fixes heuristic
     # misclassification of true-integer count variables as categorical when
     # n_distinct ≤ 20, e.g. fruitf25 "how many fruits per day" range 0-20).
-    phv_type_map: dict[str, str] = (
-        load_phv_type_map(cache_dir) if cache_dir and cache_dir.exists() else {}
-    )
-    phv_value_codes: dict[str, set[str]] = (
-        load_phv_value_codes_map(cache_dir) if cache_dir and cache_dir.exists() else {}
-    )
+    phv_type_map: dict[str, str] = load_phv_type_map(cache_dir)
+    phv_value_codes: dict[str, set[str]] = load_phv_value_codes_map(cache_dir)
 
     # Run checks
     all_results: list[CheckResult] = []
