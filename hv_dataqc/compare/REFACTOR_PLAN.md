@@ -49,6 +49,10 @@ code aren't reasoning about two parallel views of the source data.
 
 ## Phase A: File split
 
+**Status: Complete** (PR #582). The file was split into the layout below;
+the original 4,090-line `compare_source_harmonized.py` is now ~700 lines
+of orchestration in `compare.py`.
+
 `compare_source_harmonized.py` is ~4,090 lines. Proposed layout (subject to
 refinement as the split proceeds):
 
@@ -99,6 +103,20 @@ affects raw JSON row ordering.
 ---
 
 ## Phase B: JSON extract cleanup
+
+**Status: Complete.** Phase B grew during implementation to cover several
+related cleanups beyond the original scope:
+1. Removed dead PHV-ID and name-match fallback strategies (commit `70e463a5`).
+2. Made `--yaml-dir` and `--cache-dir` required arguments (`8063d4aa`).
+3. Dropped dead conditional paths and unused `--show-unmatched-source`
+   flag (`ec606c71`).
+4. Replaced the flat `variables` dict with a `variables_by_name[col][pht]`
+   in-memory lookup; extractor JSON no longer emits `variables`
+   (`a02889b7`).
+5. Added the `CROSSWALK` FAIL when a column lookup is ambiguous across
+   PHTs and the YAML/cache can't disambiguate (`dbc11dfd`).
+6. Integration tests for the new FAIL path (`ed9df8e1`).
+7. Report archiving by commit + timestamp (`af623034`).
 
 **Problem:** `extract_source_summaries.py` emits two parallel views of the
 same data:

@@ -38,10 +38,18 @@ ranges, visit structure, and cross-variable consistency.
    Re-run `python -m hv_dataqc.compare` as often as needed as YAMLs evolve — no
    re-entry to the enclave required.
 
-4. **dbGaP cache is required for YAML mode.** When `--yaml-dir` is supplied, a
-   local dbGaP cache is also required (`--cache-dir`) to resolve PHV accessions to
-   source column names. Use `cache_fetcher/fetch_dbgap_cache.py` to build the cache
-   (deps: `requests`, `pyyaml`; one command per cohort, idempotent on re-runs).
+4. **YAML transforms and dbGaP cache are both required.** `--yaml-dir` (HV
+   transform YAMLs) and `--cache-dir` (dbGaP data-dict XMLs) are mandatory
+   arguments to `python -m hv_dataqc.compare`. Use `cache_fetcher/fetch_dbgap_cache.py`
+   to build the cache (deps: `requests`, `pyyaml`; one command per cohort,
+   idempotent on re-runs).
+
+5. **Reports are archived by commit + timestamp.** Every `compare.sh` run writes
+   its outputs into `local_output/archive/<git-short-commit>_<UTC-timestamp>/`,
+   and updates symlinks at `local_output/<cohort>_comparison_{report.md,results.json}`
+   to point at the latest archive entry. Old reports are never overwritten.
+   Each archive entry also contains a `manifest.json` recording the source
+   and harmonized JSONs used and the git commit at the time of the run.
 
 ---
 
@@ -107,8 +115,9 @@ cd hv_dataqc/local_scripts/
 
 ### Output layout
 
-Both extract scripts write into timestamped subdirectories with `latest_*`
-symlinks, so you never need to type timestamps:
+**Extract outputs** (on SB, in `/sbgenomics/workspace/QC-output-files/<COHORT>/`):
+both extract scripts write into timestamped subdirectories with `latest_*`
+symlinks, so you never need to type timestamps.
 
 ```
 QC-output-files/<COHORT>/
@@ -116,6 +125,21 @@ QC-output-files/<COHORT>/
   harmonized_<ts>/copdgene_harmonized_<ts>.json
   latest_source -> source_<ts>
   latest_harmonized -> harmonized_<ts>
+```
+
+**Comparison outputs** (locally, in `hv_dataqc/local_output/`): each
+`compare.sh` run writes into a fresh archive directory and updates
+top-level symlinks. Old reports are never overwritten.
+
+```
+hv_dataqc/local_output/
+  <cohort>_comparison_report.md           -> archive/<commit>_<ts>/...
+  <cohort>_comparison_results.json        -> archive/<commit>_<ts>/...
+  archive/
+    <git-commit>_<YYYYMMDDTHHMMSSZ>/
+      copdgene_comparison_report.md
+      copdgene_comparison_results.json
+      manifest.json
 ```
 
 ### Full manual workflow
@@ -126,10 +150,15 @@ individual steps or without the convenience wrappers.
 
 ---
 
-## Exported JSON Format (both extracts)
+## Exported JSON Format
 
 Both `extract_source_summaries.py` and `extract_harmonized_summaries.py` write
 **aggregate-only** JSON — no individual participant rows.
+
+### Source extract
+
+Source variables are stored nested by PHT (no top-level flat dict — that was
+removed in Phase B because column-name collisions across PHTs were ambiguous):
 
 ```json
 {
@@ -137,15 +166,46 @@ Both `extract_source_summaries.py` and `extract_harmonized_summaries.py` write
   "total_participants": 2973,
   "total_rows": 11892,
   "rows_per_visit": { "VISIT_1": 2973, ... },
-  "variables": {
-    "<key>": {
-      "type": "continuous",
-      "n_valid": 7757, "n_missing": 135,
-      "mean": 170.4, "sd": 9.1, ...
+  "participants_by_pht": { "pht002239": 2973, ... },
+  "total_rows_by_pht": { "pht002239": 8919, ... },
+  "variables_by_pht": {
+    "pht002239": {
+      "age_baseline": {
+        "type": "continuous",
+        "n_valid": 7757, "n_missing": 135,
+        "mean": 59.1, "sd": 8.9, ...
+      },
+      "sex": {
+        "type": "categorical",
+        "distribution": { "1": {"n": 5000, "pct": 42.1}, ... }
+      }
     },
-    "<key>": {
+    "pht016246": { ... }
+  }
+}
+```
+
+`compare.py` builds `variables_by_name[col][pht]` at startup for column-name
+lookups; when a YAML's PHV maps to a column that exists in multiple PHTs and
+the PHV→PHT route can't disambiguate, the comparison emits a per-variable
+`CROSSWALK` FAIL rather than silently picking one PHT.
+
+### Harmonized extract
+
+```json
+{
+  "metadata": { "source": "bdc_dmbip", "cohort": "SPIROMICS", ... },
+  "total_participants": 2973,
+  "total_rows": 11892,
+  "rows_per_visit": { "VISIT_1": 2973, ... },
+  "variables": {
+    "measurement_OBA:VT0001253": {
+      "type": "continuous",
+      "n_valid": 7757, ...
+    },
+    "condition_MONDO:0004981": {
       "type": "categorical",
-      "distribution": { "1": {"n": 5000, "pct": 42.1}, ... }
+      "distribution": { "PRESENT": {"n": 500, "pct": 6.5}, ... }
     }
   }
 }
@@ -153,10 +213,11 @@ Both `extract_source_summaries.py` and `extract_harmonized_summaries.py` write
 
 ---
 
-## Checks (C1-C12)
+## Checks
 
 | Check | What it validates |
 |-------|------------------|
+| `CROSSWALK` | Source-column lookups that the YAML/cache couldn't resolve to a single PHT (FAIL) |
 | C1 | Total participant N preserved |
 | C2 | Per-variable valid N (no silent row loss) |
 | C3 | Missing value rates stable |

@@ -130,8 +130,9 @@ python -m hv_dataqc.compare `
     --cache-dir .\dbgap-cache\aric
 ```
 
-Note: `--cache-dir` is **required** when `--yaml-dir` is supplied. The
-compare tool will hard-fail loudly (exit 2) rather than silently produce
+Note: `--cache-dir` and `--yaml-dir` are both **required** arguments to
+`python -m hv_dataqc.compare`. The compare tool will hard-fail loudly
+(exit 2) when the cache is missing or empty, rather than silently produce
 an empty crosswalk.
 
 ## Notes
