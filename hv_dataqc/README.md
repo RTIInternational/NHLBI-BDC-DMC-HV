@@ -84,7 +84,11 @@ source hv_dataqc/sb_scripts/setup.sh
 # 5. Optional: set vi as editor (SB doesn't persist dotfiles).
 source hv_dataqc/sb_scripts/vi_defaults.sh
 
-# 6. Run extracts for a cohort. Auto-discovers the latest DataRun and
+# 6. Optional sanity checks before kicking off a long extract:
+uv run python -m pytest hv_dataqc/tests/ -q   # unit + integration tests
+uv run python -m hv_dataqc.compare --help     # compare CLI sanity check
+
+# 7. Run extracts for a cohort. Auto-discovers the latest DataRun and
 #    packages a downloadable tgz when both extracts succeed.
 hv_dataqc/sb_scripts/run_extracts.sh COPDGene
 ```
@@ -175,6 +179,49 @@ Recent comparison report details:
 - C10 reads `_cross_variable_rules` from `clinical_ranges.yaml`; simple two-variable
   mean comparisons run automatically, while formula rules are reported as `SKIP`
   until implemented.
+
+---
+
+## Tests
+
+The test suite covers crosswalk construction, individual check functions,
+YAML parsing edge cases, and end-to-end integration scenarios for the
+ambiguous-PHT detection path. All tests are pure Python — no external
+fixtures or live data.
+
+```bash
+# All tests, terse output
+uv run python -m pytest hv_dataqc/tests/ -q
+
+# Single test class
+uv run python -m pytest hv_dataqc/tests/test_compare_source_harmonized.py::AmbiguousColumnIntegrationTests -v
+
+# Single test
+uv run python -m pytest \
+    hv_dataqc/tests/test_compare_source_harmonized.py::C1NPreservationTests::test_c1_pass_exact_match_no_pht \
+    -v
+```
+
+### Regression check (local only)
+
+`hv_dataqc/tests/regression_check.sh` compares the current Markdown +
+JSON comparison-report output for COPDGene, ARIC, and HCHS against
+pre-captured baselines (in `/tmp/phase_a_baseline/` by default). Used
+during refactor work to verify that mechanical changes preserve output
+behavior; not part of the regular test suite.
+
+```bash
+# Capture baselines from the current code state.
+hv_dataqc/tests/regression_check.sh capture
+
+# Diff current output against the captured baselines.
+hv_dataqc/tests/regression_check.sh check
+```
+
+Requires `compare.sh` to be runnable for all three cohorts, which means
+the source/harmonized JSONs must be present under `local_output/` and
+the dbGaP cache must be fetched for each cohort. Doesn't run on Seven
+Bridges (different paths, no harmonized download).
 
 ---
 
