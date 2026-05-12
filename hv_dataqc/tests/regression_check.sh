@@ -26,8 +26,12 @@ strip_md()   { sed -E 's/^\*\*Generated:\*\*.*$/<timestamp>/' "$1"; }
 
 run_compare_for() {
     local name="$1"
+    local slug="$2"
+    # Remove output files first so a crashed compare leaves no stale output
+    # that could be misread as a successful run.
+    rm -f "$OUT/${slug}_comparison_results.json" "$OUT/${slug}_comparison_report.md"
     # compare.sh exits nonzero when findings include FAILs; that's normal.
-    "$COMPARE" "$name" > "/tmp/compare_${name,,}.log" 2>&1 || true
+    "$COMPARE" "$name" > "/tmp/compare_${slug}.log" 2>&1 || true
 }
 
 if [ "$MODE" = "capture" ]; then
@@ -36,7 +40,7 @@ if [ "$MODE" = "capture" ]; then
         set -- $spec
         NAME="$1"; SLUG="$2"
         echo "Capturing $SLUG (cohort=$NAME)..."
-        run_compare_for "$NAME"
+        run_compare_for "$NAME" "$SLUG"
         if [ ! -f "$OUT/${SLUG}_comparison_results.json" ]; then
             echo "  ERROR: no output JSON for $SLUG — see /tmp/compare_${SLUG}.log"
             exit 1
@@ -59,7 +63,7 @@ for spec in "COPDGene copdgene" "ARIC aric" "hchs hchs"; do
     NAME="$1"; SLUG="$2"
 
     echo "--- $SLUG ---"
-    run_compare_for "$NAME"
+    run_compare_for "$NAME" "$SLUG"
 
     if [ ! -f "$OUT/${SLUG}_comparison_results.json" ]; then
         echo "  compare run FAILED (no JSON output) — see /tmp/compare_${SLUG}.log"
