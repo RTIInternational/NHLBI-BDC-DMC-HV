@@ -81,24 +81,20 @@ Per-family file grouping, ~7 files of moderate size.
   output.
 
 **Regression-safety approach:** before each file extraction, capture the
-current Markdown report for COPDGene, ARIC, and HCHS. After the extraction,
-re-run compare on the same inputs and diff. The MD report (after stripping
-the `**Generated:**` timestamp line) is deterministic and is the canonical
-parity signal — same `**Generated:**`-stripped MD means same comparison
-results. JSON output has pre-existing nondeterministic array ordering on
-some cohorts (HCHS observed; presumably from dict iteration in
-distribution emission); we track it but don't use it as the parity gate.
+current Markdown report and JSON output for COPDGene, ARIC, and HCHS. After
+the extraction, re-run compare on the same inputs and diff. Both MD (after
+stripping the `**Generated:**` line) and JSON (after stripping
+`metadata.generated_at`) are deterministic and form the parity gate.
 
 Harness lives at `hv_dataqc/tests/regression_check.sh`:
 `./regression_check.sh capture` captures baselines from current state;
 `./regression_check.sh check` re-runs and diffs. Used during each Phase A
 extraction commit.
 
-**Pre-existing nondeterminism worth fixing later:** ARIC and HCHS comparison
-JSON emits distribution rows in different order across runs. Doesn't affect
-the MD output (renderer must be sorting before emission). Likely a one-line
-`sorted(...)` fix in the JSON-emission path; consider doing it as a
-warmup for Phase B.
+A C7 set-iteration bug producing nondeterministic JSON output on
+categorical-heavy cohorts (ARIC, HCHS) was fixed in commit 3ab2e41f as
+prep for this phase. MD output was already deterministic; the fix only
+affects raw JSON row ordering.
 
 ---
 
