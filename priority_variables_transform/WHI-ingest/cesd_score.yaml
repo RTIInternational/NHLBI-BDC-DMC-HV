@@ -1,0 +1,23 @@
+- class_derivations:
+    Observation:
+      populated_from: pht001005
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078867}) + ":WHI")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078867}) + ":WHI FORM 37")'
+        observation_type:
+          value: OMOP:0
+        method_type:
+          value: "questionnaire"
+          range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001005
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00079079
+                  unit:
+                    value: "{score}"
