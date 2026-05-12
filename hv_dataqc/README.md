@@ -49,29 +49,48 @@ ranges, visit structure, and cross-variable consistency.
 
 ### Quick start (using convenience scripts)
 
-**On Seven Bridges** (run extracts):
+**On Seven Bridges** (run extracts).
+These instructions assume a fresh Data Studio session (no persisted state).
+SB studio sessions often crash after a timeout and lose the workspace, so
+"start from scratch" is the realistic default; if the repo is already
+present and on the branch you want, you can skip the clone/checkout
+steps.
+
 ```bash
-cd <path-to>/NHLBI-BDC-DMC-HV
-git pull
-source hv_dataqc/sb_scripts/setup.sh
-hv_dataqc/sb_scripts/run_extracts.sh COPDGene
-# → auto-discovers DataRun, runs both extracts, packages output.tgz for download
-```
+# 1. Clone the repo if it's not already here (run in whatever dir you
+#    want the clone to live under — /sbgenomics/workspace/ is typical).
+[ -d NHLBI-BDC-DMC-HV ] || git clone https://github.com/RTIInternational/NHLBI-BDC-DMC-HV.git
 
-***Note: if the latest QC code is on a feature branch that hasn't been merged to main yet, you'll need to check out that branch instead:
-```
-# 1. Go into the repo
+# 2. Enter the repo and sync with origin.
 cd NHLBI-BDC-DMC-HV
-
-# 2. Fetch all remote branches
 git fetch origin
 
-# 3. Switch to the target branch
-git checkout <feature branch name>
+# 3. Check out the branch you want. The active QC-refactor work lives on
+#    a `refactor/phase-*` branch stacked on `feature/hv-dataqc-20260423`
+#    (the umbrella). To list the most recently updated remotes:
+#       git for-each-ref --sort=-committerdate \
+#           --format='%(refname:short)  %(committerdate:short)  %(subject)' \
+#           refs/remotes/origin/ | head -10
+#    Then `git checkout <name>` using the short name (git creates a local
+#    tracking branch automatically). Pick the latest `refactor/phase-*`
+#    branch if you want the in-flight QC refactor; pick the umbrella if
+#    you want everything that's merged so far. Example:
+git checkout refactor/phase-b-json-cleanup   # most recent QC-refactor branch
+git pull --ff-only
 
-# 4. Pull latest from that branch
-git pull origin <feature branch name>
+# 4. Install deps (once per session — uv isn't preinstalled on SB).
+source hv_dataqc/sb_scripts/setup.sh
+
+# 5. Optional: set vi as editor (SB doesn't persist dotfiles).
+source hv_dataqc/sb_scripts/vi_defaults.sh
+
+# 6. Run extracts for a cohort. Auto-discovers the latest DataRun and
+#    packages a downloadable tgz when both extracts succeed.
+hv_dataqc/sb_scripts/run_extracts.sh COPDGene
 ```
+
+Download the resulting `dataqc_<cohort>_output.tgz` from `/sbgenomics/workspace/`
+via JupyterLab's file browser (right-click → Download).
 
 **Locally** (fetch cache, unpack, compare):
 ```bash
