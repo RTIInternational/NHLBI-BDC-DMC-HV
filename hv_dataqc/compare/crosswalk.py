@@ -1928,8 +1928,10 @@ def build_variable_crosswalk(
                 if expr_summary is not None:
                     summaries_by_phv[expr_phv] = dict(expr_summary)
 
-        if not per_pht_summaries:
-            # Couldn't resolve a single contributing summary.
+        if not per_pht_summaries and not ambiguous_columns:
+            # Couldn't resolve a single contributing summary, and it's not
+            # because of ambiguity — record as unresolved YAML so the
+            # diagnostics reporter can surface it.
             unresolved.setdefault(harmonized_key, []).extend(
                 [
                     {
