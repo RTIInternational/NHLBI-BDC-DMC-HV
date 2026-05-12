@@ -263,5 +263,3 @@ def check_c7_categorical_distribution(
                            f"Partial expected distribution has {len(mismatches)} category shift(s); row-level data needed for exact verdict", detail)
     return CheckResult("C7", var_name, "WARN",
                        f"{len(mismatches)} categories with >+/-{pass_pct}% shift", detail)
-
-

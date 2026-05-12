@@ -2,7 +2,7 @@
 
 Self-contained downloader for the dbGaP per-dataset XML metadata that the
 HV-DataQC compare tool needs. Run this once per cohort to build a local
-cache, then point `compare_source_harmonized.py --cache-dir` at it.
+cache, then point `python -m hv_dataqc.compare --cache-dir` at it.
 
 ## What it downloads
 
@@ -29,7 +29,7 @@ For each cohort, the FTP `pheno_variable_summaries/` directory:
       ...
 ```
 
-This matches exactly what `compare_source_harmonized.py --cache-dir` expects.
+This matches exactly what `python -m hv_dataqc.compare --cache-dir` expects.
 
 ## Cohort versions
 

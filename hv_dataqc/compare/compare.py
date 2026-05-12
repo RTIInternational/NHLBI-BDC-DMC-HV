@@ -2,7 +2,7 @@
 hv_dataqc.compare — Source vs. Harmonized comparison orchestrator.
 
 Compare aggregate summaries from extract_source_summaries.py (raw dbGaP source)
-and extract_harmonized_summaries.py (dm-bip harmonized output). Runs checks C1–C11
+and extract_harmonized_summaries.py (dm-bip harmonized output). Runs checks C1–C12
 and produces a Markdown + JSON report.
 
 No hardcoded paths. All paths are explicit CLI arguments.
@@ -20,6 +20,7 @@ CHECKS:
   C9  Clinical Range         — harmonized values within clinical_ranges.yaml bounds
   C10 Cross-Variable Consistency — SBP > DBP, FEV1 < FVC, etc.
   C11 Variable Type Consistency  — source/harmonized agree on continuous vs. categorical
+  C12 Value Mapping Coverage     — YAML value_mappings cover dbGaP coded values
 
 USAGE:
   python -m hv_dataqc.compare \\
@@ -263,7 +264,7 @@ def _dedup_check_results(results: list[CheckResult]) -> list[CheckResult]:
 
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(
-        description="Compare source vs. harmonized summaries (C1-C11 checks).",
+        description="Compare source vs. harmonized summaries (C1-C12 checks).",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     p.add_argument("--source", required=True, metavar="JSON",

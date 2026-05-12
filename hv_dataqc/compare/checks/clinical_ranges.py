@@ -125,4 +125,3 @@ def check_c9_clinical_range(
     return CheckResult("C9", var_name, status,
                        "; ".join(issues),
                        {"min": out_min, "max": out_max})
-

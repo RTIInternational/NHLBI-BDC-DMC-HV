@@ -60,4 +60,3 @@ def check_c11_type_consistency(
         f"Type mismatch: expected={src_type}, harmonized={harmonized_type}",
         detail_base,
     )
-

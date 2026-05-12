@@ -12,7 +12,7 @@ ranges, visit structure, and cross-variable consistency.
 |--------|--------|---------|-----------|
 | `extract_source/` | `extract_source_summaries.py` | Summarize raw dbGaP TSVs | **Inside enclave** |
 | `extract_harmonized/` | `extract_harmonized_summaries.py` | Summarize dm-bip harmonized output | **Inside enclave** |
-| `compare/` | `python -m hv_dataqc.compare` | Compare both summaries; run checks C1-C11 | Outside enclave |
+| `compare/` | `python -m hv_dataqc.compare` | Compare both summaries; run checks C1-C12 | Outside enclave |
 | `cache_fetcher/` | `fetch_dbgap_cache.py` | Download dbGaP data dictionaries for PHV resolution | Outside enclave |
 | `sb_scripts/` | Runner/analysis scripts | Ad-hoc scripts for enclave work | **Inside enclave** |
 | `local_scripts/` | `compare.sh`, `fetch_cache.sh` | Convenience wrappers (auto-resolve paths) | Outside enclave |
@@ -130,7 +130,7 @@ Both `extract_source_summaries.py` and `extract_harmonized_summaries.py` write
 
 ---
 
-## Checks (C1-C11)
+## Checks (C1-C12)
 
 | Check | What it validates |
 |-------|------------------|
@@ -145,6 +145,7 @@ Both `extract_source_summaries.py` and `extract_harmonized_summaries.py` write
 | C9 | Harmonized values within clinical plausible range |
 | C10 | Cross-variable consistency (SBP > DBP, FEV1 < FVC) |
 | C11 | Source/harmonized type consistency (continuous vs categorical) |
+| C12 | YAML value_mappings cover dbGaP coded values |
 
 Recent comparison report details:
 
