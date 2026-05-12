@@ -20,7 +20,7 @@ sys.path.insert(0, str(COMPARE_DIR))
 
 from hv_dataqc_common import normalize_category_key, write_json_atomic  # noqa: E402
 
-from compare_source_harmonized import (  # noqa: E402
+from compare import (  # noqa: E402
     CheckResult,
     CrosswalkBuildError,
     _aggregate_source_summaries,
@@ -1088,7 +1088,7 @@ class C1NPreservationTests(unittest.TestCase):
 # Crosswalk extraction: case() and value_mappings concept code improvements
 # ---------------------------------------------------------------------------
 
-from compare_source_harmonized import (  # noqa: E402
+from compare import (  # noqa: E402
     _concept_codes_from_expr,
     _concept_codes_from_value_mappings,
     _extract_crosswalk_from_class_derivations,

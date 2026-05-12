@@ -23,7 +23,7 @@ cd ../local_scripts/
 
 ```bash
 # Full run with YAML-driven crosswalk
-python compare_source_harmonized.py \
+python -m hv_dataqc.compare \
     --source  spiromics_source_20250101T120000.json \
     --harmonized  spiromics_harmonized_20250101T120000.json \
     --cohort  SPIROMICS \
@@ -31,13 +31,13 @@ python compare_source_harmonized.py \
     --cache-dir /path/to/data/dbgap-cache/spiromics/
 
 # Without YAML crosswalk (only C1/C8/C10 run)
-python compare_source_harmonized.py \
+python -m hv_dataqc.compare \
     --source  spiromics_source_20250101T120000.json \
     --harmonized  spiromics_harmonized_20250101T120000.json \
     --cohort  SPIROMICS
 
 # Custom tolerances and output paths
-python compare_source_harmonized.py \
+python -m hv_dataqc.compare \
     --source  src.json --harmonized out.json --cohort CARDIA \
     --yaml-dir /HV/priority_variables_transform/CARDIA-ingest/ \
     --cache-dir /dbgap-cache/cardia/ \

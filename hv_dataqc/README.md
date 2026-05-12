@@ -12,7 +12,7 @@ ranges, visit structure, and cross-variable consistency.
 |--------|--------|---------|-----------|
 | `extract_source/` | `extract_source_summaries.py` | Summarize raw dbGaP TSVs | **Inside enclave** |
 | `extract_harmonized/` | `extract_harmonized_summaries.py` | Summarize dm-bip harmonized output | **Inside enclave** |
-| `compare/` | `compare_source_harmonized.py` | Compare both summaries; run checks C1-C11 | Outside enclave |
+| `compare/` | `python -m hv_dataqc.compare` | Compare both summaries; run checks C1-C11 | Outside enclave |
 | `cache_fetcher/` | `fetch_dbgap_cache.py` | Download dbGaP data dictionaries for PHV resolution | Outside enclave |
 | `sb_scripts/` | Runner/analysis scripts | Ad-hoc scripts for enclave work | **Inside enclave** |
 | `local_scripts/` | `compare.sh`, `fetch_cache.sh` | Convenience wrappers (auto-resolve paths) | Outside enclave |
@@ -35,7 +35,7 @@ ranges, visit structure, and cross-variable consistency.
 
 3. **Comparison uses live YAMLs.** The crosswalk (source PHV → harmonized concept
    code) is built fresh from the current HV YAML checkout on every compare run.
-   Re-run `compare_source_harmonized.py` as often as needed as YAMLs evolve — no
+   Re-run `python -m hv_dataqc.compare` as often as needed as YAMLs evolve — no
    re-entry to the enclave required.
 
 4. **dbGaP cache is required for YAML mode.** When `--yaml-dir` is supplied, a

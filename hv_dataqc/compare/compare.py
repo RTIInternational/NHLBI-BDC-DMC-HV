@@ -1,5 +1,5 @@
 """
-compare_source_harmonized.py — HV-DataQC Component 3
+hv_dataqc.compare — Source vs. Harmonized comparison orchestrator.
 
 Compare aggregate summaries from extract_source_summaries.py (raw dbGaP source)
 and extract_harmonized_summaries.py (dm-bip harmonized output). Runs checks C1–C11
@@ -22,7 +22,7 @@ CHECKS:
   C11 Variable Type Consistency  — source/harmonized agree on continuous vs. categorical
 
 USAGE:
-  python compare_source_harmonized.py \\
+  python -m hv_dataqc.compare \\
       --source  spiromics_source_20250101T120000.json \\
       --harmonized  spiromics_harmonized_20250101T120000.json \\
       --cohort  SPIROMICS \\

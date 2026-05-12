@@ -2,7 +2,7 @@
 extract_harmonized_summaries.py — HV-DataQC Component 2
 
 Summarize dm-bip harmonized output TSV files for one cohort and export an
-aggregate-only JSON artifact compatible with compare_source_harmonized.py.
+aggregate-only JSON artifact compatible with hv_dataqc.compare.
 
 Design:
   - ZERO dependency on HV transform YAML files. Reads entity TSVs produced by

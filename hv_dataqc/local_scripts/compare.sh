@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Convenience wrapper for compare_source_harmonized.py.
+# Convenience wrapper for `python -m hv_dataqc.compare`.
 # Picks up the latest source/harmonized JSONs from local_output/ for the given cohort.
 #
 # Usage:
@@ -51,7 +51,7 @@ YAML_DIR="$(find "$HV/priority_variables_transform" -maxdepth 1 -type d -iname "
 
 if [ -z "$YAML_DIR" ]; then
     echo "WARNING: No YAML dir found for $COHORT in priority_variables_transform/. Running without crosswalk." >&2
-    (cd "$HV" && uv run python -m hv_dataqc.compare.compare_source_harmonized \
+    (cd "$HV" && uv run python -m hv_dataqc.compare \
         --source "$SOURCE" \
         --harmonized "$HARMONIZED" \
         --cohort "$COHORT" \
@@ -65,7 +65,7 @@ else
         echo "  Run: ./fetch_cache.sh --cohort $COHORT_LOWER" >&2
         exit 1
     fi
-    (cd "$HV" && uv run python -m hv_dataqc.compare.compare_source_harmonized \
+    (cd "$HV" && uv run python -m hv_dataqc.compare \
         --source "$SOURCE" \
         --harmonized "$HARMONIZED" \
         --cohort "$COHORT" \

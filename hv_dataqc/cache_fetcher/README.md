@@ -122,7 +122,7 @@ downloads substantially more data. Most users only need one cohort at a time.
 ## Wiring it into the compare tool
 
 ```powershell
-python ..\compare\compare_source_harmonized.py `
+python -m hv_dataqc.compare `
     --cohort ARIC `
   --source <source.json> `
   --harmonized <harmonized.json> `
