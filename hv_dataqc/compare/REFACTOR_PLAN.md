@@ -57,7 +57,7 @@ hv_dataqc/compare/
 ├── __main__.py                # CLI entry, orchestration
 ├── compare.py                 # top-level run_comparison(...) function
 ├── crosswalk.py               # YAML parsing, mode detection, PHV resolution
-├── io.py                      # JSON read/write
+├── report_io.py               # report writes (MD + JSON), thresholds load
 ├── render.py                  # MD rendering
 ├── checks/
 │   ├── __init__.py

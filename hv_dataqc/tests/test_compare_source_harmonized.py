@@ -33,7 +33,6 @@ from compare_source_harmonized import (  # noqa: E402
     _json_safe,
     _normalize_code,
     _to_discovered_key,
-    _write_text_atomic,
     authoritative_source_type_for_match,
     build_variable_crosswalk,
     build_expected_summary,
@@ -48,9 +47,12 @@ from compare_source_harmonized import (  # noqa: E402
     check_c8_visit_distribution,
     check_c9_clinical_range,
     determine_comparison_type,
-    load_thresholds,
     should_run_c5_conversion_check,
     validate_clinical_ranges_config,
+)
+from hv_dataqc.compare.report_io import (  # noqa: E402
+    load_thresholds,
+    write_text_atomic as _write_text_atomic,
 )
 
 

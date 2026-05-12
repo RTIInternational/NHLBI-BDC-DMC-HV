@@ -54,36 +54,18 @@ from hv_dataqc.hv_dataqc_common import (
     json_safe,
     load_phv_name_map as _shared_load_phv_name_map,
     normalize_category_key,
-    write_json_atomic,
+)
+from hv_dataqc.compare.report_io import (
+    load_thresholds,
+    write_json_atomic_strict,
+    write_text_atomic,
 )
 
 # Default clinical ranges config (relative to this script)
 _CONFIG_DIR = Path(__file__).resolve().parent / "config"
-_THRESHOLDS_PATH = _CONFIG_DIR / "thresholds.yaml"
 
 _canonical_phv_id = canonical_phv_id
 _json_safe = json_safe
-
-
-def _write_json_atomic(path: Path, data: Any) -> None:
-    """Write strict JSON via temp file then atomic replace."""
-    write_json_atomic(path, data, ensure_ascii=False, default=str)
-
-
-def _write_text_atomic(path: Path, text: str) -> None:
-    """Write text via temp file then atomic replace.
-
-    Creates parent directories as needed.
-    """
-    path.parent.mkdir(parents=True, exist_ok=True)
-    tmp_path = path.with_name(f"{path.name}.tmp")
-    try:
-        with tmp_path.open("w", encoding="utf-8") as fh:
-            fh.write(text)
-        tmp_path.replace(path)
-    finally:
-        if tmp_path.exists():
-            tmp_path.unlink()
 
 
 def _md_escape(value: Any) -> str:
@@ -143,28 +125,6 @@ def validate_clinical_ranges_config(clinical_ranges: dict) -> list[str]:
                     )
 
     return warnings
-
-
-def load_thresholds(path: Path | None = None) -> dict:
-    """Load statistical comparison thresholds from YAML, falling back to built-in defaults.
-
-    Built-in defaults match COPDGene-calibrated values.  Any subset of keys
-    can be overridden by supplying a custom YAML path via ``--thresholds``.
-    """
-    effective_path = path or _THRESHOLDS_PATH
-    if effective_path.exists():
-        try:
-            with effective_path.open("r", encoding="utf-8") as fh:
-                cfg = yaml.safe_load(fh) or {}
-            print(f"Loaded thresholds from {effective_path.name}")
-            return cfg
-        except yaml.YAMLError as exc:
-            print(f"WARNING: Malformed thresholds YAML {effective_path.name}: {exc} -- using built-in defaults",
-                  file=sys.stderr)
-            return {}
-    if path is not None:
-        print(f"WARNING: Thresholds file not found: {effective_path} -- using built-in defaults")
-    return {}
 
 
 # ---------------------------------------------------------------------------
@@ -4051,7 +4011,7 @@ def main(argv: list[str] | None = None) -> None:
         all_results, cohort, source_meta, harmonized_meta, crosswalk=crosswalk
     )
     report_path = Path(args.report or f"{cohort.lower()}_comparison_report.md")
-    _write_text_atomic(report_path, md)
+    write_text_atomic(report_path, md)
     print(f"\nMarkdown report : {report_path}")
 
     # Write JSON
@@ -4075,7 +4035,7 @@ def main(argv: list[str] | None = None) -> None:
         "results": [r.to_dict() for r in all_results],
     }
     json_path = Path(args.json_report or f"{cohort.lower()}_comparison_results.json")
-    _write_json_atomic(json_path, json_report)
+    write_json_atomic_strict(json_path, json_report)
     print(f"JSON report     : {json_path}")
 
     n_fail = counts.get("FAIL", 0)
