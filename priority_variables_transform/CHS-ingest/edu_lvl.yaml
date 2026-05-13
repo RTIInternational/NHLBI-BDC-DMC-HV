@@ -3,7 +3,7 @@
       populated_from: pht001450
       slot_derivations:
         associated_participant:
-          populated_from: phv00098771
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00098771}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
         observation_type:
@@ -15,7 +15,7 @@
               Quantity:
                 populated_from: pht001450
                 slot_derivations:
-                  value_decimal:
+                  value_concept:
                     populated_from: phv00098802
                     value_mappings:
                       '8': 8TH_GRADE_OR_LESS
@@ -33,9 +33,9 @@
       populated_from: pht001490
       slot_derivations:
         associated_participant:
-          populated_from: phv00105099
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00105099}) + ":CHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS BASELINE 2")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
         observation_type:
           value: OMOP:4022643
           range: string
@@ -45,7 +45,7 @@
               Quantity:
                 populated_from: pht001490
                 slot_derivations:
-                  value_decimal:
+                  value_concept:
                     populated_from: phv00105119
                     value_mappings:
                       '6': 8TH_GRADE_OR_LESS

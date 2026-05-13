@@ -3,14 +3,16 @@
       populated_from: pht001490
       slot_derivations:
         associated_participant:
-          populated_from: phv00105099
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00105099}) + ":CHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS BASELINE 2")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
         age_at_observation:
           expr: '{phv00105622} * 365'
         observation_type:
           value: OMOP:4042886
           range: string
+        method_type:
+          value: "Food Frequency Questionnaire"
         value_quantity:
           object_derivations:
           - class_derivations:
