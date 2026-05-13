@@ -7,7 +7,7 @@
         name:
           value: LTRC Baseline
         associated_participant:
-          populated_from: phv00429048
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00429048}) + ":LTRC")'
         visit_category:
           value: HEALTH_EXAMINATION
         age_at_visit_start:

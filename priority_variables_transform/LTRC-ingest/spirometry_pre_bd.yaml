@@ -3,7 +3,7 @@
       populated_from: pht010064
       slot_derivations:
         associated_participant:
-          populated_from: phv00429460
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00429460}) + ":LTRC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00429460}) + ":LTRC Baseline")'
         observations:
@@ -14,6 +14,8 @@
                 slot_derivations:
                   observation_type:
                     value: OMOP:4241837
+                  body_position:
+                    value: SITTING_POSITION
                   method_type:
                     value: pre-bronchodilator spirometry
                   value_quantity:
@@ -32,6 +34,8 @@
                 slot_derivations:
                   observation_type:
                     value: OMOP:4176265
+                  body_position:
+                    value: SITTING_POSITION
                   method_type:
                     value: pre-bronchodilator spirometry
                   value_quantity:
@@ -50,6 +54,8 @@
                 slot_derivations:
                   observation_type:
                     value: OMOP:3011505
+                  body_position:
+                    value: SITTING_POSITION
                   method_type:
                     value: pre-bronchodilator spirometry
                   value_quantity:
