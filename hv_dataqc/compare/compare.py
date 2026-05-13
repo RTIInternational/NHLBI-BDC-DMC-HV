@@ -343,7 +343,11 @@ def _dedup_check_results(results: list[CheckResult]) -> list[CheckResult]:
 
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(
-        description="Compare source vs. harmonized summaries (C1-C12 checks).",
+        description=(
+            "Compare source vs. harmonized summaries. Runs the full set of "
+            "configured checks (see the module docstring or README for the "
+            "current list)."
+        ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     p.add_argument("--source", required=True, metavar="JSON",
@@ -435,7 +439,15 @@ def main(argv: list[str] | None = None) -> None:
     with open(args.harmonized, "r", encoding="utf-8") as fh:
         harmonized: dict = json.load(fh)
 
-    variables_by_pht = source.get("variables_by_pht", {})
+    variables_by_pht = source.get("variables_by_pht")
+    if not isinstance(variables_by_pht, dict) or not variables_by_pht:
+        print(
+            f"ERROR: source JSON {args.source} has no usable `variables_by_pht`. "
+            "Either the file is malformed or it was produced by an unsupported "
+            "extractor version. Re-run extract_source_summaries.py to regenerate.",
+            file=sys.stderr,
+        )
+        sys.exit(2)
     variables_by_name = _build_variables_by_name(variables_by_pht)
     harmonized_vars = _normalize_harmonized_vars(harmonized.get("variables", {}))
     source_meta = source.get("metadata", {})

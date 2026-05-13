@@ -85,8 +85,13 @@ COMPARE_RC=0
     --json-report "$JSON_REPORT" \
     "$@") || COMPARE_RC=$?
 
-# Manifest records the inputs used for this archive entry.
-cat > "$ARCHIVE_DIR/manifest.json" <<EOF
+# Only update the latest symlinks and write the manifest if compare actually
+# produced both expected outputs. A pre-output crash (invalid input, schema
+# mismatch, etc.) should leave the previous latest links pointing at the
+# last successful run rather than at a half-written or missing archive.
+if [ -f "$REPORT" ] && [ -f "$JSON_REPORT" ]; then
+    # Manifest records the inputs used for this archive entry.
+    cat > "$ARCHIVE_DIR/manifest.json" <<EOF
 {
   "cohort": "$COHORT",
   "git_commit": "$GIT_COMMIT",
@@ -97,14 +102,26 @@ cat > "$ARCHIVE_DIR/manifest.json" <<EOF
 }
 EOF
 
-# Update top-level symlinks to point at the latest archived report.
-ln -sfn "archive/${GIT_COMMIT}_${RUN_TS}/${COHORT_LOWER}_comparison_report.md" "$LATEST_REPORT"
-ln -sfn "archive/${GIT_COMMIT}_${RUN_TS}/${COHORT_LOWER}_comparison_results.json" "$LATEST_JSON"
+    # Update top-level symlinks to point at the latest archived report.
+    ln -sfn "archive/${GIT_COMMIT}_${RUN_TS}/${COHORT_LOWER}_comparison_report.md" "$LATEST_REPORT"
+    ln -sfn "archive/${GIT_COMMIT}_${RUN_TS}/${COHORT_LOWER}_comparison_results.json" "$LATEST_JSON"
 
-echo
-echo "Reports: $REPORT"
-echo "         $JSON_REPORT"
-echo "Latest:  $LATEST_REPORT -> archive/${GIT_COMMIT}_${RUN_TS}/"
+    echo
+    echo "Reports: $REPORT"
+    echo "         $JSON_REPORT"
+    echo "Latest:  $LATEST_REPORT -> archive/${GIT_COMMIT}_${RUN_TS}/"
+else
+    # Compare failed before writing output. Clean up the empty archive dir
+    # (rmdir is safe — it only removes empty dirs) and leave existing
+    # latest symlinks alone.
+    rmdir "$ARCHIVE_DIR" 2>/dev/null || true
+    echo >&2
+    echo "ERROR: compare exited with $COMPARE_RC without producing output files." >&2
+    echo "Existing latest symlinks (if any) are unchanged." >&2
+    # Ensure we propagate a failure exit even if the compare process
+    # somehow reported 0 but produced no output.
+    [ "$COMPARE_RC" -eq 0 ] && COMPARE_RC=1
+fi
 
 # Preserve the compare exit code so callers (e.g., CI / regression-check)
 # can still detect FAILs even though we did extra work after the run.

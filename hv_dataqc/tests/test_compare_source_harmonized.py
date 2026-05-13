@@ -5,6 +5,7 @@ All fixtures are aggregate metadata only; no participant-level rows are used.
 
 from __future__ import annotations
 
+import json
 import sys
 import unittest
 import math
@@ -26,6 +27,7 @@ from compare import (  # noqa: E402
     _aggregate_source_summaries,
     _ambiguous_columns_fail,
     _case_branches,
+    main as compare_main,
     _expected_harmonized_n,
     _expected_summary_from_concept_value_map,
     _expected_summary_from_value_map,
@@ -1632,6 +1634,82 @@ class HarmonizedKeyNormalizationTests(unittest.TestCase):
             self.assertEqual(len(matches), 1)
             self.assertEqual(matches[0]["harmonized_key"], "measurement_OMOP:4152194")
             self.assertEqual(matches[0]["source_key"], "sysBP")
+
+
+class SourceSchemaValidationTests(unittest.TestCase):
+    """compare.main must reject source JSON without `variables_by_pht`.
+
+    Otherwise a malformed or unsupported-extractor source summary will
+    silently compare as zero source variables, producing misleading
+    unmatched/missing output.
+    """
+
+    def _write_minimal_inputs(
+        self,
+        tmp: Path,
+        source_doc: dict,
+        harmonized_doc: dict | None = None,
+    ) -> dict[str, Path]:
+        """Lay out a temp dir with the files compare.main needs at startup.
+
+        Returns a dict of paths the caller can pass into argv. Yaml and
+        cache dirs exist but are empty — the schema check is supposed to
+        fire before the crosswalk build, so empty is fine.
+        """
+        src_path = tmp / "src.json"
+        harm_path = tmp / "harm.json"
+        yaml_dir = tmp / "yaml"
+        cache_dir = tmp / "cache"
+        src_path.write_text(json.dumps(source_doc), encoding="utf-8")
+        harm_path.write_text(
+            json.dumps(harmonized_doc if harmonized_doc is not None else {"variables": {}}),
+            encoding="utf-8",
+        )
+        yaml_dir.mkdir()
+        cache_dir.mkdir()
+        return {
+            "source": src_path, "harmonized": harm_path,
+            "yaml_dir": yaml_dir, "cache_dir": cache_dir,
+        }
+
+    def _argv(self, paths: dict[str, Path]) -> list[str]:
+        return [
+            "--source", str(paths["source"]),
+            "--harmonized", str(paths["harmonized"]),
+            "--cohort", "TESTCOHORT",
+            "--yaml-dir", str(paths["yaml_dir"]),
+            "--cache-dir", str(paths["cache_dir"]),
+        ]
+
+    def test_missing_variables_by_pht_exits_with_clear_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = self._write_minimal_inputs(
+                Path(tmp),
+                source_doc={"metadata": {}, "total_rows": 100},  # no variables_by_pht
+            )
+            with self.assertRaises(SystemExit) as ctx:
+                compare_main(self._argv(paths))
+            self.assertEqual(ctx.exception.code, 2)
+
+    def test_empty_variables_by_pht_exits_with_clear_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = self._write_minimal_inputs(
+                Path(tmp),
+                source_doc={"metadata": {}, "variables_by_pht": {}},
+            )
+            with self.assertRaises(SystemExit) as ctx:
+                compare_main(self._argv(paths))
+            self.assertEqual(ctx.exception.code, 2)
+
+    def test_variables_by_pht_wrong_type_exits_with_clear_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = self._write_minimal_inputs(
+                Path(tmp),
+                source_doc={"metadata": {}, "variables_by_pht": "not a dict"},
+            )
+            with self.assertRaises(SystemExit) as ctx:
+                compare_main(self._argv(paths))
+            self.assertEqual(ctx.exception.code, 2)
 
 
 class AtomicWriteTests(unittest.TestCase):
