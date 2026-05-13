@@ -1,6 +1,7 @@
-# P2/P3 gated: phv00569146 (hematocrit) collected in P2 P3 only (not P1)
+# Hypertension treatment (current medication for high blood pressure)
+# phv00568929: currmedhighbp - collected P2 P3 (0=No, 1=Yes)
 - class_derivations:
-    MeasurementObservation:
+    DrugExposure:
       populated_from: pht002239
       slot_derivations:
         associated_visit:
@@ -11,19 +12,12 @@
             str({phv00159568}) + ':COPDGene P3B')), (True, None))
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00159568}) + ":COPDGene")'
-        age_at_observation:
-          expr: '{phv00568808} * 365'
-        observation_type:
-          value: OBA:2045381
-        method_type:
-          value: CBC
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002239
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00569146
-                  unit:
-                    value: '%'
+        drug_concept:
+          value: ATC:C02
+        exposure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+        exposure_status:
+          populated_from: phv00568929
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT

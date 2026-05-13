@@ -1,4 +1,4 @@
-# P2/P3 gated: phv00569146 (hematocrit) collected in P2 P3 only (not P1)
+# P2/P3 gated: phv00569148 (MCH) collected in P2 P3 only
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002239
@@ -14,7 +14,7 @@
         age_at_observation:
           expr: '{phv00568808} * 365'
         observation_type:
-          value: OBA:2045381
+          value: OBA:2045301
         method_type:
           value: CBC
         value_quantity:
@@ -24,6 +24,6 @@
                 populated_from: pht002239
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00569146
+                    populated_from: phv00569148
                   unit:
-                    value: '%'
+                    value: pg
