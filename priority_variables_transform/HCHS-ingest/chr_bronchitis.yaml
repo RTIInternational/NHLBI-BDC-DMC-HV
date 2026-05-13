@@ -6,17 +6,16 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
-        age_at_condition_start:
-          expr: case(({phv00526597} == 1, {phv00526598} * 365))
         condition_concept:
-          value: HP:0001681
+          value: MONDO:0006070
           range: string
         condition_status:
-          populated_from: phv00526597
+          populated_from: phv00526883
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
             '9': UNKNOWN
+            'Q': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string

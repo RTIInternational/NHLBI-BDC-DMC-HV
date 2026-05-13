@@ -3,7 +3,7 @@
       populated_from: pht004715
       slot_derivations:
         associated_participant:
-          populated_from: phv00226250
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         condition_concept:
@@ -18,6 +18,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -26,7 +29,7 @@
       populated_from: pht004715
       slot_derivations:
         associated_participant:
-          populated_from: phv00226250
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         age_at_condition_start:
@@ -44,6 +47,9 @@
             '0': PATIENT_SELF-REPORTED_CONDITION
             '1': CLINICAL_DIAGNOSIS
             '9': UNKNOWN
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -52,7 +58,7 @@
       populated_from: pht004715
       slot_derivations:
         associated_participant:
-          populated_from: phv00226250
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         age_at_condition_start:

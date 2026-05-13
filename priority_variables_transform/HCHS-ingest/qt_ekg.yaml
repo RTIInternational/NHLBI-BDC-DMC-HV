@@ -6,13 +6,13 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
+        observation_type:
+          value: OMOP:4273023
+          range: string
         age_at_observation:
           expr: '{phv00226251} * 365'
-        observation_type:
-          value: OMOP:37208635
-          range: string
         method_type:
-          value: "calculated from serum creatinine"
+          value: "Electrocardiogram"
           range: string
         value_quantity:
           object_derivations:
@@ -21,9 +21,9 @@
                 populated_from: pht004715
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00253222
+                    populated_from: phv00226265
                   unit:
-                    value: mL/min/{1.73_m2}
+                    value: "ms"
                     range: string
 - class_derivations:
     MeasurementObservation:
@@ -33,13 +33,13 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
+        observation_type:
+          value: OMOP:4273023
+          range: string
         age_at_observation:
           expr: '{phv00226251} * 365'
-        observation_type:
-          value: OMOP:37208635
-          range: string
         method_type:
-          value: "calculated from serum creatinine"
+          value: "Electrocardiogram, corrected QT"
           range: string
         value_quantity:
           object_derivations:
@@ -48,7 +48,7 @@
                 populated_from: pht004715
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00253223
+                    populated_from: phv00226266
                   unit:
-                    value: mL/min/{1.73_m2}
+                    value: "ms"
                     range: string

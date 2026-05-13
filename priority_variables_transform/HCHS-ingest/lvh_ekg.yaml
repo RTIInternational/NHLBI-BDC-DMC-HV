@@ -6,22 +6,22 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
-        age_at_condition_start:
-          expr: case(({phv00526597} == 1, {phv00526598} * 365))
         condition_concept:
-          value: HP:0001681
+          value: HP:0001714
           range: string
         condition_status:
-          populated_from: phv00526597
+          populated_from: phv00526416
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
-            '9': UNKNOWN
+            '6.0': ABSENT
+            '6': ABSENT
+            '6.1.0': PRESENT
+            '6.1.1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: CLINICAL_FINDING
           range: string
         associated_evidence:
-          value: "self-report questionnaire"
+          value: "12-lead ECG"
           range: string
         relationship_to_participant:
           value: ONESELF
