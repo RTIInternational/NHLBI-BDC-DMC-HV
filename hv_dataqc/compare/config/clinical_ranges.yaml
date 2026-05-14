@@ -1,0 +1,447 @@
+# hv_dataqc clinical ranges configuration
+# =========================================
+# Per-variable plausible ranges for flagging impossible/suspicious values.
+# Used by `python -m hv_dataqc.compare` (specifically check C9 / clinical-range bounds).
+#
+# Format:
+#   variable_name:
+#     unit: <UCUM unit string>
+#     plausible_lo: <minimum clinically plausible value>
+#     plausible_hi: <maximum clinically plausible value>
+#     red_flag_lo: <value below which is clearly impossible>
+#     red_flag_hi: <value above which is clearly impossible>
+#     notes: <optional context>
+#
+# Sources: clinical reference ranges, NHANES distributions, epidemiological norms.
+# These are intentionally WIDE to avoid false positives — they catch data errors
+# and unit mistakes, not clinical outliers.
+
+# ── Anthropometrics ──────────────────────────────────────────────────────────
+height_cm:
+  unit: cm
+  plausible_lo: 120
+  plausible_hi: 220
+  red_flag_lo: 50
+  red_flag_hi: 250
+  notes: "Adult standing height. <120 suggests pediatric or wheelchair. >220 extremely rare."
+  oba_codes: ["OBA:VT0001253"]
+  omop_codes: []
+  common_phv_names: ["HEIGHT", "HT_CM", "STANDING_HEIGHT", "HTCM"]
+
+weight_kg:
+  unit: kg
+  plausible_lo: 30
+  plausible_hi: 250
+  red_flag_lo: 15
+  red_flag_hi: 350
+  notes: "Adult body weight. Extreme obesity can reach 250kg."
+  oba_codes: ["OBA:VT0001259"]
+  omop_codes: []
+  common_phv_names: ["WEIGHT", "WT_KG", "BODY_WEIGHT", "WGTKG"]
+
+bmi:
+  unit: "kg/m2"
+  plausible_lo: 12
+  plausible_hi: 70
+  red_flag_lo: 8
+  red_flag_hi: 100
+  notes: "BMI. <15 severe underweight, >50 morbid obesity."
+  oba_codes: ["OBA:2045455"]
+  omop_codes: []
+  common_phv_names: ["BMI", "BMI_CM01", "BODY_MASS_INDEX"]
+
+waist_circumference:
+  unit: cm
+  plausible_lo: 50
+  plausible_hi: 200
+  red_flag_lo: 30
+  red_flag_hi: 250
+  oba_codes: ["OBA:VT0100693"]
+  omop_codes: []
+  common_phv_names: ["WAIST", "WAIST_CIRC", "WAISTCM"]
+
+hip_circumference:
+  unit: cm
+  plausible_lo: 60
+  plausible_hi: 200
+  red_flag_lo: 40
+  red_flag_hi: 250
+  oba_codes: ["OBA:VT0100694"]
+  omop_codes: []
+  common_phv_names: ["HIP", "HIP_CIRC", "HIPCM"]
+
+# ── Blood Pressure ───────────────────────────────────────────────────────────
+bp_systolic:
+  unit: "mmHg"
+  plausible_lo: 70
+  plausible_hi: 250
+  red_flag_lo: 40
+  red_flag_hi: 300
+  notes: "Systolic BP. Severe hypotension <70, hypertensive crisis >250."
+  oba_codes: []
+  omop_codes: ["OMOP:4152194"]
+  common_phv_names: ["SBP", "AVGSYS", "SYSTOLIC", "SYSBP"]
+
+bp_diastolic:
+  unit: "mmHg"
+  plausible_lo: 30
+  plausible_hi: 150
+  red_flag_lo: 15
+  red_flag_hi: 200
+  notes: "Diastolic BP. Should always be < systolic."
+  oba_codes: []
+  omop_codes: ["OMOP:4154790"]
+  common_phv_names: ["DBP", "AVGDIA", "DIASTOLIC", "DIABP"]
+
+heart_rate:
+  unit: "beats/min"
+  plausible_lo: 30
+  plausible_hi: 200
+  red_flag_lo: 15
+  red_flag_hi: 300
+  notes: "Resting heart rate. Bradycardia <50, tachycardia >100."
+  oba_codes: ["OBA:1001087"]
+  omop_codes: []
+  common_phv_names: ["HR", "AVGHR", "HEART_RATE", "HRTRT"]
+
+# ── Spirometry (percent predicted — must come BEFORE raw volumes for matching) ─
+fev1pp:
+  unit: "%"
+  plausible_lo: 5
+  plausible_hi: 200
+  red_flag_lo: 0
+  red_flag_hi: 250
+  notes: "FEV1 percent predicted. Values >100% are normal; >150% possible but rare."
+  oba_codes: []
+  omop_codes: ["OMOP:3011708"]
+  common_phv_names: ["FEV1PP", "FEV1PP_PRE", "FEV1PP_POST", "FEV1_PCT_PRED", "PCT_PRE_FEV1", "PCT_POST_FEV1"]
+
+fvcpp:
+  unit: "%"
+  plausible_lo: 5
+  plausible_hi: 200
+  red_flag_lo: 0
+  red_flag_hi: 250
+  notes: "FVC percent predicted."
+  oba_codes: []
+  omop_codes: ["OMOP:3005600"]
+  common_phv_names: ["FVCPP", "FVCPP_PRE", "FVCPP_POST", "FVC_PCT_PRED", "PCT_PRE_FVC", "PCT_POST_FVC"]
+
+# ── Spirometry (raw volumes) ─────────────────────────────────────────────────
+fev1:
+  unit: L
+  plausible_lo: 0.3
+  plausible_hi: 6.5
+  red_flag_lo: 0.1
+  red_flag_hi: 8.0
+  notes: "Forced expiratory volume in 1 sec. Severely restricted COPD can be <0.5L."
+  oba_codes: []
+  omop_codes: ["OMOP:4241837", "OMOP:3022891"]
+  common_phv_names: ["FEV1", "FEV1_PRE", "FEV1_POST", "PRBDFEV1", "POBDFEV1", "PRE_FEV1_DERV", "POST_FEV1_DERV", "PRED_FEV1"]
+
+fvc:
+  unit: L
+  plausible_lo: 0.5
+  plausible_hi: 8.5
+  red_flag_lo: 0.2
+  red_flag_hi: 10.0
+  notes: "Forced vital capacity. Generally FVC >= FEV1."
+  oba_codes: []
+  omop_codes: ["OMOP:4176265", "OMOP:3002094"]
+  common_phv_names: ["FVC", "FVC_PRE", "FVC_POST", "PRBDFVC", "POBDFVC", "PRE_FVC_DERV", "POST_FVC_DERV", "PRED_FVC"]
+
+fev1_fvc_ratio:
+  unit: "%"
+  plausible_lo: 15
+  plausible_hi: 100
+  red_flag_lo: 10
+  red_flag_hi: 110
+  notes: "FEV1/FVC ratio expressed as percentage (0–100 scale). <70% = COPD diagnostic threshold. PRED_FEV1FVC uses same scale."
+  oba_codes: []
+  omop_codes: ["OMOP:3024594"]
+  common_phv_names: ["FEV1_FVC", "FEV1_FVC_RATIO", "PRED_FEV1FVC"]
+
+fev1_fvc_ratio_decimal:
+  unit: ratio
+  plausible_lo: 0.10
+  plausible_hi: 1.00
+  red_flag_lo: 0.05
+  red_flag_hi: 1.15
+  notes: "FEV1/FVC ratio as decimal (0–1 scale). <0.7 = COPD threshold. SPIROMICS PRE/POST_FEV1FVC_DERV use this scale."
+  oba_codes: []
+  omop_codes: ["OMOP:3011505"]
+  common_phv_names: ["PRE_FEV1FVC_DERV", "POST_FEV1FVC_DERV"]
+
+fev1_fvc_ratio_pp:
+  unit: "%"
+  plausible_lo: 20
+  plausible_hi: 140
+  red_flag_lo: 10
+  red_flag_hi: 170
+  notes: "FEV1/FVC percent predicted. Values >100% mean actual ratio exceeds predicted reference; possible in restricted patterns."
+  oba_codes: []
+  omop_codes: ["OMOP:4196583"]
+  common_phv_names: ["PCT_PRE_FEV1FVC", "PCT_POST_FEV1FVC"]
+
+# ── Lipids ───────────────────────────────────────────────────────────────────
+hdl:
+  unit: "mg/dL"
+  plausible_lo: 5
+  plausible_hi: 200
+  red_flag_lo: 1
+  red_flag_hi: 300
+  oba_codes: ["OBA:VT0000184"]
+  omop_codes: []
+  common_phv_names: ["HDL", "COREHDL", "HDL_CHOLESTEROL"]
+
+ldl:
+  unit: "mg/dL"
+  plausible_lo: 10
+  plausible_hi: 400
+  red_flag_lo: 1
+  red_flag_hi: 600
+  oba_codes: ["OBA:VT0001815"]
+  omop_codes: []
+  common_phv_names: ["LDL", "CORELDL", "LDL_CHOLESTEROL"]
+
+total_cholesterol:
+  unit: "mg/dL"
+  plausible_lo: 50
+  plausible_hi: 600
+  red_flag_lo: 20
+  red_flag_hi: 800
+  oba_codes: ["OBA:VT0000180"]
+  omop_codes: []
+  common_phv_names: ["TC", "TOTAL_CHOL", "COREANTC"]
+
+triglycerides:
+  unit: "mg/dL"
+  plausible_lo: 10
+  plausible_hi: 2000
+  red_flag_lo: 1
+  red_flag_hi: 5000
+  oba_codes: ["OBA:VT0002644"]
+  omop_codes: []
+  common_phv_names: ["TG", "TRIGLYCERIDES", "CORETRIG"]
+
+# ── CBC ──────────────────────────────────────────────────────────────────────
+hematocrit:
+  unit: "%"
+  plausible_lo: 15
+  plausible_hi: 65
+  red_flag_lo: 5
+  red_flag_hi: 75
+  oba_codes: ["OBA:2045381"]
+  omop_codes: []
+  common_phv_names: ["HCT", "HEMATOCRIT"]
+
+hemoglobin:
+  unit: "g/dL"
+  plausible_lo: 4.0
+  plausible_hi: 22.0
+  red_flag_lo: 2.0
+  red_flag_hi: 25.0
+  oba_codes: ["OBA:2060175"]
+  omop_codes: []
+  common_phv_names: ["HGB", "HEMOGLOBIN", "HB"]
+
+platelet_count:
+  unit: "10^3/uL"
+  plausible_lo: 10
+  plausible_hi: 1000
+  red_flag_lo: 1
+  red_flag_hi: 2000
+  oba_codes: []
+  omop_codes: ["OMOP:4267147"]
+  common_phv_names: ["PLT", "PLATELET", "PLATELET_COUNT"]
+
+wbc_count:
+  unit: "10^3/uL"
+  plausible_lo: 1.0
+  plausible_hi: 50.0
+  red_flag_lo: 0.1
+  red_flag_hi: 100.0
+  oba_codes: ["OBA:VT0000217"]
+  omop_codes: []
+  common_phv_names: ["WBC", "WBC_COUNT"]
+
+rbc_count:
+  unit: "10^6/uL"
+  plausible_lo: 1.0
+  plausible_hi: 10.0
+  red_flag_lo: 0.5
+  red_flag_hi: 15.0
+  oba_codes: ["OBA:VT0001586"]
+  omop_codes: []
+  common_phv_names: ["RBC", "RBC_COUNT"]
+
+mcv:
+  unit: fL
+  plausible_lo: 50
+  plausible_hi: 130
+  red_flag_lo: 30
+  red_flag_hi: 160
+  oba_codes: ["OBA:0003460"]
+  omop_codes: []
+  common_phv_names: ["MCV"]
+
+mch:
+  unit: pg
+  plausible_lo: 15
+  plausible_hi: 50
+  red_flag_lo: 10
+  red_flag_hi: 60
+  oba_codes: ["OBA:2045301"]
+  omop_codes: []
+  common_phv_names: ["MCH"]
+
+mchc:
+  unit: "g/dL"
+  plausible_lo: 25
+  plausible_hi: 42
+  red_flag_lo: 20
+  red_flag_hi: 50
+  oba_codes: []
+  omop_codes: ["OMOP:37393850"]
+  common_phv_names: ["MCHC"]
+
+rdw:
+  unit: "%"
+  plausible_lo: 10
+  plausible_hi: 30
+  red_flag_lo: 8
+  red_flag_hi: 40
+  oba_codes: []
+  omop_codes: ["OMOP:37397924"]
+  common_phv_names: ["RDW"]
+
+# ── Kidney ───────────────────────────────────────────────────────────────────
+serum_creatinine:
+  unit: "mg/dL"
+  plausible_lo: 0.1
+  plausible_hi: 20.0
+  red_flag_lo: 0.01
+  red_flag_hi: 30.0
+  oba_codes: ["OBA:2050096"]
+  omop_codes: []
+  common_phv_names: ["CREATININE", "SERUM_CREAT", "CREAT_BLD"]
+
+egfr:
+  unit: "mL/min/1.73m2"
+  plausible_lo: 2
+  plausible_hi: 200
+  red_flag_lo: 0
+  red_flag_hi: 300
+  oba_codes: []
+  omop_codes: []
+  common_phv_names: ["EGFR", "eGFR"]
+
+cystatin_c:
+  unit: "mg/L"
+  plausible_lo: 0.3
+  plausible_hi: 8.0
+  red_flag_lo: 0.1
+  red_flag_hi: 15.0
+  oba_codes: []
+  omop_codes: []
+  common_phv_names: ["CYSC", "CYSTATIN_C"]
+
+# ── Other Labs ───────────────────────────────────────────────────────────────
+fasting_glucose:
+  unit: "mg/dL"
+  plausible_lo: 20
+  plausible_hi: 600
+  red_flag_lo: 5
+  red_flag_hi: 1000
+  oba_codes: ["OBA:VT0000188"]
+  omop_codes: []
+  common_phv_names: ["GLUCOSE", "FASTING_GLUCOSE", "FGLUC"]
+
+hba1c:
+  unit: "%"
+  plausible_lo: 3.0
+  plausible_hi: 18.0
+  red_flag_lo: 2.0
+  red_flag_hi: 20.0
+  oba_codes: []
+  omop_codes: []
+  common_phv_names: ["HBA1C", "HEMO_A1C", "A1C"]
+
+insulin:
+  unit: "pmol/L"
+  plausible_lo: 0
+  plausible_hi: 2000
+  red_flag_lo: 0
+  red_flag_hi: 5000
+  notes: "After conversion from mU/L (×6). Raw mU/L range: 0–300."
+  oba_codes: []
+  omop_codes: []
+  common_phv_names: ["INSULIN", "INSULIN_BLOOD"]
+
+crp:
+  unit: "mg/L"
+  plausible_lo: 0.0
+  plausible_hi: 200.0
+  red_flag_lo: 0.0
+  red_flag_hi: 500.0
+  oba_codes: []
+  omop_codes: ["OMOP:4208414"]
+  common_phv_names: ["CRP", "HSCRP"]
+
+ferritin:
+  unit: "ng/mL"
+  plausible_lo: 1
+  plausible_hi: 5000
+  red_flag_lo: 0
+  red_flag_hi: 10000
+  oba_codes: []
+  omop_codes: []
+  common_phv_names: ["FERRITIN"]
+
+# ── Demographics ─────────────────────────────────────────────────────────────
+age:
+  unit: years
+  plausible_lo: 0
+  plausible_hi: 120
+  red_flag_lo: -1
+  red_flag_hi: 150
+  notes: "Most NHLBI cohorts enroll adults 18+. Some enroll 40+."
+  oba_codes: []
+  omop_codes: []
+  common_phv_names: ["AGE", "AGE_DERV", "AGE_AT_VISIT", "AGE_BASELINE"]
+
+# ── Cross-Variable Consistency Rules ─────────────────────────────────────────
+# These rules define expected relationships BETWEEN variables.
+# Used by `python -m hv_dataqc.compare` (specifically check C10 / cross-variable consistency).
+_cross_variable_rules:
+  sbp_gt_dbp:
+    description: "Systolic BP should always be greater than Diastolic BP"
+    check: "mean(SBP) > mean(DBP)"
+    variables: [bp_systolic, bp_diastolic]
+    severity: ERROR
+
+  bmi_consistency:
+    description: "BMI ≈ weight_kg / (height_m)² within ±10%"
+    check: "mean(BMI) ≈ mean(weight) / (mean(height)/100)²"
+    variables: [bmi, weight_kg, height_cm]
+    severity: WARNING
+
+  fev1_lt_fvc:
+    description: "FEV1 is generally less than FVC"
+    check: "mean(FEV1) < mean(FVC)"
+    variables: [fev1, fvc]
+    severity: WARNING
+
+  postbd_ge_prebd_fev1:
+    description: "Post-BD FEV1 generally >= Pre-BD FEV1 (bronchodilator response)"
+    check: "mean(post_FEV1) >= mean(pre_FEV1)"
+    variables: [fev1]
+    severity: WARNING
+    notes: "Aggregate only — individual variation expected"
+
+  friedewald:
+    description: "LDL ≈ TC - HDL - TG/5 within ±15%"
+    check: "mean(LDL) ≈ mean(TC) - mean(HDL) - mean(TG)/5"
+    variables: [ldl, total_cholesterol, hdl, triglycerides]
+    severity: WARNING
+    notes: "Only valid when TG < 400 mg/dL"
