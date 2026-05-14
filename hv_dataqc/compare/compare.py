@@ -30,8 +30,6 @@ USAGE:
       --yaml-dir /path/to/HV-repo/priority_variables_transform/SPIROMICS-ingest/ \\
       --cache-dir /path/to/data/dbgap-cache/spiromics/
 
-  # --yaml-dir and --cache-dir are optional; without them the variable crosswalk
-  # cannot be built and only C1 / C8 / C10 run.
   # --clinical-ranges defaults to compare/config/clinical_ranges.yaml.
 """
 
@@ -46,14 +44,20 @@ from pathlib import Path
 import yaml
 
 from hv_dataqc.hv_dataqc_common import json_safe
-from hv_dataqc.compare._common import CheckResult, CrosswalkBuildError
+from hv_dataqc.compare._common import (
+    AmbiguousColumnError,
+    CheckResult,
+    CrosswalkBuildError,
+)
 from hv_dataqc.compare.crosswalk import (  # noqa: F401  (many symbols re-exported for tests)
     # Used internally by checks and main():
+    _build_variables_by_name,
     _codes_are_numeric_or_sentinel,
     _distribution_count_map,
     _is_null_sentinel_code,
     _normalize_code,
     _normalize_harmonized_vars,
+    _pick_single_pht_summary,
     build_variable_crosswalk,
     determine_comparison_type,
     load_phv_type_map,
@@ -108,6 +112,8 @@ _CONFIG_DIR = Path(__file__).resolve().parent / "config"
 _json_safe = json_safe
 
 
+
+
 def validate_clinical_ranges_config(clinical_ranges: dict) -> list[str]:
     """Return non-fatal validation warnings for clinical_ranges.yaml."""
     warnings: list[str] = []
@@ -154,6 +160,79 @@ def validate_clinical_ranges_config(clinical_ranges: dict) -> list[str]:
 
     return warnings
 
+
+def _current_git_commit() -> str | None:
+    """Return the short git commit hash for the repo containing this file,
+    or None if git isn't available or the lookup fails."""
+    import subprocess
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            capture_output=True,
+            text=True,
+            cwd=Path(__file__).resolve().parent,
+            timeout=2,
+        )
+        if result.returncode == 0:
+            return result.stdout.strip() or None
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        pass
+    return None
+
+
+def _ambiguous_columns_fail(
+    match: dict,
+    ambiguous: list[dict],
+    variables_by_name: dict[str, dict[str, dict]],
+) -> CheckResult:
+    """Build a FAIL CheckResult describing one or more ambiguous column lookups.
+
+    A column is ambiguous when it appears in multiple source PHTs and the
+    YAML/cache route couldn't pin it to one. The FAIL message and detail
+    give the operator enough information to decide whether the YAML/cache
+    needs fixing, or whether the column should be aggregated across PHTs
+    (the deferred option B in the Phase B plan).
+    """
+    harmonized_key = match.get("harmonized_key", "?")
+    parts: list[str] = []
+    detail: dict = {
+        "harmonized_key": harmonized_key,
+        "yaml_file": match.get("yaml_file"),
+        "ambiguous_columns": [],
+    }
+    for amb in ambiguous:
+        col = amb["col"]
+        phts = amb["phts"]
+        role = amb.get("role", "source")
+        phv = amb.get("phv_id") or "?"
+        # Capture per-PHT stat summary (n_valid, mean, sd) so a reviewer can
+        # see whether the PHTs disagree materially or just need pooling.
+        pht_map = variables_by_name.get(col, {})
+        per_pht_stats = {
+            pht: {
+                k: v for k, v in (pht_map.get(pht) or {}).items()
+                if k in ("n_valid", "n_total", "mean", "sd", "n_distinct", "_pht")
+            }
+            for pht in phts
+        }
+        detail["ambiguous_columns"].append({
+            "col": col,
+            "role": role,
+            "phv_id": phv,
+            "phts": phts,
+            "per_pht_stats": per_pht_stats,
+        })
+        parts.append(
+            f"column {col!r} ({role}; phv={phv}) appears in {len(phts)} PHTs: "
+            f"{', '.join(phts)}"
+        )
+    msg = (
+        "Ambiguous source-column lookup; could not pick a single PHT. "
+        + " | ".join(parts)
+        + ". Fix the YAML to disambiguate the PHV→PHT mapping, "
+        "or add PHT aggregation if these summaries should be pooled."
+    )
+    return CheckResult("CROSSWALK", harmonized_key, "FAIL", msg, detail)
 
 
 # ---------------------------------------------------------------------------
@@ -264,7 +343,11 @@ def _dedup_check_results(results: list[CheckResult]) -> list[CheckResult]:
 
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(
-        description="Compare source vs. harmonized summaries (C1-C12 checks).",
+        description=(
+            "Compare source vs. harmonized summaries. Runs the full set of "
+            "configured checks (see the module docstring or README for the "
+            "current list)."
+        ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     p.add_argument("--source", required=True, metavar="JSON",
@@ -274,17 +357,13 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--cohort", required=True, metavar="NAME",
                    help="Cohort name (e.g. SPIROMICS, CARDIA)")
 
-    p.add_argument("--yaml-dir", metavar="DIR",
+    p.add_argument("--yaml-dir", metavar="DIR", required=True,
                    help="HV YAML transform directory for the cohort "
-                        "(e.g. .../priority_variables_transform/SPIROMICS-ingest/). "
-                        "Without this, only C1/C8/C10 run.")
-    p.add_argument("--cache-dir", metavar="DIR",
+                        "(e.g. .../priority_variables_transform/SPIROMICS-ingest/).")
+    p.add_argument("--cache-dir", metavar="DIR", required=True,
                    help="dbGaP cache directory for the cohort, used to resolve PHV->name "
-                        "(e.g. data/dbgap-cache/spiromics/). "
-                        "REQUIRED when --yaml-dir is supplied (must contain "
-                        "pheno_variable_summaries/*.data_dict.xml). Without it the "
-                        "YAML-driven crosswalk cannot resolve PHV IDs to source column "
-                        "names and would be empty.")
+                        "(e.g. data/dbgap-cache/spiromics/). Must contain "
+                        "pheno_variable_summaries/*.data_dict.xml.")
 
     p.add_argument("--clinical-ranges", metavar="YAML",
                    help=f"Clinical ranges YAML (default: {_CONFIG_DIR / 'clinical_ranges.yaml'})")
@@ -296,9 +375,6 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--json-report", metavar="FILE",
                    help="JSON report output path "
                         "(default: <cohort>_comparison_results.json)")
-    p.add_argument("--show-unmatched-source", action="store_true", default=False,
-                   help="Include INFO rows for source variables not present in the harmonized "
-                        "output (default: hidden; only a summary count is shown).")
     return p.parse_args(argv)
 
 
@@ -312,39 +388,15 @@ def main(argv: list[str] | None = None) -> None:
             print(f"ERROR: {label} file not found: {path_arg}", file=sys.stderr)
             sys.exit(1)
 
-    # Resolve optional paths
-    yaml_dir = Path(args.yaml_dir) if args.yaml_dir else None
-    cache_dir = Path(args.cache_dir) if args.cache_dir else None
-
-    if not yaml_dir:
-        print("NOTE: --yaml-dir not provided. YAML-driven crosswalk disabled; C4/C5/C6/C7/C9 will SKIP.")
-    elif not yaml_dir.exists():
-        print(f"WARNING: --yaml-dir not found: {yaml_dir}")
-        yaml_dir = None
-
-    # --cache-dir is required when --yaml-dir is supplied: without the PHV->name
-    # map produced from the cache, _extract_crosswalk_from_class_derivations()
-    # silently skips every YAML entry (missing src_name) and the YAML-driven
-    # crosswalk ends up empty, producing a useless report.
-    if yaml_dir and not cache_dir:
-        print(
-            "ERROR: --cache-dir is required when --yaml-dir is supplied. "
-            "Without it the PHV->name map cannot be built and the YAML "
-            "crosswalk will be empty.",
-            file=sys.stderr,
-        )
+    # Resolve required paths
+    yaml_dir = Path(args.yaml_dir)
+    cache_dir = Path(args.cache_dir)
+    if not yaml_dir.exists():
+        print(f"ERROR: --yaml-dir not found: {yaml_dir}", file=sys.stderr)
         sys.exit(2)
-
-    if cache_dir and not cache_dir.exists():
-        if yaml_dir:
-            print(
-                f"ERROR: --cache-dir not found: {cache_dir}. "
-                "Required when --yaml-dir is supplied.",
-                file=sys.stderr,
-            )
-            sys.exit(2)
-        print(f"WARNING: --cache-dir not found: {cache_dir}")
-        cache_dir = None
+    if not cache_dir.exists():
+        print(f"ERROR: --cache-dir not found: {cache_dir}", file=sys.stderr)
+        sys.exit(2)
 
     # Load clinical ranges
     cr_path = (
@@ -387,12 +439,22 @@ def main(argv: list[str] | None = None) -> None:
     with open(args.harmonized, "r", encoding="utf-8") as fh:
         harmonized: dict = json.load(fh)
 
-    source_vars = source.get("variables", {})
+    variables_by_pht = source.get("variables_by_pht")
+    if not isinstance(variables_by_pht, dict) or not variables_by_pht:
+        print(
+            f"ERROR: source JSON {args.source} has no usable `variables_by_pht`. "
+            "Either the file is malformed or it was produced by an unsupported "
+            "extractor version. Re-run extract_source_summaries.py to regenerate.",
+            file=sys.stderr,
+        )
+        sys.exit(2)
+    variables_by_name = _build_variables_by_name(variables_by_pht)
     harmonized_vars = _normalize_harmonized_vars(harmonized.get("variables", {}))
     source_meta = source.get("metadata", {})
     harmonized_meta = harmonized.get("metadata", {})
 
-    print(f"\nSource: {len(source_vars)} variables, "
+    print(f"\nSource: {len(variables_by_name)} variables across "
+          f"{len(variables_by_pht)} PHTs, "
           f"{source.get('total_participants', '?')} participants")
     print(f"Harmonized: {len(harmonized_vars)} variables, "
           f"{harmonized.get('total_participants', '?')} participants")
@@ -402,7 +464,7 @@ def main(argv: list[str] | None = None) -> None:
     yaml_diagnostics: dict = {}
     try:
         crosswalk = build_variable_crosswalk(
-            source_vars, harmonized_vars,
+            variables_by_name, harmonized_vars,
             yaml_dir=yaml_dir,
             cache_dir=cache_dir,
             source_doc=source,
@@ -411,9 +473,12 @@ def main(argv: list[str] | None = None) -> None:
     except CrosswalkBuildError as exc:
         print(str(exc), file=sys.stderr)
         sys.exit(2)
-    print(f"Matched {len(crosswalk)} variable pairs")
+    method_counts: dict[str, int] = {}
     for m in crosswalk:
-        method = m.get("match_method", "?")
+        method_counts[m.get("match_method", "?")] = method_counts.get(m.get("match_method", "?"), 0) + 1
+    method_summary = ", ".join(f"{n} {k}" for k, n in sorted(method_counts.items()))
+    print(f"Matched {len(crosswalk)} variable pairs ({method_summary})")
+    for m in crosswalk:
         yaml_f = m.get("yaml_file", "")
         phv = m.get("phv_id", "")
         resolved_pht = m.get("_resolved_pht", "")
@@ -431,17 +496,13 @@ def main(argv: list[str] | None = None) -> None:
             )
         elif resolved_pht:
             extra += f" -> {resolved_pht}"
-        print(f"  {m['source_key']:<30} -> {m['harmonized_key']:<40} [{method}]{extra}")
+        print(f"  {m['source_key']:<30} -> {m['harmonized_key']:<40}{extra}")
 
     # Load dbGaP authoritative type map for source-type override (fixes heuristic
     # misclassification of true-integer count variables as categorical when
     # n_distinct ≤ 20, e.g. fruitf25 "how many fruits per day" range 0-20).
-    phv_type_map: dict[str, str] = (
-        load_phv_type_map(cache_dir) if cache_dir and cache_dir.exists() else {}
-    )
-    phv_value_codes: dict[str, set[str]] = (
-        load_phv_value_codes_map(cache_dir) if cache_dir and cache_dir.exists() else {}
-    )
+    phv_type_map: dict[str, str] = load_phv_type_map(cache_dir)
+    phv_value_codes: dict[str, set[str]] = load_phv_value_codes_map(cache_dir)
 
     # Run checks
     all_results: list[CheckResult] = []
@@ -462,8 +523,34 @@ def main(argv: list[str] | None = None) -> None:
     for match in crosswalk:
         src_key = match["source_key"]
         harmonized_key = match["harmonized_key"]
-        # Use per-PHT stats when available (eliminates multi-table inflation).
-        src_var = match.get("_resolved_src") or source_vars.get(src_key, {})
+
+        # If the crosswalk recorded an ambiguous column lookup (column appears
+        # in multiple PHTs and the YAML/cache couldn't pick one), surface a
+        # FAIL with diagnostic detail and skip the rest of the checks for this
+        # match — the source summary would be unreliable.
+        ambiguous = match.get("_ambiguous_columns") or []
+        if ambiguous:
+            all_results.append(_ambiguous_columns_fail(
+                match, ambiguous, variables_by_name
+            ))
+            continue
+
+        # Use pooled per-PHT stats from the match when present; fall back
+        # to picking the only PHT's summary by column name. If the column
+        # is itself ambiguous, AmbiguousColumnError → caught above (the
+        # crosswalk already recorded it on the match).
+        try:
+            src_var = match.get("_resolved_src") or _pick_single_pht_summary(
+                variables_by_name, src_key
+            ) or {}
+        except AmbiguousColumnError as exc:
+            all_results.append(_ambiguous_columns_fail(
+                match,
+                [{"col": exc.col, "phts": sorted(exc.pht_map),
+                  "role": "source", "phv_id": match.get("phv_id")}],
+                variables_by_name,
+            ))
+            continue
         harmonized_var = harmonized_vars[harmonized_key]
 
         # Determine the expected comparison type from source/dbGaP/YAML intent.
@@ -573,13 +660,11 @@ def main(argv: list[str] | None = None) -> None:
     for m in crosswalk:
         if m.get("_source_keys"):
             matched_src.update(m["_source_keys"])
-            matched_src.update(m.get("_source_flat_keys") or [])
         else:
             matched_src.add(m["source_key"])
     matched_harmonized = {m["harmonized_key"] for m in crosswalk}
     _unmatched_src_keys = [
-        sk for sk in source_vars
-        if sk not in matched_src and "error" not in source_vars[sk]
+        col for col in variables_by_name if col not in matched_src
     ]
     if _unmatched_src_keys:
         count = len(_unmatched_src_keys)
@@ -668,6 +753,7 @@ def main(argv: list[str] | None = None) -> None:
         "metadata": {
             "cohort": cohort,
             "generated_at": datetime.now(timezone.utc).isoformat(),
+            "git_commit": _current_git_commit(),
             "source_file": args.source,
             "harmonized_file": args.harmonized,
             "thresholds_file": str(thresholds_path),

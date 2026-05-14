@@ -22,19 +22,13 @@ cd ../local_scripts/
 ## Usage (direct)
 
 ```bash
-# Full run with YAML-driven crosswalk
+# Standard run
 python -m hv_dataqc.compare \
     --source  spiromics_source_20250101T120000.json \
     --harmonized  spiromics_harmonized_20250101T120000.json \
     --cohort  SPIROMICS \
     --yaml-dir /path/to/HV-repo/priority_variables_transform/SPIROMICS-ingest/ \
     --cache-dir /path/to/data/dbgap-cache/spiromics/
-
-# Without YAML crosswalk (only C1/C8/C10 run)
-python -m hv_dataqc.compare \
-    --source  spiromics_source_20250101T120000.json \
-    --harmonized  spiromics_harmonized_20250101T120000.json \
-    --cohort  SPIROMICS
 
 # Custom tolerances and output paths
 python -m hv_dataqc.compare \
@@ -53,12 +47,18 @@ python -m hv_dataqc.compare \
 | `--source JSON` | Yes | Source summary JSON from extract_source_summaries.py |
 | `--harmonized JSON` | Yes | Harmonized summary JSON from extract_harmonized_summaries.py |
 | `--cohort NAME` | Yes | Cohort name (used in report title) |
-| `--yaml-dir DIR` | Recommended | HV transform directory for YAML-driven crosswalk. Without this, C2–C7/C9 skip. |
-| `--cache-dir DIR` | **Required when --yaml-dir is set** | dbGaP cache dir for PHV→name resolution (`pheno_variable_summaries/*.data_dict.xml`). The tool exits with an error if `--yaml-dir` is supplied without this — without it the crosswalk would be empty. Build the cache with `../cache_fetcher/fetch_dbgap_cache.py`. |
+| `--yaml-dir DIR` | Yes | HV transform directory for YAML-driven crosswalk (e.g. `priority_variables_transform/SPIROMICS-ingest/`). |
+| `--cache-dir DIR` | Yes | dbGaP cache dir for PHV→name and PHV→PHT resolution (`pheno_variable_summaries/*.data_dict.xml`). Build the cache with `../cache_fetcher/fetch_dbgap_cache.py`. |
 | `--clinical-ranges YAML` | No | Clinical ranges file (default: `config/clinical_ranges.yaml`) |
 | `--thresholds YAML` | No | Statistical thresholds file (default: `config/thresholds.yaml`) |
-| `--report FILE` | No | Markdown report output (default: `<cohort>_comparison_report.md`) |
-| `--json-report FILE` | No | JSON report output (default: `<cohort>_comparison_results.json`) |
+| `--report FILE` | No | Markdown report output path (default: `<cohort>_comparison_report.md`) |
+| `--json-report FILE` | No | JSON report output path (default: `<cohort>_comparison_results.json`) |
+
+When run via `local_scripts/compare.sh`, the wrapper sets `--report` /
+`--json-report` to a fresh `local_output/archive/<commit>_<ts>/` directory
+and updates `local_output/<cohort>_comparison_*` symlinks afterward.
+See the top-level [README](../README.md#output-layout) for the archive
+layout.
 
 ---
 
@@ -66,6 +66,7 @@ python -m hv_dataqc.compare \
 
 | Check | Name | What It Tests |
 |-------|------|---------------|
+| `CROSSWALK` | Crosswalk Resolution Failures | Per-variable FAIL when a source-column lookup is ambiguous across PHTs and the YAML/cache can't pin it. Emitted before C1–C12 and causes those checks to skip for the affected harmonized variable. |
 | C1 | N Preservation | Total participant count did not drop unexpectedly |
 | C2 | N Loss Detection | Per-variable valid-N: harmonized should preserve source N |
 | C3 | Missing Value Accounting | Missing rate stable between source and harmonized |
@@ -127,31 +128,36 @@ Exit code is `1` if any `FAIL` result exists, `0` otherwise.
 
 ## Variable Crosswalk Strategy
 
-When `--yaml-dir` is provided, the engine builds a source-to-harmonized crosswalk
-by parsing YAML transform files:
+The engine builds a source-to-harmonized crosswalk by parsing the HV
+transform YAMLs (every match comes from YAML; the older PHV-ID and
+name-match fallback strategies were removed in Phase B):
 
 1. For each `class_derivations` block, extracts:
    - `observation_type` / `condition_concept` value → harmonized entity key
    - `populated_from` PHV accessions → resolved to variable names via dbGaP cache
    - `value_mappings` → used for C7 categorical translation
-    - simple `case()` expressions in value slots → used to derive expected
-      categorical comparison distributions for split blocks without YAML changes
-    - `method_type` → retained as crosswalk metadata when present
+   - simple `case()` expressions in value slots → used to derive expected
+     categorical comparison distributions for split blocks without YAML changes
+   - `method_type` → retained as crosswalk metadata when present
 
 2. For `MeasurementObservationSet` (blood pressure, spirometry), recurses into
    `observations.object_derivations` to extract each nested `MeasurementObservation`.
 
 3. Builds an expected post-transform source summary for each harmonized key.
-    Exact aggregate expectations are produced for direct copies, value_mappings,
-    concept routing where the concept and value PHVs align, simple case()
-    routing, scalar arithmetic, common `unit_conversion` blocks, static YAML
-    values, and pooled independent blocks. Cases that require row-level joint
-    counts are marked as partial/unsupported rather than guessed.
+   Exact aggregate expectations are produced for direct copies, value_mappings,
+   concept routing where the concept and value PHVs align, simple case()
+   routing, scalar arithmetic, common `unit_conversion` blocks, static YAML
+   values, and pooled independent blocks. Cases that require row-level joint
+   counts are marked as partial/unsupported rather than guessed.
 
 4. Groups multiple YAML blocks that emit the same harmonized key and compares
-    against the pooled or YAML-derived source basis instead of a single first PHV.
+   against the pooled or YAML-derived source basis instead of a single first PHV.
 
-5. Falls back to PHV ID match, then variable name match if YAML matching fails.
+5. Source-column lookups go through the dbGaP cache's PHV→PHT map first.
+   If that fails and the column name exists in multiple source PHTs, the
+   match records an `_ambiguous_columns` diagnostic and the orchestrator
+   emits a `CROSSWALK` FAIL for that harmonized variable rather than
+   silently picking one PHT's stats.
 
 ---
 

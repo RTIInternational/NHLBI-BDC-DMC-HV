@@ -33,9 +33,21 @@ Automatically locates the YAML transform dir and dbGaP cache.
 ./compare.sh COPDGene --thresholds custom.yaml
 ```
 
+Each run is archived. Outputs are written into
+`../local_output/archive/<git-commit>_<UTC-timestamp>/` alongside a
+`manifest.json` recording the inputs used, and the top-level
+`../local_output/<cohort>_comparison_{report.md,results.json}` symlinks
+are updated to point at the latest archive entry. Old reports are never
+overwritten.
+
+The script exits non-zero when the comparison surfaces any `FAIL` results
+(matching the underlying `python -m hv_dataqc.compare` exit behavior).
+
 **Prerequisites:**
 1. Source and harmonized JSONs in `../local_output/` (via `unpack.sh` or manual copy)
 2. dbGaP cache fetched (see `fetch_cache.sh`)
+3. HV transform YAMLs at `<repo>/priority_variables_transform/<COHORT>-ingest/`
+   (always present in this repo)
 
 ### `fetch_cache.sh <cohort> [flags...]`
 
@@ -62,4 +74,6 @@ flags are forwarded.
 ./compare.sh COPDGene
 ```
 
-Comparison reports are written to `../local_output/`.
+Comparison reports are archived under `../local_output/archive/`. The
+top-level symlinks at `../local_output/<cohort>_comparison_*` always
+point at the most recent run.

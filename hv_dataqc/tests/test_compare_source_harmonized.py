@@ -5,6 +5,7 @@ All fixtures are aggregate metadata only; no participant-level rows are used.
 
 from __future__ import annotations
 
+import json
 import sys
 import unittest
 import math
@@ -24,7 +25,9 @@ from compare import (  # noqa: E402
     CheckResult,
     CrosswalkBuildError,
     _aggregate_source_summaries,
+    _ambiguous_columns_fail,
     _case_branches,
+    main as compare_main,
     _expected_harmonized_n,
     _expected_summary_from_concept_value_map,
     _expected_summary_from_value_map,
@@ -53,6 +56,11 @@ from compare import (  # noqa: E402
 from hv_dataqc.compare.report_io import (  # noqa: E402
     load_thresholds,
     write_text_atomic as _write_text_atomic,
+)
+from hv_dataqc.compare._common import AmbiguousColumnError  # noqa: E402
+from hv_dataqc.compare.crosswalk import (  # noqa: E402
+    _build_variables_by_name,
+    _pick_single_pht_summary,
 )
 
 
@@ -853,7 +861,7 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
 
             with self.assertRaises(CrosswalkBuildError):
                 build_variable_crosswalk(
-                    source_vars={},
+                    variables_by_name={},
                     harmonized_vars={},
                     yaml_dir=yaml_dir,
                     cache_dir=cache_dir,
@@ -881,6 +889,223 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         self.assertTrue(
             variables["condition_MONDO:1"]["condition_status_missing_assumption"]
         )
+
+
+class AmbiguousColumnTests(unittest.TestCase):
+    """Tests for the variables_by_name lookup and ambiguity handling."""
+
+    def test_build_variables_by_name_groups_by_column(self) -> None:
+        vbp = {
+            "pht1": {"age": {"mean": 50}, "sex": {"n_valid": 100}},
+            "pht2": {"age": {"mean": 60}},
+        }
+        vbn = _build_variables_by_name(vbp)
+        self.assertEqual(set(vbn), {"age", "sex"})
+        self.assertEqual(set(vbn["age"]), {"pht1", "pht2"})
+        self.assertEqual(vbn["age"]["pht1"]["mean"], 50)
+
+    def test_pick_single_pht_summary_returns_only_pht(self) -> None:
+        vbn = {"age": {"pht1": {"mean": 50, "n_valid": 100}}}
+        result = _pick_single_pht_summary(vbn, "age")
+        self.assertEqual(result, {"mean": 50, "n_valid": 100})
+
+    def test_pick_single_pht_summary_returns_none_for_missing(self) -> None:
+        vbn = {"age": {"pht1": {"mean": 50}}}
+        self.assertIsNone(_pick_single_pht_summary(vbn, "weight"))
+
+    def test_pick_single_pht_summary_raises_on_multi_pht(self) -> None:
+        vbn = {
+            "age": {
+                "pht1": {"mean": 50, "n_valid": 100},
+                "pht2": {"mean": 60, "n_valid": 200},
+            }
+        }
+        with self.assertRaises(AmbiguousColumnError) as ctx:
+            _pick_single_pht_summary(vbn, "age")
+        self.assertEqual(ctx.exception.col, "age")
+        self.assertEqual(set(ctx.exception.pht_map), {"pht1", "pht2"})
+
+
+class AmbiguousColumnIntegrationTests(unittest.TestCase):
+    """End-to-end tests for build_variable_crosswalk's ambiguous-column path.
+
+    Construct a minimal cache XML + YAML + variables_by_name to exercise the
+    PHV→PHT fallback. The fallback fires when the cache doesn't have the
+    PHV (so phv_to_pht.get returns None) and we fall through to looking up
+    by bare column name in variables_by_name.
+
+    - Scenario A: column exists in multiple PHTs → AmbiguousColumnError →
+      crosswalk records _ambiguous_columns on the merged match.
+    - Scenario B: column exists in only one PHT → silent resolution, no
+      _ambiguous_columns recorded.
+    """
+
+    YAML_BLOCK = (
+        "- class_derivations:\n"
+        "    MeasurementObservation:\n"
+        "      populated_from: pht002239\n"
+        "      slot_derivations:\n"
+        "        observation_type:\n"
+        "          value: OMOP:1234567\n"
+        "        value_quantity:\n"
+        "          object_derivations:\n"
+        "          - class_derivations:\n"
+        "              Quantity:\n"
+        "                populated_from: pht002239\n"
+        "                slot_derivations:\n"
+        "                  value_decimal:\n"
+        "                    populated_from: phv00000999\n"
+    )
+
+    def _write_cache(
+        self,
+        tmp_path: Path,
+        cache_phv: str,
+        cache_var_name: str,
+        cache_pht: str,
+    ) -> None:
+        """Write a minimal data_dict.xml that maps `cache_phv` to `cache_var_name`
+        under `cache_pht`. If we want the YAML's PHV to be absent from the cache,
+        the caller passes a different PHV than the YAML's populated_from."""
+        pheno_dir = tmp_path / "pheno_variable_summaries"
+        pheno_dir.mkdir(exist_ok=True)
+        (pheno_dir / f"phs000000.v1.{cache_pht}.v1.p1.test.data_dict.xml").write_text(
+            '<?xml version="1.0"?>\n'
+            "<data_table>\n"
+            f'  <variable id="{cache_phv}.v1">\n'
+            f"    <name>{cache_var_name}</name>\n"
+            "  </variable>\n"
+            "</data_table>\n",
+            encoding="utf-8",
+        )
+
+    def test_ambiguous_lookup_emits_ambiguous_columns(self) -> None:
+        """YAML PHV not in cache + bare-name column in 2 PHTs → FAIL recorded."""
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+
+            # Cache resolves the YAML's PHV (phv00000999) to a column name
+            # but NOT to a PHT entry that contains the column — we'll make
+            # the cache map the PHV to pht002239 while the actual column
+            # lives only in unrelated PHTs in variables_by_name.
+            self._write_cache(
+                tmp_path,
+                cache_phv="phv00000999",
+                cache_var_name="ambig_col",
+                cache_pht="pht002239",
+            )
+
+            yaml_dir = tmp_path / "yaml"
+            yaml_dir.mkdir()
+            (yaml_dir / "test.yaml").write_text(self.YAML_BLOCK, encoding="utf-8")
+
+            # variables_by_name: ambig_col exists in TWO unrelated PHTs.
+            # Since pht002239 has no ambig_col entry, the PHV→PHT path
+            # fails to find the summary, falling through to bare-name lookup,
+            # which raises AmbiguousColumnError.
+            variables_by_name = {
+                "ambig_col": {
+                    "pht111111": {"type": "continuous", "n_valid": 50, "mean": 1.0},
+                    "pht222222": {"type": "continuous", "n_valid": 80, "mean": 2.0},
+                },
+            }
+            harmonized_vars = {"measurement_OMOP:1234567": {"n_valid": 100}}
+
+            matches = build_variable_crosswalk(
+                variables_by_name=variables_by_name,
+                harmonized_vars=harmonized_vars,
+                yaml_dir=yaml_dir,
+                cache_dir=tmp_path,
+            )
+
+            self.assertEqual(len(matches), 1)
+            match = matches[0]
+            self.assertIn("_ambiguous_columns", match)
+            # At least one source-role ambiguity for ambig_col with both PHTs.
+            # (The value-expr resolution loop may also flag the same column
+            # via the entry's source_phvs list — that's fine; both should
+            # carry the same diagnostic info.)
+            source_role = [
+                a for a in match["_ambiguous_columns"] if a["role"] == "source"
+            ]
+            self.assertEqual(len(source_role), 1)
+            amb = source_role[0]
+            self.assertEqual(amb["col"], "ambig_col")
+            self.assertEqual(set(amb["phts"]), {"pht111111", "pht222222"})
+            for entry in match["_ambiguous_columns"]:
+                self.assertEqual(entry["col"], "ambig_col")
+                self.assertEqual(set(entry["phts"]), {"pht111111", "pht222222"})
+
+    def test_ambiguous_columns_fail_builds_checkresult_with_diagnostic(self) -> None:
+        """_ambiguous_columns_fail produces a CROSSWALK FAIL with per-PHT stats."""
+        match = {
+            "harmonized_key": "measurement_OBA:9999999",
+            "yaml_file": "test.yaml",
+            "phv_id": "phv00000999",
+        }
+        ambiguous = [{
+            "col": "age",
+            "phts": ["pht111111", "pht222222"],
+            "role": "source",
+            "phv_id": "phv00000999",
+        }]
+        variables_by_name = {
+            "age": {
+                "pht111111": {"n_valid": 50, "mean": 1.0, "_pht": "pht111111"},
+                "pht222222": {"n_valid": 80, "mean": 2.0, "_pht": "pht222222"},
+            },
+        }
+        result = _ambiguous_columns_fail(match, ambiguous, variables_by_name)
+        self.assertEqual(result.check_id, "CROSSWALK")
+        self.assertEqual(result.status, "FAIL")
+        self.assertEqual(result.variable, "measurement_OBA:9999999")
+        # Diagnostic detail should carry per-PHT stats for reviewer triage.
+        per_pht = result.detail["ambiguous_columns"][0]["per_pht_stats"]
+        self.assertEqual(per_pht["pht111111"]["mean"], 1.0)
+        self.assertEqual(per_pht["pht222222"]["mean"], 2.0)
+        # Message should name the column and list the PHTs.
+        self.assertIn("'age'", result.message)
+        self.assertIn("pht111111", result.message)
+        self.assertIn("pht222222", result.message)
+
+    def test_unambiguous_single_pht_lookup_no_failure(self) -> None:
+        """YAML PHV not in cache + bare-name column in 1 PHT → resolves silently."""
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+
+            self._write_cache(
+                tmp_path,
+                cache_phv="phv00000999",
+                cache_var_name="solo_col",
+                cache_pht="pht002239",
+            )
+
+            yaml_dir = tmp_path / "yaml"
+            yaml_dir.mkdir()
+            yaml_text = self.YAML_BLOCK.replace("phv00000999", "phv00000999")
+            (yaml_dir / "test.yaml").write_text(yaml_text, encoding="utf-8")
+
+            # solo_col exists in only one PHT — fallback returns it without
+            # complaint.
+            variables_by_name = {
+                "solo_col": {
+                    "pht999999": {"type": "continuous", "n_valid": 50, "mean": 1.0},
+                },
+            }
+            harmonized_vars = {"measurement_OMOP:1234567": {"n_valid": 100}}
+
+            matches = build_variable_crosswalk(
+                variables_by_name=variables_by_name,
+                harmonized_vars=harmonized_vars,
+                yaml_dir=yaml_dir,
+                cache_dir=tmp_path,
+            )
+
+            self.assertEqual(len(matches), 1)
+            match = matches[0]
+            self.assertNotIn("_ambiguous_columns", match)
+            # The single-PHT summary should have been picked up.
+            self.assertIsNotNone(match.get("_resolved_src"))
 
 
 class DedupCheckResultsTests(unittest.TestCase):
@@ -1323,12 +1548,14 @@ class HarmonizedKeyNormalizationTests(unittest.TestCase):
                 encoding="utf-8",
             )
 
-            source_vars = {"FEV1_pre": {"type": "continuous", "n_valid": 100, "n_total": 100}}
+            variables_by_name = {
+                "FEV1_pre": {"pht000001": {"type": "continuous", "n_valid": 100, "n_total": 100}},
+            }
             # Harmonized extract has bare key — no |method_type suffix
             harmonized_vars = {"measurement_OMOP:4241837": {"n_valid": 100}}
 
             matches = build_variable_crosswalk(
-                source_vars=source_vars,
+                variables_by_name=variables_by_name,
                 harmonized_vars=harmonized_vars,
                 yaml_dir=yaml_dir,
                 cache_dir=tmp_path,
@@ -1392,11 +1619,13 @@ class HarmonizedKeyNormalizationTests(unittest.TestCase):
                 encoding="utf-8",
             )
 
-            source_vars = {"sysBP": {"type": "continuous", "n_valid": 100, "n_total": 100}}
+            variables_by_name = {
+                "sysBP": {"pht000001": {"type": "continuous", "n_valid": 100, "n_total": 100}},
+            }
             raw_harmonized_vars = {"measurement_('OMOP:4152194',)": {"n_valid": 100}}
 
             matches = build_variable_crosswalk(
-                source_vars=source_vars,
+                variables_by_name=variables_by_name,
                 harmonized_vars=_normalize_harmonized_vars(raw_harmonized_vars),
                 yaml_dir=yaml_dir,
                 cache_dir=tmp_path,
@@ -1405,6 +1634,82 @@ class HarmonizedKeyNormalizationTests(unittest.TestCase):
             self.assertEqual(len(matches), 1)
             self.assertEqual(matches[0]["harmonized_key"], "measurement_OMOP:4152194")
             self.assertEqual(matches[0]["source_key"], "sysBP")
+
+
+class SourceSchemaValidationTests(unittest.TestCase):
+    """compare.main must reject source JSON without `variables_by_pht`.
+
+    Otherwise a malformed or unsupported-extractor source summary will
+    silently compare as zero source variables, producing misleading
+    unmatched/missing output.
+    """
+
+    def _write_minimal_inputs(
+        self,
+        tmp: Path,
+        source_doc: dict,
+        harmonized_doc: dict | None = None,
+    ) -> dict[str, Path]:
+        """Lay out a temp dir with the files compare.main needs at startup.
+
+        Returns a dict of paths the caller can pass into argv. Yaml and
+        cache dirs exist but are empty — the schema check is supposed to
+        fire before the crosswalk build, so empty is fine.
+        """
+        src_path = tmp / "src.json"
+        harm_path = tmp / "harm.json"
+        yaml_dir = tmp / "yaml"
+        cache_dir = tmp / "cache"
+        src_path.write_text(json.dumps(source_doc), encoding="utf-8")
+        harm_path.write_text(
+            json.dumps(harmonized_doc if harmonized_doc is not None else {"variables": {}}),
+            encoding="utf-8",
+        )
+        yaml_dir.mkdir()
+        cache_dir.mkdir()
+        return {
+            "source": src_path, "harmonized": harm_path,
+            "yaml_dir": yaml_dir, "cache_dir": cache_dir,
+        }
+
+    def _argv(self, paths: dict[str, Path]) -> list[str]:
+        return [
+            "--source", str(paths["source"]),
+            "--harmonized", str(paths["harmonized"]),
+            "--cohort", "TESTCOHORT",
+            "--yaml-dir", str(paths["yaml_dir"]),
+            "--cache-dir", str(paths["cache_dir"]),
+        ]
+
+    def test_missing_variables_by_pht_exits_with_clear_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = self._write_minimal_inputs(
+                Path(tmp),
+                source_doc={"metadata": {}, "total_rows": 100},  # no variables_by_pht
+            )
+            with self.assertRaises(SystemExit) as ctx:
+                compare_main(self._argv(paths))
+            self.assertEqual(ctx.exception.code, 2)
+
+    def test_empty_variables_by_pht_exits_with_clear_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = self._write_minimal_inputs(
+                Path(tmp),
+                source_doc={"metadata": {}, "variables_by_pht": {}},
+            )
+            with self.assertRaises(SystemExit) as ctx:
+                compare_main(self._argv(paths))
+            self.assertEqual(ctx.exception.code, 2)
+
+    def test_variables_by_pht_wrong_type_exits_with_clear_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = self._write_minimal_inputs(
+                Path(tmp),
+                source_doc={"metadata": {}, "variables_by_pht": "not a dict"},
+            )
+            with self.assertRaises(SystemExit) as ctx:
+                compare_main(self._argv(paths))
+            self.assertEqual(ctx.exception.code, 2)
 
 
 class AtomicWriteTests(unittest.TestCase):

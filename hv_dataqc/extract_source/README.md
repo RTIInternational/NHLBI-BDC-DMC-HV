@@ -84,6 +84,11 @@ Re-running creates a new dated directory and updates the symlink.
 
 ## Output JSON Format
 
+Variables are emitted nested by PHT under `variables_by_pht`. The older
+flat `variables` top-level dict was removed in Phase B because the same
+column name can appear in multiple PHTs with different stats — the
+collision rule used to silently pick one.
+
 ```json
 {
   "metadata": {
@@ -94,27 +99,32 @@ Re-running creates a new dated directory and updates the symlink.
     "source_dirs": ["spiromics_phs001119_c1", "spiromics_phs001119_c2"]
   },
   "total_rows": 11892,
+  "total_rows_by_pht": {"pht006243": 8919, "pht006244": 2973},
+  "participants_by_pht": {"pht006243": 2973, "pht006244": 2973},
   "rows_per_visit": {"VISIT_1": 2973, "VISIT_2": 2919, ...},
-  "variables": {
-    "ht_cm": {
-      "type": "continuous",
-      "n_valid": 2973, "n_missing": 0,
-      "mean": 170.4, "sd": 9.1,
-      "min": 142.0, "max": 198.5,
-      "_pht": "pht006243",
-      "_col_original": "HT_CM",
-      "name": "Standing Height"
-    },
-    "race1": {
-      "type": "categorical",
-      "n_valid": 2973, "n_missing": 0,
-      "n_distinct": 5,
-      "distribution": {
-        "1": {"n": 1800, "pct": 60.5},
-        "2": {"n": 600, "pct": 20.2},
-        ...
+  "variables_by_pht": {
+    "pht006243": {
+      "ht_cm": {
+        "type": "continuous",
+        "n_valid": 2973, "n_missing": 0,
+        "mean": 170.4, "sd": 9.1,
+        "min": 142.0, "max": 198.5,
+        "_pht": "pht006243",
+        "_col_original": "HT_CM",
+        "name": "Standing Height"
+      },
+      "race1": {
+        "type": "categorical",
+        "n_valid": 2973, "n_missing": 0,
+        "n_distinct": 5,
+        "distribution": {
+          "1": {"n": 1800, "pct": 60.5},
+          "2": {"n": 600, "pct": 20.2},
+          ...
+        }
       }
-    }
+    },
+    "pht006244": { ... }
   }
 }
 ```

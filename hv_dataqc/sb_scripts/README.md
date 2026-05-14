@@ -8,22 +8,18 @@ can be cloned anywhere on SB.
 
 ## Setup
 
-At the start of each SB session:
+At the start of each SB session — see the top-level
+[README's SB quick-start](../README.md#quick-start-using-convenience-scripts)
+for the full clone/fetch/checkout walkthrough. Once the repo is in place
+and you're on the branch you want:
 
 ```bash
-cd <path-to>/NHLBI-BDC-DMC-HV
-git pull
-source hv_dataqc/sb_scripts/setup.sh
+source hv_dataqc/sb_scripts/setup.sh        # uv + project deps (once per session)
+source hv_dataqc/sb_scripts/vi_defaults.sh  # optional: vi as editor + vi keybindings
 ```
 
-### `vi_defaults.sh`
-
-SB doesn't persist dotfiles. Source this to set vi as editor and enable
-vi keybindings:
-
-```bash
-source NHLBI-BDC-DMC-HV/hv_dataqc/sb_scripts/vi_defaults.sh
-```
+SB doesn't persist dotfiles between sessions, so `vi_defaults.sh` exists
+for that.
 
 ## Scripts
 

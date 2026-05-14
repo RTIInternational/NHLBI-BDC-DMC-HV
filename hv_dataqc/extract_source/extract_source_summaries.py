@@ -605,8 +605,7 @@ def main(argv: list[str] | None = None) -> None:
         # ------------------------------------------------------------------
         # 5. Summarize variables across all pht frames
         # ------------------------------------------------------------------
-        variables: dict[str, dict] = {}
-        variables_by_pht: dict[str, dict] = {}   # per-PHT stats (Option B)
+        variables_by_pht: dict[str, dict] = {}   # {pht: {col_key: summary}}
         total_rows_all = 0
         total_rows_by_pht: dict[str, int] = {}
         total_participants: int | None = None
@@ -675,14 +674,6 @@ def main(argv: list[str] | None = None) -> None:
                     log.debug("  Filtered out: %s", col)
                     continue
 
-                # Build stat entry key = "pht.col" if col appears in multiple phts
-                # Use consistent key = lower-case column name for now; if ambiguous,
-                # prefix with pht label
-                entry_key = col_key
-                if entry_key in variables and variables[entry_key].get("_pht") != pht_label:
-                    # Column appears in multiple pht → namespace it
-                    entry_key = f"{pht_label}.{col_key}"
-
                 forced_type = source_type_map.get(col_key)
                 summary = compute_variable_summary(
                     df[col],
@@ -698,12 +689,10 @@ def main(argv: list[str] | None = None) -> None:
                 elif col.lower() in phv_name_map:
                     summary["name"] = phv_name_map[col.lower()]
 
-                variables[entry_key] = summary
-                # Per-PHT storage for per-table disambiguation
                 variables_by_pht.setdefault(pht_label, {})[col_key] = summary
                 log.debug("  Summarized: %s (%s, n_valid=%d)", col, summary["type"], summary.get("n_valid", 0))
 
-            log.info("  Running total variables: %d", len(variables))
+            log.info("  PHT %s: %d variables", pht_label, len(variables_by_pht.get(pht_label, {})))
 
         if participant_ids:
             total_participants = len(participant_ids)
@@ -730,7 +719,6 @@ def main(argv: list[str] | None = None) -> None:
             "rows_per_visit": rows_per_visit_combined,
             "participants_by_pht": participants_by_pht,
             "variables_by_pht": variables_by_pht,
-            "variables": variables,
         }
         if total_participants is not None:
             output_doc["total_participants"] = total_participants
@@ -743,11 +731,12 @@ def main(argv: list[str] | None = None) -> None:
         else:
             out_path = run_dir / f"{cohort_lower}_source_{timestamp}.json"
 
-        log.info("Writing %d variable summaries to %s", len(variables), out_path)
+        total_var_entries = sum(len(v) for v in variables_by_pht.values())
+        log.info("Writing %d variable summaries to %s", total_var_entries, out_path)
         _write_json_atomic(out_path, output_doc)
 
         log.info("=== Done. Variables summarized: %d, Total rows: %d ===",
-                 len(variables), total_rows_all)
+                 total_var_entries, total_rows_all)
 
     finally:
         _close_file_logging()
