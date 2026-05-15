@@ -647,20 +647,6 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193819}) + ":WHI")'
 
-# WHI FORM 37
-# Source: pht001005 (f37_rel1 -- Social Support / Psychosocial questionnaire)
-# Multi-visit annual form; generic label used for CES-D score mapping.
-- class_derivations:
-    Visit:
-      populated_from: pht001005
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078867}) + ":WHI FORM 37")'
-        name:
-          value: WHI FORM 37
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078867}) + ":WHI")'
-
 # WHI UNC HEART FAILURE DETAILS
 # Source: pht006223
 - class_derivations:
