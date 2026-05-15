@@ -16,7 +16,7 @@ from hv_dataqc.compare._common import CheckResult, fmt_n as _n
 
 def _synthesize_source_visit_counts(
     source: dict, yaml_dir: Path,
-) -> tuple[dict[str, int], list[str]]:
+) -> tuple[dict[str, int], list[str], list[dict]]:
     """Build a {visit_label: participant_count} dict for table-based cohorts.
 
     Table-based cohorts (CHS, ARIC, CARDIA, FHS, etc.) encode visit structure
@@ -32,20 +32,22 @@ def _synthesize_source_visit_counts(
     If multiple YAML blocks share the same PHT (e.g. pht001451 appears for both
     "CHS BASELINE 2" self-report and ECG blocks), only the *Visit* class
     derivation is used to avoid double-counting.  If the same PHT maps to
-    multiple distinct visit labels (pooled tables are rare) the rows are split
-    evenly with a note in the label.
+    multiple distinct visit labels, aggregate metadata cannot determine the
+    split safely, so the PHT is reported as unsupported instead of being
+    duplicated across labels.
 
     Returns a tuple of:
       - synthesized {visit_label: count} (PHTs mapped in visit.yaml only)
-      - uncovered_phts: list of PHT IDs present in source but absent from visit.yaml
+            - uncovered_phts: list of PHT IDs present in source but absent from visit.yaml
+            - unsupported_phts: list of multi-label PHTs that could not be synthesized
     """
     visit_yaml = yaml_dir / "visit.yaml"
     if not visit_yaml.exists():
-        return {}, []
+        return {}, [], []
 
     rows_by_pht: dict[str, int] = source.get("total_rows_by_pht", {})
     if not rows_by_pht:
-        return {}, []
+        return {}, [], []
 
     # Parse visit.yaml: each YAML document is a single-element list whose only
     # item is {"class_derivations": {"Visit": {populated_from, slot_derivations}}}
@@ -53,7 +55,7 @@ def _synthesize_source_visit_counts(
     try:
         docs = list(yaml.safe_load_all(visit_yaml.read_text(encoding="utf-8")))
     except yaml.YAMLError:
-        return {}, []
+        return {}, [], []
 
     for doc in docs:
         if not isinstance(doc, list):
@@ -79,16 +81,19 @@ def _synthesize_source_visit_counts(
 
     synthesized: dict[str, int] = {}
     uncovered: list[str] = []
+    unsupported: list[dict] = []
     for pht, n in rows_by_pht.items():
         labels = pht_to_labels.get(pht)
         if not labels:
             # PHT present in source but absent from visit.yaml — not being harmonized (by design)
             uncovered.append(pht)
+        elif len(labels) > 1:
+            unsupported.append({"pht": pht, "labels": sorted(labels), "rows": int(n)})
         else:
             for label in labels:
                 synthesized[label] = synthesized.get(label, 0) + n
 
-    return synthesized, uncovered
+    return synthesized, uncovered, unsupported
 
 
 def check_c8_visit_distribution(
@@ -114,15 +119,24 @@ def check_c8_visit_distribution(
     # For table-based cohorts: synthesize source visit counts from PHT rows + visit.yaml
     synthesized = False
     uncovered_phts: list[str] = []
+    unsupported_phts: list[dict] = []
     if not src_visits and yaml_dir:
-        src_visits, uncovered_phts = _synthesize_source_visit_counts(source, yaml_dir)
+        src_visits, uncovered_phts, unsupported_phts = _synthesize_source_visit_counts(source, yaml_dir)
         if src_visits:
             synthesized = True
 
+    unsupported_results: list[CheckResult] = []
+    if unsupported_phts:
+        unsupported_results.append(CheckResult(
+            "C8", "_unsupported_multi_label_phts", "WARN",
+            f"{len(unsupported_phts)} source table(s) map to multiple visit labels; aggregate visit counts cannot be synthesized safely",
+            {"comparison_confidence": "unsupported", "multi_label_phts": unsupported_phts},
+        ))
+
     if not src_visits and not harmonized_visits:
-        return [CheckResult("C8", "_visits", "SKIP", "No visit data in either summary")]
+        return unsupported_results or [CheckResult("C8", "_visits", "SKIP", "No visit data in either summary")]
     if not src_visits:
-        return [CheckResult("C8", "_visits", "SKIP", "No source visit data")]
+        return unsupported_results or [CheckResult("C8", "_visits", "SKIP", "No source visit data")]
 
     src_label = "synthesized from total_rows_by_pht + visit.yaml" if synthesized else "source"
 
@@ -147,11 +161,12 @@ def check_c8_visit_distribution(
                 "A FAIL may indicate a visit.yaml label mismatch rather than a pipeline issue."
             )
         if harmonized_total == src_total:
-            return [CheckResult("C8", "visit_TOTAL", "PASS",
-                                f"Total visits match: N={_n(src_total)} despite label namespace mismatch",
+            detail["comparison_confidence"] = "unsupported"
+            return unsupported_results + [CheckResult("C8", "visit_TOTAL", "WARN",
+                                f"Visit labels use incompatible namespaces; totals match N={_n(src_total)} but row-level visit semantics are needed for an exact verdict",
                                 detail)]
         detail["comparison_confidence"] = "unsupported"
-        return [CheckResult(
+        return unsupported_results + [CheckResult(
             "C8", "visit_TOTAL", "WARN",
             f"Visit labels use incompatible namespaces; totals differ {_n(src_total)} -> {_n(harmonized_total)} and row-level visit semantics are needed for an exact verdict",
             detail,
@@ -200,4 +215,4 @@ def check_c8_visit_distribution(
             {"uncovered_phts": sorted(uncovered_phts), "total_rows": total_uncovered_rows},
         ))
 
-    return results
+    return unsupported_results + results

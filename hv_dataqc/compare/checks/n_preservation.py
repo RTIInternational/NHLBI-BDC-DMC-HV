@@ -120,14 +120,14 @@ def check_c2_n_loss(
         detail_base["source_n_raw"] = src_n_raw
         detail_base["expected_n_for_concept"] = expected_n
 
-    if src_n == 0:
-        return CheckResult("C2", var_name, "SKIP", "No valid source values", detail_base)
     if confidence == "unsupported":
         return CheckResult(
             "C2", var_name, "SKIP",
             "Expected N requires row-level joint counts; aggregate comparison not attempted",
             detail_base,
         )
+    if src_n == 0:
+        return CheckResult("C2", var_name, "SKIP", "No valid source values", detail_base)
     if harmonized_n == src_n:
         return CheckResult("C2", var_name, "PASS", f"N preserved: {_n(src_n)}", detail_base)
 

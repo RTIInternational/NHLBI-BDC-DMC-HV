@@ -47,6 +47,13 @@ def load_thresholds(path: Path | None = None) -> dict:
         try:
             with effective_path.open("r", encoding="utf-8") as fh:
                 cfg = yaml.safe_load(fh) or {}
+            if not isinstance(cfg, dict):
+                print(
+                    f"WARNING: Thresholds YAML {effective_path.name}: expected a mapping, "
+                    "using built-in defaults",
+                    file=sys.stderr,
+                )
+                return {}
             print(f"Loaded thresholds from {effective_path.name}")
             return cfg
         except yaml.YAMLError as exc:

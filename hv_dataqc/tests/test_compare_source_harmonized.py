@@ -13,6 +13,8 @@ import tempfile
 import importlib.util
 from pathlib import Path
 
+import pandas as pd
+
 
 HV_DATAQC_DIR = Path(__file__).resolve().parents[1]
 COMPARE_DIR = HV_DATAQC_DIR / "compare"
@@ -62,6 +64,12 @@ from hv_dataqc.compare.crosswalk import (  # noqa: E402
     _build_variables_by_name,
     _pick_single_pht_summary,
 )
+from hv_dataqc.compare.checks.visit_n import _synthesize_source_visit_counts  # noqa: E402
+from hv_dataqc.extract_harmonized.extract_harmonized_summaries import (  # noqa: E402
+    merge_variable_summaries,
+    process_measurement_observation_sets,
+)
+from hv_dataqc.extract_source.extract_source_summaries import _canonical_participant_id  # noqa: E402
 
 
 class CompareSourceHarmonizedTests(unittest.TestCase):
@@ -351,6 +359,11 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
 
         self.assertTrue(any("missing" in warning for warning in warnings))
 
+    def test_clinical_ranges_validation_warns_on_non_mapping_top_level(self) -> None:
+        warnings = validate_clinical_ranges_config(["not", "a", "mapping"])
+
+        self.assertIn("expected top-level mapping", warnings)
+
     def test_json_safe_converts_non_finite_floats_to_none(self) -> None:
         sanitized = _json_safe({"ok": 1.0, "bad": float("nan"), "nested": [float("inf")]})
 
@@ -376,6 +389,15 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         result = load_thresholds(Path("/nonexistent/thresholds.yaml"))
         self.assertIsInstance(result, dict)
         self.assertEqual(len(result), 0)
+
+    def test_load_thresholds_returns_empty_dict_for_non_mapping_yaml(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "thresholds.yaml"
+            path.write_text("- not\n- a mapping\n", encoding="utf-8")
+
+            result = load_thresholds(path)
+
+        self.assertEqual(result, {})
 
     def test_c5_runs_only_with_explicit_conversion_factor(self) -> None:
         self.assertFalse(should_run_c5_conversion_check({}, {}))
@@ -499,7 +521,7 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
             [("{phv00258106} == 0", "OMOP:45883537"), ("True", "None")],
         )
 
-    def test_expected_summary_from_case_value_exprs_handles_split_skip_pattern(self) -> None:
+    def test_expected_summary_from_case_value_exprs_marks_multi_phv_conditions_unsupported(self) -> None:
         entries = [
             {
                 "value_exprs": [
@@ -536,11 +558,9 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         expected = _expected_summary_from_case_value_exprs(entries, summaries_by_phv)
 
         self.assertIsNotNone(expected)
-        self.assertEqual(expected["n_valid"], 12)
         self.assertEqual(expected["_comparison_basis"], "yaml_case_value_expr")
-        self.assertEqual(expected["distribution"]["OMOP:45883537"]["n"], 7)
-        self.assertEqual(expected["distribution"]["OMOP:40766945"]["n"], 3)
-        self.assertEqual(expected["distribution"]["OMOP:45883458"]["n"], 2)
+        self.assertEqual(expected["_comparison_confidence"], "unsupported")
+        self.assertIn("joint counts", expected["_comparison_limitations"][0])
 
     def test_expected_summary_from_case_value_exprs_skips_non_null_else_branch(self) -> None:
         entries = [
@@ -787,6 +807,44 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
 
         self.assertEqual(results[0].status, "WARN")
         self.assertEqual(results[0].detail["comparison_confidence"], "unsupported")
+
+    def test_c8_namespace_mismatch_equal_totals_warns_not_pass(self) -> None:
+        source = {"rows_per_visit": {"SOURCE VISIT": 10}}
+        harmonized = {"rows_per_visit": {"uuid:VISIT": 10}}
+
+        results = check_c8_visit_distribution(source, harmonized)
+
+        self.assertEqual(results[0].status, "WARN")
+        self.assertEqual(results[0].detail["comparison_confidence"], "unsupported")
+
+    def test_c8_synthesis_marks_multi_label_pht_unsupported(self) -> None:
+        visit_yaml = """
+- class_derivations:
+    Visit:
+      populated_from: pht000001
+      slot_derivations:
+        name:
+          value: VISIT A
+---
+- class_derivations:
+    Visit:
+      populated_from: pht000001
+      slot_derivations:
+        name:
+          value: VISIT B
+"""
+        with tempfile.TemporaryDirectory() as tmp:
+            yaml_dir = Path(tmp)
+            (yaml_dir / "visit.yaml").write_text(visit_yaml, encoding="utf-8")
+
+            synthesized, uncovered, unsupported = _synthesize_source_visit_counts(
+                {"total_rows_by_pht": {"pht000001": 100}}, yaml_dir
+            )
+
+        self.assertEqual(synthesized, {})
+        self.assertEqual(uncovered, [])
+        self.assertEqual(unsupported[0]["rows"], 100)
+        self.assertEqual(unsupported[0]["labels"], ["VISIT A", "VISIT B"])
 
     def test_c9_source_carried_red_flag_warns(self) -> None:
         ranges = {
@@ -1437,6 +1495,29 @@ class CrosswalkConceptExtractionTests(unittest.TestCase):
         for e in cw:
             self.assertEqual(e["phv_id"], "phv00100042",
                              "Both entries should use value_decimal PHV (HDL44)")
+            self.assertTrue(e["concept_exprs"])
+
+    def test_concept_case_expr_expected_summary_is_unsupported(self) -> None:
+        entry = {
+            "yaml_file": "hdl.yaml",
+            "phv_id": "phv00100042",
+            "concept_codes": ["OMOP:4041720", "OBA:VT0000184"],
+            "concept_exprs": ["case(({phv00099923} >= 12, 'OMOP:4041720'), (True, 'OBA:VT0000184'))"],
+            "_source_summary": {
+                "type": "continuous",
+                "n_total": 12,
+                "n_valid": 12,
+                "mean": 50.0,
+                "sd": 5.0,
+            },
+        }
+
+        expected = build_expected_summary([entry], {})
+
+        self.assertIsNotNone(expected)
+        self.assertEqual(expected["_comparison_basis"], "yaml_concept_case_expr")
+        self.assertEqual(expected["_comparison_confidence"], "unsupported")
+        self.assertIn("branch-specific", expected["_comparison_limitations"][0])
 
     def test_value_mappings_condition_concept_generates_multiple_entries(self) -> None:
         """condition_concept with CURIE value_mappings emits one entry per CURIE.
@@ -1711,6 +1792,39 @@ class SourceSchemaValidationTests(unittest.TestCase):
                 compare_main(self._argv(paths))
             self.assertEqual(ctx.exception.code, 2)
 
+    def test_missing_harmonized_variables_exits_with_clear_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = self._write_minimal_inputs(
+                Path(tmp),
+                source_doc={"metadata": {}, "variables_by_pht": {"pht000001": {"X": {"type": "continuous"}}}},
+                harmonized_doc={"metadata": {}},
+            )
+            with self.assertRaises(SystemExit) as ctx:
+                compare_main(self._argv(paths))
+            self.assertEqual(ctx.exception.code, 2)
+
+    def test_empty_harmonized_variables_exits_with_clear_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = self._write_minimal_inputs(
+                Path(tmp),
+                source_doc={"metadata": {}, "variables_by_pht": {"pht000001": {"X": {"type": "continuous"}}}},
+                harmonized_doc={"metadata": {}, "variables": {}},
+            )
+            with self.assertRaises(SystemExit) as ctx:
+                compare_main(self._argv(paths))
+            self.assertEqual(ctx.exception.code, 2)
+
+    def test_wrong_type_harmonized_variables_exits_with_clear_error(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = self._write_minimal_inputs(
+                Path(tmp),
+                source_doc={"metadata": {}, "variables_by_pht": {"pht000001": {"X": {"type": "continuous"}}}},
+                harmonized_doc={"metadata": {}, "variables": "not a dict"},
+            )
+            with self.assertRaises(SystemExit) as ctx:
+                compare_main(self._argv(paths))
+            self.assertEqual(ctx.exception.code, 2)
+
 
 class AtomicWriteTests(unittest.TestCase):
     """Atomic writers must create missing parent directories."""
@@ -1728,6 +1842,83 @@ class AtomicWriteTests(unittest.TestCase):
             _write_text_atomic(target, "hello")
             self.assertTrue(target.exists())
             self.assertEqual(target.read_text(encoding="utf-8"), "hello")
+
+
+class ExtractorRegressionTests(unittest.TestCase):
+    """Regression tests for extractor behaviors consumed by compare."""
+
+    def test_mos_extractor_summarizes_integer_coded_and_concept_values(self) -> None:
+        df = pd.DataFrame(
+            {
+                "observations": [
+                    json.dumps([
+                        {
+                            "observation_type": "OBA:INTEGER",
+                            "value_quantity": {"value_integer": 3},
+                        },
+                        {
+                            "observation_type": "OBA:CODED",
+                            "value_quantity": {"value_coded": "HIGH"},
+                        },
+                        {
+                            "observation_type": "OBA:CONCEPT",
+                            "value_quantity": {"value_concept": "OMOP:123"},
+                        },
+                    ])
+                ]
+            }
+        )
+
+        variables = process_measurement_observation_sets(df, {})
+
+        self.assertEqual(variables["measurement_OBA:INTEGER"]["type"], "continuous")
+        self.assertEqual(variables["measurement_OBA:INTEGER"]["n_valid"], 1)
+        self.assertEqual(variables["measurement_OBA:INTEGER"]["mean"], 3.0)
+        self.assertEqual(variables["measurement_OBA:CODED"]["type"], "categorical")
+        self.assertEqual(variables["measurement_OBA:CODED"]["distribution"]["HIGH"]["n"], 1)
+        self.assertEqual(variables["measurement_OBA:CONCEPT"]["distribution"]["OMOP:123"]["n"], 1)
+
+    def test_merge_variable_summaries_combines_duplicate_continuous_keys(self) -> None:
+        variables = {
+            "measurement_OBA:1": {
+                "type": "continuous",
+                "entity": "MeasurementObservation",
+                "n_total": 2,
+                "n_valid": 2,
+                "n_missing": 0,
+                "mean": 10.0,
+                "sd": 2.0,
+            }
+        }
+        diagnostics: dict = {}
+
+        merge_variable_summaries(
+            variables,
+            {
+                "measurement_OBA:1": {
+                    "type": "continuous",
+                    "entity": "MeasurementObservationSet",
+                    "n_total": 1,
+                    "n_valid": 1,
+                    "n_missing": 0,
+                    "mean": 20.0,
+                    "sd": None,
+                }
+            },
+            diagnostics,
+        )
+
+        merged = variables["measurement_OBA:1"]
+        self.assertTrue(merged["_merged_harmonized_key_collision"])
+        self.assertEqual(merged["n_valid"], 3)
+        self.assertAlmostEqual(merged["mean"], 13.333333, places=6)
+        self.assertEqual(diagnostics["harmonized_variable_key_collisions"], ["measurement_OBA:1"])
+
+    def test_canonical_participant_id_normalizes_integer_like_values(self) -> None:
+        self.assertEqual(_canonical_participant_id(1), "1")
+        self.assertEqual(_canonical_participant_id(1.0), "1")
+        self.assertEqual(_canonical_participant_id(" 1.0 "), "1")
+        self.assertEqual(_canonical_participant_id("001"), "001")
 
 
 if __name__ == "__main__":

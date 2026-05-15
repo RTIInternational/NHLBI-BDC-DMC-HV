@@ -444,6 +444,19 @@ def _distribution_count_for_code(summary: dict | None, code: str) -> int | None:
     return None
 
 
+def _unsupported_joint_summary(src_summary: dict | None, basis: str, limitation: str) -> dict:
+    """Return a source-shaped summary that tells checks to skip exact verdicts."""
+    summary = dict(src_summary or {})
+    summary.setdefault("type", (src_summary or {}).get("type", "categorical"))
+    summary.setdefault("n_total", int((src_summary or {}).get("n_total", 0) or 0))
+    summary.setdefault("n_valid", int((src_summary or {}).get("n_valid", 0) or 0))
+    summary.setdefault("n_missing", int((src_summary or {}).get("n_missing", 0) or 0))
+    summary["_comparison_basis"] = basis
+    summary["_comparison_confidence"] = "unsupported"
+    summary["_comparison_limitations"] = [limitation]
+    return summary
+
+
 def _expected_summary_from_case_value_exprs(
     entries: list[dict], summaries_by_phv: dict[str, dict]
 ) -> dict | None:
@@ -451,12 +464,11 @@ def _expected_summary_from_case_value_exprs(
 
     Some transforms intentionally split one harmonized variable across multiple
     YAML blocks to avoid null propagation or to combine multiple source PHVs.
-    When those blocks use simple ``case()`` value expressions, aggregate source
-    distributions can provide the correct comparison basis without adding any
-    metadata to the YAML.  For multi-PHV conditions, prefer the last equality
-    test with a usable distribution; this captures common gated patterns such
-    as ``TBEA1 == 1 and TBEA3 == 3`` where TBEA1 selects the skip pattern and
-    TBEA3 supplies the emitted category.
+    When those blocks use simple single-PHV ``case()`` value expressions,
+    aggregate source distributions can provide the correct comparison basis
+    without adding any metadata to the YAML.  Multi-PHV branch conditions need
+    row-level joint counts, so this helper returns an unsupported summary
+    instead of treating one PHV's marginal count as exact.
     """
     expected_counts: dict[str, int] = {}
     contributing_phvs: set[str] = set()
@@ -476,6 +488,12 @@ def _expected_summary_from_case_value_exprs(
                 eq_tests = list(_PHV_EQ_RE.finditer(condition))
                 if not eq_tests:
                     return None
+                if len({_canonical_phv_id(eq.group("phv")) for eq in eq_tests}) > 1:
+                    return _unsupported_joint_summary(
+                        None,
+                        "yaml_case_value_expr",
+                        "case() branch references multiple PHVs; aggregate summaries cannot compute joint counts",
+                    )
                 counted = False
                 for eq in reversed(eq_tests):
                     phv = _canonical_phv_id(eq.group("phv"))
@@ -785,6 +803,12 @@ def _expected_summary_from_case_entry(entry: dict, src_summary: dict, summaries_
             eq_tests = list(_PHV_EQ_RE.finditer(condition))
             if not eq_tests:
                 return None
+            if len({_canonical_phv_id(eq.group("phv")) for eq in eq_tests}) > 1:
+                return _unsupported_joint_summary(
+                    src_summary,
+                    "yaml_case_value_expr",
+                    "case() branch references multiple PHVs; aggregate summaries cannot compute joint counts",
+                )
             counted = False
             for eq in reversed(eq_tests):
                 phv = _canonical_phv_id(eq.group("phv"))
@@ -828,6 +852,13 @@ def _expected_summary_for_entry(entry: dict, summaries_by_phv: dict[str, dict]) 
     src_summary = entry.get("_source_summary") or summaries_by_phv.get(_canonical_phv_id(entry.get("phv_id", "")))
     if not src_summary:
         return None
+
+    if entry.get("concept_exprs") and len(entry.get("concept_codes") or []) > 1:
+        return _unsupported_joint_summary(
+            src_summary,
+            "yaml_concept_case_expr",
+            "concept-slot case() routes one value PHV to multiple concepts; aggregate summaries cannot compute branch-specific counts or moments",
+        )
 
     # Most specific first: value-slot case expressions, then concept routing,
     # then value mappings, then scalar/unit conversion, then direct copy.
@@ -880,7 +911,10 @@ def build_expected_summary(entries: list[dict], summaries_by_phv: dict[str, dict
         return None
     expected = _aggregate_source_summaries(expected_parts)
     basis = "+".join(sorted(bases)) if bases else "source_direct"
-    confidence = "exact" if confidences <= {"exact"} and not limitations else "partial"
+    if "unsupported" in confidences:
+        confidence = "unsupported"
+    else:
+        confidence = "exact" if confidences <= {"exact"} and not limitations else "partial"
     expected["_comparison_basis"] = basis
     expected["_comparison_confidence"] = confidence
     expected["_comparison_limitations"] = limitations
@@ -1066,6 +1100,7 @@ def _extract_crosswalk_from_class_derivations(
         # expected harmonized N as the sum of source rows whose code routes to
         # *this* concept (instead of the full source n_valid).
         concept_value_map: dict | None = None
+        concept_exprs: list[str] = []
         concept_phv: str | None = None
         concept_slot_name = CONCEPT_SLOTS.get(entity_class)
         if concept_slot_name and concept_slot_name in slots:
@@ -1084,6 +1119,7 @@ def _extract_crosswalk_from_class_derivations(
                         codes = _concept_codes_from_expr(expr)
                         if codes:
                             concept_codes = codes
+                            concept_exprs.append(expr)
                         else:
                             # Treat as a literal (e.g. a plain string value)
                             concept_codes = [expr.strip("'\" ")]
@@ -1317,6 +1353,8 @@ def _extract_crosswalk_from_class_derivations(
                     "yaml_file": yaml_filename,
                     "phv_id": primary["phv"],
                     "concept_code": concept_code,
+                    "concept_codes": concept_codes,
+                    "concept_exprs": concept_exprs,
                     "concept_phv": concept_phv,
                     "entity_class": entity_class,
                     "value_map": primary["value_map"],

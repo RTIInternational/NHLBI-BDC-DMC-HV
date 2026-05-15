@@ -17,6 +17,13 @@ def check_c4_mean_preservation(
     pass_rel: float = 0.001, warn_rel: float = 0.01,
 ) -> CheckResult:
     """C4: Continuous mean comparison (no unit conversion)."""
+    if src_var.get("_comparison_confidence") == "unsupported":
+        return CheckResult(
+            "C4", var_name, "SKIP",
+            "Expected mean requires row-level joint counts; aggregate comparison not attempted",
+            {"comparison_confidence": "unsupported",
+             "comparison_limitations": src_var.get("_comparison_limitations") or []},
+        )
     if src_var.get("type") != "continuous" or harmonized_var.get("type") != "continuous":
         return CheckResult("C4", var_name, "SKIP", "Not both continuous")
 
@@ -75,6 +82,13 @@ def check_c5_mean_after_conversion(
     conversion_factor: float | None = None, pass_rel: float = 0.001,
 ) -> CheckResult:
     """C5: Mean comparison with a known unit conversion factor."""
+    if src_var.get("_comparison_confidence") == "unsupported":
+        return CheckResult(
+            "C5", var_name, "SKIP",
+            "Expected converted mean requires row-level joint counts; aggregate comparison not attempted",
+            {"comparison_confidence": "unsupported",
+             "comparison_limitations": src_var.get("_comparison_limitations") or []},
+        )
     if conversion_factor is None:
         return CheckResult("C5", var_name, "SKIP", "No conversion factor specified")
     if src_var.get("type") != "continuous" or harmonized_var.get("type") != "continuous":
@@ -115,6 +129,13 @@ def check_c6_sd_preservation(
     pass_rel: float = 0.002, warn_rel: float = 0.01,
 ) -> CheckResult:
     """C6: Standard deviation comparison."""
+    if src_var.get("_comparison_confidence") == "unsupported":
+        return CheckResult(
+            "C6", var_name, "SKIP",
+            "Expected SD requires row-level joint counts; aggregate comparison not attempted",
+            {"comparison_confidence": "unsupported",
+             "comparison_limitations": src_var.get("_comparison_limitations") or []},
+        )
     if src_var.get("type") != "continuous" or harmonized_var.get("type") != "continuous":
         return CheckResult("C6", var_name, "SKIP", "Not both continuous")
 

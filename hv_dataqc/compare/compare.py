@@ -117,6 +117,8 @@ _json_safe = json_safe
 def validate_clinical_ranges_config(clinical_ranges: dict) -> list[str]:
     """Return non-fatal validation warnings for clinical_ranges.yaml."""
     warnings: list[str] = []
+    if not isinstance(clinical_ranges, dict):
+        return ["expected top-level mapping"]
     required_bounds = ("plausible_lo", "plausible_hi", "red_flag_lo", "red_flag_hi")
     range_names = {k for k in clinical_ranges if not str(k).startswith("_")}
 
@@ -409,6 +411,12 @@ def main(argv: list[str] | None = None) -> None:
         try:
             with cr_path.open("r", encoding="utf-8") as fh:
                 clinical_ranges = yaml.safe_load(fh) or {}
+            if not isinstance(clinical_ranges, dict):
+                print(
+                    f"WARNING: Clinical ranges YAML {cr_path.name}: expected a mapping -- C9/C10 will SKIP",
+                    file=sys.stderr,
+                )
+                clinical_ranges = {}
             print(f"Loaded {len(clinical_ranges)} clinical range definitions from {cr_path.name}")
             for warning in validate_clinical_ranges_config(clinical_ranges):
                 print(f"WARNING: clinical ranges config: {warning}")
@@ -449,7 +457,16 @@ def main(argv: list[str] | None = None) -> None:
         )
         sys.exit(2)
     variables_by_name = _build_variables_by_name(variables_by_pht)
-    harmonized_vars = _normalize_harmonized_vars(harmonized.get("variables", {}))
+    raw_harmonized_vars = harmonized.get("variables")
+    if not isinstance(raw_harmonized_vars, dict) or not raw_harmonized_vars:
+        print(
+            f"ERROR: harmonized JSON {args.harmonized} has no usable `variables`. "
+            "Either the file is malformed or it was produced by an unsupported "
+            "extractor version. Re-run extract_harmonized_summaries.py to regenerate.",
+            file=sys.stderr,
+        )
+        sys.exit(2)
+    harmonized_vars = _normalize_harmonized_vars(raw_harmonized_vars)
     source_meta = source.get("metadata", {})
     harmonized_meta = harmonized.get("metadata", {})
 

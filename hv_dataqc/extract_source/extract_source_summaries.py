@@ -82,6 +82,16 @@ def _canonical_phv_id(raw_id: str) -> str:
     return canonical_phv_id(raw_id)
 
 
+def _canonical_participant_id(value: Any) -> str:
+    """Return a stable string key for participant-count unioning."""
+    if isinstance(value, float) and value.is_integer():
+        return str(int(value))
+    text = str(value).strip()
+    if text.endswith(".0") and text[:-2].lstrip("-").isdigit():
+        return text[:-2]
+    return text
+
+
 def _write_json_atomic(path: Path, data: Any) -> None:
     """Write strict JSON via temp file then atomic replace."""
     write_json_atomic(path, data, ensure_ascii=True, default=str)
@@ -653,7 +663,7 @@ def main(argv: list[str] | None = None) -> None:
                         break
             if part_col and part_col in df.columns:
                 n_unique_here = int(df[part_col].nunique(dropna=True))
-                participant_ids.update(str(v) for v in df[part_col].dropna().unique())
+                participant_ids.update(_canonical_participant_id(v) for v in df[part_col].dropna().unique())
                 participants_by_pht[pht_label] = n_unique_here
                 log.info("  Unique participants in %s: %d", pht_label, n_unique_here)
                 if total_participants is None:

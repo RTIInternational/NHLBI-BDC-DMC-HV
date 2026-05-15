@@ -43,6 +43,7 @@ from __future__ import annotations
 import argparse
 import ast
 import json
+import math
 import re
 import sys
 from datetime import datetime, timezone
@@ -546,6 +547,11 @@ def process_measurement_observation_sets(
     if "observations" not in df.columns:
         return variables
 
+    DECIMAL_FIELD = "value_decimal"
+    INTEGER_FIELD = "value_integer"
+    CODED_FIELD = "value_coded"
+    CONCEPT_FIELD = "value_concept"
+
     # Resolve visit UUIDs on the outer DataFrame before exploding
     if "associated_visit" in df.columns:
         df = df.copy()
@@ -611,13 +617,17 @@ def process_measurement_observation_sets(
             if not obs_type:
                 continue
             vq = obs.get("value_quantity", {})
-            value = vq.get("value_decimal") if isinstance(vq, dict) else None
+            if not isinstance(vq, dict):
+                vq = {}
             method = obs.get("method_type")
             rows.append(
                 {
                     "observation_type": str(obs_type),
                     "method_type": str(method) if method else None,
-                    "value_decimal": value,
+                    DECIMAL_FIELD: vq.get(DECIMAL_FIELD),
+                    INTEGER_FIELD: vq.get(INTEGER_FIELD),
+                    CODED_FIELD: vq.get(CODED_FIELD),
+                    CONCEPT_FIELD: vq.get(CONCEPT_FIELD),
                     "associated_visit": visit_val,
                 }
             )
@@ -641,6 +651,8 @@ def process_measurement_observation_sets(
         else:
             obs_type_val = group_key
             method_val = None
+            if isinstance(obs_type_val, tuple):
+                obs_type_val = obs_type_val[0] if obs_type_val else None
 
         obs_type_str = str(obs_type_val) if pd.notna(obs_type_val) else "MISSING_OBS_TYPE"
         method_str = (
@@ -655,7 +667,28 @@ def process_measurement_observation_sets(
             else f"measurement_{obs_type_str}"
         )
 
-        summary = continuous_stats(group["value_decimal"])
+        has_decimal = group[DECIMAL_FIELD].notna().any()
+        has_integer = group[INTEGER_FIELD].notna().any()
+        has_coded = group[CODED_FIELD].notna().any()
+        has_concept = group[CONCEPT_FIELD].notna().any()
+
+        if has_decimal or has_integer:
+            value_field = DECIMAL_FIELD if has_decimal else INTEGER_FIELD
+            summary = continuous_stats(group[value_field])
+        elif has_coded:
+            value_field = CODED_FIELD
+            summary = categorical_stats(group[value_field])
+        elif has_concept:
+            value_field = CONCEPT_FIELD
+            summary = categorical_stats(group[value_field])
+        else:
+            value_field = DECIMAL_FIELD
+            summary = {
+                "type": "unknown",
+                "n_total": int(len(group)),
+                "n_valid": 0,
+                "n_missing": int(len(group)),
+            }
         summary["entity"] = "MeasurementObservationSet"
         summary["observation_type"] = obs_type_str
         if method_str:
@@ -665,12 +698,122 @@ def process_measurement_observation_sets(
             by_visit_stats: dict[str, dict] = {}
             for visit_val, vgroup in group.groupby("associated_visit", dropna=False):
                 vlabel = str(visit_val) if pd.notna(visit_val) else "_MISSING_VISIT"
-                by_visit_stats[vlabel] = continuous_stats(vgroup["value_decimal"])
+                if has_decimal or has_integer:
+                    by_visit_stats[vlabel] = continuous_stats(vgroup[value_field])
+                elif has_coded or has_concept:
+                    by_visit_stats[vlabel] = categorical_stats(vgroup[value_field])
+                else:
+                    by_visit_stats[vlabel] = {
+                        "type": "unknown",
+                        "n_total": int(len(vgroup)),
+                        "n_valid": 0,
+                        "n_missing": int(len(vgroup)),
+                    }
             summary["by_visit"] = by_visit_stats
 
         variables[harmonized_key] = summary
 
     return variables
+
+
+def _distribution_count(info: Any) -> int:
+    if isinstance(info, dict):
+        return int(info.get("n", info.get("count", 0)) or 0)
+    try:
+        return int(info)
+    except (TypeError, ValueError):
+        return 0
+
+
+def _merge_variable_summary(existing: dict, incoming: dict) -> dict:
+    """Merge duplicate harmonized variable summaries instead of overwriting."""
+    existing_type = existing.get("type")
+    incoming_type = incoming.get("type")
+    entities = sorted({str(v) for v in (existing.get("_merged_entities") or [existing.get("entity")]) + [incoming.get("entity")] if v})
+
+    if existing_type == incoming_type == "continuous":
+        n1 = int(existing.get("n_valid", 0) or 0)
+        n2 = int(incoming.get("n_valid", 0) or 0)
+        total_valid = n1 + n2
+        n_total = int(existing.get("n_total", 0) or 0) + int(incoming.get("n_total", 0) or 0)
+        n_missing = int(existing.get("n_missing", 0) or 0) + int(incoming.get("n_missing", 0) or 0)
+        mean1 = existing.get("mean")
+        mean2 = incoming.get("mean")
+        merged = dict(existing)
+        merged.update({"n_total": n_total, "n_valid": total_valid, "n_missing": n_missing})
+        merged["pct_missing"] = round(n_missing / n_total * 100, 2) if n_total else 0.0
+        if total_valid and mean1 is not None and mean2 is not None:
+            pooled_mean = (n1 * float(mean1) + n2 * float(mean2)) / total_valid
+            merged["mean"] = round(pooled_mean, 6)
+            if total_valid > 1:
+                within = 0.0
+                if existing.get("sd") is not None and n1 > 1:
+                    within += (n1 - 1) * float(existing["sd"]) ** 2
+                if incoming.get("sd") is not None and n2 > 1:
+                    within += (n2 - 1) * float(incoming["sd"]) ** 2
+                between = 0.0
+                if mean1 is not None:
+                    between += n1 * (float(mean1) - pooled_mean) ** 2
+                if mean2 is not None:
+                    between += n2 * (float(mean2) - pooled_mean) ** 2
+                merged["sd"] = round(math.sqrt((within + between) / (total_valid - 1)), 6)
+        mins = [v for v in (existing.get("min"), incoming.get("min")) if v is not None]
+        maxs = [v for v in (existing.get("max"), incoming.get("max")) if v is not None]
+        if mins:
+            merged["min"] = min(float(v) for v in mins)
+        if maxs:
+            merged["max"] = max(float(v) for v in maxs)
+    elif existing_type == incoming_type == "categorical":
+        merged = dict(existing)
+        merged_dist: dict[str, dict] = {}
+        for summary in (existing, incoming):
+            dist = summary.get("distribution") or summary.get("values") or {}
+            if not isinstance(dist, dict):
+                continue
+            for code, info in dist.items():
+                slot = merged_dist.setdefault(str(code), {"n": 0})
+                slot["n"] += _distribution_count(info)
+        total_valid = sum(v["n"] for v in merged_dist.values())
+        n_total = int(existing.get("n_total", 0) or 0) + int(incoming.get("n_total", 0) or 0)
+        n_missing = int(existing.get("n_missing", 0) or 0) + int(incoming.get("n_missing", 0) or 0)
+        for stats in merged_dist.values():
+            stats["pct"] = round(stats["n"] / total_valid * 100, 2) if total_valid else 0.0
+        merged.update({
+            "distribution": merged_dist,
+            "n_total": n_total,
+            "n_valid": total_valid,
+            "n_missing": n_missing,
+            "pct_missing": round(n_missing / n_total * 100, 2) if n_total else 0.0,
+        })
+    else:
+        merged = dict(existing)
+        merged.update({
+            "type": "mixed",
+            "n_total": int(existing.get("n_total", 0) or 0) + int(incoming.get("n_total", 0) or 0),
+            "n_valid": int(existing.get("n_valid", 0) or 0) + int(incoming.get("n_valid", 0) or 0),
+            "_merge_warning": f"duplicate key had incompatible types: {existing_type} and {incoming_type}",
+        })
+    merged["_merged_harmonized_key_collision"] = True
+    merged["_merged_entities"] = entities
+    return merged
+
+
+def merge_variable_summaries(
+    variables: dict[str, dict],
+    incoming: dict[str, dict],
+    diagnostics_out: dict | None = None,
+) -> None:
+    """Merge a batch of variable summaries into *variables* without silent overwrites."""
+    collisions: list[str] = []
+    for key, summary in incoming.items():
+        if key in variables:
+            collisions.append(key)
+            variables[key] = _merge_variable_summary(variables[key], summary)
+        else:
+            variables[key] = summary
+    if collisions and diagnostics_out is not None:
+        existing = diagnostics_out.setdefault("harmonized_variable_key_collisions", [])
+        existing.extend(collisions)
 
 
 # ---------------------------------------------------------------------------
@@ -864,7 +1007,7 @@ def _run_extract(
             meas_df, ("associated_participant", "participant", "participant_id")
         )
         mo_vars = process_measurements(meas_df, visit_id_to_label, args.by_visit)
-        variables.update(mo_vars)
+        merge_variable_summaries(variables, mo_vars, extraction_warnings)
         n_types = (
             int(meas_df["observation_type"].nunique()) if "observation_type" in meas_df.columns else 0
         )
@@ -891,7 +1034,7 @@ def _run_extract(
         mos_vars = process_measurement_observation_sets(
             meas_set_df, visit_id_to_label, args.by_visit, diagnostics_out=extraction_warnings
         )
-        variables.update(mos_vars)
+        merge_variable_summaries(variables, mos_vars, extraction_warnings)
         print(f"    Total: {len(meas_set_df):,} rows | {len(mos_vars)} observation types extracted")
         for key in sorted(mos_vars):
             v = mos_vars[key]
