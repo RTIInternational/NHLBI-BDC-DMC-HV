@@ -1,0 +1,181 @@
+- class_derivations:
+    Condition:
+      populated_from: pht001575
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00113261}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113261}) + ":CARDIA YEAR 0")'
+        age_at_condition_start:
+          expr: "None if str({phv00113387}) == 'M' else float({phv00113387})"
+        condition_concept:
+          value: MONDO:0005607
+        condition_status:
+          populated_from: phv00113376
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001575
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00113261}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113261}) + ":CARDIA YEAR 0")'
+        age_at_condition_start:
+          expr: "None if str({phv00113387}) == 'M' else float({phv00113387})"
+        condition_concept:
+          value: MONDO:0005607
+        condition_status:
+          populated_from: phv00113377
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001575
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00113261}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113261}) + ":CARDIA YEAR 0")'
+        age_at_condition_start:
+          expr: "None if str({phv00113387}) == 'M' else float({phv00113387})"
+        condition_concept:
+          value: MONDO:0005607
+        condition_status:
+          populated_from: phv00113378
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001715
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00116953}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116953}) + ":CARDIA YEAR 7")'
+        condition_concept:
+          value: MONDO:0005607
+        condition_status:
+          populated_from: phv00117056
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT
+            '8': ABSENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001761
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00118426}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00118426}) + ":CARDIA YEAR 10")'
+        condition_concept:
+          value: MONDO:0005607
+        condition_status:
+          populated_from: phv00118536
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT
+            '8': ABSENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001811
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00119801}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119801}) + ":CARDIA YEAR 15")'
+        age_at_condition_start:
+          expr: "None if str({phv00119967}) == 'M' else float({phv00119967})"
+        condition_concept:
+          value: MONDO:0005607
+        condition_status:
+          populated_from: phv00119915
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT
+            '8': ABSENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht003298
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190551}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190551}) + ":CARDIA YEAR 20")'
+        age_at_condition_start:
+          expr: "None if str({phv00190622}) == 'M' else float({phv00190622})"
+        condition_concept:
+          value: MONDO:0005607
+        condition_status:
+          populated_from: phv00190625
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string

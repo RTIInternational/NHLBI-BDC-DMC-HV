@@ -1,0 +1,66 @@
+- class_derivations:
+    Observation:
+      populated_from: pht001572
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00113167}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113167}) + ":CARDIA YEAR 0")'
+          range: string
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          populated_from: phv00113169
+          value_mappings:
+            '1': OMOP:45883537
+            '2': OMOP:40766945
+            '88': None
+- class_derivations:
+    Observation:
+      populated_from: pht001573
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00113211}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113211}) + ":CARDIA YEAR 0")'
+          range: string
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          populated_from: phv00113224
+- class_derivations:
+    Observation:
+      populated_from: pht001818
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120063}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120063}) + ":CARDIA YEAR 15")'
+          range: string
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          populated_from: phv00120073
+- class_derivations:
+    Observation:
+      populated_from: pht001999
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00158913}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00158913}) + ":CARDIA YEAR 20")'
+          range: string
+        age_at_observation:
+          expr: "None if str({phv00129493}) == 'M' else float({phv00129493})"
+        observation_type:
+          value: OMOP:4282779
+          range: string
+        value_enum:
+          populated_from: phv00129536
+          value_mappings:
+            '0': OMOP:45883537
+            '1': OMOP:45883458
+            '2': OMOP:40766945

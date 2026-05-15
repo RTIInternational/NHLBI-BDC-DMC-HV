@@ -1,0 +1,73 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001563
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00112654}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00112654}) + ":CARDIA YEAR 0")'
+        observation_type:
+          value: OMOP:37208699
+        method_type:
+          value: "blood assay"
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001563
+                slot_derivations:
+                  value_decimal:
+                    expr: "None if str({phv00112694}) == 'M' else float({phv00112694})"
+                  unit:
+                    value: "10*3/uL"
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003298
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190551}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190551}) + ":CARDIA YEAR 20")'
+        age_at_observation:
+          expr: "None if str({phv00190622}) == 'M' else float({phv00190622})"
+        observation_type:
+          value: OMOP:37208699
+        method_type:
+          value: "blood assay"
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003298
+                slot_derivations:
+                  value_decimal:
+                    expr: "None if str({phv00190607}) == 'M' else float({phv00190607})"
+                  unit:
+                    value: "10*3/uL"
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003298
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190551}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190551}) + ":CARDIA YEAR 20")'
+        age_at_observation:
+          expr: "None if str({phv00190622}) == 'M' else float({phv00190622})"
+        observation_type:
+          value: OMOP:37208699
+        method_type:
+          value: "blood assay"
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003298
+                slot_derivations:
+                  value_decimal:
+                    expr: "None if str({phv00190612}) == 'M' else float({phv00190612})"
+                  unit:
+                    value: "10*3/uL"
+                    range: string

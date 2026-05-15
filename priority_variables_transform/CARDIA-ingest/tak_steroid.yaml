@@ -1,0 +1,18 @@
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001759
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00118359}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00118359}) + ":CARDIA YEAR 10")'
+        drug_concept:
+          expr: 'case(({phv00118387} == 2, "ATC:C00000"))'
+        exposure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+          range: string
+        exposure_status:
+          populated_from: phv00118387
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT
