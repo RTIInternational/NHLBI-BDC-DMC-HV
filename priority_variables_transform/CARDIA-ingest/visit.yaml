@@ -160,6 +160,21 @@
           value: HEALTH_EXAMINATION
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190551}) + ":CARDIA")'
+# pht001999 (GENEVA_CARDIA_Subject_Phenotypes) uses GENEVA_ID (phv00129484) as participant key —
+# a different ID space from standard CARDIA Individual_ID. Visit UUIDs here match the
+# associated_participant/associated_visit keys in cig_smok.yaml's pht001999 block.
+- class_derivations:
+    Visit:
+      populated_from: pht001999
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00129484}) + ":CARDIA YEAR 20")'
+        name:
+          value: CARDIA YEAR 20
+        visit_category:
+          value: HEALTH_EXAMINATION
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00129484}) + ":CARDIA")'
 # CARDIA Medical History visit: pht001869 (Y1MORB06) and pht001871 (YM106) are
 # companion hospitalization-review tables representing the same conceptual visit.
 # Both use Individual_ID as participant key, so uuid5 produces the same Visit ID

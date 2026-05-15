@@ -49,9 +49,9 @@
       populated_from: pht001999
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00158913}) + ":CARDIA")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00129484}) + ":CARDIA")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00158913}) + ":CARDIA YEAR 20")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00129484}) + ":CARDIA YEAR 20")'
           range: string
         age_at_observation:
           expr: "None if str({phv00129493}) == 'M' else float({phv00129493})"
@@ -59,7 +59,7 @@
           value: OMOP:4282779
           range: string
         value_enum:
-          populated_from: phv00129536
+          populated_from: phv00129542
           value_mappings:
             '0': OMOP:45883537
             '1': OMOP:45883458

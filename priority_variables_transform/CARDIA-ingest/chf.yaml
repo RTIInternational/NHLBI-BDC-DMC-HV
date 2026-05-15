@@ -94,28 +94,3 @@
         relationship_to_participant:
           value: ONESELF
           range: string
-- class_derivations:
-    Condition:
-      populated_from: pht001999
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00158913}) + ":CARDIA")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00158913}) + ":CARDIA YEAR 20")'
-        age_at_condition_start:
-          expr: "None if str({phv00129493}) == 'M' else float({phv00129493})"
-        condition_concept:
-          value: MONDO:0005009
-        condition_status:
-          populated_from: phv00129547
-          value_mappings:
-            '1': ABSENT
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-          range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
