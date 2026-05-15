@@ -6,8 +6,10 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
+        age_at_exposure_start:
+          expr: 'case(({phv00083069} == 1, {phv00083068} * 365))'
         drug_concept:
-          expr: 'case(({phv00083069} == 1, "ATC:B01AC06"))'
+          expr: 'case(({phv00083069} == 1, "ATC:1191"))'
         exposure_status:
           populated_from: phv00083069
           value_mappings:
@@ -26,8 +28,10 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
+        age_at_exposure_start:
+          expr: 'case(({phv00085306} == 1, {phv00085305} * 365))'
         drug_concept:
-          expr: 'case(({phv00085306} == 1, "ATC:B01AC06"))'
+          expr: 'case(({phv00085306} == 1, "ATC:1191"))'
         exposure_status:
           populated_from: phv00085306
           value_mappings:
@@ -47,7 +51,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         drug_concept:
-          expr: 'case(({phv00085955} == 1, "ATC:B01AC06"))'
+          expr: 'case(({phv00085955} == 1, "ATC:1191"))'
         exposure_status:
           populated_from: phv00085955
           value_mappings:
@@ -67,7 +71,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         drug_concept:
-          expr: 'case(({phv00086437} == 1, "ATC:B01AC06"))'
+          expr: 'case(({phv00086437} == 1, "ATC:1191"))'
         exposure_status:
           populated_from: phv00086437
           value_mappings:
@@ -87,7 +91,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         drug_concept:
-          expr: 'case(({phv00086881} == 1, "ATC:B01AC06"))'
+          expr: 'case(({phv00086881} == 1, "ATC:1191"))'
         exposure_status:
           populated_from: phv00086881
           value_mappings:
@@ -106,8 +110,10 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
+        age_at_exposure_start:
+          expr: 'case(({phv00087222} == 1, {phv00087221} * 365))'
         drug_concept:
-          expr: 'case(({phv00087222} == 1, "ATC:B01AC06"))'
+          expr: 'case(({phv00087222} == 1, "ATC:1191"))'
         exposure_status:
           populated_from: phv00087222
           value_mappings:
@@ -127,7 +133,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         drug_concept:
-          expr: 'case(({phv00175271} == 1, "ATC:B01AC06"))'
+          expr: 'case(({phv00175271} == 1, "ATC:1191"))'
         exposure_status:
           populated_from: phv00175271
           value_mappings:
@@ -147,7 +153,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         drug_concept:
-          expr: 'case(({phv00176694} == 1, "ATC:B01AC06"))'
+          expr: 'case(({phv00176694} == 1, "ATC:1191"))'
         exposure_status:
           populated_from: phv00176694
           value_mappings:
