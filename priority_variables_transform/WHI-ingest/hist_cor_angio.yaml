@@ -17,7 +17,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
         age_at_procedure:
-          expr: '({phv00078437} * 365) + {phv00193200}'
+          expr: 'case(({phv00193199} == 1, ({phv00078437} * 365) + {phv00193200}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193141}) + ":WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED")'
         procedure_concept:
