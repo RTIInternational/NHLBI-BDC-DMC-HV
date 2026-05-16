@@ -332,7 +332,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190551}) + ":CARDIA YEAR 20")'
         age_at_observation:
-          expr: "None if str({phv00190622}) == 'M' else float({phv00190622})"
+          expr: "None if str({phv00190622}) == 'M' else float({phv00190622}) * 365"
         observation_type:
           value: OMOP:4087501
         method_type:
@@ -359,7 +359,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116476}) + ":CARDIA YEAR 7")'
         age_at_observation:
-          expr: "None if str({phv00116526}) == 'M' else float({phv00116526})"
+          expr: "None if str({phv00116526}) == 'M' else float({phv00116526}) * 365"
         observation_type:
           value: OMOP:4087501
         method_type:
@@ -386,7 +386,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116476}) + ":CARDIA YEAR 7")'
         age_at_observation:
-          expr: "None if str({phv00116526}) == 'M' else float({phv00116526})"
+          expr: "None if str({phv00116526}) == 'M' else float({phv00116526}) * 365"
         observation_type:
           value: OMOP:4087501
         method_type:
@@ -413,7 +413,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116476}) + ":CARDIA YEAR 7")'
         age_at_observation:
-          expr: "None if str({phv00116526}) == 'M' else float({phv00116526})"
+          expr: "None if str({phv00116526}) == 'M' else float({phv00116526}) * 365"
         observation_type:
           value: OMOP:4087501
         method_type:
@@ -440,7 +440,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116476}) + ":CARDIA YEAR 7")'
         age_at_observation:
-          expr: "None if str({phv00116526}) == 'M' else float({phv00116526})"
+          expr: "None if str({phv00116526}) == 'M' else float({phv00116526}) * 365"
         observation_type:
           value: OMOP:4087501
         method_type:
@@ -467,7 +467,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116476}) + ":CARDIA YEAR 7")'
         age_at_observation:
-          expr: "None if str({phv00116526}) == 'M' else float({phv00116526})"
+          expr: "None if str({phv00116526}) == 'M' else float({phv00116526}) * 365"
         observation_type:
           value: OMOP:4087501
         method_type:
@@ -494,7 +494,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116476}) + ":CARDIA YEAR 7")'
         age_at_observation:
-          expr: "None if str({phv00116526}) == 'M' else float({phv00116526})"
+          expr: "None if str({phv00116526}) == 'M' else float({phv00116526}) * 365"
         observation_type:
           value: OMOP:4087501
         method_type:

@@ -105,7 +105,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119801}) + ":CARDIA YEAR 15")'
         age_at_condition_start:
-          expr: "None if str({phv00119967}) == 'M' else float({phv00119967})"
+          expr: "None if str({phv00119967}) == 'M' else float({phv00119967}) * 365"
         condition_concept:
           value: MONDO:0005264
         condition_status:

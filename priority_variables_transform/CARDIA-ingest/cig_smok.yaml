@@ -54,7 +54,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00129484}) + ":CARDIA YEAR 20")'
           range: string
         age_at_observation:
-          expr: "None if str({phv00129493}) == 'M' else float({phv00129493})"
+          expr: "None if str({phv00129493}) == 'M' else float({phv00129493}) * 365"
         observation_type:
           value: OMOP:4282779
           range: string

@@ -30,7 +30,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190551}) + ":CARDIA YEAR 20")'
         age_at_observation:
-          expr: "None if str({phv00190622}) == 'M' else float({phv00190622})"
+          expr: "None if str({phv00190622}) == 'M' else float({phv00190622}) * 365"
         observation_type:
           value: OBA:VT0002607
         method_type:
@@ -55,7 +55,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190551}) + ":CARDIA YEAR 20")'
         age_at_observation:
-          expr: "None if str({phv00190622}) == 'M' else float({phv00190622})"
+          expr: "None if str({phv00190622}) == 'M' else float({phv00190622}) * 365"
         observation_type:
           value: OBA:VT0002607
         method_type:
