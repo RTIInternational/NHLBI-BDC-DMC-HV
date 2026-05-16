@@ -99,7 +99,8 @@
 # standard CARDIA Individual_ID — uuid5 produces matching Visit IDs across these tables.
 # pht003298 (HeartGO_CARDIA) uses HeartGO New_SUBJID (GENEVA subject ID) — these produce
 # separate Visit entities that do not cross-link with standard Individual_ID-keyed tables.
-# None of these YEAR 20 tables contain a direct exam-age variable; age_at_visit omitted.
+# pht003298 (HeartGO_CARDIA) uses phv00190622 (ESP_age_at_serum_creatinine) as exam-age proxy;
+# all other YEAR 20 tables lack a direct exam-age variable and omit age_at_visit.
 - class_derivations:
     Visit:
       populated_from: pht001857
@@ -160,6 +161,10 @@
           value: HEALTH_EXAMINATION
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190551}) + ":CARDIA")'
+        age_at_visit_start:
+          expr: "None if str({phv00190622}) == 'M' else float({phv00190622}) * 365"
+        age_at_visit_end:
+          expr: "None if str({phv00190622}) == 'M' else float({phv00190622}) * 365"
 # pht001999 (GENEVA_CARDIA_Subject_Phenotypes) uses GENEVA_ID (phv00129484) as participant key —
 # a different ID space from standard CARDIA Individual_ID. Visit UUIDs here match the
 # associated_participant/associated_visit keys in cig_smok.yaml's pht001999 block.
@@ -175,6 +180,10 @@
           value: HEALTH_EXAMINATION
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00129484}) + ":CARDIA")'
+        age_at_visit_start:
+          expr: "None if str({phv00129493}) == 'M' else float({phv00129493}) * 365"
+        age_at_visit_end:
+          expr: "None if str({phv00129493}) == 'M' else float({phv00129493}) * 365"
 # CARDIA Medical History visit: pht001869 (Y1MORB06) and pht001871 (YM106) are
 # companion hospitalization-review tables representing the same conceptual visit.
 # Both use Individual_ID as participant key, so uuid5 produces the same Visit ID
