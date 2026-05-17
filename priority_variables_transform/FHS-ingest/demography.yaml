@@ -48,7 +48,8 @@
                 case(({phv00021251} == 1, 1), (True, 0))
                 > 1,
                 "OMOP:45880900"
-              )
+              ),
+              (True, None)
             )
 # - class_derivations:
 #     Demography:
@@ -115,7 +116,8 @@
                 case(({phv00072537} == 1, 1), (True, 0))
                 > 1,
                 "OMOP:45880900"
-              )
+              ),
+              (True, None)
             )
 - class_derivations:
     Demography:
@@ -161,7 +163,8 @@
                 case(({phv00177603} == 1, 1), (True, 0))
                 > 1,
                 "OMOP:45880900"
-              )
+              ),
+              (True, None)
             )
 - class_derivations:
     Demography:
@@ -228,7 +231,8 @@
                 case(({phv00251753} == 1, 1), (True, 0))
                 > 1,
                 "OMOP:45880900"
-              )
+              ),
+              (True, None)
             )
 - class_derivations:
     Demography:
@@ -312,7 +316,8 @@
                 case(({phv00423855} == 1, 1), (True, 0))
                 > 1,
                 "OMOP:45880900"
-              )
+              ),
+              (True, None)
             )
 - class_derivations:
     Demography:
@@ -361,7 +366,8 @@
                 case(({phv00423865} == 1, 1), (True, 0))
                 > 1,
                 "OMOP:45880900"
-              )
+              ),
+              (True, None)
             )
 - class_derivations:
     Demography:
@@ -389,7 +395,7 @@
           value_mappings:
             '0': OMOP:38003564
             '1': OMOP:38003563
-            '88': OMOP:38003564
+            # '88' (Unknown/Refused) omitted — maps to null rather than Not Hispanic
         race:
           populated_from: phv00568194
           value_mappings:
