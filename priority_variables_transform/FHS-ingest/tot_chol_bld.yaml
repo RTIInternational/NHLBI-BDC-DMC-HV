@@ -289,26 +289,6 @@
                   unit:
                     value: mg/dl
                     range: string
-# - class_derivations:
-#     MeasurementObservation:
-#       populated_from: pht006026
-#       slot_derivations:
-#         observation_type:
-#           value: OBA:VT0000180
-#           range: string
-#         associated_visit:
-#           value: FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 1-3
-#           range: string
-#         associated_participant:
-#           populated_from: phv00277016
-#         value_quantity:
-#           object_derivations:
-#           - class_derivations:
-#               Quantity:
-#                 populated_from: pht006026
-#                 slot_derivations:
-#                   value_decimal:
-#                     populated_from: phv00520306
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -392,7 +372,7 @@
 # reads systematically +10-15 mg/dL higher than enzymatic methods used by all
 # other cohorts. Not comparable cross-cohort without calibration adjustment.
 # DCC analysts also excluded Original cohort TC for the same reason.
-# Original Exam 4 is the FHS Original baseline visit; removing this block
+# Original Exam 4 is the first FHS Original exam with TC measurement; removing this block
 # excludes ~5,000 Original cohort participants from baseline TC, matching the
 # DCC scope (Offspring + Gen3/NOS/Omni2 only). Longitudinal Original exams
 # with enzymatic assay (Exams 11+) are retained elsewhere in this file.

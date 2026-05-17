@@ -189,46 +189,25 @@
         condition_provenance:
           value: OMOP:4822160
           range: string
-# - class_derivations:
-#     Condition:
-#       populated_from: FHS
-#       slot_derivations:
-#         condition_concept:
-#           value: MONDO:0005279
-#           range: string
-#         condition_status:
-#           populated_from: phv00460989
-#           value_mappings:
-#             '0': ABSENT
-#             '1': PRESENT
-#         condition_provenance:
-#           value: PATIENT_SELF-REPORTED_CONDITION
-#           range: string
-#         associated_evidence:
-#           value: Final Diagnostic Summary
-#           range: string
-#         relationship_to_participant:
-#           value: ONESELF
-#           range: string
-# - class_derivations:
-#     Condition:
-#       populated_from: FHS
-#       slot_derivations:
-#         condition_concept:
-#           value: MONDO:0005279
-#           range: string
-#         condition_status:
-#           populated_from: phv00461919
-#           value_mappings:
-#             '0': ABSENT
-#             '1': PRESENT
-#             '2': UNKNOWN
-#         condition_provenance:
-#           value: PATIENT_SELF-REPORTED_CONDITION
-#           range: string
-#         relationship_to_participant:
-#           value: ONESELF
-#           range: string
+- class_derivations:
+    Condition:
+      populated_from: pht010724
+      slot_derivations:
+        condition_concept:
+          value: MONDO:0005279
+          range: string
+        condition_status:
+          populated_from: phv00461919
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': UNKNOWN
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht006005
@@ -557,44 +536,22 @@
         condition_provenance:
           value: OMOP:4822160
           range: string
-# - class_derivations:
-#     Condition:
-#       populated_from: FHS
-#       slot_derivations:
-#         condition_concept:
-#           value: MONDO:0005399
-#           range: string
-#         condition_status:
-#           populated_from: phv00460988
-#           value_mappings:
-#             '0': ABSENT
-#             '1': PRESENT
-#             '2': UNKNOWN
-#         condition_provenance:
-#           value: PATIENT_SELF-REPORTED_CONDITION
-#           range: string
-#         associated_evidence:
-#           value: Final Diagnostic Summary
-#           range: string
-#         relationship_to_participant:
-#           value: ONESELF
-#           range: string
-# - class_derivations:
-#     Condition:
-#       populated_from: FHS
-#       slot_derivations:
-#         condition_concept:
-#           value: MONDO:0005399
-#           range: string
-#         condition_status:
-#           populated_from: phv00461918
-#           value_mappings:
-#             '0': ABSENT
-#             '1': PRESENT
-#             '2': UNKNOWN
-#         condition_provenance:
-#           value: PATIENT_SELF-REPORTED_CONDITION
-#           range: string
-#         relationship_to_participant:
-#           value: ONESELF
-#           range: string
+- class_derivations:
+    Condition:
+      populated_from: pht010724
+      slot_derivations:
+        condition_concept:
+          value: MONDO:0005399
+          range: string
+        condition_status:
+          populated_from: phv00461918
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': UNKNOWN
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
