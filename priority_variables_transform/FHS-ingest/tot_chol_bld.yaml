@@ -38,6 +38,8 @@
           expr: '{pht003099.phv00177930} * 365'  
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00423868}) + ":FHS")'
+        method_type:
+          value: 'blood assay'
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -62,6 +64,8 @@
           expr: '{pht003099.phv00177950} * 365'
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00001803}) + ":FHS")'
+        method_type:
+          value: 'blood assay'
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -497,6 +501,8 @@
           expr: '{phv00369667} * 365'
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00369651}) + ":FHS")'
+        method_type:
+          value: 'blood assay'
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -683,6 +689,8 @@
           expr: '{phv00369666} * 365'
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00369651}) + ":FHS")'
+        method_type:
+          value: 'blood assay'
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -869,6 +877,8 @@
           expr: case(({phv00423780} == 10, {pht003099.phv00177948} * 365), case({phv00423780} == 11, {pht003099.phv00177950} * 365), case({phv00423780} == 12, {pht003099.phv00177952} * 365))
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00423778}) + ":FHS")'
+        method_type:
+          value: 'Abell-Kendall technique'
         value_quantity:
           object_derivations:
           - class_derivations:
