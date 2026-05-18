@@ -694,27 +694,3 @@
         relationship_to_participant:
           value: ONESELF
           range: string
-- class_derivations:
-    Condition:
-      populated_from: pht006008
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00275064}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275064}) + ":FHS DVT REVIEW ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 1, OMNI 2")'
-        condition_concept:
-          value: MONDO:0005252
-          range: string
-        condition_status:
-          populated_from: phv00276986
-          value_mappings:
-            '1': PRESENT
-        condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
-        associated_evidence:
-          value: Medical History
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
