@@ -626,7 +626,7 @@
         associated_participant:
           populated_from: phv00056635
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":FHS OFFSPRING BASELINE")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":" + case(({phv00056607} == 1, ''FHS OFFSPRING SHHS''), ({phv00056607} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 1'')'
         drug_concept:
           expr: case(({phv00055374} == 1, "ATC:C07A"))
         exposure_provenance:
@@ -644,7 +644,7 @@
         associated_participant:
           populated_from: phv00056635
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":FHS OFFSPRING BASELINE")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":" + case(({phv00056607} == 1, ''FHS OFFSPRING SHHS''), ({phv00056607} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 1'')'
         drug_concept:
           expr: case(({phv00055375} == 1, "ATC:C07A"))
         exposure_provenance:

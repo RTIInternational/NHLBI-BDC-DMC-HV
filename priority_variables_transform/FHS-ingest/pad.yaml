@@ -160,6 +160,8 @@
             ))
         age_at_observation:
           expr: '{pht003099.phv00177930} * 365'
+        age_at_condition_start:
+          expr: "case(({phv00036469} == 30 and int({phv00036471}) <= 0, ({pht003099.phv00177930} * 365) + int({phv00036471})))"
         condition_concept:
           value: MONDO:0005386
           range: string
