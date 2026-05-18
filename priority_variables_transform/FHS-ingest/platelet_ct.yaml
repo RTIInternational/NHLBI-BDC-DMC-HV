@@ -3,7 +3,7 @@
       populated_from: pht002889
       slot_derivations:
         associated_participant:
-          populated_from: phv00172159
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00172159}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172159}) + ":" + case(({phv00172160} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00172160} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00172160} == ''72'', ''FHS OMNI 2 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
@@ -27,7 +27,7 @@
       populated_from: pht004802
       slot_derivations:
         associated_participant:
-          populated_from: phv00227023
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00227023}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00227023}) + ":" + case(({phv00227024} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00227024} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
@@ -51,7 +51,7 @@
       populated_from: pht001045
       slot_derivations:
         associated_participant:
-          populated_from: phv00081012
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00081012}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00081012}) + ":" + case(({phv00081047} == ''20'', ''FHS ORIGINAL EXAM 20''), ({phv00081047} == ''21'', ''FHS ORIGINAL EXAM 21''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:

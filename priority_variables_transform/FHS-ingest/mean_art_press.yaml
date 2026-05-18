@@ -3,7 +3,7 @@
       populated_from: pht000195
       slot_derivations:
         associated_participant:
-          populated_from: phv00024438
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00024438}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00024438}) + ":FHS OFFSPRING EXAM 7")'
         age_at_observation:
@@ -27,7 +27,7 @@
       populated_from: pht000194
       slot_derivations:
         associated_participant:
-          populated_from: phv00024437
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00024437}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00024437}) + ":FHS GENERATION 3 EXAM 1")'
         age_at_observation:
@@ -51,7 +51,7 @@
       populated_from: pht000211
       slot_derivations:
         associated_participant:
-          populated_from: phv00024907
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00024907}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00024907}) + ":FHS ORIGINAL EXAM 26")'
         age_at_observation:
@@ -75,7 +75,7 @@
       populated_from: pht000209
       slot_derivations:
         associated_participant:
-          populated_from: phv00024802
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00024802}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00024802}) + ":" + case(({phv00024759} == ''1'', ''FHS OFFSPRING EXAM 7''), ({phv00024759} == ''7'', ''FHS OMNI 1 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
@@ -99,7 +99,7 @@
       populated_from: pht000210
       slot_derivations:
         associated_participant:
-          populated_from: phv00024846
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00024846}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00024846}) + ":" + case(({phv00024803} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 1''), ({phv00024803} == ''3'', ''FHS GENERATION 3 EXAM 1''), ({phv00024803} == ''72'', ''FHS OMNI 2 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:

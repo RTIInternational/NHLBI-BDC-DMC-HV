@@ -3,7 +3,7 @@
       populated_from: pht000160
       slot_derivations:
         associated_participant:
-          populated_from: phv00023794
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00023794}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023794}) + ":FHS PSIP ORIGINAL, OFFSPRING")'
         observation_type:
@@ -25,7 +25,7 @@
       populated_from: pht000172
       slot_derivations:
         associated_participant:
-          populated_from: phv00023901
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00023901}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023901}) + ":FHS PSIP ORIGINAL, OFFSPRING")'
         observation_type:

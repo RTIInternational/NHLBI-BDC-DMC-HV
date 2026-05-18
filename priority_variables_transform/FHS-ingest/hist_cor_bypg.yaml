@@ -12,7 +12,7 @@
       populated_from: pht000023
       slot_derivations:
         associated_participant:
-          populated_from: phv00004939
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00004939}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004939}) + ":FHS ORIGINAL EXAM 21")'
         procedure_concept:
@@ -35,7 +35,7 @@
       populated_from: pht000034
       slot_derivations:
         associated_participant:
-          populated_from: phv00009579
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00009579}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00009579}) + ":FHS OFFSPRING EXAM 5")'
         procedure_concept:
@@ -58,7 +58,7 @@
       populated_from: pht000074
       slot_derivations:
         associated_participant:
-          populated_from: phv00021427
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00021427}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00021427}) + ":FHS GENERATION 3 EXAM 1")'
         procedure_concept:

@@ -3,7 +3,7 @@
       populated_from: pht000688
       slot_derivations:
         associated_participant:
-          populated_from: phv00069685
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00069685}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00069685}) + ":FHS GENERATION 3 EXAM 1")'
         age_at_observation:
@@ -27,7 +27,7 @@
       populated_from: pht003901
       slot_derivations:
         associated_participant:
-          populated_from: phv00201989
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00201989}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00201989}) + ":" + case(({phv00201990} == ''1'', ''FHS OFFSPRING EXAM 8''), ({phv00201990} == ''7'', ''FHS OMNI 1 EXAM 3''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
@@ -54,7 +54,7 @@
       populated_from: pht003902
       slot_derivations:
         associated_participant:
-          populated_from: phv00201993
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00201993}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00201993}) + ":" + case(({phv00201994} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00201994} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00201994} == ''72'', ''FHS OMNI 2 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
@@ -81,7 +81,7 @@
       populated_from: pht004804
       slot_derivations:
         associated_participant:
-          populated_from: phv00227079
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00227079}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00227079}) + ":FHS OMNI 2 EXAM 1")'
         age_at_observation:
@@ -105,7 +105,7 @@
       populated_from: pht004805
       slot_derivations:
         associated_participant:
-          populated_from: phv00227082
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00227082}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00227082}) + ":" + case(({phv00227083} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00227083} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:

@@ -3,7 +3,7 @@
       populated_from: pht000074
       slot_derivations:
         associated_participant:
-          populated_from: phv00021427
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00021427}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00021427}) + ":FHS GENERATION 3 EXAM 1")'
         sex:
@@ -56,7 +56,7 @@
       populated_from: pht000747
       slot_derivations:
         associated_participant:
-          populated_from: phv00072044
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00072044}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00072044}) + ":FHS OFFSPRING EXAM 8")'
         ethnicity:
@@ -98,7 +98,7 @@
       populated_from: pht003094
       slot_derivations:
         associated_participant:
-          populated_from: phv00177237
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00177237}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177237}) + ":" + case(({phv00177238} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00177238} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00177238} == ''72'', ''FHS OMNI 2 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         sex:
@@ -145,7 +145,7 @@
       populated_from: pht003099
       slot_derivations:
         associated_participant:
-          populated_from: phv00177926
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00177926}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00177926}) + ":" + case(({phv00177928} == 0, ''FHS ORIGINAL EXAM 4''), ({phv00177928} == 1, ''FHS OFFSPRING EXAM 1''), ({phv00177928} == 2, ''FHS NEW OFFSPRING SPOUSE EXAM 1''), ({phv00177928} == 3, ''FHS GENERATION 3 EXAM 1''), ({phv00177928} == 7, ''FHS OMNI 1 EXAM 1''), ({phv00177928} == 72, ''FHS OMNI 2 EXAM 1''), (True, ''FHS UNKNOWN VISIT EXAM 1'')))'
         sex:
@@ -158,7 +158,7 @@
       populated_from: pht004374
       slot_derivations:
         associated_participant:
-          populated_from: phv00220821
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00220821}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00220821}) + ":" + case(({phv00220822} == ''0'', ''FHS ORIGINAL EXAM 4''), ({phv00220822} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00220822} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 1''), ({phv00220822} == ''3'', ''FHS GENERATION 3 EXAM 1''), ({phv00220822} == ''7'', ''FHS OMNI 1 EXAM 1''), ({phv00220822} == ''72'', ''FHS OMNI 2 EXAM 1''), (True, ''FHS UNKNOWN VISIT EXAM 1'')))'
         sex:
@@ -171,7 +171,7 @@
       populated_from: pht004815
       slot_derivations:
         associated_participant:
-          populated_from: phv00251262
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00251262}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00251262}) + ":FHS OMNI 1 EXAM 3")'
         ethnicity:
@@ -213,7 +213,7 @@
       populated_from: pht005140
       slot_derivations:
         associated_participant:
-          populated_from: phv00254010
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00254010}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         sex:
@@ -223,7 +223,7 @@
       populated_from: pht006026
       slot_derivations:
         associated_participant:
-          populated_from: phv00277015
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00277015}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00277015}) + ":" + case(({phv00277016} == ''2'', ''FHS NEW OFFSPRING SPOUSE''), ({phv00277016} == ''3'', ''FHS GENERATION 3''), ({phv00277016} == ''72'', ''FHS OMNI 2''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 1'')'
         sex:
@@ -238,7 +238,7 @@
       populated_from: pht007777
       slot_derivations:
         associated_participant:
-          populated_from: phv00369651
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00369651}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 4")'
         sex:
@@ -251,7 +251,7 @@
       populated_from: pht009760
       slot_derivations:
         associated_participant:
-          populated_from: phv00423847
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00423847}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423847}) + ":" + case(({phv00423848} == ''0'', ''FHS ORIGINAL EXAM 4''), ({phv00423848} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00423848} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 1''), ({phv00423848} == ''3'', ''FHS GENERATION 3 EXAM 1''), ({phv00423848} == ''7'', ''FHS OMNI 1 EXAM 1''), ({phv00423848} == ''72'', ''FHS OMNI 2 EXAM 1''), (True, ''FHS UNKNOWN VISIT EXAM 1'')))'
 
@@ -294,7 +294,7 @@
       populated_from: pht009760
       slot_derivations:
         associated_participant:
-          populated_from: phv00423847
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00423847}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423847}) + ":" + case(({phv00423848} == ''0'', ''FHS ORIGINAL EXAM 4''), ({phv00423848} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00423848} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 1''), ({phv00423848} == ''3'', ''FHS GENERATION 3 EXAM 1''), ({phv00423848} == ''7'', ''FHS OMNI 1 EXAM 1''), ({phv00423848} == ''72'', ''FHS OMNI 2 EXAM 1''), (True, ''FHS UNKNOWN VISIT EXAM 1'')))'
 
@@ -340,7 +340,7 @@
       populated_from: pht009761
       slot_derivations:
         associated_participant:
-          populated_from: phv00423868
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00423868}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING''), ({phv00423869} == ''7'', ''FHS OMNI 1''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 1'')'
         sex:
@@ -353,7 +353,7 @@
       populated_from: pht016162
       slot_derivations:
         associated_participant:
-          populated_from: phv00568188
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00568188}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00568188}) + ":" + case(({phv00568189} == 0, ''FHS ORIGINAL EXAM 4''), ({phv00568189} == 1, ''FHS OFFSPRING EXAM 1''), ({phv00568189} == 2, ''FHS NEW OFFSPRING SPOUSE EXAM 1''), ({phv00568189} == 3, ''FHS GENERATION 3 EXAM 1''), ({phv00568189} == 7, ''FHS OMNI 1 EXAM 1''), ({phv00568189} == 72, ''FHS OMNI 2 EXAM 1''), (True, ''FHS UNKNOWN VISIT EXAM 1'')))'
         ethnicity:

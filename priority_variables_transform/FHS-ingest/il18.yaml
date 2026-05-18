@@ -7,7 +7,7 @@
           lookup_key: phv00177926
       slot_derivations:
         associated_participant:
-          populated_from: phv00520376
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00520376}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00520376}) + ":" + case(({phv00520377} == ''1'', ''FHS OFFSPRING EXAM 7''), ({phv00520377} == ''7'', ''FHS OMNI 1 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
