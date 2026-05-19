@@ -7,37 +7,16 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
         condition_concept:
-          value: MONDO:0004995
+          value: MONDO:0005010
         condition_status:
-          populated_from: phv00401212
+          populated_from: phv00401210
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
         associated_evidence:
-          value: "Analysis derived"
-        relationship_to_participant:
-          value: ONESELF
-- class_derivations:
-    Condition:
-      populated_from: pht008730
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401273}) + ":JHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401273}) + ":JHS Exam 2")'
-        condition_concept:
-          value: MONDO:0004995
-        condition_status:
-          populated_from: phv00401349
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: PATIENT_SELF_REPORT
-        associated_evidence:
-          value: "Analysis derived"
+          value: "Analysis derived CHD status/history"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -49,15 +28,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
         condition_concept:
-          value: MONDO:0004995
+          value: MONDO:0005010
         condition_status:
-          populated_from: phv00401477
+          populated_from: phv00401475
           value_mappings:
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
         associated_evidence:
-          value: "Analysis derived"
+          value: "Analysis derived CHD status/history"
         relationship_to_participant:
           value: ONESELF

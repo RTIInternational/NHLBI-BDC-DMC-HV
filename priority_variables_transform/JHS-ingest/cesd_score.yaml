@@ -9,7 +9,7 @@
         age_at_observation:
           expr: "{phv00401085} * 365"
         observation_type:
-          value: OMOP:4042886
+          value: OMOP:36303297
         method_type:
           value: "questionnaire"
         value_quantity:
@@ -18,5 +18,7 @@
               Quantity:
                 populated_from: pht008729
                 slot_derivations:
-                  value_decimal:
-                    expr: "{phv00401250} * 7"
+                  value_integer:
+                    populated_from: phv00401225
+                  unit:
+                    value: "{score}"
