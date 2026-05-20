@@ -94,7 +94,7 @@
           expr: '{phv00120748} * 365'
         age_at_visit_end:
           expr: '{phv00120748} * 365'
-# CARDIA YEAR 20 visits: multiple tables cover this exam year with different participant keys.
+# CARDIA YEAR 15 visits: multiple tables cover this exam year with different participant keys.
 # pht001857 (F2F20), pht001854 (F2EBCT), pht001855 (F2F03), pht001874 (Z33E06) all use
 # standard CARDIA Individual_ID — uuid5 produces matching Visit IDs across these tables.
 # pht003298 (HeartGO_CARDIA) uses HeartGO New_SUBJID (GENEVA subject ID) — these produce
@@ -106,9 +106,9 @@
       populated_from: pht001857
       slot_derivations:
         id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120993}) + ":CARDIA YEAR 20")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120993}) + ":CARDIA YEAR 15")'
         name:
-          value: CARDIA YEAR 20
+          value: CARDIA YEAR 15
         visit_category:
           value: HEALTH_EXAMINATION
         associated_participant:
@@ -118,9 +118,9 @@
       populated_from: pht001854
       slot_derivations:
         id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120763}) + ":CARDIA YEAR 20")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120763}) + ":CARDIA YEAR 15")'
         name:
-          value: CARDIA YEAR 20
+          value: CARDIA YEAR 15
         visit_category:
           value: HEALTH_EXAMINATION
         associated_participant:
@@ -130,9 +130,9 @@
       populated_from: pht001855
       slot_derivations:
         id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120930}) + ":CARDIA YEAR 20")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120930}) + ":CARDIA YEAR 15")'
         name:
-          value: CARDIA YEAR 20
+          value: CARDIA YEAR 15
         visit_category:
           value: HEALTH_EXAMINATION
         associated_participant:
@@ -142,9 +142,9 @@
       populated_from: pht001874
       slot_derivations:
         id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121724}) + ":CARDIA YEAR 20")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121724}) + ":CARDIA YEAR 15")'
         name:
-          value: CARDIA YEAR 20
+          value: CARDIA YEAR 15
         visit_category:
           value: HEALTH_EXAMINATION
         associated_participant:
