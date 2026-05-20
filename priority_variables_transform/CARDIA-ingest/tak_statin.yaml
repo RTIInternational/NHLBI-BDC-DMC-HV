@@ -9,7 +9,7 @@
         drug_concept:
           expr: 'case(({phv00115477} == 2, "ATC:C10A"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00115477
@@ -28,7 +28,7 @@
         drug_concept:
           expr: 'case(({phv00121377} == 1, "ATC:C10A"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00121377
@@ -46,7 +46,7 @@
         drug_concept:
           expr: 'case(({phv00121596} == 1, "ATC:C10A"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00121596
@@ -64,7 +64,7 @@
         drug_concept:
           expr: 'case((str({phv00115510}).lower().strip() == "mevacor", "RxCUI:6472"), (str({phv00115510}).lower().strip() == "niacin", "RxCUI:7393"), (str({phv00115510}).lower().strip() == "fred meyers fish oil", "RxCUI:2053495"), (str({phv00115510}).lower().strip() == "qestian", "RxCUI:202582"), (str({phv00115510}).lower().strip() == "lopid", "RxCUI:202999"), (str({phv00115510}).lower().strip() == "mevacoh", "RxCUI:6472"), (str({phv00115510}).lower().strip() == "lorelco", "RxCUI:8699"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           expr: "None if str({phv00115510}).strip() == 'M' else 'PRESENT'"
@@ -79,7 +79,7 @@
         drug_concept:
           expr: 'case((str({phv00117471}).lower().strip() == "mevacor", "RxCUI:6472"), (str({phv00117471}).lower().strip() == "m", "RxCUI:6472"), (str({phv00117471}).lower().strip() == "hydrochlorothiazide", "RxCUI:5487"), (str({phv00117471}).lower().strip() == "proventil", "RxCUI:202908"), (str({phv00117471}).lower().strip() == "lopid", "RxCUI:202999"), (str({phv00117471}).lower().strip() == "questran", "RxCUI:202582"), (str({phv00117471}).lower().strip() == "mavacor 20mg", "RxCUI:316175"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           expr: "None if str({phv00117471}).strip() == 'M' else 'PRESENT'"
@@ -94,7 +94,7 @@
         drug_concept:
           expr: 'case((str({phv00118672}).lower().strip() == "mevacor", "RxCUI:6472"), (str({phv00118672}).lower().strip() == "zocor", "RxCUI:196503"), (str({phv00118672}).lower().strip() in ("gemfibrozil", "gemfibrozil / lopid"), "RxCUI:4719"), (str({phv00118672}).lower().strip() == "cholestid", "RxCUI:151533"), (str({phv00118672}).lower().strip() == "niacin 500mg tablets", "RxCUI:316343"), (str({phv00118672}).lower().strip() == "pravachol", "RxCUI:203333"), (str({phv00118672}).lower().strip() == "metoprolol", "RxCUI:6918"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           expr: "None if str({phv00118672}).strip() == 'M' else 'PRESENT'"

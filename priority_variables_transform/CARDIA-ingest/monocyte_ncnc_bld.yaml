@@ -1,28 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001563
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00112654}) + ":CARDIA")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00112654}) + ":CARDIA YEAR 0")'
-        observation_type:
-          value: OBA:VT0000223
-        method_type:
-          value: "blood assay"
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001563
-                slot_derivations:
-                  value_decimal:
-                    expr: "None if str({phv00112692}) == 'M' else float({phv00112692})"
-                  unit:
-                    value: "%"
-                    range: string
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht003298
       slot_derivations:
         associated_participant:
