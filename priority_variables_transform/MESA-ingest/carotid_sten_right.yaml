@@ -3,13 +3,22 @@
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         age_at_observation:
           expr: '{phv00084442} * 365'
         observation_type:
           value: OMOP:43021859
+          range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        body_site:
+          value: "Right carotid artery"
+          range: string
+        method_type:
+          value: "carotid ultrasound"
           range: string
         value_quantity:
           object_derivations:

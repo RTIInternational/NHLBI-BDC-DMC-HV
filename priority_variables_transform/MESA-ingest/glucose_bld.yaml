@@ -3,13 +3,16 @@
       populated_from: pht003087
       slot_derivations:
         associated_participant:
-          populated_from: phv00175794
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00175794}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00175794}) + ":MESA LUNG CT")'
         age_at_observation:
           expr: '{phv00175854} * 365'
         observation_type:
           value: OBA:VT0000188
+          range: string
+        method_type:
+          value: "blood assay"
           range: string
         value_quantity:
           object_derivations:

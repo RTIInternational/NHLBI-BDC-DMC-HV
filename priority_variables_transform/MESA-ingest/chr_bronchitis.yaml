@@ -1,0 +1,25 @@
+- class_derivations:
+    Condition:
+      populated_from: pht001112
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00083440}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00083440}) + ":MESA AIR SPIROMETRY")'
+        condition_concept:
+          value: MONDO:0005607
+          range: string
+        condition_status:
+          populated_from: phv00083491
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        associated_evidence:
+          value: "MRC-defined bronchitis from spirometry questionnaire"
+          range: string
