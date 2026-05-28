@@ -1221,6 +1221,11 @@ def _extract_crosswalk_from_class_derivations(
     bare ``measurement_<concept>`` keys because the standalone extractor path
     does not include method_type in its grouping.
     """
+    # Structural classes that appear in YAML but have no source-variable
+    # counterpart to crosswalk (e.g. Visit anchors measurements in time).
+    # Skip them silently rather than emitting an "Unknown entity class" warning.
+    STRUCTURAL_CLASSES = {"Visit"}
+
     ENTITY_PREFIX = {
         "Condition": "condition_",
         "MeasurementObservation": "measurement_",
@@ -1251,6 +1256,8 @@ def _extract_crosswalk_from_class_derivations(
             continue
 
         entity_class = class_name
+        if entity_class in STRUCTURAL_CLASSES:
+            continue
         if entity_class not in ENTITY_PREFIX:
             print(
                 f"  WARNING: Unknown entity class {entity_class!r} in {yaml_filename}; "
