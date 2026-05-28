@@ -35,11 +35,14 @@ Usage examples:
 from __future__ import annotations
 
 import argparse
+import gc
+import itertools
 import logging
 import math
 import os
 import re
 import sys
+from collections.abc import Iterator
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -364,22 +367,32 @@ def load_source_data(
     source_dirs: list[Path],
     pht_filter: str | None = None,
     participant_col: str | None = None,
-) -> list[tuple[str, pd.DataFrame]]:
-    """Load raw phenotype TSV files grouped by PHT accession.
+) -> Iterator[tuple[str, pd.DataFrame]]:
+    """Yield raw phenotype TSV data grouped by PHT accession, one PHT at a time.
 
     Files from multiple consent-group directories for the *same* PHT are
     concatenated together.  MULTI files (whose names contain ``"MULTI"``) are
     deduplicated on the participant-ID column to avoid counting the same
     subject once per consent group.
 
-    Returns ``[(pht_id, DataFrame), ...]`` — one entry per distinct PHT,
-    sorted by PHT accession.  The caller's
-    ``for pht_label, df in loaded`` loop works unchanged.
+    **Memory design**: uses a two-pass approach to limit peak memory usage.
+    Pass 1 discovers and groups file *paths* by PHT accession (no reading).
+    Pass 2 loads, concatenates, and yields exactly one PHT's DataFrame at a
+    time, then explicitly frees the source frames before moving to the next
+    PHT.  For large cohorts (e.g. WHI with 100+ tables), this keeps peak
+    memory proportional to the largest single PHT rather than the whole study.
+
+    Yields ``(pht_id, DataFrame)`` — one entry per distinct PHT, sorted by
+    PHT accession.  The caller's ``for pht_label, df in loaded`` loop works
+    unchanged.
     """
     _GLOB_PATTERNS = ("*.txt", "*.tsv", "*.txt.gz", "*.tsv.gz")
 
-    # Collect frames and MULTI flags keyed by PHT accession.
-    pht_frames: dict[str, list[pd.DataFrame]] = {}
+    # ------------------------------------------------------------------
+    # Pass 1: discover file paths grouped by PHT — no reading yet.
+    # ------------------------------------------------------------------
+    pht_file_lists: dict[str, list[Path]] = {}
+    pht_consent_dirs: dict[str, list[str]] = {}  # for logging
     pht_is_multi: dict[str, bool] = {}
 
     for src_dir in source_dirs:
@@ -394,8 +407,25 @@ def load_source_data(
                 continue
 
             pht_id = _extract_pht_id(f.name)
-            is_multi = "MULTI" in f.name.upper()
+            pht_file_lists.setdefault(pht_id, []).append(f)
+            pht_consent_dirs.setdefault(pht_id, []).append(src_dir.name)
+            if "MULTI" in f.name.upper():
+                pht_is_multi[pht_id] = True
 
+    if not pht_file_lists:
+        return
+
+    log.info("  Discovered %d distinct PHT(s) across %d dir(s)", len(pht_file_lists), len(source_dirs))
+
+    # ------------------------------------------------------------------
+    # Pass 2: load one PHT at a time, yield, then free before next PHT.
+    # ------------------------------------------------------------------
+    yielded = 0
+    for pht_id in sorted(pht_file_lists):
+        frames: list[pd.DataFrame] = []
+        for f in pht_file_lists[pht_id]:
+            src_dir_name = f.parent.name
+            is_multi = pht_is_multi.get(pht_id, False)
             try:
                 df = pd.read_csv(
                     f,
@@ -406,26 +436,25 @@ def load_source_data(
                     encoding="latin-1",
                 )
                 df.columns = df.columns.astype(str).str.strip()
-                df["_consent_group"] = src_dir.name
+                df["_consent_group"] = src_dir_name
                 log.info(
                     "  [%s] %s: %d rows (pht=%s%s)",
-                    src_dir.name, f.name, len(df), pht_id,
+                    src_dir_name, f.name, len(df), pht_id,
                     ", MULTI" if is_multi else "",
                 )
-                pht_frames.setdefault(pht_id, []).append(df)
-                if is_multi:
-                    pht_is_multi[pht_id] = True
+                frames.append(df)
             except Exception as exc:
                 log.warning("  Could not load %s: %s", f, exc)
 
-    if not pht_frames:
-        return []
+        if not frames:
+            continue
 
-    result: list[tuple[str, pd.DataFrame]] = []
-    for pht_id in sorted(pht_frames):
-        frames = pht_frames[pht_id]
         combined = pd.concat(frames, ignore_index=True)
         row_count_before = len(combined)
+
+        # Free the per-file frames immediately — only the combined df is needed.
+        del frames
+        gc.collect()
 
         if pht_is_multi.get(pht_id):
             # MULTI files list the same subjects in multiple consent groups.
@@ -449,14 +478,13 @@ def load_source_data(
                     pht_id,
                 )
 
-        log.info(
-            "  PHT %s: %d rows from %d file(s)",
-            pht_id, len(combined), len(frames),
-        )
-        result.append((pht_id, combined))
+        log.info("  PHT %s: %d rows from %d file(s)", pht_id, len(combined), len(pht_file_lists[pht_id]))
+        yielded += 1
+        yield (pht_id, combined)
+        # combined is now held only by the caller's loop variable; it will be
+        # released when the loop moves to the next iteration.
 
-    log.info("  Loaded %d distinct PHT(s)", len(result))
-    return result
+    log.info("  Processed %d distinct PHT(s)", yielded)
 
 
 # ---------------------------------------------------------------------------
@@ -704,12 +732,14 @@ def main(argv: list[str] | None = None) -> None:
         _add_file_logging(log_path)
 
         # ------------------------------------------------------------------
-        # 2. Load all TSVs
+        # 2. Load all TSVs — lazy generator, one PHT at a time.
         # ------------------------------------------------------------------
-        loaded = load_source_data(source_dirs, args.pht_filter, args.participant_col)
-        if not loaded:
+        _source_gen = load_source_data(source_dirs, args.pht_filter, args.participant_col)
+        _first = next(_source_gen, None)
+        if _first is None:
             log.error("No data loaded — check --source-root / --source-dirs.")
             sys.exit(1)
+        loaded = itertools.chain([_first], _source_gen)
 
         # ------------------------------------------------------------------
         # 3. Optional PHV name map
