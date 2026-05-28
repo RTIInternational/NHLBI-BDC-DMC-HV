@@ -70,6 +70,16 @@ from hv_dataqc.extract_harmonized.extract_harmonized_summaries import (  # noqa:
     process_measurement_observation_sets,
 )
 from hv_dataqc.extract_source.extract_source_summaries import _canonical_participant_id  # noqa: E402
+from hv_dataqc.extract_source.scan_yaml_phv_pairs import scan_yaml_for_phv_pairs  # noqa: E402
+from hv_dataqc.extract_source.extract_source_summaries import (  # noqa: E402
+    _compute_joint_distributions,
+    _normalize_dist_key,
+)
+from hv_dataqc.compare.crosswalk import (  # noqa: E402
+    _extract_phv_conditions,
+    _count_from_joint_dist,
+    _expected_summary_from_case_entry,
+)
 
 
 class CompareSourceHarmonizedTests(unittest.TestCase):
@@ -1919,6 +1929,401 @@ class ExtractorRegressionTests(unittest.TestCase):
         self.assertEqual(_canonical_participant_id(1.0), "1")
         self.assertEqual(_canonical_participant_id(" 1.0 "), "1")
         self.assertEqual(_canonical_participant_id("001"), "001")
+
+
+class JointDistributionOptionBTests(unittest.TestCase):
+    """Tests for Option B: pre-generated crosstabs enabling exact multi-PHV comparisons."""
+
+    # -----------------------------------------------------------------------
+    # scan_yaml_for_phv_pairs
+    # -----------------------------------------------------------------------
+
+    def test_scan_yaml_for_phv_pairs_finds_two_phv_condition(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            yaml_path = Path(tmpdir) / "test.yaml"
+            yaml_path.write_text(
+                'value:\n'
+                '  expr: case(({phv00001234} == 1 and {phv00005678} == 2, "YES"), (True, None))\n'
+            )
+            pairs = scan_yaml_for_phv_pairs(Path(tmpdir))
+        self.assertEqual(pairs, [("phv00001234", "phv00005678")])
+
+    def test_scan_yaml_for_phv_pairs_deduplicates(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            yaml_path = Path(tmpdir) / "test.yaml"
+            yaml_path.write_text(
+                'expr: case(({phv00001234} == 1 and {phv00005678} == 2, "A"), '
+                '({phv00001234} == 1 and {phv00005678} == 3, "B"))\n'
+            )
+            pairs = scan_yaml_for_phv_pairs(Path(tmpdir))
+        # Same pair on two lines — should be deduplicated
+        self.assertEqual(pairs, [("phv00001234", "phv00005678")])
+
+    def test_scan_yaml_for_phv_pairs_ignores_single_phv_lines(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            yaml_path = Path(tmpdir) / "test.yaml"
+            yaml_path.write_text('expr: case(({phv00001234} == 1, "YES"))\n')
+            pairs = scan_yaml_for_phv_pairs(Path(tmpdir))
+        self.assertEqual(pairs, [])
+
+    def test_scan_yaml_for_phv_pairs_canonical_order(self) -> None:
+        """Pair key is always alphabetically sorted regardless of line order."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            yaml_path = Path(tmpdir) / "test.yaml"
+            yaml_path.write_text(
+                'expr: case(({phv00009999} == 1 and {phv00001111} == 2, "A"))\n'
+            )
+            pairs = scan_yaml_for_phv_pairs(Path(tmpdir))
+        # phv00001111 < phv00009999 alphabetically
+        self.assertEqual(pairs, [("phv00001111", "phv00009999")])
+
+    def test_scan_yaml_for_phv_pairs_finds_in_condition(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            yaml_path = Path(tmpdir) / "test.yaml"
+            yaml_path.write_text(
+                'expr: case(({phv00001234} == 1 and {phv00005678} in (2, 3), "YES"))\n'
+            )
+            pairs = scan_yaml_for_phv_pairs(Path(tmpdir))
+        self.assertEqual(pairs, [("phv00001234", "phv00005678")])
+
+    # -----------------------------------------------------------------------
+    # _normalize_dist_key
+    # -----------------------------------------------------------------------
+
+    def test_normalize_dist_key_integer_float(self) -> None:
+        self.assertEqual(_normalize_dist_key(1.0), "1")
+        self.assertEqual(_normalize_dist_key(2.0), "2")
+
+    def test_normalize_dist_key_nan(self) -> None:
+        self.assertEqual(_normalize_dist_key(float("nan")), "nan")
+
+    def test_normalize_dist_key_string(self) -> None:
+        self.assertEqual(_normalize_dist_key("YES"), "YES")
+
+    # -----------------------------------------------------------------------
+    # _compute_joint_distributions
+    # -----------------------------------------------------------------------
+
+    def test_compute_joint_distributions_basic_crosstab(self) -> None:
+        df = pd.DataFrame({
+            "SMOKE": [1, 1, 1, 0, 0],
+            "DRINK": [2, 3, 2, 1, 1],
+        })
+        pairs = [("phv00000001", "phv00000002")]
+        phv_name_map = {"phv00000001": "SMOKE", "phv00000002": "DRINK"}
+
+        result = _compute_joint_distributions(df, pairs, phv_name_map)
+
+        self.assertIn("phv00000001+phv00000002", result)
+        ct = result["phv00000001+phv00000002"]
+        # SMOKE=1: DRINK=2 twice, DRINK=3 once
+        self.assertEqual(ct["1"]["2"], 2)
+        self.assertEqual(ct["1"]["3"], 1)
+        # SMOKE=0: DRINK=1 twice
+        self.assertEqual(ct["0"]["1"], 2)
+
+    def test_compute_joint_distributions_skips_missing_column(self) -> None:
+        df = pd.DataFrame({"SMOKE": [1, 0, 1]})
+        pairs = [("phv00000001", "phv00000002")]
+        phv_name_map = {"phv00000001": "SMOKE", "phv00000002": "DRINK"}
+
+        result = _compute_joint_distributions(df, pairs, phv_name_map)
+
+        # DRINK column absent — pair should be skipped
+        self.assertEqual(result, {})
+
+    def test_compute_joint_distributions_empty_pairs_returns_empty(self) -> None:
+        df = pd.DataFrame({"A": [1, 2], "B": [3, 4]})
+        result = _compute_joint_distributions(df, [], {})
+        self.assertEqual(result, {})
+
+    def test_compute_joint_distributions_uses_phv_name_fallback(self) -> None:
+        """When PHV name not in name map, fall back to PHV ID as column name."""
+        df = pd.DataFrame({
+            "phv00000001": [1, 0],
+            "phv00000002": [2, 1],
+        })
+        pairs = [("phv00000001", "phv00000002")]
+
+        result = _compute_joint_distributions(df, pairs, phv_name_map={})
+
+        self.assertIn("phv00000001+phv00000002", result)
+
+    # -----------------------------------------------------------------------
+    # _extract_phv_conditions
+    # -----------------------------------------------------------------------
+
+    def test_extract_phv_conditions_equality(self) -> None:
+        conds = _extract_phv_conditions("{phv00001234} == 1")
+        self.assertEqual(conds, {"phv00001234": ["1"]})
+
+    def test_extract_phv_conditions_in_list(self) -> None:
+        conds = _extract_phv_conditions("{phv00001234} in (2, 3, 4)")
+        self.assertEqual(conds, {"phv00001234": ["2", "3", "4"]})
+
+    def test_extract_phv_conditions_two_phv_mixed(self) -> None:
+        conds = _extract_phv_conditions("{phv00000001} == 1 and {phv00000002} in (2, 3)")
+        self.assertEqual(sorted(conds.keys()), ["phv00000001", "phv00000002"])
+        self.assertEqual(conds["phv00000001"], ["1"])
+        self.assertIn("2", conds["phv00000002"])
+        self.assertIn("3", conds["phv00000002"])
+
+    def test_extract_phv_conditions_inequality_excluded(self) -> None:
+        """!= is intentionally excluded from the extracted conditions."""
+        conds = _extract_phv_conditions("{phv00001234} != 9 and {phv00001234} == 1")
+        # Only the == test is captured
+        self.assertEqual(conds, {"phv00001234": ["1"]})
+
+    # -----------------------------------------------------------------------
+    # _count_from_joint_dist
+    # -----------------------------------------------------------------------
+
+    def _make_joint_dists(self) -> dict[str, dict]:
+        """Fixture: pht001234 has a 2×3 crosstab for phv00000001 × phv00000002."""
+        return {
+            "pht001234": {
+                "phv00000001+phv00000002": {
+                    "0": {"1": 300, "2": 100, "3": 50},
+                    "1": {"1": 80, "2": 120, "3": 150},
+                }
+            }
+        }
+
+    def test_count_from_joint_dist_single_value_each(self) -> None:
+        jd = self._make_joint_dists()
+        count = _count_from_joint_dist(jd, "pht001234", "phv00000001", ["1"], "phv00000002", ["2"])
+        self.assertEqual(count, 120)
+
+    def test_count_from_joint_dist_multiple_values_inner(self) -> None:
+        jd = self._make_joint_dists()
+        # phv00000002 in (1, 2) for phv00000001 == 1
+        count = _count_from_joint_dist(jd, "pht001234", "phv00000001", ["1"], "phv00000002", ["1", "2"])
+        self.assertEqual(count, 200)  # 80 + 120
+
+    def test_count_from_joint_dist_reversed_phv_order(self) -> None:
+        """Caller passes phv_b as first arg, phv_a as second — should still work."""
+        jd = self._make_joint_dists()
+        # Pass args with phv_b first; orientation should be handled by sorted()
+        count = _count_from_joint_dist(jd, "pht001234", "phv00000002", ["2"], "phv00000001", ["1"])
+        self.assertEqual(count, 120)
+
+    def test_count_from_joint_dist_missing_pair_returns_none(self) -> None:
+        jd = self._make_joint_dists()
+        count = _count_from_joint_dist(jd, "pht001234", "phv00000001", ["1"], "phv00000099", ["2"])
+        self.assertIsNone(count)
+
+    def test_count_from_joint_dist_missing_pht_returns_none(self) -> None:
+        jd = self._make_joint_dists()
+        count = _count_from_joint_dist(jd, "pht999999", "phv00000001", ["1"], "phv00000002", ["2"])
+        self.assertIsNone(count)
+
+    # -----------------------------------------------------------------------
+    # _expected_summary_from_case_value_exprs with joint_dists_by_pht
+    # -----------------------------------------------------------------------
+
+    def test_case_value_exprs_exact_with_joint_dist(self) -> None:
+        """Multi-PHV condition resolves to exact verdict when joint dist is provided."""
+        joint_dists_by_pht = {
+            "pht001234": {
+                "phv00258106+phv00258107": {
+                    "0": {"1": 4, "2": 2, "3": 1},
+                    "1": {"1": 2, "2": 1, "3": 2},
+                }
+            }
+        }
+        entries = [
+            {
+                "value_exprs": [
+                    'case(({phv00258106} == 0, "OMOP:45883537"), (True, None))'
+                ]
+            },
+            {
+                "value_exprs": [
+                    'case(('
+                    '{phv00258106} == 1 and {phv00258107} == 1, "OMOP:40766945"), '
+                    '({phv00258106} == 1 and {phv00258107} == 2, "OMOP:40766945"), '
+                    '({phv00258106} == 1 and {phv00258107} == 3, "OMOP:45883458"), '
+                    '(True, None))'
+                ]
+            },
+        ]
+        summaries_by_phv = {
+            "phv00258106": {
+                "_pht": "pht001234",
+                "type": "categorical",
+                "distribution": {
+                    "0": {"n": 7, "pct": 58.33},
+                    "1": {"n": 5, "pct": 41.67},
+                },
+            },
+            "phv00258107": {
+                "_pht": "pht001234",
+                "type": "categorical",
+                "distribution": {
+                    "1": {"n": 2, "pct": 40.0},
+                    "2": {"n": 1, "pct": 20.0},
+                    "3": {"n": 2, "pct": 40.0},
+                },
+            },
+        }
+
+        result = _expected_summary_from_case_value_exprs(entries, summaries_by_phv, joint_dists_by_pht)
+
+        self.assertIsNotNone(result)
+        self.assertEqual(result["_comparison_confidence"], "exact")
+        self.assertEqual(result["_comparison_basis"], "yaml_case_value_expr")
+        # OMOP:45883537: phv00258106 == 0 → uses marginal: 7 (single PHV, uses reversed vals)
+        self.assertEqual(result["distribution"]["OMOP:45883537"]["n"], 7)
+        # OMOP:40766945: (phv00258106==1 AND phv00258107==1) + (phv00258106==1 AND phv00258107==2) = 2+1 = 3
+        self.assertEqual(result["distribution"]["OMOP:40766945"]["n"], 3)
+        # OMOP:45883458: phv00258106==1 AND phv00258107==3 = 2
+        self.assertEqual(result["distribution"]["OMOP:45883458"]["n"], 2)
+
+    def test_case_value_exprs_still_unsupported_without_joint_dist(self) -> None:
+        """Without joint_dists_by_pht, multi-PHV conditions still return unsupported."""
+        entries = [
+            {
+                "value_exprs": [
+                    'case(({phv00258106} == 1 and {phv00258107} == 1, "YES"), (True, None))'
+                ]
+            },
+        ]
+        summaries_by_phv = {
+            "phv00258106": {"type": "categorical", "distribution": {"1": {"n": 5, "pct": 100.0}}},
+            "phv00258107": {"type": "categorical", "distribution": {"1": {"n": 5, "pct": 100.0}}},
+        }
+
+        result = _expected_summary_from_case_value_exprs(entries, summaries_by_phv)
+
+        self.assertIsNotNone(result)
+        self.assertEqual(result["_comparison_confidence"], "unsupported")
+
+    def test_extract_phv_conditions_in_returns_multiple_values(self) -> None:
+        """_extract_phv_conditions handles in() lists in raw condition strings."""
+        # Note: _case_branches does NOT parse in() inside case() because the
+        # comma inside in(1, 2) confuses the regex. _extract_phv_conditions is
+        # called on the output of _case_branches, so in() conditions within
+        # case() expressions are not reachable through the normal path.
+        # However, _extract_phv_conditions is correct for raw condition strings
+        # (e.g. from when: fields) so we test it directly here.
+        conds = _extract_phv_conditions("{phv00000001} in (1, 2)")
+        self.assertEqual(conds["phv00000001"], ["1", "2"])
+
+    def test_case_value_exprs_single_phv_equality(self) -> None:
+        """Single PHV == condition still resolves via marginal (no regression)."""
+        entries = [
+            {
+                "value_exprs": [
+                    'case(({phv00000001} == 1, "PRESENT"), (True, None))'
+                ]
+            },
+        ]
+        summaries_by_phv = {
+            "phv00000001": {
+                "type": "categorical",
+                "distribution": {
+                    "1": {"n": 30, "pct": 30.0},
+                    "3": {"n": 70, "pct": 70.0},
+                },
+            }
+        }
+
+        result = _expected_summary_from_case_value_exprs(entries, summaries_by_phv)
+
+        self.assertIsNotNone(result)
+        self.assertEqual(result["_comparison_confidence"], "exact")
+        self.assertEqual(result["distribution"]["PRESENT"]["n"], 30)
+
+    # -----------------------------------------------------------------------
+    # _expected_summary_from_case_entry with joint_dists_by_pht
+    # -----------------------------------------------------------------------
+
+    def test_case_entry_exact_with_joint_dist(self) -> None:
+        """Single entry with a two-PHV condition resolves when joint dist available."""
+        joint_dists_by_pht = {
+            "pht001234": {
+                "phv00000001+phv00000002": {
+                    "0": {"1": 300, "2": 100},
+                    "1": {"1": 80, "2": 120},
+                }
+            }
+        }
+        entry = {
+            "value_exprs": [
+                'case(({phv00000001} == 1 and {phv00000002} == 2, "YES"), '
+                '({phv00000001} == 0, "NO"), '
+                '(True, None))'
+            ]
+        }
+        src_summary = {
+            "type": "categorical",
+            "_pht": "pht001234",
+            "n_total": 600,
+            "n_valid": 600,
+            "n_missing": 0,
+        }
+        summaries_by_phv = {
+            "phv00000001": {
+                "_pht": "pht001234",
+                "type": "categorical",
+                "distribution": {
+                    "0": {"n": 400, "pct": 66.67},
+                    "1": {"n": 200, "pct": 33.33},
+                },
+            }
+        }
+
+        result = _expected_summary_from_case_entry(
+            entry, src_summary, summaries_by_phv, joint_dists_by_pht
+        )
+
+        self.assertIsNotNone(result)
+        self.assertEqual(result["_comparison_confidence"], "exact")
+        # YES: joint count for phv00000001==1 AND phv00000002==2 = 120
+        self.assertEqual(result["distribution"]["YES"]["n"], 120)
+        # NO: marginal phv00000001==0 = 400 (single-PHV condition)
+        self.assertEqual(result["distribution"]["NO"]["n"], 400)
+
+    def test_case_entry_unsupported_when_joint_dist_missing_pht(self) -> None:
+        """Falls back to unsupported when the joint dist has no entry for this PHT."""
+        joint_dists_by_pht = {}  # No distributions for any PHT
+        entry = {
+            "value_exprs": [
+                'case(({phv00000001} == 1 and {phv00000002} == 2, "YES"), (True, None))'
+            ]
+        }
+        src_summary = {
+            "type": "categorical",
+            "_pht": "pht001234",
+            "n_total": 100,
+        }
+        summaries_by_phv = {}
+
+        result = _expected_summary_from_case_entry(
+            entry, src_summary, summaries_by_phv, joint_dists_by_pht
+        )
+
+        self.assertIsNotNone(result)
+        self.assertEqual(result["_comparison_confidence"], "unsupported")
+
+    def test_case_entry_still_unsupported_without_joint_dists_kwarg(self) -> None:
+        """Calling without joint_dists_by_pht arg preserves old unsupported behaviour."""
+        entry = {
+            "value_exprs": [
+                'case(({phv00000001} == 1 and {phv00000002} == 2, "YES"), (True, None))'
+            ]
+        }
+        src_summary = {
+            "type": "categorical",
+            "_pht": "pht001234",
+            "n_total": 100,
+        }
+        summaries_by_phv = {}
+
+        result = _expected_summary_from_case_entry(entry, src_summary, summaries_by_phv)
+
+        self.assertIsNotNone(result)
+        self.assertEqual(result["_comparison_confidence"], "unsupported")
 
 
 if __name__ == "__main__":

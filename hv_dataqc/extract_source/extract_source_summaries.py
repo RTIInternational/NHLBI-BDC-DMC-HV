@@ -36,6 +36,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+import math
 import os
 import re
 import sys
@@ -54,6 +55,7 @@ from hv_dataqc.hv_dataqc_common import (
     load_phv_name_map as _shared_load_phv_name_map,
     write_json_atomic,
 )
+from hv_dataqc.extract_source.scan_yaml_phv_pairs import scan_yaml_for_phv_pairs
 
 # ---------------------------------------------------------------------------
 # Logging helpers
@@ -126,6 +128,115 @@ def _close_file_logging() -> None:
         log.removeHandler(_file_handler)
         _file_handler.close()
         _file_handler = None
+
+
+# ---------------------------------------------------------------------------
+# Joint distribution helpers
+# ---------------------------------------------------------------------------
+
+def _normalize_dist_key(value: Any) -> str:
+    """Normalize a pandas cell value to a consistent string key for crosstabs.
+
+    Mirrors the key normalization used for individual variable distributions:
+    float integers are stored as plain integer strings (``"1"`` not ``"1.0"``),
+    and NaN / pandas NA values become the literal string ``"nan"``.
+    """
+    if isinstance(value, float):
+        if math.isnan(value):
+            return "nan"
+        if value == int(value):
+            return str(int(value))
+    return str(value)
+
+
+def _compute_joint_distributions(
+    df: "pd.DataFrame",
+    phv_pairs: list[tuple[str, str]],
+    phv_name_map: dict[str, str],
+) -> dict[str, dict]:
+    """Compute pairwise crosstabs for PHV pairs present in *df*.
+
+    For each ``(phv_a, phv_b)`` pair in *phv_pairs* (canonical alphabetical
+    order), resolves the corresponding column names in *df* via *phv_name_map*
+    (PHV accession → variable name), then falls back to trying the PHV ID
+    itself as a column name (case-insensitive).  If both columns are present
+    in *df*, computes ``df.groupby([col_a, col_b]).size()`` and stores the
+    result as nested string-key dicts.
+
+    Pairs where one or both PHVs have no matching column in the current
+    DataFrame are silently skipped — this is the natural filter for cross-table
+    pairs (the crosstab can only be computed when both variables live in the
+    same physical TSV file).
+
+    Storage format::
+
+        {
+            "<phv_a>+<phv_b>": {
+                "<val_of_phv_a>": {
+                    "<val_of_phv_b>": <count>,
+                    ...
+                },
+                ...
+            },
+            ...
+        }
+
+    The pair key uses the same canonical ``sorted([phv_a, phv_b])`` ordering
+    as ``scan_yaml_for_phv_pairs``, so the outer dict keys correspond to
+    values of the alphabetically-smaller PHV.
+
+    Parameters
+    ----------
+    df:
+        DataFrame for a single PHT (all rows from one source TSV).
+    phv_pairs:
+        Canonical sorted PHV pairs from ``scan_yaml_for_phv_pairs``.
+    phv_name_map:
+        PHV accession → variable name from the dbGaP cache.
+
+    Returns
+    -------
+    dict
+        ``{pair_key: {outer_val: {inner_val: count}}}`` for pairs found in
+        *df*.  Empty dict if no pairs are present in this table.
+    """
+    if not phv_pairs:
+        return {}
+
+    # Build a case-insensitive column lookup once per DataFrame
+    col_lower_map = {c.lower(): c for c in df.columns}
+
+    joint_dists: dict[str, dict] = {}
+    for phv_a, phv_b in phv_pairs:
+        # phv_a < phv_b (canonical sorted order from scan_yaml_for_phv_pairs)
+        # Resolve column name: prefer phv_name_map, fall back to PHV ID itself
+        name_a = phv_name_map.get(phv_a, phv_a)
+        name_b = phv_name_map.get(phv_b, phv_b)
+        actual_a = col_lower_map.get(name_a.lower()) or col_lower_map.get(phv_a.lower())
+        actual_b = col_lower_map.get(name_b.lower()) or col_lower_map.get(phv_b.lower())
+
+        if actual_a is None or actual_b is None or actual_a == actual_b:
+            # Not in this table — skip silently (cross-table pair or unmapped PHV)
+            continue
+
+        try:
+            cross = df.groupby([actual_a, actual_b], dropna=False).size()
+            pair_dist: dict[str, dict[str, int]] = {}
+            for (val_a, val_b), count in cross.items():
+                k_a = _normalize_dist_key(val_a)
+                k_b = _normalize_dist_key(val_b)
+                pair_dist.setdefault(k_a, {})[k_b] = int(count)
+
+            pair_key = f"{phv_a}+{phv_b}"
+            joint_dists[pair_key] = pair_dist
+            log.debug(
+                "  Crosstab %s × %s (%s × %s): %d outer keys",
+                phv_a, phv_b, actual_a, actual_b, len(pair_dist),
+            )
+        except Exception as exc:  # noqa: BLE001
+            log.debug("  Crosstab failed for %s × %s: %s", phv_a, phv_b, exc)
+
+    return joint_dists
 
 
 # ---------------------------------------------------------------------------
@@ -504,6 +615,12 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
                    help="Optional thresholds/config YAML. Defaults to compare/config/thresholds.yaml.")
     p.add_argument("--cache-dir", metavar="DIR",
                    help="Optional: path to dbGaP cache dir for a cohort, used to resolve PHV→name.")
+    p.add_argument("--yaml-dir", metavar="DIR",
+                   help="Optional: path to HV transform YAML directory. "
+                        "When supplied, pre-scans YAML files for multi-PHV case() conditions "
+                        "and computes pairwise crosstabs during extraction. "
+                        "Adds 'joint_distributions_by_pht' to the output JSON, enabling "
+                        "exact (non-SKIP) comparisons for multi-PHV conditions in compare.")
 
     # --- output ---
     p.add_argument("--output-dir", metavar="DIR", default=None,
@@ -605,6 +722,36 @@ def main(argv: list[str] | None = None) -> None:
             source_type_map = load_source_type_map(cache_path)
 
         # ------------------------------------------------------------------
+        # 3b. Optional: pre-scan YAML for multi-PHV pairs (for --yaml-dir)
+        # ------------------------------------------------------------------
+        phv_pairs: list[tuple[str, str]] = []
+        if args.yaml_dir:
+            yaml_dir_path = Path(args.yaml_dir)
+            if yaml_dir_path.is_dir():
+                phv_pairs = scan_yaml_for_phv_pairs(yaml_dir_path)
+                log.info(
+                    "YAML pre-scan (%s): found %d multi-PHV pair(s) to crosstab",
+                    yaml_dir_path, len(phv_pairs),
+                )
+                if log.isEnabledFor(logging.DEBUG):
+                    for pa, pb in phv_pairs:
+                        log.debug("  Pair: %s + %s", pa, pb)
+            else:
+                log.warning("--yaml-dir does not exist: %s — skipping joint distribution pre-scan", yaml_dir_path)
+
+        # If YAML pre-scan found pairs to crosstab but the PHV name map is
+        # empty (--cache-dir missing or cache empty), joint distributions
+        # cannot be computed and the compare step will SKIP those checks.
+        # Fail hard here rather than silently producing incomplete output.
+        if phv_pairs and not phv_name_map:
+            raise SystemExit(
+                "ERROR: --yaml-dir found multi-PHV pairs to crosstab but "
+                "--cache-dir was not provided or resolved no PHV names.\n"
+                "Provide --cache-dir pointing to the cohort's dbGaP cache so "
+                "PHV accessions can be resolved to TSV column names."
+            )
+
+        # ------------------------------------------------------------------
         # 4. Optional column filter
         # ------------------------------------------------------------------
         phv_filter_set: set[str] = set()
@@ -616,6 +763,7 @@ def main(argv: list[str] | None = None) -> None:
         # 5. Summarize variables across all pht frames
         # ------------------------------------------------------------------
         variables_by_pht: dict[str, dict] = {}   # {pht: {col_key: summary}}
+        joint_distributions_by_pht: dict[str, dict] = {}   # {pht: {pair_key: crosstab}}
         total_rows_all = 0
         total_rows_by_pht: dict[str, int] = {}
         total_participants: int | None = None
@@ -704,6 +852,17 @@ def main(argv: list[str] | None = None) -> None:
 
             log.info("  PHT %s: %d variables", pht_label, len(variables_by_pht.get(pht_label, {})))
 
+            # Joint distributions — only when --yaml-dir was supplied and
+            # the pre-scan found at least one pair to compute.
+            if phv_pairs:
+                pht_joints = _compute_joint_distributions(df, phv_pairs, phv_name_map)
+                if pht_joints:
+                    joint_distributions_by_pht[pht_label] = pht_joints
+                    log.info(
+                        "  PHT %s: %d joint distribution(s) computed",
+                        pht_label, len(pht_joints),
+                    )
+
         if participant_ids:
             total_participants = len(participant_ids)
             log.info("Unique participants (cross-PHT union): %d", total_participants)
@@ -732,6 +891,13 @@ def main(argv: list[str] | None = None) -> None:
         }
         if total_participants is not None:
             output_doc["total_participants"] = total_participants
+        if joint_distributions_by_pht:
+            output_doc["joint_distributions_by_pht"] = joint_distributions_by_pht
+            n_total_pairs = sum(len(v) for v in joint_distributions_by_pht.values())
+            log.info(
+                "Joint distributions: %d pair(s) across %d PHT(s)",
+                n_total_pairs, len(joint_distributions_by_pht),
+            )
 
         # ------------------------------------------------------------------
         # 7. Write JSON

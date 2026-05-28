@@ -23,10 +23,14 @@ ranges, visit structure, and cross-variable consistency.
 
 ## Design Principles
 
-1. **Source extract is YAML-agnostic.** It summarizes every column in the raw
-   TSV regardless of what the current HV YAMLs reference. This makes it a
-   stable, reusable artifact — it never needs to be re-run when YAMLs change,
-   only when the source study version changes or a new PHT table is added.
+1. **Source extract is source-first, with optional YAML-guided joint counts.**
+  It summarizes every column in the raw TSV regardless of what the current HV
+  YAMLs reference. This makes the core source summaries stable and reusable.
+  When `--yaml-dir` is supplied, the extractor also pre-scans transform YAMLs
+  for multi-PHV `case()` conditions and emits aggregate pairwise crosstabs in
+  `joint_distributions_by_pht`. Re-run the source extract when the dbGaP study
+  version changes, a new PHT table is added, or YAML changes introduce/modify
+  multi-PHV conditions that need exact comparison.
 
 2. **Harmonized extract is also YAML-agnostic.** It reads entity TSVs produced
    by dm-bip and groups by `observation_type` / `condition_concept` columns —
@@ -46,10 +50,12 @@ ranges, visit structure, and cross-variable consistency.
 
 5. **Reports are archived by commit + timestamp.** Every `compare.sh` run writes
    its outputs into `local_output/archive/<git-short-commit>_<UTC-timestamp>/`,
-   and updates symlinks at `local_output/<cohort>_comparison_{report.md,results.json}`
-   to point at the latest archive entry. Old reports are never overwritten.
-   Each archive entry also contains a `manifest.json` recording the source
-   and harmonized JSONs used and the git commit at the time of the run.
+  updates stable symlinks at `local_output/<cohort>_comparison_{report.md,results.json}`,
+  and creates timestamped top-level symlinks for the same run. Old reports are
+  never overwritten. Each archive entry also contains a `manifest.json`
+  recording the source and harmonized JSONs used, the YAML directory, and the
+  git commit at the time of the run. Markdown report headers also record the
+  source JSON filename, harmonized JSON filename, and YAML directory used.
 
 ---
 
@@ -135,6 +141,8 @@ top-level symlinks. Old reports are never overwritten.
 hv_dataqc/local_output/
   <cohort>_comparison_report.md           -> archive/<commit>_<ts>/...
   <cohort>_comparison_results.json        -> archive/<commit>_<ts>/...
+  <cohort>_comparison_report_<ts>.md      -> archive/<commit>_<ts>/...
+  <cohort>_comparison_results_<ts>.json   -> archive/<commit>_<ts>/...
   archive/
     <git-commit>_<YYYYMMDDTHHMMSSZ>/
       copdgene_comparison_report.md
@@ -168,6 +176,7 @@ removed in Phase B because column-name collisions across PHTs were ambiguous):
   "rows_per_visit": { "VISIT_1": 2973, ... },
   "participants_by_pht": { "pht002239": 2973, ... },
   "total_rows_by_pht": { "pht002239": 8919, ... },
+  "joint_distributions_by_pht": { "pht002239": { "phv...+phv...": { ... } } },
   "variables_by_pht": {
     "pht002239": {
       "age_baseline": {
@@ -189,6 +198,12 @@ removed in Phase B because column-name collisions across PHTs were ambiguous):
 lookups; when a YAML's PHV maps to a column that exists in multiple PHTs and
 the PHV→PHT route can't disambiguate, the comparison emits a per-variable
 `CROSSWALK` FAIL rather than silently picking one PHT.
+
+`joint_distributions_by_pht` is present only when the source extractor was run
+with `--yaml-dir`. It enables exact aggregate comparisons for two-PHV `case()`
+conditions without exporting row-level data. When the field is absent or a
+condition needs more than a two-way crosstab, compare reports the affected
+check as unsupported/SKIP rather than guessing.
 
 ### Harmonized extract
 
@@ -240,6 +255,9 @@ Recent comparison report details:
 - C10 reads `_cross_variable_rules` from `clinical_ranges.yaml`; simple two-variable
   mean comparisons run automatically, while formula rules are reported as `SKIP`
   until implemented.
+- Two-PHV `case()` routing can be compared exactly when the source JSON includes
+  `joint_distributions_by_pht`, produced by running the source extractor with
+  `--yaml-dir`. Unsupported multi-PHV cases are reported as unsupported/SKIP.
 
 ---
 

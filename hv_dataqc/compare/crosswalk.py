@@ -393,6 +393,11 @@ _PHV_EQ_RE = re.compile(
     r"(?P<value>'[^']*'|\"[^\"]*\"|-?\d+(?:\.\d+)?|[A-Za-z0-9_:.-]+)",
     re.IGNORECASE,
 )
+# Matches {phv} in (val1, val2, ...) set-membership tests in case() conditions
+_PHV_IN_RE = re.compile(
+    r"\{(?P<phv>phv\d+)\}\s+in\s+\((?P<values>[^)]+)\)",
+    re.IGNORECASE,
+)
 
 
 def _strip_expr_literal(value: str) -> str:
@@ -457,8 +462,105 @@ def _unsupported_joint_summary(src_summary: dict | None, basis: str, limitation:
     return summary
 
 
+def _extract_phv_conditions(condition: str) -> dict[str, list[str]]:
+    """Extract per-PHV value lists from a case() branch condition string.
+
+    Handles both ``{phv} == value`` equality comparisons and
+    ``{phv} in (v1, v2, ...)`` set-membership patterns.
+
+    Returns ``{canonical_phv_id: [value, ...]}`` where multiple values arise
+    from ``in (...)`` lists.  A single ``==`` test contributes one value.
+    PHVs referenced only by inequality (``!=``) or comparison operators
+    (``<``, ``>``) are intentionally excluded — they constrain the population
+    but the compare engine cannot compute the residual count from marginals.
+
+    Parameters
+    ----------
+    condition:
+        A single case() branch condition string, e.g.
+        ``"{phv00001} == 1 and {phv00002} in (2, 3)"``.
+
+    Returns
+    -------
+    dict
+        ``{phv_id: [val, ...]}`` for each PHV with deterministic value tests.
+    """
+    phv_vals: dict[str, list[str]] = {}
+    for m in _PHV_EQ_RE.finditer(condition):
+        phv = _canonical_phv_id(m.group("phv"))
+        val = _strip_expr_literal(m.group("value"))
+        phv_vals.setdefault(phv, []).append(val)
+    for m in _PHV_IN_RE.finditer(condition):
+        phv = _canonical_phv_id(m.group("phv"))
+        vals = [_strip_expr_literal(v.strip()) for v in m.group("values").split(",")]
+        phv_vals.setdefault(phv, []).extend(vals)
+    return phv_vals
+
+
+def _count_from_joint_dist(
+    joint_dists_by_pht: dict[str, dict],
+    pht: str,
+    phv_a: str,
+    vals_a: list[str],
+    phv_b: str,
+    vals_b: list[str],
+) -> int | None:
+    """Look up and sum joint counts for a two-PHV condition from a pre-computed crosstab.
+
+    The joint distribution is keyed by canonical sorted PHV pair
+    (``"phv_smaller+phv_larger"``), with the smaller PHV's values as the outer
+    dict keys and the larger PHV's values as inner keys.  This function handles
+    the orientation transparently — the caller does not need to know which PHV
+    is "outer".
+
+    Parameters
+    ----------
+    joint_dists_by_pht:
+        ``{pht: {pair_key: {outer_val: {inner_val: count}}}}`` from the source
+        extract JSON's ``joint_distributions_by_pht`` field.
+    pht:
+        PHT accession for the source table (e.g. ``"pht001234"``).
+    phv_a, phv_b:
+        Canonical PHV accession IDs for the two PHVs in the condition.
+    vals_a, vals_b:
+        Value strings to match for *phv_a* and *phv_b* respectively.
+
+    Returns
+    -------
+    int or None
+        Summed count of rows satisfying the joint condition, or ``None`` if
+        the crosstab for this pair/PHT is not available in *joint_dists_by_pht*.
+    """
+    sorted_pair = sorted([phv_a, phv_b])
+    pair_key = "+".join(sorted_pair)
+    joint_dist = joint_dists_by_pht.get(pht, {}).get(pair_key)
+    if joint_dist is None:
+        return None
+
+    # Determine which vals are "outer" (sorted_pair[0]) vs "inner" (sorted_pair[1])
+    if phv_a == sorted_pair[0]:
+        outer_vals, inner_vals = vals_a, vals_b
+    else:
+        outer_vals, inner_vals = vals_b, vals_a
+
+    # Normalize target values using the same normalization as the distribution lookup
+    norm_outer = {normalize_category_key(_normalize_code(v)) for v in outer_vals}
+    norm_inner = {normalize_category_key(_normalize_code(v)) for v in inner_vals}
+
+    count = 0
+    for outer_key, inner_dict in joint_dist.items():
+        if normalize_category_key(_normalize_code(outer_key)) not in norm_outer:
+            continue
+        for inner_key, n in inner_dict.items():
+            if normalize_category_key(_normalize_code(inner_key)) in norm_inner:
+                count += int(n)
+    return count
+
+
 def _expected_summary_from_case_value_exprs(
-    entries: list[dict], summaries_by_phv: dict[str, dict]
+    entries: list[dict],
+    summaries_by_phv: dict[str, dict],
+    joint_dists_by_pht: dict[str, dict] | None = None,
 ) -> dict | None:
     """Build expected harmonized categorical distribution from YAML case() values.
 
@@ -466,9 +568,9 @@ def _expected_summary_from_case_value_exprs(
     YAML blocks to avoid null propagation or to combine multiple source PHVs.
     When those blocks use simple single-PHV ``case()`` value expressions,
     aggregate source distributions can provide the correct comparison basis
-    without adding any metadata to the YAML.  Multi-PHV branch conditions need
-    row-level joint counts, so this helper returns an unsupported summary
-    instead of treating one PHV's marginal count as exact.
+    without adding any metadata to the YAML.  Multi-PHV branch conditions
+    require joint counts, which are pre-computed crosstabs if *joint_dists_by_pht*
+    is provided; otherwise they yield an unsupported summary.
     """
     expected_counts: dict[str, int] = {}
     contributing_phvs: set[str] = set()
@@ -485,28 +587,61 @@ def _expected_summary_from_case_value_exprs(
                     # look like a loss, so leave this comparison on the normal
                     # pooled-source path.
                     return None
-                eq_tests = list(_PHV_EQ_RE.finditer(condition))
-                if not eq_tests:
+
+                # Extract all PHV references including == and in() patterns
+                phv_conds = _extract_phv_conditions(condition)
+                distinct_phvs = sorted(phv_conds.keys())
+
+                if len(distinct_phvs) == 0:
                     return None
-                if len({_canonical_phv_id(eq.group("phv")) for eq in eq_tests}) > 1:
+
+                elif len(distinct_phvs) == 1:
+                    # Single PHV — use marginal distribution (existing behaviour)
+                    phv = distinct_phvs[0]
+                    vals = phv_conds[phv]
+                    # For a single == test, try values in reverse order (matches
+                    # original behaviour for compound conditions on one PHV)
+                    counted = False
+                    for val in reversed(vals):
+                        count = _distribution_count_for_code(summaries_by_phv.get(phv), val)
+                        if count is None:
+                            continue
+                        expected_counts[output_key] = expected_counts.get(output_key, 0) + count
+                        contributing_phvs.add(phv)
+                        counted = True
+                        break
+                    if not counted:
+                        return None
+
+                elif len(distinct_phvs) == 2 and joint_dists_by_pht is not None:
+                    # Two-PHV condition — attempt joint distribution lookup
+                    phv_a, phv_b = distinct_phvs[0], distinct_phvs[1]
+                    # Get PHT from either PHV's source summary
+                    pht = (
+                        (summaries_by_phv.get(phv_a) or {}).get("_pht")
+                        or (summaries_by_phv.get(phv_b) or {}).get("_pht")
+                        or ""
+                    )
+                    count = _count_from_joint_dist(
+                        joint_dists_by_pht, pht,
+                        phv_a, phv_conds[phv_a],
+                        phv_b, phv_conds[phv_b],
+                    ) if pht else None
+                    if count is None:
+                        return _unsupported_joint_summary(
+                            None,
+                            "yaml_case_value_expr",
+                            "case() branch references multiple PHVs; aggregate summaries cannot compute joint counts",
+                        )
+                    expected_counts[output_key] = expected_counts.get(output_key, 0) + count
+                    contributing_phvs.update([phv_a, phv_b])
+
+                else:
                     return _unsupported_joint_summary(
                         None,
                         "yaml_case_value_expr",
                         "case() branch references multiple PHVs; aggregate summaries cannot compute joint counts",
                     )
-                counted = False
-                for eq in reversed(eq_tests):
-                    phv = _canonical_phv_id(eq.group("phv"))
-                    code = _strip_expr_literal(eq.group("value"))
-                    count = _distribution_count_for_code(summaries_by_phv.get(phv), code)
-                    if count is None:
-                        continue
-                    expected_counts[output_key] = expected_counts.get(output_key, 0) + count
-                    contributing_phvs.add(phv)
-                    counted = True
-                    break
-                if not counted:
-                    return None
 
     total = sum(expected_counts.values())
     if total <= 0:
@@ -524,6 +659,7 @@ def _expected_summary_from_case_value_exprs(
         "pct_missing": 0.0,
         "distribution": distribution,
         "_comparison_basis": "yaml_case_value_expr",
+        "_comparison_confidence": "exact",
         "_comparison_phvs": sorted(contributing_phvs),
     }
 
@@ -781,12 +917,18 @@ def _expected_summary_from_concept_value_map(entry: dict, src_summary: dict) -> 
     )
 
 
-def _expected_summary_from_case_entry(entry: dict, src_summary: dict, summaries_by_phv: dict[str, dict]) -> dict | None:
+def _expected_summary_from_case_entry(
+    entry: dict,
+    src_summary: dict,
+    summaries_by_phv: dict[str, dict],
+    joint_dists_by_pht: dict[str, dict] | None = None,
+) -> dict | None:
     """Build expected summary for a single value-slot case expression."""
     counts: dict[str, int] = {}
     explicit_count = 0
     saw_branch = False
     table_total = int(src_summary.get("n_total", 0) or src_summary.get("n_valid", 0) or 0)
+    pht = str(src_summary.get("_pht", "") or "")
 
     for expr in entry.get("value_exprs") or []:
         for condition, output in _case_branches(expr):
@@ -800,28 +942,54 @@ def _expected_summary_from_case_entry(entry: dict, src_summary: dict, summaries_
                 default_count = max(table_total - explicit_count, 0)
                 counts[output_key] = counts.get(output_key, 0) + default_count
                 continue
-            eq_tests = list(_PHV_EQ_RE.finditer(condition))
-            if not eq_tests:
+
+            # Extract all PHV references including == and in() patterns
+            phv_conds = _extract_phv_conditions(condition)
+            distinct_phvs = sorted(phv_conds.keys())
+
+            if len(distinct_phvs) == 0:
                 return None
-            if len({_canonical_phv_id(eq.group("phv")) for eq in eq_tests}) > 1:
+
+            elif len(distinct_phvs) == 1:
+                # Single PHV — use marginal distribution (existing behaviour)
+                phv = distinct_phvs[0]
+                vals = phv_conds[phv]
+                counted = False
+                for val in reversed(vals):
+                    count = _distribution_count_for_code(summaries_by_phv.get(phv), val)
+                    if count is None:
+                        continue
+                    counts[output_key] = counts.get(output_key, 0) + count
+                    explicit_count += count
+                    counted = True
+                    break
+                if not counted:
+                    return None
+
+            elif len(distinct_phvs) == 2 and joint_dists_by_pht is not None and pht:
+                # Two-PHV condition — attempt joint distribution lookup
+                phv_a, phv_b = distinct_phvs[0], distinct_phvs[1]
+                count = _count_from_joint_dist(
+                    joint_dists_by_pht, pht,
+                    phv_a, phv_conds[phv_a],
+                    phv_b, phv_conds[phv_b],
+                )
+                if count is None:
+                    return _unsupported_joint_summary(
+                        src_summary,
+                        "yaml_case_value_expr",
+                        "case() branch references multiple PHVs; aggregate summaries cannot compute joint counts",
+                    )
+                counts[output_key] = counts.get(output_key, 0) + count
+                explicit_count += count
+
+            else:
                 return _unsupported_joint_summary(
                     src_summary,
                     "yaml_case_value_expr",
                     "case() branch references multiple PHVs; aggregate summaries cannot compute joint counts",
                 )
-            counted = False
-            for eq in reversed(eq_tests):
-                phv = _canonical_phv_id(eq.group("phv"))
-                code = _strip_expr_literal(eq.group("value"))
-                count = _distribution_count_for_code(summaries_by_phv.get(phv), code)
-                if count is None:
-                    continue
-                counts[output_key] = counts.get(output_key, 0) + count
-                explicit_count += count
-                counted = True
-                break
-            if not counted:
-                return None
+
     if not saw_branch:
         return None
     return _categorical_summary_from_counts(
@@ -847,7 +1015,11 @@ def _apply_conversion_factor_to_summary(src_summary: dict, factor: float | None)
     return converted
 
 
-def _expected_summary_for_entry(entry: dict, summaries_by_phv: dict[str, dict]) -> dict | None:
+def _expected_summary_for_entry(
+    entry: dict,
+    summaries_by_phv: dict[str, dict],
+    joint_dists_by_pht: dict[str, dict] | None = None,
+) -> dict | None:
     """Build the best available expected post-transform summary for one YAML block."""
     src_summary = entry.get("_source_summary") or summaries_by_phv.get(_canonical_phv_id(entry.get("phv_id", "")))
     if not src_summary:
@@ -862,7 +1034,9 @@ def _expected_summary_for_entry(entry: dict, summaries_by_phv: dict[str, dict]) 
 
     # Most specific first: value-slot case expressions, then concept routing,
     # then value mappings, then scalar/unit conversion, then direct copy.
-    case_summary = _expected_summary_from_case_entry(entry, src_summary, summaries_by_phv)
+    case_summary = _expected_summary_from_case_entry(
+        entry, src_summary, summaries_by_phv, joint_dists_by_pht
+    )
     if case_summary:
         return case_summary
 
@@ -888,7 +1062,11 @@ def _expected_summary_for_entry(entry: dict, summaries_by_phv: dict[str, dict]) 
     return converted
 
 
-def build_expected_summary(entries: list[dict], summaries_by_phv: dict[str, dict]) -> dict | None:
+def build_expected_summary(
+    entries: list[dict],
+    summaries_by_phv: dict[str, dict],
+    joint_dists_by_pht: dict[str, dict] | None = None,
+) -> dict | None:
     """Build expected harmonized aggregate summary from YAML transform semantics."""
     expected_parts: list[dict] = []
     limitations: list[str] = []
@@ -896,7 +1074,7 @@ def build_expected_summary(entries: list[dict], summaries_by_phv: dict[str, dict
     confidences: set[str] = set()
 
     for entry in entries:
-        part = _expected_summary_for_entry(entry, summaries_by_phv)
+        part = _expected_summary_for_entry(entry, summaries_by_phv, joint_dists_by_pht)
         if part:
             expected_parts.append(part)
             bases.add(part.get("_comparison_basis", "source_direct"))
@@ -1311,12 +1489,13 @@ def _extract_crosswalk_from_class_derivations(
         if not primary_phvs or not concept_codes:
             continue
 
-        # method_type creates a compound harmonized key only for MO blocks
-        # nested inside a MeasurementObservationSet — the MOS path in the
-        # harmonized extractor groups by (observation_type, method_type) and
-        # emits keys like ``measurement_OMOP:XXX|<method_type>``.  Standalone
-        # MeasurementObservation files (bdy_hgt, bmi, hrt_rt, ...) are grouped
-        # by observation_type alone and keep bare keys.
+        # method_type creates a compound harmonized key ``|<method_type>`` for
+        # any MeasurementObservation block that has a method_type slot, whether
+        # it is nested inside a MeasurementObservationSet or is a standalone MO.
+        # The dm-bip harmonized extractor groups by (observation_type, method_type)
+        # when method_type is present and emits keys like
+        # ``measurement_OMOP:XXX|<method_type>``.  Standalone MO files without
+        # a method_type slot (bdy_hgt, bmi, hrt_rt, ...) keep bare keys.
         method_type_val: str | None = None
         if entity_class == "MeasurementObservation" and "method_type" in slots:
             mt = slots["method_type"]
@@ -1340,7 +1519,7 @@ def _extract_crosswalk_from_class_derivations(
         # hdl.yaml: OMOP:4041720 & OBA:VT0000184, stroke.yaml: HP:0002140 &
         # MONDO:0013792, diabetes.yaml pht001490: MONDO:0005015 & MONDO:0006920).
         for concept_code in concept_codes:
-            if inside_mos and method_type_val:
+            if method_type_val:
                 harmonized_key = f"{prefix}{concept_code}|{method_type_val}"
             else:
                 harmonized_key = f"{prefix}{concept_code}"
@@ -1417,6 +1596,16 @@ _TUPLE_OBS_RE = re.compile(r"^\(\s*['\"]?([^'\"()]+?)['\"]?\s*,?\s*\)$")
 # Matches full harmonized keys whose observation_type was serialized as a Python
 # singleton tuple: e.g.  measurement_('OMOP:4152194',)
 _TUPLE_KEY_RE = re.compile(r"^([a-z_]+)\('([^']+)',?\)$")
+
+
+def _normalize_method_type_part(s: str) -> str:
+    """Normalize a method_type string for fuzzy matching.
+
+    Strips commas, normalizes whitespace, and lowercases so that YAML values
+    like ``pre-bronchodilator spirometry`` match harmonized keys like
+    ``Pre-bronchodilator, spirometry``.
+    """
+    return re.sub(r"\s+", " ", s.replace(",", "").lower()).strip()
 
 
 def _norm_obs_type(s: str) -> str:
@@ -1730,6 +1919,9 @@ def build_variable_crosswalk(
     variables_by_pht: dict[str, dict] = (
         source_doc.get("variables_by_pht", {}) if source_doc else {}
     )
+    joint_dists_by_pht: dict[str, dict] = (
+        source_doc.get("joint_distributions_by_pht", {}) if source_doc else {}
+    )
 
     yaml_cw = build_yaml_crosswalk(yaml_dir, phv_names)
     if not yaml_cw:
@@ -1763,7 +1955,10 @@ def build_variable_crosswalk(
                     resolved_src_key = sk
                     break
 
-        # Case-insensitive fallback for harmonized key
+        # Case-insensitive fallback for harmonized key; also normalizes the
+        # method_type component (strips commas, lowercases) to handle
+        # differences such as YAML ``pre-bronchodilator spirometry`` vs
+        # harmonized ``Pre-bronchodilator, spirometry``.
         resolved_harmonized_key: str | None = None
         if harmonized_key in harmonized_vars:
             resolved_harmonized_key = harmonized_key
@@ -1772,6 +1967,18 @@ def build_variable_crosswalk(
                 if ok.upper() == harmonized_key.upper():
                     resolved_harmonized_key = ok
                     break
+        if resolved_harmonized_key is None and "|" in harmonized_key:
+            hk_prefix, hk_mt = harmonized_key.split("|", 1)
+            norm_mt = _normalize_method_type_part(hk_mt)
+            for ok in harmonized_vars:
+                if "|" in ok:
+                    ok_prefix, ok_mt = ok.split("|", 1)
+                    if (
+                        ok_prefix.upper() == hk_prefix.upper()
+                        and _normalize_method_type_part(ok_mt) == norm_mt
+                    ):
+                        resolved_harmonized_key = ok
+                        break
 
         # Fallback 1: newer BDC extractors prefix YAML-mapped concept keys
         # with "discovered:" (e.g. "discovered:condition:MONDO:0004981")
@@ -1810,8 +2017,7 @@ def build_variable_crosswalk(
         # ``|<method_type>`` suffix (e.g.
         # ``measurement_OMOP:4241837|Pre-bronchodilator, spirometry``).
         # Some cohort harmonized extractors group by observation_type alone
-        # and emit bare keys without the method_type component (e.g.
-        # COPDGene spirometry.yaml and blood_pressure.yaml).  Fall back to
+        # and emit bare keys without the method_type component.  Fall back to
         # the bare key when the suffixed form is absent from harmonized_vars.
         if (
             resolved_harmonized_key is None
@@ -1827,6 +2033,33 @@ def build_variable_crosswalk(
                     if ok.upper() == bare_key.upper():
                         resolved_harmonized_key = ok
                         break
+
+        # Fallback 4: Crosswalk has a bare key (no method_type in YAML) but
+        # the harmonized extractor added a ``|<method_type>`` suffix from
+        # pipeline metadata (e.g. blood_pressure.yaml SBP/DBP concepts get
+        # ``|automated sphygmomanometer`` from the dm-bip extractor even
+        # though blood_pressure.yaml has no method_type slot).  Find any
+        # harmonized key that starts with ``bare_key|``.
+        if resolved_harmonized_key is None and "|" not in harmonized_key:
+            prefix_candidates = [
+                ok for ok in harmonized_vars
+                if ok.startswith(harmonized_key + "|")
+            ]
+            if len(prefix_candidates) == 1:
+                resolved_harmonized_key = prefix_candidates[0]
+            elif len(prefix_candidates) > 1:
+                # Multiple method_type variants for the same concept — use the
+                # entry's method_type value (if any) to pick the best match.
+                mt_val = entry.get("method_type")
+                if mt_val:
+                    norm_mt = _normalize_method_type_part(mt_val)
+                    for pc in prefix_candidates:
+                        if _normalize_method_type_part(pc.split("|", 1)[1]) == norm_mt:
+                            resolved_harmonized_key = pc
+                            break
+                if resolved_harmonized_key is None:
+                    # Cannot disambiguate; take the first candidate.
+                    resolved_harmonized_key = prefix_candidates[0]
 
         if resolved_harmonized_key is None or resolved_src_key is None:
             # Stash diagnostic — at minimum we still know the YAML claims
@@ -1991,7 +2224,9 @@ def build_variable_crosswalk(
         # concept_code, entity_class, value_map, method_type) and overlay
         # the pooled fields.
         merged = dict(entries[0])
-        expected_src = build_expected_summary(entries, summaries_by_phv)
+        expected_src = build_expected_summary(
+            entries, summaries_by_phv, joint_dists_by_pht or None
+        )
         merged["_resolved_src"] = expected_src or _aggregate_source_summaries(per_pht_summaries)
         unsupported_joint = any(
             e.get("concept_value_map")

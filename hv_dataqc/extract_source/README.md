@@ -8,16 +8,20 @@ an aggregate-only JSON artifact. Run this **inside the data enclave**.
 ## What It Does
 
 - Walks consent-group directories under a source root (or use explicit paths)
-- Summarizes **every non-system column** — no YAML dependency at all
+- Summarizes **every non-system column** from the raw TSVs
 - Auto-detects categorical vs. continuous based on dtype and n_distinct
 - Optionally stratifies row counts by a visit column
-- Optionally resolves PHV IDs to variable names from the local dbGaP cache
+- Resolves PHV IDs to variable names from the local dbGaP cache (`--cache-dir`)
+- Pre-scans HV YAMLs for multi-PHV `case()` conditions and computes pairwise
+  aggregate crosstabs for those PHV pairs (`--yaml-dir`; requires `--cache-dir`)
 - Counts the participant union internally and exports only the aggregate count
 - Writes strict JSON atomically; non-finite numeric summaries are exported as `null`
 - Writes a stable, YAML-version-independent JSON artifact
 
-The source JSON only needs to be re-run when the dbGaP study version changes
-or a new pht table is added. It does NOT need to be re-run when HV YAMLs change.
+The core source summaries only need to be re-run when the dbGaP study version
+changes or a new pht table is added. If `--yaml-dir` is used to generate
+`joint_distributions_by_pht`, re-run the source extract when YAML changes add,
+remove, or modify multi-PHV `case()` conditions that need exact comparison.
 
 ---
 
@@ -45,6 +49,14 @@ python extract_source_summaries.py \
     --source-root /enclave/raw/spiromics/ \
     --cache-dir /enclave/dbgap-cache/spiromics/ \
     --output-dir ./dataqc-runs/
+
+# With exact two-PHV case() comparison support
+python extract_source_summaries.py \
+  --cohort COPDGene \
+  --source-root /enclave/raw/copdgene/ \
+  --cache-dir /enclave/dbgap-cache/copdgene/ \
+  --yaml-dir /workspace/NHLBI-BDC-DMC-HV/priority_variables_transform/COPDGene-ingest \
+  --output-dir ./dataqc-runs/
 ```
 
 ### All Arguments
@@ -59,7 +71,8 @@ python extract_source_summaries.py \
 | `--pht-filter PHT` | No | Only load files whose names contain this string (e.g. `pht002239`). Substring match. |
 | `--phv-list PHV ...` | No | Only summarize these specific columns (override all-columns behavior). |
 | `--n-distinct-threshold N` | No | Max distinct values to treat numeric column as categorical (default: 20). |
-| `--cache-dir DIR` | No | dbGaP cache dir; resolves PHV IDs to human-readable names. |
+| `--cache-dir DIR` | No* | dbGaP cache dir; resolves PHV IDs to human-readable names. **Required when `--yaml-dir` is supplied** — the script aborts with an error if `--yaml-dir` finds multi-PHV pairs but `--cache-dir` is absent or the cache is empty. |
+| `--yaml-dir DIR` | No* | HV transform YAML directory. Pre-scans YAML for multi-PHV `case()` conditions and emits `joint_distributions_by_pht` for exact aggregate comparisons. **Must be paired with `--cache-dir`** (see above). |
 | `--output-dir DIR` | No | Output directory. Defaults to `<source-root>/dataqc-runs/`. |
 | `--output FILE` | No | Override output JSON filename |
 | `--verbose` | No | Enable debug logging |
@@ -102,6 +115,14 @@ collision rule used to silently pick one.
   "total_rows_by_pht": {"pht006243": 8919, "pht006244": 2973},
   "participants_by_pht": {"pht006243": 2973, "pht006244": 2973},
   "rows_per_visit": {"VISIT_1": 2973, "VISIT_2": 2919, ...},
+  "joint_distributions_by_pht": {
+    "pht006243": {
+      "phv001+phv002": {
+        "1": {"0": 120, "1": 42},
+        "2": {"0": 80, "1": 30}
+      }
+    }
+  },
   "variables_by_pht": {
     "pht006243": {
       "ht_cm": {
@@ -129,6 +150,12 @@ collision rule used to silently pick one.
 }
 ```
 
+`joint_distributions_by_pht` appears only when both `--yaml-dir` and
+`--cache-dir` are supplied and at least one requested PHV pair is present
+in a source table. (`--yaml-dir` without `--cache-dir` is a hard error when
+multi-PHV pairs are found — the PHV→column-name mapping requires the cache.)
+It contains aggregate crosstabs only, never row-level data.
+
 ---
 
 ## System Columns Skipped
@@ -145,6 +172,9 @@ The following column patterns are always skipped (never summarized):
 
 ```
 pandas >= 1.3
+pyyaml >= 5.4
 ```
 
-No YAML dependency. No dependency on any other hv_dataqc script.
+`pyyaml` is required for `--yaml-dir` support. When `--yaml-dir` is used,
+`--cache-dir` must also be provided so PHV accessions can be resolved to TSV
+column names. Source statistics remain aggregate-only and source-driven.

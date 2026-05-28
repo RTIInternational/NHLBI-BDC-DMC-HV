@@ -31,14 +31,27 @@ Automatically locates the YAML transform dir and dbGaP cache.
 ./compare.sh COPDGene
 ./compare.sh SPIROMICS
 ./compare.sh COPDGene --thresholds custom.yaml
+./compare.sh COPDGene --yaml-dir /path/to/integration/HV/priority_variables_transform/COPDGene-ingest
 ```
 
 Each run is archived. Outputs are written into
 `../local_output/archive/<git-commit>_<UTC-timestamp>/` alongside a
 `manifest.json` recording the inputs used, and the top-level
 `../local_output/<cohort>_comparison_{report.md,results.json}` symlinks
-are updated to point at the latest archive entry. Old reports are never
-overwritten.
+are updated to point at the latest archive entry. The script also creates
+timestamped top-level symlinks for each run, such as
+`../local_output/<cohort>_comparison_report_<UTC-timestamp>.md`. Old reports
+are never overwritten.
+
+Pass `--yaml-dir` to compare against transform YAMLs from another checkout,
+such as an integration/testing repo. The wrapper consumes this flag and uses
+that directory instead of auto-resolving `priority_variables_transform/` from
+the local repo.
+
+For HCHS-SOL runs, source/harmonized extract filenames may use the short
+cohort name `HCHS`, while the dbGaP cache directory uses the canonical
+manifest key `hchs_sol`. `compare.sh HCHS` automatically looks for the cache
+under `../local_output/dbgap-cache/hchs_sol`.
 
 The script exits non-zero when the comparison surfaces any `FAIL` results
 (matching the underlying `python -m hv_dataqc.compare` exit behavior).
@@ -75,5 +88,6 @@ flags are forwarded.
 ```
 
 Comparison reports are archived under `../local_output/archive/`. The
-top-level symlinks at `../local_output/<cohort>_comparison_*` always
-point at the most recent run.
+stable top-level symlinks at `../local_output/<cohort>_comparison_*` always
+point at the most recent run; timestamped top-level symlinks provide durable
+paths for individual runs.

@@ -156,9 +156,9 @@ fev1_fvc_ratio:
   plausible_hi: 100
   red_flag_lo: 10
   red_flag_hi: 110
-  notes: "FEV1/FVC ratio expressed as percentage (0–100 scale). <70% = COPD diagnostic threshold. PRED_FEV1FVC uses same scale."
+  notes: "FEV1/FVC ratio expressed as percentage (0–100 scale). <70% = COPD diagnostic threshold."
   oba_codes: []
-  omop_codes: ["OMOP:3024594"]
+  omop_codes: []
   common_phv_names: ["FEV1_FVC", "FEV1_FVC_RATIO", "PRED_FEV1FVC"]
 
 fev1_fvc_ratio_decimal:
@@ -167,10 +167,10 @@ fev1_fvc_ratio_decimal:
   plausible_hi: 1.00
   red_flag_lo: 0.05
   red_flag_hi: 1.15
-  notes: "FEV1/FVC ratio as decimal (0–1 scale). <0.7 = COPD threshold. SPIROMICS PRE/POST_FEV1FVC_DERV use this scale."
+  notes: "FEV1/FVC ratio as decimal (0–1 scale). <0.7 = COPD threshold. OMOP:3024594 and SPIROMICS PRE/POST_FEV1FVC_DERV use this scale."
   oba_codes: []
-  omop_codes: ["OMOP:3011505"]
-  common_phv_names: ["PRE_FEV1FVC_DERV", "POST_FEV1FVC_DERV"]
+  omop_codes: ["OMOP:3011505", "OMOP:3024594"]
+  common_phv_names: ["PRE_FEV1FVC_DERV", "POST_FEV1FVC_DERV", "PRED_FEV1_FVC", "FEV1_FVC_PRE", "FEV1_FVC_POST"]
 
 fev1_fvc_ratio_pp:
   unit: "%"

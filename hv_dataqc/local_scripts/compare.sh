@@ -6,6 +6,7 @@
 #   ./compare.sh copdgene
 #   ./compare.sh spiromics
 #   ./compare.sh copdgene --thresholds custom.yaml   # extra flags forwarded
+#   ./compare.sh copdgene --yaml-dir /path/to/other-hv-repo/priority_variables_transform/COPDGene-ingest
 set -euo pipefail
 cd "$(dirname "$0")"
 HV="$(cd ../.. && pwd)"
@@ -15,6 +16,19 @@ mkdir -p "$OUT"
 COHORT="${1:?Usage: ./compare.sh <cohort> [extra flags...]}"
 shift
 COHORT_LOWER="$(echo "$COHORT" | tr '[:upper:]' '[:lower:]')"
+
+# Pre-parse --yaml-dir from remaining args so callers can override the
+# auto-resolved path (e.g. to point at an integration/testing repo).
+# Consumed here so it is not forwarded to Python a second time.
+YAML_DIR_OVERRIDE=""
+EXTRA_ARGS=()
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --yaml-dir)   YAML_DIR_OVERRIDE="$2"; shift 2 ;;
+        --yaml-dir=*) YAML_DIR_OVERRIDE="${1#*=}"; shift ;;
+        *)            EXTRA_ARGS+=("$1"); shift ;;
+    esac
+done
 
 # Find source and harmonized JSONs.
 # Try latest_source/ and latest_harmonized/ subdirs first (from unpack.sh),
@@ -52,23 +66,42 @@ mkdir -p "$ARCHIVE_DIR"
 REPORT="$ARCHIVE_DIR/${COHORT_LOWER}_comparison_report.md"
 JSON_REPORT="$ARCHIVE_DIR/${COHORT_LOWER}_comparison_results.json"
 
-# Top-level symlinks: <cohort>_comparison_{report.md,results.json}
+# Top-level symlinks — two flavours:
+#   stable (latest):    <cohort>_comparison_report.md  (always points at most recent run)
+#   timestamped:        <cohort>_comparison_report_<RUN_TS>.md  (addressable by run time)
 LATEST_REPORT="$OUT/${COHORT_LOWER}_comparison_report.md"
 LATEST_JSON="$OUT/${COHORT_LOWER}_comparison_results.json"
+LATEST_REPORT_TS="$OUT/${COHORT_LOWER}_comparison_report_${RUN_TS}.md"
+LATEST_JSON_TS="$OUT/${COHORT_LOWER}_comparison_results_${RUN_TS}.json"
 
-# Determine YAML dir with a case-insensitive lookup so
-# casing does not matter and the script remains portable
-# across sed variants.
-YAML_DIR="$(find "$HV/priority_variables_transform" -maxdepth 1 -type d -iname "${COHORT}-ingest" -print -quit)"
-if [ -z "$YAML_DIR" ]; then
-    echo "ERROR: No YAML dir found for $COHORT in priority_variables_transform/" >&2
-    exit 1
+# Determine YAML dir. If --yaml-dir was passed, use it directly; otherwise
+# do a case-insensitive lookup inside this repo's priority_variables_transform/.
+if [ -n "$YAML_DIR_OVERRIDE" ]; then
+    YAML_DIR="$YAML_DIR_OVERRIDE"
+    if [ ! -d "$YAML_DIR" ]; then
+        echo "ERROR: --yaml-dir path does not exist: $YAML_DIR" >&2
+        exit 1
+    fi
+else
+    YAML_DIR="$(find "$HV/priority_variables_transform" -maxdepth 1 -type d -iname "${COHORT}-ingest" -print -quit)"
+    if [ -z "$YAML_DIR" ]; then
+        echo "ERROR: No YAML dir found for $COHORT in priority_variables_transform/" >&2
+        exit 1
+    fi
 fi
 
-CACHE_DIR="$OUT/dbgap-cache/$COHORT_LOWER"
+# Some cohorts use an abbreviated name in extract file naming (e.g. HCHS for
+# HCHS-SOL) but the cache fetcher uses the full manifest name (hchs_sol).
+# Map any known short names to their canonical cache directory name.
+case "$COHORT_LOWER" in
+    hchs) CACHE_COHORT="hchs_sol" ;;
+    *)    CACHE_COHORT="$COHORT_LOWER" ;;
+esac
+
+CACHE_DIR="$OUT/dbgap-cache/$CACHE_COHORT"
 if [ ! -d "$CACHE_DIR" ]; then
     echo "ERROR: dbGaP cache not found at $CACHE_DIR" >&2
-    echo "  Run: ./fetch_cache.sh --cohort $COHORT_LOWER" >&2
+    echo "  Run: ./fetch_cache.sh --cohort $CACHE_COHORT" >&2
     exit 1
 fi
 
@@ -83,7 +116,7 @@ COMPARE_RC=0
     --cache-dir "$CACHE_DIR" \
     --report "$REPORT" \
     --json-report "$JSON_REPORT" \
-    "$@") || COMPARE_RC=$?
+    "${EXTRA_ARGS[@]}") || COMPARE_RC=$?
 
 # Only update the latest symlinks and write the manifest if compare actually
 # produced both expected outputs. A pre-output crash (invalid input, schema
@@ -102,14 +135,18 @@ if [ -f "$REPORT" ] && [ -f "$JSON_REPORT" ]; then
 }
 EOF
 
-    # Update top-level symlinks to point at the latest archived report.
+    # Update stable top-level symlinks (always points at the most recent run).
     ln -sfn "archive/${GIT_COMMIT}_${RUN_TS}/${COHORT_LOWER}_comparison_report.md" "$LATEST_REPORT"
     ln -sfn "archive/${GIT_COMMIT}_${RUN_TS}/${COHORT_LOWER}_comparison_results.json" "$LATEST_JSON"
+    # Timestamped top-level symlinks (one per run, addressable by run time).
+    ln -sfn "archive/${GIT_COMMIT}_${RUN_TS}/${COHORT_LOWER}_comparison_report.md" "$LATEST_REPORT_TS"
+    ln -sfn "archive/${GIT_COMMIT}_${RUN_TS}/${COHORT_LOWER}_comparison_results.json" "$LATEST_JSON_TS"
 
     echo
     echo "Reports: $REPORT"
     echo "         $JSON_REPORT"
     echo "Latest:  $LATEST_REPORT -> archive/${GIT_COMMIT}_${RUN_TS}/"
+    echo "         $LATEST_REPORT_TS"
 else
     # Compare failed before writing output. Clean up the empty archive dir
     # (rmdir is safe — it only removes empty dirs) and leave existing

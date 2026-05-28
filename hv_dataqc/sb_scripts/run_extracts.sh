@@ -45,9 +45,8 @@ OUTPUT_DIR="/sbgenomics/workspace/QC-output-files/$COHORT"
 ALL_DATARUNS=()
 ALL_MAPPED_DIRS=()
 for dr in $(ls -dr /sbgenomics/project-files/_QC_STAGING/DataRun_* 2>/dev/null); do
-    found=$(find "$dr" -ipath "*${COHORT_INPUT}*BDCHM/mapped-data" -type d 2>/dev/null | sort)
-    # TODO: confirm fix against other cohorts. This was changed to get WHI working.
-    # found=$(find "$dr" -path "*${COHORT_LOWER}*BDCHM/mapped-data" -type d 2>/dev/null | sort)
+    # Use _COHORT_ delimiters to prevent substring matches (e.g. CHS matching HCHS).
+    found=$(find "$dr" -ipath "*_${COHORT_INPUT}_*BDCHM/mapped-data" -type d 2>/dev/null | sort)
     if [ -n "$found" ]; then
         ALL_DATARUNS+=("$(basename "$dr")")
         ALL_MAPPED_DIRS+=("$found")
@@ -99,10 +98,27 @@ else
     fi
 fi
 
+# Map cohort name to dbGaP cache subdirectory name (handles HCHS -> hchs_sol)
+case "$COHORT_LOWER" in
+    hchs) CACHE_COHORT="hchs_sol" ;;
+    *)    CACHE_COHORT="$COHORT_LOWER" ;;
+esac
+CACHE_DIR="$HV/hv_dataqc/local_output/dbgap-cache/$CACHE_COHORT"
+
+# Preflight: cache must exist so PHV->column name resolution works for
+# Option B joint-distribution crosstabs. Without it, multi-PHV case()
+# comparisons would be silently skipped in the compare step.
+if [ ! -d "$CACHE_DIR" ]; then
+    echo "ERROR: dbGaP cache not found for $COHORT: $CACHE_DIR" >&2
+    echo "  Run: cd hv_dataqc/local_scripts && ./fetch_cache.sh $CACHE_COHORT" >&2
+    exit 1
+fi
+
 echo "Source root:  $SOURCE_ROOT"
 echo "Mapped dirs:"
 echo "$MAPPED_DIRS" | sed 's/^/  /'
 echo "Output dir:   $OUTPUT_DIR"
+echo "Cache dir:    $CACHE_DIR"
 echo
 
 # --- Source extract ---
@@ -110,7 +126,9 @@ echo "=== Running source extract ==="
 (cd "$HV" && uv run python -m hv_dataqc.extract_source.extract_source_summaries \
     --cohort "$COHORT" \
     --source-root "$SOURCE_ROOT" \
-    --output-dir "$OUTPUT_DIR")
+    --output-dir "$OUTPUT_DIR" \
+    --yaml-dir "$HV/priority_variables_transform/${COHORT}-ingest" \
+    --cache-dir "$CACHE_DIR")
 
 echo
 

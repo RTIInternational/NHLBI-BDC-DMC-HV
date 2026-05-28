@@ -54,6 +54,19 @@ Runs both source and harmonized extracts in one command. Auto-discovers
 the latest `DataRun_*` directory containing mapped-data for the cohort.
 Packages output into a tgz for download.
 
+The source extract is run with both `--yaml-dir` (checked-out cohort transform
+directory) and `--cache-dir` (the cohort's local dbGaP cache). Both are required
+for `joint_distributions_by_pht` to be emitted, which enables exact aggregate
+comparison of two-PHV `case()` conditions.
+
+The script auto-resolves the cache path to
+`hv_dataqc/local_output/dbgap-cache/<cohort>/` and **aborts with a clear error**
+if the cache has not been fetched yet. Fetch it first with:
+
+```bash
+cd hv_dataqc/local_scripts && ./fetch_cache.sh <cohort>
+```
+
 ```bash
 # Use latest DataRun
 ./NHLBI-BDC-DMC-HV/hv_dataqc/sb_scripts/run_extracts.sh COPDGene
@@ -82,7 +95,9 @@ If you need more control (e.g., a custom output dir):
 uv run python NHLBI-BDC-DMC-HV/hv_dataqc/extract_source/extract_source_summaries.py \
     --cohort COPDGene \
     --source-root /sbgenomics/project-files/PilotParentStudies_NoDRS/COPDGene \
-    --output-dir /sbgenomics/workspace/QC-output-files/COPDGene
+    --output-dir /sbgenomics/workspace/QC-output-files/COPDGene \
+    --yaml-dir NHLBI-BDC-DMC-HV/priority_variables_transform/COPDGene-ingest \
+    --cache-dir NHLBI-BDC-DMC-HV/hv_dataqc/local_output/dbgap-cache/copdgene
 
 # Harmonized extract (use --mapped-data-dirs to avoid OOM)
 uv run python NHLBI-BDC-DMC-HV/hv_dataqc/extract_harmonized/extract_harmonized_summaries.py \

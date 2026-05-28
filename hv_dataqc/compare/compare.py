@@ -759,7 +759,11 @@ def main(argv: list[str] | None = None) -> None:
 
     # Write Markdown
     md = generate_markdown_report(
-        all_results, cohort, source_meta, harmonized_meta, crosswalk=crosswalk
+        all_results, cohort,
+        {**source_meta, "input_file": Path(args.source).name},
+        {**harmonized_meta, "input_file": Path(args.harmonized).name},
+        crosswalk=crosswalk,
+        yaml_dir=yaml_dir.name,
     )
     report_path = Path(args.report or f"{cohort.lower()}_comparison_report.md")
     write_text_atomic(report_path, md)

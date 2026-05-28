@@ -29,6 +29,7 @@ def generate_markdown_report(
     source_meta: dict,
     harmonized_meta: dict,
     crosswalk: list[dict] | None = None,
+    yaml_dir: str | None = None,
 ) -> str:
     """Generate a human-readable Markdown report."""
     # Extract dbGaP study ID (e.g. phs000280.v8.p2) from source directory names
@@ -53,8 +54,14 @@ def generate_markdown_report(
         "",
         f"**Generated:** {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}",
         f"**Source:** {source_meta.get('source', '?')}",
-        f"**Harmonized:** {harmonized_meta.get('source', '?')}",
     ]
+    if source_meta.get("input_file"):
+        lines.append(f"**Source file:** `{source_meta['input_file']}`")
+    lines.append(f"**Harmonized:** {harmonized_meta.get('source', '?')}")
+    if harmonized_meta.get("input_file"):
+        lines.append(f"**Harmonized file:** `{harmonized_meta['input_file']}`")
+    if yaml_dir:
+        lines.append(f"**YAML dir:** `{yaml_dir}`")
     if study_id_full:
         lines.append(
             f"**dbGaP:** [{study_id_full}]({dbgap_datasets_url})"

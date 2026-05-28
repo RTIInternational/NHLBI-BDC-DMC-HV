@@ -56,9 +56,10 @@ python -m hv_dataqc.compare \
 
 When run via `local_scripts/compare.sh`, the wrapper sets `--report` /
 `--json-report` to a fresh `local_output/archive/<commit>_<ts>/` directory
-and updates `local_output/<cohort>_comparison_*` symlinks afterward.
-See the top-level [README](../README.md#output-layout) for the archive
-layout.
+and updates both stable and timestamped `local_output/<cohort>_comparison_*`
+symlinks afterward. The Markdown report header records the source JSON file,
+harmonized JSON file, and YAML directory used. See the top-level
+[README](../README.md#output-layout) for the archive layout.
 
 ---
 
@@ -86,6 +87,11 @@ Notes:
     harmonized summary when transform semantics are available. This expected
     summary may account for value_mappings, concept routing, case() expressions,
     scalar unit conversion, static YAML values, and pooled multi-block transforms.
+- Two-PHV `case()` value-routing expressions can be compared exactly when the
+    source JSON includes `joint_distributions_by_pht`, produced by running
+    `extract_source_summaries.py --yaml-dir <transform-dir>`. Missing crosstabs
+    or conditions involving more than two PHVs remain unsupported/SKIP rather
+    than guessed.
 - C7 translates YAML `value_mappings` before comparison and aggregates many source
     categories that map to the same harmonized category. For status-like transforms,
     pooled expected summaries normalize raw source aliases (`N`, `Y`, `T`, etc.) into
@@ -146,9 +152,10 @@ name-match fallback strategies were removed in Phase B):
 3. Builds an expected post-transform source summary for each harmonized key.
    Exact aggregate expectations are produced for direct copies, value_mappings,
    concept routing where the concept and value PHVs align, simple case()
-   routing, scalar arithmetic, common `unit_conversion` blocks, static YAML
-   values, and pooled independent blocks. Cases that require row-level joint
-   counts are marked as partial/unsupported rather than guessed.
+    routing, two-PHV case() routing with precomputed joint distributions, scalar
+    arithmetic, common `unit_conversion` blocks, static YAML values, and pooled
+    independent blocks. Cases that require unavailable row-level joint counts are
+    marked as partial/unsupported rather than guessed.
 
 4. Groups multiple YAML blocks that emit the same harmonized key and compares
    against the pooled or YAML-derived source basis instead of a single first PHV.
