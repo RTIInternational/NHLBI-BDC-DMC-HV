@@ -403,6 +403,7 @@ def load_source_data(
                     comment="#",
                     na_values=["", "NA", ".", "NaN"],
                     low_memory=False,
+                    encoding="latin-1",
                 )
                 df.columns = df.columns.astype(str).str.strip()
                 df["_consent_group"] = src_dir.name
