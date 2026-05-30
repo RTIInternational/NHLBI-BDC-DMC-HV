@@ -68,7 +68,7 @@ harmonized JSON file, and YAML directory used. See the top-level
 | Check | Name | What It Tests |
 |-------|------|---------------|
 | `CROSSWALK` | Crosswalk Resolution Failures | Per-variable FAIL when a source-column lookup is ambiguous across PHTs and the YAML/cache can't pin it. Emitted before C1–C12 and causes those checks to skip for the affected harmonized variable. |
-| C1 | N Preservation | Total participant count did not drop unexpectedly |
+| C1 | N Preservation | Harmonized participant count matches the mapped source participant universe |
 | C2 | N Loss Detection | Per-variable valid-N: harmonized should preserve source N |
 | C3 | Missing Value Accounting | Missing rate stable between source and harmonized |
 | C4 | Mean Preservation | Continuous mean within tolerance (no unit conversion) |
@@ -83,6 +83,13 @@ harmonized JSON file, and YAML directory used. See the top-level
 
 Notes:
 
+- C1 uses `participant_denominators.mapped_source_union_n` when present. This is
+    the exact union of participants across source PHTs referenced by YAML
+    mappings, computed inside the enclave by the source extractor. The
+    all-source union and largest single-PHT count remain in the detail payload
+    as context because source extracts often include roster/admin tables that
+    are not the harmonization denominator. Older source JSON files without the
+    exact mapped union fall back to mapped-PHT max as a WARN-level diagnostic.
 - C2-C7 compare actual harmonized summaries against a YAML-derived expected
     harmonized summary when transform semantics are available. This expected
     summary may account for value_mappings, concept routing, case() expressions,

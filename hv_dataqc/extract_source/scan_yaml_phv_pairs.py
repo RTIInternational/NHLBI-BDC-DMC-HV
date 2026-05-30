@@ -15,9 +15,51 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
+from typing import Any
 
-# Matches any {phvXXXXXX} reference (case-insensitive, no version suffix)
+import yaml
+
+# Matches PHV references (case-insensitive, no version suffix).  Braced
+# references are used in expressions; plain PHVs appear in populated_from.
 _PHV_REF_RE = re.compile(r"\{(phv\d+)\}", re.IGNORECASE)
+_PHV_ANY_RE = re.compile(r"\b(phv\d+)\b", re.IGNORECASE)
+
+
+def scan_yaml_for_phvs(yaml_dir: Path) -> set[str]:
+    """Return all PHV accessions referenced by YAML content under *yaml_dir*.
+
+    YAML comments are intentionally ignored so stale commented-out mappings do
+    not inflate the mapped participant denominator.
+    """
+    phvs: set[str] = set()
+
+    def _walk(value: Any) -> None:
+        if isinstance(value, dict):
+            for key, item in value.items():
+                _walk(key)
+                _walk(item)
+        elif isinstance(value, list):
+            for item in value:
+                _walk(item)
+        elif isinstance(value, str):
+            phvs.update(m.group(1).lower() for m in _PHV_ANY_RE.finditer(value))
+
+    for yaml_file in sorted(yaml_dir.rglob("*.yaml")):
+        try:
+            text = yaml_file.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        try:
+            for doc in yaml.safe_load_all(text):
+                _walk(doc)
+        except yaml.YAMLError:
+            for line in text.splitlines():
+                stripped = line.lstrip()
+                if stripped.startswith("#"):
+                    continue
+                phvs.update(m.group(1).lower() for m in _PHV_ANY_RE.finditer(line))
+
+    return phvs
 
 
 def scan_yaml_for_phv_pairs(yaml_dir: Path) -> list[tuple[str, str]]:

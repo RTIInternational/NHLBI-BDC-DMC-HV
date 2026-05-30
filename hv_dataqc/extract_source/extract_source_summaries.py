@@ -58,7 +58,7 @@ from hv_dataqc.hv_dataqc_common import (
     load_phv_name_map as _shared_load_phv_name_map,
     write_json_atomic,
 )
-from hv_dataqc.extract_source.scan_yaml_phv_pairs import scan_yaml_for_phv_pairs
+from hv_dataqc.extract_source.scan_yaml_phv_pairs import scan_yaml_for_phv_pairs, scan_yaml_for_phvs
 
 # ---------------------------------------------------------------------------
 # Logging helpers
@@ -756,13 +756,15 @@ def main(argv: list[str] | None = None) -> None:
         # 3b. Optional: pre-scan YAML for multi-PHV pairs (for --yaml-dir)
         # ------------------------------------------------------------------
         phv_pairs: list[tuple[str, str]] = []
+        yaml_phvs: set[str] = set()
         if args.yaml_dir:
             yaml_dir_path = Path(args.yaml_dir)
             if yaml_dir_path.is_dir():
+                yaml_phvs = scan_yaml_for_phvs(yaml_dir_path)
                 phv_pairs = scan_yaml_for_phv_pairs(yaml_dir_path)
                 log.info(
-                    "YAML pre-scan (%s): found %d multi-PHV pair(s) to crosstab",
-                    yaml_dir_path, len(phv_pairs),
+                    "YAML pre-scan (%s): found %d PHV(s), %d multi-PHV pair(s) to crosstab",
+                    yaml_dir_path, len(yaml_phvs), len(phv_pairs),
                 )
                 if log.isEnabledFor(logging.DEBUG):
                     for pa, pb in phv_pairs:
@@ -800,6 +802,9 @@ def main(argv: list[str] | None = None) -> None:
         total_participants: int | None = None
         participant_ids: set[str] = set()
         participants_by_pht: dict[str, int] = {}   # unique participant count per PHT
+        mapped_source_participant_ids: set[str] = set()
+        mapped_source_phts: set[str] = set()
+        mapped_participants_by_pht: dict[str, int] = {}
         rows_per_visit_combined: dict[str, int] = {}
 
         for pht_label, df in loaded:
@@ -842,13 +847,32 @@ def main(argv: list[str] | None = None) -> None:
                         break
             if part_col and part_col in df.columns:
                 n_unique_here = int(df[part_col].nunique(dropna=True))
-                participant_ids.update(_canonical_participant_id(v) for v in df[part_col].dropna().unique())
+                pht_participant_ids = {
+                    _canonical_participant_id(v) for v in df[part_col].dropna().unique()
+                }
+                participant_ids.update(pht_participant_ids)
                 participants_by_pht[pht_label] = n_unique_here
                 log.info("  Unique participants in %s: %d", pht_label, n_unique_here)
                 if total_participants is None:
                     total_participants = n_unique_here
                 else:
                     total_participants = max(total_participants, n_unique_here)
+
+                if yaml_phvs:
+                    cols_lower = {c.lower() for c in df.columns}
+                    table_phvs = {
+                        phv for phv in yaml_phvs
+                        if phv in cols_lower
+                        or phv_name_map.get(phv, "").lower() in cols_lower
+                    }
+                    if table_phvs:
+                        mapped_source_phts.add(pht_label)
+                        mapped_participants_by_pht[pht_label] = n_unique_here
+                        mapped_source_participant_ids.update(pht_participant_ids)
+                        log.info(
+                            "  YAML-mapped participant universe includes %s: %d PHV(s), %d participants",
+                            pht_label, len(table_phvs), n_unique_here,
+                        )
 
             # Iterate columns
             for col in df.columns:
@@ -901,6 +925,28 @@ def main(argv: list[str] | None = None) -> None:
                 max_pht = max(participants_by_pht, key=participants_by_pht.get)
                 log.info("  Largest single-PHT count: %s (%d)", max_pht, participants_by_pht[max_pht])
 
+        participant_denominators: dict[str, Any] = {}
+        if total_participants is not None:
+            participant_denominators["all_source_union_n"] = total_participants
+        if participants_by_pht:
+            max_pht = max(participants_by_pht, key=participants_by_pht.get)
+            participant_denominators.update({
+                "max_source_pht": max_pht,
+                "max_source_pht_n": participants_by_pht[max_pht],
+            })
+        if mapped_source_phts:
+            mapped_max_pht = max(mapped_participants_by_pht, key=mapped_participants_by_pht.get)
+            participant_denominators.update({
+                "mapped_source_phts": sorted(mapped_source_phts),
+                "mapped_source_union_n": len(mapped_source_participant_ids),
+                "mapped_source_max_pht": mapped_max_pht,
+                "mapped_source_max_pht_n": mapped_participants_by_pht[mapped_max_pht],
+            })
+            log.info(
+                "Unique participants (YAML-mapped PHT union): %d across %d PHT(s)",
+                len(mapped_source_participant_ids), len(mapped_source_phts),
+            )
+
         # ------------------------------------------------------------------
         # 6. Build output document
         # ------------------------------------------------------------------
@@ -918,6 +964,7 @@ def main(argv: list[str] | None = None) -> None:
             "total_rows_by_pht": total_rows_by_pht,
             "rows_per_visit": rows_per_visit_combined,
             "participants_by_pht": participants_by_pht,
+            "participant_denominators": participant_denominators,
             "variables_by_pht": variables_by_pht,
         }
         if total_participants is not None:

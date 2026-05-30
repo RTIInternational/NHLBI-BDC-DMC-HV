@@ -71,6 +71,7 @@ from hv_dataqc.extract_harmonized.extract_harmonized_summaries import (  # noqa:
 )
 from hv_dataqc.extract_source.extract_source_summaries import _canonical_participant_id  # noqa: E402
 from hv_dataqc.extract_source.scan_yaml_phv_pairs import scan_yaml_for_phv_pairs  # noqa: E402
+from hv_dataqc.extract_source.scan_yaml_phv_pairs import scan_yaml_for_phvs  # noqa: E402
 from hv_dataqc.extract_source.extract_source_summaries import (  # noqa: E402
     _compute_joint_distributions,
     _normalize_dist_key,
@@ -231,6 +232,98 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         self.assertEqual(pooled["n_valid"], 3)
         self.assertEqual(pooled["mean"], 4.333333)
         self.assertAlmostEqual(pooled["sd"], 4.932883, places=6)
+
+    def test_c1_uses_mapped_source_union_as_primary_denominator(self) -> None:
+        source = {
+            "total_participants": 5885,
+            "participant_denominators": {
+                "all_source_union_n": 5885,
+                "max_source_pht": "pht001920",
+                "max_source_pht_n": 5885,
+                "mapped_source_phts": ["pht008729"],
+                "mapped_source_union_n": 3883,
+                "mapped_source_max_pht": "pht008729",
+                "mapped_source_max_pht_n": 3883,
+            },
+        }
+        harmonized = {"total_participants": 3883}
+
+        result = check_c1_n_preservation(source, harmonized)[0]
+
+        self.assertEqual(result.status, "PASS")
+        self.assertEqual(result.detail["source_n"], 3883)
+        self.assertEqual(result.detail["all_source_union_n"], 5885)
+        self.assertEqual(result.detail["denominator_basis"], "mapped_source_union")
+
+    def test_c1_allows_harmonized_count_above_single_mapped_pht_when_union_matches(self) -> None:
+        source = {
+            "total_participants": 9780,
+            "participant_denominators": {
+                "all_source_union_n": 9780,
+                "max_source_pht": "pht001108",
+                "max_source_pht_n": 9780,
+                "mapped_source_phts": ["pht001116", "pht001118"],
+                "mapped_source_union_n": 8296,
+                "mapped_source_max_pht": "pht001116",
+                "mapped_source_max_pht_n": 6429,
+            },
+        }
+        harmonized = {"total_participants": 8296}
+
+        result = check_c1_n_preservation(source, harmonized)[0]
+
+        self.assertEqual(result.status, "PASS")
+        self.assertEqual(result.detail["source_n"], 8296)
+        self.assertEqual(result.detail["mapped_source_max_pht_n"], 6429)
+
+    def test_c1_fails_when_harmonized_below_mapped_source_union(self) -> None:
+        source = {
+            "total_participants": 5000,
+            "participant_denominators": {
+                "mapped_source_union_n": 4000,
+            },
+        }
+        harmonized = {"total_participants": 3900}
+
+        result = check_c1_n_preservation(source, harmonized, fail_pct=1.0)[0]
+
+        self.assertEqual(result.status, "FAIL")
+        self.assertEqual(result.detail["loss_pct"], 2.5)
+        self.assertEqual(result.detail["denominator_basis"], "mapped_source_union")
+
+    def test_c1_old_source_json_warns_when_only_mapped_max_matches(self) -> None:
+        source = {
+            "total_participants": 5885,
+            "participants_by_pht": {"pht001920": 5885, "pht008729": 3883},
+        }
+        harmonized = {"total_participants": 3883}
+
+        result = check_c1_n_preservation(source, harmonized, mapped_phts={"pht008729"})[0]
+
+        self.assertEqual(result.status, "WARN")
+        self.assertEqual(result.detail["source_n"], 3883)
+        self.assertEqual(result.detail["denominator_basis"], "mapped_source_max_fallback")
+
+    def test_scan_yaml_for_phvs_ignores_commented_out_phvs(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            yaml_path = Path(tmpdir) / "demo.yaml"
+            yaml_path.write_text(
+                """
+- class_derivations:
+    MeasurementObservation:
+      slot_derivations:
+        value_quantity:
+          populated_from: phv000001
+        flag:
+          expr: 'case({phv000002} == 1, true, false)'
+# populated_from: phv999999
+""",
+                encoding="utf-8",
+            )
+
+            phvs = scan_yaml_for_phvs(Path(tmpdir))
+
+        self.assertEqual(phvs, {"phv000001", "phv000002"})
 
     def test_c7_aggregates_many_source_categories_to_one_harmonized_category(self) -> None:
         src = {
@@ -1289,7 +1382,7 @@ class C1NPreservationTests(unittest.TestCase):
         self.assertEqual(result[0].status, "FAIL")
         self.assertEqual(result[0].detail["source_n"], 7380)
         self.assertEqual(result[0].detail["max_single_pht_n"], 7200)
-        self.assertIn("pht001467=7200", result[0].message)
+        self.assertIn("max single-PHT: pht001467=7,200", result[0].message)
 
     def test_c1_reports_pht_diagnostics_without_masking_union_loss(self) -> None:
         """CHS scenario stays visible as loss but reports max single-PHT context."""
@@ -1300,7 +1393,7 @@ class C1NPreservationTests(unittest.TestCase):
         self.assertEqual(result[0].status, "FAIL")
         self.assertEqual(result[0].detail["source_n"], 7380)
         self.assertEqual(result[0].detail["max_single_pht_n"], 5531)
-        self.assertIn("cross-PHT union=7380", result[0].message)
+        self.assertIn("all-PHT union=7,380", result[0].message)
 
     def test_c1_fail_real_loss_with_pht(self) -> None:
         """Even with pht breakdown, genuine loss is still FAIL."""
@@ -1337,8 +1430,8 @@ class C1NPreservationTests(unittest.TestCase):
         self.assertEqual(result[0].detail["source_n"], 7380)
         self.assertEqual(result[0].detail["mapped_pht_max"], "pht001447")
         self.assertEqual(result[0].detail["mapped_pht_max_n"], 5612)
-        self.assertIn("mapped-PHT max: pht001447=5612", result[0].message)
-        self.assertIn("all-PHT union=7380", result[0].message)
+        self.assertIn("mapped-PHT max: pht001447=5,612", result[0].message)
+        self.assertIn("all-PHT union=7,380", result[0].message)
 
     def test_c1_mapped_phts_detail_has_both_max_fields(self) -> None:
         """detail carries both max_single_pht (global) and mapped_pht_max (scoped)."""
@@ -1363,7 +1456,7 @@ class C1NPreservationTests(unittest.TestCase):
             mapped_phts=mapped,
         )
         # Should not crash; note falls back to just union
-        self.assertIn("cross-PHT union=5612", result[0].message)
+        self.assertIn("all-PHT union=5,612", result[0].message)
         self.assertNotIn("mapped_pht_max", result[0].detail)
 
     def test_c1_pass_with_mapped_phts(self) -> None:

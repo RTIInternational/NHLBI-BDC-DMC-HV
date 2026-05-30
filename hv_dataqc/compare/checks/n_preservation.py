@@ -1,9 +1,10 @@
-"""N-preservation checks: C1 (total participant count) and C2 (per-variable valid N).
+"""N-preservation checks: C1 (participant denominator) and C2 (valid N).
 
-C1 compares total participant counts between source and harmonized at the
-study level. C2 compares per-variable n_valid (non-missing row counts),
-optionally using an `expected_n` provided by crosswalk for value-mapping
-routed concept slots.
+C1 compares harmonized participants to the source participant universe that is
+eligible for harmonization.  When available, that universe is the exact union
+of participants in YAML-mapped source PHTs.  The all-source union remains in
+the result detail as context because source extracts often include roster or
+administrative tables that are not clinical harmonization anchors.
 """
 
 from __future__ import annotations
@@ -15,27 +16,37 @@ def check_c1_n_preservation(
     source: dict, harmonized: dict, fail_pct: float = 1.0,
     mapped_phts: set | None = None,
 ) -> list[CheckResult]:
-    """C1: Total participant count comparison.
-
-    If the source summary includes ``participants_by_pht`` and ``mapped_phts``
-    is provided (PHTs actually referenced by YAML), the message shows both:
-      - max across mapped PHTs (the YAML-scoped universe ceiling)
-      - all-PHT union (total_participants, the pass/fail denominator)
-
-    If ``mapped_phts`` is not provided, falls back to showing the global max
-    single PHT for diagnostics.  The pass/fail denominator always remains
-    ``total_participants``.
-    """
-    src_n = source.get("total_participants", 0)
+    """C1: Participant count comparison against the mapped source universe."""
+    all_source_n = source.get("total_participants", 0)
     harmonized_n = harmonized.get("total_participants", 0)
 
-    if src_n == 0:
+    if all_source_n == 0:
         return [CheckResult("C1", "_total", "SKIP", "No source participant count")]
     if harmonized_n == 0:
         return [CheckResult("C1", "_total", "FAIL", "No harmonized participants found")]
 
-    detail_base: dict = {"source_n": src_n, "harmonized_n": harmonized_n}
-    pht_note = ""
+    denominators = source.get("participant_denominators") or {}
+    expected_n = denominators.get("mapped_source_union_n")
+    denominator_basis = "mapped_source_union" if expected_n else "all_source_union"
+    if not expected_n:
+        expected_n = all_source_n
+
+    detail_base: dict = {
+        "source_n": expected_n,
+        "harmonized_n": harmonized_n,
+        "denominator_basis": denominator_basis,
+        "all_source_union_n": all_source_n,
+    }
+    for key in (
+        "max_source_pht", "max_source_pht_n",
+        "mapped_source_phts", "mapped_source_union_n",
+        "mapped_source_max_pht", "mapped_source_max_pht_n",
+    ):
+        if key in denominators:
+            detail_base[key] = denominators[key]
+
+    pht_note_parts: list[str] = []
+    mapped_max_fallback: CheckResult | None = None
     participants_by_pht: dict[str, int] = source.get("participants_by_pht", {})
     if participants_by_pht:
         max_pht_n = max(participants_by_pht.values())
@@ -44,6 +55,10 @@ def check_c1_n_preservation(
             "max_single_pht": max_pht_key,
             "max_single_pht_n": max_pht_n,
         })
+        pht_note_parts.append(f"all-PHT union={_n(all_source_n)}")
+        pht_note_parts.append(f"max single-PHT: {max_pht_key}={_n(max_pht_n)}")
+        if denominator_basis == "mapped_source_union":
+            pht_note_parts.append(f"mapped-PHT union={_n(expected_n)}")
         if mapped_phts:
             mapped_counts = {
                 pht: n for pht, n in participants_by_pht.items()
@@ -52,39 +67,53 @@ def check_c1_n_preservation(
             if mapped_counts:
                 mapped_max_n = max(mapped_counts.values())
                 mapped_max_key = max(mapped_counts, key=mapped_counts.get)
-                pht_note = (
-                    f" [mapped-PHT max: {mapped_max_key}={mapped_max_n};"
-                    f" all-PHT union={src_n}]"
-                )
-                detail_base.update({
-                    "mapped_pht_max": mapped_max_key,
-                    "mapped_pht_max_n": mapped_max_n,
-                })
-            else:
-                pht_note = f" [cross-PHT union={src_n}]"
-        else:
-            pht_note = (
-                f" [max single-PHT: {max_pht_key}={max_pht_n};"
-                f" cross-PHT union={src_n}]"
-            )
+                if "mapped_source_max_pht" not in detail_base:
+                    detail_base.update({
+                        "mapped_pht_max": mapped_max_key,
+                        "mapped_pht_max_n": mapped_max_n,
+                    })
+                pht_note_parts.append(f"mapped-PHT max: {mapped_max_key}={_n(mapped_max_n)}")
+                if denominator_basis != "mapped_source_union" and harmonized_n == mapped_max_n:
+                    detail = {
+                        **detail_base,
+                        "source_n": mapped_max_n,
+                        "denominator_basis": "mapped_source_max_fallback",
+                    }
+                    mapped_max_fallback = CheckResult(
+                        "C1", "_total", "WARN",
+                        "Participant count matches mapped-PHT max, but exact mapped-PHT union is unavailable: "
+                        f"{_n(harmonized_n)} [{'; '.join(pht_note_parts)}]",
+                        detail,
+                    )
+    pht_note = f" [{'; '.join(pht_note_parts)}]" if pht_note_parts else ""
 
-    if harmonized_n == src_n:
+    if harmonized_n == expected_n:
+        if denominator_basis == "mapped_source_union" and all_source_n != expected_n:
+            msg = (
+                "Participant count matches mapped source universe: "
+                f"{_n(expected_n)}; all-source union is {_n(all_source_n)}"
+            )
+        else:
+            msg = f"Participant count matches: {_n(expected_n)}"
         return [CheckResult("C1", "_total", "PASS",
-                             f"Participant count matches: {_n(src_n)}{pht_note}",
+                             f"{msg}{pht_note}",
                              detail_base)]
 
-    if harmonized_n < src_n:
-        loss_pct = round((src_n - harmonized_n) / src_n * 100, 1)
+    if mapped_max_fallback:
+        return [mapped_max_fallback]
+
+    if harmonized_n < expected_n:
+        loss_pct = round((expected_n - harmonized_n) / expected_n * 100, 1)
         status = "FAIL" if loss_pct > fail_pct else "WARN"
         detail = {**detail_base, "loss_pct": loss_pct}
         return [CheckResult("C1", "_total", status,
-                             f"Participant loss: {_n(src_n)} -> {_n(harmonized_n)}"
+                             f"Participant loss from {denominator_basis}: {_n(expected_n)} -> {_n(harmonized_n)}"
                              f" ({loss_pct}%){pht_note}",
                              detail)]
 
     return [CheckResult("C1", "_total", "WARN",
-                         f"Harmonized has MORE participants than source:"
-                         f" {_n(src_n)} -> {_n(harmonized_n)}{pht_note}",
+                         f"Harmonized has MORE participants than {denominator_basis}:"
+                         f" {_n(expected_n)} -> {_n(harmonized_n)}{pht_note}",
                          detail_base)]
 
 
