@@ -12,6 +12,7 @@ from pathlib import Path
 
 from hv_dataqc.compare.crosswalk import (
     _infer_match_mode,
+    _promote_comparison_metadata,
     _source_phv_details_for_entries,
     build_expected_summary,
     build_variable_crosswalk,
@@ -246,7 +247,45 @@ class CompareCrosswalkModeTests(unittest.TestCase):
 
         self.assertEqual(len(matches), 1)
         self.assertEqual(matches[0]["match_mode"], "direct")
+        self.assertEqual(matches[0]["comparison_basis"], "source_direct")
+        self.assertEqual(matches[0]["comparison_confidence"], "exact")
+        self.assertEqual(matches[0]["comparison_limitations"], [])
+        self.assertEqual(matches[0]["source_phts"], ["pht000001"])
+        self.assertEqual(matches[0]["source_phvs"], ["phv000001"])
         self.assertEqual(matches[0]["_yaml_entries"][0]["match_mode"], "direct")
+
+    def test_promote_comparison_metadata_uses_resolved_src_fields(self) -> None:
+        match = {
+            "_resolved_src": {
+                "_comparison_basis": "yaml_case_value_expr",
+                "_comparison_confidence": "unsupported",
+                "_comparison_limitations": ["aggregate summaries cannot compute joint counts"],
+            },
+            "_source_phts": ["pht000001"],
+            "_source_phvs": ["phv000010", "phv000011"],
+        }
+
+        _promote_comparison_metadata(match)
+
+        self.assertEqual(match["comparison_basis"], "yaml_case_value_expr")
+        self.assertEqual(match["comparison_confidence"], "unsupported")
+        self.assertEqual(
+            match["comparison_limitations"],
+            ["aggregate summaries cannot compute joint counts"],
+        )
+        self.assertEqual(match["source_phts"], ["pht000001"])
+        self.assertEqual(match["source_phvs"], ["phv000010", "phv000011"])
+
+    def test_promote_comparison_metadata_defaults_direct_fields(self) -> None:
+        match = {"_resolved_src": {"type": "continuous"}, "_phv_ids": ["phv000030"]}
+
+        _promote_comparison_metadata(match)
+
+        self.assertEqual(match["comparison_basis"], "source_direct")
+        self.assertEqual(match["comparison_confidence"], "exact")
+        self.assertEqual(match["comparison_limitations"], [])
+        self.assertEqual(match["source_phts"], [])
+        self.assertEqual(match["source_phvs"], ["phv000030"])
 
     def test_build_variable_crosswalk_exposes_source_phv_details(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

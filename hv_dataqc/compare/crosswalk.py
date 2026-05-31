@@ -1160,6 +1160,30 @@ def _source_phv_details_for_entries(
     return details
 
 
+def _promote_comparison_metadata(match: dict) -> None:
+    """Expose public comparison metadata fields while preserving private keys."""
+    resolved_src = match.get("_resolved_src") or {}
+    basis = resolved_src.get("_comparison_basis") or match.get("_comparison_basis")
+    if not basis:
+        basis = "source_pooled_raw" if len(match.get("_per_pht_src") or []) > 1 else "source_direct"
+    confidence = (
+        resolved_src.get("_comparison_confidence")
+        or match.get("_comparison_confidence")
+        or "exact"
+    )
+    limitations = (
+        resolved_src.get("_comparison_limitations")
+        or match.get("_comparison_limitations")
+        or []
+    )
+
+    match["comparison_basis"] = basis
+    match["comparison_confidence"] = confidence
+    match["comparison_limitations"] = list(limitations)
+    match["source_phts"] = list(match.get("_source_phts") or [])
+    match["source_phvs"] = list(match.get("_source_phvs") or match.get("_phv_ids") or [])
+
+
 # Matches a quoted CURIE-like string inside case() expressions or bare values:
 # e.g.  'OMOP:4041720'  "MONDO:0013792"  OBA:2045443  HP:0002140
 _CURIE_QUOTED_RE = re.compile(r"['\"]([A-Z][A-Z0-9]+:[A-Za-z0-9.:_-]+)['\"]")
@@ -2397,6 +2421,7 @@ def build_variable_crosswalk(
             merged["_comparison_basis"] = expected_src.get("_comparison_basis")
             merged["_comparison_confidence"] = expected_src.get("_comparison_confidence")
             merged["_comparison_limitations"] = expected_src.get("_comparison_limitations")
+        _promote_comparison_metadata(merged)
         # Preserve concept_value_map from ANY contributing entry that
         # has one.  Different visit blocks for the same harmonized_key
         # may use a static ``value:`` (no cvm) while one block uses
