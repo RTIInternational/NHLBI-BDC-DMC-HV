@@ -1105,6 +1105,25 @@ def build_expected_summary(
     return expected
 
 
+def _infer_match_mode(entries: list[dict], resolved_src: dict | None, per_pht_summaries: list[dict]) -> str:
+    """Return the explicit comparison mode represented by merged YAML entries."""
+    if (resolved_src or {}).get("_comparison_confidence") == "unsupported":
+        return "unsupported_complex"
+    if any(e.get("is_static") for e in entries):
+        return "static_value"
+    if any(e.get("concept_value_map") for e in entries):
+        return "concept_routing"
+    if any(e.get("value_map") for e in entries):
+        return "value_mapping"
+    if any(e.get("conversion_factor") for e in entries):
+        return "scalar_conversion"
+    if any("case(" in str(expr).lower() for e in entries for expr in (e.get("value_exprs") or [])):
+        return "case_expr"
+    if len(entries) > 1 or len(per_pht_summaries) > 1:
+        return "pooled_blocks"
+    return "direct"
+
+
 # Matches a quoted CURIE-like string inside case() expressions or bare values:
 # e.g.  'OMOP:4041720'  "MONDO:0013792"  OBA:2045443  HP:0002140
 _CURIE_QUOTED_RE = re.compile(r"['\"]([A-Z][A-Z0-9]+:[A-Za-z0-9.:_-]+)['\"]")
@@ -2314,6 +2333,7 @@ def build_variable_crosswalk(
             merged["_source_summaries_by_phv"] = summaries_by_phv
         if ambiguous_columns:
             merged["_ambiguous_columns"] = ambiguous_columns
+        merged["match_mode"] = _infer_match_mode(entries, merged.get("_resolved_src"), per_pht_summaries)
         merged["_yaml_entries"] = [
             {
                 "yaml_file": e.get("yaml_file"),
@@ -2327,6 +2347,7 @@ def build_variable_crosswalk(
                 "value_exprs": e.get("value_exprs"),
                 "source_phv_roles": e.get("source_phv_roles"),
                 "source_summary": e.get("_source_summary"),
+                "match_mode": merged["match_mode"],
             }
             for e in entries
         ]

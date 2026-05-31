@@ -6,9 +6,15 @@ or identifiers are embedded here.
 
 from __future__ import annotations
 
+import tempfile
 import unittest
+from pathlib import Path
 
-from hv_dataqc.compare.crosswalk import build_expected_summary
+from hv_dataqc.compare.crosswalk import (
+    _infer_match_mode,
+    build_expected_summary,
+    build_variable_crosswalk,
+)
 
 
 class CompareCrosswalkModeTests(unittest.TestCase):
@@ -172,6 +178,74 @@ class CompareCrosswalkModeTests(unittest.TestCase):
         expected = build_expected_summary([entry], {})
 
         self.assertIsNone(expected)
+
+    def test_match_mode_labels_supported_modes(self) -> None:
+        exact = {"_comparison_confidence": "exact"}
+
+        self.assertEqual(_infer_match_mode([{}], exact, [{}]), "direct")
+        self.assertEqual(_infer_match_mode([{}, {}], exact, [{}, {}]), "pooled_blocks")
+        self.assertEqual(_infer_match_mode([{"value_map": {"0": "ABSENT"}}], exact, [{}]), "value_mapping")
+        self.assertEqual(_infer_match_mode([{"concept_value_map": {"1": "MONDO:1"}}], exact, [{}]), "concept_routing")
+        self.assertEqual(_infer_match_mode([{"value_exprs": ["case((True, 'Y'))"]}], exact, [{}]), "case_expr")
+        self.assertEqual(_infer_match_mode([{"conversion_factor": 2.0}], exact, [{}]), "scalar_conversion")
+        self.assertEqual(_infer_match_mode([{"is_static": True}], exact, [{}]), "static_value")
+        self.assertEqual(
+            _infer_match_mode([{"value_exprs": ["case((True, 'Y'))"]}], {"_comparison_confidence": "unsupported"}, [{}]),
+            "unsupported_complex",
+        )
+
+    def test_build_variable_crosswalk_exposes_match_mode(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            pheno_dir = tmp_path / "pheno_variable_summaries"
+            pheno_dir.mkdir()
+            (pheno_dir / "synthetic.pht000001.data_dict.xml").write_text(
+                '<?xml version="1.0"?>\n'
+                "<data_table>\n"
+                '  <variable id="phv000001.v1">\n'
+                "    <name>HR</name>\n"
+                "  </variable>\n"
+                "</data_table>\n",
+                encoding="utf-8",
+            )
+            yaml_dir = tmp_path / "yaml"
+            yaml_dir.mkdir()
+            (yaml_dir / "heart_rate.yaml").write_text(
+                "- class_derivations:\n"
+                "    MeasurementObservation:\n"
+                "      populated_from: pht000001\n"
+                "      slot_derivations:\n"
+                "        observation_type:\n"
+                "          value: OBA:HEART_RATE\n"
+                "        value_quantity:\n"
+                "          object_derivations:\n"
+                "            - class_derivations:\n"
+                "                Quantity:\n"
+                "                  slot_derivations:\n"
+                "                    value_decimal:\n"
+                "                      populated_from: phv000001\n",
+                encoding="utf-8",
+            )
+            source_summary = {
+                "type": "continuous",
+                "n_total": 2,
+                "n_valid": 2,
+                "n_missing": 0,
+                "mean": 80.0,
+                "sd": 5.0,
+            }
+
+            matches = build_variable_crosswalk(
+                variables_by_name={"HR": {"pht000001": source_summary}},
+                harmonized_vars={"measurement_OBA:HEART_RATE": {"type": "continuous"}},
+                yaml_dir=yaml_dir,
+                cache_dir=tmp_path,
+                source_doc={"variables_by_pht": {"pht000001": {"HR": source_summary}}},
+            )
+
+        self.assertEqual(len(matches), 1)
+        self.assertEqual(matches[0]["match_mode"], "direct")
+        self.assertEqual(matches[0]["_yaml_entries"][0]["match_mode"], "direct")
 
 
 if __name__ == "__main__":
