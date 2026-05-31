@@ -469,6 +469,52 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
 
         self.assertIn("expected top-level mapping", warnings)
 
+    def test_clinical_ranges_validation_warns_on_duplicate_concept_code(self) -> None:
+        warnings = validate_clinical_ranges_config(
+            {
+                "range_a": {
+                    "plausible_lo": 1,
+                    "plausible_hi": 2,
+                    "red_flag_lo": 0,
+                    "red_flag_hi": 3,
+                    "omop_codes": ["OMOP:123"],
+                },
+                "range_b": {
+                    "plausible_lo": 1,
+                    "plausible_hi": 2,
+                    "red_flag_lo": 0,
+                    "red_flag_hi": 3,
+                    "omop_codes": ["OMOP:123"],
+                },
+            }
+        )
+
+        self.assertTrue(any("OMOP:123" in warning and "multiple" in warning for warning in warnings))
+
+    def test_clinical_ranges_validation_allows_declared_duplicate_concept_code(self) -> None:
+        warnings = validate_clinical_ranges_config(
+            {
+                "range_a": {
+                    "plausible_lo": 1,
+                    "plausible_hi": 2,
+                    "red_flag_lo": 0,
+                    "red_flag_hi": 3,
+                    "omop_codes": ["OMOP:123"],
+                    "allow_duplicate_codes": ["OMOP:123"],
+                },
+                "range_b": {
+                    "plausible_lo": 1,
+                    "plausible_hi": 2,
+                    "red_flag_lo": 0,
+                    "red_flag_hi": 3,
+                    "omop_codes": ["OMOP:123"],
+                    "allow_duplicate_codes": ["OMOP:123"],
+                },
+            }
+        )
+
+        self.assertFalse(any("OMOP:123" in warning for warning in warnings))
+
     def test_json_safe_converts_non_finite_floats_to_none(self) -> None:
         sanitized = _json_safe({"ok": 1.0, "bad": float("nan"), "nested": [float("inf")]})
 
@@ -1084,6 +1130,67 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
 
         self.assertEqual(result.status, "WARN")
         self.assertIn("[out+src]", result.message)
+
+    def test_c9_detail_reports_exact_name_match(self) -> None:
+        ranges = {
+            "weight_kg": {
+                "common_phv_names": ["WEIGHT"],
+                "plausible_lo": 15,
+                "plausible_hi": 350,
+                "red_flag_lo": 15,
+                "red_flag_hi": 350,
+            }
+        }
+        out = {"type": "continuous", "min": 70.0, "max": 90.0}
+
+        result = check_c9_clinical_range(out, "weight", ranges)
+
+        self.assertEqual(result.status, "PASS")
+        self.assertEqual(result.detail["range_name"], "weight_kg")
+        self.assertEqual(result.detail["match_method"], "common_phv_name")
+
+    def test_c9_detail_reports_concept_code_match(self) -> None:
+        ranges = {
+            "heart_rate": {
+                "oba_codes": ["OBA:1001087"],
+                "omop_codes": [],
+                "plausible_lo": 30,
+                "plausible_hi": 200,
+                "red_flag_lo": 15,
+                "red_flag_hi": 300,
+            }
+        }
+        out = {
+            "type": "continuous",
+            "observation_type": "OBA:1001087",
+            "min": 45.0,
+            "max": 130.0,
+        }
+
+        result = check_c9_clinical_range(out, "hr30", ranges)
+
+        self.assertEqual(result.status, "PASS")
+        self.assertEqual(result.detail["range_name"], "heart_rate")
+        self.assertEqual(result.detail["match_method"], "concept_code")
+        self.assertEqual(result.detail["matched_code"], "OBA:1001087")
+
+    def test_c9_detail_reports_substring_match(self) -> None:
+        ranges = {
+            "heart_rate": {
+                "common_phv_names": [],
+                "plausible_lo": 30,
+                "plausible_hi": 200,
+                "red_flag_lo": 15,
+                "red_flag_hi": 300,
+            }
+        }
+        out = {"type": "continuous", "min": 45.0, "max": 350.0}
+
+        result = check_c9_clinical_range(out, "resting heart_rate supine", ranges)
+
+        self.assertEqual(result.status, "FAIL")
+        self.assertEqual(result.detail["range_name"], "heart_rate")
+        self.assertEqual(result.detail["match_method"], "substring")
 
     def test_c2_large_n_gain_escalates_to_fail(self) -> None:
         src = {"n_valid": 100}

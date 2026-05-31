@@ -121,12 +121,28 @@ def validate_clinical_ranges_config(clinical_ranges: dict) -> list[str]:
         return ["expected top-level mapping"]
     required_bounds = ("plausible_lo", "plausible_hi", "red_flag_lo", "red_flag_hi")
     range_names = {k for k in clinical_ranges if not str(k).startswith("_")}
+    concept_code_ranges: dict[str, list[str]] = {}
+
+    def _allows_duplicate_code(rng: dict, code: str) -> bool:
+        setting = rng.get("allow_duplicate_codes", False)
+        if isinstance(setting, bool):
+            return setting
+        if isinstance(setting, (list, tuple, set)):
+            return code in {str(item) for item in setting}
+        return str(setting) == code
 
     for name in sorted(range_names):
         rng = clinical_ranges.get(name)
         if not isinstance(rng, dict):
             warnings.append(f"{name}: range definition is not a mapping")
             continue
+        for code_field in ("oba_codes", "omop_codes"):
+            codes = rng.get(code_field, []) or []
+            if not isinstance(codes, list):
+                warnings.append(f"{name}: {code_field} should be a list")
+                continue
+            for code in codes:
+                concept_code_ranges.setdefault(str(code), []).append(name)
         missing = [k for k in required_bounds if k not in rng]
         if missing:
             warnings.append(f"{name}: missing bound(s): {', '.join(missing)}")
@@ -145,6 +161,20 @@ def validate_clinical_ranges_config(clinical_ranges: dict) -> list[str]:
             warnings.append(f"{name}: red_flag_lo > plausible_lo")
         if red_hi < plaus_hi:
             warnings.append(f"{name}: red_flag_hi < plausible_hi")
+
+    for code, names in sorted(concept_code_ranges.items()):
+        unique_names = sorted(set(names))
+        if len(unique_names) <= 1:
+            continue
+        if all(
+            _allows_duplicate_code(clinical_ranges.get(name, {}), code)
+            for name in unique_names
+        ):
+            continue
+        warnings.append(
+            f"clinical concept code {code!r} appears in multiple range definitions: "
+            f"{', '.join(unique_names)}"
+        )
 
     rules = clinical_ranges.get("_cross_variable_rules", {})
     if rules and not isinstance(rules, dict):

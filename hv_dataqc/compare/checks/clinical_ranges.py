@@ -33,6 +33,38 @@ def _range_violations(val_min, val_max, matched: dict) -> list[str]:
     return issues
 
 
+def _match_clinical_range(
+    var_name: str, observation_type: str, clinical_ranges: dict,
+) -> tuple[str | None, dict | None, str, str | None]:
+    """Return the best clinical range match and the basis used to match it."""
+    matched_name: str | None = None
+    matched_range: dict | None = None
+    matched_method = "none"
+    matched_code: str | None = None
+    best_len = 0
+
+    for range_name, rng in clinical_ranges.items():
+        if range_name.startswith("_"):
+            continue
+        if var_name.upper() in [n.upper() for n in rng.get("common_phv_names", [])]:
+            return range_name, rng, "common_phv_name", None
+        codes = rng.get("oba_codes", []) + rng.get("omop_codes", [])
+        if observation_type and observation_type in codes:
+            return range_name, rng, "concept_code", observation_type
+        # Word-boundary substring fallback: treat underscores as separators to prevent
+        # e.g. range_name="wbc" matching var_name="wbc_pct_basophils".
+        _wb_pattern = (r'(?<![A-Za-z0-9_])' + re.escape(range_name.upper())
+                       + r'(?![A-Za-z0-9_])')
+        if re.search(_wb_pattern, var_name.upper()) and len(range_name) > best_len:
+            matched_name = range_name
+            matched_range = rng
+            matched_method = "substring"
+            matched_code = None
+            best_len = len(range_name)
+
+    return matched_name, matched_range, matched_method, matched_code
+
+
 def check_c9_clinical_range(
     harmonized_var: dict, var_name: str, clinical_ranges: dict,
     src_var: dict | None = None,
@@ -45,37 +77,33 @@ def check_c9_clinical_range(
             [src only] - only the source exceeds the bound (pre-existing in raw data)
     """
     if harmonized_var.get("type") != "continuous":
-        return CheckResult("C9", var_name, "SKIP", "Not continuous")
+        return CheckResult("C9", var_name, "SKIP", "Not continuous", {
+            "range_name": None,
+            "match_method": "not_applicable",
+        })
 
     # Match range definition: exact name > code match > substring
-    matched: dict | None = None
-    best_len = 0
     obs_type = harmonized_var.get("observation_type", "")
-    for range_name, rng in clinical_ranges.items():
-        if range_name.startswith("_"):
-            continue
-        if var_name.upper() in [n.upper() for n in rng.get("common_phv_names", [])]:
-            matched = rng
-            break
-        codes = rng.get("oba_codes", []) + rng.get("omop_codes", [])
-        if obs_type and obs_type in codes:
-            matched = rng
-            break
-        # Word-boundary substring fallback: treat underscores as separators to prevent
-        # e.g. range_name="wbc" matching var_name="wbc_pct_basophils".
-        _wb_pattern = (r'(?<![A-Za-z0-9_])' + re.escape(range_name.upper())
-                       + r'(?![A-Za-z0-9_])')
-        if re.search(_wb_pattern, var_name.upper()) and len(range_name) > best_len:
-            matched = rng
-            best_len = len(range_name)
+    range_name, matched, match_method, matched_code = _match_clinical_range(
+        var_name, obs_type, clinical_ranges
+    )
+    detail = {
+        "range_name": range_name,
+        "match_method": match_method,
+    }
+    if matched_code:
+        detail["matched_code"] = matched_code
+    if obs_type:
+        detail["observation_type"] = obs_type
 
     if not matched:
-        return CheckResult("C9", var_name, "SKIP", "No clinical range defined")
+        return CheckResult("C9", var_name, "SKIP", "No clinical range defined", detail)
 
     out_min = harmonized_var.get("min")
     out_max = harmonized_var.get("max")
+    detail.update({"min": out_min, "max": out_max})
     if out_min is None or out_max is None:
-        return CheckResult("C9", var_name, "SKIP", "No min/max in harmonized")
+        return CheckResult("C9", var_name, "SKIP", "No min/max in harmonized", detail)
 
     out_issues = _range_violations(out_min, out_max, matched)
 
@@ -83,7 +111,8 @@ def check_c9_clinical_range(
         plaus_lo = matched.get("plausible_lo")
         plaus_hi = matched.get("plausible_hi")
         return CheckResult("C9", var_name, "PASS",
-                           f"Range OK: [{out_min}, {out_max}] within [{plaus_lo}, {plaus_hi}]")
+                           f"Range OK: [{out_min}, {out_max}] within [{plaus_lo}, {plaus_hi}]",
+                           detail)
 
     # Annotate each issue with source context when src_var is available
     if src_var and src_var.get("min") is not None and src_var.get("max") is not None:
@@ -124,4 +153,4 @@ def check_c9_clinical_range(
         status = "WARN"
     return CheckResult("C9", var_name, status,
                        "; ".join(issues),
-                       {"min": out_min, "max": out_max})
+                       detail)
