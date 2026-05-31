@@ -12,6 +12,7 @@ from pathlib import Path
 
 from hv_dataqc.compare.crosswalk import (
     _infer_match_mode,
+    _source_phv_details_for_entries,
     build_expected_summary,
     build_variable_crosswalk,
 )
@@ -246,6 +247,92 @@ class CompareCrosswalkModeTests(unittest.TestCase):
         self.assertEqual(len(matches), 1)
         self.assertEqual(matches[0]["match_mode"], "direct")
         self.assertEqual(matches[0]["_yaml_entries"][0]["match_mode"], "direct")
+
+    def test_build_variable_crosswalk_exposes_source_phv_details(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            pheno_dir = tmp_path / "pheno_variable_summaries"
+            pheno_dir.mkdir()
+            (pheno_dir / "synthetic.pht000001.data_dict.xml").write_text(
+                '<?xml version="1.0"?>\n'
+                "<data_table>\n"
+                '  <variable id="phv000010.v1"><name>PERSON_KEY</name></variable>\n'
+                '  <variable id="phv000011.v1"><name>AGE_DAYS</name></variable>\n'
+                '  <variable id="phv000012.v1"><name>HEART_RATE</name></variable>\n'
+                "</data_table>\n",
+                encoding="utf-8",
+            )
+            yaml_dir = tmp_path / "yaml"
+            yaml_dir.mkdir()
+            (yaml_dir / "heart_rate.yaml").write_text(
+                "- class_derivations:\n"
+                "    MeasurementObservation:\n"
+                "      populated_from: pht000001\n"
+                "      slot_derivations:\n"
+                "        associated_participant:\n"
+                "          populated_from: phv000010\n"
+                "        associated_visit:\n"
+                "          expr: 'uuid5(\"Visit\", str({phv000010}) + \":baseline\")'\n"
+                "        age_at_observation:\n"
+                "          expr: '{phv000011} * 365'\n"
+                "        observation_type:\n"
+                "          value: OBA:HEART_RATE\n"
+                "        value_quantity:\n"
+                "          object_derivations:\n"
+                "            - class_derivations:\n"
+                "                Quantity:\n"
+                "                  slot_derivations:\n"
+                "                    value_decimal:\n"
+                "                      populated_from: phv000012\n",
+                encoding="utf-8",
+            )
+            source_summary = {
+                "type": "continuous",
+                "n_total": 2,
+                "n_valid": 2,
+                "n_missing": 0,
+                "mean": 80.0,
+                "sd": 5.0,
+            }
+
+            matches = build_variable_crosswalk(
+                variables_by_name={"HEART_RATE": {"pht000001": source_summary}},
+                harmonized_vars={"measurement_OBA:HEART_RATE": {"type": "continuous"}},
+                yaml_dir=yaml_dir,
+                cache_dir=tmp_path,
+                source_doc={"variables_by_pht": {"pht000001": {"HEART_RATE": source_summary}}},
+            )
+
+        details = matches[0]["source_phv_details"]
+        detail_by_role = {(detail["phv_id"], detail["role"]): detail for detail in details}
+
+        self.assertEqual(detail_by_role[("phv000010", "participant_id")]["source_column"], "PERSON_KEY")
+        self.assertEqual(detail_by_role[("phv000010", "visit")]["slot"], "associated_visit")
+        self.assertEqual(detail_by_role[("phv000011", "age_at_observation")]["pht_id"], "pht000001")
+        self.assertEqual(detail_by_role[("phv000012", "value")]["source_column"], "HEART_RATE")
+        self.assertEqual(detail_by_role[("phv000012", "value")]["yaml_file"], "heart_rate.yaml")
+        self.assertEqual(matches[0]["_yaml_entries"][0]["source_phv_details"], details)
+
+    def test_source_phv_details_falls_back_to_primary_phv(self) -> None:
+        details = _source_phv_details_for_entries(
+            [{"yaml_file": "demography.yaml", "phv_id": "phv000020"}],
+            {"phv000020": "SEX"},
+            {"phv000020": "pht000002"},
+        )
+
+        self.assertEqual(
+            details,
+            [
+                {
+                    "phv_id": "phv000020",
+                    "pht_id": "pht000002",
+                    "source_column": "SEX",
+                    "role": "value",
+                    "slot": "",
+                    "yaml_file": "demography.yaml",
+                }
+            ],
+        )
 
 
 if __name__ == "__main__":

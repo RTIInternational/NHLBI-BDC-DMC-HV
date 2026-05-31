@@ -1124,6 +1124,42 @@ def _infer_match_mode(entries: list[dict], resolved_src: dict | None, per_pht_su
     return "direct"
 
 
+def _source_phv_details_for_entries(
+    entries: list[dict],
+    phv_names: dict[str, str],
+    phv_to_pht: dict[str, str],
+) -> list[dict[str, str]]:
+    """Build inspectable source-PHV metadata for merged YAML entries."""
+    details: list[dict[str, str]] = []
+    seen: set[tuple[str, str, str, str]] = set()
+    for entry in entries:
+        roles = entry.get("source_phv_roles") or []
+        if not roles and entry.get("phv_id"):
+            roles = [{"phv_id": entry.get("phv_id"), "role": "value", "slot": ""}]
+        for role_entry in roles:
+            phv_id = _canonical_phv_id(role_entry.get("phv_id", ""))
+            if not phv_id:
+                continue
+            role = str(role_entry.get("role") or "context")
+            slot = str(role_entry.get("slot") or "")
+            yaml_file = str(entry.get("yaml_file") or "")
+            detail_key = (phv_id, role, slot, yaml_file)
+            if detail_key in seen:
+                continue
+            details.append(
+                {
+                    "phv_id": phv_id,
+                    "pht_id": phv_to_pht.get(phv_id, ""),
+                    "source_column": phv_names.get(phv_id, ""),
+                    "role": role,
+                    "slot": slot,
+                    "yaml_file": yaml_file,
+                }
+            )
+            seen.add(detail_key)
+    return details
+
+
 # Matches a quoted CURIE-like string inside case() expressions or bare values:
 # e.g.  'OMOP:4041720'  "MONDO:0013792"  OBA:2045443  HP:0002140
 _CURIE_QUOTED_RE = re.compile(r"['\"]([A-Z][A-Z0-9]+:[A-Za-z0-9.:_-]+)['\"]")
@@ -2334,6 +2370,9 @@ def build_variable_crosswalk(
         if ambiguous_columns:
             merged["_ambiguous_columns"] = ambiguous_columns
         merged["match_mode"] = _infer_match_mode(entries, merged.get("_resolved_src"), per_pht_summaries)
+        source_phv_details = _source_phv_details_for_entries(entries, phv_names, phv_to_pht)
+        if source_phv_details:
+            merged["source_phv_details"] = source_phv_details
         merged["_yaml_entries"] = [
             {
                 "yaml_file": e.get("yaml_file"),
@@ -2348,6 +2387,7 @@ def build_variable_crosswalk(
                 "source_phv_roles": e.get("source_phv_roles"),
                 "source_summary": e.get("_source_summary"),
                 "match_mode": merged["match_mode"],
+                "source_phv_details": _source_phv_details_for_entries([e], phv_names, phv_to_pht),
             }
             for e in entries
         ]
