@@ -67,6 +67,7 @@ from hv_dataqc.compare.crosswalk import (  # noqa: E402
 from hv_dataqc.compare.checks.visit_n import _synthesize_source_visit_counts  # noqa: E402
 from hv_dataqc.extract_harmonized.extract_harmonized_summaries import (  # noqa: E402
     merge_variable_summaries,
+    process_measurements,
     process_measurement_observation_sets,
 )
 from hv_dataqc.extract_source.extract_source_summaries import _canonical_participant_id  # noqa: E402
@@ -1949,6 +1950,30 @@ class AtomicWriteTests(unittest.TestCase):
 
 class ExtractorRegressionTests(unittest.TestCase):
     """Regression tests for extractor behaviors consumed by compare."""
+
+    def test_measurement_extractor_summarizes_flat_enum_and_status_values(self) -> None:
+        df = pd.DataFrame(
+            {
+                "observation_type": ["OBA:ENUM", "OBA:ENUM", "OBA:STATUS", "OBA:STATUS"],
+                "value_enum": ["YES", "NO", None, None],
+                "measurement_status": [None, None, "present", "absent"],
+                "associated_visit": ["visit_1", "visit_2", "visit_1", "visit_2"],
+            }
+        )
+
+        variables = process_measurements(df, {}, by_visit=True)
+
+        enum_summary = variables["measurement_OBA:ENUM"]
+        self.assertEqual(enum_summary["type"], "categorical")
+        self.assertEqual(enum_summary["n_valid"], 2)
+        self.assertEqual(enum_summary["distribution"]["YES"]["n"], 1)
+        self.assertEqual(enum_summary["by_visit"]["visit_1"]["distribution"]["YES"]["n"], 1)
+
+        status_summary = variables["measurement_OBA:STATUS"]
+        self.assertEqual(status_summary["type"], "categorical")
+        self.assertEqual(status_summary["n_valid"], 2)
+        self.assertEqual(status_summary["distribution"]["present"]["n"], 1)
+        self.assertEqual(status_summary["by_visit"]["visit_2"]["distribution"]["absent"]["n"], 1)
 
     def test_mos_extractor_summarizes_integer_coded_and_concept_values(self) -> None:
         df = pd.DataFrame(

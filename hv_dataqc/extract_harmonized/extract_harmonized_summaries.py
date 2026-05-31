@@ -330,10 +330,20 @@ def process_measurements(
     CODED_COL           = "value_quantity__value_coded"
     Q_VALUE_CONCEPT_COL = "value_quantity__value_concept"  # nested Quantity via object_derivations
     VALUE_CONCEPT_COL   = "value_concept"                  # flat (non-nested) fallback
+    FLAT_CATEGORICAL_CANDIDATES = [
+        VALUE_CONCEPT_COL,
+        "value_enum",
+        "value_coded",
+        "value_as_string",
+        "value_as_concept_name",
+        "measurement_status",
+        "observation_status",
+    ]
 
     obs_cols = [
         c for c in df.columns
-        if "value" in c.lower() or c in ("observation_type", "age_at_observation")
+        if "value" in c.lower()
+        or c in ("observation_type", "age_at_observation", "measurement_status", "observation_status")
     ]
     print(f"    [Columns] {len(df.columns)} total. Observation/value-related:")
     for c in obs_cols:
@@ -351,7 +361,12 @@ def process_measurements(
         has_integer         = INTEGER_COL         in df.columns and group[INTEGER_COL].notna().any()
         has_coded           = CODED_COL           in df.columns and group[CODED_COL].notna().any()
         has_q_value_concept = Q_VALUE_CONCEPT_COL in df.columns and group[Q_VALUE_CONCEPT_COL].notna().any()
-        has_value_concept   = VALUE_CONCEPT_COL   in df.columns and group[VALUE_CONCEPT_COL].notna().any()
+
+        flat_col: str | None = None
+        for candidate in FLAT_CATEGORICAL_CANDIDATES:
+            if candidate in group.columns and group[candidate].notna().any():
+                flat_col = candidate
+                break
 
         if has_decimal or has_integer:
             value_col = DECIMAL_COL if has_decimal else INTEGER_COL
@@ -360,8 +375,8 @@ def process_measurements(
             summary = categorical_stats(group[CODED_COL])
         elif has_q_value_concept:
             summary = categorical_stats(group[Q_VALUE_CONCEPT_COL])
-        elif has_value_concept:
-            summary = categorical_stats(group[VALUE_CONCEPT_COL])
+        elif flat_col:
+            summary = categorical_stats(group[flat_col])
         else:
             summary = {
                 "type": "unknown",
@@ -383,8 +398,8 @@ def process_measurements(
                     by_visit_stats[vlabel] = categorical_stats(vgroup[CODED_COL])
                 elif has_q_value_concept:
                     by_visit_stats[vlabel] = categorical_stats(vgroup[Q_VALUE_CONCEPT_COL])
-                elif has_value_concept:
-                    by_visit_stats[vlabel] = categorical_stats(vgroup[VALUE_CONCEPT_COL])
+                elif flat_col:
+                    by_visit_stats[vlabel] = categorical_stats(vgroup[flat_col])
             summary["by_visit"] = by_visit_stats
 
         variables[f"measurement_{key}"] = summary
