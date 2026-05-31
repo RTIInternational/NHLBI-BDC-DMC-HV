@@ -2,7 +2,8 @@
 
 Compares per-variable missing-value rates between source and harmonized.
 Falls back to n_valid comparison when source/harmonized denominators differ
-by >20% (typical when source is concatenated raw TSVs).
+past the configured denominator-ratio threshold (typical when source is
+concatenated raw TSVs).
 """
 
 from __future__ import annotations
@@ -14,11 +15,13 @@ def check_c3_missing_accounting(
     src_var: dict, harmonized_var: dict, var_name: str,
     pass_pp: float = 0.5, warn_pp: float = 3.0,
     n_valid_pass_pct: float = 0.5, n_valid_warn_pct: float = 3.0,
+    denominator_ratio_fallback_threshold: float = 0.8,
 ) -> CheckResult:
     """C3: Missing value rate comparison.
 
-    When denominators differ by >20% (common when source is concatenated raw
-    TSVs), falls back to n_valid comparison to avoid false positives.
+    When denominators differ past ``denominator_ratio_fallback_threshold``
+    (common when source is concatenated raw TSVs), falls back to n_valid
+    comparison to avoid false positives.
     """
     src_total = src_var.get("n_total", 0)
     harmonized_total = harmonized_var.get("n_total", 0)
@@ -36,7 +39,7 @@ def check_c3_missing_accounting(
 
     if src_total > 0 and harmonized_total > 0:
         denom_ratio = min(src_total, harmonized_total) / max(src_total, harmonized_total)
-        if denom_ratio < 0.8:
+        if denom_ratio < denominator_ratio_fallback_threshold:
             if src_valid == 0:
                 return CheckResult("C3", var_name, "SKIP",
                                    "No valid source values (denominator mismatch)")

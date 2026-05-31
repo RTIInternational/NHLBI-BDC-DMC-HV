@@ -629,6 +629,7 @@ def main(argv: list[str] | None = None) -> None:
             pass_pp=c3_t.get("pass_pp", 0.5), warn_pp=c3_t.get("warn_pp", 3.0),
             n_valid_pass_pct=c3_t.get("n_valid_pass_pct", 0.5),
             n_valid_warn_pct=c3_t.get("n_valid_warn_pct", 3.0),
+            denominator_ratio_fallback_threshold=c3_t.get("denominator_ratio_fallback_threshold", 0.8),
         ))
         harmonized_type = harmonized_var.get("type")
         if comparison_type == "continuous" and harmonized_type == "continuous":

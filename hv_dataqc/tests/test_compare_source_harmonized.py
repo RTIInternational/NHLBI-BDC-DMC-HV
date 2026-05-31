@@ -44,6 +44,7 @@ from compare import (  # noqa: E402
     check_c1_n_preservation,
     _dedup_check_results,
     check_c2_n_loss,
+    check_c3_missing_accounting,
     check_c4_mean_preservation,
     check_c10_cross_variable,
     check_c11_type_consistency,
@@ -487,6 +488,23 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         # Tight defaults: pass_rel=0.001 (0.1%), warn_rel=0.01 (1%) -> FAIL (1.5% > 1%)
         result_tight = check_c4_mean_preservation(src, out, "test", pass_rel=0.001, warn_rel=0.01)
         self.assertEqual(result_tight.status, "FAIL")
+
+    def test_c3_denominator_ratio_fallback_threshold_is_configurable(self) -> None:
+        src = {"n_total": 100, "n_valid": 80, "pct_missing": 20.0}
+        out = {"n_total": 85, "n_valid": 80, "pct_missing": 5.88}
+
+        default_result = check_c3_missing_accounting(src, out, "c3 threshold")
+        configured_result = check_c3_missing_accounting(
+            src,
+            out,
+            "c3 threshold",
+            denominator_ratio_fallback_threshold=0.9,
+        )
+
+        self.assertEqual(default_result.status, "FAIL")
+        self.assertIn("Large missing rate change", default_result.message)
+        self.assertEqual(configured_result.status, "PASS")
+        self.assertIn("n_valid preserved", configured_result.message)
 
     def test_load_thresholds_returns_empty_dict_for_nonexistent_path(self) -> None:
         from pathlib import Path

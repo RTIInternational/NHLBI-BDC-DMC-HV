@@ -43,9 +43,12 @@ c2:
 
 # -- C3: Missing value rate (percentage points) -----------------------------
 # Two code paths:
-#   (a) When total-row denominators agree within 20%: compare pct_missing diff
-#   (b) When denominators diverge >20%: fall back to n_valid comparison
+#   (a) When total-row denominator ratio is >= denominator_ratio_fallback_threshold:
+#       compare pct_missing diff
+#   (b) When denominator ratio is below denominator_ratio_fallback_threshold:
+#       fall back to n_valid comparison
 c3:
+  denominator_ratio_fallback_threshold: 0.8 # <0.8 ratio -> n_valid fallback
   # Path (a): percentage-point difference in missing rate
   pass_pp: 0.5          # <=0.5 pp diff -> PASS   (was 1.0 pp)
   warn_pp: 3.0          # <=3.0 pp diff -> WARN   (was 5.0 pp)
