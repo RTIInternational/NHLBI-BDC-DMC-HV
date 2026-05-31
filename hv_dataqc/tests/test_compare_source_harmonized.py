@@ -940,6 +940,41 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         self.assertEqual(results[0].status, "INFO")
         self.assertIn("missing_sentinel_codes", results[0].detail)
 
+    def test_c12_uses_concept_phv_summary_for_concept_value_mappings(self) -> None:
+        match = {
+            "_source_summaries_by_phv": {
+                "phv_concept": {
+                    "type": "categorical",
+                    "distribution": {"1": {"n": 6}, "2": {"n": 3}, "9": {"n": 1}},
+                },
+                "phv_status": {
+                    "type": "categorical",
+                    "distribution": {"0": {"n": 7}, "1": {"n": 3}},
+                },
+            },
+            "_yaml_entries": [
+                {
+                    "yaml_file": "condition.yaml",
+                    "phv_id": "phv_status",
+                    "concept_phv": "phv_concept",
+                    "concept_value_map": {"1": "MONDO:0005015", "2": "MONDO:0006920"},
+                    "source_summary": {
+                        "type": "categorical",
+                        "distribution": {"0": {"n": 7}, "1": {"n": 3}},
+                    },
+                }
+            ],
+        }
+
+        results = check_c12_value_mapping_coverage(
+            match,
+            {"phv_concept": {"1", "2"}, "phv_status": {"0", "1"}},
+        )
+
+        self.assertEqual(results[0].status, "WARN")
+        self.assertEqual(results[0].detail["phv_id"], "phv_concept")
+        self.assertEqual(results[0].detail["missing_codes"], ["9"])
+
     def test_c11_treats_numeric_encoded_source_as_info(self) -> None:
         src = {
             "type": "categorical",
@@ -1626,6 +1661,47 @@ class CrosswalkConceptExtractionTests(unittest.TestCase):
         self.assertEqual(cw[0]["phv_id"], "phv00110401",
                          "Should pick SPLT9069 (value_concept), not Individual_ID")
         self.assertEqual(cw[0]["source_key"], "SPLT9069")
+
+    def test_context_phvs_are_tagged_but_excluded_from_comparison_source_phvs(self) -> None:
+        cd = {
+            "MeasurementObservation": {
+                "populated_from": "pht001450",
+                "slot_derivations": {
+                    "associated_participant": {"populated_from": "phv000001"},
+                    "associated_visit": {"expr": 'uuid5("Visit", str({phv000001}) + ":baseline")'},
+                    "age_at_observation": {"expr": "{phv000002} * 365"},
+                    "observation_type": {"value": "OBA:1001087"},
+                    "value_quantity": {
+                        "object_derivations": [
+                            {
+                                "class_derivations": {
+                                    "Quantity": {
+                                        "slot_derivations": {
+                                            "value_decimal": {"expr": "{phv000003} * 2"},
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "method_type": {"value": "30 second heart rate"},
+                },
+            }
+        }
+        phv_names = {"phv000001": "ID", "phv000002": "AGE", "phv000003": "HR30"}
+        cw: list[dict] = []
+
+        _extract_crosswalk_from_class_derivations(cd, "hrtrt.yaml", phv_names, cw)
+
+        self.assertEqual(len(cw), 1)
+        self.assertEqual(cw[0]["phv_id"], "phv000003")
+        self.assertEqual(cw[0]["source_phvs"], ["phv000003"])
+        roles = {(entry["phv_id"], entry["role"]) for entry in cw[0]["source_phv_roles"]}
+        self.assertIn(("phv000001", "participant_id"), roles)
+        self.assertIn(("phv000001", "visit"), roles)
+        self.assertIn(("phv000002", "age_at_observation"), roles)
+        self.assertIn(("phv000003", "value"), roles)
+        self.assertEqual(cw[0]["conversion_factor"], 2.0)
 
     def test_case_expr_observation_type_generates_multiple_entries(self) -> None:
         """case() on observation_type generates one crosswalk entry per CURIE.

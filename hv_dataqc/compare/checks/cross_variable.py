@@ -28,6 +28,7 @@ def check_c12_value_mapping_coverage(match: dict, phv_value_codes: dict[str, set
     """C12: Verify YAML value_mappings cover dbGaP/observed source codes."""
     results: list[CheckResult] = []
     yaml_entries = match.get("_yaml_entries") or [match]
+    source_summaries_by_phv = match.get("_source_summaries_by_phv") or {}
     for entry in yaml_entries:
         mapping_specs = []
         if isinstance(entry.get("value_map"), dict) and entry.get("phv_id"):
@@ -48,7 +49,8 @@ def check_c12_value_mapping_coverage(match: dict, phv_value_codes: dict[str, set
                 for code in value_map
             }
             dbgap_codes = phv_value_codes.get(phv_id, set())
-            observed_counts = _distribution_count_map(entry.get("source_summary"))
+            observed_summary = source_summaries_by_phv.get(phv_id) or entry.get("source_summary")
+            observed_counts = _distribution_count_map(observed_summary)
             observed_codes = {code for code, count in observed_counts.items() if count > 0}
             expected_codes = dbgap_codes | observed_codes
             if not expected_codes:

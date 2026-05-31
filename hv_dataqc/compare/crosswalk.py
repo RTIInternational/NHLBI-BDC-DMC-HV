@@ -1256,6 +1256,33 @@ def _extract_crosswalk_from_class_derivations(
         "Procedure": "procedure_status",
     }
 
+    def _is_value_slot_name(slot_name: str, value_slot_name: str) -> bool:
+        return (
+            slot_name == value_slot_name
+            or slot_name in ("value_decimal", "value_integer", "value_coded", "value_concept")
+            or slot_name.startswith("value")
+        )
+
+    def _phv_role_for_slot(
+        slot_name: str,
+        value_slot_name: str,
+        concept_slot_name: str | None,
+        is_value_slot: bool,
+    ) -> str:
+        if is_value_slot:
+            return "value"
+        if concept_slot_name and slot_name == concept_slot_name:
+            return "concept"
+        if slot_name == "associated_participant":
+            return "participant_id"
+        if slot_name == "associated_visit":
+            return "visit"
+        if slot_name == "age_at_observation" or slot_name.startswith("age_at"):
+            return "age_at_observation"
+        if "join" in slot_name:
+            return "join_key"
+        return "context"
+
     for class_name, class_body in class_derivations.items():
         if not isinstance(class_body, dict):
             continue
@@ -1399,15 +1426,15 @@ def _extract_crosswalk_from_class_derivations(
             if not isinstance(slot_body, dict):
                 continue
             pf = str(slot_body.get("populated_from", ""))
+            is_value_slot = _is_value_slot_name(slot_name, value_slot_name)
             if pf.startswith("phv"):
                 primary_phvs.append(
                     {
                         "phv": pf,
                         "slot": slot_name,
-                        "is_value_slot": (
-                            slot_name == value_slot_name
-                            or slot_name in ("value_decimal", "value_integer", "value_coded")
-                            or slot_name.startswith("value")
+                        "is_value_slot": is_value_slot,
+                        "role": _phv_role_for_slot(
+                            slot_name, value_slot_name, concept_slot_name, is_value_slot
                         ),
                         "value_map": _extract_value_mappings(slot_body),
                         "conversion_factor": None,
@@ -1416,10 +1443,9 @@ def _extract_crosswalk_from_class_derivations(
             # PHVs referenced inside case() expressions
             expr = slot_body.get("expr", "")
             if isinstance(expr, str):
-                is_value_expr = (
-                    slot_name == value_slot_name
-                    or slot_name in ("value_decimal", "value_integer", "value_coded")
-                    or slot_name.startswith("value")
+                is_value_expr = _is_value_slot_name(slot_name, value_slot_name)
+                phv_role = _phv_role_for_slot(
+                    slot_name, value_slot_name, concept_slot_name, is_value_expr
                 )
                 if is_value_expr:
                     value_exprs.append(expr)
@@ -1434,6 +1460,7 @@ def _extract_crosswalk_from_class_derivations(
                             "phv": phv,
                             "slot": slot_name,
                             "is_value_slot": is_value_expr,
+                            "role": phv_role,
                             "value_map": _extract_value_mappings(slot_body),
                             "conversion_factor": cf,
                             "expr": expr,
@@ -1458,6 +1485,7 @@ def _extract_crosswalk_from_class_derivations(
                             if not isinstance(inner_slot_body, dict):
                                 continue
                             inner_pf = str(inner_slot_body.get("populated_from", ""))
+                            is_inner_value_slot = _is_value_slot_name(inner_slot, "")
                             if inner_pf.startswith("phv"):
                                 inner_cf_from_block = _unit_conversion_factor(
                                     inner_slot_body.get("unit_conversion")
@@ -1466,9 +1494,9 @@ def _extract_crosswalk_from_class_derivations(
                                     {
                                         "phv": inner_pf,
                                         "slot": f"{slot_name}.{inner_slot}",
-                                        "is_value_slot": inner_slot in (
-                                            "value_decimal", "value_integer",
-                                            "value_coded", "value_concept",
+                                        "is_value_slot": is_inner_value_slot,
+                                        "role": _phv_role_for_slot(
+                                            inner_slot, "", None, is_inner_value_slot
                                         ),
                                         "value_map": _extract_value_mappings(inner_slot_body),
                                         "conversion_factor": inner_cf_from_block,
@@ -1476,9 +1504,7 @@ def _extract_crosswalk_from_class_derivations(
                                 )
                             inner_expr = inner_slot_body.get("expr", "")
                             if isinstance(inner_expr, str):
-                                is_inner_value_expr = inner_slot in (
-                                    "value_decimal", "value_integer", "value_coded", "value_concept"
-                                )
+                                is_inner_value_expr = _is_value_slot_name(inner_slot, "")
                                 if is_inner_value_expr:
                                     value_exprs.append(inner_expr)
                                 inner_cf = (
@@ -1492,6 +1518,9 @@ def _extract_crosswalk_from_class_derivations(
                                             "phv": phv,
                                             "slot": f"{slot_name}.{inner_slot}",
                                             "is_value_slot": is_inner_value_expr,
+                                            "role": _phv_role_for_slot(
+                                                inner_slot, "", None, is_inner_value_expr
+                                            ),
                                             "value_map": None,
                                             "conversion_factor": inner_cf,
                                             "expr": inner_expr,
@@ -1521,6 +1550,22 @@ def _extract_crosswalk_from_class_derivations(
 
         value_phvs = [p for p in primary_phvs if p["is_value_slot"]]
         primary = value_phvs[0] if value_phvs else primary_phvs[0]
+
+        source_phv_roles: list[dict[str, str]] = []
+        comparison_phvs: set[str] = set()
+        seen_role_keys: set[tuple[str, str, str]] = set()
+        for phv_ref in primary_phvs:
+            phv_id = _canonical_phv_id(phv_ref.get("phv", ""))
+            if not phv_id:
+                continue
+            role = str(phv_ref.get("role") or ("value" if phv_ref.get("is_value_slot") else "context"))
+            slot = str(phv_ref.get("slot") or "")
+            role_key = (phv_id, role, slot)
+            if role_key not in seen_role_keys:
+                source_phv_roles.append({"phv_id": phv_id, "role": role, "slot": slot})
+                seen_role_keys.add(role_key)
+            if role in {"value", "concept"}:
+                comparison_phvs.add(phv_id)
 
         src_name = phv_names.get(primary["phv"], "")
         if not src_name:
@@ -1552,13 +1597,8 @@ def _extract_crosswalk_from_class_derivations(
                     "concept_value_map": concept_value_map,
                     "method_type": method_type_val,
                     "conversion_factor": primary.get("conversion_factor"),
-                    "source_phvs": sorted(
-                        {
-                            _canonical_phv_id(p["phv"])
-                            for p in primary_phvs
-                            if p.get("phv")
-                        }
-                    ),
+                    "source_phvs": sorted(comparison_phvs),
+                    "source_phv_roles": source_phv_roles,
                     "value_exprs": value_exprs,
                 }
             )
@@ -2270,6 +2310,8 @@ def build_variable_crosswalk(
         merged["_source_phts"] = source_phts
         merged["_source_keys"] = source_keys_used
         merged["_phv_ids"] = list(dict.fromkeys(phv_ids))
+        if summaries_by_phv:
+            merged["_source_summaries_by_phv"] = summaries_by_phv
         if ambiguous_columns:
             merged["_ambiguous_columns"] = ambiguous_columns
         merged["_yaml_entries"] = [
@@ -2283,6 +2325,7 @@ def build_variable_crosswalk(
                 "value_map": e.get("value_map"),
                 "concept_value_map": e.get("concept_value_map"),
                 "value_exprs": e.get("value_exprs"),
+                "source_phv_roles": e.get("source_phv_roles"),
                 "source_summary": e.get("_source_summary"),
             }
             for e in entries
