@@ -859,6 +859,11 @@ def _categorical_summary_from_counts(
     }
 
 
+def _looks_like_unresolved_expr(value: Any) -> bool:
+    text = str(value or "").strip().lower()
+    return "case(" in text or "{phv" in text or text.startswith("uuid5(")
+
+
 def _expected_summary_from_value_map(entry: dict, src_summary: dict) -> dict | None:
     """Build exact expected categorical output for value_mappings on a value slot."""
     value_map = entry.get("value_map")
@@ -2115,13 +2120,26 @@ def build_variable_crosswalk(
                 total = int(rows_by_pht.get(static_pht, 0) or 0)
                 if not total:
                     total = int((source_doc or {}).get("total_participants", 0) or 0)
-                static_value = normalize_category_key(entry.get("static_value"))
-                static_summary = _categorical_summary_from_counts(
-                    {static_value: total},
-                    basis="static_yaml_value",
-                    confidence="exact",
-                    raw={"n_total": total},
-                ) or {}
+                raw_static_value = entry.get("static_value")
+                if _looks_like_unresolved_expr(raw_static_value):
+                    static_summary = _unsupported_joint_summary(
+                        {
+                            "type": "categorical",
+                            "n_total": total,
+                            "n_valid": total,
+                            "n_missing": 0,
+                        },
+                        "static_yaml_expr",
+                        "Static YAML expression requires source row evaluation; aggregate comparison not attempted",
+                    )
+                else:
+                    static_value = normalize_category_key(raw_static_value)
+                    static_summary = _categorical_summary_from_counts(
+                        {static_value: total},
+                        basis="static_yaml_value",
+                        confidence="exact",
+                        raw={"n_total": total},
+                    ) or {}
                 entry["_source_summary"] = static_summary
                 per_pht_summaries.append(static_summary)
                 if static_pht and static_pht not in source_phts:

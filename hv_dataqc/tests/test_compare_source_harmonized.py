@@ -532,6 +532,52 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
 
         self.assertEqual(result.status, "PASS")
 
+    def test_static_case_expr_does_not_become_c7_category(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            pheno_dir = tmp_path / "pheno_variable_summaries"
+            pheno_dir.mkdir()
+            (pheno_dir / "phs000000.v1.pht000001.v1.p1.test.data_dict.xml").write_text(
+                '<?xml version="1.0"?>\n'
+                "<data_table>\n"
+                '  <variable id="phv000001.v1">\n'
+                "    <name>SEX_SRC</name>\n"
+                "  </variable>\n"
+                "</data_table>\n",
+                encoding="utf-8",
+            )
+            yaml_dir = tmp_path / "yaml"
+            yaml_dir.mkdir()
+            (yaml_dir / "demography.yaml").write_text(
+                "- class_derivations:\n"
+                "    Demography:\n"
+                "      populated_from: pht000001\n"
+                "      slot_derivations:\n"
+                "        sex:\n"
+                "          expr: \"case(({phv000001} == 1, 'FEMALE'), (True, 'MALE'))\"\n",
+                encoding="utf-8",
+            )
+
+            matches = build_variable_crosswalk(
+                variables_by_name={},
+                harmonized_vars={"demog_sex": {"type": "categorical", "distribution": {}}},
+                yaml_dir=yaml_dir,
+                cache_dir=tmp_path,
+                source_doc={"total_participants": 10, "total_rows_by_pht": {"pht000001": 10}},
+            )
+
+        self.assertEqual(len(matches), 1)
+        resolved = matches[0]["_resolved_src"]
+        self.assertEqual(resolved["_comparison_basis"], "static_yaml_expr")
+        self.assertEqual(resolved["_comparison_confidence"], "unsupported")
+        self.assertNotIn("case(", "".join(resolved.get("distribution", {}).keys()))
+        result = check_c7_categorical_distribution(
+            resolved,
+            {"type": "categorical", "distribution": {"FEMALE": {"n": 5, "pct": 50.0}}},
+            "demog sex",
+        )
+        self.assertEqual(result.status, "SKIP")
+
     def test_source_extract_config_loads_infer_type_threshold(self) -> None:
         module_path = HV_DATAQC_DIR / "extract_source" / "extract_source_summaries.py"
         spec = importlib.util.spec_from_file_location("extract_source_summaries", module_path)
