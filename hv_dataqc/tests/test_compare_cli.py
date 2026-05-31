@@ -61,6 +61,7 @@ class CompareCliSmokeTests(unittest.TestCase):
                 {
                     "metadata": {"source": "synthetic"},
                     "total_participants": 10,
+                    "entity_counts": {"MeasurementObservation": 10},
                     "rows_per_visit": {},
                     "variables": {
                         "measurement_OBA:1001087": {

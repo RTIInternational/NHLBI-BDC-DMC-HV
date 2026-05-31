@@ -112,6 +112,65 @@ _CONFIG_DIR = Path(__file__).resolve().parent / "config"
 _json_safe = json_safe
 
 
+def _required_mapping_error(doc: dict, field: str, label: str, *, non_empty: bool = False) -> str | None:
+    value = doc.get(field)
+    if not isinstance(value, dict):
+        return f"ERROR: {label} JSON has no usable `{field}` mapping."
+    if non_empty and not value:
+        return f"ERROR: {label} JSON has empty `{field}` mapping."
+    return None
+
+
+def validate_source_summary_schema(source: dict) -> list[str]:
+    """Return fatal schema errors for extract_source_summaries.py JSON."""
+    if not isinstance(source, dict):
+        return ["ERROR: source JSON top-level value must be an object."]
+    errors: list[str] = []
+    for field, non_empty in (
+        ("metadata", False),
+        ("variables_by_pht", True),
+        ("participant_denominators", False),
+        ("total_rows_by_pht", False),
+    ):
+        error = _required_mapping_error(source, field, "source", non_empty=non_empty)
+        if error:
+            errors.append(error)
+    return errors
+
+
+def validate_harmonized_summary_schema(harmonized: dict) -> list[str]:
+    """Return fatal schema errors for extract_harmonized_summaries.py JSON."""
+    if not isinstance(harmonized, dict):
+        return ["ERROR: harmonized JSON top-level value must be an object."]
+    errors: list[str] = []
+    for field, non_empty in (
+        ("metadata", False),
+        ("variables", True),
+        ("entity_counts", False),
+    ):
+        error = _required_mapping_error(harmonized, field, "harmonized", non_empty=non_empty)
+        if error:
+            errors.append(error)
+    total_participants = harmonized.get("total_participants")
+    if not isinstance(total_participants, int) or isinstance(total_participants, bool):
+        errors.append("ERROR: harmonized JSON has no usable integer `total_participants`.")
+    return errors
+
+
+def _exit_on_summary_schema_errors(source: dict, harmonized: dict) -> None:
+    errors = validate_source_summary_schema(source) + validate_harmonized_summary_schema(harmonized)
+    if not errors:
+        return
+    for error in errors:
+        print(error, file=sys.stderr)
+    print(
+        "Re-run extract_source_summaries.py and extract_harmonized_summaries.py "
+        "to regenerate supported summary artifacts.",
+        file=sys.stderr,
+    )
+    sys.exit(2)
+
+
 
 
 def validate_clinical_ranges_config(clinical_ranges: dict) -> list[str]:
@@ -477,25 +536,11 @@ def main(argv: list[str] | None = None) -> None:
     with open(args.harmonized, "r", encoding="utf-8") as fh:
         harmonized: dict = json.load(fh)
 
+    _exit_on_summary_schema_errors(source, harmonized)
+
     variables_by_pht = source.get("variables_by_pht")
-    if not isinstance(variables_by_pht, dict) or not variables_by_pht:
-        print(
-            f"ERROR: source JSON {args.source} has no usable `variables_by_pht`. "
-            "Either the file is malformed or it was produced by an unsupported "
-            "extractor version. Re-run extract_source_summaries.py to regenerate.",
-            file=sys.stderr,
-        )
-        sys.exit(2)
     variables_by_name = _build_variables_by_name(variables_by_pht)
     raw_harmonized_vars = harmonized.get("variables")
-    if not isinstance(raw_harmonized_vars, dict) or not raw_harmonized_vars:
-        print(
-            f"ERROR: harmonized JSON {args.harmonized} has no usable `variables`. "
-            "Either the file is malformed or it was produced by an unsupported "
-            "extractor version. Re-run extract_harmonized_summaries.py to regenerate.",
-            file=sys.stderr,
-        )
-        sys.exit(2)
     harmonized_vars = _normalize_harmonized_vars(raw_harmonized_vars)
     source_meta = source.get("metadata", {})
     harmonized_meta = harmonized.get("metadata", {})

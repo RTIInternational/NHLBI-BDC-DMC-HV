@@ -54,7 +54,9 @@ from compare import (  # noqa: E402
     check_c9_clinical_range,
     determine_comparison_type,
     should_run_c5_conversion_check,
+    validate_harmonized_summary_schema,
     validate_clinical_ranges_config,
+    validate_source_summary_schema,
 )
 from hv_dataqc.compare.report_io import (  # noqa: E402
     load_thresholds,
@@ -2113,6 +2115,26 @@ class SourceSchemaValidationTests(unittest.TestCase):
             "--cache-dir", str(paths["cache_dir"]),
         ]
 
+    def _valid_source_doc(self) -> dict:
+        return {
+            "metadata": {},
+            "variables_by_pht": {"pht000001": {"X": {"type": "continuous"}}},
+            "participant_denominators": {},
+            "total_rows_by_pht": {"pht000001": 1},
+        }
+
+    def test_source_summary_schema_requires_phase4_fields(self) -> None:
+        errors = validate_source_summary_schema({"metadata": {}, "variables_by_pht": {"pht000001": {}}})
+
+        self.assertIn("ERROR: source JSON has no usable `participant_denominators` mapping.", errors)
+        self.assertIn("ERROR: source JSON has no usable `total_rows_by_pht` mapping.", errors)
+
+    def test_harmonized_summary_schema_requires_phase4_fields(self) -> None:
+        errors = validate_harmonized_summary_schema({"metadata": {}, "variables": {"x": {}}})
+
+        self.assertIn("ERROR: harmonized JSON has no usable `entity_counts` mapping.", errors)
+        self.assertIn("ERROR: harmonized JSON has no usable integer `total_participants`.", errors)
+
     def test_missing_variables_by_pht_exits_with_clear_error(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             paths = self._write_minimal_inputs(
@@ -2147,7 +2169,7 @@ class SourceSchemaValidationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             paths = self._write_minimal_inputs(
                 Path(tmp),
-                source_doc={"metadata": {}, "variables_by_pht": {"pht000001": {"X": {"type": "continuous"}}}},
+                source_doc=self._valid_source_doc(),
                 harmonized_doc={"metadata": {}},
             )
             with self.assertRaises(SystemExit) as ctx:
@@ -2158,8 +2180,8 @@ class SourceSchemaValidationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             paths = self._write_minimal_inputs(
                 Path(tmp),
-                source_doc={"metadata": {}, "variables_by_pht": {"pht000001": {"X": {"type": "continuous"}}}},
-                harmonized_doc={"metadata": {}, "variables": {}},
+                source_doc=self._valid_source_doc(),
+                harmonized_doc={"metadata": {}, "variables": {}, "entity_counts": {}, "total_participants": 1},
             )
             with self.assertRaises(SystemExit) as ctx:
                 compare_main(self._argv(paths))
@@ -2169,8 +2191,8 @@ class SourceSchemaValidationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             paths = self._write_minimal_inputs(
                 Path(tmp),
-                source_doc={"metadata": {}, "variables_by_pht": {"pht000001": {"X": {"type": "continuous"}}}},
-                harmonized_doc={"metadata": {}, "variables": "not a dict"},
+                source_doc=self._valid_source_doc(),
+                harmonized_doc={"metadata": {}, "variables": "not a dict", "entity_counts": {}, "total_participants": 1},
             )
             with self.assertRaises(SystemExit) as ctx:
                 compare_main(self._argv(paths))
