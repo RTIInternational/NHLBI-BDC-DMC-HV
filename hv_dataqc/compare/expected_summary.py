@@ -630,31 +630,50 @@ def build_expected_summary(
     joint_dists_by_pht: dict[str, dict] | None = None,
 ) -> dict | None:
     """Build expected harmonized aggregate summary from YAML transform semantics."""
-    expected_parts: list[dict] = []
+    all_parts: list[dict] = []
     limitations: list[str] = []
-    bases: set[str] = set()
-    confidences: set[str] = set()
 
     for entry in entries:
         part = _expected_summary_for_entry(entry, summaries_by_phv, joint_dists_by_pht)
         if part:
-            expected_parts.append(part)
-            bases.add(part.get("_comparison_basis", "source_direct"))
-            confidences.add(part.get("_comparison_confidence", "exact"))
+            all_parts.append(part)
             limitations.extend(part.get("_comparison_limitations") or [])
         else:
             limitations.append(
                 f"Unsupported transform in {entry.get('yaml_file', '?')} for {entry.get('phv_id', '?')}"
             )
 
-    if not expected_parts:
+    if not all_parts:
         return None
-    expected = _aggregate_source_summaries(expected_parts)
-    basis = "+".join(sorted(bases)) if bases else "source_direct"
-    if "unsupported" in confidences:
-        confidence = "unsupported"
+
+    # Separate entries that can contribute a comparable distribution from those
+    # that cannot (unsupported entries carry raw source codes, not mapped harmonized
+    # values, so mixing them into the aggregate corrupts the distribution).
+    comparable_parts = [p for p in all_parts if p.get("_comparison_confidence") != "unsupported"]
+    unsupported_parts = [p for p in all_parts if p.get("_comparison_confidence") == "unsupported"]
+
+    if comparable_parts:
+        # Aggregate only the entries we can actually compare; record the skipped
+        # ones as limitations so the reviewer knows coverage is partial.
+        aggregate_parts = comparable_parts
+        for p in unsupported_parts:
+            for lim in (p.get("_comparison_limitations") or []):
+                if lim not in limitations:
+                    limitations.append(lim)
+        bases: set[str] = {p.get("_comparison_basis", "source_direct") for p in comparable_parts}
+        comparable_confidences: set[str] = {p.get("_comparison_confidence", "exact") for p in comparable_parts}
+        if unsupported_parts:
+            confidence = "partial"
+        else:
+            confidence = "exact" if comparable_confidences <= {"exact"} and not limitations else "partial"
     else:
-        confidence = "exact" if confidences <= {"exact"} and not limitations else "partial"
+        # Every entry is unsupported — nothing useful to compare.
+        aggregate_parts = all_parts
+        bases = {p.get("_comparison_basis", "source_direct") for p in all_parts}
+        confidence = "unsupported"
+
+    expected = _aggregate_source_summaries(aggregate_parts)
+    basis = "+".join(sorted(bases)) if bases else "source_direct"
     expected["_comparison_basis"] = basis
     expected["_comparison_confidence"] = confidence
     expected["_comparison_limitations"] = limitations
