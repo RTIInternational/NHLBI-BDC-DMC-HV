@@ -171,6 +171,30 @@ def _exit_on_summary_schema_errors(source: dict, harmonized: dict) -> None:
     sys.exit(2)
 
 
+def validate_compare_json_schema(report: dict) -> list[str]:
+    """Return schema errors for a compare JSON report.
+
+    Validates the five required top-level sections are present and have the
+    expected Python types.  Used as a self-check after building ``json_report``
+    in ``main()`` and as a utility for consumers that reload archived compare
+    output.
+    """
+    if not isinstance(report, dict):
+        return ["ERROR: compare JSON top-level value must be an object."]
+    errors: list[str] = []
+    for field, expected_type, type_label in (
+        ("metadata", dict, "object"),
+        ("summary", dict, "object"),
+        ("crosswalk", list, "array"),
+        ("yaml_diagnostics", dict, "object"),
+        ("results", list, "array"),
+    ):
+        value = report.get(field)
+        if not isinstance(value, expected_type):
+            errors.append(
+                f"ERROR: compare JSON missing or invalid `{field}` (expected {type_label})."
+            )
+    return errors
 
 
 def validate_clinical_ranges_config(clinical_ranges: dict) -> list[str]:
@@ -916,6 +940,9 @@ def main(argv: list[str] | None = None) -> None:
         "yaml_diagnostics": yaml_diagnostics,
         "results": [r.to_dict() for r in all_results],
     }
+    _schema_errors = validate_compare_json_schema(json_report)
+    for _e in _schema_errors:
+        print(f"WARNING: compare report schema: {_e}", file=sys.stderr)
     json_path = Path(args.json_report or f"{cohort.lower()}_comparison_results.json")
     write_json_atomic_strict(json_path, json_report)
     print(f"JSON report     : {json_path}")

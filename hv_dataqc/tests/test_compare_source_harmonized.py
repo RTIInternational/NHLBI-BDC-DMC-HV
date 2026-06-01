@@ -57,6 +57,7 @@ from compare import (  # noqa: E402
     validate_harmonized_summary_schema,
     validate_clinical_ranges_config,
     validate_source_summary_schema,
+    validate_compare_json_schema,
 )
 from hv_dataqc.compare.report_io import (  # noqa: E402
     load_thresholds,
@@ -2197,6 +2198,79 @@ class SourceSchemaValidationTests(unittest.TestCase):
             with self.assertRaises(SystemExit) as ctx:
                 compare_main(self._argv(paths))
             self.assertEqual(ctx.exception.code, 2)
+
+
+class CompareJsonSchemaValidationTests(unittest.TestCase):
+    """validate_compare_json_schema must catch malformed compare JSON output."""
+
+    def _valid_report(self) -> dict:
+        return {
+            "metadata": {"cohort": "TEST", "generated_at": "2026-01-01T00:00:00+00:00"},
+            "summary": {"PASS": 1},
+            "crosswalk": [],
+            "yaml_diagnostics": {},
+            "results": [],
+        }
+
+    def test_valid_report_has_no_errors(self) -> None:
+        self.assertEqual(validate_compare_json_schema(self._valid_report()), [])
+
+    def test_not_a_dict_returns_single_error(self) -> None:
+        errors = validate_compare_json_schema([])
+        self.assertEqual(len(errors), 1)
+        self.assertIn("top-level", errors[0])
+
+    def test_all_five_sections_missing_yields_five_errors(self) -> None:
+        errors = validate_compare_json_schema({})
+        self.assertEqual(len(errors), 5)
+
+    def test_missing_metadata_reported(self) -> None:
+        doc = self._valid_report()
+        del doc["metadata"]
+        errors = validate_compare_json_schema(doc)
+        self.assertTrue(any("`metadata`" in e for e in errors))
+
+    def test_missing_summary_reported(self) -> None:
+        doc = self._valid_report()
+        del doc["summary"]
+        errors = validate_compare_json_schema(doc)
+        self.assertTrue(any("`summary`" in e for e in errors))
+
+    def test_missing_crosswalk_reported(self) -> None:
+        doc = self._valid_report()
+        del doc["crosswalk"]
+        errors = validate_compare_json_schema(doc)
+        self.assertTrue(any("`crosswalk`" in e for e in errors))
+
+    def test_missing_yaml_diagnostics_reported(self) -> None:
+        doc = self._valid_report()
+        del doc["yaml_diagnostics"]
+        errors = validate_compare_json_schema(doc)
+        self.assertTrue(any("`yaml_diagnostics`" in e for e in errors))
+
+    def test_missing_results_reported(self) -> None:
+        doc = self._valid_report()
+        del doc["results"]
+        errors = validate_compare_json_schema(doc)
+        self.assertTrue(any("`results`" in e for e in errors))
+
+    def test_wrong_type_crosswalk_dict_instead_of_list(self) -> None:
+        doc = self._valid_report()
+        doc["crosswalk"] = {}
+        errors = validate_compare_json_schema(doc)
+        self.assertTrue(any("`crosswalk`" in e for e in errors))
+
+    def test_wrong_type_results_dict_instead_of_list(self) -> None:
+        doc = self._valid_report()
+        doc["results"] = {}
+        errors = validate_compare_json_schema(doc)
+        self.assertTrue(any("`results`" in e for e in errors))
+
+    def test_wrong_type_metadata_list_instead_of_dict(self) -> None:
+        doc = self._valid_report()
+        doc["metadata"] = []
+        errors = validate_compare_json_schema(doc)
+        self.assertTrue(any("`metadata`" in e for e in errors))
 
 
 class AtomicWriteTests(unittest.TestCase):
