@@ -58,6 +58,7 @@ from compare import (  # noqa: E402
     validate_clinical_ranges_config,
     validate_source_summary_schema,
     validate_compare_json_schema,
+    check_stale_artifacts,
 )
 from hv_dataqc.compare.report_io import (  # noqa: E402
     load_thresholds,
@@ -2271,6 +2272,131 @@ class CompareJsonSchemaValidationTests(unittest.TestCase):
         doc["metadata"] = []
         errors = validate_compare_json_schema(doc)
         self.assertTrue(any("`metadata`" in e for e in errors))
+
+
+class StaleArtifactTests(unittest.TestCase):
+    """check_stale_artifacts must detect mismatched or stale extraction timestamps."""
+
+    def _src(self, extracted_at: str) -> dict:
+        return {"metadata": {"extracted_at": extracted_at}}
+
+    def _harm(self, generated_at: str) -> dict:
+        return {"metadata": {"generated_at": generated_at}}
+
+    def test_matching_timestamps_no_warnings(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            cache = Path(tmp) / "cache"
+            yaml_d = Path(tmp) / "yaml"
+            cache.mkdir()
+            yaml_d.mkdir()
+            warnings = check_stale_artifacts(
+                self._src("2026-01-01T00:00:00+00:00"),
+                self._harm("2026-01-01T00:01:00+00:00"),
+                cache_dir=cache,
+                yaml_dir=yaml_d,
+            )
+        self.assertEqual(warnings, [])
+
+    def test_skew_beyond_threshold_warns(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            cache = Path(tmp) / "cache"
+            yaml_d = Path(tmp) / "yaml"
+            cache.mkdir()
+            yaml_d.mkdir()
+            warnings = check_stale_artifacts(
+                self._src("2026-01-01T00:00:00+00:00"),
+                self._harm("2026-01-15T00:00:00+00:00"),  # 14 days apart
+                cache_dir=cache,
+                yaml_dir=yaml_d,
+                max_skew_days=7.0,
+            )
+        self.assertEqual(len(warnings), 1)
+        self.assertIn("STALE", warnings[0])
+        self.assertIn("14.", warnings[0])
+
+    def test_skew_within_threshold_no_warning(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            cache = Path(tmp) / "cache"
+            yaml_d = Path(tmp) / "yaml"
+            cache.mkdir()
+            yaml_d.mkdir()
+            warnings = check_stale_artifacts(
+                self._src("2026-01-01T00:00:00+00:00"),
+                self._harm("2026-01-04T00:00:00+00:00"),  # 3 days apart
+                cache_dir=cache,
+                yaml_dir=yaml_d,
+                max_skew_days=7.0,
+            )
+        self.assertEqual(warnings, [])
+
+    def test_cache_newer_than_source_warns(self) -> None:
+        import time
+        with tempfile.TemporaryDirectory() as tmp:
+            cache = Path(tmp) / "cache"
+            yaml_d = Path(tmp) / "yaml"
+            cache.mkdir()
+            yaml_d.mkdir()
+            # Create a data_dict.xml with current mtime (newer than our old extracted_at)
+            dd = cache / "pht000001.v1.data_dict.xml"
+            dd.write_text("<data_table/>")
+            warnings = check_stale_artifacts(
+                self._src("2020-01-01T00:00:00+00:00"),  # very old extraction
+                self._harm("2020-01-01T00:00:00+00:00"),
+                cache_dir=cache,
+                yaml_dir=yaml_d,
+                max_skew_days=7.0,
+            )
+        cache_warns = [w for w in warnings if "cache was updated" in w]
+        self.assertEqual(len(cache_warns), 1)
+
+    def test_yaml_newer_than_harmonized_warns(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            cache = Path(tmp) / "cache"
+            yaml_d = Path(tmp) / "yaml"
+            cache.mkdir()
+            yaml_d.mkdir()
+            # Create a yaml file with current mtime (newer than our old generated_at)
+            yf = yaml_d / "heart_rate.yaml"
+            yf.write_text("transform: []\n")
+            warnings = check_stale_artifacts(
+                self._src("2020-01-01T00:00:00+00:00"),
+                self._harm("2020-01-01T00:00:00+00:00"),  # very old extraction
+                cache_dir=cache,
+                yaml_dir=yaml_d,
+                max_skew_days=7.0,
+            )
+        yaml_warns = [w for w in warnings if "YAML transform" in w]
+        self.assertEqual(len(yaml_warns), 1)
+
+    def test_missing_timestamps_no_crash(self) -> None:
+        """Missing metadata timestamps must not raise — just skip the check."""
+        with tempfile.TemporaryDirectory() as tmp:
+            cache = Path(tmp) / "cache"
+            yaml_d = Path(tmp) / "yaml"
+            cache.mkdir()
+            yaml_d.mkdir()
+            warnings = check_stale_artifacts(
+                {"metadata": {}},
+                {"metadata": {}},
+                cache_dir=cache,
+                yaml_dir=yaml_d,
+            )
+        self.assertEqual(warnings, [])
+
+    def test_invalid_timestamp_strings_no_crash(self) -> None:
+        """Unparseable ISO strings must not raise."""
+        with tempfile.TemporaryDirectory() as tmp:
+            cache = Path(tmp) / "cache"
+            yaml_d = Path(tmp) / "yaml"
+            cache.mkdir()
+            yaml_d.mkdir()
+            warnings = check_stale_artifacts(
+                self._src("not-a-date"),
+                self._harm("also-not-a-date"),
+                cache_dir=cache,
+                yaml_dir=yaml_d,
+            )
+        self.assertEqual(warnings, [])
 
 
 class AtomicWriteTests(unittest.TestCase):

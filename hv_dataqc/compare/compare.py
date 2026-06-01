@@ -533,6 +533,99 @@ def build_run_manifest(
     }
 
 
+def check_stale_artifacts(
+    source: dict,
+    harmonized: dict,
+    *,
+    cache_dir: Path,
+    yaml_dir: Path,
+    max_skew_days: float = 7.0,
+) -> list[str]:
+    """Return human-readable warnings for likely stale or mismatched artifacts.
+
+    Three checks are performed:
+
+    1. **Extraction skew** — source ``extracted_at`` and harmonized
+       ``generated_at`` differ by more than *max_skew_days* days, suggesting
+       one was regenerated without the other.
+
+    2. **Cache newer than source** — the newest ``data_dict.xml`` under
+       *cache_dir* is more recent than the source ``extracted_at`` timestamp,
+       suggesting the dbGaP cache was refreshed after source extraction.
+
+    3. **YAML newer than harmonized** — the newest ``.yaml`` file under
+       *yaml_dir* is more recent than the harmonized ``generated_at``
+       timestamp, suggesting transform files were edited after harmonized
+       extraction.
+
+    All warnings are non-fatal; the caller decides whether to print them.
+    """
+    warnings: list[str] = []
+
+    def _parse_iso(s: object) -> datetime | None:
+        if not isinstance(s, str):
+            return None
+        try:
+            dt = datetime.fromisoformat(s)
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            return dt
+        except ValueError:
+            return None
+
+    def _newest_file_mtime(directory: Path, pattern: str) -> datetime | None:
+        try:
+            files = list(directory.rglob(pattern))
+        except OSError:
+            return None
+        if not files:
+            return None
+        try:
+            ts = max(f.stat().st_mtime for f in files)
+            return datetime.fromtimestamp(ts, tz=timezone.utc)
+        except OSError:
+            return None
+
+    src_ts = _parse_iso(source.get("metadata", {}).get("extracted_at"))
+    harm_ts = _parse_iso(harmonized.get("metadata", {}).get("generated_at"))
+
+    # Check 1: extraction skew
+    if src_ts is not None and harm_ts is not None:
+        skew_days = abs((harm_ts - src_ts).total_seconds()) / 86400.0
+        if skew_days > max_skew_days:
+            older, newer = (
+                ("source", "harmonized") if src_ts < harm_ts else ("harmonized", "source")
+            )
+            warnings.append(
+                f"STALE: {older} extraction is {skew_days:.1f} days older than "
+                f"{newer} extraction (threshold: {max_skew_days:.0f} days). "
+                f"Re-run both extractors together for a consistent comparison."
+            )
+
+    # Check 2: cache newer than source
+    cache_mtime = _newest_file_mtime(cache_dir, "*.data_dict.xml")
+    if src_ts is not None and cache_mtime is not None and cache_mtime > src_ts:
+        lag_days = (cache_mtime - src_ts).total_seconds() / 86400.0
+        warnings.append(
+            f"STALE: dbGaP cache was updated {lag_days:.1f} days after source extraction "
+            f"(cache newest: {cache_mtime.isoformat()}, source extracted_at: {src_ts.isoformat()}). "
+            f"Re-run extract_source_summaries.py to pick up cache changes."
+        )
+
+    # Check 3: YAML newer than harmonized
+    yaml_mtime = _newest_file_mtime(yaml_dir, "*.yaml")
+    if harm_ts is not None and yaml_mtime is not None and yaml_mtime > harm_ts:
+        lag_days = (yaml_mtime - harm_ts).total_seconds() / 86400.0
+        warnings.append(
+            f"STALE: YAML transform files were modified {lag_days:.1f} days after harmonized "
+            f"extraction (YAML newest: {yaml_mtime.isoformat()}, harmonized generated_at: "
+            f"{harm_ts.isoformat()}). "
+            f"Re-run extract_harmonized_summaries.py to pick up YAML changes."
+        )
+
+    return warnings
+
+
 def main(argv: list[str] | None = None) -> None:
     args = _parse_args(argv)
     cohort = args.cohort.upper()
@@ -601,6 +694,13 @@ def main(argv: list[str] | None = None) -> None:
         harmonized: dict = json.load(fh)
 
     _exit_on_summary_schema_errors(source, harmonized)
+
+    # Stale artifact check — warn before crosswalk build so reviewer sees it early.
+    _stale_warnings = check_stale_artifacts(
+        source, harmonized, cache_dir=cache_dir, yaml_dir=yaml_dir
+    )
+    for _w in _stale_warnings:
+        print(f"WARNING: {_w}", file=sys.stderr)
 
     variables_by_pht = source.get("variables_by_pht")
     variables_by_name = _build_variables_by_name(variables_by_pht)
@@ -928,6 +1028,7 @@ def main(argv: list[str] | None = None) -> None:
                 clinical_ranges_path=cr_path,
                 git_commit=git_commit,
             ),
+            "stale_warnings": _stale_warnings,
         },
         "summary": counts,
         "crosswalk": [
