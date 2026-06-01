@@ -469,6 +469,46 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return p.parse_args(argv)
 
 
+def _path_provenance(path: Path) -> dict:
+    """Return reproducibility metadata for an input file or directory."""
+    try:
+        resolved = path.resolve()
+    except OSError:
+        resolved = path
+    try:
+        stat = path.stat()
+        mtime_utc = datetime.fromtimestamp(stat.st_mtime, timezone.utc).isoformat()
+    except OSError:
+        mtime_utc = None
+    return {
+        "path": str(resolved),
+        "exists": path.exists(),
+        "mtime_utc": mtime_utc,
+    }
+
+
+def build_run_manifest(
+    *,
+    source_path: Path,
+    harmonized_path: Path,
+    yaml_dir: Path,
+    cache_dir: Path,
+    thresholds_path: Path,
+    clinical_ranges_path: Path,
+    git_commit: str | None,
+) -> dict:
+    """Build a JSON-safe manifest describing the inputs needed to reproduce a run."""
+    return {
+        "git_commit": git_commit,
+        "source_json": _path_provenance(source_path),
+        "harmonized_json": _path_provenance(harmonized_path),
+        "yaml_dir": _path_provenance(yaml_dir),
+        "cache_dir": _path_provenance(cache_dir),
+        "thresholds_file": _path_provenance(thresholds_path),
+        "clinical_ranges_file": _path_provenance(clinical_ranges_path),
+    }
+
+
 def main(argv: list[str] | None = None) -> None:
     args = _parse_args(argv)
     cohort = args.cohort.upper()
@@ -846,14 +886,24 @@ def main(argv: list[str] | None = None) -> None:
     print(f"\nMarkdown report : {report_path}")
 
     # Write JSON
+    git_commit = _current_git_commit()
     json_report = {
         "metadata": {
             "cohort": cohort,
             "generated_at": datetime.now(timezone.utc).isoformat(),
-            "git_commit": _current_git_commit(),
+            "git_commit": git_commit,
             "source_file": args.source,
             "harmonized_file": args.harmonized,
             "thresholds_file": str(thresholds_path),
+            "run_manifest": build_run_manifest(
+                source_path=Path(args.source),
+                harmonized_path=Path(args.harmonized),
+                yaml_dir=yaml_dir,
+                cache_dir=cache_dir,
+                thresholds_path=thresholds_path,
+                clinical_ranges_path=cr_path,
+                git_commit=git_commit,
+            ),
         },
         "summary": counts,
         "crosswalk": [

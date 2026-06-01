@@ -136,6 +136,14 @@ class CompareCliSmokeTests(unittest.TestCase):
             self.assertTrue(paths["json_report"].exists())
             payload = json.loads(paths["json_report"].read_text(encoding="utf-8"))
             self.assertEqual(payload["metadata"]["cohort"], "TESTCOHORT")
+            run_manifest = payload["metadata"]["run_manifest"]
+            self.assertEqual(run_manifest["git_commit"], payload["metadata"]["git_commit"])
+            self.assertEqual(Path(run_manifest["source_json"]["path"]).name, "source.json")
+            self.assertEqual(Path(run_manifest["harmonized_json"]["path"]).name, "harmonized.json")
+            self.assertEqual(Path(run_manifest["yaml_dir"]["path"]).name, "yaml")
+            self.assertEqual(Path(run_manifest["cache_dir"]["path"]).name, "cache")
+            self.assertTrue(run_manifest["source_json"]["exists"])
+            self.assertTrue(run_manifest["clinical_ranges_file"]["exists"])
             self.assertEqual(payload["summary"].get("FAIL", 0), 0)
             self.assertEqual(payload["crosswalk"][0]["source_key"], "HR")
 
