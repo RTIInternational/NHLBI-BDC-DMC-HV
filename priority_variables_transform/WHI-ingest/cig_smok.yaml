@@ -3,12 +3,14 @@
       populated_from: pht001003
       slot_derivations:
         associated_participant:
-          populated_from: phv00078772
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078772}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078772}) + ":WHI SCREENING")'
           range: string
         observation_type:
           value: OMOP:4282779
+        method_type:
+          value: "questionnaire"
           range: string
         value_enum:
           populated_from: phv00078825

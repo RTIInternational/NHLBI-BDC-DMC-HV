@@ -1,0 +1,10 @@
+- class_derivations:
+    Participant:
+      populated_from: pht000998
+      slot_derivations:
+        identity:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078435}) + ":WHI")'
+        member_of_research_study:
+          value: "Women's Health Initiative (WHI)"
+        associated_person:
+          expr: 'uuid5("https://w3id.org/bdchm/Person", str({dbGaP_Subject_ID}))'

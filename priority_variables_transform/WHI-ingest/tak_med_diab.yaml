@@ -1,14 +1,14 @@
 - class_derivations:
     DrugExposure:
-      populated_from: pht000999
+      populated_from: pht000998
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078506}) + ":WHI")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078435}) + ":WHI")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078506}) + ":WHI SCREENING")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078435}) + ":WHI SCREENING")'
           range: string
         drug_concept:
-          expr: 'case(({phv00078559} == 1, "ATC:C02"))'
+          expr: 'case(({phv00078470} == 1, "ATC:A10B"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -22,7 +22,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00170566}) + ":WHI CAD")'
           range: string
         drug_concept:
-          expr: 'case(({phv00170607} == 1, "ATC:C02"))'
+          expr: 'case(({phv00170599} == 1, "ATC:A10B"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -36,7 +36,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00170648}) + ":WHI SCREENING")'
           range: string
         drug_concept:
-          expr: 'case(({phv00170689} == 1, "ATC:C02"))'
+          expr: 'case(({phv00170681} == 1, "ATC:A10B"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -50,7 +50,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193628}) + ":WHI EXTENSION STUDY 2 MRC")'
           range: string
         drug_concept:
-          expr: 'case(({phv00193667} == 1, "ATC:C02"))'
+          expr: 'case(({phv00193673} == 1, "ATC:A10B"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
@@ -64,7 +64,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
           range: string
         drug_concept:
-          expr: 'case(({phv00193779} == 1, "ATC:C02"))'
+          expr: 'case(({phv00193785} == 1, "ATC:A10B"))'
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
