@@ -1,0 +1,54 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001684
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00116206}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116206}) + ":CARDIA YEAR 5")'
+        observation_type:
+          value: OBA:VT2000000
+        method_type:
+          value: "Seated random-zero average"
+        body_position:
+          value: SITTING_POSITION
+        body_site:
+          value: "Right arm"
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001684
+                slot_derivations:
+                  value_decimal:
+                    expr: "None if str({phv00116215}) == 'M' else float({phv00116215})"
+                  unit:
+                    value: "mm[Hg]"
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001633
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00114865}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00114865}) + ":CARDIA YEAR 2")'
+        observation_type:
+          value: OBA:VT2000000
+        method_type:
+          value: "Seated random-zero average"
+        body_position:
+          value: SITTING_POSITION
+        body_site:
+          value: "Right arm"
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001633
+                slot_derivations:
+                  value_decimal:
+                    expr: "None if str({phv00114868}) == 'M' else float({phv00114868})"
+                  unit:
+                    value: "mm[Hg]"
+                    range: string

@@ -3,13 +3,15 @@
       populated_from: pht001845
       slot_derivations:
         associated_participant:
-          populated_from: phv00120660
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120660}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120660}) + ":CARDIA YEAR 15")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4156660
+        method_type:
+          value: "blood assay"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -25,13 +27,15 @@
       populated_from: pht001799
       slot_derivations:
         associated_participant:
-          populated_from: phv00119597
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00119597}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119597}) + ":CARDIA YEAR 10")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4156660
+        method_type:
+          value: "blood assay"
         value_quantity:
           object_derivations:
           - class_derivations:

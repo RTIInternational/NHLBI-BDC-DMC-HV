@@ -3,13 +3,15 @@
       populated_from: pht001862
       slot_derivations:
         associated_participant:
-          populated_from: phv00121060
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121060}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121060}) + ":CARDIA YEAR 15")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OBA:2052890
+        method_type:
+          value: "blood assay"
         value_quantity:
           object_derivations:
           - class_derivations:
