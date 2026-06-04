@@ -899,7 +899,11 @@ def main(argv: list[str] | None = None) -> None:
     run_dir = output_dir / f"harmonized_{run_ts}"
     run_dir.mkdir(exist_ok=True)
     latest_link = output_dir / "latest_harmonized"
-    latest_link.unlink(missing_ok=True)
+    if latest_link.is_dir() and not latest_link.is_symlink():
+        import shutil
+        shutil.rmtree(latest_link)
+    else:
+        latest_link.unlink(missing_ok=True)
     latest_link.symlink_to(run_dir.name)
     print(f"Output dir: {run_dir}")
     print(f"Symlink:    {latest_link} -> {run_dir.name}")

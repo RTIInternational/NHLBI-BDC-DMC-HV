@@ -721,7 +721,12 @@ def main(argv: list[str] | None = None) -> None:
         run_dir = output_dir / f"source_{timestamp}"
         run_dir.mkdir(exist_ok=True)
         latest_link = output_dir / "latest_source"
-        latest_link.unlink(missing_ok=True)
+        if latest_link.is_dir() and not latest_link.is_symlink():
+            # Legacy: earlier runs created a real directory here; replace with symlink.
+            import shutil
+            shutil.rmtree(latest_link)
+        else:
+            latest_link.unlink(missing_ok=True)
         latest_link.symlink_to(run_dir.name)
         log.info("Output dir: %s", run_dir)
         log.info("Symlink:    %s -> %s", latest_link, run_dir.name)
