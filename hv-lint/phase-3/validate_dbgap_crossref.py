@@ -324,6 +324,14 @@ def _collect_accession_strings(block: dict) -> list[tuple[str, str]]:
                     if isinstance(jpf, str):
                         for m in PHT_LOOSE_RE.finditer(jpf):
                             results.append((m.group(), f"joins on {class_name}"))
+                    # Join keys carry PHV accessions (source_key / lookup_key).
+                    for key_field in ("source_key", "lookup_key"):
+                        kv = v.get(key_field)
+                        if isinstance(kv, str):
+                            for m in PHV_LOOSE_RE.finditer(kv):
+                                results.append(
+                                    (m.group(), f"joins {key_field} on {class_name}")
+                                )
         elif isinstance(raw_joins, list):
             for j in raw_joins:
                 if isinstance(j, dict):
@@ -460,6 +468,7 @@ def check_block(
         # class alias (the PHT in this repo). The list form carries the
         # PHT in each item's populated_from.
         join_phts: set[str] = set()
+        join_phvs: list[tuple[str, str]] = []
         if isinstance(raw_joins, dict):
             for k, v in raw_joins.items():
                 if isinstance(k, str) and PHT_STRICT_RE.fullmatch(k):
@@ -468,6 +477,13 @@ def check_block(
                     jpht = v.get("populated_from", "")
                     if isinstance(jpht, str) and PHT_STRICT_RE.fullmatch(jpht):
                         join_phts.add(jpht)
+                    for key_field in ("source_key", "lookup_key"):
+                        kv = v.get(key_field)
+                        if isinstance(kv, str):
+                            for m in PHV_STRICT_RE.finditer(kv):
+                                join_phvs.append(
+                                    (m.group(), f"{key_field} in joins on {class_name}")
+                                )
         elif isinstance(raw_joins, list):
             for j in raw_joins:
                 if isinstance(j, dict):
@@ -482,6 +498,14 @@ def check_block(
                 f"PHT '{class_pht}' on {class_name} not found in "
                 f"dbGaP variable index"
             ))
+
+        # -- Check 3.3: PHV existence for join keys (source_key / lookup_key) --
+        for phv, context in join_phvs:
+            if phv not in dbgap.phv_to_pht:
+                findings.append(Finding(
+                    rel_path, block_idx, "3.3", "ERROR",
+                    f"PHV '{phv}' ({context}) not found in dbGaP index"
+                ))
 
         # Extract PHV references from slot derivations
         phv_refs, nested_join_phts = extract_slot_refs(slot_derivs, class_name)
