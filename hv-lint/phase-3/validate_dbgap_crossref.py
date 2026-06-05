@@ -55,8 +55,31 @@ COHORT_TO_CACHE_KEY: dict[str, str] = {
     "LTRC": "ltrc",
 }
 
-# Files to skip entirely (reset -- start fresh for Phase 3 restructuring)
-KNOWN_ISSUES: dict[str, str] = {}
+# Files to skip entirely. Each entry suppresses cross-reference checks for one
+# file while a tracked data issue is resolved -- remove the entry once fixed.
+_CARDIA_PHS000285_V3P2 = "CARDIA refs absent from phs000285.v3.p2 -- see #593"
+KNOWN_ISSUES: dict[str, str] = {
+    f"priority_variables_transform/CARDIA-ingest/{f}": _CARDIA_PHS000285_V3P2
+    for f in (
+        "basophil_ncnc_bld.yaml",
+        "bmi.yaml",
+        "cac_score.yaml",
+        "chr_bronchitis.yaml",
+        "cig_smok.yaml",
+        "copd.yaml",
+        "emphysema.yaml",
+        "eosinophil_ncnc_bld.yaml",
+        "lympho_ct.yaml",
+        "monocyte_ncnc_bld.yaml",
+        "neutro_ct.yaml",
+        "participant.yaml",
+        "person.yaml",
+        "pselectin.yaml",
+        "tak_nstat_med.yaml",
+        "visit.yaml",
+        "waist_hip.yaml",
+    )
+}
 
 SEVERITY_RANK = {"CRITICAL": 5, "ERROR": 4, "HIGH": 3, "WARNING": 2, "INFO": 1}
 

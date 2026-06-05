@@ -119,15 +119,9 @@ jobs:
             2>&1 | tee phase5-output.txt
           exit 0
 
-      # ENFORCED gate: the only check green across all cohorts today.
-      # A failure here fails the PR. `exit ${PIPESTATUS[0]}` propagates the
-      # script's exit code past the `tee` pipe (otherwise tee masks it).
-      #
-      # Phase 3 dbGaP cross-reference (3.1-3.5) is NOT yet gated: the committed
-      # dbgap-cache index is missing recently-added CARDIA PHTs/PHVs, producing
-      # 84 [3.2]/[3.3] "not found in index" errors. It runs advisory in the
-      # Phase 3 step above until the cache is refreshed (update_data.py) or the
-      # CARDIA refs are corrected, then it can be promoted to a gate.
+      # ENFORCED gates: checks green across all cohorts. A failure here fails
+      # the PR. `exit ${PIPESTATUS[0]}` propagates the script's exit code past
+      # the `tee` pipe (otherwise tee masks it).
       - name: "Gate: PHV deduplication 2.8 (enforced)"
         id: gate_phase2
         if: always()
@@ -137,6 +131,21 @@ jobs:
             --fail-on "${{ steps.config.outputs.fail_on }}" \
             --skip conformance \
             2>&1 | tee gate-phase2-output.txt
+          exit "${PIPESTATUS[0]}"
+
+      # Cross-reference (3.1-3.5) + value-semantic (3.11). 17 CARDIA files with
+      # refs absent from phs000285.v3.p2 are suppressed via KNOWN_ISSUES in
+      # validate_dbgap_crossref.py (tracked in #593); all other cohorts and any
+      # NEW CARDIA breakage are enforced. Semantic (3.9-3.16) stays advisory.
+      - name: "Gate: dbGaP cross-reference 3.1-3.5 + value-semantic 3.11 (enforced)"
+        id: gate_phase3
+        if: always()
+        run: |
+          python hv-lint/phase-3/run_phase3.py \
+            --cohort "${{ steps.config.outputs.cohort }}" \
+            --fail-on "${{ steps.config.outputs.fail_on }}" \
+            --skip semantic \
+            2>&1 | tee gate-phase3-output.txt
           exit "${PIPESTATUS[0]}"
 
       - name: Publish step summary
