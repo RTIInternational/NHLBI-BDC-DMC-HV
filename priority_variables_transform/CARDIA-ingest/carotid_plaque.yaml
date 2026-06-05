@@ -1,0 +1,21 @@
+- class_derivations:
+    Condition:
+      populated_from: pht001754
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00118009}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00118009}) + ":CARDIA YEAR 10")'
+        condition_concept:
+          value: OMOP:4102124
+        condition_status:
+          expr: "case((str({phv00118020}) == 'M', 'UNKNOWN'), (float({phv00118020}) == 0, 'ABSENT'), (True, 'PRESENT'))"
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: "Electron Beam Computed Tomography (EBCT)"
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string

@@ -1,0 +1,25 @@
+- class_derivations:
+    Condition:
+      populated_from: pht001001
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078666}) + ":WHI")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078666}) + ":WHI SCREENING")'
+          range: string
+        condition_concept:
+          value: HP:0001297
+          range: string
+        condition_status:
+          populated_from: phv00078697
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+        relationship_to_participant:
+          value: FAMILY_MEMBER
+          range: string

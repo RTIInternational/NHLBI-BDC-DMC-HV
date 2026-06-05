@@ -1,0 +1,107 @@
+- class_derivations:
+    Condition:
+      populated_from: pht003407
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
+        age_at_condition_start:
+          expr: 'case(({phv00193160} == 1, ({phv00078437} * 365) + {phv00193161}))'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193141}) + ":WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED")'
+          range: string
+        condition_concept:
+          value: OMOP:4102124
+          range: string
+        condition_status:
+          populated_from: phv00193160
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+          range: string
+        associated_evidence:
+          value: "adjudicated event"
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht003414
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
+        age_at_condition_start:
+          expr: 'case(({phv00193715} == 1, ({phv00078437} * 365) + {phv00193716}))'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
+          range: string
+        condition_concept:
+          value: OMOP:4102124
+          range: string
+        condition_status:
+          populated_from: phv00193715
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht003414
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
+        age_at_condition_start:
+          expr: 'case(({phv00193717} == 1, ({phv00078437} * 365) + {phv00193718}))'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
+          range: string
+        condition_concept:
+          value: OMOP:4102124
+          range: string
+        condition_status:
+          populated_from: phv00193717
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht006223
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283451}) + ":WHI")'
+        age_at_condition_start:
+          expr: 'case(({phv00283698} == 1, ({phv00078437} * 365) + {phv00283452}))'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
+          range: string
+        condition_concept:
+          value: OMOP:4102124
+          range: string
+        condition_status:
+          populated_from: phv00283698
+          value_mappings:
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        associated_evidence:
+          value: "hospital record abstraction"
+        relationship_to_participant:
+          value: ONESELF
+          range: string
