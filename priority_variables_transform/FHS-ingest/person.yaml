@@ -1,184 +1,49 @@
 - class_derivations:
-    ResearchStudy:
+    Person:
       populated_from: pht003099
+      joins:
+        pht002075:
+          source_key: phv00177926
+          lookup_key: phv00146738
+        pht000094:
+          source_key: phv00177926
+          lookup_key: phv00030516
       slot_derivations:
-        name:
-          value: 'Framingham Heart Study'
-        name_shortened:
-          value: FHS
-        accession_number:
-          value: phs000007
-        accession_authority:
-          value: dbGAP
-        version:
-          value: 35
-        url:
-          value: https://www.framinghamheartstudy.org/
-- class_derivations:
-    ResearchStudy:
-      populated_from: pht003099
-      slot_derivations:
-        name:
-          value: 'Framingham Heart Study Original Cohort'
-        name_shortened:
-          value: 'FHS Original'
-        part_of:
-          value: 'Framingham Heart Study'
-- class_derivations:
-    ResearchStudy:
-      populated_from: pht003099
-      slot_derivations:
-        name:
-          value: 'Framingham Heart Study Offspring Cohort'
-        name_shortened:
-          value: 'FHS Offspring'
-        part_of:
-          value: 'Framingham Heart Study'
-- class_derivations:
-    ResearchStudy:
-      populated_from: pht003099
-      slot_derivations:
-        name:
-          value: 'Framingham Heart Study Generation 3 Cohort'
-        name_shortened:
-          value: 'FHS Generation 3'
-        part_of:
-          value: 'Framingham Heart Study'
-- class_derivations:
-    ResearchStudy:
-      populated_from: pht003099
-      slot_derivations:
-        name:
-          value: 'Framingham Heart Study New Offspring Spouse Cohort'
-        name_shortened:
-          value: 'FHS New Offspring Spouse'
-        part_of:
-          value: 'Framingham Heart Study'
-- class_derivations:
-    ResearchStudy:
-      populated_from: pht003099
-      slot_derivations:
-        name:
-          value: 'Framingham Heart Study Omni 1 Cohort'
-        name_shortened:
-          value: 'FHS Omni 1'
-        part_of:
-          value: 'Framingham Heart Study'
-- class_derivations:
-    ResearchStudy:
-      populated_from: pht003099
-      slot_derivations:
-        name:
-          value: 'Framingham Heart Study Omni 2 Cohort'
-        name_shortened:
-          value: 'FHS Omni 2'
-        part_of:
-          value: 'Framingham Heart Study'
-- class_derivations:
-    Participant:
-      populated_from: pht003099
-      slot_derivations:
-        member_of_research_study:
-          expr: 'case(({phv00177928} == 0, "Framingham Heart Study Original Cohort"), ({phv00177928} == 1, "Framingham Heart Study Offspring Cohort"), ({phv00177928} == 2, "Framingham Heart Study New Offspring Spouse Cohort"), ({phv00177928} == 3, "Framingham Heart Study Generation 3 Cohort"), ({phv00177928} == 7, "Framingham Heart Study OMNI 1 Cohort"), ({phv00177928} == 72, "Framingham Heart Study OMNI 2 Cohort"), (True, "Framingham Heart Study Unknown Cohort"))'
-        associated_person:
+        identity:
+          expr: 'uuid5("https://w3id.org/bdchm/Person", str({dbGaP_Subject_ID}))'
+        species:
+          value: NCBITaxon:9606
+        vital_status:
+          expr: 'case(({pht002075.phv00146741} is not None, "OMOP:434489"))'
+        age_at_death:
+          expr: 'case(({pht002075.phv00146741} is not None, {pht002075.phv00146741} * 365))'
+        cause_of_death:
           object_derivations:
           - class_derivations:
-              Person:
+              CauseOfDeath:
                 populated_from: pht003099
                 slot_derivations:
-                  identity:
-                    populated_from: phv00177926
-                  species:
-                    value: NCBITaxon:9606
-# cross-table refs don't resolve against pht003099 (#447)
-# NOTE: cause_of_death structure fixed (#428) — duplicate CauseOfDeath keys
-#   converted to separate object_derivations list items. Re-enable when #447 resolved.
-#                  vital_status:
-#                    populated_from: pht006018.phv00276841
-#                    value_mappings:
-#                      '0': OMOP:4230556
-#                      '1': OMOP:434489
-#                  age_at_death:
-#                    expr: '{pht002075.phv00141916} * 365'
-#                  cause_of_death:
-#                    object_derivations:
-#                    - class_derivations:
-#                        CauseOfDeath:
-#                          populated_from: pht000094
-#                          slot_derivations:
-#                            cause:
-#                              populated_from: phv00021941
-#                            order:
-#                              value: 1
-#                    - class_derivations:
-#                        CauseOfDeath:
-#                          populated_from: pht000094
-#                          slot_derivations:
-#                            cause:
-#                              populated_from: phv00021942
-#                            order:
-#                              value: 2
-#                    - class_derivations:
-#                        CauseOfDeath:
-#                          populated_from: pht000094
-#                          slot_derivations:
-#                            cause:
-#                              populated_from: phv00021943
-#                            order:
-#                              value: 3
-#                    - class_derivations:
-#                        CauseOfDeath:
-#                          populated_from: pht000094
-#                          slot_derivations:
-#                            cause:
-#                              populated_from: phv00021944
-#                            order:
-#                              value: 4
-#                    - class_derivations:
-#                        CauseOfDeath:
-#                          populated_from: pht000094
-#                          slot_derivations:
-#                            cause:
-#                              populated_from: phv00021945
-#                            order:
-#                              value: 5
-#                    - class_derivations:
-#                        CauseOfDeath:
-#                          populated_from: pht000094
-#                          slot_derivations:
-#                            cause:
-#                              populated_from: phv00021946
-#                            order:
-#                              value: 6
-#                    - class_derivations:
-#                        CauseOfDeath:
-#                          populated_from: pht000094
-#                          slot_derivations:
-#                            cause:
-#                              populated_from: phv00021947
-#                            order:
-#                              value: 7
-#                    - class_derivations:
-#                        CauseOfDeath:
-#                          populated_from: pht000094
-#                          slot_derivations:
-#                            cause:
-#                              populated_from: phv00021948
-#                            order:
-#                              value: 8
-#                    - class_derivations:
-#                        CauseOfDeath:
-#                          populated_from: pht000094
-#                          slot_derivations:
-#                            cause:
-#                              populated_from: phv00021949
-#                            order:
-#                              value: 9
-#                    - class_derivations:
-#                        CauseOfDeath:
-#                          populated_from: pht000094
-#                          slot_derivations:
-#                            cause:
-#                              populated_from: phv00021950
-#                            order:
-#                              value: 10
+                  cause:
+                    # pht000094.phv00030515 = icd_sys (ICD version: 8 or 9)
+                    # pht000094.phv00030512 = icdecod1 (main/underlying cause of death)
+                    expr: 'case(({pht000094.phv00030515} == 9 and {pht000094.phv00030512} is not None, "ICD9CM:" + str({pht000094.phv00030512})), ({pht000094.phv00030515} == 8 and {pht000094.phv00030512} is not None, "ICD8CM:" + str({pht000094.phv00030512})))'
+                  order:
+                    value: 1
+          - class_derivations:
+              CauseOfDeath:
+                populated_from: pht003099
+                slot_derivations:
+                  cause:
+                    # pht000094.phv00030513 = icdecod2 (secondary cause of death)
+                    expr: 'case(({pht000094.phv00030515} == 9 and {pht000094.phv00030513} is not None, "ICD9CM:" + str({pht000094.phv00030513})), ({pht000094.phv00030515} == 8 and {pht000094.phv00030513} is not None, "ICD8CM:" + str({pht000094.phv00030513})))'
+                  order:
+                    value: 2
+          - class_derivations:
+              CauseOfDeath:
+                populated_from: pht003099
+                slot_derivations:
+                  cause:
+                    # pht000094.phv00030514 = icdecod3 (tertiary cause of death)
+                    expr: 'case(({pht000094.phv00030515} == 9 and {pht000094.phv00030514} is not None, "ICD9CM:" + str({pht000094.phv00030514})), ({pht000094.phv00030515} == 8 and {pht000094.phv00030514} is not None, "ICD8CM:" + str({pht000094.phv00030514})))'
+                  order:
+                    value: 3
