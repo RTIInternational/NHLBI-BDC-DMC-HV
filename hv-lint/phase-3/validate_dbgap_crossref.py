@@ -80,6 +80,15 @@ KNOWN_ISSUES: dict[str, str] = {
         "waist_hip.yaml",
     )
 }
+# FHS person.yaml death/vital-status block references accessions that do not
+# exist in phs000007.v35: cause-of-death PHVs (phv00030512-516) do not match
+# pht000094 (real vars are UCOD=phv00021941, COD1-9), and vital-status/age-at-
+# death are mapped to pht002075, which is actually a neuropathology table.
+# Needs curation-team rework to the correct FHS survival/cause-of-death tables.
+KNOWN_ISSUES["priority_variables_transform/FHS-ingest/person.yaml"] = (
+    "FHS death/cause-of-death mappings reference accessions absent from "
+    "phs000007.v35 -- see #594"
+)
 
 SEVERITY_RANK = {"CRITICAL": 5, "ERROR": 4, "HIGH": 3, "WARNING": 2, "INFO": 1}
 
