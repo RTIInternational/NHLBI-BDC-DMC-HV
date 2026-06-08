@@ -18,6 +18,7 @@ from hv_dataqc.extract_harmonized.extract_harmonized_summaries import (
     load_entity,
     process_measurement_observation_sets,
     process_measurements,
+    process_observations,
     resolve_visit_series,
 )
 
@@ -145,6 +146,87 @@ class ExtractHarmonizedSummaryTests(unittest.TestCase):
         self.assertEqual(variables, {})
         self.assertEqual(diagnostics["measurement_observation_set_parse_errors"], 1)
         self.assertEqual(diagnostics["measurement_observation_set_rows_examined"], 2)
+
+
+class LabelMapWiringTests(unittest.TestCase):
+    """The three entity processors should populate `bdc_label` when a label
+    map is supplied, and leave it `None` otherwise."""
+
+    LABEL_MAP = {
+        "OBA:VT0001253": "Height",
+        "OMOP:4245997": "BMI",
+        "CESD_SCORE": "CESD score",
+    }
+
+    def test_process_measurements_populates_bdc_label(self) -> None:
+        df = pd.DataFrame(
+            {
+                "observation_type": ["OBA:VT0001253", "OMOP:4245997"],
+                "value_quantity__value_decimal": [180.0, 24.5],
+            }
+        )
+        variables = process_measurements(df, {}, label_map=self.LABEL_MAP)
+        self.assertEqual(variables["measurement_OBA:VT0001253"]["bdc_label"], "Height")
+        self.assertEqual(variables["measurement_OMOP:4245997"]["bdc_label"], "BMI")
+
+    def test_process_measurements_bdc_label_none_when_no_map(self) -> None:
+        df = pd.DataFrame(
+            {
+                "observation_type": ["OBA:VT0001253"],
+                "value_quantity__value_decimal": [180.0],
+            }
+        )
+        variables = process_measurements(df, {})
+        self.assertIsNone(variables["measurement_OBA:VT0001253"]["bdc_label"])
+
+    def test_process_measurements_bdc_label_none_for_unknown_obs_type(self) -> None:
+        df = pd.DataFrame(
+            {
+                "observation_type": ["OBA:UNMAPPED"],
+                "value_quantity__value_decimal": [42.0],
+            }
+        )
+        variables = process_measurements(df, {}, label_map=self.LABEL_MAP)
+        self.assertIsNone(variables["measurement_OBA:UNMAPPED"]["bdc_label"])
+
+    def test_process_observations_populates_bdc_label(self) -> None:
+        df = pd.DataFrame(
+            {
+                "observation_type": ["CESD_SCORE"],
+                "value_quantity__value_decimal": [12.0],
+            }
+        )
+        variables = process_observations(df, label_map=self.LABEL_MAP)
+        self.assertEqual(variables["observation_CESD_SCORE"]["bdc_label"], "CESD score")
+
+    def test_process_observations_bdc_label_none_when_no_map(self) -> None:
+        df = pd.DataFrame(
+            {
+                "observation_type": ["CESD_SCORE"],
+                "value_quantity__value_decimal": [12.0],
+            }
+        )
+        variables = process_observations(df)
+        self.assertIsNone(variables["observation_CESD_SCORE"]["bdc_label"])
+
+    def test_process_measurement_observation_sets_populates_bdc_label(self) -> None:
+        # MOS observations are stringified Python list-of-dicts that get
+        # parsed by ast.literal_eval.
+        df = pd.DataFrame(
+            {
+                "observations": [
+                    "[{'observation_type': 'OBA:VT0001253', "
+                    "'value_quantity': {'value_decimal': 175.0}}]",
+                ],
+            }
+        )
+        variables = process_measurement_observation_sets(
+            df, {}, label_map=self.LABEL_MAP,
+        )
+        # MOS uses 'measurement_set_{obs_type}' as the key prefix.
+        keys = [k for k in variables if "VT0001253" in k]
+        self.assertTrue(keys, f"expected a Height key, got: {list(variables)}")
+        self.assertEqual(variables[keys[0]]["bdc_label"], "Height")
 
 
 if __name__ == "__main__":

@@ -58,6 +58,10 @@ from hv_dataqc.hv_dataqc_common import (
     continuous_stats,
     write_json_atomic,
 )
+from hv_dataqc.extract_harmonized.label_map import (
+    DEFAULT_PATH as DEFAULT_LABEL_MAP_PATH,
+    load_label_map,
+)
 
 # Entity TSV files produced by dm-bip
 ENTITY_FILES = {
@@ -308,6 +312,7 @@ def process_measurements(
     df: pd.DataFrame,
     visit_id_to_label: dict[str, str],
     by_visit: bool = False,
+    label_map: dict[str, str] | None = None,
 ) -> dict[str, dict]:
     """Extract per-observation_type summaries from MeasurementObservation.
 
@@ -319,6 +324,8 @@ def process_measurements(
         visit_id_to_label: UUID-to-label map built from Visit.tsv. Resolves
             UUIDs in associated_visit before building by-visit stats.
         by_visit: If True, include per-visit breakdowns.
+        label_map: Optional observation_type -> bdc_label lookup. When supplied,
+            each variable's ``bdc_label`` field is populated (otherwise ``None``).
     """
     variables: dict[str, dict] = {}
 
@@ -387,6 +394,7 @@ def process_measurements(
 
         summary["entity"] = "MeasurementObservation"
         summary["observation_type"] = key
+        summary["bdc_label"] = (label_map or {}).get(key)
 
         if by_visit and "associated_visit" in df.columns:
             by_visit_stats: dict[str, dict] = {}
@@ -474,13 +482,21 @@ def process_conditions(
     return variables
 
 
-def process_observations(df: pd.DataFrame) -> dict[str, dict]:
+def process_observations(
+    df: pd.DataFrame,
+    label_map: dict[str, str] | None = None,
+) -> dict[str, dict]:
     """Extract per-observation_type summaries from Observation entity.
 
     Checks multiple candidate value column names — different YAML slot names
     produce different column names in the output TSV. Includes nested
     Quantity columns (value_quantity__*) emitted by dm-bip when the YAML
     uses an object_derivation for value_quantity (e.g., fam_income.yaml).
+
+    Args:
+        df: Observation DataFrame.
+        label_map: Optional observation_type -> bdc_label lookup. When supplied,
+            each variable's ``bdc_label`` field is populated (otherwise ``None``).
     """
     variables: dict[str, dict] = {}
 
@@ -533,6 +549,7 @@ def process_observations(df: pd.DataFrame) -> dict[str, dict]:
 
         summary["entity"] = "Observation"
         summary["observation_type"] = key
+        summary["bdc_label"] = (label_map or {}).get(key)
         variables[f"observation_{key}"] = summary
 
     return variables
@@ -543,6 +560,7 @@ def process_measurement_observation_sets(
     visit_id_to_label: dict[str, str],
     by_visit: bool = False,
     diagnostics_out: dict | None = None,
+    label_map: dict[str, str] | None = None,
 ) -> dict[str, dict]:
     """Extract per-observation_type summaries from MeasurementObservationSet entity.
 
@@ -706,6 +724,7 @@ def process_measurement_observation_sets(
             }
         summary["entity"] = "MeasurementObservationSet"
         summary["observation_type"] = obs_type_str
+        summary["bdc_label"] = (label_map or {}).get(obs_type_str)
         if method_str:
             summary["method_type"] = method_str
 
@@ -859,6 +878,11 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
                    help="Override output JSON filename.")
     p.add_argument("--extract-config", metavar="YAML",
                    help=f"Harmonized extractor config YAML (default: {_DEFAULT_EXTRACT_CONFIG})")
+    p.add_argument("--label-map", metavar="TSV", default=None,
+                   help="harmonized_vars.tsv path. Resolves observation_type "
+                        "to bdc_label for each measurement / observation entry. "
+                        "Pass an empty string to skip (default: shipped TSV at "
+                        "extract_harmonized/config/harmonized_vars.tsv).")
     return p.parse_args(argv)
 
 
@@ -871,6 +895,20 @@ def main(argv: list[str] | None = None) -> None:
     extract_config_path = Path(args.extract_config) if args.extract_config else _DEFAULT_EXTRACT_CONFIG
     extract_config = load_harmonized_extract_config(extract_config_path)
     apply_harmonized_extract_config(extract_config)
+
+    # Load observation_type -> bdc_label map.  An empty string explicitly
+    # disables labeling; None (default) uses the shipped TSV.  A path string
+    # overrides to a custom map.
+    label_map: dict[str, str] = {}
+    if args.label_map == "":
+        print("Label map: disabled (--label-map='')")
+    else:
+        label_map_path = Path(args.label_map) if args.label_map else DEFAULT_LABEL_MAP_PATH
+        try:
+            label_map = load_label_map(label_map_path)
+            print(f"Label map: {len(label_map)} entries from {label_map_path.name}")
+        except FileNotFoundError:
+            print(f"WARNING: label map not found at {label_map_path} -- bdc_label will be None for all entries")
 
     # Resolve mapped-data directories
     if args.mapped_data_dirs:
@@ -1025,7 +1063,7 @@ def _run_extract(
         participant_count_candidates["MeasurementObservation"] = participant_count_from_entity(
             meas_df, ("associated_participant", "participant", "participant_id")
         )
-        mo_vars = process_measurements(meas_df, visit_id_to_label, args.by_visit)
+        mo_vars = process_measurements(meas_df, visit_id_to_label, args.by_visit, label_map=label_map)
         merge_variable_summaries(variables, mo_vars, extraction_warnings)
         n_types = (
             int(meas_df["observation_type"].nunique()) if "observation_type" in meas_df.columns else 0
@@ -1051,7 +1089,8 @@ def _run_extract(
             meas_set_df, ("associated_participant", "participant", "participant_id")
         )
         mos_vars = process_measurement_observation_sets(
-            meas_set_df, visit_id_to_label, args.by_visit, diagnostics_out=extraction_warnings
+            meas_set_df, visit_id_to_label, args.by_visit,
+            diagnostics_out=extraction_warnings, label_map=label_map,
         )
         merge_variable_summaries(variables, mos_vars, extraction_warnings)
         print(f"    Total: {len(meas_set_df):,} rows | {len(mos_vars)} observation types extracted")
@@ -1094,7 +1133,7 @@ def _run_extract(
         participant_count_candidates["Observation"] = participant_count_from_entity(
             obs_df, ("associated_participant", "participant", "participant_id")
         )
-        obs_vars = process_observations(obs_df)
+        obs_vars = process_observations(obs_df, label_map=label_map)
         variables.update(obs_vars)
         print(f"    Total: {len(obs_df):,} rows | {len(obs_vars)} observation types")
     else:
