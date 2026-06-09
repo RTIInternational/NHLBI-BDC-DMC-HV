@@ -6,3 +6,4 @@ HV="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$HV"
 export UV_LINK_MODE=copy
 uv sync
+git config core.fileMode false  # because SB changes file permissions and then git status says every file has changed
