@@ -121,8 +121,9 @@ def pool_entries(
         bdc_label: The label these entries pool into (recorded on the result).
 
     Returns:
-        PooledRow with exact n / nulls / mean / sd / min / max and approximate
-        median (n-weighted average of contributor medians).
+        PooledRow with pooled n / nulls / participants / mean / sd / min /
+        max and an n-weighted average of contributor medians.  See the
+        module docstring for the math.
     """
     if not entries:
         return PooledRow(

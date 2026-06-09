@@ -81,19 +81,29 @@ DATARUN_PATH="/sbgenomics/project-files/_QC_STAGING/$CHOSEN_DATARUN"
 
 # --- Discover cohorts in the DataRun ---
 # Each cohort's mapped-data dir is at
-#   <DataRun>/DMC_<lowercase>_<COHORT>_*BDCHM/mapped-data/
-# Extract the COHORT segment between the second underscore and "_Processed".
+#   <DataRun>/DMC_<lowercase_study>_<COHORT>_*BDCHM/mapped-data/
+# The lowercase study prefix can itself contain underscores (e.g. hchs_sol),
+# so we match against a known list of cohort names by checking for
+# `_${COHORT}_` as a delimited substring in the DMC dir basename.  Same
+# approach run_extracts.sh uses on the input side.
+KNOWN_COHORTS=(ARIC CARDIA CHS COPDGene FHS HCHS JHS LTRC MESA SPIROMICS WHI)
 declare -A COHORT_MAPPED_DIRS=()  # cohort -> space-separated list of mapped-data dirs
 for mapped_dir in $(find "$DATARUN_PATH" -ipath "*BDCHM/mapped-data" -type d 2>/dev/null | sort); do
-    # Walk up to the DMC_*_<COHORT>_*BDCHM dir
     bdchm_dir=$(dirname "$mapped_dir")
     dmc_dir=$(basename "$(dirname "$bdchm_dir")")
-    # Strip DMC_ prefix and _Processed_... suffix; what remains is <lowercase>_<COHORT>_<consent>
-    stripped="${dmc_dir#DMC_}"
-    stripped="${stripped%_Processed_*}"
-    # Cohort is the second underscore-delimited token (after lowercase study, before consent)
-    cohort=$(echo "$stripped" | awk -F_ '{print $2}')
+    cohort=""
+    for candidate in "${KNOWN_COHORTS[@]}"; do
+        # Use case-insensitive _COHORT_ delimiter matching.  Same logic as
+        # run_extracts.sh's find -ipath "*_${COHORT}_*BDCHM/mapped-data".
+        candidate_lower=$(echo "$candidate" | tr '[:upper:]' '[:lower:]')
+        dmc_lower=$(echo "$dmc_dir" | tr '[:upper:]' '[:lower:]')
+        if [[ "$dmc_lower" == *"_${candidate_lower}_"* ]]; then
+            cohort="$candidate"
+            break
+        fi
+    done
     if [ -z "$cohort" ]; then
+        echo "NOTE: skipping $dmc_dir (no known cohort name matched)" >&2
         continue
     fi
     # Accumulate mapped-data dirs per cohort
