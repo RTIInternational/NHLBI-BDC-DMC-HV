@@ -229,5 +229,38 @@ class LabelMapWiringTests(unittest.TestCase):
         self.assertEqual(variables[keys[0]]["bdc_label"], "Height")
 
 
+class LabelMapMainWiringTests(unittest.TestCase):
+    """Regression tests for the main() -> _run_extract -> processor wiring.
+
+    When the label_map flag was first added, ``main()`` loaded the map but
+    didn't pass it through to ``_run_extract``, which still referenced
+    ``label_map`` from its enclosing scope and raised ``NameError`` at
+    runtime — caught only on the first SB run.  These tests use
+    ``inspect.signature`` to verify the wiring without needing TSV fixtures.
+    """
+
+    def test_run_extract_accepts_label_map_parameter(self) -> None:
+        import inspect
+        from hv_dataqc.extract_harmonized.extract_harmonized_summaries import _run_extract
+        sig = inspect.signature(_run_extract)
+        self.assertIn(
+            "label_map", sig.parameters,
+            "_run_extract must accept label_map; main() loads it and "
+            "_run_extract uses it in the processor call sites.",
+        )
+
+    def test_main_passes_label_map_to_run_extract(self) -> None:
+        # Structural check: main()'s body should contain `label_map=label_map`
+        # as a kwarg in the _run_extract call.  If a refactor renames either
+        # side, this test fails loudly.
+        import inspect
+        from hv_dataqc.extract_harmonized.extract_harmonized_summaries import main
+        source = inspect.getsource(main)
+        self.assertIn(
+            "label_map=label_map", source,
+            "main() must forward its loaded label_map into _run_extract.",
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

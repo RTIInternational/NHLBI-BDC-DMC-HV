@@ -964,6 +964,7 @@ def main(argv: list[str] | None = None) -> None:
             log_path=log_path,
             extract_config=extract_config,
             extract_config_path=extract_config_path,
+            label_map=label_map,
         )
     finally:
         # Ensure stdout is restored and the log file is closed even if an
@@ -981,6 +982,7 @@ def _run_extract(
     log_path: Path,
     extract_config: dict | None,
     extract_config_path: Path,
+    label_map: dict[str, str] | None = None,
 ) -> None:
     print("=" * 60)
     print(f"  HV-DataQC Harmonized Extractor: {cohort}")
