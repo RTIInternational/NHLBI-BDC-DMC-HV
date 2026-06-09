@@ -288,6 +288,19 @@ def participant_count_from_entity(df: pd.DataFrame, preferred_cols: tuple[str, .
     return 0
 
 
+# Column names that have historically held the participant ID across the
+# different dm-bip-emitted entity TSVs.  Tried in order; first available wins.
+_PARTICIPANT_COL_CANDIDATES = ("associated_participant", "participant", "participant_id")
+
+
+def _participant_col(df: pd.DataFrame) -> str | None:
+    """Return the first participant-ID column present in *df*, or None."""
+    for col in _PARTICIPANT_COL_CANDIDATES:
+        if col in df.columns:
+            return col
+    return None
+
+
 # ---------------------------------------------------------------------------
 # Summary statistics
 # ---------------------------------------------------------------------------
@@ -361,6 +374,8 @@ def process_measurements(
         df = df.copy()
         df["associated_visit"] = resolve_visit_series(df["associated_visit"], visit_id_to_label)
 
+    pcol = _participant_col(df)
+
     for obs_type, group in df.groupby("observation_type", dropna=False):
         key = str(obs_type) if pd.notna(obs_type) else "MISSING_OBS_TYPE"
 
@@ -395,6 +410,8 @@ def process_measurements(
         summary["entity"] = "MeasurementObservation"
         summary["observation_type"] = key
         summary["bdc_label"] = (label_map or {}).get(key)
+        if pcol is not None:
+            summary["participants"] = int(group[pcol].nunique(dropna=True))
 
         if by_visit and "associated_visit" in df.columns:
             by_visit_stats: dict[str, dict] = {}
@@ -521,6 +538,8 @@ def process_observations(
         "value_as_concept_name",
     ]
 
+    pcol = _participant_col(df)
+
     for obs_type, group in df.groupby("observation_type", dropna=False):
         key = str(obs_type) if pd.notna(obs_type) else "MISSING_OBS_TYPE"
 
@@ -550,6 +569,8 @@ def process_observations(
         summary["entity"] = "Observation"
         summary["observation_type"] = key
         summary["bdc_label"] = (label_map or {}).get(key)
+        if pcol is not None:
+            summary["participants"] = int(group[pcol].nunique(dropna=True))
         variables[f"observation_{key}"] = summary
 
     return variables
@@ -589,6 +610,11 @@ def process_measurement_observation_sets(
     if "associated_visit" in df.columns:
         df = df.copy()
         df["associated_visit"] = resolve_visit_series(df["associated_visit"], visit_id_to_label)
+
+    # Participant IDs live on the outer set row, not in the exploded
+    # sub-observation dict.  Propagate them so we can compute per-
+    # observation_type distinct participant counts after the explode.
+    outer_pcol = _participant_col(df)
 
     rows: list[dict] = []
     parse_errors = 0
@@ -632,6 +658,9 @@ def process_measurement_observation_sets(
             if "associated_visit" in df.columns
             else None
         )
+        participant_val = (
+            df[outer_pcol].iloc[idx] if outer_pcol is not None else None
+        )
 
         for obs in obs_list:
             if not isinstance(obs, dict):
@@ -662,6 +691,7 @@ def process_measurement_observation_sets(
                     CODED_FIELD: vq.get(CODED_FIELD),
                     CONCEPT_FIELD: vq.get(CONCEPT_FIELD),
                     "associated_visit": visit_val,
+                    "_participant_id": participant_val,
                 }
             )
 
@@ -725,6 +755,8 @@ def process_measurement_observation_sets(
         summary["entity"] = "MeasurementObservationSet"
         summary["observation_type"] = obs_type_str
         summary["bdc_label"] = (label_map or {}).get(obs_type_str)
+        if "_participant_id" in group.columns:
+            summary["participants"] = int(group["_participant_id"].nunique(dropna=True))
         if method_str:
             summary["method_type"] = method_str
 

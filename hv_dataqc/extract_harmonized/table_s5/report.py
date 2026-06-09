@@ -41,6 +41,18 @@ def _fmt_float(value: float | None) -> str:
     return str(value)
 
 
+def _fmt_enums(enums: dict[str, int] | None) -> str:
+    """Serialize an enum distribution as 'cat1: n1; cat2: n2; ...'.
+
+    Sorts categories by count descending so the most common are first;
+    ties broken alphabetically for stability across runs.
+    """
+    if not enums:
+        return ""
+    items = sorted(enums.items(), key=lambda kv: (-kv[1], kv[0]))
+    return "; ".join(f"{cat}: {n}" for cat, n in items)
+
+
 def _row_to_sheet_cells(row: PooledRow | None) -> list[str]:
     """Render a PooledRow as the SHEET_COLUMNS-ordered cells for the TSV."""
     if row is None:
@@ -53,7 +65,7 @@ def _row_to_sheet_cells(row: PooledRow | None) -> list[str]:
         _fmt_float(row.maximum),
         _fmt_float(row.minimum),
         _fmt_float(row.sd),
-        "",  # 'enums' column — left blank; populated upstream by Sheets formulas
+        _fmt_enums(row.enums),
         _fmt_int(row.participants),
     ]
 

@@ -153,12 +153,54 @@ class PoolEntriesTests(unittest.TestCase):
         self.assertIsNone(row.mean)
         self.assertIsNone(row.sd)
 
-    def test_participants_falls_back_to_n_valid(self) -> None:
-        # When 'participants' isn't supplied, we treat n_valid as the
-        # participant count for that cohort.
+    def test_participants_none_when_no_contributor_supplies_it(self) -> None:
+        # When NO contributor supplies 'participants', the result is None
+        # (not a silent fallback to n_valid).  This surfaces in the
+        # formatter as a blank cell rather than the misleading
+        # participants==n sentinel that earlier versions emitted.
         entry = {"n_valid": 80, "_cohort": "A"}
         row = pool_entries([entry], bdc_label="X")
-        self.assertEqual(row.participants, 80)
+        self.assertIsNone(row.participants)
+
+    def test_participants_summed_across_contributors_that_supply_it(self) -> None:
+        # Cohorts have disjoint participant sets, so summing distinct
+        # participant counts is correct.
+        a = {"n_valid": 100, "participants": 90, "_cohort": "A"}
+        b = {"n_valid": 100, "participants": 95, "_cohort": "B"}
+        row = pool_entries([a, b], bdc_label="X")
+        self.assertEqual(row.participants, 185)
+
+    def test_participants_partial_sums_only_contributors_with_it(self) -> None:
+        # If only some contributors supply participants, sum those and
+        # ignore the rest.  Better than None (we have some signal) and
+        # better than misreporting (we know which cohort's count this is).
+        a = {"n_valid": 100, "participants": 90, "_cohort": "A"}
+        b = {"n_valid": 100, "_cohort": "B"}  # no participants field
+        row = pool_entries([a, b], bdc_label="X")
+        self.assertEqual(row.participants, 90)
+
+    def test_enums_pool_by_category(self) -> None:
+        # Same category 'ABSENT' across two cohorts -> summed.  Distinct
+        # categories preserved.
+        a = {
+            "n_valid": 100, "_cohort": "A",
+            "distribution": {
+                "ABSENT": {"n": 80, "pct": 80.0},
+                "PRESENT": {"n": 20, "pct": 20.0},
+            },
+        }
+        b = {
+            "n_valid": 200, "_cohort": "B",
+            "distribution": {
+                "ABSENT": {"n": 150, "pct": 75.0},
+                "UNKNOWN": {"n": 50, "pct": 25.0},
+            },
+        }
+        row = pool_entries([a, b], bdc_label="X")
+        self.assertEqual(
+            row.enums,
+            {"ABSENT": 230, "PRESENT": 20, "UNKNOWN": 50},
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -243,8 +285,9 @@ class FormatPasteTsvTests(unittest.TestCase):
     def test_matched_label_renders_stats(self) -> None:
         pooled = {
             "BMI": PooledRow(
-                bdc_label="BMI", n=300, nulls_missing=15, participants=300,
+                bdc_label="BMI", n=300, nulls_missing=15, participants=270,
                 mean=28.0, median=27.0, minimum=16.0, maximum=50.0, sd=5.0,
+                enums={},
                 contributing_codes=("OBA:BMI_ALT", "OMOP:4245997"),
                 contributing_cohorts=("ARIC", "CHS"), n_contributors=2,
             ),
@@ -262,8 +305,8 @@ class FormatPasteTsvTests(unittest.TestCase):
         self.assertEqual(cells[4], "50.0")   # max
         self.assertEqual(cells[5], "16.0")   # min
         self.assertEqual(cells[6], "5.0")    # sd
-        self.assertEqual(cells[7], "")       # enums
-        self.assertEqual(cells[8], "300")    # participants
+        self.assertEqual(cells[7], "")       # enums (empty for continuous)
+        self.assertEqual(cells[8], "270")    # participants — distinct, not == n
         # Coverage for BMI is 'matched'.
         bmi_cov = next(r for r in coverage if r["s5_label"] == "BMI")
         self.assertEqual(bmi_cov["status"], "matched")
@@ -285,6 +328,7 @@ class FormatPasteTsvTests(unittest.TestCase):
             "Fruits": PooledRow(
                 bdc_label="Fruits", n=50, nulls_missing=0, participants=50,
                 mean=None, median=None, minimum=None, maximum=None, sd=None,
+                enums={},
                 contributing_codes=(), contributing_cohorts=("ARIC",),
                 n_contributors=1,
             ),
@@ -304,6 +348,7 @@ class FormatPasteTsvTests(unittest.TestCase):
             "BMI": PooledRow(
                 bdc_label="BMI", n=100, nulls_missing=0, participants=100,
                 mean=27.0, median=None, minimum=None, maximum=None, sd=None,
+                enums={},
                 contributing_codes=("OMOP:4245997",),
                 contributing_cohorts=("ARIC",), n_contributors=1,
             ),
@@ -315,10 +360,52 @@ class FormatPasteTsvTests(unittest.TestCase):
         self.assertIn("status", header)
         self.assertIn("n_contributors", header)
 
+    def test_categorical_row_renders_enums(self) -> None:
+        # Categorical variable with three categories.  Cells 2-6 (mean...sd)
+        # should be blank, enums (cell 7) should be the formatted dict
+        # sorted descending by count, participants (cell 8) populated.
+        pooled = {
+            "Cigarette smoking": PooledRow(
+                bdc_label="Cigarette smoking", n=300, nulls_missing=15,
+                participants=270,
+                mean=None, median=None, minimum=None, maximum=None, sd=None,
+                enums={"NEVER": 180, "FORMER": 80, "CURRENT": 40},
+                contributing_codes=("OMOP:45883537",),
+                contributing_cohorts=("ARIC",), n_contributors=1,
+            ),
+        }
+        paste, _ = format_paste_tsv(pooled)
+        idx = TABLE_S5_LABELS.index("Cigarette smoking")
+        cells = paste.split("\n")[idx].split("\t")
+        self.assertEqual(cells[2], "")                # mean
+        self.assertEqual(cells[3], "")                # median
+        # enums sorted descending by count.
+        self.assertEqual(cells[7], "NEVER: 180; FORMER: 80; CURRENT: 40")
+        self.assertEqual(cells[8], "270")             # participants
+
+    def test_participants_blank_when_none(self) -> None:
+        # When participants is None (no contributor supplied it), the cell
+        # should render blank — not "0", not "n", just empty.
+        pooled = {
+            "BMI": PooledRow(
+                bdc_label="BMI", n=100, nulls_missing=0, participants=None,
+                mean=27.0, median=None, minimum=None, maximum=None, sd=None,
+                enums={},
+                contributing_codes=(), contributing_cohorts=(),
+                n_contributors=1,
+            ),
+        }
+        paste, _ = format_paste_tsv(pooled)
+        idx = TABLE_S5_LABELS.index("BMI")
+        cells = paste.split("\n")[idx].split("\t")
+        self.assertEqual(cells[0], "100")  # n is set
+        self.assertEqual(cells[8], "")     # participants blank
+
     def test_coverage_summary_string(self) -> None:
         pooled = {"BMI": PooledRow(
             bdc_label="BMI", n=100, nulls_missing=0, participants=100,
             mean=27.0, median=None, minimum=None, maximum=None, sd=None,
+            enums={},
             contributing_codes=(), contributing_cohorts=(), n_contributors=1,
         )}
         _, coverage = format_paste_tsv(pooled)

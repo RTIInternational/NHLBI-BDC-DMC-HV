@@ -8,9 +8,17 @@ cohort that contributed.
 
 ## Pooling math
 
-For n / nulls_missing / participants: **exact** sum across contributors.
-Cohorts have disjoint participant sets, so summing distinct participant
-counts is correct.
+For n / nulls_missing: **exact** sum across contributors.
+
+For participants: **exact** sum across contributors that provide a
+distinct-participant-id count.  Cohorts have disjoint participant sets,
+so summing is correct.  When NO contributor supplies ``participants``
+the result is ``None`` — the formatter renders blank rather than
+falling back to ``n``, which would mislead readers.
+
+For enums: **sum n by category** across contributors.  Categories with
+the same label (e.g. ``ABSENT``) pool; cohort-specific labels stay
+separate.
 
 For mean: **exact** n-weighted average across contributors that provide
 both ``n_valid`` and ``mean``.
@@ -53,12 +61,13 @@ class PooledRow:
     bdc_label: str
     n: int
     nulls_missing: int
-    participants: int
+    participants: int | None
     mean: float | None
     median: float | None
     minimum: float | None
     maximum: float | None
     sd: float | None
+    enums: dict[str, int]
     contributing_codes: tuple[str, ...]
     contributing_cohorts: tuple[str, ...]
     n_contributors: int
@@ -127,18 +136,46 @@ def pool_entries(
     """
     if not entries:
         return PooledRow(
-            bdc_label=bdc_label, n=0, nulls_missing=0, participants=0,
+            bdc_label=bdc_label, n=0, nulls_missing=0, participants=None,
             mean=None, median=None, minimum=None, maximum=None, sd=None,
+            enums={},
             contributing_codes=(), contributing_cohorts=(), n_contributors=0,
         )
 
     n_total = sum(int(e.get("n_valid", 0) or 0) for e in entries)
     nulls = sum(int(e.get("n_missing", 0) or 0) for e in entries)
-    # 'participants' isn't always present; fall back to n_valid when missing.
-    participants = sum(
-        int(e.get("participants", e.get("n_valid", 0)) or 0)
-        for e in entries
+    # 'participants' is a distinct-participant-id count when the extractor
+    # supplied it.  Sum across cohorts (cohorts are disjoint participant
+    # sets).  Return None — not a fallback to n_valid — when NO contributor
+    # supplied participants, so the S5 cell shows blank rather than the
+    # misleading "participants == n" sentinel that fell out before.
+    participants_provided = [
+        int(e["participants"]) for e in entries
+        if "participants" in e and e.get("participants") is not None
+    ]
+    participants: int | None = (
+        sum(participants_provided) if participants_provided else None
     )
+
+    # Pool categorical enum distributions by category.  Cohorts using the
+    # same category label (e.g. "ABSENT") accumulate; cohort-specific labels
+    # stay separate (which is desirable for surfacing harmonization gaps).
+    enums: dict[str, int] = {}
+    for e in entries:
+        dist = e.get("distribution") or {}
+        if not isinstance(dist, dict):
+            continue
+        for cat, stats in dist.items():
+            if isinstance(stats, dict):
+                count = int(stats.get("n", 0) or 0)
+            else:
+                # Defensive: distribution sometimes stored as {cat: int}.
+                try:
+                    count = int(stats)
+                except (TypeError, ValueError):
+                    continue
+            if count > 0:
+                enums[str(cat)] = enums.get(str(cat), 0) + count
 
     # n-weighted mean over contributors that have both n_valid > 0 and mean.
     mean_contribs: list[tuple[int, float]] = []
@@ -190,6 +227,7 @@ def pool_entries(
         minimum=min(mins) if mins else None,
         maximum=max(maxs) if maxs else None,
         sd=_pooled_sd(sd_contribs) if sd_strictly_pooled else None,
+        enums=enums,
         contributing_codes=codes,
         contributing_cohorts=cohorts,
         n_contributors=len(entries),
