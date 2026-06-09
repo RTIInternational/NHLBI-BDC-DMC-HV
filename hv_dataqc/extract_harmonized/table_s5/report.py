@@ -45,12 +45,15 @@ def _fmt_enums(enums: dict[str, int] | None) -> str:
     """Serialize an enum distribution as 'cat1: n1; cat2: n2; ...'.
 
     Sorts categories by count descending so the most common are first;
-    ties broken alphabetically for stability across runs.
+    ties broken alphabetically for stability across runs.  Counts get
+    thousands-separator commas because this column is a string field —
+    Sheets' number formatting doesn't reach inside it the way it does
+    for the dedicated numeric columns.
     """
     if not enums:
         return ""
     items = sorted(enums.items(), key=lambda kv: (-kv[1], kv[0]))
-    return "; ".join(f"{cat}: {n}" for cat, n in items)
+    return "; ".join(f"{cat}: {n:,}" for cat, n in items)
 
 
 def _row_to_sheet_cells(row: PooledRow | None) -> list[str]:

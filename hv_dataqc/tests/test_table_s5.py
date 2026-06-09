@@ -380,7 +380,25 @@ class FormatPasteTsvTests(unittest.TestCase):
         self.assertEqual(cells[2], "")                # mean
         self.assertEqual(cells[3], "")                # median
         # enums sorted descending by count.
+        # Counts get comma separators inside the enums string column.
         self.assertEqual(cells[7], "NEVER: 180; FORMER: 80; CURRENT: 40")
+        # And with larger counts that exercise the comma path.
+        large_pooled = {
+            "Cigarette smoking": PooledRow(
+                bdc_label="Cigarette smoking", n=100000, nulls_missing=0,
+                participants=80000,
+                mean=None, median=None, minimum=None, maximum=None, sd=None,
+                enums={"NEVER": 50000, "FORMER": 30000, "CURRENT": 20000},
+                contributing_codes=(), contributing_cohorts=(),
+                n_contributors=1,
+            ),
+        }
+        large_paste, _ = format_paste_tsv(large_pooled)
+        large_cells = large_paste.split("\n")[idx].split("\t")
+        self.assertEqual(
+            large_cells[7],
+            "NEVER: 50,000; FORMER: 30,000; CURRENT: 20,000",
+        )
         self.assertEqual(cells[8], "270")             # participants
 
     def test_participants_blank_when_none(self) -> None:
