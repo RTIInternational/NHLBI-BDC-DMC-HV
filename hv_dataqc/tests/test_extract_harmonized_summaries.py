@@ -343,6 +343,32 @@ class ParticipantsCountedOverValidRowsTests(unittest.TestCase):
         self.assertEqual(variables["observation_OMOP:W"]["n_valid"], 2)
         self.assertEqual(variables["observation_OMOP:W"]["participants"], 1)
 
+    def test_non_numeric_value_strings_do_not_inflate_participants(self) -> None:
+        # Anne caught FHS ALT SGPT showing participants=3,732 over n_valid=3,728.
+        # Root cause: continuous_stats coerces value strings to numeric via
+        # pd.to_numeric(errors="coerce"), so rows with non-numeric values
+        # (sentinels like "<5", "censored") contribute to n_total but not
+        # n_valid.  The participants-count mask must apply the same coercion
+        # — otherwise those non-coerce-able rows' participants count toward
+        # participants but not toward n_valid, inflating the former.
+        df = pd.DataFrame(
+            {
+                "observation_type": ["OBA:LIVER"] * 6,
+                # 4 numeric, 2 sentinels.  pd.to_numeric coerces the sentinels
+                # to NaN, so n_valid=4.  Participants from sentinel rows
+                # (E, F) must NOT inflate the count beyond 4.
+                "value_quantity__value_decimal": [10.0, 20.0, 30.0, 40.0,
+                                                  "censored", "<5"],
+                "associated_participant": ["A", "B", "C", "D", "E", "F"],
+            }
+        )
+        variables = process_measurements(df, {})
+        result = variables["measurement_OBA:LIVER"]
+        self.assertEqual(result["n_valid"], 4)
+        # Participants must not exceed n_valid even though six distinct
+        # participant IDs are present in the raw group.
+        self.assertEqual(result["participants"], 4)
+
 
 if __name__ == "__main__":
     unittest.main()

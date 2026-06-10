@@ -301,6 +301,22 @@ def _participant_col(df: pd.DataFrame) -> str | None:
     return None
 
 
+def _valid_value_mask(series: pd.Series, *, is_continuous: bool) -> pd.Series:
+    """Return the row-mask used by continuous_stats / categorical_stats for n_valid.
+
+    continuous_stats coerces to numeric via ``pd.to_numeric(..., errors="coerce")``
+    before dropping NaN, so a row with a non-numeric string in the value column
+    contributes to n_total but NOT to n_valid.  categorical_stats drops only
+    raw NaN.  Distinct-participant counts must use the SAME mask as the n_valid
+    computation, otherwise rows whose value coerces to NaN inflate participants
+    past n_valid — Anne caught FHS ALT SGPT showing participants=3,732 over
+    n_valid=3,728 because four rows had non-numeric value strings.
+    """
+    if is_continuous:
+        return pd.to_numeric(series, errors="coerce").notna()
+    return series.notna()
+
+
 # ---------------------------------------------------------------------------
 # Summary statistics
 # ---------------------------------------------------------------------------
@@ -415,15 +431,15 @@ def process_measurements(
         summary["entity"] = "MeasurementObservation"
         summary["observation_type"] = key
         summary["bdc_label"] = (label_map or {}).get(key)
-        # Distinct participants COUNTED ONLY OVER ROWS WITH A VALID VALUE.
-        # Counting over the whole group inflates participants past n_valid
-        # whenever rows are present without a value (the cohort recorded
-        # "we asked, no answer") — Anne observed this directly in the S5
-        # output and it's nonsensical: a row that contributed nothing to
-        # n_valid shouldn't count as a participant for that variable.
+        # Distinct participants COUNTED OVER THE SAME POPULATION AS n_valid.
+        # See _valid_value_mask for why this needs to mirror the stat
+        # helper's NaN-handling (and not just raw .notna()).
         if pcol is not None:
             if value_col_used is not None:
-                valid_mask = group[value_col_used].notna()
+                valid_mask = _valid_value_mask(
+                    group[value_col_used],
+                    is_continuous=(summary.get("type") == "continuous"),
+                )
                 summary["participants"] = int(
                     group.loc[valid_mask, pcol].nunique(dropna=True)
                 )
@@ -591,11 +607,14 @@ def process_observations(
         summary["entity"] = "Observation"
         summary["observation_type"] = key
         summary["bdc_label"] = (label_map or {}).get(key)
-        # Distinct participants COUNTED ONLY OVER ROWS WITH A VALID VALUE.
-        # See the equivalent comment in process_measurements for rationale.
+        # Distinct participants COUNTED OVER THE SAME POPULATION AS n_valid.
+        # See process_measurements for rationale.
         if pcol is not None:
             if value_col_used is not None:
-                valid_mask = group[value_col_used].notna()
+                valid_mask = _valid_value_mask(
+                    group[value_col_used],
+                    is_continuous=(summary.get("type") == "continuous"),
+                )
                 summary["participants"] = int(
                     group.loc[valid_mask, pcol].nunique(dropna=True)
                 )
@@ -785,12 +804,15 @@ def process_measurement_observation_sets(
         summary["entity"] = "MeasurementObservationSet"
         summary["observation_type"] = obs_type_str
         summary["bdc_label"] = (label_map or {}).get(obs_type_str)
-        # Distinct participants COUNTED ONLY OVER ROWS WITH A VALID VALUE.
+        # Distinct participants COUNTED OVER THE SAME POPULATION AS n_valid.
         # See process_measurements for rationale.  The "unknown" branch
         # left n_valid=0 -> no participants either.
         if "_participant_id" in group.columns:
             if int(summary.get("n_valid", 0) or 0) > 0:
-                valid_mask = group[value_field].notna()
+                valid_mask = _valid_value_mask(
+                    group[value_field],
+                    is_continuous=(summary.get("type") == "continuous"),
+                )
                 summary["participants"] = int(
                     group.loc[valid_mask, "_participant_id"].nunique(dropna=True)
                 )
