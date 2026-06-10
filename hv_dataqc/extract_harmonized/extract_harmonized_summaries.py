@@ -390,15 +390,20 @@ def process_measurements(
                 flat_col = candidate
                 break
 
+        value_col_used: str | None = None
         if has_decimal or has_integer:
             value_col = DECIMAL_COL if has_decimal else INTEGER_COL
             summary = continuous_stats(group[value_col])
+            value_col_used = value_col
         elif has_coded:
             summary = categorical_stats(group[CODED_COL])
+            value_col_used = CODED_COL
         elif has_q_value_concept:
             summary = categorical_stats(group[Q_VALUE_CONCEPT_COL])
+            value_col_used = Q_VALUE_CONCEPT_COL
         elif flat_col:
             summary = categorical_stats(group[flat_col])
+            value_col_used = flat_col
         else:
             summary = {
                 "type": "unknown",
@@ -410,8 +415,20 @@ def process_measurements(
         summary["entity"] = "MeasurementObservation"
         summary["observation_type"] = key
         summary["bdc_label"] = (label_map or {}).get(key)
+        # Distinct participants COUNTED ONLY OVER ROWS WITH A VALID VALUE.
+        # Counting over the whole group inflates participants past n_valid
+        # whenever rows are present without a value (the cohort recorded
+        # "we asked, no answer") — Anne observed this directly in the S5
+        # output and it's nonsensical: a row that contributed nothing to
+        # n_valid shouldn't count as a participant for that variable.
         if pcol is not None:
-            summary["participants"] = int(group[pcol].nunique(dropna=True))
+            if value_col_used is not None:
+                valid_mask = group[value_col_used].notna()
+                summary["participants"] = int(
+                    group.loc[valid_mask, pcol].nunique(dropna=True)
+                )
+            else:
+                summary["participants"] = 0
 
         if by_visit and "associated_visit" in df.columns:
             by_visit_stats: dict[str, dict] = {}
@@ -554,23 +571,36 @@ def process_observations(
                 flat_col = candidate
                 break
 
+        value_col_used: str | None = None
         if has_decimal or has_integer:
             value_col = DECIMAL_COL if has_decimal else INTEGER_COL
             summary = continuous_stats(group[value_col])
+            value_col_used = value_col
         elif has_q_coded:
             summary = categorical_stats(group[CODED_COL])
+            value_col_used = CODED_COL
         elif has_q_concept:
             summary = categorical_stats(group[Q_VALUE_CONCEPT])
+            value_col_used = Q_VALUE_CONCEPT
         elif flat_col:
             summary = categorical_stats(group[flat_col])
+            value_col_used = flat_col
         else:
             summary = {"type": "categorical", "n_total": int(len(group)), "n_valid": 0}
 
         summary["entity"] = "Observation"
         summary["observation_type"] = key
         summary["bdc_label"] = (label_map or {}).get(key)
+        # Distinct participants COUNTED ONLY OVER ROWS WITH A VALID VALUE.
+        # See the equivalent comment in process_measurements for rationale.
         if pcol is not None:
-            summary["participants"] = int(group[pcol].nunique(dropna=True))
+            if value_col_used is not None:
+                valid_mask = group[value_col_used].notna()
+                summary["participants"] = int(
+                    group.loc[valid_mask, pcol].nunique(dropna=True)
+                )
+            else:
+                summary["participants"] = 0
         variables[f"observation_{key}"] = summary
 
     return variables
@@ -755,8 +785,17 @@ def process_measurement_observation_sets(
         summary["entity"] = "MeasurementObservationSet"
         summary["observation_type"] = obs_type_str
         summary["bdc_label"] = (label_map or {}).get(obs_type_str)
+        # Distinct participants COUNTED ONLY OVER ROWS WITH A VALID VALUE.
+        # See process_measurements for rationale.  The "unknown" branch
+        # left n_valid=0 -> no participants either.
         if "_participant_id" in group.columns:
-            summary["participants"] = int(group["_participant_id"].nunique(dropna=True))
+            if int(summary.get("n_valid", 0) or 0) > 0:
+                valid_mask = group[value_field].notna()
+                summary["participants"] = int(
+                    group.loc[valid_mask, "_participant_id"].nunique(dropna=True)
+                )
+            else:
+                summary["participants"] = 0
         if method_str:
             summary["method_type"] = method_str
 

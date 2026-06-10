@@ -262,5 +262,87 @@ class LabelMapMainWiringTests(unittest.TestCase):
         )
 
 
+class ParticipantsCountedOverValidRowsTests(unittest.TestCase):
+    """Regression tests for the participants-vs-n_valid mask alignment.
+
+    Anne reported S5 rows where the participants column exceeded n (8-epi-
+    PGF2a in urine: participants=9,730 vs n=3,096; WHI BUN per-cohort:
+    participants=39,046 vs n_valid=5,928).  Root cause: participants was
+    counted via `group[pcol].nunique()` over the *whole* group, including
+    rows whose value column was null.  Those rows contribute nothing to
+    n_valid but were inflating the distinct-participant count.
+
+    Fix: count distinct participants only over rows where the chosen value
+    column is non-null — the same population that produced n_valid.
+    """
+
+    def test_participants_not_counted_for_rows_with_null_value(self) -> None:
+        # 4 distinct participants in the group, but only participants A and
+        # B contribute non-null values.  Expect participants=2, not 4.
+        df = pd.DataFrame(
+            {
+                "observation_type": ["OMOP:X"] * 4,
+                "value_quantity__value_decimal": [10.0, 20.0, None, None],
+                "associated_participant": ["A", "B", "C", "D"],
+            }
+        )
+        variables = process_measurements(df, {})
+        self.assertEqual(variables["measurement_OMOP:X"]["n_valid"], 2)
+        self.assertEqual(variables["measurement_OMOP:X"]["participants"], 2)
+
+    def test_participants_never_exceeds_n_valid(self) -> None:
+        # Synthetic case where 100 participants visited but only 30 had a
+        # value recorded.  participants should be at most 30 (and is in
+        # fact 30 here because each of those 30 is distinct).
+        rows = []
+        for i in range(30):
+            rows.append({"observation_type": "OMOP:Y",
+                         "value_quantity__value_decimal": float(i),
+                         "associated_participant": f"P{i}"})
+        for i in range(30, 100):
+            # Same observation_type but no value recorded.
+            rows.append({"observation_type": "OMOP:Y",
+                         "value_quantity__value_decimal": None,
+                         "associated_participant": f"P{i}"})
+        df = pd.DataFrame(rows)
+        variables = process_measurements(df, {})
+        n_valid = variables["measurement_OMOP:Y"]["n_valid"]
+        participants = variables["measurement_OMOP:Y"]["participants"]
+        self.assertEqual(n_valid, 30)
+        self.assertLessEqual(participants, n_valid,
+                             "participants must not exceed n_valid")
+        self.assertEqual(participants, 30)
+
+    def test_repeat_visits_same_participant_counted_once(self) -> None:
+        # Same participant contributing 3 measurements should count once
+        # in participants but as 3 in n_valid (this is the harmless case
+        # — participants <= n_valid).
+        df = pd.DataFrame(
+            {
+                "observation_type": ["OMOP:Z"] * 3,
+                "value_quantity__value_decimal": [10.0, 11.0, 12.0],
+                "associated_participant": ["A", "A", "A"],
+            }
+        )
+        variables = process_measurements(df, {})
+        self.assertEqual(variables["measurement_OMOP:Z"]["n_valid"], 3)
+        self.assertEqual(variables["measurement_OMOP:Z"]["participants"], 1)
+
+    def test_observation_processor_also_masks(self) -> None:
+        # Same bug existed in process_observations; same fix.
+        df = pd.DataFrame(
+            {
+                "observation_type": ["OMOP:W"] * 4,
+                "value_quantity__value_decimal": [5.0, None, None, 6.0],
+                "associated_participant": ["A", "B", "C", "A"],
+            }
+        )
+        variables = process_observations(df)
+        # Only A (twice) and... wait, A has two rows.  Rows 0 and 3 have
+        # values; row 0 is A, row 3 is A again.  So participants = 1, not 2.
+        self.assertEqual(variables["observation_OMOP:W"]["n_valid"], 2)
+        self.assertEqual(variables["observation_OMOP:W"]["participants"], 1)
+
+
 if __name__ == "__main__":
     unittest.main()
