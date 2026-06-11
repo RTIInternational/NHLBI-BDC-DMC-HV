@@ -1,0 +1,28 @@
+name: HV-DataQC Tests
+
+on:
+  pull_request:
+    paths:
+      - 'hv_dataqc/**'
+  workflow_dispatch:
+
+jobs:
+  unittest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install pandas pyyaml
+
+      - name: Run hv_dataqc unit tests
+        # Self-contained code tests only (tempfile fixtures, no network/corpus).
+        # The 'test*.py' pattern intentionally excludes regression_check.sh,
+        # which needs a saved baseline from a real data run.
+        run: python -m unittest discover -s hv_dataqc/tests -p 'test*.py' -v
