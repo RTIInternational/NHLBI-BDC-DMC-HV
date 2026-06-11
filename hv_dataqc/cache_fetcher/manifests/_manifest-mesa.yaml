@@ -1,0 +1,77 @@
+# MESA Variable Mapping Manifest
+# Single source of truth for MESA harmonization versioning
+# This file evolves with each MESA data version update
+
+# =============================================================================
+# CURRENT VERSION (Active Work)
+# =============================================================================
+current_version:
+  study_id: "phs000209"
+  study_name: "Multi-Ethnic Study of Atherosclerosis (MESA)"
+  data_version: "v13.p3"
+  last_updated: "2026-02-24"
+  
+  # dbGaP Documentation Links (AI tooling can reference these directly)
+  dbgap_references:
+    study_homepage: 
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000209.v13.p3"
+      description: "Main study page with metadata, documentation, and access info"
+      
+    variable_dictionary:
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/GetListOfAllObjects.cgi?study_id=phs000209.v13.p3&object_type=variable"
+      description: "Complete listing of all variables with definitions and metadata"
+      cached_file: "data/dbgap-cache/mesa/variables.xml"
+      
+    study_documents:
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/GetListOfAllObjects.cgi?study_id=phs000209.v13.p3&object_type=document"
+      description: "Study protocols, data collection procedures, codebooks"
+      cached_file: "data/dbgap-cache/mesa/documents.xml"
+
+    pheno_variable_summaries:
+      ftp_url: "https://ftp.ncbi.nlm.nih.gov/dbgap/studies/phs000209/phs000209.v13.p3/pheno_variable_summaries/"
+      description: "Per-dataset data dictionaries (XML) with variable IDs, descriptions, types, units, coded values"
+      cached_dir: "data/dbgap-cache/mesa/pheno_variable_summaries/"
+      file_count: 97
+
+    gap_exchange:
+      ftp_url: "https://ftp.ncbi.nlm.nih.gov/dbgap/studies/phs000209/phs000209.v13.p3/GapExchange_phs000209.v13.p3.xml"
+      description: "Study-level GapExchange XML with dataset inventory and study structure"
+      cached_file: "data/dbgap-cache/mesa/GapExchange_phs000209.v13.p3.xml"
+  
+  # Current harmonization work
+  harmonization:
+    bdchm_schema: "v0.1.0"
+    transform_version: "MESA-2026.02.1"
+    repository_location: "https://github.com/RTIInternational/NHLBI-BDC-DMC-HV/tree/main/priority_variables_transform/MESA-ingest"    
+    
+  # Status tracking
+  status:
+    mapping_progress: "planned"
+    lead: "TBD"
+    started: "TBD"
+
+# =============================================================================
+# VERSION HISTORY (Previous Versions)
+# =============================================================================
+version_history:
+  # Previous MESA versions will be added here as data updates occur
+  # Pattern: move current_version to history when new version arrives
+  
+# =============================================================================
+# STUDY-SPECIFIC NOTES
+# =============================================================================
+study_characteristics:
+  focus: "Subclinical CVD prevalence, progression, and risk factors across four ethnic groups"
+  design: "Multi-center, multi-ethnic prospective cohort, CVD-free at enrollment"
+  population: "~6,814 adults aged 45-84, White, African American, Hispanic, Chinese American"
+  key_strengths: 
+    - "Multi-ethnic design with four racial/ethnic groups"
+    - "Advanced imaging (CT, cardiac MRI, carotid ultrasound)"
+    - "CVD-free at baseline enabling subclinical disease progression studies"
+    - "Extensive ancillary studies (Air, Lung, Family)"
+    
+harmonization_considerations:
+  - "CVD-free baseline design differs from other cohorts"
+  - "Multi-ethnic design with four discrete racial/ethnic groups"
+  - "Advanced imaging protocols requiring standardization"
+  - "Ancillary study variables may extend available data"

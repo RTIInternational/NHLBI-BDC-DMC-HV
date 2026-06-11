@@ -35,7 +35,7 @@ The script generates `preharmonized_qaqc_report.csv` with the following structur
 
 ### Running the Script
 ```bash
-poetry run python preharmonized_qaqc_report.py
+uv run python preharmonized_qaqc_report.py
 ```
 
 ### Using the Output with the Template

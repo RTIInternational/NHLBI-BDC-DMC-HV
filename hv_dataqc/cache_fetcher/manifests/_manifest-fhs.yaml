@@ -1,0 +1,77 @@
+# FHS Variable Mapping Manifest
+# Single source of truth for FHS harmonization versioning
+# This file evolves with each FHS data version update
+
+# =============================================================================
+# CURRENT VERSION (Active Work)
+# =============================================================================
+current_version:
+  study_id: "phs000007"
+  study_name: "Framingham Heart Study (FHS)"
+  data_version: "v35.p16"
+  last_updated: "2026-02-20"
+  
+  # dbGaP Documentation Links (AI tooling can reference these directly)
+  dbgap_references:
+    study_homepage: 
+      url: "https://dbgap.ncbi.nlm.nih.gov/beta/study/phs000007.v35.p16"
+      description: "Main study page with metadata, documentation, and access info"
+      
+    variable_dictionary:
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/GetListOfAllObjects.cgi?study_id=phs000007.v35.p16&object_type=variable"
+      description: "Complete listing of all variables with definitions and metadata"
+      cached_file: "data/dbgap-cache/fhs/variables.xml"
+      
+    dataset_catalog:
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/GetListOfAllObjects.cgi?study_id=phs000007.v35.p16&object_type=dataset"  
+      description: "Available datasets and their structures"
+      
+    study_documents:
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/GetListOfAllObjects.cgi?study_id=phs000007.v35.p16&object_type=document"
+      description: "Study protocols, data collection procedures, codebooks"
+      cached_file: "data/dbgap-cache/fhs/documents.xml"
+
+    pheno_variable_summaries:
+      ftp_url: "https://ftp.ncbi.nlm.nih.gov/dbgap/studies/phs000007/phs000007.v35.p16/pheno_variable_summaries/"
+      description: "Per-dataset data dictionaries (XML) with variable IDs, descriptions, types, units, coded values"
+      cached_dir: "data/dbgap-cache/fhs/pheno_variable_summaries/"
+      file_count: 586
+
+    gap_exchange:
+      ftp_url: "https://ftp.ncbi.nlm.nih.gov/dbgap/studies/phs000007/phs000007.v35.p16/GapExchange_phs000007.v35.p16.xml"
+      description: "Study-level GapExchange XML with dataset inventory and study structure"
+      cached_file: "data/dbgap-cache/fhs/GapExchange_phs000007.v35.p16.xml"
+  
+  # Current harmonization work
+  harmonization:
+    bdchm_schema: "v0.1.0"
+    transform_version: "FHS-2026.02.1"
+    github_branch: "Mapping-FHS-new-version-updated"
+    
+  # Status tracking
+  status:
+    mapping_progress: "in_progress"
+    lead: "Chris"
+    started: "2026-02-20"
+
+# =============================================================================
+# VERSION HISTORY (Previous Versions)
+# =============================================================================
+version_history:
+  - data_version: "v33"
+    bdchm_schema: "v0.1.0"
+    transform_version: "FHS-2025.12.1"
+    status: "production"
+    completed: "2025-12-15"
+    
+    # Historical dbGaP references (AI tools can compare versions)
+    dbgap_references:
+      study_homepage: 
+        url: "https://dbgap.ncbi.nlm.nih.gov/beta/study/phs000007.v33"
+        description: "Historical v33 study page"
+      variable_dictionary:
+        url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/GetListOfAllObjects.cgi?study_id=phs000007.v33&object_type=variable"
+        description: "v33 variable definitions (for comparison with v35)"
+    
+  # Future versions will be added here when FHS updates
+  # Pattern: move current_version to history when new version arrives
