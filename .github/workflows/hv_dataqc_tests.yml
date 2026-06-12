@@ -7,6 +7,23 @@ on:
   workflow_dispatch:
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install ruff
+        run: pip install ruff==0.14.8
+
+      - name: Lint hv_dataqc
+        run: ruff check hv_dataqc/
+
   unittest:
     runs-on: ubuntu-latest
     steps:

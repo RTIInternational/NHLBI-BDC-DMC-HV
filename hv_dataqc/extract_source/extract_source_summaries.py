@@ -39,7 +39,6 @@ import gc
 import itertools
 import logging
 import math
-import os
 import re
 import sys
 from collections.abc import Iterator

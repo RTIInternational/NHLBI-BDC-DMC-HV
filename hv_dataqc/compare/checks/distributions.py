@@ -8,6 +8,8 @@ mappings are applied.
 
 from __future__ import annotations
 
+from typing import Any
+
 from hv_dataqc.compare._common import CheckResult, fmt_cmp_stat as _cmp_stat, fmt_n as _n
 from hv_dataqc.hv_dataqc_common import normalize_category_key
 
