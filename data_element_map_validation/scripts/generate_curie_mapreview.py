@@ -119,10 +119,10 @@ _MAPPING_LINE_RE = re.compile(r"^\s+'[^']*':\s+([A-Z][A-Z0-9_]*:[A-Z0-9.]+)", re
 def extract_yaml_curies(yaml_file: Path) -> dict[str, list[str]]:
     """Return {slot_name: [curie, ...]} from a YAML file.
 
-    Handles both:
-      slot_name:\n    value: CURIE
-    and:
-      slot_name:\n    value_mappings:\n      'x': CURIE
+    Handles:
+      Strategy 1: slot_name:\n    value: CURIE
+      Strategy 2: slot_name:\n    value_mappings:\n      'x': CURIE
+      Strategy 3: slot_name:\n    expr: 'case((..., "CURIE"))' — CURIEs embedded in expressions
     """
     try:
         text = yaml_file.read_text(encoding="utf-8")
@@ -159,6 +159,19 @@ def extract_yaml_curies(yaml_file: Path) -> dict[str, list[str]]:
         curies = _CURIE_RE.findall(block)
         if curies:
             result.setdefault(parent_slot, []).extend(curies)
+
+    # Strategy 3: CURIEs embedded in expr strings, e.g. case(({phv} == 1, "ATC:C10A"))
+    _EXPR_LINE_RE = re.compile(
+        r"^(\s+)(\w+):\s*\n\1  expr:\s+['\"](.+)['\"]", re.MULTILINE
+    )
+    for m in _EXPR_LINE_RE.finditer(text):
+        slot = m.group(2).strip()
+        if slot in result:
+            continue  # already covered by strategy 1/2
+        expr_val = m.group(3)
+        curies = _CURIE_RE.findall(expr_val)
+        if curies:
+            result.setdefault(slot, []).extend(curies)
 
     return result
 

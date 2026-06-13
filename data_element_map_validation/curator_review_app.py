@@ -271,37 +271,6 @@ def load_mapreview_csv(study: str) -> tuple[list[str], list[dict]]:
 _UNIT_SLOT_NAMES = {"unit_concept", "unit", "unit_source_value"}
 
 
-def _get_yaml_measurement_units(study: str, yaml_file: str) -> list[dict]:
-    """Scan a YAML file for unit slot values.
-
-    Returns list of {slot, value, populated_from} dicts.
-    'value' is a fixed CURIE/code; 'populated_from' means the unit varies per row.
-    """
-    yaml_path = STUDIES[study]["yaml_dir"] / Path(yaml_file).name
-    if not yaml_path.exists():
-        return []
-    try:
-        import yaml as _yaml
-        data = _yaml.safe_load(yaml_path.read_text(encoding="utf-8")) or {}
-        units: list[dict] = []
-        seen: set[str] = set()
-        for class_data in data.get("class_derivations", {}).values():
-            for s, s_data in ((class_data or {}).get("slot_derivations", {}) or {}).items():
-                if s not in _UNIT_SLOT_NAMES:
-                    continue
-                s_data = s_data or {}
-                val  = s_data.get("value")
-                pfrom = s_data.get("populated_from")
-                key  = f"{s}:{val or pfrom}"
-                if key not in seen:
-                    seen.add(key)
-                    units.append({"slot": s, "value": str(val) if val else None,
-                                  "populated_from": str(pfrom) if pfrom else None})
-        return units
-    except Exception:
-        return []
-
-
 def _curie_csv_has_unit_column(study: str) -> bool:
     fieldnames, _ = load_curie_csv(study)
     return any(f.strip().lower() == "unit" for f in fieldnames)
@@ -309,10 +278,50 @@ def _curie_csv_has_unit_column(study: str) -> bool:
 
 def get_current_curies(study: str, yaml_file: str, slot: str) -> list[str]:
     _, rows = load_curie_csv(study)
+    fname = Path(yaml_file).name
     return sorted({
         r["CURIE"] for r in rows
-        if r.get("YAML File") == yaml_file and r.get("Slot") == slot and r.get("CURIE")
+        if r.get("YAML File") == fname and r.get("Slot") == slot and r.get("CURIE")
     })
+
+
+def get_curie_csv_rows_for_file(study: str, yaml_file: str, slot: str) -> list[dict]:
+    """Return all curie CSV rows matching yaml_file (basename) + slot."""
+    _, rows = load_curie_csv(study)
+    fname = Path(yaml_file).name
+    return [r for r in rows if r.get("YAML File") == fname and r.get("Slot") == slot]
+
+
+def _render_var_row_caption(r: dict) -> None:
+    """One caption line showing PHV, Variable Name, and Variable Description (explicitly blank if missing)."""
+    phv  = r.get("PHV", "").strip()
+    name = r.get("Variable Name", "").strip()
+    desc = r.get("Variable Description", "").strip()
+    parts = []
+    if phv:
+        parts.append(f"`{phv}`")
+    parts.append(f"**Variable:** {name if name else '_blank_'}")
+    parts.append(f"**Description:** {desc if desc else '_blank_'}")
+    st.caption("↳ " + " · ".join(parts))
+
+
+def _render_curies_with_vars(study: str, yaml_file: str, slot: str, curies: list[str]) -> None:
+    """Show CURIE links followed by variable metadata (PHV, name, description) from curie CSV.
+
+    Also shows rows where CURIE is blank, labelled explicitly.
+    """
+    csv_rows = get_curie_csv_rows_for_file(study, yaml_file, slot)
+    by_curie: dict[str, list[dict]] = {}
+    for r in csv_rows:
+        by_curie.setdefault(r.get("CURIE", "").strip(), []).append(r)
+    for c in curies:
+        _curie_link_md(c)
+        for r in by_curie.get(c, []):
+            _render_var_row_caption(r)
+    # Rows where CURIE column is blank
+    for r in by_curie.get("", []):
+        st.caption("_CURIE is blank:_")
+        _render_var_row_caption(r)
 
 
 def _check_yaml_slot(
@@ -322,36 +331,58 @@ def _check_yaml_slot(
 
     Returns (yaml_exists, slot_found, curie_values, all_slots, entity_types).
       all_slots    — {slot_name: [unique curie values]} across all classes
-      entity_types — class names from class_derivations (e.g. ConditionOccurrence, DrugExposure)
-    Covers: direct `value`, `value_mappings`, and nested observation lists.
+      entity_types — class names found (e.g. MeasurementObservation, DrugExposure)
+    Handles: list-of-blocks YAML, direct value, value_mappings,
+             nested object_derivations (e.g. value_quantity → unit).
+    Excludes slots that carry PHV/expr references rather than ontology CURIEs.
     """
+    _NON_CURIE_SLOTS = {"associated_participant", "associated_visit",
+                        "age_at_observation", "value_decimal", "value_integer",
+                        "value_boolean", "value_string"}
+
     yaml_path = STUDIES[study]["yaml_dir"] / Path(yaml_file).name
     if not yaml_path.exists():
         return False, False, [], {}, []
     try:
         import yaml as _yaml
-        data = _yaml.safe_load(yaml_path.read_text(encoding="utf-8")) or {}
-        all_slots: dict[str, list[str]] = {}
-        entity_types: list[str] = list(data.get("class_derivations", {}).keys())
+        raw = _yaml.safe_load(yaml_path.read_text(encoding="utf-8"))
+        # YAML may be a list of blocks or a single dict
+        blocks: list[dict] = raw if isinstance(raw, list) else [raw] if raw else []
 
-        for class_data in data.get("class_derivations", {}).values():
-            for s, s_data in ((class_data or {}).get("slot_derivations", {}) or {}).items():
+        all_slots: dict[str, list[str]] = {}
+        entity_types: list[str] = []
+
+        def _scan_slot_derivations(slot_derivs: dict) -> None:
+            for s, s_data in (slot_derivs or {}).items():
+                if s in _NON_CURIE_SLOTS:
+                    continue
                 s_data = s_data or {}
-                # Direct single value
-                if s_data.get("value"):
-                    all_slots.setdefault(s, []).append(str(s_data["value"]))
-                # Coded value_mappings (e.g. condition with enumerated values)
+                # Direct value
+                val = s_data.get("value")
+                if val and not str(val).startswith("{"):
+                    all_slots.setdefault(s, []).append(str(val))
+                # CURIEs embedded in case() expressions: case(({phv} == 1, "ATC:C10A"))
+                expr = s_data.get("expr")
+                if expr:
+                    for emb in re.findall(r'\b([A-Z][A-Z0-9_]*:[A-Z0-9.]+)\b', str(expr)):
+                        all_slots.setdefault(s, []).append(emb)
+                # Coded value_mappings
                 for mapping in s_data.get("value_mappings", []) or []:
                     mval = (mapping or {}).get("value")
                     if mval:
                         all_slots.setdefault(s, []).append(str(mval))
-                # Nested observation list (observation_type inside observations list)
-                if isinstance(s_data.get("range_list"), list):
-                    for obs in s_data["range_list"]:
-                        for inner_slot, inner_data in (obs or {}).items():
-                            ival = (inner_data or {}).get("value")
-                            if ival:
-                                all_slots.setdefault(inner_slot, []).append(str(ival))
+                # Nested object_derivations (e.g. value_quantity → Quantity → unit)
+                for obj_block in s_data.get("object_derivations", []) or []:
+                    for inner_class in (obj_block or {}).get("class_derivations", {}).values():
+                        _scan_slot_derivations(
+                            (inner_class or {}).get("slot_derivations", {})
+                        )
+
+        for block in blocks:
+            for class_name, class_data in (block or {}).get("class_derivations", {}).items():
+                if class_name not in entity_types:
+                    entity_types.append(class_name)
+                _scan_slot_derivations((class_data or {}).get("slot_derivations", {}))
 
         # Deduplicate preserving order
         all_slots = {s: list(dict.fromkeys(vs)) for s, vs in all_slots.items()}
@@ -378,16 +409,12 @@ def _render_curie_not_in_mapreview(study: str, yaml_file: str, slot: str) -> Non
 
     # Measurement-specific: show unit info and flag missing Unit column in curie CSV
     if any("measurement" in e.lower() for e in entity_types):
-        units = _get_yaml_measurement_units(study, yaml_file)
-        if units:
-            unit_parts: list[str] = []
-            for u in units:
-                if u["value"]:
-                    unit_parts.append(f"`{u['slot']}` = `{u['value']}`")
-                elif u["populated_from"]:
-                    unit_parts.append(f"`{u['slot']}` varies by row (populated from `{u['populated_from']}`)")
-            if unit_parts:
-                st.caption("**Unit info from YAML:** " + " · ".join(unit_parts))
+        unit_parts: list[str] = []
+        for uslot in sorted(_UNIT_SLOT_NAMES & all_slots.keys()):
+            for uval in all_slots[uslot]:
+                unit_parts.append(f"`{uslot}` = `{uval}`")
+        if unit_parts:
+            st.caption("**Unit info from YAML:** " + " · ".join(unit_parts))
         else:
             st.caption("_No unit slot found in YAML — unit may not be mapped yet._")
 
@@ -598,6 +625,18 @@ _KNOWN_SLOTS = [
     "procedure_concept", "route_concept", "race", "sex",
 ]
 
+# Maps slot → which agent handles it (mirrors generate_curie_mapreview.py routing)
+_SLOT_AGENT: dict[str, str] = {
+    "condition_concept":  "MONDO / HPO / OMOP",
+    "drug_concept":       "RxNorm",
+    "observation_type":   "LOINC (measurementObs)",
+    "observations":       "LOINC (measurementObs)",
+    "procedure_concept":  "OMOP",
+    "route_concept":      "OMOP (route)",
+    "race":               "OMOP (race/ethnicity)",
+    "sex":                "OMOP (gender)",
+}
+
 
 def _detect_slot(text: str) -> str:
     for slot in _KNOWN_SLOTS:
@@ -673,16 +712,45 @@ def render_row(row: dict, study: str, pending: dict, idx: int) -> None:
                 else:
                     det_curies = get_current_curies(study, yaml_files[0], auto_slot)
                     if det_curies:
-                        for c in det_curies:
-                            _curie_link_md(c)
+                        _render_curies_with_vars(study, yaml_files[0], auto_slot, det_curies)
                     else:
-                        _render_curie_not_in_mapreview(study, yaml_files[0], auto_slot)
+                        blank_rows = get_curie_csv_rows_for_file(study, yaml_files[0], auto_slot)
+                        if blank_rows:
+                            st.caption("_CURIE is blank in curie CSV:_")
+                            for _r in blank_rows:
+                                _render_var_row_caption(_r)
+                        else:
+                            _render_curie_not_in_mapreview(study, yaml_files[0], auto_slot)
             with d_right:
                 det_suggestions = _extract_agent_curies(validator)
+                st.markdown("**Agent suggestion:**")
                 if det_suggestions:
-                    st.markdown("**Agent suggestion:**")
                     for s in det_suggestions:
                         _curie_link_md(s)
+                else:
+                    if not auto_slot:
+                        st.caption("_Slot not detected — cannot determine expected agent._")
+                    else:
+                        agent_label = _SLOT_AGENT.get(auto_slot)
+                        if agent_label:
+                            st.caption(f"_Expected agent: **{agent_label}**_")
+                        else:
+                            st.caption(f"_No agent routing defined for slot `{auto_slot}`._")
+                        # Try entity type from curie CSV first, then YAML scan
+                        etype, etype_src = "", ""
+                        if yaml_files:
+                            _cr = get_curie_csv_rows_for_file(study, yaml_files[0], auto_slot)
+                            if _cr:
+                                etype = _cr[0].get("Entity Type", "").strip()
+                                etype_src = "curie CSV"
+                            else:
+                                _, _, _, _, _etypes = _check_yaml_slot(study, yaml_files[0], auto_slot)
+                                if _etypes:
+                                    etype = ", ".join(_etypes)
+                                    etype_src = "YAML"
+                        if etype:
+                            st.caption(f"_Entity type ({etype_src}): `{etype}`_")
+                        st.caption("_No suggestion found in curie map review._")
             st.divider()
             st.markdown("**Semantic validator review:**")
             _info_box(validator)
@@ -705,10 +773,15 @@ def render_row(row: dict, study: str, pending: dict, idx: int) -> None:
                 else:
                     curies = get_current_curies(study, yaml_files[0], auto_slot)
                     if curies:
-                        for c in curies:
-                            _curie_link_md(c)
+                        _render_curies_with_vars(study, yaml_files[0], auto_slot, curies)
                     else:
-                        _render_curie_not_in_mapreview(study, yaml_files[0], auto_slot)
+                        blank_rows = get_curie_csv_rows_for_file(study, yaml_files[0], auto_slot)
+                        if blank_rows:
+                            st.caption("_CURIE is blank in curie CSV:_")
+                            for _r in blank_rows:
+                                _render_var_row_caption(_r)
+                        else:
+                            _render_curie_not_in_mapreview(study, yaml_files[0], auto_slot)
 
                 agent_suggestions = _extract_agent_curies(validator)
                 if agent_suggestions:
