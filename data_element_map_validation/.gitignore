@@ -1,0 +1,23 @@
+# Generated pipeline outputs — do not check in
+bdc_study_input/*_curie_mapreview.csv
+
+# Generated review MDs and summaries
+valueset_mapping_review_output/*_semantic_review_v*.md
+valueset_mapping_review_output/*_semantic_validator_summary_v*.md
+valueset_mapping_review_output/release_report_v*.md
+
+# Curator app runtime state
+valueset_mapping_review_output/pending_change/
+valueset_mapping_review_output/change_log/
+
+# One-time utility scripts
+extract_chs_curie.py
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+
+# Streamlit
+.streamlit/secrets.toml
