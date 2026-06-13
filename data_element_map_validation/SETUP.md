@@ -43,7 +43,7 @@ YAML transform files must exist at:
 
 In a terminal from the `data_element_map_validation/` directory:
 ```bash
-python -m streamlit run scripts/curator_review_app.py --server.port 8501
+python -m streamlit run curator_review_app.py --server.port 8501
 ```
 Then open **http://localhost:8501** in your browser.
 

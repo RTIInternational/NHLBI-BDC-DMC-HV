@@ -17,11 +17,12 @@ from pathlib import Path
 import streamlit as st
 
 # ── Base paths ────────────────────────────────────────────────────────────────
-_HERE      = Path(__file__).parent.parent   # scripts/ → data_element_map_validation/
-DATA_ROOT  = _HERE.parent
-REVIEW_OUT = _HERE / "valueset_mapping_review_output"
-LOG_DIR     = REVIEW_OUT / "change_log"
-PENDING_DIR = REVIEW_OUT / "pending_change"
+_HERE        = Path(__file__).parent          # data_element_map_validation/
+_SCRIPTS_DIR = _HERE / "scripts"              # data_element_map_validation/scripts/
+DATA_ROOT    = _HERE.parent
+REVIEW_OUT   = _HERE / "valueset_mapping_review_output"
+LOG_DIR      = REVIEW_OUT / "change_log"
+PENDING_DIR  = REVIEW_OUT / "pending_change"
 
 
 def _pending_path(study: str) -> Path:
@@ -946,7 +947,7 @@ def render_registration_page(study: str) -> None:
     log1 = st.empty()
     with st.spinner(f"Running MONDO / HPO / OMOP / RxNorm / LOINC agents for {label} …"):
         rc1, lines1 = _stream_subprocess(
-            [sys.executable, str(_HERE / "generate_curie_mapreview.py"), "--study", study],
+            [sys.executable, str(_SCRIPTS_DIR / "generate_curie_mapreview.py"), "--study", study],
             log1,
         )
     log1.empty()
@@ -973,7 +974,7 @@ def render_registration_page(study: str) -> None:
         log2 = st.empty()
         with st.spinner(f"Generating semantic review for {label} …"):
             rc2, lines2 = _stream_subprocess(
-                [sys.executable, str(_HERE / "generate_semantic_review.py"), "--study", study],
+                [sys.executable, str(_SCRIPTS_DIR / "generate_semantic_review.py"), "--study", study],
                 log2,
             )
         log2.empty()
@@ -1130,7 +1131,7 @@ def render_setup_tab(study: str) -> None:
             if st.button("🔍 YAML check only (fast)", key=f"noagents_{study}", use_container_width=True):
                 _run_pipeline_cmd(
                     f"Map-review YAML check — {label}",
-                    [sys.executable, str(_HERE / "generate_curie_mapreview.py"),
+                    [sys.executable, str(_SCRIPTS_DIR / "generate_curie_mapreview.py"),
                      "--study", study, "--no-agents"],
                 )
                 load_mapreview_csv.clear()
@@ -1139,7 +1140,7 @@ def render_setup_tab(study: str) -> None:
             if st.button("🤖 Full agent run", key=f"agents_{study}", use_container_width=True):
                 _run_pipeline_cmd(
                     f"Map-review full agents — {label}",
-                    [sys.executable, str(_HERE / "generate_curie_mapreview.py"), "--study", study],
+                    [sys.executable, str(_SCRIPTS_DIR / "generate_curie_mapreview.py"), "--study", study],
                 )
                 load_mapreview_csv.clear()
                 st.rerun()
@@ -1156,7 +1157,7 @@ def render_setup_tab(study: str) -> None:
         ):
             _run_pipeline_cmd(
                 f"Semantic review — {label}",
-                [sys.executable, str(_HERE / "generate_semantic_review.py"), "--study", study],
+                [sys.executable, str(_SCRIPTS_DIR / "generate_semantic_review.py"), "--study", study],
             )
             load_review_rows.clear()
             st.rerun()
