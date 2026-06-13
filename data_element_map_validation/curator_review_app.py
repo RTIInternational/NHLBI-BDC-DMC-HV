@@ -681,7 +681,12 @@ def render_row(row: dict, study: str, pending: dict, idx: int) -> None:
     saved  = pending.get(row_id, {})
 
     badge      = {"P1": "🔴", "P2": "🟡", "P3": "🟢"}.get(priority, "⚪")
-    done_badge = " ✅" if saved.get("applied") else (" 💾" if saved.get("change_request") else "")
+    done_badge = (
+        " ✅" if saved.get("applied")
+        else " 💾" if saved.get("change_request")
+        else " 📝" if saved.get("notes")
+        else ""
+    )
     label = f"{badge} **{priority}** · `{_unescape_md(file_field)}` — {issue[:70]}{'…' if len(issue)>70 else ''}{done_badge}"
 
     with st.expander(label, expanded=False):
@@ -796,7 +801,7 @@ def render_row(row: dict, study: str, pending: dict, idx: int) -> None:
                     key=f"slot_{study}_{idx}",
                 )
                 new_cr = st.text_input(
-                    "New CURIE *",
+                    "New CURIE (optional — add when ready to submit)",
                     value=saved.get("change_request", ""),
                     key=f"cr_{study}_{idx}",
                     placeholder="e.g. MONDO:0004849",
@@ -827,17 +832,18 @@ def render_row(row: dict, study: str, pending: dict, idx: int) -> None:
                 st.divider()
 
                 if st.button(
-                    "💾 Save change request", key=f"save_{study}_{idx}",
+                    "💾 Save", key=f"save_{study}_{idx}",
                     type="primary", use_container_width=True,
                 ):
-                    err = _validate_curie(new_cr)
-                    if err:
-                        st.error(f"Invalid CURIE — {err}")
+                    curie_err = _validate_curie(new_cr) if new_cr.strip() else ""
+                    if curie_err:
+                        st.error(f"Invalid CURIE — {curie_err}")
                     elif not use_slot:
                         st.error("Slot is required.")
+                    elif not new_cr.strip() and not notes.strip():
+                        st.error("Enter a CURIE, notes, or both before saving.")
                     else:
-                        # Capture original CURIE now, before any apply overwrites it
-                        original_curies = get_current_curies(study, yaml_files[0], use_slot) if yaml_files else []
+                        original_curies = get_current_curies(study, yaml_files[0], use_slot) if yaml_files and new_cr.strip() else []
                         pending[row_id] = {
                             "study":           study,
                             "change_request":  new_cr.strip(),
@@ -851,18 +857,23 @@ def render_row(row: dict, study: str, pending: dict, idx: int) -> None:
                         _save_pending(pending, study)
                         _, n = _rebuild_cr_csv(study, pending)
                         st.session_state[f"pending_{study}"] = pending
-                        st.toast(f"✓ Saved — CR CSV updated ({n} row(s))")
+                        if new_cr.strip():
+                            st.toast(f"✓ Saved — CR CSV updated ({n} row(s))")
+                        else:
+                            st.toast("📝 Notes saved — add a CURIE when ready to submit.")
                         st.rerun()
 
-                if saved.get("change_request") and not saved.get("applied"):
+                if saved.get("applied"):
+                    st.success(f"✅ Applied: `{saved['change_request']}`")
+                elif saved.get("change_request") and not saved.get("applied"):
                     url = _curie_to_url(saved["change_request"])
                     link = (
                         f'<a href="{url}" target="_blank"><code>{saved["change_request"]}</code></a>'
                         if url else f'<code>{saved["change_request"]}</code>'
                     )
                     st.markdown(f"💾 Saved: {link} → `{saved.get('slot')}`", unsafe_allow_html=True)
-                elif saved.get("applied"):
-                    st.success(f"✅ Applied: `{saved['change_request']}`")
+                elif saved.get("notes") and not saved.get("applied"):
+                    st.info("📝 Notes saved — no CURIE yet. Add a CURIE before submitting.")
 
 
 # ── Previously Committed tab ──────────────────────────────────────────────────
@@ -996,10 +1007,25 @@ def render_submit_tab(study: str, pending: dict) -> None:
         k: v for k, v in pending.items()
         if v.get("change_request") and not v.get("applied")
     }
+    notes_only = {
+        k: v for k, v in pending.items()
+        if not v.get("change_request") and v.get("notes") and not v.get("applied")
+    }
 
     st.subheader("Pending change requests")
-    if not not_applied:
+    if not not_applied and not notes_only:
         st.info("No pending change requests. Save requests in the ✏️ Change request tab.")
+        return
+
+    if notes_only:
+        files = ", ".join(k.split("::", 2)[-1] for k in notes_only)
+        st.warning(
+            f"📝 **{len(notes_only)} entry/entries have notes but no CURIE** — "
+            f"they will not be applied on submit: `{files}`"
+        )
+
+    if not not_applied:
+        st.info("No CURIE change requests ready to submit yet.")
         return
 
     table = []
