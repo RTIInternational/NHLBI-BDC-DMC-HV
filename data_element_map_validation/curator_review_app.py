@@ -1375,27 +1375,23 @@ def render_setup_tab(study: str) -> None:
     st.divider()
 
     # ── Individual steps (for re-runs / partial updates) ─────────────────────
+    pipeline_running = st.session_state.get("pipeline_running", False)
     with st.expander("⚙️ Run individual steps", expanded=True):
         st.caption("Use these for partial re-runs after fixing issues.")
 
         st.markdown("**Step 1 — CURIE map-review**")
         c1, c2 = st.columns(2)
         with c1:
-            if st.button("🔍 YAML check only (fast)", key=f"noagents_{study}", use_container_width=True):
-                _run_pipeline_cmd(
-                    f"Map-review YAML check — {label}",
-                    [sys.executable, str(_SCRIPTS_DIR / "generate_curie_mapreview.py"),
-                     "--study", study, "--no-agents"],
-                )
-                load_mapreview_csv.clear()
+            if st.button("🔍 YAML check only (fast)", key=f"noagents_{study}",
+                         use_container_width=True, disabled=pipeline_running):
+                st.session_state.pipeline_running = True
+                st.session_state._pipeline_cmd = ("step1_noagents", study)
                 st.rerun()
         with c2:
-            if st.button("🤖 Full agent run", key=f"agents_{study}", use_container_width=True):
-                _run_pipeline_cmd(
-                    f"Map-review full agents — {label}",
-                    [sys.executable, str(_SCRIPTS_DIR / "generate_curie_mapreview.py"), "--study", study],
-                )
-                load_mapreview_csv.clear()
+            if st.button("🤖 Full agent run", key=f"agents_{study}",
+                         use_container_width=True, disabled=pipeline_running):
+                st.session_state.pipeline_running = True
+                st.session_state._pipeline_cmd = ("step1_agents", study)
                 st.rerun()
 
         st.markdown("**Step 2 — Semantic review MD**")
@@ -1406,13 +1402,10 @@ def render_setup_tab(study: str) -> None:
             "📝 Generate semantic review MD",
             key=f"semantic_{study}",
             use_container_width=True,
-            disabled=not mapreview_ready,
+            disabled=not mapreview_ready or pipeline_running,
         ):
-            _run_pipeline_cmd(
-                f"Semantic review — {label}",
-                [sys.executable, str(_SCRIPTS_DIR / "generate_semantic_review.py"), "--study", study],
-            )
-            load_review_rows.clear()
+            st.session_state.pipeline_running = True
+            st.session_state._pipeline_cmd = ("step2", study)
             st.rerun()
 
 
@@ -1496,16 +1489,26 @@ def main() -> None:
     study_ready = (
         STUDIES[study]["review_md"].exists() and STUDIES[study]["mapreview_csv"].exists()
     )
-    if not study_ready:
-        if st.sidebar.button(
-            f"🚀 Run {STUDIES[study]['label']} Curie Review",
-            type="primary",
-            use_container_width=True,
-            help="Run the full pipeline to generate review files for this study.",
-        ):
-            st.session_state.is_registering = True
-            st.session_state.register_study = study
-            st.rerun()
+    pipeline_running = st.session_state.get("pipeline_running", False)
+
+    if not study_ready or pipeline_running:
+        if pipeline_running:
+            st.sidebar.button(
+                f"⏳ Pipeline running…",
+                disabled=True,
+                use_container_width=True,
+                type="primary",
+            )
+        else:
+            if st.sidebar.button(
+                f"🚀 Run {STUDIES[study]['label']} Curie Review",
+                type="primary",
+                use_container_width=True,
+                help="Run the full pipeline to generate review files for this study.",
+            ):
+                st.session_state.is_registering = True
+                st.session_state.register_study = study
+                st.rerun()
         st.sidebar.divider()
 
     st.sidebar.metric("Confirmed findings", len(confirmed_rows))
@@ -1567,6 +1570,36 @@ def main() -> None:
             })
             st.sidebar.metric("Missing CURIEs", missing_curies)
             st.sidebar.metric("YAML files not found", yaml_not_found)
+
+    # ── Deferred pipeline command (set by individual step buttons) ───────────
+    _pcmd = st.session_state.pop("_pipeline_cmd", None)
+    if _pcmd:
+        _cmd_type, _cmd_study = _pcmd
+        _cfg = STUDIES[_cmd_study]
+        _lbl = _cfg["label"]
+        if _cmd_type == "step1_noagents":
+            _run_pipeline_cmd(
+                f"Map-review YAML check — {_lbl}",
+                [sys.executable, str(_SCRIPTS_DIR / "generate_curie_mapreview.py"),
+                 "--study", _cmd_study, "--no-agents"],
+            )
+            load_mapreview_csv.clear()
+        elif _cmd_type == "step1_agents":
+            _run_pipeline_cmd(
+                f"Map-review full agents — {_lbl}",
+                [sys.executable, str(_SCRIPTS_DIR / "generate_curie_mapreview.py"),
+                 "--study", _cmd_study],
+            )
+            load_mapreview_csv.clear()
+        elif _cmd_type == "step2":
+            _run_pipeline_cmd(
+                f"Semantic review — {_lbl}",
+                [sys.executable, str(_SCRIPTS_DIR / "generate_semantic_review.py"),
+                 "--study", _cmd_study],
+            )
+            load_review_rows.clear()
+        st.session_state.pipeline_running = False
+        st.rerun()
 
     # ── Main content area ─────────────────────────────────────────────────────
     st.markdown(
