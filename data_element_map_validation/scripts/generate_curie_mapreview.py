@@ -40,7 +40,7 @@ from pathlib import Path
 # Path constants — resolved at runtime from --study argument
 # ---------------------------------------------------------------------------
 
-BASE_DIR = Path(__file__).parent
+BASE_DIR = Path(__file__).parent.parent  # data_element_map_validation/
 
 _REGISTRY_CSV = BASE_DIR / "bdc_study_input" / "BDC_registered_study_for_semantic_review.csv"
 
@@ -72,6 +72,7 @@ def _load_study_configs() -> dict[str, dict]:
             "output_csv": BASE_DIR / "bdc_study_input" / "COPDGene_curie_mapreview.csv",
             "yaml_dir":   BASE_DIR.parent / "priority_variables_transform" / "COPDGene-ingest",
         }
+        # BASE_DIR is data_element_map_validation/, so BASE_DIR.parent is the repo root
     return configs
 
 
