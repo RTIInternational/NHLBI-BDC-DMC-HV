@@ -1666,6 +1666,9 @@ def main() -> None:
         pk = f"pending_{new_study}"
         if pk not in st.session_state:
             st.session_state[pk] = _load_pending(new_study)
+        # Clear cached review data so the new study loads fresh on next render
+        load_review_rows.clear()
+        load_curie_csv.clear()
 
     st.sidebar.title("🔬 Semantic Review Curator")
     study = st.sidebar.selectbox(
@@ -1783,6 +1786,31 @@ def main() -> None:
             })
             st.sidebar.metric("Missing CURIEs", missing_curies)
             st.sidebar.metric("YAML files not found", yaml_not_found)
+
+    # ── Cross-study aggregate ─────────────────────────────────────────────────
+    st.sidebar.divider()
+    with st.sidebar.expander("All studies aggregate", expanded=False):
+        _agg_vars       = 0
+        _agg_reviewed   = 0
+        _agg_applied    = 0
+        _agg_pending    = 0
+        _agg_no_change  = 0
+        _agg_done_count = 0
+        for _s in STUDIES:
+            _, _csv_rows = load_curie_csv(_s)
+            _agg_vars += len(_csv_rows)
+            if STUDIES[_s]["review_md"].exists():
+                _agg_reviewed   += len(load_review_rows(_s))
+                _agg_done_count += 1
+            _p = st.session_state.get(f"pending_{_s}") or _load_pending(_s)
+            _agg_applied   += sum(1 for v in _p.values() if v.get("applied"))
+            _agg_pending   += sum(1 for v in _p.values() if v.get("change_request") and not v.get("applied"))
+            _agg_no_change += sum(1 for v in _p.values() if v.get("no_change"))
+        st.metric("Total variables", f"{_agg_vars:,}")
+        st.metric(f"Review findings ({_agg_done_count}/{len(STUDIES)} studies)", _agg_reviewed)
+        st.metric("Applied ✅", _agg_applied)
+        st.metric("Pending 💾", _agg_pending)
+        st.metric("Reviewed ☑", _agg_no_change)
 
     # ── Deferred pipeline command (set by individual step buttons) ───────────
     _pcmd = st.session_state.pop("_pipeline_cmd", None)
