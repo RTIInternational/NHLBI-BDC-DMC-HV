@@ -223,7 +223,9 @@ def _parse_md_table(lines: list[str], headers: list[str]) -> list[dict]:
         s = line.strip()
         if not s.startswith("|") or re.match(r"^\|[\s:|-]+\|", s):
             continue
-        cells = [c.strip() for c in s.strip("|").split("|")]
+        # Unescape markdown-escaped characters (e.g. \` → `) so downstream
+        # rendering helpers see bare backticks rather than backslash+backtick sequences.
+        cells = [_unescape_md(c) for c in s.strip("|").split("|")]
         if not cells or cells[0] == headers[0]:
             continue
         if len(cells) >= len(headers):
@@ -1089,6 +1091,95 @@ def render_manual_notes_tab(study: str, pending: dict, confirmed_rows: list[dict
                         _save_pending(pending, study)
                         st.toast("Note removed.")
                         st.rerun()
+
+
+# ── Cross-Study Consistency tab ───────────────────────────────────────────────
+def render_cross_study_tab() -> None:
+    """Flag YAML files where the same slot maps to different CURIEs across studies."""
+
+    # Build index: {(canonical_yaml_name, slot) -> {study_short -> [csv_row, ...]}}
+    index: dict[tuple[str, str], dict[str, list[dict]]] = {}
+    for s in STUDIES:
+        if not STUDIES[s]["curie_csv"].exists():
+            continue
+        _, rows = load_curie_csv(s)
+        for r in rows:
+            yaml_file = r.get("YAML File", "").strip()
+            slot      = r.get("Slot", "").strip()
+            if not yaml_file or not slot:
+                continue
+            canonical = Path(yaml_file).name
+            index.setdefault((canonical, slot), {}).setdefault(s, []).append(r)
+
+    # Keep only entries where ≥ 2 distinct non-blank CURIEs exist across studies
+    inconsistencies: dict[tuple[str, str], dict[str, list[dict]]] = {}
+    for key, study_map in index.items():
+        distinct = {r.get("CURIE", "").strip()
+                    for rows in study_map.values() for r in rows
+                    if r.get("CURIE", "").strip()}
+        if len(distinct) > 1:
+            inconsistencies[key] = study_map
+
+    st.caption(
+        "Variables where the same YAML file and slot are mapped to different CURIEs "
+        "across studies. Blank CURIEs are excluded from the conflict check."
+    )
+
+    if not inconsistencies:
+        st.success("No cross-study CURIE inconsistencies found.")
+        return
+
+    st.info(
+        f"{len(inconsistencies)} inconsistenc{'y' if len(inconsistencies) == 1 else 'ies'} "
+        f"detected across {len(STUDIES)} studies."
+    )
+
+    for (canonical, slot), study_map in sorted(inconsistencies.items()):
+        distinct_curies = sorted({
+            r.get("CURIE", "").strip()
+            for rows in study_map.values() for r in rows
+            if r.get("CURIE", "").strip()
+        })
+        n_studies = len(study_map)
+        exp_label = (
+            f"⚠ `{canonical}` [{slot}] — "
+            f"{len(distinct_curies)} distinct CURIEs across {n_studies} "
+            f"{'study' if n_studies == 1 else 'studies'}"
+        )
+
+        with st.expander(exp_label, expanded=False):
+            for s in sorted(study_map):
+                rows = study_map[s]
+                # Pending / curation state for this file in this study
+                _pend  = st.session_state.get(f"pending_{s}") or _load_pending(s)
+                _saved = _pend.get(_row_key(s, canonical), {})
+                if _saved.get("applied"):
+                    _status = f" ✅ → `{_saved.get('change_request', '')}`"
+                elif _saved.get("no_change"):
+                    _status = " ☑"
+                elif _saved.get("change_request"):
+                    _status = f" 💾 → `{_saved.get('change_request', '')}`"
+                elif _saved.get("notes"):
+                    _status = " 📝"
+                else:
+                    _status = ""
+
+                st.markdown(f"**{STUDIES[s]['label']}**{_status}")
+
+                # Group rows by CURIE so the link appears once per CURIE
+                by_curie: dict[str, list[dict]] = {}
+                for r in rows:
+                    by_curie.setdefault(r.get("CURIE", "").strip(), []).append(r)
+
+                for curie in sorted(by_curie):
+                    if curie:
+                        _curie_link_md(curie)
+                    else:
+                        st.caption("_(no CURIE)_")
+                    for r in by_curie[curie]:
+                        _render_var_row_caption(r)
+
+                st.divider()
 
 
 # ── Previously Committed tab ──────────────────────────────────────────────────
@@ -2053,9 +2144,10 @@ def main() -> None:
     n_orphans = len(_orphan_pending(study, pending, confirmed_rows))
     notes_label = f"📝 Manual Notes ({n_orphans})" if n_orphans else "📝 Manual Notes"
 
-    tab_conf, tab_notes, tab_summary, tab_committed, tab_submit, tab_log, tab_setup = st.tabs([
+    tab_conf, tab_notes, tab_xstudy, tab_summary, tab_committed, tab_submit, tab_log, tab_setup = st.tabs([
         f"Reviewer Findings ({len(confirmed_rows)})",
         notes_label,
+        "Cross-Study Consistency",
         summary_label,
         f"Previously Committed ✅ ({n_applied})",
         f"Submit 🚀 ({n_pending} pending)",
@@ -2081,6 +2173,9 @@ def main() -> None:
 
     with tab_notes:
         render_manual_notes_tab(study, pending, confirmed_rows)
+
+    with tab_xstudy:
+        render_cross_study_tab()
 
     with tab_summary:
         render_summary_tab(study)
