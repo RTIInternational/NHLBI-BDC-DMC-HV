@@ -700,6 +700,44 @@ def render_row(row: dict, study: str, pending: dict, idx: int) -> None:
 
         # ── Details ──────────────────────────────────────────────────────────
         with tab_detail:
+            # Applied / reviewed-no-change banner
+            if saved.get("applied"):
+                _new_curie   = saved.get("change_request", "")
+                _orig_curie  = saved.get("original_curie", "")
+                _applied_by  = saved.get("applied_by", "")
+                _applied_dt  = saved.get("applied_date", "")
+                _banner_note = saved.get("notes", "")
+                _curie_url   = _curie_to_url(_new_curie) if _new_curie else ""
+                _curie_html  = (
+                    f'<a href="{_curie_url}" target="_blank"><code>{_new_curie}</code></a>'
+                    if _curie_url else f"<code>{_new_curie}</code>"
+                ) if _new_curie else "—"
+                _orig_html   = f" &nbsp;(was: <code>{_orig_curie}</code>)" if _orig_curie else ""
+                _by_html     = f" &nbsp;·&nbsp; by {_applied_by}" if _applied_by else ""
+                _dt_html     = f" on {_applied_dt}" if _applied_dt else ""
+                _note_html   = f"<br><span style='color:#555'>{_banner_note[:200]}</span>" if _banner_note else ""
+                st.markdown(
+                    f'<div style="background:#e6f4ea;padding:10px 14px;border-radius:4px;'
+                    f'border-left:4px solid #34a853;font-size:0.9em;margin-bottom:8px">'
+                    f'✅ <strong>Applied</strong>{_dt_html}{_by_html}<br>'
+                    f'Changed to: {_curie_html}{_orig_html}{_note_html}'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
+            elif saved.get("no_change"):
+                _nc_by      = saved.get("no_change_by", "")
+                _nc_dt      = saved.get("no_change_date", "")
+                _nc_reason  = saved.get("no_change_reason", "")
+                _by_html    = f" &nbsp;·&nbsp; by {_nc_by}" if _nc_by else ""
+                _dt_html    = f" on {_nc_dt}" if _nc_dt else ""
+                _reason_html = f"<br><span style='color:#555'>Reason: {_nc_reason[:200]}</span>" if _nc_reason else ""
+                st.markdown(
+                    f'<div style="background:#f0f4ff;padding:10px 14px;border-radius:4px;'
+                    f'border-left:4px solid #6c8ebf;font-size:0.9em;margin-bottom:8px">'
+                    f'☑ <strong>Reviewed — no change</strong>{_dt_html}{_by_html}{_reason_html}'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
             st.markdown(f"**Issue:** {issue}")
             if row.get("Confidence") or row.get("Reviewer"):
                 st.markdown(
@@ -938,6 +976,119 @@ def render_row(row: dict, study: str, pending: dict, idx: int) -> None:
                             st.session_state[f"pending_{study}"] = pending
                             st.toast("☑ Marked as reviewed — no change recorded.")
                             st.rerun()
+
+
+# ── Manual Curation Notes helpers ────────────────────────────────────────────
+def _orphan_pending(study: str, pending: dict, confirmed_rows: list[dict]) -> dict:
+    """Return pending entries that have no corresponding review-MD row."""
+    anchored = {_row_key(study, row["File"]) for row in confirmed_rows if row.get("File")}
+    return {
+        k: v for k, v in pending.items()
+        if k not in anchored
+        and not v.get("applied")
+        and not v.get("no_change")
+        and (v.get("notes") or v.get("change_request"))
+        and v.get("study", study) == study
+    }
+
+
+def render_manual_notes_tab(study: str, pending: dict, confirmed_rows: list[dict]) -> None:
+    """Show pending entries that have no corresponding reviewer-findings row."""
+    orphans = _orphan_pending(study, pending, confirmed_rows)
+
+    st.caption(
+        "Variables noted here were not flagged by the semantic review generator "
+        "(e.g. CSV and YAML matched, no agent suggestion) but have curator notes or a "
+        "proposed change. Use the form below to update, submit, or close each note."
+    )
+
+    if not orphans:
+        st.info("No manual curation notes for this study.")
+        return
+
+    for i, (row_id, val) in enumerate(sorted(orphans.items())):
+        file_label  = row_id.split("::", 2)[-1]
+        slot        = val.get("slot", "")
+        cr          = val.get("change_request", "")
+        notes       = val.get("notes", "")
+        yaml_files  = val.get("yaml_files", [file_label] if file_label else [])
+        saved_date  = val.get("saved_date", "")
+        orig_curie  = val.get("original_curie", "")
+
+        badge = "💾" if cr else "📝"
+        cr_suffix = f" → {cr}" if cr else ""
+        slot_suffix = f" [{slot}]" if slot else ""
+        exp_label = f"{badge} `{file_label}`{slot_suffix}{cr_suffix}"
+
+        with st.expander(exp_label, expanded=False):
+            left, right = st.columns([1, 2])
+
+            with left:
+                st.markdown("**YAML file(s):**")
+                for yf in yaml_files:
+                    st.code(yf, language=None)
+                if slot:
+                    st.markdown(f"**Slot:** `{slot}`")
+                if saved_date:
+                    st.caption(f"Saved: {saved_date}")
+                if orig_curie:
+                    st.markdown(f"**Original CURIE:** `{orig_curie}`")
+
+                if slot and yaml_files:
+                    st.markdown("**Current CURIE in YAML:**")
+                    _curies = get_current_curies(study, yaml_files[0], slot)
+                    if _curies:
+                        _render_curies_with_vars(study, yaml_files[0], slot, _curies)
+                    else:
+                        st.caption("_Not found in YAML_")
+
+            with right:
+                new_cr = st.text_input(
+                    "Change request CURIE",
+                    value=cr,
+                    key=f"mn_cr_{study}_{i}",
+                    placeholder="e.g. MONDO:0004668",
+                )
+                new_notes = st.text_area(
+                    "Notes",
+                    value=notes,
+                    key=f"mn_notes_{study}_{i}",
+                    height=100,
+                )
+
+                col_save, col_nc, col_del = st.columns(3)
+                with col_save:
+                    if st.button("💾 Save", key=f"mn_save_{study}_{i}", use_container_width=True):
+                        pending[row_id] = {
+                            **val,
+                            "change_request": new_cr.strip(),
+                            "notes":          new_notes.strip(),
+                            "saved_date":     date.today().isoformat(),
+                        }
+                        _save_pending(pending, study)
+                        st.toast("Note saved.")
+                        st.rerun()
+
+                with col_nc:
+                    if st.button("☑ No change", key=f"mn_nc_{study}_{i}", use_container_width=True):
+                        curator = st.session_state.get("curator_sidebar", "Curator")
+                        pending[row_id] = {
+                            **val,
+                            "no_change":        True,
+                            "no_change_date":   date.today().isoformat(),
+                            "no_change_by":     curator,
+                            "no_change_reason": new_notes.strip() or "Reviewed manually — no change needed.",
+                        }
+                        _save_pending(pending, study)
+                        st.toast("☑ Marked as reviewed — no change.")
+                        st.rerun()
+
+                with col_del:
+                    if st.button("🗑 Remove", key=f"mn_del_{study}_{i}", use_container_width=True):
+                        pending.pop(row_id, None)
+                        _save_pending(pending, study)
+                        st.toast("Note removed.")
+                        st.rerun()
 
 
 # ── Previously Committed tab ──────────────────────────────────────────────────
@@ -1899,8 +2050,12 @@ def main() -> None:
     summary_exists = _find_summary_md(fk) is not None
     summary_label = "📊 Semantic Review Summary ✅" if summary_exists else "📊 Semantic Review Summary"
 
-    tab_conf, tab_summary, tab_committed, tab_submit, tab_log, tab_setup = st.tabs([
+    n_orphans = len(_orphan_pending(study, pending, confirmed_rows))
+    notes_label = f"📝 Manual Notes ({n_orphans})" if n_orphans else "📝 Manual Notes"
+
+    tab_conf, tab_notes, tab_summary, tab_committed, tab_submit, tab_log, tab_setup = st.tabs([
         f"Reviewer Findings ({len(confirmed_rows)})",
+        notes_label,
         summary_label,
         f"Previously Committed ✅ ({n_applied})",
         f"Submit 🚀 ({n_pending} pending)",
@@ -1923,6 +2078,9 @@ def main() -> None:
                 shown += 1
             if shown == 0:
                 st.info("No rows match current filters.")
+
+    with tab_notes:
+        render_manual_notes_tab(study, pending, confirmed_rows)
 
     with tab_summary:
         render_summary_tab(study)

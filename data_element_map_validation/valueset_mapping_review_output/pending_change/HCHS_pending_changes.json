@@ -29,15 +29,17 @@
   },
   "HCHS::confirmed::HCHS-ingest/tak_nstat_med.yaml": {
     "study": "HCHS",
-    "change_request": "",
-    "original_curie": "",
+    "change_request": "ATC:C10A",
+    "original_curie": "ATC:C10A",
     "slot": "drug_concept",
     "yaml_files": [
       "HCHS-ingest/tak_nstat_med.yaml"
     ],
     "notes": "This suggests that the source variable is not actually recording a medication, but rather a derived indicator that combines laboratory values and medication information.\nCould we get a clarification on this data element?\n\nIs this variable saying \"the participant is taking a non-statin medication\", or is it saying \"based on labs and medication history, we infer they are on lipid-lowering therapy\"?\n\n",
-    "applied": false,
-    "saved_date": "2026-06-13"
+    "applied": true,
+    "saved_date": "2026-06-15",
+    "applied_date": "2026-06-15",
+    "applied_by": "Curator"
   },
   "HCHS::confirmed::angina.yaml": {
     "study": "HCHS",
@@ -64,5 +66,17 @@
     "saved_date": "2026-06-15",
     "applied_date": "2026-06-15",
     "applied_by": "Curator"
+  },
+  "HCHS::confirmed::tak_aceinhib.yaml": {
+    "study": "HCHS",
+    "change_request": "ATC:C09A",
+    "original_curie": "ATC:C09A",
+    "slot": "drug_concept",
+    "yaml_files": [
+      "tak_aceinhib.yaml"
+    ],
+    "notes": "ATC:C09A = ACE inhibitors, plain",
+    "applied": false,
+    "saved_date": "2026-06-15"
   }
 }
