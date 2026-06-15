@@ -155,6 +155,17 @@ _SLOT_VOCAB_RULES: dict[str, dict] = {
             "not a quality improvement."
         ),
     },
+    "condition_concept": {
+        "valid":   {"MONDO", "HP"},
+        "invalid": {"OMOP", "SNOMED", "LOINC"},
+        "note": (
+            "`condition_concept` is typed to `ConditionConceptEnum`, defined as the union of "
+            "`MondoHumanDiseaseEnum` (MONDO: prefix) and `HpoPhenotypicAbnormalityEnum` (HP: prefix). "
+            "OMOP concept IDs belong in the OMOP CDM `condition_concept_id` column, not in bdchm. "
+            "This agent suggestion is a vocabulary/slot mismatch, not a quality improvement. "
+            "Keep the existing MONDO or HP term."
+        ),
+    },
 }
 
 
@@ -705,6 +716,7 @@ def write_summary(
     confirmed_rows: list[dict],
     anne_rows: list[dict],
     output_dir: Path,
+    suppressed_counts: dict[str, int] | None = None,
 ) -> Path:
     """Write {STUDY}_semantic_validator_summary_v{YYYYMMDD}.md and return its path."""
     stats = _build_summary_stats(mapreview_path)
@@ -843,6 +855,42 @@ def write_summary(
             )
         lines.append("")
 
+    # ── Vocab/Slot Validation ─────────────────────────────────────────────────
+    sup = suppressed_counts or {}
+    total_sup = sum(sup.values())
+    lines += [
+        "## Vocab/Slot Validation",
+        "",
+        "Agent suggestions suppressed as vocabulary/slot mismatches "
+        f"(evaluated but not surfaced as findings): **{total_sup}**",
+        "",
+    ]
+    if sup:
+        lines += [
+            "| Slot | Invalid vocab proposed | Suppressed count | Rule |",
+            "| :---- | :---- | ----: | :---- |",
+        ]
+        for slot, count in sorted(sup.items()):
+            rule = _SLOT_VOCAB_RULES.get(slot, {})
+            valid   = ", ".join(sorted(rule.get("valid",   set())))
+            invalid = ", ".join(sorted(rule.get("invalid", set())))
+            lines.append(f"| `{slot}` | {invalid} | {count} | Valid: {valid} |")
+        lines += [
+            f"| **Total** | | **{total_sup}** | |",
+            "",
+            "_These are not errors — they confirm the existing CURIEs are correct "
+            "for their slots. The agent proposed codes from a vocabulary the bdchm "
+            "slot is not typed for (e.g. OMOP in a MONDO-typed slot, LOINC in an "
+            "OBA-typed slot). See `_SLOT_VOCAB_RULES` in `generate_semantic_review.py` "
+            "for the full rule definitions._",
+        ]
+    else:
+        lines.append(
+            "_No vocab/slot mismatches detected — all agent suggestions were "
+            "for the correct vocabulary._"
+        )
+    lines.append("")
+
     # ── Error Cases Requiring Fix ─────────────────────────────────────────────
     missing = stats["missing_suggestion"]
     lines += [
@@ -901,19 +949,19 @@ def _iter_substantive(mapreview_path: Path):
 
 def _auto_generate_rows(
     mapreview: dict[str, list[dict]]
-) -> tuple[list[dict], list[dict]]:
+) -> tuple[list[dict], list[dict], dict[str, int]]:
     """Build confirmed_rows from mapreview data when no source reviewer MD exists.
 
     Two finding types (both go into Reviewer Confirmed Findings):
-      High priority  — YAML mismatches: CSV CURIE differs from what is in the YAML file.
-                       These are definitive errors — something must be corrected.
-      Medium priority — Agent improvement: agent REST APIs suggest a better CURIE than
-                       what is currently in the curie CSV. These are potential errors in
-                       the CSV that the curator should review and accept or reject.
+      High     — Agent suggests a better CURIE than what is in the curie CSV.
+      Medium   — YAML mismatch: CSV CURIE differs from what is in the YAML file.
 
-    Reviewer Questions is always empty here — only a human reviewer can populate it.
+    Returns (confirmed, anne_rows, suppressed_counts) where suppressed_counts is
+    {slot: n} counting agent suggestions silently dropped due to vocab/slot rules.
+    Reviewer Questions is always empty — only a human reviewer can populate it.
     """
     confirmed: list[dict] = []
+    suppressed: dict[str, int] = {}
 
     for yaml_file in sorted(mapreview):
         summary = _file_summary(yaml_file, mapreview)
@@ -956,7 +1004,8 @@ def _auto_generate_rows(
                         "reviewer":    "Auto-generated",
                         "source alignment": "",
                     })
-                # vocab/slot mismatch: agent is wrong vocabulary for this slot — suppress as High
+                else:
+                    suppressed[slot] = suppressed.get(slot, 0) + 1
 
             if yaml_match == "mismatch":
                 csv_str = ", ".join(f"`{c}`" for c in csv_curies)
@@ -980,7 +1029,7 @@ def _auto_generate_rows(
                     "source alignment": "",
                 })
 
-    return confirmed, []  # Reviewer Questions only come from a human reviewer MD
+    return confirmed, [], suppressed
 
 
 def main() -> None:
@@ -993,7 +1042,7 @@ def main() -> None:
         confirmed_rows, anne_rows = parse_review_md(REVIEW_MD)
         print(f"  {len(confirmed_rows)} reviewer Confirmed Findings, {len(anne_rows)} Reviewer Questions rows.")
         # Merge auto-generated findings for YAML files not already covered by the reviewer
-        auto_confirmed, _ = _auto_generate_rows(mapreview)
+        auto_confirmed, _, suppressed_counts = _auto_generate_rows(mapreview)
         reviewed_files = {
             Path(_unescape_md(r.get("file", ""))).name
             for r in confirmed_rows + anne_rows
@@ -1004,8 +1053,12 @@ def main() -> None:
             print(f"  + {len(added)} auto-generated findings for files not in reviewer MD.")
     else:
         print("No source reviewer MD — generating rows from mapreview data ...")
-        confirmed_rows, anne_rows = _auto_generate_rows(mapreview)
+        confirmed_rows, anne_rows, suppressed_counts = _auto_generate_rows(mapreview)
         print(f"  Auto-generated: {len(confirmed_rows)} Confirmed Findings, {len(anne_rows)} Reviewer Questions rows.")
+
+    if suppressed_counts:
+        total_sup = sum(suppressed_counts.values())
+        print(f"  Vocab/slot mismatch suppressed: {total_sup} ({dict(suppressed_counts)})")
 
     print("Generating semantic review ...")
     write_output(confirmed_rows, anne_rows, mapreview, OUTPUT_MD)
@@ -1016,6 +1069,7 @@ def main() -> None:
         confirmed_rows,
         anne_rows,
         OUTPUT_MD.parent,
+        suppressed_counts=suppressed_counts,
     )
     print(f"Written: {summary_path}")
     print("Done.")

@@ -688,6 +688,7 @@ def render_row(row: dict, study: str, pending: dict, idx: int) -> None:
     badge      = {"P1": "🔴", "P2": "🟡", "P3": "🟢"}.get(priority, "⚪")
     done_badge = (
         " ✅" if saved.get("applied")
+        else " ☑" if saved.get("no_change")
         else " 💾" if saved.get("change_request")
         else " 📝" if saved.get("notes")
         else ""
@@ -870,6 +871,13 @@ def render_row(row: dict, study: str, pending: dict, idx: int) -> None:
 
                 if saved.get("applied"):
                     st.success(f"✅ Applied: `{saved['change_request']}`")
+                elif saved.get("no_change"):
+                    st.success(
+                        f"☑ Reviewed — no change · {saved.get('reviewed_date', '')} "
+                        f"· {saved.get('reviewed_by', '')}"
+                    )
+                    if saved.get("no_change_reason"):
+                        st.caption(f"Reason: {saved['no_change_reason']}")
                 elif saved.get("change_request") and not saved.get("applied"):
                     url = _curie_to_url(saved["change_request"])
                     link = (
@@ -880,16 +888,69 @@ def render_row(row: dict, study: str, pending: dict, idx: int) -> None:
                 elif saved.get("notes") and not saved.get("applied"):
                     st.info("📝 Notes saved — no CURIE yet. Add a CURIE before submitting.")
 
+                # ── Reviewed — no change ──────────────────────────────────────
+                st.divider()
+                if saved.get("no_change"):
+                    if st.button(
+                        "↩ Reopen for editing",
+                        key=f"nc_undo_{study}_{idx}",
+                        use_container_width=True,
+                    ):
+                        entry = dict(pending.get(row_id, {}))
+                        for _k in ("no_change", "no_change_reason", "reviewed_date", "reviewed_by"):
+                            entry.pop(_k, None)
+                        pending[row_id] = entry
+                        _save_pending(pending, study)
+                        st.session_state[f"pending_{study}"] = pending
+                        st.toast("↩ Reopened for editing.")
+                        st.rerun()
+                else:
+                    st.markdown("**Or — mark as reviewed with no change needed:**")
+                    no_change_reason = st.text_area(
+                        "Reason (required)",
+                        value=saved.get("no_change_reason", ""),
+                        key=f"nc_reason_{study}_{idx}",
+                        height=55,
+                        placeholder="e.g. OBA term is correct for observation_type — LOINC suggestion is a vocab/slot mismatch.",
+                    )
+                    if st.button(
+                        "☑ Mark reviewed — no change",
+                        key=f"nc_btn_{study}_{idx}",
+                        use_container_width=True,
+                    ):
+                        if not no_change_reason.strip():
+                            st.error("A reason is required before marking as reviewed.")
+                        else:
+                            entry = dict(pending.get(row_id, {}))
+                            entry.update({
+                                "study":            study,
+                                "slot":             use_slot,
+                                "yaml_files":       yaml_files,
+                                "no_change":        True,
+                                "no_change_reason": no_change_reason.strip(),
+                                "reviewed_date":    date.today().isoformat(),
+                                "reviewed_by":      st.session_state.get("curator_sidebar", "Curator"),
+                                "change_request":   "",
+                                "applied":          False,
+                            })
+                            pending[row_id] = entry
+                            _save_pending(pending, study)
+                            st.session_state[f"pending_{study}"] = pending
+                            st.toast("☑ Marked as reviewed — no change recorded.")
+                            st.rerun()
+
 
 # ── Previously Committed tab ──────────────────────────────────────────────────
 def render_committed_tab(study: str, pending: dict) -> None:
-    applied = {k: v for k, v in pending.items() if v.get("applied") and v.get("study", study) == study}
+    applied    = {k: v for k, v in pending.items() if v.get("applied")   and v.get("study", study) == study}
+    no_changes = {k: v for k, v in pending.items() if v.get("no_change") and v.get("study", study) == study}
 
-    if not applied:
+    if not applied and not no_changes:
         st.info("No committed changes for this study yet. Changes appear here after you submit.")
         return
 
-    st.caption(f"{len(applied)} committed change(s) — click ✏️ Edit to queue a correction.")
+    if applied:
+        st.caption(f"{len(applied)} committed change(s) — click ✏️ Edit to queue a correction.")
 
     for i, (row_id, val) in enumerate(sorted(applied.items())):
         file_label = row_id.split("::", 2)[-1]
@@ -1003,6 +1064,45 @@ def render_committed_tab(study: str, pending: dict) -> None:
                         st.session_state[f"pending_{study}"] = pending
                         st.session_state[edit_key] = False
                         st.toast("✓ Correction queued — go to Submit tab to apply.")
+                        st.rerun()
+
+    # ── Reviewed — Kept As-Is ─────────────────────────────────────────────────
+    if no_changes:
+        if applied:
+            st.divider()
+        st.subheader(f"Reviewed — Kept As-Is ({len(no_changes)})")
+        st.caption("Curator reviewed these findings and deliberately decided to keep the existing mapping.")
+        for i, (row_id, val) in enumerate(sorted(no_changes.items())):
+            file_label = row_id.split("::", 2)[-1]
+            slot_label = f" [{val.get('slot','')}]" if val.get("slot") else ""
+            with st.expander(f"☑ `{file_label}`{slot_label}", expanded=False):
+                col_info, col_btn = st.columns([5, 1])
+                with col_info:
+                    if val.get("no_change_reason"):
+                        st.markdown(f"**Reason:** {val['no_change_reason']}")
+                    meta = []
+                    if val.get("reviewed_date"):
+                        meta.append(f"Reviewed {val['reviewed_date']}")
+                    if val.get("reviewed_by"):
+                        meta.append(f"by {val['reviewed_by']}")
+                    if meta:
+                        st.caption(" · ".join(meta))
+                    if val.get("yaml_files"):
+                        st.caption(f"YAML: {', '.join(val['yaml_files'])}")
+                with col_btn:
+                    if st.button(
+                        "↩ Reopen",
+                        key=f"nc_reopen_{study}_{i}",
+                        use_container_width=True,
+                        help="Remove the no-change decision and reopen for editing.",
+                    ):
+                        entry = dict(val)
+                        for _k in ("no_change", "no_change_reason", "reviewed_date", "reviewed_by"):
+                            entry.pop(_k, None)
+                        pending[row_id] = entry
+                        _save_pending(pending, study)
+                        st.session_state[f"pending_{study}"] = pending
+                        st.toast("↩ Reopened for editing.")
                         st.rerun()
 
 
@@ -1584,8 +1684,9 @@ def main() -> None:
     pending = st.session_state[pending_key]
 
     confirmed_rows = load_review_rows(study)
-    n_pending = sum(1 for v in pending.values() if v.get("change_request") and not v.get("applied"))
-    n_applied = sum(1 for v in pending.values() if v.get("applied"))
+    n_pending   = sum(1 for v in pending.values() if v.get("change_request") and not v.get("applied"))
+    n_applied   = sum(1 for v in pending.values() if v.get("applied"))
+    n_no_change = sum(1 for v in pending.values() if v.get("no_change"))
 
     study_ready = (
         STUDIES[study]["review_md"].exists() and STUDIES[study]["mapreview_csv"].exists()
@@ -1621,6 +1722,7 @@ def main() -> None:
     st.sidebar.metric("Reviewer findings", len(confirmed_rows))
     st.sidebar.metric("Pending 💾",         n_pending)
     st.sidebar.metric("Applied ✅",          n_applied)
+    st.sidebar.metric("Reviewed ☑",         n_no_change)
     st.sidebar.divider()
 
     _all_priorities = sorted({row.get("Priority", "") for row in confirmed_rows if row.get("Priority", "")})
