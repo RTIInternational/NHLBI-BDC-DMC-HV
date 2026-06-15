@@ -103,14 +103,13 @@ def _resolve_paths(study: str) -> None:
     src_md = cfg.get("review_md")
     if src_md is None:
         print(
-            f"No source reviewer MD found for '{study}' in {_REVIEW_OUT}.\n"
-            f"Expected a file matching '{_file_key(study)}*Semantic*Review*.md'.\n"
-            "Please place the human-authored reviewer MD there before generating.",
+            f"No source reviewer MD found for '{study}' in {_REVIEW_OUT}. "
+            "Generating from mapreview CSV only — Final Confirmed Findings and "
+            "Anne Review Required tables will be empty.",
             file=sys.stderr,
         )
-        sys.exit(1)
     MAPREVIEW_CSV = cfg["mapreview_csv"]
-    REVIEW_MD     = src_md
+    REVIEW_MD     = src_md  # may be None
     OUTPUT_MD     = cfg["output_md"]
     STUDY         = study
 
@@ -251,11 +250,15 @@ def parse_review_md(path: Path) -> tuple[list[dict], list[dict]]:
 
     for line in text.splitlines():
         stripped = line.strip()
-        # Match section headers regardless of # depth (e.g. ## or # both work)
-        if "Final Confirmed Findings" in stripped and stripped.startswith("#"):
+        # Match section headers regardless of # depth or name version
+        if stripped.startswith("#") and any(
+            k in stripped for k in ("Confirmed Findings", "Reviewer Confirmed")
+        ):
             current_section = "confirmed"
             continue
-        if "Anne Review Required" in stripped and stripped.startswith("#"):
+        if stripped.startswith("#") and any(
+            k in stripped for k in ("Anne Review Required", "Reviewer Questions")
+        ):
             current_section = "anne"
             continue
         if not stripped.startswith("|"):
@@ -464,17 +467,18 @@ def write_output(
 ) -> None:
     lines: list[str] = []
 
+    review_md_name = REVIEW_MD.name if REVIEW_MD is not None else "(no source reviewer MD)"
     lines += [
         f"# {STUDY} Semantic Review v{TODAY}",
         "",
-        f"> Auto-generated {TODAY} from `{MAPREVIEW_CSV.name}` and `{REVIEW_MD.name}`.",
+        f"> Auto-generated {TODAY} from `{MAPREVIEW_CSV.name}` and `{review_md_name}`.",
         "> **Semantic validator review** cross-references YAML spot-check results "
         "and agent CURIE suggestions (mondo\\_agent, omop\\_agent, measurementObs\\_agent) "
         "with each row's Recommended action.",
         "",
     ]
 
-    # ---- Final Confirmed Findings -------------------------------------------
+    # ---- Reviewer Confirmed Findings ----------------------------------------
     # Display headers (proper casing); access keys are lowercase (normalized in parse_review_md)
     disp_conf_headers = [
         "Priority", "File", "Final issue", "Evidence to confirm",
@@ -485,7 +489,7 @@ def write_output(
     all_conf_headers = disp_conf_headers + [new_col]
 
     lines += [
-        "## Final Confirmed Findings",
+        "## Reviewer Confirmed Findings",
         "",
         "| " + " | ".join(all_conf_headers) + " |",
         "| " + " | ".join(":----" for _ in all_conf_headers) + " |",
@@ -507,13 +511,13 @@ def write_output(
 
     lines.append("")
 
-    # ---- Anne Review Required -----------------------------------------------
+    # ---- Reviewer Questions -------------------------------------------------
     disp_anne_headers = ["Priority", "File", "Question", "Evidence", "Decision needed"]
     key_anne_headers  = [h.lower() for h in disp_anne_headers]
     all_anne_headers  = disp_anne_headers + [new_col]
 
     lines += [
-        "## Anne Review Required",
+        "## Reviewer Questions",
         "",
         "| " + " | ".join(all_anne_headers) + " |",
         "| " + " | ".join(":----" for _ in all_anne_headers) + " |",
@@ -668,7 +672,7 @@ def write_summary(
         "",
         f"**Generated:** {TODAY}",
         f"**Mapreview CSV:** `{mapreview_path.name}`",
-        f"**Review MD:** `{REVIEW_MD.name}`",
+        f"**Review MD:** `{REVIEW_MD.name if REVIEW_MD is not None else '(none — generated from mapreview CSV only)'}`",
         "",
         "---",
         "",
@@ -719,7 +723,7 @@ def write_summary(
         lines.append("| :---- | :---- | :---- | :---- |")
         for m in stats["yaml_mismatches"]:
             lines.append(
-                f"| {m['var']} | {m['yaml_file']} | `{m['csv']}` | `{m['yaml_curie']}` |"
+                f"| {m['var']} | {m['yaml_file']} | `{m['csv_curie']}` | `{m['yaml_curie']}` |"
             )
     lines.append("")
 
@@ -848,14 +852,110 @@ def _iter_substantive(mapreview_path: Path):
 # Main
 # ---------------------------------------------------------------------------
 
+def _auto_generate_rows(
+    mapreview: dict[str, list[dict]]
+) -> tuple[list[dict], list[dict]]:
+    """Build confirmed_rows from mapreview data when no source reviewer MD exists.
+
+    Two finding types (both go into Reviewer Confirmed Findings):
+      High priority  — YAML mismatches: CSV CURIE differs from what is in the YAML file.
+                       These are definitive errors — something must be corrected.
+      Medium priority — Agent improvement: agent REST APIs suggest a better CURIE than
+                       what is currently in the curie CSV. These are potential errors in
+                       the CSV that the curator should review and accept or reject.
+
+    Reviewer Questions is always empty here — only a human reviewer can populate it.
+    """
+    confirmed: list[dict] = []
+
+    for yaml_file in sorted(mapreview):
+        summary = _file_summary(yaml_file, mapreview)
+        if not summary:
+            continue
+
+        for slot, sdata in summary["slots"].items():
+            yaml_match  = sdata.get("yaml_match", "")
+            csv_curies  = sorted(sdata.get("csv_curies", set()))
+            yaml_curie  = sdata.get("yaml_curie", "")
+            mondo       = sorted(sdata.get("mondo", set()))
+            hpo         = sorted(sdata.get("hpo",   set()))
+            omop        = sorted(sdata.get("omop",  set()))
+            agent_curie = next(iter(mondo or hpo or omop), "")
+            vars_       = sdata.get("vars", [])
+            var_desc    = vars_[0][1] if vars_ else ""
+
+            if agent_curie and csv_curies and agent_curie not in csv_curies:
+                csv_str   = ", ".join(f"`{c}`" for c in csv_curies)
+                desc_frag = f' ("{var_desc[:80]}")' if var_desc else ""
+                source    = ("MONDO" if mondo else "HPO" if hpo else "OMOP/LOINC")
+                confirmed.append({
+                    "priority":            "High",
+                    "file":               yaml_file,
+                    "final issue":        (
+                        f"Agent suggests better CURIE for `{slot}`{desc_frag}: "
+                        f"{source} recommends `{agent_curie}` but CSV has {csv_str}"
+                    ),
+                    "evidence to confirm": (
+                        f"Variable description: {var_desc[:120] if var_desc else '(none)'}. "
+                        f"{source} agent returned `{agent_curie}` as best match."
+                    ),
+                    "recommended action":  (
+                        f"Review whether `{agent_curie}` is more accurate than {csv_str} "
+                        f"for `{slot}`. If yes, update the curie CSV and re-run."
+                    ),
+                    "confidence":  "High",
+                    "reviewer":    "Auto-generated",
+                    "source alignment": "",
+                })
+
+            if yaml_match == "mismatch":
+                csv_str = ", ".join(f"`{c}`" for c in csv_curies)
+                confirmed.append({
+                    "priority":            "Medium",
+                    "file":               yaml_file,
+                    "final issue":        (
+                        f"YAML mismatch on `{slot}`: "
+                        f"CSV has {csv_str} but YAML contains `{yaml_curie}`"
+                    ),
+                    "evidence to confirm": (
+                        f"CSV CURIE(s): {csv_str}; "
+                        f"YAML `{slot}` value: `{yaml_curie}`"
+                    ),
+                    "recommended action":  (
+                        f"Verify correct value and update YAML to match. "
+                        + (f"Agent suggests `{agent_curie}`." if agent_curie else "No agent suggestion available.")
+                    ),
+                    "confidence":  "Medium",
+                    "reviewer":    "Auto-generated",
+                    "source alignment": "",
+                })
+
+    return confirmed, []  # Reviewer Questions only come from a human reviewer MD
+
+
 def main() -> None:
     print("Loading mapreview CSV ...")
     mapreview = load_mapreview(MAPREVIEW_CSV)
     print(f"  {sum(len(v) for v in mapreview.values())} rows across {len(mapreview)} YAML files.")
 
-    print("Parsing review MD ...")
-    confirmed_rows, anne_rows = parse_review_md(REVIEW_MD)
-    print(f"  {len(confirmed_rows)} Final Confirmed Findings, {len(anne_rows)} Anne Review Required rows.")
+    if REVIEW_MD is not None:
+        print("Parsing review MD ...")
+        confirmed_rows, anne_rows = parse_review_md(REVIEW_MD)
+        print(f"  {len(confirmed_rows)} reviewer Confirmed Findings, {len(anne_rows)} Reviewer Questions rows.")
+        # Merge auto-generated findings for YAML files not already covered by the reviewer
+        auto_confirmed, _ = _auto_generate_rows(mapreview)
+        reviewed_files = {
+            Path(_unescape_md(r.get("file", ""))).name
+            for r in confirmed_rows + anne_rows
+        }
+        added = [r for r in auto_confirmed if Path(r["file"]).name not in reviewed_files]
+        if added:
+            confirmed_rows = confirmed_rows + added
+            print(f"  + {len(added)} auto-generated findings for files not in reviewer MD.")
+    else:
+        print("No source reviewer MD — generating rows from mapreview data ...")
+        confirmed_rows, anne_rows = _auto_generate_rows(mapreview)
+        print(f"  Auto-generated: {len(confirmed_rows)} Confirmed Findings, {len(anne_rows)} Reviewer Questions rows.")
 
     print("Generating semantic review ...")
     write_output(confirmed_rows, anne_rows, mapreview, OUTPUT_MD)
@@ -869,6 +969,9 @@ def main() -> None:
     )
     print(f"Written: {summary_path}")
     print("Done.")
+
+    from pipeline_status import write_status
+    write_status()
 
 
 if __name__ == "__main__":

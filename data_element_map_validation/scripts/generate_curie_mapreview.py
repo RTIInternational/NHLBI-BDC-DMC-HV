@@ -476,6 +476,12 @@ def main(no_agents: bool = False) -> None:
 
     print(f"\nDone. Output written to:\n  {OUTPUT_CSV}", file=sys.stderr)
 
+    try:
+        from pipeline_status import write_status
+        write_status()
+    except Exception as _e:
+        print(f"Warning: could not update pipeline_status.json: {_e}", file=sys.stderr)
+
 
 if __name__ == "__main__":
     import argparse

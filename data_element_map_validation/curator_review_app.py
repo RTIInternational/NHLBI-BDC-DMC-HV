@@ -11,6 +11,8 @@ import json
 import re
 import subprocess
 import sys
+import threading
+import time
 from datetime import date
 from pathlib import Path
 
@@ -163,6 +165,8 @@ def _validate_curie(curie: str) -> str:
 
 def _linkify(text: str) -> str:
     """Replace CURIE patterns with HTML anchor tags (new tab)."""
+    # Strip backtick wrappers around CURIEs so they don't produce malformed HTML
+    text = re.sub(r'`([A-Z][A-Z0-9_]*:[A-Z0-9.]+)`', r'\1', text)
     def _sub(m: re.Match) -> str:
         curie = m.group(1) or m.group(2)
         url = _curie_to_url(curie)
@@ -238,7 +242,8 @@ def load_review_rows(study: str) -> list[dict]:
     conf_lines: list[str] = []
     in_conf = False
     for line in path.read_text(encoding="utf-8").splitlines():
-        if "## Final Confirmed Findings" in line:
+        # Accept both legacy "Final Confirmed Findings" and new "Reviewer Confirmed Findings"
+        if line.startswith("## ") and "Confirmed Findings" in line:
             in_conf = True
         elif line.startswith("## "):
             in_conf = False
@@ -1167,6 +1172,37 @@ def _run_pipeline_cmd(label: str, cmd: list[str]) -> None:
         st.code("\n".join(lines) if lines else "(no output)")
 
 
+# Module-level job store — threads write here; avoids cross-thread session_state writes
+_BG_JOBS: dict[str, dict] = {}
+
+
+def _start_bg_pipeline(label: str, cmd: list[str], cmd_type: str) -> None:
+    """Launch subprocess in a background thread so the UI stays interactive."""
+    import uuid
+    job_id = str(uuid.uuid4())
+    _BG_JOBS[job_id] = {"label": label, "lines": [], "rc": None, "done": False, "cmd_type": cmd_type}
+    st.session_state._bg_job_id = job_id
+
+    def _worker() -> None:
+        job = _BG_JOBS[job_id]
+        try:
+            proc = subprocess.Popen(
+                cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                text=True, cwd=str(_HERE),
+            )
+            for line in proc.stdout:  # type: ignore[union-attr]
+                job["lines"].append(line.rstrip())
+            proc.wait()
+            job["rc"] = proc.returncode
+        except Exception as exc:
+            job["lines"].append(f"ERROR: {exc}")
+            job["rc"] = -1
+        finally:
+            job["done"] = True
+
+    threading.Thread(target=_worker, daemon=True).start()
+
+
 # ── Full-page Registration flow ───────────────────────────────────────────────
 def render_registration_page(study: str) -> None:
     """Replaces the entire UI while the pipeline runs. Nothing else is rendered."""
@@ -1319,9 +1355,71 @@ def render_summary_tab(study: str) -> None:
 
 
 # ── Setup tab ─────────────────────────────────────────────────────────────────
+_STATUS_JSON = _HERE / "valueset_mapping_review_output" / "pipeline_status.json"
+
+
+def _render_all_studies_status() -> None:
+    import json as _json
+    st.subheader("All studies — pipeline overview")
+    if not _STATUS_JSON.exists():
+        st.caption("No `pipeline_status.json` yet — run any pipeline step to generate it.")
+        return
+
+    try:
+        status = _json.loads(_STATUS_JSON.read_text(encoding="utf-8"))
+    except Exception as exc:
+        st.warning(f"Could not read pipeline_status.json: {exc}")
+        return
+
+    studies_data = status.get("studies", {})
+    last_updated = status.get("last_updated", "")
+
+    rows_md = []
+    for study_name, s in studies_data.items():
+        mp = s.get("mapreview")
+        sr = s.get("semantic_review")
+        input_ver = s.get("input_version", 1)
+        release   = s.get("release") or "—"
+        if mp:
+            mp_cell = f"✅ {mp['completed'][:10]} ({mp['rows']} rows)"
+        else:
+            mp_cell = "⏳ not run"
+        sr_cell = f"✅ {sr['completed'][:10]}" if sr else "⏳ not run"
+        rows_md.append(f"| {study_name} | v{input_ver} | {mp_cell} | {sr_cell} | {release} |")
+
+    md_lines = [
+        "| Study | Input ver | Mapreview (step 1) | Semantic Review MD (step 2) | Release |",
+        "| :---- | :---: | :---- | :---- | :---: |",
+    ] + rows_md
+    st.markdown("\n".join(md_lines))
+    if last_updated:
+        st.caption(f"Status file last updated: {last_updated}")
+    st.divider()
+
+
 def render_setup_tab(study: str) -> None:
     cfg = STUDIES[study]
     label = STUDIES[study]["label"]
+
+    # ── Last pipeline result (shown here, dismissed by user) ──────────────────
+    result = st.session_state.get("_pipeline_result")
+    if result:
+        rc    = result["rc"]
+        lbl   = result["label"]
+        lines = result["lines"]
+        if rc == 0:
+            st.success(f"✅ {lbl} — done.")
+        else:
+            st.error(f"❌ {lbl} — failed (exit {rc}).")
+        if lines:
+            with st.expander("Output log", expanded=rc != 0):
+                st.code("\n".join(lines), language=None)
+        if st.button("Dismiss", key="dismiss_pipeline_result"):
+            st.session_state.pop("_pipeline_result", None)
+            st.rerun()
+        st.divider()
+
+    _render_all_studies_status()
 
     # ── File status ───────────────────────────────────────────────────────────
     st.subheader("Pipeline file status")
@@ -1338,10 +1436,13 @@ def render_setup_tab(study: str) -> None:
         with c1:
             st.markdown(f"{icon} **{lbl}**")
         with c2:
-            st.code(
-                str(path.relative_to(_HERE.parent)) if exists else f"{path.name}  — not found",
-                language=None,
-            )
+            if exists:
+                from datetime import datetime as _dt
+                mtime = _dt.fromtimestamp(path.stat().st_mtime)
+                st.code(str(path.relative_to(_HERE.parent)), language=None)
+                st.caption(f"completed {mtime.strftime('%Y-%m-%d %H:%M')}")
+            else:
+                st.code(f"{path.name}  — not found", language=None)
 
     st.divider()
 
@@ -1499,6 +1600,12 @@ def main() -> None:
                 use_container_width=True,
                 type="primary",
             )
+            if st.sidebar.button("🔄 Reset stuck pipeline", key="reset_pipeline",
+                                 use_container_width=True):
+                for _k in ("pipeline_running", "_bg_job_id", "_pipeline_result",
+                           "_bg_label", "_bg_lines", "_bg_rc", "_bg_done", "_bg_cmd_type"):
+                    st.session_state.pop(_k, None)
+                st.rerun()
         else:
             if st.sidebar.button(
                 f"🚀 Run {STUDIES[study]['label']} Curie Review",
@@ -1511,13 +1618,17 @@ def main() -> None:
                 st.rerun()
         st.sidebar.divider()
 
-    st.sidebar.metric("Confirmed findings", len(confirmed_rows))
+    st.sidebar.metric("Reviewer findings", len(confirmed_rows))
     st.sidebar.metric("Pending 💾",         n_pending)
     st.sidebar.metric("Applied ✅",          n_applied)
     st.sidebar.divider()
 
+    _all_priorities = sorted({row.get("Priority", "") for row in confirmed_rows if row.get("Priority", "")})
+    if not _all_priorities:
+        _all_priorities = ["P1", "P2", "P3"]
     priority_filter = st.sidebar.multiselect(
-        "Priority filter", ["P1", "P2", "P3"], default=["P1", "P2", "P3"]
+        "Priority filter", _all_priorities, default=_all_priorities,
+        key=f"priority_filter_{study}",
     )
     st.sidebar.divider()
 
@@ -1578,28 +1689,64 @@ def main() -> None:
         _cfg = STUDIES[_cmd_study]
         _lbl = _cfg["label"]
         if _cmd_type == "step1_noagents":
-            _run_pipeline_cmd(
+            _start_bg_pipeline(
                 f"Map-review YAML check — {_lbl}",
                 [sys.executable, str(_SCRIPTS_DIR / "generate_curie_mapreview.py"),
                  "--study", _cmd_study, "--no-agents"],
+                _cmd_type,
             )
-            load_mapreview_csv.clear()
         elif _cmd_type == "step1_agents":
-            _run_pipeline_cmd(
+            _start_bg_pipeline(
                 f"Map-review full agents — {_lbl}",
                 [sys.executable, str(_SCRIPTS_DIR / "generate_curie_mapreview.py"),
                  "--study", _cmd_study],
+                _cmd_type,
             )
-            load_mapreview_csv.clear()
         elif _cmd_type == "step2":
-            _run_pipeline_cmd(
+            _start_bg_pipeline(
                 f"Semantic review — {_lbl}",
                 [sys.executable, str(_SCRIPTS_DIR / "generate_semantic_review.py"),
                  "--study", _cmd_study],
+                _cmd_type,
             )
-            load_review_rows.clear()
-        st.session_state.pipeline_running = False
-        st.rerun()
+        # pipeline_running stays True — cleared below when the bg thread finishes
+        st.session_state._pipeline_start_ts = time.time()
+
+    # ── Background pipeline polling ───────────────────────────────────────────
+    if st.session_state.get("pipeline_running"):
+        # Auto-clear if stuck for more than 10 minutes (e.g. after hot-reload)
+        _start_ts = st.session_state.setdefault("_pipeline_start_ts", time.time())
+        if time.time() - _start_ts > 600:
+            for _k in ("pipeline_running", "_bg_job_id", "_pipeline_start_ts",
+                       "_bg_label", "_bg_lines", "_bg_rc", "_bg_done", "_bg_cmd_type"):
+                st.session_state.pop(_k, None)
+            st.rerun()
+
+        job_id = st.session_state.get("_bg_job_id", "")
+        job    = _BG_JOBS.get(job_id)
+        if job and not job["done"]:
+            # Still running — poll silently; sidebar button already shows ⏳
+            time.sleep(0.5)
+            st.rerun()
+        else:
+            # Thread finished (or job not found) — save result for Setup tab
+            if job:
+                st.session_state._pipeline_result = {
+                    "label": job["label"],
+                    "rc":    job["rc"] if job["rc"] is not None else -1,
+                    "lines": job["lines"],
+                }
+                cmd_type = job["cmd_type"]
+                _BG_JOBS.pop(job_id, None)
+            else:
+                cmd_type = ""
+            if cmd_type in ("step1_noagents", "step1_agents"):
+                load_mapreview_csv.clear()
+            elif cmd_type == "step2":
+                load_review_rows.clear()
+            st.session_state.pipeline_running = False
+            st.session_state.pop("_bg_job_id", None)
+            st.rerun()
 
     # ── Main content area ─────────────────────────────────────────────────────
     st.markdown(
@@ -1623,7 +1770,7 @@ def main() -> None:
     summary_label = "📊 Semantic Review Summary ✅" if summary_exists else "📊 Semantic Review Summary"
 
     tab_conf, tab_summary, tab_committed, tab_submit, tab_log, tab_setup = st.tabs([
-        f"Confirmed Findings ({len(confirmed_rows)})",
+        f"Reviewer Findings ({len(confirmed_rows)})",
         summary_label,
         f"Previously Committed ✅ ({n_applied})",
         f"Submit 🚀 ({n_pending} pending)",
