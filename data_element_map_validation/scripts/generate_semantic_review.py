@@ -140,6 +140,45 @@ _CURATOR_NOTES: dict[str, str] = {
 }
 
 # ---------------------------------------------------------------------------
+# Vocabulary-slot compatibility rules
+# ---------------------------------------------------------------------------
+# Maps slot name → which CURIE prefixes are valid/invalid.
+# Used to suppress false-positive agent suggestions and warn in reviewer rows.
+_SLOT_VOCAB_RULES: dict[str, dict] = {
+    "observation_type": {
+        "valid":   {"OBA", "OMOP"},
+        "invalid": {"LOINC"},
+        "note": (
+            "LOINC encodes assay procedures (the *how*) and belongs in `method_type`. "
+            "OBA/OMOP encode biological attributes (the *what*) — the correct vocabulary "
+            "for `observation_type`. This agent suggestion is a vocabulary/slot mismatch, "
+            "not a quality improvement."
+        ),
+    },
+}
+
+
+def _curie_prefix(curie: str) -> str:
+    return curie.split(":")[0].upper() if ":" in curie else ""
+
+
+def _vocab_slot_mismatch_note(agent_curie: str, csv_curies: set, slot: str) -> str:
+    """Return an explanatory note if agent_curie is a vocabulary/slot mismatch, else ''."""
+    rule = _SLOT_VOCAB_RULES.get(slot)
+    if not rule:
+        return ""
+    ap = _curie_prefix(agent_curie)
+    csv_prefixes = {_curie_prefix(c) for c in csv_curies}
+    # Agent suggests an explicitly invalid vocabulary for this slot
+    if ap in rule["invalid"]:
+        return rule["note"]
+    # Agent suggests replacing a valid vocabulary with a non-valid one
+    if csv_prefixes & rule["valid"] and ap and ap not in rule["valid"]:
+        return rule["note"]
+    return ""
+
+
+# ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 _CURIE_RE = re.compile(r"\b([A-Z][A-Z0-9_]*:[A-Z0-9.]+)\b")
@@ -331,6 +370,14 @@ def _agent_text(sdata: dict, slot: str) -> str:
         parts.append(f"HPO agent → `{', '.join(hpo)}`{desc_frag}.")
     if omop:
         parts.append(f"Measurement/procedure agent → `{', '.join(omop)}`{desc_frag}.")
+
+    # Flag vocabulary/slot mismatches so reviewers aren't misled
+    best_agent = next(iter(mondo or hpo or omop), "")
+    if best_agent:
+        mismatch = _vocab_slot_mismatch_note(best_agent, sdata.get("csv_curies", set()), slot)
+        if mismatch:
+            parts.append(f"⚠ **Vocab/slot mismatch**: {mismatch}")
+
     return " ".join(parts)
 
 
@@ -885,28 +932,31 @@ def _auto_generate_rows(
             var_desc    = vars_[0][1] if vars_ else ""
 
             if agent_curie and csv_curies and agent_curie not in csv_curies:
-                csv_str   = ", ".join(f"`{c}`" for c in csv_curies)
-                desc_frag = f' ("{var_desc[:80]}")' if var_desc else ""
-                source    = ("MONDO" if mondo else "HPO" if hpo else "OMOP/LOINC")
-                confirmed.append({
-                    "priority":            "High",
-                    "file":               yaml_file,
-                    "final issue":        (
-                        f"Agent suggests better CURIE for `{slot}`{desc_frag}: "
-                        f"{source} recommends `{agent_curie}` but CSV has {csv_str}"
-                    ),
-                    "evidence to confirm": (
-                        f"Variable description: {var_desc[:120] if var_desc else '(none)'}. "
-                        f"{source} agent returned `{agent_curie}` as best match."
-                    ),
-                    "recommended action":  (
-                        f"Review whether `{agent_curie}` is more accurate than {csv_str} "
-                        f"for `{slot}`. If yes, update the curie CSV and re-run."
-                    ),
-                    "confidence":  "High",
-                    "reviewer":    "Auto-generated",
-                    "source alignment": "",
-                })
+                vocab_note = _vocab_slot_mismatch_note(agent_curie, set(csv_curies), slot)
+                if not vocab_note:
+                    csv_str   = ", ".join(f"`{c}`" for c in csv_curies)
+                    desc_frag = f' ("{var_desc[:80]}")' if var_desc else ""
+                    source    = ("MONDO" if mondo else "HPO" if hpo else "OMOP/LOINC")
+                    confirmed.append({
+                        "priority":            "High",
+                        "file":               yaml_file,
+                        "final issue":        (
+                            f"Agent suggests better CURIE for `{slot}`{desc_frag}: "
+                            f"{source} recommends `{agent_curie}` but CSV has {csv_str}"
+                        ),
+                        "evidence to confirm": (
+                            f"Variable description: {var_desc[:120] if var_desc else '(none)'}. "
+                            f"{source} agent returned `{agent_curie}` as best match."
+                        ),
+                        "recommended action":  (
+                            f"Review whether `{agent_curie}` is more accurate than {csv_str} "
+                            f"for `{slot}`. If yes, update the curie CSV and re-run."
+                        ),
+                        "confidence":  "High",
+                        "reviewer":    "Auto-generated",
+                        "source alignment": "",
+                    })
+                # vocab/slot mismatch: agent is wrong vocabulary for this slot — suppress as High
 
             if yaml_match == "mismatch":
                 csv_str = ", ".join(f"`{c}`" for c in csv_curies)

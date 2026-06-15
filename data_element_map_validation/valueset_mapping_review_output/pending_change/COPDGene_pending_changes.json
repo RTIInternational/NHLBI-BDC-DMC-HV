@@ -80,5 +80,19 @@
     "saved_date": "2026-06-13",
     "applied_date": "2026-06-13",
     "applied_by": "Stephanie"
+  },
+  "COPDGene::confirmed::lymphocyte_ct.yaml": {
+    "study": "COPDGene",
+    "change_request": "OBA:VT0000717",
+    "original_curie": "OBA:VT0000217",
+    "slot": "observation_type",
+    "yaml_files": [
+      "lymphocyte_ct.yaml"
+    ],
+    "notes": "OBA:VT0000217 is 'leukocyte quantity' (total WBC count) — incorrect for lymphocytes. Corrected to OBA:VT0000717 ('lymphocyte quantity'). Root cause: bdchm schema enum LYMPHOCYTES_COUNT also had this wrong OBA code. Confirmed via OLS VT ontology. whtbld_ct.yaml correctly retains OBA:VT0000217 for total WBC. The agent suggestion of LOINC:6690-2 was a false positive — LOINC encodes assay procedures (method_type) not biological attributes (observation_type).",
+    "applied": true,
+    "saved_date": "2026-06-15",
+    "applied_date": "2026-06-15",
+    "applied_by": "Stephanie"
   }
 }
