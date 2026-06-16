@@ -96,7 +96,7 @@ def _load_study_registry() -> dict[str, dict]:
 STUDIES: dict[str, dict] = _load_study_registry()
 
 # ── CURIE utilities ───────────────────────────────────────────────────────────
-_CURIE_RE = re.compile(r"`([A-Z][A-Z0-9_]*:[A-Z0-9.]+)`|([A-Z][A-Z0-9_]*:[A-Z0-9.]+)")
+_CURIE_RE = re.compile(r"`([A-Z][A-Z0-9_]*:[A-Z0-9._-]+)`|([A-Z][A-Z0-9_]*:[A-Z0-9._-]+)")
 
 _CURIE_URLS: list[tuple[str, str]] = [
     ("MONDO",   "https://www.ebi.ac.uk/ols4/ontologies/mondo/terms?obo_id={c}"),
@@ -166,7 +166,7 @@ def _validate_curie(curie: str) -> str:
 def _linkify(text: str) -> str:
     """Replace CURIE patterns with HTML anchor tags (new tab)."""
     # Strip backtick wrappers around CURIEs so they don't produce malformed HTML
-    text = re.sub(r'`([A-Z][A-Z0-9_]*:[A-Z0-9.]+)`', r'\1', text)
+    text = re.sub(r'`([A-Z][A-Z0-9_]*:[A-Z0-9._-]+)`', r'\1', text)
     def _sub(m: re.Match) -> str:
         curie = m.group(1) or m.group(2)
         url = _curie_to_url(curie)
