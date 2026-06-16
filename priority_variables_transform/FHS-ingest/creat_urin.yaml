@@ -72,7 +72,7 @@
                 populated_from: pht000685
                 slot_derivations:
                   value_decimal:
-                    expr: '{phv00070900} * 88.4'
+                    expr: '{phv00070900} * 11.312'
                   unit:
                     value: mg/dL
                     range: string
@@ -125,32 +125,6 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00172162
-                  unit:
-                    value: mg/dL
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht004362
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00219228}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00219228}) + ":FHS OFFSPRING EXAM 6")'
-        age_at_observation:
-          expr: '{pht003099.phv00177940} * 365'
-        observation_type:
-          value: OBA:VT0010540
-          range: string
-        method_type:
-          value: 'metabolite profiling'
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004362
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00219357
                   unit:
                     value: mg/dL
                     range: string
@@ -228,7 +202,7 @@
                 populated_from: pht004809
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00227286
+                    populated_from: ({phv00227286} * 100} / {phv00227269}
                   unit:
                     value: mg/dL
                     range: string
