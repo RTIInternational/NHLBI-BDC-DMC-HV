@@ -96,7 +96,26 @@ Curation fixes applied and recorded as of the dates below.
 These patterns systematically produce incorrect High-priority findings and are suppressed by `_SLOT_VOCAB_RULES`. They do not indicate errors in the existing CURIEs.
 
 1. **LOINC replacing OBA in `observation_type`** — agent returns lab-test codes (LOINC) for measurement variables; bdchm `observation_type` requires biological-attribute terms (OBA/OMOP). Suppressed count ranged from 21 (COPDGene) to 61 (ARIC) per study as of 2026-06-15.
-
 2. **OMOP replacing MONDO in `condition_concept`** — agent returns OMOP CDM concept IDs for condition variables; bdchm `condition_concept` is typed to MONDO/HP only. Suppressed count ranged from 3 (CHS) to 15 (ARIC) per study as of 2026-06-15.
 
 To add a new false-positive rule, append an entry to `_SLOT_VOCAB_RULES` in `scripts/generate_semantic_review.py` and re-run the semantic review for affected studies.
+
+#### Vocabulary selection: OBA vs LOINC
+
+Rule: vocabulary is chosen by (target model × slot semantics), not by ontology preference.
+LOINC and OBA are NOT substitutes — LOINC names the observation/survey item;
+OBA names the biological attribute/trait itself.
+
+- OMOP target → LOINC or SNOMED standard concept_id. OBA is NOT an OMOP vocabulary;
+  never assign an OBA CURIE on the OMOP path (no concept_id, no domain routing).
+- bdchm target → assign the CURIE from the vocabulary the target slot's `range`/binding
+  declares. Use OBA ONLY where the slot is an OBA/PATO-bound attribute enum.
+  Measurement/observation-type slots take the LOINC CURIE.
+- Survey/measurement items default to LOINC (LOINC covers survey & screening instruments).
+
+#### OLS4 (OBA)
+- Discovery:  https://www.ebi.ac.uk/ols4/api/search?ontology=oba&q=<term>
+- Validate:   https://www.ebi.ac.uk/ols4/api/ontologies/oba/terms?obo_id=OBA:<id>
+- Note: OBA results may surface VT: and PATO-derived CURIEs; decide whether the slot
+  wants the OBA composite or the underlying PATO quality before auto-assigning.
+
