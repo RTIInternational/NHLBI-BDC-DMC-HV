@@ -299,6 +299,15 @@ def get_curie_csv_rows_for_file(study: str, yaml_file: str, slot: str) -> list[d
     return [r for r in rows if r.get("YAML File") == fname and r.get("Slot") == slot]
 
 
+def _yaml_has_family_history_blocks(study: str, yaml_file: str) -> bool:
+    """Return True if the YAML file contains any non-ONESELF relationship_to_participant block."""
+    yaml_path = STUDIES[study]["yaml_dir"] / Path(yaml_file).name
+    try:
+        return bool(_REL_NON_SELF_RE.search(yaml_path.read_text(encoding="utf-8")))
+    except OSError:
+        return False
+
+
 def _render_var_row_caption(r: dict) -> None:
     """One caption line showing PHV, Variable Name, and Variable Description (explicitly blank if missing)."""
     phv  = r.get("PHV", "").strip()
@@ -559,7 +568,25 @@ def _rebuild_cr_csv(study: str, pending: dict) -> tuple[Path, int]:
 
 
 # ── YAML / CSV apply ──────────────────────────────────────────────────────────
+# Detects blocks whose relationship_to_participant is not ONESELF — used only
+# for the informational warning in the Details panel; _apply_yaml updates all
+# blocks uniformly (family-history blocks share the same concept CURIE as the
+# self-report blocks in BDCHM, so all blocks should be updated together).
+_REL_NON_SELF_RE = re.compile(
+    r"\brelationship_to_participant:\s*\n[ \t]+value:\s+(?!ONESELF\b)\S+"
+)
+
+# Slots that must never be updated via submit because each block intentionally
+# holds a different value — uniform file-wide replacement would corrupt the YAML.
+_SUBMIT_BLOCKED_SLOTS = frozenset({"relationship_to_participant"})
+
+
 def _apply_yaml(study: str, yaml_file: str, slot: str, new_curie: str) -> str:
+    if slot in _SUBMIT_BLOCKED_SLOTS:
+        return (
+            f"⚠ `{slot}` values are set per block in the YAML and were not updated — "
+            "review and correct them directly in the YAML file."
+        )
     yaml_path = STUDIES[study]["yaml_dir"] / Path(yaml_file).name
     if not yaml_path.exists():
         return f"❌ YAML not found: `{yaml_file}`"
@@ -569,7 +596,7 @@ def _apply_yaml(study: str, yaml_file: str, slot: str, new_curie: str) -> str:
     if n == 0:
         return f"⚠ No `{slot}: value:` pattern in `{yaml_file}`"
     yaml_path.write_text(new_text, encoding="utf-8")
-    return f"✓ YAML `{yaml_file}` [{slot}] → `{new_curie}` ({n} match)"
+    return f"✓ YAML `{yaml_file}` [{slot}] → `{new_curie}` ({n} block(s) updated)"
 
 
 def _apply_csv(study: str, yaml_file: str, slot: str, new_curie: str) -> str:
@@ -609,6 +636,14 @@ def submit_all(study: str, pending: dict, curator: str) -> tuple[list[str], Path
         slot    = val.get("slot", "")
         yf_list = val.get("yaml_files", [])
         row_res: list[str] = []
+        if slot in _SUBMIT_BLOCKED_SLOTS:
+            row_res.append(
+                f"⚠ `{slot}` values are set per block in the YAML and were not updated — "
+                "review and correct them directly in the YAML file."
+            )
+            results.extend(row_res)
+            # Do not mark applied — YAML and CSV are untouched
+            continue
         for yf in yf_list:
             r1 = _apply_yaml(study, yf, slot, new_curie)
             r2 = _apply_csv(study, yf, slot, new_curie)
@@ -745,6 +780,23 @@ def render_row(row: dict, study: str, pending: dict, idx: int) -> None:
                     f'border-left:4px solid #6c8ebf;font-size:0.9em;margin-bottom:8px">'
                     f'☑ <strong>Reviewed — no change</strong>{_dt_html}{_by_html}{_reason_html}'
                     f'</div>',
+                    unsafe_allow_html=True,
+                )
+            # Family-history info note — shown when the YAML has non-ONESELF blocks.
+            if yaml_files and _yaml_has_family_history_blocks(study, yaml_files[0]):
+                st.markdown(
+                    '<div style="background:#fff8e1;padding:9px 14px;border-radius:4px;'
+                    'border-left:4px solid #f9a825;font-size:0.88em;margin-bottom:8px">'
+                    f'ℹ <strong>Family-history blocks present in '
+                    f'<code>{Path(yaml_files[0]).name}</code></strong><br>'
+                    'This file contains blocks where <code>relationship_to_participant</code> '
+                    'is not <code>ONESELF</code> (e.g. mother, father, sibling).<br>'
+                    '• <strong>Condition concept changes</strong> (e.g. <code>condition_concept</code>) '
+                    '— submit works correctly and updates all blocks, including family-history blocks.<br>'
+                    '• <strong><code>relationship_to_participant</code> values</strong> '
+                    '— these are set per block and must be reviewed and corrected directly in the YAML file; '
+                    'they cannot be changed via submit.'
+                    '</div>',
                     unsafe_allow_html=True,
                 )
             st.markdown(f"**Issue:** {issue}")
