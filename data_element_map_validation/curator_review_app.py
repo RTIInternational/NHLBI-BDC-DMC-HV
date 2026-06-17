@@ -308,6 +308,38 @@ def _yaml_has_family_history_blocks(study: str, yaml_file: str) -> bool:
         return False
 
 
+# Slots for which OBA live suggestions are shown in the Details panel.
+_OBA_SLOTS = frozenset({"observation_type", "observations"})
+
+
+@st.cache_data(ttl=3600, show_spinner=False)
+def _fetch_oba_suggestions(query: str, max_results: int = 5) -> list[tuple[str, str]]:
+    """Return [(obo_id, label), ...] from OLS4 OBA search. Cached 1 hour."""
+    import urllib.request
+    import urllib.parse
+    import json as _json
+
+    if not query.strip():
+        return []
+    params = urllib.parse.urlencode({
+        "q":          query.strip(),
+        "ontology":   "oba",
+        "rows":       max_results,
+        "fieldList":  "obo_id,label",
+    })
+    url = f"https://www.ebi.ac.uk/ols4/api/search?{params}"
+    try:
+        with urllib.request.urlopen(url, timeout=8) as resp:
+            data = _json.loads(resp.read().decode("utf-8"))
+        return [
+            (d["obo_id"], d.get("label", d["obo_id"]))
+            for d in data.get("response", {}).get("docs", [])
+            if d.get("obo_id")
+        ]
+    except Exception:
+        return []
+
+
 def _render_var_row_caption(r: dict) -> None:
     """One caption line showing PHV, Variable Name, and Variable Description (explicitly blank if missing)."""
     phv  = r.get("PHV", "").strip()
@@ -861,6 +893,41 @@ def render_row(row: dict, study: str, pending: dict, idx: int) -> None:
                         if etype:
                             st.caption(f"_Entity type ({etype_src}): `{etype}`_")
                         st.caption("_No suggestion found in curie map review._")
+
+                # ── OBA live suggestions (measurement slots only) ──────────────
+                # Prefer auto_slot; fall back to curie CSV if the review MD text
+                # doesn't mention the slot name explicitly.
+                _oba_slot = auto_slot if auto_slot in _OBA_SLOTS else ""
+                if not _oba_slot and yaml_files:
+                    for _try_slot in ("observation_type", "observations"):
+                        if get_curie_csv_rows_for_file(study, yaml_files[0], _try_slot):
+                            _oba_slot = _try_slot
+                            break
+                if _oba_slot and yaml_files:
+                    st.markdown("**OBA suggestion** _(OLS4 live)_:")
+                    _oba_rows = get_curie_csv_rows_for_file(study, yaml_files[0], _oba_slot)
+                    _oba_query = ""
+                    if _oba_rows:
+                        _oba_query = (
+                            _oba_rows[0].get("Variable Description", "").strip()
+                            or _oba_rows[0].get("Variable Name", "").strip()
+                        )
+                    if not _oba_query:
+                        _oba_query = Path(yaml_files[0]).stem.replace("_", " ")
+                    _oba_hits = _fetch_oba_suggestions(_oba_query)
+                    if _oba_hits:
+                        for _obo_id, _label in _oba_hits:
+                            _oba_url = _curie_to_url(_obo_id)
+                            _id_part = (
+                                f'<a href="{_oba_url}" target="_blank"><code>{_obo_id}</code></a>'
+                                if _oba_url else f"<code>{_obo_id}</code>"
+                            )
+                            st.markdown(
+                                f'{_id_part} &nbsp;—&nbsp; {_label}',
+                                unsafe_allow_html=True,
+                            )
+                    else:
+                        st.caption(f'_No OBA terms found for "{_oba_query}"._')
             st.divider()
             st.markdown("**Semantic validator review:**")
             _info_box(validator)
