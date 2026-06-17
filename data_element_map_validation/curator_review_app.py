@@ -623,10 +623,18 @@ def _apply_yaml(study: str, yaml_file: str, slot: str, new_curie: str) -> str:
     if not yaml_path.exists():
         return f"❌ YAML not found: `{yaml_file}`"
     text = yaml_path.read_text(encoding="utf-8")
+    existing = re.findall(rf"\b{re.escape(slot)}:\s*\n[ \t]+value:\s+(\S+)", text)
+    if not existing:
+        return f"⚠ No `{slot}: value:` pattern in `{yaml_file}`"
+    unique_existing = set(existing)
+    if len(unique_existing) > 1:
+        vals = ", ".join(f"`{v}`" for v in sorted(unique_existing))
+        return (
+            f"⚠ `{slot}` has {len(existing)} blocks with differing values ({vals}) — "
+            "cannot apply uniformly. Edit the YAML file directly."
+        )
     pattern = rf"(\b{re.escape(slot)}:\s*\n[ \t]+value:\s+)\S+"
     new_text, n = re.subn(pattern, rf"\g<1>{new_curie}", text)
-    if n == 0:
-        return f"⚠ No `{slot}: value:` pattern in `{yaml_file}`"
     yaml_path.write_text(new_text, encoding="utf-8")
     return f"✓ YAML `{yaml_file}` [{slot}] → `{new_curie}` ({n} block(s) updated)"
 
@@ -681,8 +689,9 @@ def submit_all(study: str, pending: dict, curator: str) -> tuple[list[str], Path
             r2 = _apply_csv(study, yf, slot, new_curie)
             row_res.extend([r1, r2])
         results.extend(row_res)
-        val.update({"applied": True, "applied_date": date.today().isoformat(), "applied_by": curator})
-        submitted[key] = {**val, "apply_results": row_res}
+        if all(r.startswith("✓") for r in row_res):
+            val.update({"applied": True, "applied_date": date.today().isoformat(), "applied_by": curator})
+            submitted[key] = {**val, "apply_results": row_res}
 
     _save_pending(pending, study)
 

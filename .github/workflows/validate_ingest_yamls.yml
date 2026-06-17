@@ -17,19 +17,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Python.
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
           python-version: "3.12"
 
-      - name: Install Poetry.
-        run: pipx install poetry
-
       - name: Install dependencies.
-        run: poetry lock && poetry install
+        run: uv sync
 
       - name: Validate */*-ingest*/*.yaml files.
-        run: poetry run python validate_ingest_yamls.py
+        run: uv run python validate_ingest_yamls.py
 
   check-phv-dedup:
     runs-on: ubuntu-latest
@@ -39,16 +36,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Python.
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
           python-version: "3.12"
 
-      - name: Install Poetry.
-        run: pipx install poetry
-
       - name: Install dependencies.
-        run: poetry lock && poetry install
+        run: uv sync
 
       - name: Check PHV deduplication
-        run: poetry run python check_phv_dedup.py
+        run: uv run python check_phv_dedup.py

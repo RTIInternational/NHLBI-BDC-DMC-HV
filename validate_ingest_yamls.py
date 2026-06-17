@@ -16,9 +16,12 @@ KNOWN_ISSUES = {
 
 
 def validate_block(block: dict, block_index: int) -> list[str]:
-    # Filter out [warning]-tagged items — deprecation notices are non-fatal.
-    # The object_derivations → class_derivations migration is tracked separately.
-    errors = [e for e in validate_spec(block) if "[warning]" not in str(e)]
+    # Suppress only the object_derivations deprecation warning — renamed to
+    # class_derivations; migration is tracked separately.
+    errors = [
+        e for e in validate_spec(block)
+        if not ("[warning]" in str(e) and "object_derivations" in str(e))
+    ]
     return [f"  block {block_index}: {e}" for e in errors]
 
 
