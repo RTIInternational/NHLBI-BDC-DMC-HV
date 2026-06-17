@@ -583,10 +583,17 @@ def _apply_csv(study: str, yaml_file: str, slot: str, new_curie: str) -> str:
         updated.append(row)
     if changed == 0:
         return f"⚠ No CSV rows match `{yaml_file}` / `{slot}`"
-    with open(STUDIES[study]["curie_csv"], "w", newline="", encoding="utf-8-sig") as f:
-        w = csv.DictWriter(f, fieldnames=fieldnames)
-        w.writeheader()
-        w.writerows(updated)
+    csv_path = STUDIES[study]["curie_csv"]
+    try:
+        with open(csv_path, "w", newline="", encoding="utf-8-sig") as f:
+            w = csv.DictWriter(f, fieldnames=fieldnames)
+            w.writeheader()
+            w.writerows(updated)
+    except OSError as e:
+        return (
+            f"✗ Could not write `{csv_path.name}`: {e}. "
+            "Close the file in Excel or any other application and try again."
+        )
     load_curie_csv.clear()
     return f"✓ CSV: {changed} row(s) → `{new_curie}` for `{yaml_file}` [{slot}]"
 

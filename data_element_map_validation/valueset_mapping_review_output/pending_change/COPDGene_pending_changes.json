@@ -55,17 +55,17 @@
   },
   "COPDGene::confirmed::alcohol.yaml": {
     "study": "COPDGene",
-    "change_request": "LOINC:68518-0",
-    "original_curie": "OMOP:35609491",
+    "change_request": "OMOP:35609491",
+    "original_curie": "LOINC:68518-0",
     "slot": "observation_type",
     "yaml_files": [
       "alcohol.yaml"
     ],
-    "notes": "",
+    "notes": "Anne and Steph reviewed, this is more in line with the question - Alcohol units consumed per week",
     "applied": true,
-    "saved_date": "2026-06-13",
-    "applied_date": "2026-06-13",
-    "applied_by": "Stephanie"
+    "saved_date": "2026-06-16",
+    "applied_date": "2026-06-16",
+    "applied_by": "Curator"
   },
   "COPDGene::confirmed::tak_adrenergics.yaml": {
     "study": "COPDGene",
@@ -105,8 +105,84 @@
     ],
     "notes": "",
     "applied": true,
-    "saved_date": "2026-06-15",
-    "applied_date": "2026-06-15",
-    "applied_by": "Curator"
+    "saved_date": "2026-06-16",
+    "applied_date": "2026-06-16",
+    "applied_by": "Stephanie"
+  },
+  "COPDGene::confirmed::hist_cor_angio.yaml": {
+    "study": "COPDGene",
+    "change_request": "",
+    "original_curie": "",
+    "slot": "procedure_concept",
+    "yaml_files": [
+      "hist_cor_angio.yaml"
+    ],
+    "notes": "Anne and Steph reviewed this item and decided on this this term: https://athena.ohdsi.org/search-terms/terms/4184832",
+    "applied": false,
+    "saved_date": "2026-06-16"
+  },
+  "COPDGene::confirmed::hyperten.yaml": {
+    "study": "COPDGene",
+    "change_request": "",
+    "original_curie": "",
+    "slot": "condition_concept",
+    "yaml_files": [
+      "hyperten.yaml"
+    ],
+    "notes": "We reviewed this term and decided to leave it at HPO term: 0000822\n\nIf the question means \"Has the participant been diagnosed with high blood pressure (hypertension)?\" → use MONDO:0005044 (Hypertension). however HPO represents observable abnormalities or phenotypic features.\n\nHowever, use HP:0000822 = Hypertension \nif it describes the phenotypic abnormality of elevated blood pressure, regardless of whether there is a formal diagnosis.",
+    "applied": false,
+    "saved_date": "2026-06-16"
+  },
+  "COPDGene::confirmed::slp_ap.yaml": {
+    "study": "COPDGene",
+    "change_request": "",
+    "original_curie": "",
+    "slot": "condition_concept",
+    "yaml_files": [
+      "slp_ap.yaml"
+    ],
+    "notes": "leaving it as HPO term.",
+    "applied": false,
+    "saved_date": "2026-06-16"
+  },
+  "COPDGene::confirmed::stroke.yaml": {
+    "study": "COPDGene",
+    "change_request": "HP:0001297",
+    "original_curie": "HP:0001297",
+    "slot": "condition_concept",
+    "yaml_files": [
+      "stroke.yaml"
+    ],
+    "notes": "Anne and Steph review this term and leave it at HP:0001297 ",
+    "applied": true,
+    "saved_date": "2026-06-16",
+    "applied_date": "2026-06-16",
+    "applied_by": "Stephanie"
+  },
+  "COPDGene::confirmed::hrt_rt.yaml": {
+    "study": "COPDGene",
+    "slot": "observation_type",
+    "yaml_files": [
+      "hrt_rt.yaml"
+    ],
+    "no_change": true,
+    "no_change_reason": "Keeping as the OBA:1001087 - http://purl.obolibrary.org/obo/OBA_1001087",
+    "reviewed_date": "2026-06-16",
+    "reviewed_by": "Curator",
+    "change_request": "",
+    "applied": false
+  },
+  "COPDGene::confirmed::angina.yaml": {
+    "study": "COPDGene",
+    "slot": "condition_concept",
+    "yaml_files": [
+      "angina.yaml"
+    ],
+    "no_change": true,
+    "no_change_reason": "Angina (HP:0001681) represents a clinical condition/symptom reported for the participant.",
+    "reviewed_date": "2026-06-16",
+    "reviewed_by": "Curator",
+    "change_request": "",
+    "applied": false
   }
 }
