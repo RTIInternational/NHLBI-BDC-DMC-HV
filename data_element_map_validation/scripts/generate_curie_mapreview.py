@@ -188,7 +188,8 @@ def _import_agents():
     from omop_agent import get_omop_concept_id
     from rxnorm_agent import get_omop_concept_id as get_rxnorm_id
     from measurementObs_agent import get_loinc_id
-    return get_mondo_id, get_hpo_id, get_omop_concept_id, get_rxnorm_id, get_loinc_id, _extract_clinical_term
+    from meds_route_agent import get_omop_route_id
+    return get_mondo_id, get_hpo_id, get_omop_concept_id, get_rxnorm_id, get_loinc_id, _extract_clinical_term, get_omop_route_id
 
 
 # ---------------------------------------------------------------------------
@@ -337,7 +338,7 @@ def _agent_suggestion(
 
         elif slot == "route_concept":
             route_term = _extract_route_term(query)
-            curie = get_omop_concept_id(route_term, code_system="route")
+            curie = get_omop_route_id(route_term)
             omop_maps_to = curie or ""
             maps_to_entity_type = "DrugRoute"
 
@@ -406,7 +407,7 @@ def main(no_agents: bool = False) -> None:
         print("Running in --no-agents mode: YAML spot-check only.", file=sys.stderr)
     else:
         print("Loading agents ...", file=sys.stderr)
-        get_mondo_id, get_hpo_id, get_omop_concept_id, get_rxnorm_id, get_loinc_id, extract_clinical_term = _import_agents()  # noqa: E501
+        get_mondo_id, get_hpo_id, get_omop_concept_id, get_rxnorm_id, get_loinc_id, extract_clinical_term, get_omop_route_id = _import_agents()  # noqa: E501
         print("Agents loaded.", file=sys.stderr)
 
     # Cache: (var_name, slot, entity_type) → (omop, mondo, entity)
