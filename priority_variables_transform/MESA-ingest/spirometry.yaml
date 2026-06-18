@@ -401,29 +401,6 @@
                     range: string
                   age_at_observation:
                     expr: '{phv00087678} * 365'
-                  method_type:
-                    value: LOWER LIMIT OF NORMAL
-                    range: string
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001122
-                          slot_derivations:
-                            value_decimal:
-                              expr: '{phv00087687} * 0.01'
-                            unit:
-                              value: '{ratio}'
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001122
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3011505
-                    range: string
-                  age_at_observation:
-                    expr: '{phv00087678} * 365'
                   value_quantity:
                     object_derivations:
                     - class_derivations:
@@ -440,13 +417,10 @@
                 populated_from: pht001122
                 slot_derivations:
                   observation_type:
-                    value: OMOP:3011505
+                    value: OMOP:3024594
                     range: string
                   age_at_observation:
                     expr: '{phv00087678} * 365'
-                  method_type:
-                    value: PREDICTED
-                    range: string
                   value_quantity:
                     object_derivations:
                     - class_derivations:
@@ -454,9 +428,9 @@
                           populated_from: pht001122
                           slot_derivations:
                             value_decimal:
-                              expr: '{phv00087833} * 0.01'
+                              populated_from: phv00087833
                             unit:
-                              value: '{ratio}'
+                              value: '%'
                               range: string
           - class_derivations:
               MeasurementObservation:
@@ -515,7 +489,7 @@
                 populated_from: pht001122
                 slot_derivations:
                   observation_type:
-                    value: OMOP:3024594
+                    value: OMOP:4196583
                     range: string
                   age_at_observation:
                     expr: '{phv00087678} * 365'
