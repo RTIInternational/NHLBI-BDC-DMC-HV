@@ -1,0 +1,28 @@
+- class_derivations:
+    DrugExposure:
+      populated_from: pht006223
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283451}) + ":WHI")'
+        age_at_exposure_start:
+          expr: 'case(({phv00283683} == 1, ({phv00078437} * 365) + {phv00283452}))'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
+        drug_concept:
+          expr: case(({phv00283683} == 1, "ATC:C03DA"))
+        exposure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION
+- class_derivations:
+    DrugExposure:
+      populated_from: pht006223
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283451}) + ":WHI")'
+        age_at_exposure_start:
+          expr: 'case(({phv00283684} == 1, ({phv00078437} * 365) + {phv00283452}))'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
+        drug_concept:
+          expr: case(({phv00283684} == 1, "ATC:C03DA"))
+        exposure_provenance:
+          value: PATIENT SELF-REPORTED MEDICATION

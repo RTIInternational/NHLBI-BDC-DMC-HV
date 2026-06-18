@@ -1,0 +1,52 @@
+- class_derivations:
+    Condition:
+      populated_from: pht001121
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
+        condition_concept:
+          value: MONDO:0005252
+          range: string
+        condition_status:
+          populated_from: phv00087140
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN
+        condition_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
+
+- class_derivations:
+    Condition:
+      populated_from: pht001123
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087848}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087848}) + ":MESA CLASSIC CVE")'
+        condition_concept:
+          value: MONDO:0005252
+          range: string
+        condition_status:
+          populated_from: phv00087870
+          value_mappings:
+            '0': ABSENT
+            '1': HISTORICAL
+        condition_provenance:
+          value: CASE_REPORT_FORM
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        associated_evidence:
+          value: "hospital record abstraction"
+          range: string

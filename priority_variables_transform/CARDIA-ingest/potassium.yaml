@@ -1,0 +1,46 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001745
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00117593}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00117593}) + ":CARDIA YEAR 7")'
+        observation_type:
+          value: OBA:VT0002668
+        method_type:
+          value: "blood assay"
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001745
+                slot_derivations:
+                  value_decimal:
+                    expr: "None if str({phv00117627}) == 'M' else float({phv00117627})"
+                  unit:
+                    value: "mmol/L"
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001746
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00117707}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00117707}) + ":CARDIA YEAR 7")'
+        observation_type:
+          value: OBA:VT0002668
+        method_type:
+          value: "blood assay"
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001746
+                slot_derivations:
+                  value_decimal:
+                    expr: "None if str({phv00117741}) == 'M' else float({phv00117741})"
+                  unit:
+                    value: "mmol/L"
+                    range: string

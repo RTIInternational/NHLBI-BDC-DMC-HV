@@ -1,0 +1,26 @@
+- class_derivations:
+    Person:
+      populated_from: pht000998
+      joins:
+        pht003407:
+          source_key: phv00078435
+          lookup_key: phv00193141
+      slot_derivations:
+        identity:
+          expr: 'uuid5("https://w3id.org/bdchm/Person", str({dbGaP_Subject_ID}))'
+        species:
+          value: NCBITaxon:9606
+        vital_status:
+          expr: 'case(({pht003407.phv00193496} == 1, "OMOP:434489"), ({pht003407.phv00193496} == 0, "OMOP:4230556"))'
+        age_at_death:
+          expr: 'case(({pht003407.phv00193496} == 1, ({phv00078437} * 365) + {pht003407.phv00193498}))'
+        cause_of_death:
+          object_derivations:
+          - class_derivations:
+              CauseOfDeath:
+                populated_from: pht000998
+                slot_derivations:
+                  cause:
+                    expr: 'case(({pht003407.phv00193497} == 1, "ICD10CM:C50"), ({pht003407.phv00193497} == 10, "ICD10CM:C34"), ({pht003407.phv00193497} == 11, "ICD10CM:I20-I25"), ({pht003407.phv00193497} == 12, "ICD10CM:I60-I69"), ({pht003407.phv00193497} == 18, "ICD10CM:I00-I99"), ({pht003407.phv00193497} == 31, "ICD10CM:G30"), ({pht003407.phv00193497} == 32, "ICD10CM:J44"))'
+                  order:
+                    value: 1

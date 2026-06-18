@@ -7,7 +7,7 @@
       populated_from: pht001571
       slot_derivations:
         associated_participant:
-          populated_from: phv00113153
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00113153}) + ":CARDIA")'
         associated_visit:
           expr: "case(({phv00113154} == 'HBP' and {phv00113155} == 2, uuid5('https://w3id.org/bdchm/Visit', str({phv00113153}) + ':CARDIA YEAR 0')), (True, None))"
           range: string

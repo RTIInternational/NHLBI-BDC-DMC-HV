@@ -7,7 +7,7 @@
         name:
           expr: 'case(({phv00528696} == ''VISIT_1'', ''SPIROMICS Visit 1''), ({phv00528696} == ''VISIT_2'', ''SPIROMICS Visit 2''), ({phv00528696} == ''VISIT_3'', ''SPIROMICS Visit 3''), ({phv00528696} == ''VISIT_4'', ''SPIROMICS Visit 4''))'
         associated_participant:
-          populated_from: phv00528692
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00528692}) + ":SPIROMICS")'
         visit_category:
           value: HEALTH_EXAMINATION
         age_at_visit_start:

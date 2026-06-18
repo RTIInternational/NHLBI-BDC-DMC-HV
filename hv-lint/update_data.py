@@ -60,7 +60,9 @@ HVLINT_DIR = Path(__file__).resolve().parent
 # Ensure hv-lint dir is importable (for `from _http import get_session`)
 if str(HVLINT_DIR) not in sys.path:
     sys.path.insert(0, str(HVLINT_DIR))
-COHORTS_YAML = HVLINT_DIR / "cohorts.yaml"
+# Cohort version pins are sourced from the hv_dataqc cache-fetcher manifests,
+# the single source of truth for dbGaP study versions across both tools.
+MANIFESTS_DIR = HVLINT_DIR.parent / "hv_dataqc" / "cache_fetcher" / "manifests"
 CACHE_DIR = HVLINT_DIR / "dbgap-cache"
 
 FTP_BASE = "https://ftp.ncbi.nlm.nih.gov/dbgap/studies"
@@ -71,25 +73,45 @@ NCBI_DELAY_SECONDS = 0.5  # polite delay between real network requests
 # ---------------------------------------------------------------------------
 # Config loading
 # ---------------------------------------------------------------------------
-def load_cohorts(cohorts_yaml: Path | None = None) -> dict[str, dict]:
-    """Load cohort config from cohorts.yaml.
+def load_cohorts(manifests_dir: Path | None = None) -> dict[str, dict]:
+    """Load cohort version pins from the hv_dataqc cache-fetcher manifests.
 
-    Returns dict mapping cohort key -> {study_id, data_version, ...}.
+    Each ``_manifest-<key>.yaml`` carries a ``current_version`` block; that block
+    is the single source of truth for the cohort's dbGaP study version, shared
+    with the hv_dataqc compare pipeline so the two tools never drift.
+
+    Returns dict mapping cohort key -> {study_id, data_version, display_name}.
     """
     import yaml  # deferred so --help works without pyyaml
 
-    path = cohorts_yaml or COHORTS_YAML
-    if not path.exists():
-        print(f"ERROR: cohorts.yaml not found at {path}", file=sys.stderr)
+    directory = manifests_dir or MANIFESTS_DIR
+    if not directory.is_dir():
+        print(f"ERROR: manifests dir not found at {directory}", file=sys.stderr)
         sys.exit(1)
-    with open(path, encoding="utf-8") as f:
-        data = yaml.safe_load(f)
-    if not isinstance(data, dict):
-        print(f"ERROR: cohorts.yaml is empty or malformed at {path}", file=sys.stderr)
-        sys.exit(1)
-    cohorts = data.get("cohorts")
-    if not cohorts or not isinstance(cohorts, dict):
-        print(f"ERROR: cohorts.yaml missing 'cohorts:' mapping at {path}", file=sys.stderr)
+
+    cohorts: dict[str, dict] = {}
+    for path in sorted(directory.glob("_manifest-*.yaml")):
+        key = path.stem[len("_manifest-"):]
+        with open(path, encoding="utf-8") as f:
+            data = yaml.safe_load(f)
+        current = (data or {}).get("current_version")
+        if not isinstance(current, dict):
+            print(f"ERROR: {path.name} missing 'current_version:' mapping", file=sys.stderr)
+            sys.exit(1)
+        study_id = current.get("study_id")
+        data_version = current.get("data_version")
+        if not study_id or not data_version:
+            print(f"ERROR: {path.name} 'current_version' missing study_id/data_version",
+                  file=sys.stderr)
+            sys.exit(1)
+        cohorts[key] = {
+            "study_id": study_id,
+            "data_version": data_version,
+            "display_name": current.get("study_name", key.upper()),
+        }
+
+    if not cohorts:
+        print(f"ERROR: no _manifest-*.yaml files found in {directory}", file=sys.stderr)
         sys.exit(1)
     return cohorts
 

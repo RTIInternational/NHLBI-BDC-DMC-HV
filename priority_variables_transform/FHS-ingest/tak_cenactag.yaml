@@ -3,7 +3,7 @@
       populated_from: pht004814
       slot_derivations:
         associated_participant:
-          populated_from: phv00250718
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00250718}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00250718}) + ":FHS OMNI 1 EXAM 2")'
         drug_concept:
@@ -11,12 +11,20 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00250743
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': HISTORICAL
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht004814
       slot_derivations:
         associated_participant:
-          populated_from: phv00250718
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00250718}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00250718}) + ":FHS OMNI 1 EXAM 2")'
         drug_concept:
@@ -24,12 +32,20 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00250744
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': HISTORICAL
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000019
       slot_derivations:
         associated_participant:
-          populated_from: phv00003261
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00003261}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003261}) + ":FHS ORIGINAL EXAM 17")'
         drug_concept:
@@ -37,12 +53,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00002961
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000019
       slot_derivations:
         associated_participant:
-          populated_from: phv00003261
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00003261}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003261}) + ":FHS ORIGINAL EXAM 17")'
         drug_concept:
@@ -50,12 +71,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00002962
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000020
       slot_derivations:
         associated_participant:
-          populated_from: phv00003667
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00003667}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003667}) + ":FHS ORIGINAL EXAM 18")'
         drug_concept:
@@ -63,12 +89,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00003340
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000020
       slot_derivations:
         associated_participant:
-          populated_from: phv00003667
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00003667}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003667}) + ":FHS ORIGINAL EXAM 18")'
         drug_concept:
@@ -76,12 +107,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00003343
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000021
       slot_derivations:
         associated_participant:
-          populated_from: phv00004083
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00004083}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004083}) + ":FHS ORIGINAL EXAM 19")'
         drug_concept:
@@ -89,12 +125,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00003776
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000021
       slot_derivations:
         associated_participant:
-          populated_from: phv00004083
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00004083}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004083}) + ":FHS ORIGINAL EXAM 19")'
         drug_concept:
@@ -102,12 +143,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00003777
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000022
       slot_derivations:
         associated_participant:
-          populated_from: phv00004525
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00004525}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004525}) + ":FHS ORIGINAL EXAM 20")'
         drug_concept:
@@ -115,12 +161,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004211
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000022
       slot_derivations:
         associated_participant:
-          populated_from: phv00004525
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00004525}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004525}) + ":FHS ORIGINAL EXAM 20")'
         drug_concept:
@@ -128,12 +179,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004212
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000023
       slot_derivations:
         associated_participant:
-          populated_from: phv00004939
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00004939}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004939}) + ":FHS ORIGINAL EXAM 21")'
         drug_concept:
@@ -141,12 +197,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004605
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000023
       slot_derivations:
         associated_participant:
-          populated_from: phv00004939
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00004939}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004939}) + ":FHS ORIGINAL EXAM 21")'
         drug_concept:
@@ -154,12 +215,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004606
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
       slot_derivations:
         associated_participant:
-          populated_from: phv00005557
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00005557}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005557}) + ":FHS ORIGINAL EXAM 22")'
         drug_concept:
@@ -167,12 +233,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004961
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
       slot_derivations:
         associated_participant:
-          populated_from: phv00005557
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00005557}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005557}) + ":FHS ORIGINAL EXAM 22")'
         drug_concept:
@@ -180,12 +251,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004962
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
       slot_derivations:
         associated_participant:
-          populated_from: phv00005558
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00005558}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005558}) + ":FHS ORIGINAL EXAM 23")'
         drug_concept:
@@ -193,12 +269,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00005581
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
       slot_derivations:
         associated_participant:
-          populated_from: phv00005558
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00005558}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005558}) + ":FHS ORIGINAL EXAM 23")'
         drug_concept:
@@ -206,12 +287,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00005582
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
       slot_derivations:
         associated_participant:
-          populated_from: phv00006031
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00006031}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006031}) + ":FHS ORIGINAL EXAM 24")'
         drug_concept:
@@ -219,12 +305,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006133
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
       slot_derivations:
         associated_participant:
-          populated_from: phv00006031
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00006031}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006031}) + ":FHS ORIGINAL EXAM 24")'
         drug_concept:
@@ -232,12 +323,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006134
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000027
       slot_derivations:
         associated_participant:
-          populated_from: phv00006663
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00006663}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006663}) + ":FHS ORIGINAL EXAM 25")'
         drug_concept:
@@ -245,12 +341,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006474
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000028
       slot_derivations:
         associated_participant:
-          populated_from: phv00007095
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00007095}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007095}) + ":FHS ORIGINAL EXAM 26")'
         drug_concept:
@@ -258,12 +359,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006863
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000028
       slot_derivations:
         associated_participant:
-          populated_from: phv00007095
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00007095}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007095}) + ":FHS ORIGINAL EXAM 26")'
         drug_concept:
@@ -271,12 +377,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006864
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000029
       slot_derivations:
         associated_participant:
-          populated_from: phv00007534
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00007534}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007534}) + ":FHS ORIGINAL EXAM 27")'
         drug_concept:
@@ -284,12 +395,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00007300
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000029
       slot_derivations:
         associated_participant:
-          populated_from: phv00007534
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00007534}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007534}) + ":FHS ORIGINAL EXAM 27")'
         drug_concept:
@@ -297,12 +413,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00007301
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000032
       slot_derivations:
         associated_participant:
-          populated_from: phv00008742
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008742}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008742}) + ":FHS OFFSPRING EXAM 3")'
         drug_concept:
@@ -310,12 +431,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00008396
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000032
       slot_derivations:
         associated_participant:
-          populated_from: phv00008742
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008742}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008742}) + ":FHS OFFSPRING EXAM 3")'
         drug_concept:
@@ -323,12 +449,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00008397
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000033
       slot_derivations:
         associated_participant:
-          populated_from: phv00009127
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00009127}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00009127}) + ":FHS OFFSPRING EXAM 4")'
         drug_concept:
@@ -336,12 +467,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00008792
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000033
       slot_derivations:
         associated_participant:
-          populated_from: phv00009127
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00009127}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00009127}) + ":FHS OFFSPRING EXAM 4")'
         drug_concept:
@@ -349,12 +485,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00008793
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000034
       slot_derivations:
         associated_participant:
-          populated_from: phv00009579
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00009579}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00009579}) + ":FHS OFFSPRING EXAM 5")'
         drug_concept:
@@ -362,12 +503,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00009188
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000035
       slot_derivations:
         associated_participant:
-          populated_from: phv00010138
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00010138}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010138}) + ":FHS OFFSPRING EXAM 6")'
         drug_concept:
@@ -375,12 +521,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00009689
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000035
       slot_derivations:
         associated_participant:
-          populated_from: phv00010138
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00010138}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010138}) + ":FHS OFFSPRING EXAM 6")'
         drug_concept:
@@ -388,12 +539,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00009690
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000036
       slot_derivations:
         associated_participant:
-          populated_from: phv00010139
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00010139}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010139}) + ":FHS OFFSPRING EXAM 7")'
         drug_concept:
@@ -401,12 +557,17 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00010169
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000036
       slot_derivations:
         associated_participant:
-          populated_from: phv00010139
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00010139}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010139}) + ":FHS OFFSPRING EXAM 7")'
         drug_concept:
@@ -414,3 +575,8 @@
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00010170
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT

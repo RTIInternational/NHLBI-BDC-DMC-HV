@@ -1,249 +1,416 @@
 - class_derivations:
-    MeasurementObservation:
+    Condition:
       populated_from: pht000012
+      joins:
+        pht003099:
+          source_key: phv00001559
+          lookup_key: phv00177926
       slot_derivations:
         associated_participant:
-          populated_from: phv00001558
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00001559}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001558}) + ":FHS ORIGINAL EXAM 10")'
-        age_at_observation:
-          expr: '{pht003099.phv00177948} * 365'
-        value_enum:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001559}) + ":FHS ORIGINAL EXAM 10")'
+          range: string
+        condition_concept:
+          value: MONDO:0005139
+          range: string
+        condition_status:
           populated_from: phv00001479
           value_mappings:
             '0': ABSENT
             '1': PRESENT
             '2': PRESENT
             '3': PRESENT
-        observation_type:
-          value: OMOP:433736
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
           range: string
+        condition_severity:
+          populated_from: phv00001479
+          value_mappings:
+            '1': OMOP:4116992
+            '2': OMOP:3272197
+            '3': OMOP:4087703
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        age_at_condition_start:
+          expr: "case(({phv00001479} != '0', {pht003099.phv00177948} * 365))"
+
 - class_derivations:
-    MeasurementObservation:
+    Condition:
       populated_from: pht000013
+      joins:
+        pht003099:
+          source_key: phv00001803
+          lookup_key: phv00177926
       slot_derivations:
         associated_participant:
-          populated_from: phv00001803
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00001803}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001803}) + ":FHS ORIGINAL EXAM 11")'
-        age_at_observation:
-          expr: '{pht003099.phv00177950} * 365'
-        value_enum:
+          range: string
+        condition_concept:
+          value: MONDO:0005139
+          range: string
+        condition_status:
           populated_from: phv00001664
           value_mappings:
             '0': ABSENT
             '1': PRESENT
             '2': PRESENT
             '3': PRESENT
-        observation_type:
-          value: OMOP:433736
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
           range: string
+        condition_severity:
+          populated_from: phv00001664
+          value_mappings:
+            '1': OMOP:4116992
+            '2': OMOP:3272197
+            '3': OMOP:4087703
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        age_at_condition_start:
+          expr: "case(({phv00001664} != '0', {pht003099.phv00177950} * 365))"
+
 - class_derivations:
-    MeasurementObservation:
+    Condition:
       populated_from: pht000013
+      joins:
+        pht003099:
+          source_key: phv00001803
+          lookup_key: phv00177926
       slot_derivations:
         associated_participant:
-          populated_from: phv00001803
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00001803}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001803}) + ":FHS ORIGINAL EXAM 11")'
-        age_at_observation:
-          expr: '{pht003099.phv00177950} * 365'
-        value_enum:
+          range: string
+        condition_concept:
+          value: MONDO:0005139
+          range: string
+        condition_status:
           populated_from: phv00001786
           value_mappings:
             '0': ABSENT
             '1': PRESENT
             '2': UNKNOWN
-        observation_type:
-          value: OMOP:433736
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
           range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        age_at_condition_start:
+          expr: "case(({phv00001786} == '1', {pht003099.phv00177950} * 365))"
+
 - class_derivations:
-    MeasurementObservation:
+    Condition:
       populated_from: pht000014
+      joins:
+        pht003099:
+          source_key: phv00002020
+          lookup_key: phv00177926
       slot_derivations:
         associated_participant:
-          populated_from: phv00002020
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00002020}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002020}) + ":FHS ORIGINAL EXAM 12")'
-        age_at_observation:
-          expr: '{pht003099.phv00177952} * 365'
-        value_enum:
+          range: string
+        condition_concept:
+          value: MONDO:0005139
+          range: string
+        condition_status:
           populated_from: phv00002017
           value_mappings:
             '0': ABSENT
             '1': PRESENT
             '2': UNKNOWN
-        observation_type:
-          value: OMOP:433736
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
           range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        age_at_condition_start:
+          expr: "case(({phv00002017} == '1', {pht003099.phv00177952} * 365))"
+
 - class_derivations:
-    MeasurementObservation:
+    Condition:
       populated_from: pht000015
+      joins:
+        pht003099:
+          source_key: phv00002204
+          lookup_key: phv00177926
       slot_derivations:
         associated_participant:
-          populated_from: phv00002204
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00002204}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002204}) + ":FHS ORIGINAL EXAM 13")'
-        age_at_observation:
-          expr: '{pht003099.phv00177954} * 365'
-        value_enum:
+          range: string
+        condition_concept:
+          value: MONDO:0005139
+          range: string
+        condition_status:
           populated_from: phv00002201
           value_mappings:
             '0': ABSENT
             '1': PRESENT
             '2': UNKNOWN
-        observation_type:
-          value: OMOP:433736
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
           range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        age_at_condition_start:
+          expr: "case(({phv00002201} == '1', {pht003099.phv00177954} * 365))"
+
 - class_derivations:
-    MeasurementObservation:
+    Condition:
       populated_from: pht000016
+      joins:
+        pht003099:
+          source_key: phv00002425
+          lookup_key: phv00177926
       slot_derivations:
         associated_participant:
-          populated_from: phv00002425
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00002425}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002425}) + ":FHS ORIGINAL EXAM 14")'
-        age_at_observation:
-          expr: '{pht003099.phv00177956} * 365'
-        value_enum:
+          range: string
+        condition_concept:
+          value: MONDO:0005139
+          range: string
+        condition_status:
           populated_from: phv00002398
           value_mappings:
             '0': ABSENT
             '1': PRESENT
             '2': UNKNOWN
-        observation_type:
-          value: OMOP:433736
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
           range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        age_at_condition_start:
+          expr: "case(({phv00002398} == '1', {pht003099.phv00177956} * 365))"
+
 - class_derivations:
-    MeasurementObservation:
+    Condition:
       populated_from: pht000017
+      joins:
+        pht003099:
+          source_key: phv00002668
+          lookup_key: phv00177926
       slot_derivations:
         associated_participant:
-          populated_from: phv00002668
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00002668}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002668}) + ":FHS ORIGINAL EXAM 15")'
-        age_at_observation:
-          expr: '{pht003099.phv00177958} * 365'
-        value_enum:
+          range: string
+        condition_concept:
+          value: MONDO:0005139
+          range: string
+        condition_status:
           populated_from: phv00002636
           value_mappings:
             '0': ABSENT
             '1': PRESENT
             '2': UNKNOWN
-        observation_type:
-          value: OMOP:433736
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
           range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        age_at_condition_start:
+          expr: "case(({phv00002636} == '1', {pht003099.phv00177958} * 365))"
+
 - class_derivations:
-    MeasurementObservation:
+    Condition:
       populated_from: pht000018
+      joins:
+        pht003099:
+          source_key: phv00002946
+          lookup_key: phv00177926
       slot_derivations:
         associated_participant:
-          populated_from: phv00002946
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00002946}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002946}) + ":FHS ORIGINAL EXAM 16")'
-        age_at_observation:
-          expr: '{pht003099.phv00177960} * 365'
-        value_enum:
+          range: string
+        condition_concept:
+          value: MONDO:0005139
+          range: string
+        condition_status:
           populated_from: phv00002842
           value_mappings:
             '0': ABSENT
             '1': PRESENT
             '2': UNKNOWN
-        observation_type:
-          value: OMOP:433736
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
           range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        age_at_condition_start:
+          expr: "case(({phv00002842} == '1', {pht003099.phv00177960} * 365))"
+
 - class_derivations:
-    MeasurementObservation:
+    Condition:
       populated_from: pht000019
+      joins:
+        pht003099:
+          source_key: phv00003261
+          lookup_key: phv00177926
       slot_derivations:
         associated_participant:
-          populated_from: phv00003261
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00003261}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003261}) + ":FHS ORIGINAL EXAM 17")'
-        age_at_observation:
-          expr: '{pht003099.phv00177962} * 365'
-        value_enum:
+          range: string
+        condition_concept:
+          value: MONDO:0005139
+          range: string
+        condition_status:
           populated_from: phv00003241
           value_mappings:
             '0': ABSENT
             '1': PRESENT
             '2': UNKNOWN
-        observation_type:
-          value: OMOP:433736
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
           range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        age_at_condition_start:
+          expr: "case(({phv00003241} == '1', {pht003099.phv00177962} * 365))"
+
 - class_derivations:
-    MeasurementObservation:
+    Condition:
       populated_from: pht000020
+      joins:
+        pht003099:
+          source_key: phv00003667
+          lookup_key: phv00177926
       slot_derivations:
         associated_participant:
-          populated_from: phv00003667
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00003667}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003667}) + ":FHS ORIGINAL EXAM 18")'
-        age_at_observation:
-          expr: '{pht003099.phv00177964} * 365'
-        value_enum:
+          range: string
+        condition_concept:
+          value: MONDO:0005139
+          range: string
+        condition_status:
           populated_from: phv00003662
           value_mappings:
             '0': ABSENT
             '1': PRESENT
             '2': UNKNOWN
-        observation_type:
-          value: OMOP:433736
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
           range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        age_at_condition_start:
+          expr: "case(({phv00003662} == '1', {pht003099.phv00177964} * 365))"
+
 - class_derivations:
-    MeasurementObservation:
+    Condition:
       populated_from: pht000021
+      joins:
+        pht003099:
+          source_key: phv00004083
+          lookup_key: phv00177926
       slot_derivations:
         associated_participant:
-          populated_from: phv00004083
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00004083}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004083}) + ":FHS ORIGINAL EXAM 19")'
-        age_at_observation:
-          expr: '{pht003099.phv00177966} * 365'
-        value_enum:
+          range: string
+        condition_concept:
+          value: MONDO:0005139
+          range: string
+        condition_status:
           populated_from: phv00004071
           value_mappings:
             '0': ABSENT
             '1': PRESENT
             '2': UNKNOWN
-        observation_type:
-          value: OMOP:433736
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
           range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        age_at_condition_start:
+          expr: "case(({phv00004071} == '1', {pht003099.phv00177966} * 365))"
+
 - class_derivations:
-    MeasurementObservation:
+    Condition:
       populated_from: pht000031
+      joins:
+        pht003099:
+          source_key: phv00008379
+          lookup_key: phv00177926
       slot_derivations:
         associated_participant:
-          populated_from: phv00008378
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008379}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008378}) + ":FHS OFFSPRING EXAM 2")'
-        age_at_observation:
-          expr: '{pht003099.phv00177952} * 365'
-        value_enum:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008379}) + ":FHS OFFSPRING EXAM 2")'
+          range: string
+        condition_concept:
+          value: MONDO:0005139
+          range: string
+        condition_status:
           populated_from: phv00007949
           value_mappings:
             '0': ABSENT
             '1': PRESENT
             '2': UNKNOWN
-        observation_type:
-          value: OMOP:433736
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
           range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        age_at_condition_start:
+          expr: "case(({phv00007949} == '1', {pht003099.phv00177932} * 365))"
+
 - class_derivations:
-    MeasurementObservation:
+    Condition:
       populated_from: pht000032
+      joins:
+        pht003099:
+          source_key: phv00008743
+          lookup_key: phv00177926
       slot_derivations:
         associated_participant:
-          populated_from: phv00008742
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008743}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008742}) + ":FHS OFFSPRING EXAM 3")'
-        age_at_observation:
-          expr: '{pht003099.phv00177934} * 365'          
-        value_enum:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008743}) + ":FHS OFFSPRING EXAM 3")'
+          range: string
+        condition_concept:
+          value: MONDO:0005139
+          range: string
+        condition_status:
           populated_from: phv00008694
           value_mappings:
             '0': ABSENT
             '1': PRESENT
             '2': UNKNOWN
-        observation_type:
-          value: OMOP:433736
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
           range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        age_at_condition_start:
+          expr: "case(({phv00008694} == '1', {pht003099.phv00177934} * 365))"

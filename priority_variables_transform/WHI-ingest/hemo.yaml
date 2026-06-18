@@ -3,13 +3,15 @@
       populated_from: pht000986
       slot_derivations:
         associated_participant:
-          populated_from: phv00077360
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00077360}) + ":WHI")'
         associated_visit:
           expr: "case(({phv00077361} == 1, uuid5('https://w3id.org/bdchm/Visit', str({phv00077360}) + ':WHI SCREENING')), ({phv00077361} == 3 and {phv00077362} == 1, uuid5('https://w3id.org/bdchm/Visit', str({phv00077360}) + ':WHI YEAR 1')), ({phv00077361} == 3 and {phv00077362} == 2, uuid5('https://w3id.org/bdchm/Visit', str({phv00077360}) + ':WHI YEAR 2')), ({phv00077361} == 3 and {phv00077362} == 3, uuid5('https://w3id.org/bdchm/Visit', str({phv00077360}) + ':WHI YEAR 3')), (True, None))"
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OBA:2060175
+        method_type:
+          value: "blood assay"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -25,13 +27,15 @@
       populated_from: pht006223
       slot_derivations:
         associated_participant:
-          populated_from: phv00283451
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283451}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OBA:2060175
+        method_type:
+          value: "blood assay"
         value_quantity:
           object_derivations:
           - class_derivations:

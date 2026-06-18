@@ -2,12 +2,14 @@
     MeasurementObservation:
       populated_from: pht008733
       slot_derivations:
-        associated_participant: 
-          populated_from: phv00401561
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401561}) + ":JHS")'
         associated_visit: 
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401561}) + ":JHS Exam 1")'
         observation_type: 
           value: OBA:2045303
+        method_type:
+          value: "blood assay"
         value_quantity:
           object_derivations:
           - class_derivations:

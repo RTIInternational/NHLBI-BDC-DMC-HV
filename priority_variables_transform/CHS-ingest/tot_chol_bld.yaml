@@ -3,7 +3,7 @@
       populated_from: pht001452
       slot_derivations:
         associated_participant:
-          populated_from: phv00100285
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00100285}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100285}) + ":CHS BASELINE BOTH")'
         age_at_observation:

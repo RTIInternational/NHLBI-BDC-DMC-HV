@@ -1,22 +1,9 @@
-# - class_derivations: # REVIEW - is this needed? Should this be removed?
-#     Demography:
-#       populated_from: pht001109
-#       slot_derivations:
-#         associated_participant:
-#           populated_from: phv00082629
-#         associated_visit:
-#           value: MESA PEDIGREE
-#         sex:
-#           populated_from: phv00082632
-#           value_mappings:
-#             '1': '''OMOP:8507'''
-#             '2': '''OMOP:8532'''
 - class_derivations:
     Demography:
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         sex:
@@ -40,7 +27,7 @@
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         sex:
@@ -64,7 +51,7 @@
       populated_from: pht001118
       slot_derivations:
         associated_participant:
-          populated_from: phv00085772
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00085772}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         sex:
@@ -89,7 +76,7 @@
       populated_from: pht001119
       slot_derivations:
         associated_participant:
-          populated_from: phv00086258
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086258}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         sex:
@@ -114,7 +101,7 @@
       populated_from: pht001120
       slot_derivations:
         associated_participant:
-          populated_from: phv00086726
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086726}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         sex:
@@ -142,7 +129,7 @@
       populated_from: pht001121
       slot_derivations:
         associated_participant:
-          populated_from: phv00087070
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         sex:
@@ -164,7 +151,7 @@
       populated_from: pht003086
       slot_derivations:
         associated_participant:
-          populated_from: phv00174584
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         sex:
@@ -188,7 +175,7 @@
       populated_from: pht003087
       slot_derivations:
         associated_participant:
-          populated_from: phv00175794
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00175794}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00175794}) + ":MESA LUNG CT")'
         sex:
@@ -214,7 +201,7 @@
       populated_from: pht003088
       slot_derivations:
         associated_participant:
-          populated_from: phv00175966
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00175966}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00175966}) + ":MESA LUNG")'
         ethnicity:
@@ -230,7 +217,7 @@
       populated_from: pht003091
       slot_derivations:
         associated_participant:
-          populated_from: phv00176007
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00176007}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         sex:
@@ -254,7 +241,7 @@
       populated_from: pht004326
       slot_derivations:
         associated_participant:
-          populated_from: phv00219018
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00219018}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00219018}) + ":MESA STRESS")'
         sex:

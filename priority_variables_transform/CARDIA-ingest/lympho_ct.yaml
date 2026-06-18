@@ -3,13 +3,15 @@
       populated_from: pht001563
       slot_derivations:
         associated_participant:
-          populated_from: phv00112654
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00112654}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00112654}) + ":CARDIA YEAR 0")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0000717
+        method_type:
+          value: "blood assay"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -17,6 +19,31 @@
                 populated_from: pht001563
                 slot_derivations:
                   value_decimal:
-                    expr: "float({phv00112691}) / 100.0 * float({phv00112686})"
+                    expr: "None if str({phv00112691}) == 'M' else float({phv00112691})"
                   unit:
                     value: "10*3/uL"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003298
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190551}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190551}) + ":CARDIA YEAR 20")'
+        age_at_observation:
+          expr: "None if str({phv00190622}) == 'M' else float({phv00190622}) * 365"
+        observation_type:
+          value: OBA:VT0000717
+        method_type:
+          value: "blood assay"
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003298
+                slot_derivations:
+                  value_decimal:
+                    expr: "None if str({phv00190609}) == 'M' else float({phv00190609})"
+                  unit:
+                    value: "10*3/uL"
+                    range: string

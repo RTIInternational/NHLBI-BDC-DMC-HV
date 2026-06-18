@@ -67,7 +67,7 @@ Indexes are committed to this repo (~4 MB total) so CI and contributors can run 
 |------|-------|---------|
 | `hv-lint/_paths.py` | -- | Shared path resolution (supports `HV_ROOT` env var and `--hv-root` override) |
 | `hv-lint/_http.py` | -- | Self-contained HTTP caching layer for data fetching |
-| `hv-lint/cohorts.yaml` | -- | Cohort version pins (study IDs, data versions) |
+| `hv_dataqc/cache_fetcher/manifests/_manifest-<cohort>.yaml` | -- | Cohort version pins (study IDs, data versions) — single source of truth shared with hv_dataqc |
 | `hv-lint/update_data.py` | -- | Fetch + build all indexes and visit cache (single entry point) |
 | `hv-lint/.yamllint` | 1 | yamllint configuration |
 | `hv-lint/phase-1/run_phase1.py` | 1 | Phase 1 manager -- orchestrates all sub-components |

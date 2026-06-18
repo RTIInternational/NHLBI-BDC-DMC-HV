@@ -3,13 +3,15 @@
       populated_from: pht008731
       slot_derivations:
         associated_participant:
-          populated_from: phv00401370
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401370}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
         age_at_observation:
           expr: "{phv00401379} * 365"
         observation_type:
           value: OMOP:35609491
+        method_type:
+          value: "questionnaire"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -25,13 +27,15 @@
       populated_from: pht001926
       slot_derivations:
         associated_participant:
-          populated_from: phv00124667
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00124667}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00124667}) + ":JHS Exam 1")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OMOP:35609491
+        method_type:
+          value: "questionnaire"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -47,13 +51,15 @@
       populated_from: pht008729
       slot_derivations:
         associated_participant:
-          populated_from: phv00401078
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401078}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
         age_at_observation:
           expr: "{phv00401085} * 365"
         observation_type:
           value: OMOP:35609491
+        method_type:
+          value: "questionnaire"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -73,12 +79,14 @@
     MeasurementObservation:
       populated_from: pht008720
       slot_derivations:
-        associated_participant: 
-          populated_from: phv00400740 
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00400740}) + ":JHS")' 
         associated_visit: 
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400740}) + ":JHS Exam 3")'
         observation_type: 
           value: OMOP:35609491
+        method_type:
+          value: "questionnaire"
         value_quantity:
           object_derivations:
           - class_derivations:

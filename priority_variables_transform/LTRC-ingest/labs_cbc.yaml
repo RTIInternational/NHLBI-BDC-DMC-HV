@@ -3,11 +3,13 @@
       populated_from: pht010059
       slot_derivations:
         associated_participant:
-          populated_from: phv00429073
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00429073}) + ":LTRC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00429073}) + ":LTRC Baseline")'
         observation_type:
           value: OBA:VT0000217
+        method_type:
+          value: "clinical laboratory assay"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -23,11 +25,13 @@
       populated_from: pht010059
       slot_derivations:
         associated_participant:
-          populated_from: phv00429073
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00429073}) + ":LTRC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00429073}) + ":LTRC Baseline")'
         observation_type:
           value: OBA:2060175
+        method_type:
+          value: "clinical laboratory assay"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -43,11 +47,13 @@
       populated_from: pht010059
       slot_derivations:
         associated_participant:
-          populated_from: phv00429073
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00429073}) + ":LTRC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00429073}) + ":LTRC Baseline")'
         observation_type:
           value: OBA:2045381
+        method_type:
+          value: "clinical laboratory assay"
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -63,11 +69,13 @@
       populated_from: pht010059
       slot_derivations:
         associated_participant:
-          populated_from: phv00429073
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00429073}) + ":LTRC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00429073}) + ":LTRC Baseline")'
         observation_type:
           value: OMOP:4267147
+        method_type:
+          value: "clinical laboratory assay"
         value_quantity:
           object_derivations:
           - class_derivations:

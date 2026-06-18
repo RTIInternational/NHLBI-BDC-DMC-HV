@@ -1,0 +1,25 @@
+- class_derivations:
+    Condition:
+      populated_from: pht006223
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283451}) + ":WHI")'
+        age_at_condition_start:
+          expr: 'case(({phv00283514} == 1, ({phv00078437} * 365) + {phv00283452}))'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
+          range: string
+        condition_concept:
+          value: HP:0010535
+          range: string
+        condition_status:
+          populated_from: phv00283514
+          value_mappings:
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        associated_evidence:
+          value: "hospital record abstraction"
+        relationship_to_participant:
+          value: ONESELF

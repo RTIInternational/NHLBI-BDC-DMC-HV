@@ -29,9 +29,14 @@ python hv-lint/update_data.py --dry-run
 
 ## Architecture
 
+Version pins (study_id + data_version per cohort) are read from the hv_dataqc
+cache-fetcher manifests
+(`hv_dataqc/cache_fetcher/manifests/_manifest-<cohort>.yaml`, the
+`current_version` block) — the single source of truth shared with the hv_dataqc
+compare pipeline, so the two tools can never pin different dbGaP versions.
+
 ```
 hv-lint/
-  cohorts.yaml          # Version pins (study_id + data_version per cohort)
   update_data.py        # Single entry point: fetch + build
   _http.py              # HTTP caching layer (requires requests-cache)
   build_phv_index.py    # Basic PHV-to-PHT index builder
@@ -98,11 +103,11 @@ lint phases. Subsequent runs skip already-cached files.
 
 When dbGaP releases a new version for a cohort:
 
-1. **Update `cohorts.yaml`**:
+1. **Bump the cohort manifest** (`hv_dataqc/cache_fetcher/manifests/_manifest-aric.yaml`):
    ```yaml
-   aric:
-     study_id: phs000280
-     data_version: v9.p3   # <-- was v8.p2
+   current_version:
+     study_id: "phs000280"
+     data_version: "v9.p3"   # <-- was v8.p2
    ```
 
 2. **Re-fetch and rebuild**:
@@ -123,12 +128,12 @@ What changes between versions:
 
 ### New Cohort Onboarding
 
-1. **Add entry to `cohorts.yaml`**:
+1. **Add a cohort manifest** (`hv_dataqc/cache_fetcher/manifests/_manifest-newcohort.yaml`):
    ```yaml
-   newcohort:
-     study_id: phs999999
-     data_version: v1.p1
-     display_name: "New Cohort Study Name"
+   current_version:
+     study_id: "phs999999"
+     data_version: "v1.p1"
+     study_name: "New Cohort Study Name"
    ```
 
 2. **Fetch and build**:
@@ -177,7 +182,7 @@ Options:
 
 | Package | Required For | Install |
 |---------|-------------|---------|
-| `pyyaml` | Reading `cohorts.yaml` | `pip install pyyaml` |
+| `pyyaml` | Reading cohort manifests | `pip install pyyaml` |
 | `requests-cache` | Fetching from NCBI (`--fetch` mode) | `pip install requests-cache` |
 
 **Note**: `requests-cache` is only needed for fetch operations. If you
@@ -191,7 +196,7 @@ phases with just `pyyaml` + stdlib.
 | Problem | Cause | Fix |
 |---------|-------|-----|
 | Phase 3: "PHT not found" errors | Stale indexes | `python hv-lint/update_data.py --build-only` |
-| Phase 3: many missing PHVs | Wrong dbGaP version in cohorts.yaml | Verify version pin matches YAML files |
+| Phase 3: many missing PHVs | Wrong dbGaP version in cohort manifest | Verify version pin matches YAML files |
 | Fetch timeout / 503 | NCBI rate limiting | Wait and retry; cached files aren't re-fetched |
 | `ImportError: requests-cache` | Missing optional dep | `pip install requests-cache` |
 | "No data_dict.xml files found" | Study has no FTP summaries | Normal for some small studies; basic index still works |

@@ -3,7 +3,7 @@
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         condition_concept:
@@ -15,17 +15,20 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: CLINICAL_DIAGNOSIS
           range: string
         relationship_to_participant:
           value: ONESELF
+          range: string
+        associated_evidence:
+          value: "Electrocardiogram"
           range: string
 - class_derivations:
     Condition:
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         condition_concept:
@@ -37,17 +40,20 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: CLINICAL_DIAGNOSIS
           range: string
         relationship_to_participant:
           value: ONESELF
+          range: string
+        associated_evidence:
+          value: "Electrocardiogram"
           range: string
 - class_derivations:
     Condition:
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         condition_concept:
@@ -59,17 +65,20 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: CLINICAL_DIAGNOSIS
           range: string
         relationship_to_participant:
           value: ONESELF
+          range: string
+        associated_evidence:
+          value: "Electrocardiogram"
           range: string
 - class_derivations:
     Condition:
       populated_from: pht003086
       slot_derivations:
         associated_participant:
-          populated_from: phv00174584
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         condition_concept:
@@ -81,17 +90,20 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: CLINICAL_DIAGNOSIS
           range: string
         relationship_to_participant:
           value: ONESELF
+          range: string
+        associated_evidence:
+          value: "Electrocardiogram"
           range: string
 - class_derivations:
     Condition:
       populated_from: pht003086
       slot_derivations:
         associated_participant:
-          populated_from: phv00174584
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         condition_concept:
@@ -103,17 +115,20 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: CLINICAL_DIAGNOSIS
           range: string
         relationship_to_participant:
           value: ONESELF
+          range: string
+        associated_evidence:
+          value: "Electrocardiogram"
           range: string
 - class_derivations:
     Condition:
       populated_from: pht003086
       slot_derivations:
         associated_participant:
-          populated_from: phv00174584
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         condition_concept:
@@ -125,17 +140,20 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: CLINICAL_DIAGNOSIS
           range: string
         relationship_to_participant:
           value: ONESELF
+          range: string
+        associated_evidence:
+          value: "Electrocardiogram"
           range: string
 - class_derivations:
     Condition:
       populated_from: pht003091
       slot_derivations:
         associated_participant:
-          populated_from: phv00176007
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00176007}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         condition_concept:
@@ -147,17 +165,20 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: CLINICAL_DIAGNOSIS
           range: string
         relationship_to_participant:
           value: ONESELF
+          range: string
+        associated_evidence:
+          value: "Electrocardiogram"
           range: string
 - class_derivations:
     Condition:
       populated_from: pht003091
       slot_derivations:
         associated_participant:
-          populated_from: phv00176007
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00176007}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         condition_concept:
@@ -169,8 +190,11 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: CLINICAL_DIAGNOSIS
           range: string
         relationship_to_participant:
           value: ONESELF
+          range: string
+        associated_evidence:
+          value: "Electrocardiogram"
           range: string
