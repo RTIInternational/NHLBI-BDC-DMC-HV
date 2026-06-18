@@ -245,30 +245,6 @@
                             unit:
                               value: "%"
 - class_derivations:
-    MeasurementObservation:
-      populated_from: pht006432
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00295692}) + ":ARIC")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00295692}) + ":ARIC EXAM 5")'
-        observation_type:
-          value: "OMOP:4176265"
-        body_position:
-          value: SITTING_POSITION
-        method_type:
-          value: DLCO
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006432
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00295693
-                  unit:
-                    value: "L"
-- class_derivations:
     MeasurementObservationSet:
       populated_from: pht006467
       slot_derivations:
