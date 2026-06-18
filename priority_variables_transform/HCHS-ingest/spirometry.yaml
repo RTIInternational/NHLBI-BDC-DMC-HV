@@ -20,6 +20,16 @@
                   method_type:
                     value: "spirometry"
                     range: string
+                  context:
+                    object_derivations:
+                    - class_derivations:
+                        Context:
+                          activity:
+                            object_derivations:
+                            - class_derivations:
+                                Activity:
+                                  activity_type: BRONCHODILATOR_MEDICATION_USE
+                          relative_timing: BEFORE                    
                   value_quantity:
                     object_derivations:
                     - class_derivations:
@@ -43,6 +53,16 @@
                   method_type:
                     value: "spirometry"
                     range: string
+                  context:
+                    object_derivations:
+                    - class_derivations:
+                        Context:
+                          activity:
+                            object_derivations:
+                            - class_derivations:
+                                Activity:
+                                  activity_type: BRONCHODILATOR_MEDICATION_USE
+                          relative_timing: BEFORE                    
                   value_quantity:
                     object_derivations:
                     - class_derivations:
@@ -64,8 +84,18 @@
                   age_at_observation:
                     expr: '{phv00226251} * 365'
                   method_type:
-                    value: "spirometry"
+                    value: "calculated"
                     range: string
+                  context:
+                    object_derivations:
+                    - class_derivations:
+                        Context:
+                          activity:
+                            object_derivations:
+                            - class_derivations:
+                                Activity:
+                                  activity_type: BRONCHODILATOR_MEDICATION_USE
+                          relative_timing: BEFORE                    
                   value_quantity:
                     object_derivations:
                     - class_derivations:
