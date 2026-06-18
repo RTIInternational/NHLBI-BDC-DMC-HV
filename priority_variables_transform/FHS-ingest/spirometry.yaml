@@ -26,7 +26,7 @@
                           populated_from: pht000018
                           slot_derivations:
                             value_decimal:
-                              expr: '{phv00002682} / 10'
+                              expr: '{phv00002682} / 100'
                             unit:
                               value: L
                               range: string
@@ -48,7 +48,7 @@
                           populated_from: pht000018
                           slot_derivations:
                             value_decimal:
-                              expr: '{phv00002684} / 10'
+                              expr: '{phv00002684} / 100'
                             unit:
                               value: L
                               range: string
@@ -81,7 +81,7 @@
                           populated_from: pht000019
                           slot_derivations:
                             value_decimal:
-                              expr: '{phv00003249} / 10'
+                              expr: '{phv00003249} / 100'
                             unit:
                               value: L
                               range: string
@@ -103,7 +103,7 @@
                           populated_from: pht000019
                           slot_derivations:
                             value_decimal:
-                              expr: '{phv00003251} / 10'
+                              expr: '{phv00003251} / 100'
                             unit:
                               value: L
                               range: string
@@ -182,7 +182,7 @@
                             value_decimal:
                               populated_from: phv00022585
                             unit:
-                              value: '{ratio}'
+                              value: '%'
                               range: string
 
 - class_derivations:
@@ -259,7 +259,7 @@
                             value_decimal:
                               populated_from: phv00022600
                             unit:
-                              value: '{ratio}'
+                              value: '%'
                               range: string
 
 - class_derivations:
@@ -336,7 +336,7 @@
                             value_decimal:
                               populated_from: phv00022613
                             unit:
-                              value: '{ratio}'
+                              value: '%'
                               range: string
 
 - class_derivations:
@@ -413,7 +413,7 @@
                             value_decimal:
                               populated_from: phv00022626
                             unit:
-                              value: '{ratio}'
+                              value: '%'
                               range: string
 
 - class_derivations:
@@ -490,7 +490,7 @@
                             value_decimal:
                               populated_from: phv00022639
                             unit:
-                              value: '{ratio}'
+                              value: '%'
                               range: string
 
 - class_derivations:
@@ -567,9 +567,8 @@
                             value_decimal:
                               populated_from: phv00022654
                             unit:
-                              value: '{ratio}'
+                              value: '%'
                               range: string
-
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht000105
@@ -652,7 +651,6 @@
                             unit:
                               value: '{ratio}'
                               range: string
-
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht000101
@@ -735,7 +733,6 @@
                             unit:
                               value: '{ratio}'
                               range: string
-
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht000104
@@ -818,7 +815,6 @@
                             unit:
                               value: '{ratio}'
                               range: string
-
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht000106
@@ -901,7 +897,6 @@
                             unit:
                               value: '{ratio}'
                               range: string
-
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht000395
@@ -956,8 +951,6 @@
                             unit:
                               value: L
                               range: string
-
-
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht000832
@@ -1040,7 +1033,6 @@
                             unit:
                               value: '{ratio}'
                               range: string
-
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht000102
@@ -1062,6 +1054,8 @@
                     value: 'spirometry'
                   age_at_observation:
                     expr: '{pht003099.phv00177930} * 365'
+                  qualifier:
+                    value: MAXIMUM
                   value_quantity:
                     object_derivations:
                     - class_derivations:
@@ -1084,6 +1078,8 @@
                     value: 'spirometry'
                   age_at_observation:
                     expr: '{pht003099.phv00177930} * 365'
+                  qualifier:
+                    value: MAXIMUM
                   value_quantity:
                     object_derivations:
                     - class_derivations:
@@ -1095,8 +1091,6 @@
                             unit:
                               value: L
                               range: string
-
-
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht005170
@@ -1179,7 +1173,6 @@
                             unit:
                               value: '{ratio}'
                               range: string
-
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht003632
@@ -1262,7 +1255,6 @@
                             unit:
                               value: '{ratio}'
                               range: string
-
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht005169
@@ -1345,4 +1337,3 @@
                             unit:
                               value: '{ratio}'
                               range: string
-
