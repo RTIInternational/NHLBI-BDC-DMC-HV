@@ -926,7 +926,7 @@ wheels = [
 [[package]]
 name = "priority-variables-transform"
 version = "0.1.0"
-source = { editable = "." }
+source = { virtual = "." }
 dependencies = [
     { name = "gspread" },
     { name = "gspread-dataframe" },
@@ -934,6 +934,11 @@ dependencies = [
     { name = "pandas" },
     { name = "pyyaml" },
     { name = "tabulate" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
 ]
 
 [package.metadata]
@@ -945,6 +950,9 @@ requires-dist = [
     { name = "pyyaml", specifier = ">=6.0.2,<7.0.0" },
     { name = "tabulate", specifier = ">=0.9.0,<0.10.0" },
 ]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = ">=8.0" }]
 
 [[package]]
 name = "pyasn1"

@@ -2,10 +2,10 @@
 
 ## Prerequisites
 
-- Python 3.10+
-- pip packages:
+- Python 3.12+
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) — install once, then from the repo root:
   ```
-  pip install streamlit requests click pyyaml
+  uv sync
   ```
 
 ## Directory Structure
@@ -43,7 +43,7 @@ YAML transform files must exist at:
 
 In a terminal from the `data_element_map_validation/` directory:
 ```bash
-python -m streamlit run curator_review_app.py --server.port 8501
+uv run streamlit run curator_review_app.py --server.port 8501
 ```
 Then open **http://localhost:8501** in your browser.
 
@@ -91,13 +91,13 @@ Both pipeline scripts accept a `--study` argument:
 
 ```bash
 # Step 1 — CURIE map-review (slow: makes live API calls)
-python scripts/generate_curie_mapreview.py --study CHS
+uv run python scripts/generate_curie_mapreview.py --study CHS
 
 # Step 2 — Semantic review MD generation (fast: no API calls)
-python scripts/generate_semantic_review.py --study CHS
+uv run python scripts/generate_semantic_review.py --study CHS
 
 # Release report — aggregates all applied changes across studies
-python scripts/generate_release_report.py
+uv run python scripts/generate_release_report.py
 ```
 
 Available study names match the `cohort_study_short_name` values in the registry CSV.
