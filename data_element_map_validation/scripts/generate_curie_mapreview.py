@@ -34,6 +34,8 @@ import csv
 import os
 import re
 import sys
+import threading
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from pathlib import Path
 
@@ -281,6 +283,7 @@ def _agent_suggestion(
     get_rxnorm_id,
     get_loinc_id,
     extract_clinical_term,
+    get_omop_route_id,
     get_oba_id,
 ) -> tuple[str, str, str, str, str]:
     """Return (omop_maps_to, mondo_maps_to, hpo_maps_to, maps_to_entity_type).
@@ -403,7 +406,7 @@ def _yaml_check(yaml_file_name: str, slot: str, csv_curie: str) -> tuple[str, st
 # Main
 # ---------------------------------------------------------------------------
 
-def main(no_agents: bool = False) -> None:
+def main(no_agents: bool = False, workers: int = 10) -> None:
     if not INPUT_CSV.exists():
         print(f"Input CSV not found: {INPUT_CSV}", file=sys.stderr)
         sys.exit(1)
@@ -419,35 +422,83 @@ def main(no_agents: bool = False) -> None:
     start_time = datetime.now()
     print(f"Started: {start_time.strftime('%Y-%m-%d %H:%M:%S')}", file=sys.stderr)
 
-    # Cache: (var_name, slot, entity_type) → (omop, mondo, entity)
-    suggestion_cache: dict[tuple, tuple] = {}
-
-    with open(INPUT_CSV, newline="", encoding="utf-8") as fin, \
-         open(OUTPUT_CSV, "w", newline="", encoding="utf-8-sig") as fout:
-
+    # Read all input rows into memory first
+    with open(INPUT_CSV, newline="", encoding="utf-8") as fin:
         reader = csv.DictReader(fin)
         all_rows = list(reader)
-        total = len(all_rows)
         orig_fields = reader.fieldnames or []
-        new_fields = orig_fields + [
-            "yaml_curie",
-            "yaml_match",
-            "omop_maps_to",
-            "mondo_maps_to",
-            "hpo_maps_to",
-            "oba_maps_to",
-            "maps_to_entity_type",
-        ]
+    total = len(all_rows)
+
+    # Cache: (var_name, slot, entity_type) → (omop, mondo, hpo, oba, entity)
+    suggestion_cache: dict[tuple, tuple] = {}
+
+    if not no_agents:
+        # Collect unique (var_name, slot, entity_type) keys with first-seen var_desc
+        unique_keys: dict[tuple, str] = {}
+        for r in all_rows:
+            vn  = r.get("Variable Name", "").strip()
+            sl  = r.get("Slot", "").strip()
+            et  = r.get("Entity Type", "").strip()
+            vd  = r.get("Variable Description", "").strip()
+            if vn and vn not in ADMIN_VARS and sl:
+                key = (vn, sl, et)
+                if key not in unique_keys:
+                    unique_keys[key] = vd
+
+        n_unique = len(unique_keys)
+        actual_workers = min(workers, n_unique) if n_unique else 1
+        print(
+            f"Pre-populating {n_unique} unique variable/slot combinations "
+            f"using {actual_workers} workers...",
+            file=sys.stderr,
+        )
+
+        cache_lock = threading.Lock()
+        counter = [0]
+
+        def _populate_one(item: tuple) -> None:
+            (vn, sl, et), vd = item
+            result = _agent_suggestion(
+                sl, et, vn, vd,
+                get_mondo_id, get_hpo_id, get_omop_concept_id,
+                get_rxnorm_id, get_loinc_id, extract_clinical_term, get_omop_route_id, get_oba_id,
+            )
+            with cache_lock:
+                suggestion_cache[(vn, sl, et)] = result
+                counter[0] += 1
+                pct = counter[0] / n_unique
+                print(
+                    f"  [{counter[0]}/{n_unique} {pct:.0%}] {vn!r} slot={sl}",
+                    file=sys.stderr,
+                    flush=True,
+                )
+
+        with ThreadPoolExecutor(max_workers=actual_workers) as executor:
+            list(executor.map(_populate_one, unique_keys.items()))
+
+        print(f"Cache pre-populated ({n_unique} unique keys).", file=sys.stderr)
+
+    # Write output rows in original order
+    new_fields = orig_fields + [
+        "yaml_curie",
+        "yaml_match",
+        "omop_maps_to",
+        "mondo_maps_to",
+        "hpo_maps_to",
+        "oba_maps_to",
+        "maps_to_entity_type",
+    ]
+    with open(OUTPUT_CSV, "w", newline="", encoding="utf-8-sig") as fout:
         writer = csv.DictWriter(fout, fieldnames=new_fields)
         writer.writeheader()
 
-        for i, row in enumerate(all_rows, start=1):
-            var_name   = row.get("Variable Name", "").strip()
-            var_desc   = row.get("Variable Description", "").strip()
-            slot       = row.get("Slot", "").strip()
+        for row in all_rows:
+            var_name    = row.get("Variable Name", "").strip()
+            var_desc    = row.get("Variable Description", "").strip()
+            slot        = row.get("Slot", "").strip()
             entity_type = row.get("Entity Type", "").strip()
-            csv_curie  = row.get("CURIE", "").strip()
-            yaml_file  = row.get("YAML File", "").strip()
+            csv_curie   = row.get("CURIE", "").strip()
+            yaml_file   = row.get("YAML File", "").strip()
 
             is_admin = var_name in ADMIN_VARS or not var_name
 
@@ -458,7 +509,7 @@ def main(no_agents: bool = False) -> None:
             else:
                 yaml_curie_val, yaml_match_val = _yaml_check(yaml_file, slot, csv_curie)
 
-            # Agent suggestions
+            # Agent suggestions — always hits cache after pre-population
             if is_admin or no_agents:
                 omop_val = mondo_val = hpo_val = oba_val = entity_val = ""
             else:
@@ -466,15 +517,10 @@ def main(no_agents: bool = False) -> None:
                 if cache_key in suggestion_cache:
                     omop_val, mondo_val, hpo_val, oba_val, entity_val = suggestion_cache[cache_key]
                 else:
-                    print(
-                        f"  [{i}/{total} {i/total:.0%}] {var_name!r} slot={slot} → querying agent...",
-                        file=sys.stderr,
-                        flush=True,
-                    )
                     omop_val, mondo_val, hpo_val, oba_val, entity_val = _agent_suggestion(
                         slot, entity_type, var_name, var_desc,
                         get_mondo_id, get_hpo_id, get_omop_concept_id,
-                        get_rxnorm_id, get_loinc_id, extract_clinical_term, get_oba_id,
+                        get_rxnorm_id, get_loinc_id, extract_clinical_term, get_omop_route_id, get_oba_id,
                     )
                     suggestion_cache[cache_key] = (omop_val, mondo_val, hpo_val, oba_val, entity_val)
 
@@ -518,6 +564,13 @@ if __name__ == "__main__":
         action="store_true",
         help="Skip API agent calls; only perform YAML spot-check.",
     )
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=10,
+        metavar="N",
+        help="Number of parallel worker threads for agent calls (default: 10).",
+    )
     args = parser.parse_args()
     _resolve_paths(args.study)
-    main(no_agents=args.no_agents)
+    main(no_agents=args.no_agents, workers=args.workers)
