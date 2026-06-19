@@ -65,9 +65,11 @@ Each study requires two input files before it can be reviewed:
 1. **`bdc_study_input/{STUDY}_curie.csv`** — CURIE mapping input (one row per variable, filtered to the study's cohort only)
 2. **`valueset_mapping_review_output/{STUDY}_Semantic_Review_Final_Reviewer-*.md`** — Source reviewer markdown
 
-Once those exist, select the study in the sidebar and click **🚀 Run {STUDY} Curie Review**. The app runs both pipeline steps sequentially and displays a live log. When complete, the study is ready for curator review.
+Once those exist, run both pipeline steps from the command line (see **Running Pipeline Steps Manually** below). Do not use the app to run the full pipeline — use the command line for all Step 1 and Step 2 runs.
 
-To re-run just the semantic review step (e.g. after a fix), go to:
+After both steps complete, open the app, select the study in the sidebar, and begin curator review.
+
+To re-run just the semantic review step (e.g. after a fix), either use the command line or go to:
 **⚙️ Setup tab → Run individual steps → 📝 Generate semantic review MD**
 
 ## Adding a New Study
@@ -96,17 +98,26 @@ All generated files are prefixed with the study's short name:
 
 ## Running Pipeline Steps Manually
 
-Both pipeline scripts accept a `--study` argument:
+**Always run pipeline steps from the command line**, not from the app. Both scripts accept a `--study` argument:
 
 ```bash
-# Step 1 — CURIE map-review (slow: makes live API calls)
+# Step 1 — CURIE map-review (network-bound: makes live API calls to MONDO, HPO, OMOP, RxNorm, LOINC, OBA)
+# Use --workers N (default 10) to control parallel agent threads
 uv run python scripts/generate_curie_mapreview.py --study CHS
+uv run python scripts/generate_curie_mapreview.py --study CHS --workers 5   # fewer workers = less load
 
 # Step 2 — Semantic review MD generation (fast: no API calls)
 uv run python scripts/generate_semantic_review.py --study CHS
 
 # Release report — aggregates all applied changes across studies
 uv run python scripts/generate_release_report.py
+```
+
+### Full review for a new study (both steps in sequence)
+
+```bash
+uv run python scripts/generate_curie_mapreview.py --study MESA && \
+uv run python scripts/generate_semantic_review.py --study MESA
 ```
 
 Available study names match the `cohort_study_short_name` values in the registry CSV.

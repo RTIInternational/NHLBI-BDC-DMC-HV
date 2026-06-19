@@ -1621,37 +1621,6 @@ def render_log_tab(study: str, pending: dict) -> None:
 
 
 # ── Pipeline helpers ──────────────────────────────────────────────────────────
-def _stream_subprocess(cmd: list[str], log_area) -> tuple[int, list[str]]:
-    """Run cmd, stream combined stdout/stderr into log_area. Returns (returncode, lines)."""
-    lines: list[str] = []
-    proc = subprocess.Popen(
-        cmd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        cwd=str(_HERE),
-    )
-    for line in proc.stdout:  # type: ignore[union-attr]
-        lines.append(line.rstrip())
-        log_area.code("\n".join(lines[-50:]))
-    proc.wait()
-    return proc.returncode, lines
-
-
-def _run_pipeline_cmd(label: str, cmd: list[str]) -> None:
-    """In-tab subprocess runner with spinner + rolling log + final expander."""
-    log_area = st.empty()
-    with st.spinner(f"{label} …"):
-        rc, lines = _stream_subprocess(cmd, log_area)
-    log_area.empty()
-    if rc == 0:
-        st.success(f"✅ {label} — done.")
-    else:
-        st.error(f"❌ {label} — failed (exit {rc}).")
-    with st.expander("Output log", expanded=rc != 0):
-        st.code("\n".join(lines) if lines else "(no output)")
-
-
 # Module-level job store — threads write here; avoids cross-thread session_state writes
 _BG_JOBS: dict[str, dict] = {}
 
@@ -1681,113 +1650,6 @@ def _start_bg_pipeline(label: str, cmd: list[str], cmd_type: str) -> None:
             job["done"] = True
 
     threading.Thread(target=_worker, daemon=True).start()
-
-
-# ── Full-page Registration flow ───────────────────────────────────────────────
-def render_registration_page(study: str) -> None:
-    """Replaces the entire UI while the pipeline runs. Nothing else is rendered."""
-    cfg = STUDIES[study]
-    label = STUDIES[study]["label"]
-
-    st.markdown(
-        '<p style="font-size:0.85em;color:#888;margin-bottom:0;letter-spacing:0.08em">'
-        "SEMANTIC REVIEW CURATOR — CURIE REVIEW IN PROGRESS</p>",
-        unsafe_allow_html=True,
-    )
-    st.title(f"⚙️ Preparing {label} Curie Review")
-
-    st.markdown(
-        f"""
-        <div style="background:#fff8e1;padding:14px 18px;border-radius:6px;
-                    border-left:5px solid #f9a825;margin-bottom:1rem;font-size:0.95em">
-        ⏳ <strong>Generating all required files for {label}.</strong><br>
-        This may take <strong>10–20 minutes</strong>. Please keep this window open and do not
-        navigate away. All other controls are disabled until this process completes.
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    overall_ok = True
-
-    # ── Step 1: CURIE map-review (full agents) ────────────────────────────────
-    st.subheader("Step 1 of 2 — CURIE map-review (agent run)")
-    st.caption(f"Input: `{cfg['curie_csv'].name}` → Output: `{cfg['mapreview_csv'].name}`")
-    log1 = st.empty()
-    with st.spinner(f"Running MONDO / HPO / OMOP / RxNorm / LOINC agents for {label} …"):
-        rc1, lines1 = _stream_subprocess(
-            [sys.executable, str(_SCRIPTS_DIR / "generate_curie_mapreview.py"), "--study", study],
-            log1,
-        )
-    log1.empty()
-    if rc1 == 0:
-        st.success(f"✅ Step 1 complete — `{cfg['mapreview_csv'].name}` written.")
-        load_mapreview_csv.clear()
-    else:
-        st.error(f"❌ Step 1 failed (exit {rc1}). Step 2 will be skipped.")
-        overall_ok = False
-    with st.expander("Step 1 output log", expanded=rc1 != 0):
-        st.code("\n".join(lines1) if lines1 else "(no output)")
-
-    st.divider()
-
-    # ── Step 2: semantic review MD ────────────────────────────────────────────
-    st.subheader("Step 2 of 2 — Semantic review MD")
-    st.caption(
-        f"Input: `{cfg['mapreview_csv'].name}` + source reviewer MD "
-        f"→ Output: `{cfg['review_md'].name}`"
-    )
-    if not overall_ok:
-        st.warning("⚠️ Skipped because Step 1 failed.")
-    else:
-        log2 = st.empty()
-        with st.spinner(f"Generating semantic review for {label} …"):
-            rc2, lines2 = _stream_subprocess(
-                [sys.executable, str(_SCRIPTS_DIR / "generate_semantic_review.py"), "--study", study],
-                log2,
-            )
-        log2.empty()
-        if rc2 == 0:
-            st.success(f"✅ Step 2 complete — `{cfg['review_md'].name}` written.")
-            load_review_rows.clear()
-        else:
-            st.error(f"❌ Step 2 failed (exit {rc2}).")
-            overall_ok = False
-        with st.expander("Step 2 output log", expanded=rc2 != 0):
-            st.code("\n".join(lines2) if lines2 else "(no output)")
-
-    st.divider()
-
-    # ── Final result ──────────────────────────────────────────────────────────
-    if overall_ok:
-        st.balloons()
-        fk = _file_key(study)
-        summary_path = _find_summary_md(fk)
-        st.success(
-            f"🎉 **{label} is ready for review!** "
-            "Click the button below to open the review."
-        )
-        if summary_path and summary_path.exists():
-            st.info(
-                f"📊 **Semantic summary generated:** `{summary_path.name}` — "
-                "open the **📊 Semantic Review Summary** tab after returning to view it."
-            )
-            with st.expander("Preview summary", expanded=False):
-                st.markdown(summary_path.read_text(encoding="utf-8"))
-    else:
-        st.error(
-            "Curie review preparation did not complete successfully. "
-            "Check the logs above for details, fix any issues, and try again."
-        )
-
-    if st.button(
-        f"{'🔬 Open review' if overall_ok else '← Return to app'}",
-        type="primary",
-        use_container_width=True,
-    ):
-        st.session_state.is_registering = False
-        st.session_state.pop("register_study", None)
-        st.rerun()
 
 
 # ── Semantic Summary tab ──────────────────────────────────────────────────────
@@ -1926,35 +1788,6 @@ def render_setup_tab(study: str) -> None:
 
     st.divider()
 
-    # ── Register for Review (full pipeline, single button) ────────────────────
-    st.subheader(f"Prepare {label} Curie Review")
-    st.caption(
-        "Runs both pipeline steps in sequence: full agent map-review (Step 1) then "
-        "semantic review MD generation (Step 2). The entire UI is replaced with a "
-        "progress screen until both steps complete."
-    )
-
-    curie_csv_name = cfg["curie_csv"].name
-    curie_ok = cfg["curie_csv"].exists()
-    if not curie_ok:
-        st.error(f"❌ CURIE CSV `{curie_csv_name}` not found — cannot register.")
-    else:
-        st.info(f"📄 CURIE file: **`{curie_csv_name}`** ({label})")
-
-    if st.button(
-        f"🚀 Register {label} for Full Review",
-        key=f"register_{study}",
-        type="primary",
-        use_container_width=True,
-        disabled=not curie_ok,
-        help="Runs both pipeline steps. Takes 10–20 minutes. All controls are locked during processing.",
-    ):
-        st.session_state.is_registering = True
-        st.session_state.register_study = study
-        st.rerun()
-
-    st.divider()
-
     # ── Individual steps (for re-runs / partial updates) ─────────────────────
     pipeline_running = st.session_state.get("pipeline_running", False)
     with st.expander("⚙️ Run individual steps", expanded=True):
@@ -2034,12 +1867,6 @@ def main() -> None:
     </style>
     """, unsafe_allow_html=True)
 
-    # ── Registration intercept — full-page takeover while pipeline runs ────────
-    if st.session_state.get("is_registering"):
-        reg_study = st.session_state.get("register_study", list(STUDIES)[0])
-        render_registration_page(reg_study)
-        st.stop()  # nothing else renders until registration is done
-
     # ── Sidebar ───────────────────────────────────────────────────────────────
     def _on_study_change() -> None:
         new_study = st.session_state["selected_study"]
@@ -2089,16 +1916,6 @@ def main() -> None:
                 for _k in ("pipeline_running", "_bg_job_id", "_pipeline_result",
                            "_bg_label", "_bg_lines", "_bg_rc", "_bg_done", "_bg_cmd_type"):
                     st.session_state.pop(_k, None)
-                st.rerun()
-        else:
-            if st.sidebar.button(
-                f"🚀 Run {STUDIES[study]['label']} Curie Review",
-                type="primary",
-                use_container_width=True,
-                help="Run the full pipeline to generate review files for this study.",
-            ):
-                st.session_state.is_registering = True
-                st.session_state.register_study = study
                 st.rerun()
         st.sidebar.divider()
 
