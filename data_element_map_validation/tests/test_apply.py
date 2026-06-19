@@ -44,8 +44,8 @@ class TestApplyYaml:
         yf = tmp_path / "test.yaml"
         yf.write_text("condition_concept:\n  value: MONDO:0001111\n", encoding="utf-8")
         with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
-            result = app._apply_yaml("TEST", "test.yaml", "condition_concept", "MONDO:9999999")
-        assert result.startswith("✓")
+            ok, msg = app._apply_yaml("TEST", "test.yaml", "condition_concept", "MONDO:9999999")
+        assert ok
         assert "MONDO:9999999" in yf.read_text()
 
     def test_multi_block_uniform_replaced(self, tmp_path):
@@ -57,8 +57,8 @@ class TestApplyYaml:
             encoding="utf-8",
         )
         with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
-            result = app._apply_yaml("TEST", "test.yaml", "condition_concept", "MONDO:9999999")
-        assert result.startswith("✓")
+            ok, msg = app._apply_yaml("TEST", "test.yaml", "condition_concept", "MONDO:9999999")
+        assert ok
         assert yf.read_text().count("MONDO:9999999") == 2
 
     def test_multi_block_differing_values_refused(self, tmp_path):
@@ -70,28 +70,54 @@ class TestApplyYaml:
         )
         yf.write_text(original, encoding="utf-8")
         with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
-            result = app._apply_yaml("TEST", "test.yaml", "condition_concept", "MONDO:9999999")
-        assert result.startswith("⚠")
-        assert "differing values" in result
+            ok, msg = app._apply_yaml("TEST", "test.yaml", "condition_concept", "MONDO:9999999")
+        assert not ok
+        assert "differing values" in msg
         assert yf.read_text() == original  # file must be untouched
 
     def test_missing_yaml_returns_error(self, tmp_path):
         with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
-            result = app._apply_yaml("TEST", "missing.yaml", "condition_concept", "MONDO:9999999")
-        assert result.startswith("❌")
+            ok, msg = app._apply_yaml("TEST", "missing.yaml", "condition_concept", "MONDO:9999999")
+        assert not ok
+        assert msg.startswith("❌")
 
     def test_slot_not_found_returns_warning(self, tmp_path):
         yf = tmp_path / "test.yaml"
         yf.write_text("other_slot:\n  value: MONDO:0001111\n", encoding="utf-8")
         with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
-            result = app._apply_yaml("TEST", "test.yaml", "condition_concept", "MONDO:9999999")
-        assert result.startswith("⚠")
+            ok, msg = app._apply_yaml("TEST", "test.yaml", "condition_concept", "MONDO:9999999")
+        assert not ok
 
     def test_blocked_slot_returns_warning(self, tmp_path):
         with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
-            result = app._apply_yaml("TEST", "test.yaml", "relationship_to_participant", "ONESELF")
-        assert result.startswith("⚠")
-        assert "directly in the YAML file" in result
+            ok, msg = app._apply_yaml("TEST", "test.yaml", "relationship_to_participant", "ONESELF")
+        assert not ok
+        assert "directly in the YAML file" in msg
+
+    def test_crlf_line_endings(self, tmp_path):
+        yf = tmp_path / "test.yaml"
+        yf.write_bytes(b"condition_concept:\r\n  value: MONDO:0001111\r\n")
+        with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
+            ok, msg = app._apply_yaml("TEST", "test.yaml", "condition_concept", "MONDO:9999999")
+        assert ok
+        assert "MONDO:9999999" in yf.read_text()
+
+    def test_slot_with_dashes(self, tmp_path):
+        yf = tmp_path / "test.yaml"
+        yf.write_text("some-slot:\n  value: MONDO:0001111\n", encoding="utf-8")
+        with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
+            ok, msg = app._apply_yaml("TEST", "test.yaml", "some-slot", "MONDO:9999999")
+        assert ok
+        assert "MONDO:9999999" in yf.read_text()
+
+    def test_no_partial_slot_match(self, tmp_path):
+        """Slot 'type' must not match inside 'method_type'."""
+        yf = tmp_path / "test.yaml"
+        yf.write_text("method_type:\n  value: MONDO:0001111\n", encoding="utf-8")
+        with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
+            ok, msg = app._apply_yaml("TEST", "test.yaml", "type", "MONDO:9999999")
+        assert not ok
+        assert yf.read_text() == "method_type:\n  value: MONDO:0001111\n"
 
     def test_surrounding_content_preserved(self, tmp_path):
         yf = tmp_path / "test.yaml"
@@ -117,8 +143,8 @@ class TestApplyCsv:
         rows = [{"YAML File": "test.yaml", "Slot": "condition_concept", "CURIE": "MONDO:0001111"}]
         _write_curie_csv(csv_path, rows)
         with patch.dict(app.STUDIES, _studies_patch(tmp_path, csv_path)):
-            result = app._apply_csv("TEST", "test.yaml", "condition_concept", "MONDO:9999999")
-        assert result.startswith("✓")
+            ok, msg = app._apply_csv("TEST", "test.yaml", "condition_concept", "MONDO:9999999")
+        assert ok
         with open(csv_path, newline="", encoding="utf-8-sig") as f:
             written = list(csv.DictReader(f))
         assert written[0]["CURIE"] == "MONDO:9999999"
@@ -128,8 +154,8 @@ class TestApplyCsv:
         rows = [{"YAML File": "other.yaml", "Slot": "condition_concept", "CURIE": "MONDO:0001111"}]
         _write_curie_csv(csv_path, rows)
         with patch.dict(app.STUDIES, _studies_patch(tmp_path, csv_path)):
-            result = app._apply_csv("TEST", "test.yaml", "condition_concept", "MONDO:9999999")
-        assert result.startswith("⚠")
+            ok, msg = app._apply_csv("TEST", "test.yaml", "condition_concept", "MONDO:9999999")
+        assert not ok
 
     def test_only_matching_rows_updated(self, tmp_path):
         csv_path = tmp_path / "TEST_curie.csv"
@@ -165,8 +191,8 @@ class TestSubmitAllBookkeeping:
         pending = self._pending()
         log = tmp_path / "log.json"
         with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")), \
-             patch.object(app, "_apply_yaml", return_value="✓ YAML updated"), \
-             patch.object(app, "_apply_csv",  return_value="✓ CSV updated"), \
+             patch.object(app, "_apply_yaml", return_value=(True,  "✓ YAML updated")), \
+             patch.object(app, "_apply_csv",  return_value=(True,  "✓ CSV updated")), \
              patch.object(app, "_save_pending"), \
              patch.object(app, "_next_log_path", return_value=log):
             app.submit_all("TEST", pending, "Curator")
@@ -176,8 +202,8 @@ class TestSubmitAllBookkeeping:
         pending = self._pending()
         log = tmp_path / "log.json"
         with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")), \
-             patch.object(app, "_apply_yaml", return_value="❌ YAML not found"), \
-             patch.object(app, "_apply_csv",  return_value="✓ CSV updated"), \
+             patch.object(app, "_apply_yaml", return_value=(False, "❌ YAML not found")), \
+             patch.object(app, "_apply_csv",  return_value=(True,  "✓ CSV updated")), \
              patch.object(app, "_save_pending"), \
              patch.object(app, "_next_log_path", return_value=log):
             app.submit_all("TEST", pending, "Curator")
@@ -187,8 +213,8 @@ class TestSubmitAllBookkeeping:
         pending = self._pending()
         log = tmp_path / "log.json"
         with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")), \
-             patch.object(app, "_apply_yaml", return_value="✓ YAML updated"), \
-             patch.object(app, "_apply_csv",  return_value="✗ Could not write CSV"), \
+             patch.object(app, "_apply_yaml", return_value=(True,  "✓ YAML updated")), \
+             patch.object(app, "_apply_csv",  return_value=(False, "✗ Could not write CSV")), \
              patch.object(app, "_save_pending"), \
              patch.object(app, "_next_log_path", return_value=log):
             app.submit_all("TEST", pending, "Curator")
@@ -198,8 +224,8 @@ class TestSubmitAllBookkeeping:
         pending = self._pending()
         log = tmp_path / "log.json"
         with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")), \
-             patch.object(app, "_apply_yaml", return_value="⚠ differing values — edit YAML directly"), \
-             patch.object(app, "_apply_csv",  return_value="✓ CSV updated"), \
+             patch.object(app, "_apply_yaml", return_value=(False, "⚠ differing values — edit YAML directly")), \
+             patch.object(app, "_apply_csv",  return_value=(True,  "✓ CSV updated")), \
              patch.object(app, "_save_pending"), \
              patch.object(app, "_next_log_path", return_value=log):
             app.submit_all("TEST", pending, "Curator")
@@ -216,7 +242,7 @@ class TestSubmitAllBookkeeping:
             }
         }
         log = tmp_path / "log.json"
-        mock_yaml = MagicMock(return_value="✓ YAML updated")
+        mock_yaml = MagicMock(return_value=(True, "✓ YAML updated"))
         with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")), \
              patch.object(app, "_apply_yaml", mock_yaml), \
              patch.object(app, "_save_pending"), \

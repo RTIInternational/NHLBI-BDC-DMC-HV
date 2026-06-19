@@ -613,33 +613,33 @@ _REL_NON_SELF_RE = re.compile(
 _SUBMIT_BLOCKED_SLOTS = frozenset({"relationship_to_participant"})
 
 
-def _apply_yaml(study: str, yaml_file: str, slot: str, new_curie: str) -> str:
+def _apply_yaml(study: str, yaml_file: str, slot: str, new_curie: str) -> tuple[bool, str]:
     if slot in _SUBMIT_BLOCKED_SLOTS:
-        return (
+        return False, (
             f"⚠ `{slot}` values are set per block in the YAML and were not updated — "
             "review and correct them directly in the YAML file."
         )
     yaml_path = STUDIES[study]["yaml_dir"] / Path(yaml_file).name
     if not yaml_path.exists():
-        return f"❌ YAML not found: `{yaml_file}`"
+        return False, f"❌ YAML not found: `{yaml_file}`"
     text = yaml_path.read_text(encoding="utf-8")
     existing = re.findall(rf"^[ \t]*{re.escape(slot)}:\s*\n[ \t]+value:\s+(\S+)", text, re.MULTILINE)
     if not existing:
-        return f"⚠ No `{slot}: value:` pattern in `{yaml_file}`"
+        return False, f"⚠ No `{slot}: value:` pattern in `{yaml_file}`"
     unique_existing = set(existing)
     if len(unique_existing) > 1:
         vals = ", ".join(f"`{v}`" for v in sorted(unique_existing))
-        return (
+        return False, (
             f"⚠ `{slot}` has {len(existing)} blocks with differing values ({vals}) — "
             "cannot apply uniformly. Edit the YAML file directly."
         )
     pattern = rf"(^[ \t]*{re.escape(slot)}:\s*\n[ \t]+value:\s+)\S+"
-    new_text, n = re.subn(pattern, rf"\g<1>{new_curie}", text, flags=re.MULTILINE)
+    new_text, n = re.subn(pattern, lambda m: m.group(1) + new_curie, text, flags=re.MULTILINE)
     yaml_path.write_text(new_text, encoding="utf-8")
-    return f"✓ YAML `{yaml_file}` [{slot}] → `{new_curie}` ({n} block(s) updated)"
+    return True, f"✓ YAML `{yaml_file}` [{slot}] → `{new_curie}` ({n} block(s) updated)"
 
 
-def _apply_csv(study: str, yaml_file: str, slot: str, new_curie: str) -> str:
+def _apply_csv(study: str, yaml_file: str, slot: str, new_curie: str) -> tuple[bool, str]:
     fieldnames, rows = load_curie_csv(study)
     updated, changed = [], 0
     for row in rows:
@@ -649,7 +649,7 @@ def _apply_csv(study: str, yaml_file: str, slot: str, new_curie: str) -> str:
             changed += 1
         updated.append(row)
     if changed == 0:
-        return f"⚠ No CSV rows match `{yaml_file}` / `{slot}`"
+        return False, f"⚠ No CSV rows match `{yaml_file}` / `{slot}`"
     csv_path = STUDIES[study]["curie_csv"]
     try:
         with open(csv_path, "w", newline="", encoding="utf-8-sig") as f:
@@ -657,17 +657,18 @@ def _apply_csv(study: str, yaml_file: str, slot: str, new_curie: str) -> str:
             w.writeheader()
             w.writerows(updated)
     except OSError as e:
-        return (
+        return False, (
             f"✗ Could not write `{csv_path.name}`: {e}. "
             "Close the file in Excel or any other application and try again."
         )
     load_curie_csv.clear()
-    return f"✓ CSV: {changed} row(s) → `{new_curie}` for `{yaml_file}` [{slot}]"
+    return True, f"✓ CSV: {changed} row(s) → `{new_curie}` for `{yaml_file}` [{slot}]"
 
 
 # ── Batch submit ──────────────────────────────────────────────────────────────
-def submit_all(study: str, pending: dict, curator: str) -> tuple[list[str], Path]:
+def submit_all(study: str, pending: dict, curator: str) -> tuple[list[str], int, Path]:
     results: list[str] = []
+    ok_count: int = 0
     submitted: dict = {}
     for key, val in pending.items():
         new_curie = val.get("change_request", "").strip()
@@ -675,23 +676,25 @@ def submit_all(study: str, pending: dict, curator: str) -> tuple[list[str], Path
             continue
         slot    = val.get("slot", "")
         yf_list = val.get("yaml_files", [])
-        row_res: list[str] = []
+        row_res: list[tuple[bool, str]] = []
         if slot in _SUBMIT_BLOCKED_SLOTS:
-            row_res.append(
+            msg = (
                 f"⚠ `{slot}` values are set per block in the YAML and were not updated — "
                 "review and correct them directly in the YAML file."
             )
-            results.extend(row_res)
+            results.append(msg)
             # Do not mark applied — YAML and CSV are untouched
             continue
         for yf in yf_list:
-            r1 = _apply_yaml(study, yf, slot, new_curie)
-            r2 = _apply_csv(study, yf, slot, new_curie)
-            row_res.extend([r1, r2])
-        results.extend(row_res)
-        if all(r.startswith("✓") for r in row_res):
+            row_res.append(_apply_yaml(study, yf, slot, new_curie))
+            row_res.append(_apply_csv(study, yf, slot, new_curie))
+        msgs = [msg for _, msg in row_res]
+        results.extend(msgs)
+        ok_count += sum(1 for ok, _ in row_res if ok)
+        all_ok = all(ok for ok, _ in row_res)
+        if all_ok:
             val.update({"applied": True, "applied_date": date.today().isoformat(), "applied_by": curator})
-            submitted[key] = {**val, "apply_results": row_res}
+        submitted[key] = {**val, "apply_results": msgs}
 
     _save_pending(pending, study)
 
@@ -706,7 +709,7 @@ def submit_all(study: str, pending: dict, curator: str) -> tuple[list[str], Path
     )
     load_curie_csv.clear()
     load_mapreview_csv.clear()
-    return results, log_path
+    return results, ok_count, log_path
 
 
 # ── Slot / file helpers ───────────────────────────────────────────────────────
@@ -1548,7 +1551,7 @@ def render_submit_tab(study: str, pending: dict) -> None:
 
     if st.button("🚀 Submit all change requests", type="primary", use_container_width=True):
         with st.spinner("Applying changes …"):
-            results, log_path = submit_all(study, pending, curator)
+            results, _ok, log_path = submit_all(study, pending, curator)
             st.session_state[f"pending_{study}"] = pending
         for r in results:
             (st.success if r.startswith("✓") else st.warning if r.startswith("⚠") else st.error)(r)
@@ -2121,9 +2124,8 @@ def main() -> None:
             f"🚀 Submit all ({n_pending})", type="primary", use_container_width=True
         ):
             with st.spinner("Applying …"):
-                results, log_path = submit_all(study, pending, curator_sidebar)
+                results, ok, log_path = submit_all(study, pending, curator_sidebar)
                 st.session_state[pending_key] = pending
-            ok  = sum(1 for r in results if r.startswith("✓"))
             err = len(results) - ok
             st.sidebar.success(f"{ok} applied · {log_path.name}")
             if err:
