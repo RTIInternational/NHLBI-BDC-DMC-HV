@@ -19,7 +19,7 @@ Output:
 import csv
 import re
 from pathlib import Path
-from datetime import date
+from datetime import date, datetime
 
 # ---------------------------------------------------------------------------
 # Paths — resolved at runtime from --study argument
@@ -244,6 +244,7 @@ def _file_summary(yaml_file: str, mapreview: dict[str, list[dict]]) -> dict:
         omop       = r.get("omop_maps_to", "")
         mondo      = r.get("mondo_maps_to", "")
         hpo        = r.get("hpo_maps_to", "")
+        oba        = r.get("oba_maps_to", "")
         var_name   = r["Variable Name"]
         var_desc   = r.get("Variable Description", "")
 
@@ -254,6 +255,8 @@ def _file_summary(yaml_file: str, mapreview: dict[str, list[dict]]) -> dict:
             summary["all_mondo"].add(mondo)
         if hpo:
             summary["all_hpo"].add(hpo)
+        if oba:
+            summary.setdefault("all_oba", set()).add(oba)
         if yaml_match == "mismatch":
             summary["has_mismatch"] = True
         s = summary["slots"].setdefault(slot, {
@@ -263,6 +266,7 @@ def _file_summary(yaml_file: str, mapreview: dict[str, list[dict]]) -> dict:
             "omop":  set(),
             "mondo": set(),
             "hpo":   set(),
+            "oba":   set(),
             "vars":  [],
         })
         s["csv_curies"].add(csv_curie)
@@ -272,6 +276,8 @@ def _file_summary(yaml_file: str, mapreview: dict[str, list[dict]]) -> dict:
             s["mondo"].add(mondo)
         if hpo:
             s["hpo"].add(hpo)
+        if oba:
+            s["oba"].add(oba)
         var_key = (var_name, var_desc)
         if var_key not in [(v[0], v[1]) for v in s["vars"]]:
             s["vars"].append(var_key)
@@ -370,6 +376,7 @@ def _agent_text(sdata: dict, slot: str) -> str:
     omop  = sorted(sdata.get("omop",  set()))
     mondo = sorted(sdata.get("mondo", set()))
     hpo   = sorted(sdata.get("hpo",   set()))
+    oba   = sorted(sdata.get("oba",   set()))
     vars_ = sdata.get("vars", [])
     var_desc = vars_[0][1] if vars_ else ""
     desc_frag = f' ("{var_desc}")' if var_desc else ""
@@ -381,6 +388,8 @@ def _agent_text(sdata: dict, slot: str) -> str:
         parts.append(f"HPO agent → `{', '.join(hpo)}`{desc_frag}.")
     if omop:
         parts.append(f"Measurement/procedure agent → `{', '.join(omop)}`{desc_frag}.")
+    if oba:
+        parts.append(f"OBA agent → `{', '.join(oba)}`{desc_frag}.")
 
     # Flag vocabulary/slot mismatches so reviewers aren't misled
     best_agent = next(iter(mondo or hpo or omop), "")
@@ -619,7 +628,7 @@ def _build_summary_stats(mapreview_path: Path) -> dict:
 
     # entity-type coverage
     et_counts: dict[str, dict] = defaultdict(lambda: {
-        "total": 0, "mondo": 0, "hpo": 0, "omop": 0, "none": 0
+        "total": 0, "mondo": 0, "hpo": 0, "omop": 0, "oba": 0, "none": 0
     })
 
     # no-suggestion substantive rows (not in expected-empty slots)
@@ -669,9 +678,11 @@ def _build_summary_stats(mapreview_path: Path) -> dict:
             has_mondo = bool(row.get("mondo_maps_to", ""))
             has_hpo   = bool(row.get("hpo_maps_to", ""))
             has_omop  = bool(row.get("omop_maps_to", ""))
+            has_oba   = bool(row.get("oba_maps_to", ""))
             if has_mondo: et_counts[et]["mondo"] += 1
             if has_hpo:   et_counts[et]["hpo"]   += 1
             if has_omop:  et_counts[et]["omop"]  += 1
+            if has_oba:   et_counts[et]["oba"]   += 1
             if not (has_mondo or has_hpo or has_omop):
                 et_counts[et]["none"] += 1
                 if slot not in _NO_SUGGESTION_SLOTS and et not in (
@@ -1033,6 +1044,8 @@ def _auto_generate_rows(
 
 
 def main() -> None:
+    start_time = datetime.now()
+    print(f"Started: {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
     print("Loading mapreview CSV ...")
     mapreview = load_mapreview(MAPREVIEW_CSV)
     print(f"  {sum(len(v) for v in mapreview.values())} rows across {len(mapreview)} YAML files.")
@@ -1072,6 +1085,12 @@ def main() -> None:
         suppressed_counts=suppressed_counts,
     )
     print(f"Written: {summary_path}")
+    elapsed = datetime.now() - start_time
+    total_sec = int(elapsed.total_seconds())
+    h, rem = divmod(total_sec, 3600)
+    m, s = divmod(rem, 60)
+    elapsed_str = f"{h}h {m:02d}m {s:02d}s" if h else f"{m}m {s:02d}s"
+    print(f"Finished: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}  (elapsed: {elapsed_str})")
     print("Done.")
 
     from pipeline_status import write_status

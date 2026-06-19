@@ -34,6 +34,7 @@ import csv
 import os
 import re
 import sys
+from datetime import datetime
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
@@ -415,6 +416,9 @@ def main(no_agents: bool = False) -> None:
         get_mondo_id, get_hpo_id, get_omop_concept_id, get_rxnorm_id, get_loinc_id, extract_clinical_term, get_omop_route_id, get_oba_id = _import_agents()  # noqa: E501
         print("Agents loaded.", file=sys.stderr)
 
+    start_time = datetime.now()
+    print(f"Started: {start_time.strftime('%Y-%m-%d %H:%M:%S')}", file=sys.stderr)
+
     # Cache: (var_name, slot, entity_type) → (omop, mondo, entity)
     suggestion_cache: dict[tuple, tuple] = {}
 
@@ -422,6 +426,8 @@ def main(no_agents: bool = False) -> None:
          open(OUTPUT_CSV, "w", newline="", encoding="utf-8-sig") as fout:
 
         reader = csv.DictReader(fin)
+        all_rows = list(reader)
+        total = len(all_rows)
         orig_fields = reader.fieldnames or []
         new_fields = orig_fields + [
             "yaml_curie",
@@ -435,7 +441,7 @@ def main(no_agents: bool = False) -> None:
         writer = csv.DictWriter(fout, fieldnames=new_fields)
         writer.writeheader()
 
-        for i, row in enumerate(reader, start=1):
+        for i, row in enumerate(all_rows, start=1):
             var_name   = row.get("Variable Name", "").strip()
             var_desc   = row.get("Variable Description", "").strip()
             slot       = row.get("Slot", "").strip()
@@ -461,7 +467,7 @@ def main(no_agents: bool = False) -> None:
                     omop_val, mondo_val, hpo_val, oba_val, entity_val = suggestion_cache[cache_key]
                 else:
                     print(
-                        f"  [{i:03d}] {var_name!r} slot={slot} → querying agent...",
+                        f"  [{i}/{total} {i/total:.0%}] {var_name!r} slot={slot} → querying agent...",
                         file=sys.stderr,
                         flush=True,
                     )
@@ -482,7 +488,13 @@ def main(no_agents: bool = False) -> None:
             out_row["maps_to_entity_type"] = entity_val
             writer.writerow(out_row)
 
-    print(f"\nDone. Output written to:\n  {OUTPUT_CSV}", file=sys.stderr)
+    elapsed = datetime.now() - start_time
+    total_sec = int(elapsed.total_seconds())
+    h, rem = divmod(total_sec, 3600)
+    m, s = divmod(rem, 60)
+    elapsed_str = f"{h}h {m:02d}m {s:02d}s" if h else f"{m}m {s:02d}s"
+    print(f"\nFinished: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}  (elapsed: {elapsed_str})", file=sys.stderr)
+    print(f"Done. Output written to:\n  {OUTPUT_CSV}", file=sys.stderr)
 
     try:
         from pipeline_status import write_status
