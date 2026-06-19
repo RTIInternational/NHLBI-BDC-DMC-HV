@@ -623,7 +623,7 @@ def _apply_yaml(study: str, yaml_file: str, slot: str, new_curie: str) -> str:
     if not yaml_path.exists():
         return f"❌ YAML not found: `{yaml_file}`"
     text = yaml_path.read_text(encoding="utf-8")
-    existing = re.findall(rf"\b{re.escape(slot)}:\s*\n[ \t]+value:\s+(\S+)", text)
+    existing = re.findall(rf"^[ \t]*{re.escape(slot)}:\s*\n[ \t]+value:\s+(\S+)", text, re.MULTILINE)
     if not existing:
         return f"⚠ No `{slot}: value:` pattern in `{yaml_file}`"
     unique_existing = set(existing)
@@ -633,8 +633,8 @@ def _apply_yaml(study: str, yaml_file: str, slot: str, new_curie: str) -> str:
             f"⚠ `{slot}` has {len(existing)} blocks with differing values ({vals}) — "
             "cannot apply uniformly. Edit the YAML file directly."
         )
-    pattern = rf"(\b{re.escape(slot)}:\s*\n[ \t]+value:\s+)\S+"
-    new_text, n = re.subn(pattern, rf"\g<1>{new_curie}", text)
+    pattern = rf"(^[ \t]*{re.escape(slot)}:\s*\n[ \t]+value:\s+)\S+"
+    new_text, n = re.subn(pattern, rf"\g<1>{new_curie}", text, flags=re.MULTILINE)
     yaml_path.write_text(new_text, encoding="utf-8")
     return f"✓ YAML `{yaml_file}` [{slot}] → `{new_curie}` ({n} block(s) updated)"
 
