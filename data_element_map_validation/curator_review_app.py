@@ -1769,7 +1769,7 @@ def render_registration_page(study: str) -> None:
                 f"📊 **Semantic summary generated:** `{summary_path.name}` — "
                 "open the **📊 Semantic Review Summary** tab after returning to view it."
             )
-            with st.expander("Preview summary", expanded=True):
+            with st.expander("Preview summary", expanded=False):
                 st.markdown(summary_path.read_text(encoding="utf-8"))
     else:
         st.error(

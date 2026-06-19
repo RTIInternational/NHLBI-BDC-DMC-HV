@@ -189,7 +189,8 @@ def _import_agents():
     from rxnorm_agent import get_omop_concept_id as get_rxnorm_id
     from measurementObs_agent import get_loinc_id
     from meds_route_agent import get_omop_route_id
-    return get_mondo_id, get_hpo_id, get_omop_concept_id, get_rxnorm_id, get_loinc_id, _extract_clinical_term, get_omop_route_id
+    from oba_agent import get_oba_id
+    return get_mondo_id, get_hpo_id, get_omop_concept_id, get_rxnorm_id, get_loinc_id, _extract_clinical_term, get_omop_route_id, get_oba_id
 
 
 # ---------------------------------------------------------------------------
@@ -279,7 +280,8 @@ def _agent_suggestion(
     get_rxnorm_id,
     get_loinc_id,
     extract_clinical_term,
-) -> tuple[str, str, str, str]:
+    get_oba_id,
+) -> tuple[str, str, str, str, str]:
     """Return (omop_maps_to, mondo_maps_to, hpo_maps_to, maps_to_entity_type).
 
     Routing:
@@ -296,6 +298,7 @@ def _agent_suggestion(
     omop_maps_to = ""
     mondo_maps_to = ""
     hpo_maps_to = ""
+    oba_maps_to = ""
     maps_to_entity_type = ""
 
     try:
@@ -324,6 +327,8 @@ def _agent_suggestion(
         ):
             curie = get_loinc_id(query)
             omop_maps_to = curie or ""
+            if slot == "observation_type":
+                oba_maps_to = get_oba_id(query) or ""
             maps_to_entity_type = "Measurement"
 
         elif slot == "procedure_concept":
@@ -365,7 +370,7 @@ def _agent_suggestion(
     except Exception as exc:
         print(f"  [agent error] slot={slot} query={query!r}: {exc}", file=sys.stderr)
 
-    return omop_maps_to, mondo_maps_to, hpo_maps_to, maps_to_entity_type
+    return omop_maps_to, mondo_maps_to, hpo_maps_to, oba_maps_to, maps_to_entity_type
 
 
 # ---------------------------------------------------------------------------
@@ -403,11 +408,11 @@ def main(no_agents: bool = False) -> None:
         sys.exit(1)
 
     if no_agents:
-        get_mondo_id = get_hpo_id = get_omop_concept_id = get_rxnorm_id = get_loinc_id = extract_clinical_term = None
+        get_mondo_id = get_hpo_id = get_omop_concept_id = get_rxnorm_id = get_loinc_id = extract_clinical_term = get_omop_route_id = get_oba_id = None
         print("Running in --no-agents mode: YAML spot-check only.", file=sys.stderr)
     else:
         print("Loading agents ...", file=sys.stderr)
-        get_mondo_id, get_hpo_id, get_omop_concept_id, get_rxnorm_id, get_loinc_id, extract_clinical_term, get_omop_route_id = _import_agents()  # noqa: E501
+        get_mondo_id, get_hpo_id, get_omop_concept_id, get_rxnorm_id, get_loinc_id, extract_clinical_term, get_omop_route_id, get_oba_id = _import_agents()  # noqa: E501
         print("Agents loaded.", file=sys.stderr)
 
     # Cache: (var_name, slot, entity_type) → (omop, mondo, entity)
@@ -424,6 +429,7 @@ def main(no_agents: bool = False) -> None:
             "omop_maps_to",
             "mondo_maps_to",
             "hpo_maps_to",
+            "oba_maps_to",
             "maps_to_entity_type",
         ]
         writer = csv.DictWriter(fout, fieldnames=new_fields)
@@ -448,23 +454,23 @@ def main(no_agents: bool = False) -> None:
 
             # Agent suggestions
             if is_admin or no_agents:
-                omop_val = mondo_val = hpo_val = entity_val = ""
+                omop_val = mondo_val = hpo_val = oba_val = entity_val = ""
             else:
                 cache_key = (var_name, slot, entity_type)
                 if cache_key in suggestion_cache:
-                    omop_val, mondo_val, hpo_val, entity_val = suggestion_cache[cache_key]
+                    omop_val, mondo_val, hpo_val, oba_val, entity_val = suggestion_cache[cache_key]
                 else:
                     print(
                         f"  [{i:03d}] {var_name!r} slot={slot} → querying agent...",
                         file=sys.stderr,
                         flush=True,
                     )
-                    omop_val, mondo_val, hpo_val, entity_val = _agent_suggestion(
+                    omop_val, mondo_val, hpo_val, oba_val, entity_val = _agent_suggestion(
                         slot, entity_type, var_name, var_desc,
                         get_mondo_id, get_hpo_id, get_omop_concept_id,
-                        get_rxnorm_id, get_loinc_id, extract_clinical_term,
+                        get_rxnorm_id, get_loinc_id, extract_clinical_term, get_oba_id,
                     )
-                    suggestion_cache[cache_key] = (omop_val, mondo_val, hpo_val, entity_val)
+                    suggestion_cache[cache_key] = (omop_val, mondo_val, hpo_val, oba_val, entity_val)
 
             out_row = dict(row)
             out_row["yaml_curie"] = yaml_curie_val
@@ -472,6 +478,7 @@ def main(no_agents: bool = False) -> None:
             out_row["omop_maps_to"] = omop_val
             out_row["mondo_maps_to"] = mondo_val
             out_row["hpo_maps_to"] = hpo_val
+            out_row["oba_maps_to"] = oba_val
             out_row["maps_to_entity_type"] = entity_val
             writer.writerow(out_row)
 

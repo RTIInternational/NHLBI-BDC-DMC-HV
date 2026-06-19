@@ -38,7 +38,7 @@ data_element_map_validation/
 
 ### Step 1 — `generate_curie_mapreview.py`
 
-Reads `{STUDY}_curie.csv` (303–1762 rows per study), queries five REST agents per variable slot, performs a live YAML spot-check, and writes `{STUDY}_curie_mapreview.csv` with the following enriched columns:
+Reads `{STUDY}_curie.csv` (303–1762 rows per study), queries agents per variable slot, performs a live YAML spot-check, and writes `{STUDY}_curie_mapreview.csv` with the following enriched columns. Five agents make live REST API calls (MONDO, HPO, OMOP, RxNorm, LOINC); one agent (`meds_route_agent`) resolves `route_concept` offline from a curated CSV table with no API call:
 
 | Column | Source |
 |:---|:---|
@@ -192,12 +192,16 @@ Add a row to `bdc_study_input/BDC_registered_study_for_semantic_review.csv` with
 2. Re-run the semantic review for all affected studies
 3. Document the rule in `docs/mapping_validation_preferences.md`
 
-### Add a new REST agent
+### Add a new agent
 
+**REST agent** (queries an external API):
 1. Add a query function in `generate_curie_mapreview.py` following the pattern of `_query_mondo`, `_query_hpo`, `_query_omop`
 2. Wire the result into the mapreview CSV columns
 3. Update `_agent_text()` in `generate_semantic_review.py` to include the new column in the validator review text
 4. Update `_build_summary_stats()` to count coverage for the new agent
+
+**Offline agent** (static lookup table, no API):
+Follow the pattern of `scripts/meds_route_agent.py` — load a reference CSV from `bdc_study_input/`, expose a `get_omop_*_id(text)` function, import it in `_import_agents()` in `generate_curie_mapreview.py`, and wire it into the relevant slot block. To add new entries, update the reference CSV — no code change needed.
 
 ---
 

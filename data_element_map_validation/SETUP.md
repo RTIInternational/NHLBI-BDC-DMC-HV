@@ -23,7 +23,8 @@ data_element_map_validation/
 │   ├── rxnorm_agent.py                    # RxNorm drug CURIE lookup
 │   ├── measurementObs_agent.py            # LOINC measurement CURIE lookup
 │   ├── uberon_agent.py                    # UBERON anatomy CURIE lookup
-│   └── omop_visit_agent.py                # OMOP visit concept lookup
+│   ├── omop_visit_agent.py                # OMOP visit concept lookup
+│   └── meds_route_agent.py                # Route concept lookup (offline, no API)
 ├── bdc_study_input/
 │   ├── BDC_registered_study_for_semantic_review.csv     # Study registry
 │   └── {STUDY}_curie.csv                                # Per-study input (one per study)
@@ -42,9 +43,17 @@ YAML transform files must exist at:
 ## Running the App
 
 In a terminal from the `data_element_map_validation/` directory:
+
+**Recommended — no venv activation needed:**
 ```bash
 uv run streamlit run curator_review_app.py --server.port 8501
 ```
+
+**Alternative — using Python module syntax (venv must be active):**
+```bash
+python -m streamlit run curator_review_app.py --server.port 8501
+```
+
 Then open **http://localhost:8501** in your browser.
 
 > The terminal window must remain open while using the app. Open a separate terminal for other commands.

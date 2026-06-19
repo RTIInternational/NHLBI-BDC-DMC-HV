@@ -34,7 +34,8 @@
 
 **Process**
 - `generate_curie_mapreview.py`
-- Calls MONDO / HPO / OMOP / RxNorm / LOINC agents
+- Calls MONDO / HPO / OMOP / RxNorm / LOINC / meds_route agents
+  - `meds_route_agent` resolves `route_concept` offline from `bdc_study_input/omop_route_concepts.csv` (no API call); "respiratory tract" → `OMOP:4186832` (Endotracheopulmonary); ambiguous terms (e.g. "inhaled") left blank for curator to decide
 
 **Output**
 - `{study}_curie_mapreview.csv`
@@ -137,7 +138,7 @@ Step 1 can be run with `--no-agents` for a fast YAML-check-only pass when you on
 
 ### CI validates
 - All ingest YAMLs pass linkml-map schema validation
-- No stale `poetry.lock`
+- No stale `uv.lock`
 
 ---
 

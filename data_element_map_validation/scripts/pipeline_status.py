@@ -32,6 +32,49 @@ def _stat(path: Path) -> dict | None:
     return None
 
 
+def _count_md_table_rows(lines: list[str]) -> int:
+    """Count data rows in a markdown table (excluding header and separator lines)."""
+    data_rows = 0
+    for line in lines:
+        stripped = line.strip()
+        if not stripped.startswith("|"):
+            continue
+        inner = stripped.strip("|")
+        if all(c in "-: |" for c in inner):
+            continue
+        data_rows += 1
+    return max(0, data_rows - 1)
+
+
+def _semantic_review_stat(path: Path | None) -> dict | None:
+    if not path or not path.exists():
+        return None
+    mtime = datetime.fromtimestamp(path.stat().st_mtime)
+
+    findings_lines: list[str] = []
+    questions_lines: list[str] = []
+    current: str | None = None
+
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if line.startswith("## ") and "Confirmed Findings" in line:
+            current = "findings"
+        elif line.startswith("## ") and ("Questions" in line or "Anne Review" in line):
+            current = "questions"
+        elif line.startswith("## "):
+            current = None
+        elif current == "findings":
+            findings_lines.append(line)
+        elif current == "questions":
+            questions_lines.append(line)
+
+    return {
+        "file":      path.name,
+        "completed": mtime.strftime("%Y-%m-%dT%H:%M:%S"),
+        "findings":  _count_md_table_rows(findings_lines),
+        "questions": _count_md_table_rows(questions_lines),
+    }
+
+
 def _mapreview_stat(path: Path) -> dict | None:
     if not path.exists():
         return None
@@ -82,7 +125,7 @@ def build_status() -> dict:
                 "input_version": prev.get("input_version", 1),
                 "release":       prev.get("release", None),
                 "mapreview":       _mapreview_stat(mapreview_csv),
-                "semantic_review": _stat(sem_review_md) if sem_review_md else None,
+                "semantic_review": _semantic_review_stat(sem_review_md),
                 "summary":         _stat(summary_md) if summary_md else None,
             }
 
