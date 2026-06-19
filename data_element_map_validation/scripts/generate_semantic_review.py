@@ -986,15 +986,16 @@ def _auto_generate_rows(
             mondo       = sorted(sdata.get("mondo", set()))
             hpo         = sorted(sdata.get("hpo",   set()))
             omop        = sorted(sdata.get("omop",  set()))
+            oba         = sorted(sdata.get("oba",   set()))
             agent_curie = next(iter(mondo or hpo or omop), "")
             vars_       = sdata.get("vars", [])
             var_desc    = vars_[0][1] if vars_ else ""
+            desc_frag   = f' ("{var_desc[:80]}")' if var_desc else ""
 
             if agent_curie and csv_curies and agent_curie not in csv_curies:
                 vocab_note = _vocab_slot_mismatch_note(agent_curie, set(csv_curies), slot)
                 if not vocab_note:
                     csv_str   = ", ".join(f"`{c}`" for c in csv_curies)
-                    desc_frag = f' ("{var_desc[:80]}")' if var_desc else ""
                     source    = ("MONDO" if mondo else "HPO" if hpo else "OMOP/LOINC")
                     confirmed.append({
                         "priority":            "High",
@@ -1017,6 +1018,25 @@ def _auto_generate_rows(
                     })
                 else:
                     suppressed[slot] = suppressed.get(slot, 0) + 1
+
+            if oba:
+                oba_str = ", ".join(f"`{o}`" for o in oba)
+                confirmed.append({
+                    "priority":            "Medium",
+                    "file":               yaml_file,
+                    "final issue":        (
+                        f"OBA agent found biological attribute term(s) for `{slot}`{desc_frag}: {oba_str}"
+                    ),
+                    "evidence to confirm": (
+                        f"OBA (Ontology of Biological Attributes) agent returned {oba_str}."
+                    ),
+                    "recommended action":  (
+                        f"Consider adding OBA annotation {oba_str} for `{slot}`."
+                    ),
+                    "confidence":  "Medium",
+                    "reviewer":    "Auto-generated",
+                    "source alignment": "",
+                })
 
             if yaml_match == "mismatch":
                 csv_str = ", ".join(f"`{c}`" for c in csv_curies)
