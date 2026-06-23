@@ -1,0 +1,43 @@
+{
+  "submitted_date": "2026-06-15",
+  "study": "HCHS",
+  "curator": "Curator",
+  "changes": {
+    "HCHS::confirmed::HCHS-ingest/tak_nstat_med.yaml": {
+      "study": "HCHS",
+      "change_request": "ATC:C10A",
+      "original_curie": "ATC:C10A",
+      "slot": "drug_concept",
+      "yaml_files": [
+        "HCHS-ingest/tak_nstat_med.yaml"
+      ],
+      "notes": "This suggests that the source variable is not actually recording a medication, but rather a derived indicator that combines laboratory values and medication information.\nCould we get a clarification on this data element?\n\nIs this variable saying \"the participant is taking a non-statin medication\", or is it saying \"based on labs and medication history, we infer they are on lipid-lowering therapy\"?\n\n",
+      "applied": true,
+      "saved_date": "2026-06-15",
+      "applied_date": "2026-06-15",
+      "applied_by": "Curator",
+      "apply_results": [
+        "⚠ No `drug_concept: value:` pattern in `HCHS-ingest/tak_nstat_med.yaml`",
+        "✓ CSV: 4 row(s) → `ATC:C10A` for `HCHS-ingest/tak_nstat_med.yaml` [drug_concept]"
+      ]
+    },
+    "HCHS::confirmed::tak_aceinhib.yaml": {
+      "study": "HCHS",
+      "change_request": "ATC:C09A",
+      "original_curie": "ATC:C09A",
+      "slot": "drug_concept",
+      "yaml_files": [
+        "tak_aceinhib.yaml"
+      ],
+      "notes": "",
+      "applied": true,
+      "saved_date": "2026-06-15",
+      "applied_date": "2026-06-15",
+      "applied_by": "Curator",
+      "apply_results": [
+        "⚠ No `drug_concept: value:` pattern in `tak_aceinhib.yaml`",
+        "✓ CSV: 2 row(s) → `ATC:C09A` for `tak_aceinhib.yaml` [drug_concept]"
+      ]
+    }
+  }
+}
