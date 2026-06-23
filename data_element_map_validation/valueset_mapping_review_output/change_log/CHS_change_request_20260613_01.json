@@ -1,0 +1,20 @@
+{
+  "submitted_date": "2026-06-13",
+  "study": "CHS",
+  "curator": "Curator",
+  "changes": {
+    "CHS::confirmed::`taking_non_statin_medication.yaml`": {
+      "study": "CHS",
+      "change_request": "ATC:C10AB",
+      "original_curie": "",
+      "slot": "drug_concept ",
+      "yaml_files": [],
+      "notes": "Note fibrates (C10AB) are not statins, if a \"lipid-lowering medication\" variable gets mapped generically, make sure fibrates land on C10AB.\nATC is the classification layer, so C10AB is the right single-concept target for a fibrate class concept, and it's the ancestor of the RxNorm fibrate ingredients (gemfibrozil, fenofibrate…) for an actual drug exposure — map the exposure to RxNorm and let C10AB serve as the rollup.",
+      "applied": true,
+      "saved_date": "2026-06-13",
+      "applied_date": "2026-06-13",
+      "applied_by": "Curator",
+      "apply_results": []
+    }
+  }
+}
