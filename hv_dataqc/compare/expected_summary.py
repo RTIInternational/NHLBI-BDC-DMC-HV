@@ -15,8 +15,6 @@ from typing import Any
 from hv_dataqc.compare.helpers import (
     _canonical_phv_id,
     _distribution_count_map,
-    _NULL_SENTINEL_CODES,
-    _is_null_sentinel_code,
     _normalize_code,
 )
 from hv_dataqc.hv_dataqc_common import normalize_category_key
