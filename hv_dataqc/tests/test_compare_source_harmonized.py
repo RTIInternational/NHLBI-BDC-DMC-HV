@@ -69,7 +69,7 @@ from hv_dataqc.compare.crosswalk import (  # noqa: E402
     _build_variables_by_name,
     _pick_single_pht_summary,
 )
-from hv_dataqc.compare.checks.visit_n import _synthesize_source_visit_counts  # noqa: E402
+from hv_dataqc.compare.checks.visit_n import _synthesize_source_visit_counts, _build_visit_label_crosswalk  # noqa: E402
 from hv_dataqc.extract_harmonized.extract_harmonized_summaries import (  # noqa: E402
     merge_variable_summaries,
     process_measurements,
@@ -1066,6 +1066,77 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         harmonized = {"rows_per_visit": {"uuid:VISIT": 10}}
 
         results = check_c8_visit_distribution(source, harmonized)
+
+        self.assertEqual(results[0].status, "WARN")
+        self.assertEqual(results[0].detail["comparison_confidence"], "unsupported")
+
+    def test_c8_crosswalk_resolves_string_visit_codes_to_canonical_labels(self) -> None:
+        """Column-based cohorts (SPIROMICS, COPDGene): raw TSV visit codes translated
+        via visit.yaml case() to canonical labels; C8 should PASS per-visit, not WARN."""
+        visit_yaml = """
+- class_derivations:
+    Visit:
+      populated_from: pht000001
+      slot_derivations:
+        name:
+          expr: "case(({phv000001} == 'V1', 'Study Visit 1'), ({phv000001} == 'V2', 'Study Visit 2'), ({phv000001} == 'V3', 'Study Visit 3'))"
+"""
+        source = {"rows_per_visit": {"V1": 100, "V2": 200, "V3": 150}}
+        harmonized = {"rows_per_visit": {"Study Visit 1": 100, "Study Visit 2": 200, "Study Visit 3": 150}}
+
+        with tempfile.TemporaryDirectory() as tmp:
+            yaml_dir = Path(tmp)
+            (yaml_dir / "visit.yaml").write_text(visit_yaml, encoding="utf-8")
+            results = check_c8_visit_distribution(source, harmonized, yaml_dir=yaml_dir)
+
+        statuses = {r.variable: r.status for r in results}
+        self.assertEqual(statuses.get("visit_Study Visit 1"), "PASS")
+        self.assertEqual(statuses.get("visit_Study Visit 2"), "PASS")
+        self.assertEqual(statuses.get("visit_Study Visit 3"), "PASS")
+        self.assertNotIn("_visits", statuses)
+
+    def test_c8_crosswalk_resolves_integer_visit_codes_to_canonical_labels(self) -> None:
+        """Integer-coded visit discriminators (e.g. FHS-style): crosswalk handles
+        numeric comparisons in case() expression."""
+        visit_yaml = """
+- class_derivations:
+    Visit:
+      populated_from: pht000002
+      slot_derivations:
+        name:
+          expr: "case(({phv000002} == 0, 'Cohort Baseline'), ({phv000002} == 1, 'Cohort Exam 2'))"
+"""
+        source = {"rows_per_visit": {"0": 500, "1": 480}}
+        harmonized = {"rows_per_visit": {"Cohort Baseline": 500, "Cohort Exam 2": 480}}
+
+        with tempfile.TemporaryDirectory() as tmp:
+            yaml_dir = Path(tmp)
+            (yaml_dir / "visit.yaml").write_text(visit_yaml, encoding="utf-8")
+            results = check_c8_visit_distribution(source, harmonized, yaml_dir=yaml_dir)
+
+        statuses = {r.variable: r.status for r in results}
+        self.assertEqual(statuses.get("visit_Cohort Baseline"), "PASS")
+        self.assertEqual(statuses.get("visit_Cohort Exam 2"), "PASS")
+        self.assertNotIn("_visits", statuses)
+
+    def test_c8_crosswalk_falls_back_to_warn_when_crosswalk_cannot_resolve(self) -> None:
+        """When visit.yaml has no case() expression that maps the source labels,
+        C8 still falls back to the total-count WARN."""
+        visit_yaml = """
+- class_derivations:
+    Visit:
+      populated_from: pht000003
+      slot_derivations:
+        name:
+          value: "Fixed Visit Label"
+"""
+        source = {"rows_per_visit": {"RAW_CODE": 100}}
+        harmonized = {"rows_per_visit": {"Other Visit": 100}}
+
+        with tempfile.TemporaryDirectory() as tmp:
+            yaml_dir = Path(tmp)
+            (yaml_dir / "visit.yaml").write_text(visit_yaml, encoding="utf-8")
+            results = check_c8_visit_distribution(source, harmonized, yaml_dir=yaml_dir)
 
         self.assertEqual(results[0].status, "WARN")
         self.assertEqual(results[0].detail["comparison_confidence"], "unsupported")

@@ -7,11 +7,17 @@ total_rows_by_pht + visit.yaml mappings.
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import yaml
 
 from hv_dataqc.compare._common import CheckResult, fmt_n as _n
+from hv_dataqc.compare.expected_summary import (
+    _case_branches,
+    _PHV_EQ_RE,
+    _strip_expr_literal,
+)
 
 
 def _synthesize_source_visit_counts(
@@ -96,6 +102,57 @@ def _synthesize_source_visit_counts(
     return synthesized, uncovered, unsupported
 
 
+def _build_visit_label_crosswalk(yaml_dir: Path) -> dict[str, str]:
+    """Build a {raw_visit_label: canonical_label} crosswalk from visit.yaml name: expr:.
+
+    Column-based cohorts (e.g. SPIROMICS, COPDGene) store a visit discriminator
+    column in their source TSV.  The source extractor reads the raw coded values
+    (e.g. ``'VISIT_1'``, ``'P1'``, ``0``) directly into ``rows_per_visit``,
+    while the harmonized output uses the canonical labels produced by the
+    ``case()`` expression in ``visit.yaml`` (e.g. ``'SPIROMICS Visit 1'``,
+    ``'COPDGene P1'``, ``'FHS ORIGINAL'``).
+
+    This function parses every ``name: expr: case(...)`` expression in
+    ``visit.yaml`` and returns a mapping of raw value → canonical label so
+    C8 can re-key source visit counts before comparing.
+
+    Handles both string comparisons (``{phv} == 'VISIT_1'``) and integer
+    comparisons (``{phv} == 0``).  Integer raw values are stored as their
+    string representations to match JSON/dict key conventions.
+    """
+    visit_yaml = yaml_dir / "visit.yaml"
+    if not visit_yaml.exists():
+        return {}
+    try:
+        docs = list(yaml.safe_load_all(visit_yaml.read_text(encoding="utf-8")))
+    except yaml.YAMLError:
+        return {}
+
+    crosswalk: dict[str, str] = {}
+    for doc in docs:
+        if not isinstance(doc, list):
+            continue
+        for block in doc:
+            if not isinstance(block, dict):
+                continue
+            cd = block.get("class_derivations", {})
+            visit_def = cd.get("Visit")
+            if not visit_def:
+                continue
+            slot_defs = visit_def.get("slot_derivations", {}) or {}
+            name_slot = slot_defs.get("name", {}) or {}
+            expr = name_slot.get("expr", "")
+            if not expr or "case" not in expr:
+                continue
+            for condition, canonical in _case_branches(expr):
+                m = _PHV_EQ_RE.search(condition)
+                if m:
+                    raw_val = _strip_expr_literal(m.group("value"))
+                    if raw_val not in crosswalk:
+                        crosswalk[raw_val] = canonical
+    return crosswalk
+
+
 def check_c8_visit_distribution(
     source: dict, harmonized: dict,
     warn_lo_ratio: float = 0.95, warn_hi_ratio: float = 1.05,
@@ -142,6 +199,25 @@ def check_c8_visit_distribution(
 
     src_keys = set(src_visits) - {"_MISSING"}
     harmonized_keys = set(harmonized_visits) - {"_MISSING"}
+
+    # For column-based cohorts (SPIROMICS, COPDGene, …): when source rows_per_visit
+    # was populated directly from the TSV visit column, the raw coded values
+    # (e.g. 'VISIT_1', 'P1', 0) will not match the canonical labels in harmonized
+    # (e.g. 'SPIROMICS Visit 1', 'COPDGene P1', 'FHS ORIGINAL').  Attempt to
+    # resolve this by translating source keys via the case() expression in
+    # visit.yaml before falling back to total-count comparison.
+    if src_keys and harmonized_keys and not (src_keys & harmonized_keys) and yaml_dir and not synthesized:
+        crosswalk = _build_visit_label_crosswalk(yaml_dir)
+        if crosswalk:
+            rekeyed: dict[str, int] = {}
+            for lbl, n in src_visits.items():
+                canonical = crosswalk.get(lbl, lbl)
+                rekeyed[canonical] = rekeyed.get(canonical, 0) + int(n)
+            rekeyed_keys = set(rekeyed) - {"_MISSING"}
+            if rekeyed_keys & harmonized_keys:
+                src_visits = rekeyed
+                src_keys = rekeyed_keys
+                src_label = "source (visit labels translated via visit.yaml case() crosswalk)"
 
     # Namespace mismatch fallback
     if src_keys and harmonized_keys and not (src_keys & harmonized_keys):
