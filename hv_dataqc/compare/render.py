@@ -168,11 +168,26 @@ def generate_markdown_report(
         if not breakdown and h_n_total is None:
             return sub
         if breakdown:
+            has_phv = any(row.get("phv") for row in breakdown)
+            has_pht = any(row.get("pht") for row in breakdown)
             sub.append("")
-            sub.append("  | PHT | Source n\\_valid |")
-            sub.append("  |-----|---------------:|")
-            for row in breakdown:
-                sub.append(f"  | {row['pht']} | {row['source_n_valid']:,} |")
+            if has_phv and has_pht:
+                sub.append("  | PHV | PHT | Block src n\\_valid |")
+                sub.append("  |-----|-----|-------------------:|")
+                for row in breakdown:
+                    sub.append(
+                        f"  | {row.get('phv', '')} | {row.get('pht', '')} | {row['source_n_valid']:,} |"
+                    )
+            elif has_phv:
+                sub.append("  | PHV | Block src n\\_valid |")
+                sub.append("  |-----|-------------------:|")
+                for row in breakdown:
+                    sub.append(f"  | {row.get('phv', '')} | {row['source_n_valid']:,} |")
+            else:
+                sub.append("  | PHT | Block src n\\_valid |")
+                sub.append("  |-----|-------------------:|")
+                for row in breakdown:
+                    sub.append(f"  | {row.get('pht', '')} | {row['source_n_valid']:,} |")
         if h_n_total is not None:
             harmonized_n = r.detail.get("harmonized_n", 0)
             sub.append(

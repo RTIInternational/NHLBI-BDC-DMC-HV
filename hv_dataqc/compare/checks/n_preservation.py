@@ -159,9 +159,13 @@ def check_c2_n_loss(
     # contributing table's source n_valid without requiring external scripts.
     if per_pht_src:
         pht_rows = [
-            {"pht": p["_pht"], "source_n_valid": p.get("n_valid", 0)}
+            {
+                "phv": p.get("_phv", ""),
+                "pht": p.get("_pht", ""),
+                "source_n_valid": p.get("n_valid", 0),
+            }
             for p in per_pht_src
-            if p.get("_pht")
+            if p.get("_pht") or p.get("_phv")
         ]
         if len(pht_rows) > 1:
             detail_base["per_pht_src_breakdown"] = pht_rows

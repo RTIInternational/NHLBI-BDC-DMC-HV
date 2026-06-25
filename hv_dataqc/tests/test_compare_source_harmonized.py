@@ -3341,12 +3341,12 @@ class C2PerPhtBreakdownTests(unittest.TestCase):
     """Tests for C2 per-PHT source breakdown and harmonized n_total split (#662)."""
 
     def test_c2_fail_includes_per_pht_breakdown_in_detail(self) -> None:
-        """check_c2_n_loss populates per_pht_src_breakdown when given _pht-stamped data."""
+        """check_c2_n_loss populates per_pht_src_breakdown when given _pht/_phv-stamped data."""
         src_var = {"n_valid": 10000, "type": "continuous"}
         harmonized_var = {"n_valid": 9000, "n_total": 9000}
         per_pht = [
-            {"_pht": "pht000001", "n_valid": 6000},
-            {"_pht": "pht000002", "n_valid": 4000},
+            {"_pht": "pht000001", "_phv": "phv00000002", "n_valid": 6000},
+            {"_pht": "pht000002", "_phv": "phv00000003", "n_valid": 4000},
         ]
         result = check_c2_n_loss(
             src_var, harmonized_var, "weight",
@@ -3356,8 +3356,8 @@ class C2PerPhtBreakdownTests(unittest.TestCase):
         self.assertEqual(result.status, "FAIL")
         breakdown = result.detail.get("per_pht_src_breakdown", [])
         self.assertEqual(len(breakdown), 2)
-        self.assertEqual(breakdown[0], {"pht": "pht000001", "source_n_valid": 6000})
-        self.assertEqual(breakdown[1], {"pht": "pht000002", "source_n_valid": 4000})
+        self.assertEqual(breakdown[0], {"phv": "phv00000002", "pht": "pht000001", "source_n_valid": 6000})
+        self.assertEqual(breakdown[1], {"phv": "phv00000003", "pht": "pht000002", "source_n_valid": 4000})
 
     def test_c2_single_pht_no_breakdown(self) -> None:
         """check_c2_n_loss does not add breakdown when only one PHT is present."""
@@ -3387,16 +3387,30 @@ class C2PerPhtBreakdownTests(unittest.TestCase):
         self.assertNotIn("harmonized_n_total", result.detail)
 
     def test_c2_per_pht_breakdown_entries_without_pht_key_are_skipped(self) -> None:
-        """Per-PHT summaries lacking _pht are silently skipped in the breakdown."""
+        """Per-PHT summaries lacking both _pht and _phv are silently skipped."""
         src_var = {"n_valid": 1000, "type": "continuous"}
         harmonized_var = {"n_valid": 900, "n_total": 900}
         per_pht = [
-            {"n_valid": 600},          # no _pht key — should be ignored
-            {"_pht": "pht000002", "n_valid": 400},
+            {"n_valid": 600},          # no _pht or _phv key — should be ignored
+            {"_phv": "phv00000002", "n_valid": 400},  # only _phv, no _pht — still included
         ]
         result = check_c2_n_loss(src_var, harmonized_var, "weight", per_pht_src=per_pht)
-        # Only one pht row survives → no breakdown (need >1 to trigger)
+        # One entry survives (_phv present) → only 1 row, need >1 to trigger table
         self.assertNotIn("per_pht_src_breakdown", result.detail)
+
+    def test_c2_phv_only_entries_can_trigger_breakdown(self) -> None:
+        """Entries with _phv but no _pht still appear in the breakdown when len > 1."""
+        src_var = {"n_valid": 1000, "type": "continuous"}
+        harmonized_var = {"n_valid": 900, "n_total": 900}
+        per_pht = [
+            {"_phv": "phv00000002", "n_valid": 600},
+            {"_phv": "phv00000003", "n_valid": 400},
+        ]
+        result = check_c2_n_loss(src_var, harmonized_var, "weight", per_pht_src=per_pht)
+        breakdown = result.detail.get("per_pht_src_breakdown", [])
+        self.assertEqual(len(breakdown), 2)
+        self.assertEqual(breakdown[0]["phv"], "phv00000002")
+        self.assertEqual(breakdown[1]["phv"], "phv00000003")
 
 
 if __name__ == "__main__":

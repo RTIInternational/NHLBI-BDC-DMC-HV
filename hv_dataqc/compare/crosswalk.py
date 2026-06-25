@@ -356,6 +356,8 @@ def build_variable_crosswalk(
                 entry["_source_summary"] = static_summary
                 if static_pht:
                     static_summary.setdefault("_pht", static_pht)
+                if phv_id:
+                    static_summary.setdefault("_phv", phv_id)
                 per_pht_summaries.append(static_summary)
                 if static_pht and static_pht not in source_phts:
                     source_phts.append(static_pht)
@@ -400,6 +402,8 @@ def build_variable_crosswalk(
                 stamped = dict(resolved_summary)
                 if resolved_pht:
                     stamped.setdefault("_pht", resolved_pht)
+                if phv_id:
+                    stamped["_phv"] = phv_id
                 per_pht_summaries.append(stamped)
                 if resolved_pht and resolved_pht not in source_phts:
                     source_phts.append(resolved_pht)
