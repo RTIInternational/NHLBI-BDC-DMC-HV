@@ -20,9 +20,19 @@
                   body_position:
                     value: SITTING_POSITION
                   method_type:
-                    value: Post-bronchodilator, spirometry
+                    value: spirometry
                   age_at_observation:
                     expr: '{phv00528706} * 365'
+                  context:
+                    object_derivations:
+                    - class_derivations:
+                        Context:
+                          activity:
+                            object_derivations:
+                            - class_derivations:
+                                Activity:
+                                  activity_type: BRONCHODILATOR_MEDICATION_USE
+                          relative_timing: AFTER                    
                   value_quantity:
                     object_derivations:
                     - class_derivations:
@@ -42,9 +52,19 @@
                   body_position:
                     value: SITTING_POSITION
                   method_type:
-                    value: Post-bronchodilator, spirometry
+                    value: spirometry
                   age_at_observation:
                     expr: '{phv00528706} * 365'
+                  context:
+                    object_derivations:
+                    - class_derivations:
+                        Context:
+                          activity:
+                            object_derivations:
+                            - class_derivations:
+                                Activity:
+                                  activity_type: BRONCHODILATOR_MEDICATION_USE
+                          relative_timing: AFTER                    
                   value_quantity:
                     object_derivations:
                     - class_derivations:
@@ -64,9 +84,19 @@
                   body_position:
                     value: SITTING_POSITION
                   method_type:
-                    value: Post-bronchodilator
+                    value: calculated
                   age_at_observation:
                     expr: '{phv00528706} * 365'
+                  context:
+                    object_derivations:
+                    - class_derivations:
+                        Context:
+                          activity:
+                            object_derivations:
+                            - class_derivations:
+                                Activity:
+                                  activity_type: BRONCHODILATOR_MEDICATION_USE
+                          relative_timing: AFTER                    
                   value_quantity:
                     object_derivations:
                     - class_derivations:
@@ -74,7 +104,7 @@
                           populated_from: pht013308
                           slot_derivations:
                             value_decimal:
-                              populated_from: phv00528854
+                              expr: '{phv00528854} * 100'
                             unit:
                               value: '%'
           - class_derivations:
@@ -87,6 +117,8 @@
                     value: SITTING_POSITION
                   age_at_observation:
                     expr: '{phv00528706} * 365'
+                  method_type:
+                    value: calculated
                   value_quantity:
                     object_derivations:
                     - class_derivations:
@@ -107,6 +139,8 @@
                     value: SITTING_POSITION
                   age_at_observation:
                     expr: '{phv00528706} * 365'
+                  method_type:
+                    value: calculated
                   value_quantity:
                     object_derivations:
                     - class_derivations:
@@ -127,6 +161,8 @@
                     value: SITTING_POSITION
                   age_at_observation:
                     expr: '{phv00528706} * 365'
+                  method_type:
+                    value: calculated
                   value_quantity:
                     object_derivations:
                     - class_derivations:
@@ -146,9 +182,19 @@
                   body_position:
                     value: SITTING_POSITION
                   method_type:
-                    value: Post-bronchodilator
+                    value: calculated
                   age_at_observation:
                     expr: '{phv00528706} * 365'
+                  context:
+                    object_derivations:
+                    - class_derivations:
+                        Context:
+                          activity:
+                            object_derivations:
+                            - class_derivations:
+                                Activity:
+                                  activity_type: BRONCHODILATOR_MEDICATION_USE
+                          relative_timing: AFTER                    
                   value_quantity:
                     object_derivations:
                     - class_derivations:
@@ -168,9 +214,19 @@
                   body_position:
                     value: SITTING_POSITION
                   method_type:
-                    value: Post-bronchodilator
+                    value: calculated
                   age_at_observation:
                     expr: '{phv00528706} * 365'
+                  context:
+                    object_derivations:
+                    - class_derivations:
+                        Context:
+                          activity:
+                            object_derivations:
+                            - class_derivations:
+                                Activity:
+                                  activity_type: BRONCHODILATOR_MEDICATION_USE
+                          relative_timing: AFTER                    
                   value_quantity:
                     object_derivations:
                     - class_derivations:
@@ -190,9 +246,19 @@
                   body_position:
                     value: SITTING_POSITION
                   method_type:
-                    value: Post-bronchodilator
+                    value: calculated
                   age_at_observation:
                     expr: '{phv00528706} * 365'
+                  context:
+                    object_derivations:
+                    - class_derivations:
+                        Context:
+                          activity:
+                            object_derivations:
+                            - class_derivations:
+                                Activity:
+                                  activity_type: BRONCHODILATOR_MEDICATION_USE
+                          relative_timing: AFTER                    
                   value_quantity:
                     object_derivations:
                     - class_derivations:

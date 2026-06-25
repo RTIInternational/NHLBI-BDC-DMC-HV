@@ -82,9 +82,9 @@
                           populated_from: pht001112
                           slot_derivations:
                             value_decimal:
-                              populated_from: phv00083482
+                              expr: '{phv00083482} * 100'
                             unit:
-                              value: '{ratio}'
+                              value: '%'
                               range: string
           - class_derivations:
               MeasurementObservation:
@@ -99,7 +99,7 @@
                     value: "SITTING_POSITION"
                     range: string
                   method_type:
-                    value: "spirometry"
+                    value: "calculated"
                     range: string
                   value_quantity:
                     object_derivations:
@@ -125,7 +125,7 @@
                     value: "SITTING_POSITION"
                     range: string
                   method_type:
-                    value: "spirometry"
+                    value: "calculated"
                     range: string
                   value_quantity:
                     object_derivations:
@@ -151,7 +151,7 @@
                     value: "SITTING_POSITION"
                     range: string
                   method_type:
-                    value: "spirometry"
+                    value: "calculated"
                     range: string
                   value_quantity:
                     object_derivations:
@@ -239,7 +239,7 @@
                     value: "SITTING_POSITION"
                     range: string
                   method_type:
-                    value: "spirometry"
+                    value: "calculated"
                     range: string
                   value_quantity:
                     object_derivations:
@@ -248,9 +248,9 @@
                           populated_from: pht001114
                           slot_derivations:
                             value_decimal:
-                              populated_from: phv00083717
+                              expr: '{phv00083717} * 100'
                             unit:
-                              value: '{ratio}'
+                              value: '%'
                               range: string
           - class_derivations:
               MeasurementObservation:
@@ -265,7 +265,7 @@
                     value: "SITTING_POSITION"
                     range: string
                   method_type:
-                    value: "spirometry"
+                    value: "calculated"
                     range: string
                   value_quantity:
                     object_derivations:
@@ -291,7 +291,7 @@
                     value: "SITTING_POSITION"
                     range: string
                   method_type:
-                    value: "spirometry"
+                    value: "calculated"
                     range: string
                   value_quantity:
                     object_derivations:
@@ -317,7 +317,7 @@
                     value: "SITTING_POSITION"
                     range: string
                   method_type:
-                    value: "spirometry"
+                    value: "calculated"
                     range: string
                   value_quantity:
                     object_derivations:
@@ -402,8 +402,7 @@
                   age_at_observation:
                     expr: '{phv00087678} * 365'
                   method_type:
-                    value: LOWER LIMIT OF NORMAL
-                    range: string
+                    value: calculated
                   value_quantity:
                     object_derivations:
                     - class_derivations:
@@ -411,42 +410,21 @@
                           populated_from: pht001122
                           slot_derivations:
                             value_decimal:
-                              expr: '{phv00087687} * 0.01'
+                              expr: '{phv00087708} * 100'
                             unit:
-                              value: '{ratio}'
+                              value: '%'
                               range: string
           - class_derivations:
               MeasurementObservation:
                 populated_from: pht001122
                 slot_derivations:
                   observation_type:
-                    value: OMOP:3011505
-                    range: string
-                  age_at_observation:
-                    expr: '{phv00087678} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001122
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00087708
-                            unit:
-                              value: '{ratio}'
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001122
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3011505
+                    value: OMOP:3024594
                     range: string
                   age_at_observation:
                     expr: '{phv00087678} * 365'
                   method_type:
-                    value: PREDICTED
-                    range: string
+                    value: calculated
                   value_quantity:
                     object_derivations:
                     - class_derivations:
@@ -454,9 +432,9 @@
                           populated_from: pht001122
                           slot_derivations:
                             value_decimal:
-                              expr: '{phv00087833} * 0.01'
+                              populated_from: phv00087833
                             unit:
-                              value: '{ratio}'
+                              value: '%'
                               range: string
           - class_derivations:
               MeasurementObservation:
@@ -471,7 +449,7 @@
                     value: "SITTING_POSITION"
                     range: string
                   method_type:
-                    value: "spirometry"
+                    value: "calculated"
                     range: string
                   value_quantity:
                     object_derivations:
@@ -497,7 +475,7 @@
                     value: "SITTING_POSITION"
                     range: string
                   method_type:
-                    value: "spirometry"
+                    value: "calculated"
                     range: string
                   value_quantity:
                     object_derivations:
@@ -515,7 +493,7 @@
                 populated_from: pht001122
                 slot_derivations:
                   observation_type:
-                    value: OMOP:3024594
+                    value: OMOP:4196583
                     range: string
                   age_at_observation:
                     expr: '{phv00087678} * 365'
@@ -523,7 +501,7 @@
                     value: "SITTING_POSITION"
                     range: string
                   method_type:
-                    value: "spirometry"
+                    value: "calculated"
                     range: string
                   value_quantity:
                     object_derivations:
