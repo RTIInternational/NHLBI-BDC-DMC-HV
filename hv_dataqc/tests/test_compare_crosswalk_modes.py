@@ -496,6 +496,71 @@ class CompareCrosswalkModeTests(unittest.TestCase):
         self.assertIn("none", result.message.lower())
         self.assertIn("10", result.message)  # drop count visible
 
+    def test_cross_phv_cascade_case_returns_unsupported(self) -> None:
+        """_expected_summary_from_case_entry must return unsupported when branch 2+
+        introduces a different PHV than branch 1.  Mixing marginals from different
+        PHVs without conditioning inflates the expected count (HCHS asthma issue #673).
+        E.g. case(({phv_a}==0,'ABSENT'),({phv_b}==0,'HISTORICAL'),(True,'PRESENT'))
+        — N(phv_b=0) overcounts because it includes rows already counted as ABSENT."""
+        from hv_dataqc.compare.expected_summary import _expected_summary_from_case_entry
+
+        entry = {
+            "phv_id": "phv00001",
+            "value_exprs": [
+                "case(({phv00001} == 0, 'ABSENT'), ({phv00002} == 0, 'HISTORICAL'), (True, 'PRESENT'))"
+            ],
+        }
+        summaries_by_phv = {
+            "phv00001": {
+                "type": "categorical", "n_total": 1000, "n_valid": 1000,
+                "_pht": "pht001",
+                "distribution": {"0": {"n": 800}, "1": {"n": 200}},
+            },
+            "phv00002": {
+                "type": "categorical", "n_total": 1000, "n_valid": 1000,
+                "_pht": "pht001",
+                "distribution": {"0": {"n": 950}, "1": {"n": 50}},
+            },
+        }
+        src_summary = summaries_by_phv["phv00001"]
+        result = _expected_summary_from_case_entry(entry, src_summary, summaries_by_phv)
+
+        self.assertIsNotNone(result, "Should return a summary, not None")
+        self.assertEqual(result.get("_comparison_confidence"), "unsupported",
+                         f"Expected unsupported confidence for cross-PHV cascade, got: {result}")
+        # The n_valid in the unsupported summary should equal the source PHV's n,
+        # not the overcounted marginal sum (800 + 950 = 1750).
+        self.assertLessEqual(result.get("n_valid", 0), 1000,
+                             "Unsupported summary n_valid must not exceed source table total")
+
+    def test_single_phv_case_with_true_arm_not_affected(self) -> None:
+        """Single-PHV case() with True catch-all should still work correctly —
+        the cross-PHV guard must not fire when all explicit branches use the same PHV."""
+        from hv_dataqc.compare.expected_summary import _expected_summary_from_case_entry
+
+        entry = {
+            "phv_id": "phv00010",
+            "value_exprs": [
+                "case(({phv00010} == 0, 'ABSENT'), ({phv00010} == 1, 'PRESENT'), (True, 'UNKNOWN'))"
+            ],
+        }
+        src_summary = {
+            "type": "categorical", "n_total": 500, "n_valid": 480,
+            "_pht": "pht002",
+            "distribution": {"0": {"n": 300}, "1": {"n": 160}, "9": {"n": 20}},
+        }
+        summaries_by_phv = {"phv00010": src_summary}
+        result = _expected_summary_from_case_entry(entry, src_summary, summaries_by_phv)
+
+        self.assertIsNotNone(result, "Single-PHV case() should return a summary")
+        self.assertNotEqual(result.get("_comparison_confidence"), "unsupported",
+                            "Single-PHV case() should not be classified as unsupported")
+        dist = result.get("distribution", {})
+        self.assertEqual(dist.get("ABSENT", {}).get("n"), 300)
+        self.assertEqual(dist.get("PRESENT", {}).get("n"), 160)
+        # UNKNOWN = 500 - 300 - 160 = 40 (True arm uses table_total=500, not n_valid=480)
+        self.assertEqual(dist.get("UNKNOWN", {}).get("n"), 40)
+
     def test_c7_skipped_for_concept_value_map_routing_entries(self) -> None:
         """Concept_value_map routing entries must produce _comparison_basis ==
         'yaml_concept_value_mappings', which gates the C7 INFO/skip in

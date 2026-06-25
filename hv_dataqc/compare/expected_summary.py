@@ -534,6 +534,11 @@ def _expected_summary_from_case_entry(
     saw_branch = False
     table_total = int(src_summary.get("n_total", 0) or src_summary.get("n_valid", 0) or 0)
     pht = str(src_summary.get("_pht", "") or "")
+    # Track PHVs used in explicit (non-True) branches.  Once a branch
+    # accumulates counts from PHV-A, a subsequent branch using PHV-B cannot
+    # use PHV-B's marginal distribution as a proxy for the conditional count
+    # P(phv_b=v | phv_a was not matched) — the two marginals overlap.
+    explicit_phvs: set[str] = set()
 
     for expr in entry.get("value_exprs") or []:
         for condition, output in _case_branches(expr):
@@ -556,8 +561,21 @@ def _expected_summary_from_case_entry(
                 return None
 
             elif len(distinct_phvs) == 1:
-                # Single PHV — use marginal distribution (existing behaviour)
+                # Single PHV — use marginal distribution.
+                # Guard: if this branch introduces a NEW PHV that differs from
+                # PHVs already seen in prior branches, the marginal count for
+                # this PHV cannot substitute for the conditional count
+                # P(phv=v | prior branches did not fire).  Returning unsupported
+                # prevents inflated expected counts from cross-PHV cascade
+                # patterns (e.g. ABSENT on phv_a then HISTORICAL on phv_b).
                 phv = distinct_phvs[0]
+                if explicit_phvs and phv not in explicit_phvs:
+                    return _unsupported_joint_summary(
+                        src_summary,
+                        "yaml_case_value_expr",
+                        f"case() branches reference different PHVs ({sorted(explicit_phvs)[0]} vs {phv}); "
+                        "marginal count cannot substitute for conditional count — joint distribution required",
+                    )
                 vals = phv_conds[phv]
                 counted = False
                 for val in reversed(vals):
@@ -570,6 +588,7 @@ def _expected_summary_from_case_entry(
                     break
                 if not counted:
                     return None
+                explicit_phvs.add(phv)
 
             elif len(distinct_phvs) == 2 and joint_dists_by_pht is not None and pht:
                 # Two-PHV condition — attempt joint distribution lookup
@@ -587,6 +606,7 @@ def _expected_summary_from_case_entry(
                     )
                 counts[output_key] = counts.get(output_key, 0) + count
                 explicit_count += count
+                explicit_phvs.update([phv_a, phv_b])
 
             else:
                 return _unsupported_joint_summary(
