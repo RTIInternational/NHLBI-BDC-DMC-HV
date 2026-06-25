@@ -404,6 +404,8 @@ def build_variable_crosswalk(
                     stamped.setdefault("_pht", resolved_pht)
                 if phv_id:
                     stamped["_phv"] = phv_id
+                if entry.get("has_true_catchall"):
+                    stamped["_expected_n_basis"] = "n_total"
                 per_pht_summaries.append(stamped)
                 if resolved_pht and resolved_pht not in source_phts:
                     source_phts.append(resolved_pht)

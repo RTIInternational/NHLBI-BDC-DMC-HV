@@ -16,6 +16,7 @@ from pathlib import Path
 import yaml
 
 from hv_dataqc.compare.helpers import _canonical_phv_id
+from hv_dataqc.compare.expected_summary import _has_true_catchall
 
 
 # ---------------------------------------------------------------------------
@@ -603,9 +604,9 @@ def _extract_crosswalk_from_class_derivations(
                     "source_phvs": sorted(comparison_phvs),
                     "source_phv_roles": source_phv_roles,
                     "value_exprs": value_exprs,
+                    "has_true_catchall": any(_has_true_catchall(e) for e in value_exprs),
                 }
             )
-
 
 def build_yaml_crosswalk(
     yaml_dir: Path,

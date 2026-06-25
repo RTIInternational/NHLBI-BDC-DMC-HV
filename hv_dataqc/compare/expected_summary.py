@@ -69,6 +69,25 @@ def _case_branches(expr: str) -> list[tuple[str, str]]:
     return branches
 
 
+def _has_true_catchall(expr: str) -> bool:
+    """Return True if a case() expression ends with a ``(True, <non-null>)`` terminal arm.
+
+    A True catch-all causes the block to emit a harmonized record for **every**
+    source row, including rows where the driving PHV is null.  The correct
+    expected harmonized N for such a block is ``n_total`` (all rows), not
+    ``n_valid`` (non-null coded-value rows).
+
+    The arm ``(True, None)`` is explicitly excluded: it maps unmatched rows to
+    null so those rows produce no harmonized record, and ``n_valid`` remains
+    the correct expected N.
+    """
+    branches = _case_branches(expr)
+    if not branches:
+        return False
+    last_cond, last_val = branches[-1]
+    return last_cond.strip() == "True" and last_val not in ("None", "none", "")
+
+
 def _distribution_count_for_code(summary: dict | None, code: str) -> int | None:
     """Return the aggregate count for *code* in a source summary distribution."""
     if not summary:
@@ -713,10 +732,19 @@ def _aggregate_source_summaries(per_pht: list[dict]) -> dict:
     if not per_pht:
         return {}
     if len(per_pht) == 1:
-        return dict(per_pht[0])
+        result = dict(per_pht[0])
+        if result.get("_expected_n_basis") == "n_total" and result.get("n_total"):
+            result["_effective_n_valid"] = int(result["n_total"])
+        return result
 
-    # Pooled counts
+    # Pooled counts — True-fallback blocks use n_total (they emit a record for
+    # every source row, including null-PHV rows); others use n_valid.
     n_valid = sum(int(p.get("n_valid", 0) or 0) for p in per_pht)
+    effective_n_valid = sum(
+        int(p.get("n_total", 0) or 0) if p.get("_expected_n_basis") == "n_total"
+        else int(p.get("n_valid", 0) or 0)
+        for p in per_pht
+    )
     n_total = sum(int(p.get("n_total", 0) or 0) for p in per_pht)
     n_missing = sum(int(p.get("n_missing", 0) or 0) for p in per_pht)
 
@@ -740,6 +768,8 @@ def _aggregate_source_summaries(per_pht: list[dict]) -> dict:
             round(n_missing / n_total * 100, 2) if n_total > 0 else 0.0
         ),
     }
+    if effective_n_valid != n_valid:
+        pooled["_effective_n_valid"] = effective_n_valid
 
     # Carry through the first available human-readable name / original column
     for key in ("name", "_col_original"):

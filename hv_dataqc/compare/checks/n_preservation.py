@@ -137,7 +137,7 @@ def check_c2_n_loss(
     ``detail`` so reviewers can quickly identify which contributing table
     block is responsible for an N loss without needing external scripts.
     """
-    src_n_raw = src_var.get("n_valid", 0)
+    src_n_raw = src_var.get("_effective_n_valid", src_var.get("n_valid", 0))
     src_n = expected_n if expected_n is not None else src_n_raw
     harmonized_n = harmonized_var.get("n_valid", 0)
     confidence = src_var.get("_comparison_confidence")
@@ -157,12 +157,17 @@ def check_c2_n_loss(
 
     # Per-PHT source breakdown — accelerates FAIL diagnosis by showing each
     # contributing table's source n_valid without requiring external scripts.
+    # True-fallback blocks (has (True, <status>) terminal arm) show n_total
+    # because they generate a record for every source row including null-PHV rows.
     if per_pht_src:
         pht_rows = [
             {
                 "phv": p.get("_phv", ""),
                 "pht": p.get("_pht", ""),
-                "source_n_valid": p.get("n_valid", 0),
+                "source_n_valid": (
+                    p.get("n_total", 0) if p.get("_expected_n_basis") == "n_total"
+                    else p.get("n_valid", 0)
+                ),
             }
             for p in per_pht_src
             if p.get("_pht") or p.get("_phv")

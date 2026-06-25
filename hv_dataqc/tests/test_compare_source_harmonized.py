@@ -1763,6 +1763,7 @@ from compare import (  # noqa: E402
     _extract_crosswalk_from_class_derivations,
     _normalize_harmonized_vars,
 )
+from hv_dataqc.compare.expected_summary import _has_true_catchall  # noqa: E402
 
 
 class CrosswalkConceptExtractionTests(unittest.TestCase):
@@ -3411,6 +3412,170 @@ class C2PerPhtBreakdownTests(unittest.TestCase):
         self.assertEqual(len(breakdown), 2)
         self.assertEqual(breakdown[0]["phv"], "phv00000002")
         self.assertEqual(breakdown[1]["phv"], "phv00000003")
+
+
+class TrueCatchallFixTests(unittest.TestCase):
+    """Tests for issue #639: True catch-all in case() → expected N = n_total."""
+
+    # -----------------------------------------------------------------------
+    # _has_true_catchall detection
+    # -----------------------------------------------------------------------
+
+    def test_has_true_catchall_absent_arm(self) -> None:
+        """Standard HCHS afib Block 0 pattern: (True, 'ABSENT') → True."""
+        self.assertTrue(
+            _has_true_catchall(
+                "case(({phv00226270} == 'Atrial fibrillation', 'PRESENT'), (True, 'ABSENT'))"
+            )
+        )
+
+    def test_has_true_catchall_present_arm(self) -> None:
+        """ARIC asthma pattern: (True, 'PRESENT') → True."""
+        self.assertTrue(
+            _has_true_catchall(
+                "case(({phv00209714} == 0, 'ABSENT'), ({phv00209717} == 0, 'HISTORICAL'), (True, 'PRESENT'))"
+            )
+        )
+
+    def test_has_true_catchall_unknown_arm(self) -> None:
+        """HCHS asthma block: (True, 'UNKNOWN') → True."""
+        self.assertTrue(
+            _has_true_catchall(
+                "case(({phv00226387} == 0, 'ABSENT'), ({phv00526887} == 1, 'PRESENT'), (True, 'UNKNOWN'))"
+            )
+        )
+
+    def test_has_true_catchall_none_arm_is_false(self) -> None:
+        """(True, None) catch-all → False: null rows produce no record, n_valid is correct."""
+        self.assertFalse(
+            _has_true_catchall(
+                "case(({phv00258106} == 0, 'OMOP:45883537'), (True, None))"
+            )
+        )
+
+    def test_has_true_catchall_no_true_arm_is_false(self) -> None:
+        """No True arm at all → False."""
+        self.assertFalse(
+            _has_true_catchall(
+                "case(({phv00001234} == 1, 'PRESENT'), ({phv00001234} == 0, 'ABSENT'))"
+            )
+        )
+
+    def test_has_true_catchall_non_case_expr_is_false(self) -> None:
+        """Non-case expression → False."""
+        self.assertFalse(_has_true_catchall("{phv00001234} * 365"))
+        self.assertFalse(_has_true_catchall(""))
+
+    # -----------------------------------------------------------------------
+    # _aggregate_source_summaries with _expected_n_basis
+    # -----------------------------------------------------------------------
+
+    def test_aggregate_single_true_fallback_sets_effective_n_valid(self) -> None:
+        """Single True-fallback entry: _effective_n_valid = n_total, n_valid unchanged."""
+        summary = {
+            "type": "categorical",
+            "n_valid": 0,
+            "n_total": 11831,
+            "n_missing": 11831,
+            "_expected_n_basis": "n_total",
+        }
+        result = _aggregate_source_summaries([summary])
+        self.assertEqual(result["n_valid"], 0)          # unchanged for other checks
+        self.assertEqual(result["_effective_n_valid"], 11831)
+
+    def test_aggregate_single_normal_entry_no_effective_n_valid(self) -> None:
+        """Normal (non-True-fallback) single entry: no _effective_n_valid added."""
+        summary = {"type": "categorical", "n_valid": 11812, "n_total": 11831, "n_missing": 19}
+        result = _aggregate_source_summaries([summary])
+        self.assertNotIn("_effective_n_valid", result)
+
+    def test_aggregate_multi_block_true_fallback_sets_effective_n_valid(self) -> None:
+        """HCHS afib: Block 0 (True-fallback, n_valid=0, n_total=11831) + Block 1
+        (normal, n_valid=11812) → _effective_n_valid = 11831+11812 = 23643."""
+        block0 = {
+            "type": "categorical",
+            "n_valid": 0,
+            "n_total": 11831,
+            "n_missing": 11831,
+            "_expected_n_basis": "n_total",
+            "_phv": "phv00226270",
+        }
+        block1 = {
+            "type": "categorical",
+            "n_valid": 11812,
+            "n_total": 11831,
+            "n_missing": 19,
+            "_phv": "phv00526613",
+        }
+        result = _aggregate_source_summaries([block0, block1])
+        self.assertEqual(result["n_valid"], 11812)          # raw sum, used by C7 etc.
+        self.assertEqual(result["_effective_n_valid"], 23643)  # corrected sum for C2
+
+    def test_aggregate_multi_block_no_true_fallback_no_effective_n_valid(self) -> None:
+        """All-normal multi-block: no _effective_n_valid when sums are equal."""
+        block0 = {"type": "categorical", "n_valid": 5000, "n_total": 5100, "n_missing": 100}
+        block1 = {"type": "categorical", "n_valid": 4800, "n_total": 4900, "n_missing": 100}
+        result = _aggregate_source_summaries([block0, block1])
+        self.assertNotIn("_effective_n_valid", result)
+        self.assertEqual(result["n_valid"], 9800)
+
+    # -----------------------------------------------------------------------
+    # check_c2_n_loss with _effective_n_valid
+    # -----------------------------------------------------------------------
+
+    def test_c2_true_fallback_null_phv_passes_when_harmonized_matches_n_total(self) -> None:
+        """HCHS afib scenario: Block 0 n_valid=0, n_total=11831, True→ABSENT.
+
+        Combined source: _effective_n_valid=23643, harmonized n_valid=23643 → PASS.
+        Without the fix this would be FAIL (11812 → 23643, +100%).
+        """
+        src_var = {
+            "type": "categorical",
+            "n_valid": 11812,           # raw pooled n_valid (Block 1 only)
+            "_effective_n_valid": 23643, # corrected (Block 0 n_total + Block 1 n_valid)
+        }
+        harmonized_var = {"n_valid": 23643, "n_total": 23643}
+        result = check_c2_n_loss(src_var, harmonized_var, "condition_MONDO:0004981")
+        self.assertEqual(result.status, "PASS",
+                         f"Expected PASS but got {result.status}: {result.message}")
+
+    def test_c2_true_fallback_null_phv_fails_on_real_n_loss(self) -> None:
+        """When harmonized N is genuinely low vs corrected source, FAIL is correct."""
+        src_var = {
+            "type": "categorical",
+            "n_valid": 100,
+            "_effective_n_valid": 11931,  # Block 0 n_total=11831 + Block 1 n_valid=100
+        }
+        harmonized_var = {"n_valid": 10000, "n_total": 10000}
+        result = check_c2_n_loss(src_var, harmonized_var, "condition_MONDO:0004981")
+        self.assertEqual(result.status, "FAIL")
+
+    # -----------------------------------------------------------------------
+    # breakdown table shows n_total for True-fallback blocks
+    # -----------------------------------------------------------------------
+
+    def test_c2_breakdown_uses_n_total_for_true_fallback_block(self) -> None:
+        """Per-block breakdown table shows n_total (not n_valid=0) for True-fallback."""
+        src_var = {"n_valid": 11812, "_effective_n_valid": 23643}
+        harmonized_var = {"n_valid": 23500, "n_total": 23643}  # slight loss → FAIL
+        per_pht = [
+            {
+                "_phv": "phv00226270", "_pht": "pht004715",
+                "n_valid": 0, "n_total": 11831,
+                "_expected_n_basis": "n_total",
+            },
+            {
+                "_phv": "phv00526613", "_pht": "pht004715",
+                "n_valid": 11812, "n_total": 11831,
+            },
+        ]
+        result = check_c2_n_loss(src_var, harmonized_var, "ecga271+mhea7", per_pht_src=per_pht)
+        breakdown = result.detail.get("per_pht_src_breakdown", [])
+        self.assertEqual(len(breakdown), 2)
+        # Block 0 (True-fallback): should show n_total=11831, not n_valid=0
+        self.assertEqual(breakdown[0]["source_n_valid"], 11831)
+        # Block 1 (normal): should show n_valid=11812
+        self.assertEqual(breakdown[1]["source_n_valid"], 11812)
 
 
 if __name__ == "__main__":
