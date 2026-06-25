@@ -8,7 +8,7 @@ design, see the [main README](README.md). Assumes the
 
 | Report | What it is | Runs where | All cohorts at once? |
 |--------|-----------|-----------|----------------------|
-| **S4** | Pre-harmonized phv counts + n per variable/cohort | **Local** | Yes (one run) |
+| **S4** | Pre-harmonized phv counts + source N per variable/cohort | **SB enclave** | Yes (one run) |
 | **S5** | Harmonized summary stats (mean/min/max/…) per variable, pooled across cohorts | **SB enclave** | Yes (one run) |
 | **QAQC** | Source-vs-harmonized comparison, checks C1–C12 | SB extract + **local** compare | **No — one cohort at a time** |
 
@@ -41,32 +41,41 @@ publication/QC outputs.)
    source hv_dataqc/sb_scripts/setup.sh         # uv + deps, once per session
    ```
 
-## S4 — pre-harmonized phv report (local)
+## S4 — pre-harmonized phv report (SB enclave)
 
-One command, all cohorts. Reads source sheets + `valid-phvs/` lists; no
-enclave needed.
+Spec-sourced: phv list/count from the transform specs, source `N` measured
+by `extract_source` from the raw TSVs. No spreadsheets. One command, all
+cohorts.
 
-> **Why local?** Today's script gets both the phv list *and* the `n`
-> counts from the Google Sheets (`var_report…stats.stat.n`), so nothing
-> from SB is required. The proposed move to source S4 from the transform
-> specs (see `transform_assessment/SPEC_SOURCED_S4_DESIGN.md`) would change
-> this: phv list from specs, and `n` measured by `extract_source` **on
-> SB**. That version is not built yet — the steps below are the current,
-> sheet-based script.
+`run_s4_report.sh` **reuses** each cohort's existing `latest_source` extract
+(under `QC-output-files/<COHORT>/`). Pass `--extract` to (re-)run the source
+extract first — slow, reads raw source TSVs.
 
 ```bash
-cd transform_assessment
-uv run python preharmonized_qaqc_report.py        # writes preharmonized_qaqc_report.csv
+hv_dataqc/sb_scripts/run_s4_report.sh --list-cohorts          # cohorts with spec dirs
+hv_dataqc/sb_scripts/run_s4_report.sh --extract               # full run: extract + build
+hv_dataqc/sb_scripts/run_s4_report.sh                         # reuse existing extracts
+# subset: --cohorts FHS,MESA
 ```
 
-Inspect a single variable/cohort's phv set (e.g. to check a count):
+Output: `/sbgenomics/workspace/S4-output-files/s4_report_<ts>.csv` (+ a
+`latest_s4_report.csv` symlink). Paste it (minus header) into the Table S4
+template.
+
+Inspect one variable's resolved phvs + per-phv N:
 
 ```bash
-uv run python preharmonized_qaqc_report.py --debug-variable "AST SGOT" --debug-cohort FHS
+uv run python transform_assessment/spec_phv_report.py \
+    --specs-root priority_variables_transform \
+    --cohort FHS \
+    --source-json <QC-output-files/FHS/latest_source/fhs_source_*.json> \
+    --cache-dir hv_dataqc/local_output/dbgap-cache/fhs \
+    --debug-variable ast_sgot
 ```
 
-Paste the CSV (minus header) into the Table S4 template per
-`transform_assessment/README.md`.
+> The old sheet-based `preharmonized_qaqc_report.py` is retained for now as
+> a cross-check; it will be removed once the spec-sourced report is
+> validated against it. See `transform_assessment/SPEC_SOURCED_S4_DESIGN.md`.
 
 ## S5 — harmonized summary table (SB enclave)
 
