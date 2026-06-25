@@ -3186,6 +3186,157 @@ class MultiBlockVarLabelTests(unittest.TestCase):
         self.assertNotIn("subj_id", source_keys)
 
 
+class UnitConversionFlagTests(unittest.TestCase):
+    """Tests for the has_unit_conversion flag (#647) and related [in_us] factor entry."""
+
+    # Minimal YAML block with a unit_conversion (known pair [lb_av] → kg)
+    _YAML_WITH_UNIT_CONVERSION = """\
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000001
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00000001
+        observation_type:
+          value: OBA:VT0001259
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000001
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00000002
+                    unit_conversion:
+                      source_unit: '[lb_av]'
+                      target_unit: kg
+                  unit:
+                    value: kg
+                    range: string
+"""
+
+    # Identical structure but without any unit_conversion key
+    _YAML_WITHOUT_UNIT_CONVERSION = """\
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000001
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00000001
+        observation_type:
+          value: OBA:VT0001259
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000001
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00000002
+                  unit:
+                    value: kg
+                    range: string
+"""
+
+    # YAML with an unknown unit pair (not in _COMMON_UNIT_FACTORS) to verify
+    # has_unit_conversion is True even when conversion_factor cannot be computed.
+    _YAML_UNKNOWN_UNIT_PAIR = """\
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000001
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00000001
+        observation_type:
+          value: OBA:VT0001259
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000001
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00000002
+                    unit_conversion:
+                      source_unit: 'fathom'
+                      target_unit: 'meter'
+                  unit:
+                    value: meter
+                    range: string
+"""
+
+    def _write_yaml_and_get_entries(self, yaml_text: str) -> list[dict]:
+        """Write a single YAML file and return build_yaml_crosswalk results."""
+        phv_names = {"phv00000001": "subj_id", "phv00000002": "weight_src"}
+        with tempfile.TemporaryDirectory() as tmp:
+            yaml_dir = Path(tmp) / "yaml"
+            yaml_dir.mkdir()
+            (yaml_dir / "weight.yaml").write_text(yaml_text, encoding="utf-8")
+            return build_yaml_crosswalk(yaml_dir, phv_names)
+
+    def test_in_us_to_cm_factor_is_in_factor_table(self) -> None:
+        """[in_us] → cm unit pair is now in _COMMON_UNIT_FACTORS (added for #647)."""
+        self.assertEqual(
+            _unit_conversion_factor({"source_unit": "[in_us]", "target_unit": "cm"}),
+            2.54,
+        )
+
+    def test_crosswalk_entry_has_unit_conversion_true_for_known_unit_pair(self) -> None:
+        """A block with unit_conversion: [lb_av] → kg emits has_unit_conversion=True."""
+        entries = self._write_yaml_and_get_entries(self._YAML_WITH_UNIT_CONVERSION)
+        self.assertEqual(len(entries), 1)
+        entry = entries[0]
+        self.assertTrue(entry.get("has_unit_conversion"), msg="has_unit_conversion should be True")
+        self.assertAlmostEqual(entry.get("conversion_factor"), 0.453592, places=5)
+
+    def test_crosswalk_entry_has_unit_conversion_false_without_unit_conversion(self) -> None:
+        """A block without unit_conversion: emits has_unit_conversion=False."""
+        entries = self._write_yaml_and_get_entries(self._YAML_WITHOUT_UNIT_CONVERSION)
+        self.assertEqual(len(entries), 1)
+        self.assertFalse(entries[0].get("has_unit_conversion"),
+                         msg="has_unit_conversion should be False when no unit_conversion key")
+
+    def test_crosswalk_entry_has_unit_conversion_true_for_unknown_unit_pair(self) -> None:
+        """A block with an unknown unit pair sets has_unit_conversion=True, conversion_factor=None.
+
+        This combination triggers the C4/C6 INFO bypass in compare.py: the YAML
+        specifies a conversion but the tool cannot compute the factor, so comparing
+        raw source values to harmonized values would produce a false FAIL.
+        """
+        entries = self._write_yaml_and_get_entries(self._YAML_UNKNOWN_UNIT_PAIR)
+        self.assertEqual(len(entries), 1)
+        entry = entries[0]
+        self.assertTrue(entry.get("has_unit_conversion"),
+                        msg="has_unit_conversion should be True even for unknown unit pair")
+        self.assertIsNone(entry.get("conversion_factor"),
+                          msg="conversion_factor should be None for unknown pair")
+
+    def test_c5_guard_fires_for_mixed_source_direct_plus_yaml_scalar_basis(self) -> None:
+        """The C5 guard string-contains check blocks C5 for mixed pooled bases.
+
+        When some blocks use yaml_scalar_conversion and some use source_direct,
+        the pooled basis is "source_direct+yaml_scalar_conversion".  The old
+        exact-equality guard (basis != "yaml_scalar_conversion") would let C5 run,
+        double-applying the conversion factor.  The new substring guard catches it.
+        """
+        # Simulate the mixed-basis resolved source as returned by build_expected_summary
+        resolved_src = {
+            "type": "continuous",
+            "mean": 72.503,  # already post-conversion (kg)
+            "sd": 15.0,
+            "n_valid": 10000,
+            "_comparison_basis": "source_direct+yaml_scalar_conversion",
+        }
+        basis = resolved_src["_comparison_basis"]
+        # New guard: "yaml_scalar_conversion" in basis → C5 should be SKIPPED
+        self.assertIn("yaml_scalar_conversion", basis)
+        # The old guard (exact equality) would have been False → C5 would run
+        self.assertNotEqual(basis, "yaml_scalar_conversion")
+        # The new guard prevents C5 from running
+        self.assertFalse("yaml_scalar_conversion" not in basis,
+                         msg="New guard should prevent C5 when basis contains yaml_scalar_conversion")
+
+
 if __name__ == "__main__":
     unittest.main()
 

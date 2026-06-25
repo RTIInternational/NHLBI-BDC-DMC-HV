@@ -876,20 +876,36 @@ def main(argv: list[str] | None = None) -> None:
         ))
         harmonized_type = harmonized_var.get("type")
         if comparison_type == "continuous" and harmonized_type == "continuous":
-            all_results.append(check_c4_mean_preservation(
-                src_var, harmonized_var, var_label,
-                pass_rel=c4_t.get("pass_rel", 0.001), warn_rel=c4_t.get("warn_rel", 0.01),
-            ))
-            if expected_basis != "yaml_scalar_conversion" and should_run_c5_conversion_check(match, c5_t):
+            if match.get("has_unit_conversion") and match.get("conversion_factor") is None:
+                # unit_conversion: is present in the YAML but the unit pair is not in the
+                # known-factor table, so build_expected_summary cannot scale the source mean.
+                # Comparing raw source values (original units) to harmonized values
+                # (converted units) would produce a false FAIL — skip C4 and C6.
+                all_results.append(CheckResult(
+                    "C4", var_label, "INFO",
+                    "Skipped — unit_conversion present but unit pair not in known-factor table; "
+                    "source and harmonized values are in different units",
+                ))
+                all_results.append(CheckResult(
+                    "C6", var_label, "INFO",
+                    "Skipped — unit_conversion present but unit pair not in known-factor table; "
+                    "source and harmonized values are in different units",
+                ))
+            else:
+                all_results.append(check_c4_mean_preservation(
+                    src_var, harmonized_var, var_label,
+                    pass_rel=c4_t.get("pass_rel", 0.001), warn_rel=c4_t.get("warn_rel", 0.01),
+                ))
+                all_results.append(check_c6_sd_preservation(
+                    src_var, harmonized_var, var_label,
+                    pass_rel=c6_t.get("pass_rel", 0.002), warn_rel=c6_t.get("warn_rel", 0.01),
+                ))
+            if "yaml_scalar_conversion" not in (expected_basis or "") and should_run_c5_conversion_check(match, c5_t):
                 all_results.append(check_c5_mean_after_conversion(
                     src_var, harmonized_var, var_label,
                     conversion_factor=match.get("conversion_factor") or c5_t.get("conversion_factor"),
                     pass_rel=c5_t.get("pass_rel", 0.001),
                 ))
-            all_results.append(check_c6_sd_preservation(
-                src_var, harmonized_var, var_label,
-                pass_rel=c6_t.get("pass_rel", 0.002), warn_rel=c6_t.get("warn_rel", 0.01),
-            ))
         elif comparison_type == "categorical" and harmonized_type == "categorical":
             all_results.append(check_c7_categorical_distribution(
                 src_var, harmonized_var, var_label,

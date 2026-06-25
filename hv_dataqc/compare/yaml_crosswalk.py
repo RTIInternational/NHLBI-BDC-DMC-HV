@@ -69,6 +69,7 @@ _COMMON_UNIT_FACTORS: dict[tuple[str, str], float] = {
     ("kg", "lbs"): 2.20462,
     ("in", "cm"): 2.54,
     ("[in_i]", "cm"): 2.54,
+    ("[in_us]", "cm"): 2.54,
     ("cm", "in"): 0.393701,
     ("mg/dL", "mmol/L glucose"): 0.0555,
     ("mg/dL", "mmol/L cholesterol"): 0.02586,
@@ -480,9 +481,8 @@ def _extract_crosswalk_from_class_derivations(
                             inner_pf = str(inner_slot_body.get("populated_from", ""))
                             is_inner_value_slot = _is_value_slot_name(inner_slot, "")
                             if inner_pf.startswith("phv"):
-                                inner_cf_from_block = _unit_conversion_factor(
-                                    inner_slot_body.get("unit_conversion")
-                                )
+                                inner_uc = inner_slot_body.get("unit_conversion")
+                                inner_cf_from_block = _unit_conversion_factor(inner_uc)
                                 primary_phvs.append(
                                     {
                                         "phv": inner_pf,
@@ -493,6 +493,7 @@ def _extract_crosswalk_from_class_derivations(
                                         ),
                                         "value_map": _extract_value_mappings(inner_slot_body),
                                         "conversion_factor": inner_cf_from_block,
+                                        "has_unit_conversion_def": isinstance(inner_uc, dict),
                                     }
                                 )
                             inner_expr = inner_slot_body.get("expr", "")
@@ -598,6 +599,7 @@ def _extract_crosswalk_from_class_derivations(
                     "concept_value_map": concept_value_map,
                     "method_type": method_type_val,
                     "conversion_factor": primary.get("conversion_factor"),
+                    "has_unit_conversion": primary.get("has_unit_conversion_def", False),
                     "source_phvs": sorted(comparison_phvs),
                     "source_phv_roles": source_phv_roles,
                     "value_exprs": value_exprs,
