@@ -1285,7 +1285,7 @@ def _run_extract(
 
     print()
     print("=" * 60)
-    print(f"  Complete")
+    print("  Complete")
     print(f"    JSON  : {output_path}")
     print(f"    Log   : {log_path}")
     print(f"    {len(variables)} variables | {n_participants:,} participants")
