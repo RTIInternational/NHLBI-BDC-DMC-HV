@@ -1763,7 +1763,10 @@ from compare import (  # noqa: E402
     _extract_crosswalk_from_class_derivations,
     _normalize_harmonized_vars,
 )
-from hv_dataqc.compare.expected_summary import _has_true_catchall  # noqa: E402
+from hv_dataqc.compare.expected_summary import (  # noqa: E402
+    _has_true_catchall,
+    _true_arm_output_phvs,
+)
 
 
 class CrosswalkConceptExtractionTests(unittest.TestCase):
@@ -3415,10 +3418,69 @@ class C2PerPhtBreakdownTests(unittest.TestCase):
 
 
 class TrueCatchallFixTests(unittest.TestCase):
-    """Tests for issue #639: True catch-all in case() → expected N = n_total."""
+    """Tests for issue #639: True catch-all in case() → expected N = n_total.
+    Also covers issue #663: True-arm PHV output driver added to comparison pool.
+    """
 
     # -----------------------------------------------------------------------
-    # _has_true_catchall detection
+    # _true_arm_output_phvs — issue #663
+    # -----------------------------------------------------------------------
+
+    def test_true_arm_output_phvs_single_phv(self) -> None:
+        """MESA tnfa LLOD/ULOD: True arm has a different PHV from conditions."""
+        result = _true_arm_output_phvs(
+            "case(({phv00160541} == -333, 'LLOD'), ({phv00160541} == -555, 'ULOD'), (True, {phv00160540}))"
+        )
+        self.assertEqual(result, {"phv00160540"})
+
+    def test_true_arm_output_phvs_arithmetic_two_phvs(self) -> None:
+        """bdy_hgt feet+inches: True arm arithmetic over two PHVs."""
+        result = _true_arm_output_phvs(
+            "case(({phv00401596} <= 0, None),(True, {phv00401596} * 30.48 + {phv00401597} * 2.54))"
+        )
+        self.assertEqual(result, {"phv00401596", "phv00401597"})
+
+    def test_true_arm_output_phvs_literal_value_returns_empty(self) -> None:
+        """(True, 'ABSENT') literal arm: no PHV refs → empty set (handled by _has_true_catchall)."""
+        result = _true_arm_output_phvs(
+            "case(({phv00226270} == 'X', 'PRESENT'), (True, 'ABSENT'))"
+        )
+        self.assertEqual(result, set())
+
+    def test_true_arm_output_phvs_no_true_arm_returns_empty(self) -> None:
+        """No (True, ...) arm → empty set."""
+        result = _true_arm_output_phvs(
+            "case(({phv00001234} == 1, 'PRESENT'), ({phv00001234} == 0, 'ABSENT'))"
+        )
+        self.assertEqual(result, set())
+
+    def test_true_arm_output_phvs_same_phv_as_condition(self) -> None:
+        """Sub-type A: True arm has the same PHV already in conditions (set dedup no-op)."""
+        result = _true_arm_output_phvs(
+            "case(({phv00172161} > 3.0, {phv00172161}), ({phv00227069} == 1, None), (True, {phv00172161}))"
+        )
+        # Returns the PHV — set.update() on comparison_phvs will dedup it
+        self.assertEqual(result, {"phv00172161"})
+
+    def test_true_arm_output_phvs_non_case_expr_returns_empty(self) -> None:
+        """Non-case expressions: empty."""
+        self.assertEqual(_true_arm_output_phvs("{phv00001234} * 365"), set())
+        self.assertEqual(_true_arm_output_phvs(""), set())
+
+    # -----------------------------------------------------------------------
+    # _has_true_catchall: PHV-ref True arm correctly returns False (#663 guard)
+    # -----------------------------------------------------------------------
+
+    def test_has_true_catchall_phv_ref_arm_is_false(self) -> None:
+        """(True, {phv}) arm: _case_branches can't parse it → _has_true_catchall False."""
+        self.assertFalse(
+            _has_true_catchall(
+                "case(({phv00160541} == -333, 'LLOD'), ({phv00160541} == -555, 'ULOD'), (True, {phv00160540}))"
+            )
+        )
+
+    # -----------------------------------------------------------------------
+    # _has_true_catchall detection — issue #639
     # -----------------------------------------------------------------------
 
     def test_has_true_catchall_absent_arm(self) -> None:

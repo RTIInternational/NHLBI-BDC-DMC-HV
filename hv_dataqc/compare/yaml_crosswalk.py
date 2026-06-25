@@ -16,7 +16,7 @@ from pathlib import Path
 import yaml
 
 from hv_dataqc.compare.helpers import _canonical_phv_id
-from hv_dataqc.compare.expected_summary import _has_true_catchall
+from hv_dataqc.compare.expected_summary import _has_true_catchall, _true_arm_output_phvs
 
 
 # ---------------------------------------------------------------------------
@@ -569,6 +569,14 @@ def _extract_crosswalk_from_class_derivations(
                 seen_role_keys.add(role_key)
             if role in {"value", "concept"}:
                 comparison_phvs.add(phv_id)
+
+        # Add any PHV referenced in the output of a (True, {phv}) fallback arm.
+        # These PHVs drive most harmonized records but don't appear in conditions,
+        # so they are absent from comparison_phvs without this step (issue #663).
+        # set.update() deduplicates: Sub-type A patterns where the True-arm PHV
+        # already appears in conditions are silently no-ops.
+        for expr in value_exprs:
+            comparison_phvs.update(_true_arm_output_phvs(expr))
 
         src_name = phv_names.get(primary["phv"], "")
         if not src_name:

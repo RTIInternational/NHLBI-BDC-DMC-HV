@@ -80,12 +80,38 @@ def _has_true_catchall(expr: str) -> bool:
     The arm ``(True, None)`` is explicitly excluded: it maps unmatched rows to
     null so those rows produce no harmonized record, and ``n_valid`` remains
     the correct expected N.
+
+    Note: arms whose value is a PHV reference ``(True, {phv...})`` are NOT
+    matched by ``_case_branches`` (the regex excludes ``{...}`` syntax), so
+    this function correctly returns False for those — they are handled
+    separately by ``_true_arm_output_phvs``.
     """
     branches = _case_branches(expr)
     if not branches:
         return False
     last_cond, last_val = branches[-1]
     return last_cond.strip() == "True" and last_val not in ("None", "none", "")
+
+
+def _true_arm_output_phvs(expr: str) -> set[str]:
+    """Return all PHV accessions referenced in the value of the ``(True, ...)`` terminal arm.
+
+    When a case() expression ends with ``(True, {phvXXX})`` or an arithmetic
+    expression like ``(True, {phvA} * 30.48 + {phvB} * 2.54)``, the PHVs in
+    the output position drive almost all harmonized records yet do not appear
+    in any condition branch.  They are therefore absent from the normal
+    ``comparison_phvs`` pool and must be added explicitly for correct C2 source
+    N attribution (issue #663).
+
+    Returns an empty set when no ``(True,`` arm is present or when the True arm
+    contains no PHV references (e.g. literal-value arms like ``(True, 'ABSENT')``
+    are handled by ``_has_true_catchall`` instead).
+    """
+    true_idx = expr.find("(True,")
+    if true_idx < 0:
+        return set()
+    rest = expr[true_idx + len("(True,"):]
+    return set(re.findall(r"\{(phv\d+)\}", rest))
 
 
 def _distribution_count_for_code(summary: dict | None, code: str) -> int | None:
