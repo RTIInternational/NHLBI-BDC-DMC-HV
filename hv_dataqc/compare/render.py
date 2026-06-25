@@ -157,6 +157,30 @@ def generate_markdown_report(
         "C12": "Value Mapping Coverage",
     }
 
+    def _render_c2_detail(r: CheckResult) -> list[str]:
+        """Render per-PHT source breakdown and harmonized n_total note for C2 FAIL/WARN."""
+        if r.status not in ("FAIL", "WARN"):
+            return []
+        sub: list[str] = []
+        breakdown = r.detail.get("per_pht_src_breakdown") or []
+        h_n_total = r.detail.get("harmonized_n_total")
+        null_rows = r.detail.get("harmonized_null_status_rows", 0)
+        if not breakdown and h_n_total is None:
+            return sub
+        if breakdown:
+            sub.append("")
+            sub.append("  | PHT | Source n\\_valid |")
+            sub.append("  |-----|---------------:|")
+            for row in breakdown:
+                sub.append(f"  | {row['pht']} | {row['source_n_valid']:,} |")
+        if h_n_total is not None:
+            harmonized_n = r.detail.get("harmonized_n", 0)
+            sub.append(
+                f"  _harmonized: n\\_total={h_n_total:,}, n\\_valid={harmonized_n:,}"
+                f" ({null_rows:,} null-status rows — check value\\_mappings key types)_"
+            )
+        return sub
+
     def _render_c7_detail(r: CheckResult) -> list[str]:
         """Render C7 distribution table and mismatch detail as indented markdown."""
         sub: list[str] = []
@@ -324,6 +348,8 @@ def generate_markdown_report(
             for r in group_results:
                 icon = STATUS_ICONS.get(r.status, r.status)
                 lines.append(f"- {icon} **{md_escape(r.variable)}**: {md_escape(r.message)}")
+                if check_id == "C2":
+                    lines.extend(_render_c2_detail(r))
                 if check_id == "C7":
                     lines.extend(_render_c7_detail(r))
                 if r.detail.get("direction") == "source_unmatched_summary":

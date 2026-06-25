@@ -3337,6 +3337,68 @@ class UnitConversionFlagTests(unittest.TestCase):
                          msg="New guard should prevent C5 when basis contains yaml_scalar_conversion")
 
 
+class C2PerPhtBreakdownTests(unittest.TestCase):
+    """Tests for C2 per-PHT source breakdown and harmonized n_total split (#662)."""
+
+    def test_c2_fail_includes_per_pht_breakdown_in_detail(self) -> None:
+        """check_c2_n_loss populates per_pht_src_breakdown when given _pht-stamped data."""
+        src_var = {"n_valid": 10000, "type": "continuous"}
+        harmonized_var = {"n_valid": 9000, "n_total": 9000}
+        per_pht = [
+            {"_pht": "pht000001", "n_valid": 6000},
+            {"_pht": "pht000002", "n_valid": 4000},
+        ]
+        result = check_c2_n_loss(
+            src_var, harmonized_var, "weight",
+            pass_pct=0.5, warn_pct=2.0,
+            per_pht_src=per_pht,
+        )
+        self.assertEqual(result.status, "FAIL")
+        breakdown = result.detail.get("per_pht_src_breakdown", [])
+        self.assertEqual(len(breakdown), 2)
+        self.assertEqual(breakdown[0], {"pht": "pht000001", "source_n_valid": 6000})
+        self.assertEqual(breakdown[1], {"pht": "pht000002", "source_n_valid": 4000})
+
+    def test_c2_single_pht_no_breakdown(self) -> None:
+        """check_c2_n_loss does not add breakdown when only one PHT is present."""
+        src_var = {"n_valid": 1000, "type": "continuous"}
+        harmonized_var = {"n_valid": 900, "n_total": 900}
+        per_pht = [{"_pht": "pht000001", "n_valid": 1000}]
+        result = check_c2_n_loss(
+            src_var, harmonized_var, "weight",
+            per_pht_src=per_pht,
+        )
+        self.assertNotIn("per_pht_src_breakdown", result.detail)
+
+    def test_c2_harmonized_n_total_differs_adds_detail(self) -> None:
+        """When harmonized n_total > n_valid, null-status row count appears in detail."""
+        src_var = {"n_valid": 26561, "type": "categorical"}
+        harmonized_var = {"n_valid": 11256, "n_total": 26561}
+        result = check_c2_n_loss(src_var, harmonized_var, "ecglvh1c")
+        self.assertEqual(result.status, "FAIL")
+        self.assertEqual(result.detail.get("harmonized_n_total"), 26561)
+        self.assertEqual(result.detail.get("harmonized_null_status_rows"), 15305)
+
+    def test_c2_harmonized_n_total_equal_to_n_valid_not_added(self) -> None:
+        """When n_total == n_valid, no extra n_total key is added to detail."""
+        src_var = {"n_valid": 500, "type": "categorical"}
+        harmonized_var = {"n_valid": 480, "n_total": 480}
+        result = check_c2_n_loss(src_var, harmonized_var, "some_var")
+        self.assertNotIn("harmonized_n_total", result.detail)
+
+    def test_c2_per_pht_breakdown_entries_without_pht_key_are_skipped(self) -> None:
+        """Per-PHT summaries lacking _pht are silently skipped in the breakdown."""
+        src_var = {"n_valid": 1000, "type": "continuous"}
+        harmonized_var = {"n_valid": 900, "n_total": 900}
+        per_pht = [
+            {"n_valid": 600},          # no _pht key — should be ignored
+            {"_pht": "pht000002", "n_valid": 400},
+        ]
+        result = check_c2_n_loss(src_var, harmonized_var, "weight", per_pht_src=per_pht)
+        # Only one pht row survives → no breakdown (need >1 to trigger)
+        self.assertNotIn("per_pht_src_breakdown", result.detail)
+
+
 if __name__ == "__main__":
     unittest.main()
 
