@@ -908,10 +908,25 @@ def main(argv: list[str] | None = None) -> None:
                     pass_rel=c5_t.get("pass_rel", 0.001),
                 ))
         elif comparison_type == "categorical" and harmonized_type == "categorical":
-            all_results.append(check_c7_categorical_distribution(
-                src_var, harmonized_var, var_label,
-                pass_pct=c7_t.get("pass_pct", 0.5), value_map=value_map,
-            ))
+            if expected_basis == "yaml_concept_value_mappings":
+                # Concept-routing entries route source codes to concept CURIEs
+                # that select WHICH harmonized variable receives the record.
+                # The harmonized categorical field is condition_status (PRESENT/
+                # ABSENT), not the concept CURIE itself — so comparing source
+                # CURIE categories against harmonized status categories is
+                # meaningless.  C2 already validates N preservation per concept.
+                all_results.append(CheckResult(
+                    "C7", var_label, "INFO",
+                    "Skipped — concept_value_map routing: distribution comparison "
+                    "not applicable (source categories are concept CURIEs; "
+                    "harmonized categories are condition_status values); "
+                    "N preservation validated by C2.",
+                ))
+            else:
+                all_results.append(check_c7_categorical_distribution(
+                    src_var, harmonized_var, var_label,
+                    pass_pct=c7_t.get("pass_pct", 0.5), value_map=value_map,
+                ))
         all_results.append(check_c9_clinical_range(harmonized_var, var_label, clinical_ranges, src_var=src_var))
         all_results.append(check_c11_type_consistency(
             src_var,

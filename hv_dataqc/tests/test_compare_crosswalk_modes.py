@@ -420,6 +420,113 @@ class CompareCrosswalkModeTests(unittest.TestCase):
         self.assertEqual(detail_by_role[("phv000012", "value")]["yaml_file"], "heart_rate.yaml")
         self.assertEqual(matches[0]["_yaml_entries"][0]["source_phv_details"], details)
 
+    def test_value_map_none_rows_excluded_from_expected_distribution(self) -> None:
+        """Source codes mapped to None (null sentinel = drop row) produce a
+        'None' category in the expected distribution.  C7 must downgrade this
+        from FAIL to INFO so the drop count is visible for review but is not
+        confused with a genuine mapping error.  The expected_summary function
+        still includes 'None' so reviewers see the drop in the distribution
+        table; distributions.py separates it from real missing categories."""
+        entry = {
+            "yaml_file": "lvh.yaml",
+            "phv_id": "phv000050",
+            "value_map": {
+                "0": "ABSENT",
+                "1": "PRESENT",
+                "4": None,     # explicit drop sentinel → 'None' category
+                "6": "UNKNOWN",
+            },
+            "_source_summary": {
+                "type": "categorical",
+                "n_total": 100,
+                "n_valid": 100,
+                "n_missing": 0,
+                "distribution": {
+                    "0": {"n": 50, "pct": 50.0},
+                    "1": {"n": 20, "pct": 20.0},
+                    "4": {"n": 10, "pct": 10.0},
+                    "6": {"n": 20, "pct": 20.0},
+                },
+            },
+        }
+
+        expected = build_expected_summary([entry], {})
+
+        self.assertIsNotNone(expected)
+        dist = expected.get("distribution", {})
+        # 'None' IS present in expected (visible for review in distribution table)
+        self.assertIn("None", dist)
+        self.assertEqual(dist["None"]["n"], 10)
+        # Real categories are also present
+        self.assertIn("ABSENT", dist)
+        self.assertIn("UNKNOWN", dist)
+
+    def test_c7_none_drop_produces_info_not_fail(self) -> None:
+        """C7 must emit INFO (not FAIL) when the only missing category is 'None'.
+        The 'None' category represents rows explicitly excluded via None
+        value_mapping — intentional behavior that should be visible but not
+        treated as a mapping error."""
+        from hv_dataqc.compare.checks.distributions import check_c7_categorical_distribution
+
+        # Use percentages already relative to the non-None denominator (90),
+        # so the real categories ABSENT/PRESENT match exactly and only 'None'
+        # is missing — isolating the None-drop INFO path.
+        src_var = {
+            "type": "categorical",
+            "n_valid": 100,
+            "distribution": {
+                "ABSENT": {"n": 50, "pct": 55.6},
+                "PRESENT": {"n": 40, "pct": 44.4},
+                "None": {"n": 10, "pct": 10.0},   # drop sentinel
+            },
+        }
+        harmonized_var = {
+            "type": "categorical",
+            "n_valid": 90,
+            "distribution": {
+                "ABSENT": {"n": 50, "pct": 55.6},
+                "PRESENT": {"n": 40, "pct": 44.4},
+            },
+        }
+
+        result = check_c7_categorical_distribution(src_var, harmonized_var, "lvh_minn")
+
+        self.assertEqual(result.status, "INFO",
+                         f"Expected INFO for None-only drop, got {result.status}: {result.message}")
+        self.assertIn("none", result.message.lower())
+        self.assertIn("10", result.message)  # drop count visible
+
+    def test_c7_skipped_for_concept_value_map_routing_entries(self) -> None:
+        """Concept_value_map routing entries must produce _comparison_basis ==
+        'yaml_concept_value_mappings', which gates the C7 INFO/skip in
+        compare.py.  The source distribution contains concept CURIEs; the
+        harmonized distribution contains condition_status values — orthogonal
+        axes where a category comparison is meaningless."""
+        entry = {
+            "yaml_file": "pad.yaml",
+            "phv_id": "phv000091",
+            "concept_phv": "phv000091",   # concept_phv == phv_id (promoted primary)
+            "concept_code": "HP:0004417",
+            "concept_value_map": {"1": "HP:0004417", "2": "HP:0002621"},
+            "_source_summary": {
+                "type": "categorical",
+                "n_total": 100,
+                "n_valid": 10,
+                "n_missing": 90,
+                "distribution": {"1": {"n": 10, "pct": 100.0}},
+            },
+        }
+
+        expected = build_expected_summary([entry], {})
+
+        self.assertIsNotNone(expected)
+        # The basis must be 'yaml_concept_value_mappings' so compare.py
+        # emits C7 INFO (skip) instead of calling check_c7_categorical_distribution.
+        self.assertEqual(expected["_comparison_basis"], "yaml_concept_value_mappings")
+        # Distribution is keyed by concept CURIE, NOT by condition_status value —
+        # this confirms the C7 mismatch that the skip guards against.
+        self.assertIn("HP:0004417", expected.get("distribution", {}))
+
     def test_source_phv_details_falls_back_to_primary_phv(self) -> None:
         details = _source_phv_details_for_entries(
             [{"yaml_file": "demography.yaml", "phv_id": "phv000020"}],

@@ -229,6 +229,14 @@ def check_c7_categorical_distribution(
     missing = sorted(src_keys - harmonized_keys)
     extra = sorted(harmonized_keys - src_keys)
 
+    # "None" in the expected distribution means source codes were explicitly
+    # mapped to null (the drop sentinel) in the YAML value_mappings — those
+    # rows produce no harmonised record by design.  Keep them visible in the
+    # distribution table so reviewers can audit the drop, but do not treat
+    # them as a missing category for FAIL/WARN purposes.
+    none_drop_n = src_dist.get("None", {}).get("n", 0) if "None" in missing else 0
+    missing_real = [m for m in missing if m != "None"]
+
     mismatches: list[dict] = []
     for cat in sorted(src_keys & harmonized_keys):
         src_pct = src_dist[cat].get("pct", 0)
@@ -258,27 +266,40 @@ def check_c7_categorical_distribution(
         full_table.append(row)
 
     detail: dict = {"distribution_table": full_table}
-    if missing:
+    if missing_real:
+        detail["missing_categories"] = missing_real
+    elif missing:  # only "None" entries — preserve for table display
         detail["missing_categories"] = missing
+    if none_drop_n:
+        detail["none_drop_n"] = none_drop_n
     if extra:
         detail["extra_categories"] = extra
     if mismatches:
         detail["mismatches"] = mismatches
 
-    if not missing and not extra and not mismatches:
+    if not missing_real and not extra and not mismatches:
+        if none_drop_n:
+            return CheckResult("C7", var_name, "INFO",
+                               f"Distribution matches; {none_drop_n} source rows "
+                               f"explicitly excluded via None value_mapping (not in harmonized)",
+                               detail)
         return CheckResult("C7", var_name, "PASS",
                            f"Distribution matches ({len(src_dist)} categories)", detail)
-    if not mismatches and not missing:
-        return CheckResult("C7", var_name, "INFO",
-                           f"Extra harmonized categories: {extra}", detail)
-    if missing:
+    if not mismatches and not missing_real:
+        msgs = []
+        if none_drop_n:
+            msgs.append(f"{none_drop_n} rows excluded via None mapping")
+        if extra:
+            msgs.append(f"Extra harmonized categories: {extra}")
+        return CheckResult("C7", var_name, "INFO", "; ".join(msgs), detail)
+    if missing_real:
         if confidence == "partial":
             detail["comparison_confidence"] = confidence
             detail["comparison_limitations"] = limitations
             return CheckResult("C7", var_name, "WARN",
-                               f"Partial expected distribution missing categories in harmonized: {missing}", detail)
+                               f"Partial expected distribution missing categories in harmonized: {missing_real}", detail)
         return CheckResult("C7", var_name, "FAIL",
-                           f"Missing categories in harmonized: {missing}", detail)
+                           f"Missing categories in harmonized: {missing_real}", detail)
     if confidence == "partial":
         detail["comparison_confidence"] = confidence
         detail["comparison_limitations"] = limitations
