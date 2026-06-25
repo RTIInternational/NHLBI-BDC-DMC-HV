@@ -4,6 +4,7 @@ Generate pre-harmonized data counts by variable and PHV, filtered to Corey's PHV
 Creates a CSV report compatible with the Data Harmonization Supplementary Data template.
 """
 
+import argparse
 import pandas as pd
 from pathlib import Path
 from variable_documentation.generate_variable_documentation import load_gsheet_as_df
@@ -108,12 +109,23 @@ def load_from_fhs_sheet():
         print(f"Filtered out {before_count - len(sheet)} 'out of scope' rows from FHS")
 
     phv = sheet['Variable accession'] # Col H
-    phv = phv.str.replace('\..*', '', regex=True)
+    phv = phv.str.replace(r'\..*', '', regex=True)
     bdch_label = sheet['BDCHM Label'] # Col J
     cohort = 'FHS'
     n_stats = sheet['data_table.variable.total.stats.stat.n'].apply(parse_stats_column) # Col U
 
-    normalized_df = pd.DataFrame({'phv': phv, 'bdchm_label': bdch_label, 'cohort': cohort, 'n_stats': n_stats})
+    normalized_df = pd.DataFrame({
+        'phv': phv,
+        'bdchm_label': bdch_label,
+        'cohort': cohort,
+        'n_stats': n_stats,
+        # Source-level provenance, carried through only to power --debug-variable.
+        'src_name': sheet['Source Variable name'],
+        'src_desc': sheet['Source Variable description'],
+        'src_units': sheet['data_table.variable.units'],
+        'src_min': sheet['data_table.variable.total.stats.stat.min'],
+        'src_max': sheet['data_table.variable.total.stats.stat.max'],
+    })
     return normalized_df
 
 
@@ -152,15 +164,83 @@ def load_source_data():
     return combined_df
 
 
-def generate_report():
+def debug_variable(sheet, valid_phvs, variable, cohort):
+    """Dump the phvs S4 counts for one variable/cohort, stage by stage.
+
+    Mirrors the filter the main loop in generate_report() applies (the
+    dropna guard and the valid-phvs membership test) so the dump cannot
+    drift from the counts the report actually emits.  Note the 'out of
+    scope' Transform Comment rows are already removed upstream in the
+    per-sheet loaders, so they never reach *sheet* — what prints here is
+    everything that survived that earlier drop.
+    """
+    print("\n" + "=" * 70)
+    print(f"  DEBUG: variable={variable!r}  cohort={cohort!r}")
+    print("=" * 70)
+
+    match = sheet[
+        (sheet['bdchm_label'] == variable) & (sheet['cohort'] == cohort)
+    ].copy()
+
+    # Same row-level guard the main loop uses before counting a row.
+    valid = match.dropna(subset=['bdchm_label', 'phv', 'cohort'])
+    dropped_na = len(match) - len(valid)
+
+    valid_list = valid_phvs.get(cohort)
+    if valid_list is not None:
+        in_list = valid[valid['phv'].isin(valid_list)]
+        not_in_list = valid[~valid['phv'].isin(valid_list)]
+    else:
+        in_list = valid
+        not_in_list = valid.iloc[0:0]
+
+    print(f"rows matching {variable!r}/{cohort}: {len(match)} "
+          f"(dropped {dropped_na} for NaN bdchm_label/phv/cohort)")
+    print(f"valid-phvs list for {cohort}: "
+          f"{'present (' + str(len(valid_list)) + ' phvs)' if valid_list is not None else 'NONE — all phvs counted'}")
+
+    def _first(rows, col):
+        """First non-null source value for a phv group, or '' if absent."""
+        if col not in rows.columns:
+            return ''
+        vals = rows[col].dropna()
+        return str(vals.iloc[0]) if len(vals) else ''
+
+    counted = sorted(in_list['phv'].unique())
+    print(f"\nFINAL COUNTED phvs ({len(counted)}):")
+    for p in counted:
+        rows = in_list[in_list['phv'] == p]
+        n = int(rows['n_stats'].sum())
+        print(f"  {p}   n={n:,}")
+        name, units = _first(rows, 'src_name'), _first(rows, 'src_units')
+        smin, smax = _first(rows, 'src_min'), _first(rows, 'src_max')
+        desc = _first(rows, 'src_desc')
+        if any([name, units, smin, smax, desc]):
+            print(f"      name={name!r}  units={units!r}  src_min={smin}  src_max={smax}")
+            if desc:
+                print(f"      desc={desc[:120]!r}")
+
+    if valid_list is not None and len(not_in_list):
+        excluded = sorted(not_in_list['phv'].unique())
+        print(f"\nEXCLUDED by valid-phvs filter ({len(excluded)}):")
+        for p in excluded:
+            n = int(not_in_list[not_in_list['phv'] == p]['n_stats'].sum())
+            print(f"  {p}   n={n:,}")
+    print("=" * 70 + "\n")
+
+
+def generate_report(debug_variable_name=None, debug_cohort='FHS'):
     """Generate the pre-harmonized data report."""
     print("Loading PHV lists...")
     valid_phvs = load_valid_phvs()
-    
+
     # Load source data
     sheet = load_source_data()
     if sheet is None:
         return None
+
+    if debug_variable_name:
+        debug_variable(sheet, valid_phvs, debug_variable_name, debug_cohort)
     
     # Get unique variables from the template/priority list
     # For now, we'll use all unique BDCHM labels in the data
@@ -247,4 +327,18 @@ def generate_report():
 
 
 if __name__ == "__main__":
-    generate_report()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--debug-variable", metavar="LABEL", default=None,
+        help="Dump the phvs counted for this BDCHM label (e.g. 'AST SGOT') "
+             "stage by stage, then still generate the full report.",
+    )
+    parser.add_argument(
+        "--debug-cohort", metavar="COHORT", default="FHS",
+        help="Cohort to inspect with --debug-variable (default: FHS).",
+    )
+    args = parser.parse_args()
+    generate_report(
+        debug_variable_name=args.debug_variable,
+        debug_cohort=args.debug_cohort,
+    )
