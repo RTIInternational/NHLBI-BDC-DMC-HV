@@ -101,7 +101,8 @@ class CompareC9RangeTests(unittest.TestCase):
         self.assertEqual(result.detail["range_name"], "heart_rate")
         self.assertEqual(result.detail["match_method"], "common_phv_name")
 
-    def test_source_carried_red_flag_warns_not_fails(self) -> None:
+    def test_source_carried_red_flag_demoted_to_info(self) -> None:
+        """All violations annotated [out+src]: pre-existing in source, INFO not WARN."""
         result = check_c9_clinical_range(
             {"type": "continuous", "min": 0.0, "max": 350.0},
             "heart_rate",
@@ -109,9 +110,25 @@ class CompareC9RangeTests(unittest.TestCase):
             src_var={"type": "continuous", "min": 0.0, "max": 350.0},
         )
 
-        self.assertEqual(result.status, "WARN")
+        self.assertEqual(result.status, "INFO")
         self.assertIn("[out+src]", result.message)
         self.assertEqual(result.detail["range_name"], "heart_rate")
+
+    def test_mixed_out_src_and_out_only_stays_warn(self) -> None:
+        """When at least one [out only] violation exists the result stays WARN."""
+        # min=0 is below plausible_lo=30 in both out and src -> [out+src]
+        # max=250 is above plausible_hi=200 in out but src max=190 is in range -> [out only]
+        # Neither triggers the red_flag guard (red_flag_lo=15, red_flag_hi=300).
+        result = check_c9_clinical_range(
+            {"type": "continuous", "min": 0.0, "max": 250.0},
+            "heart_rate",
+            {"heart_rate": self._range(common_phv_names=["heart_rate"])},
+            src_var={"type": "continuous", "min": 0.0, "max": 190.0},
+        )
+
+        self.assertEqual(result.status, "WARN")
+        self.assertIn("[out+src]", result.message)  # min violation shared
+        self.assertIn("[out only]", result.message)  # max violation new
 
     def test_duplicate_concept_code_validation_can_be_allowed(self) -> None:
         ranges = {

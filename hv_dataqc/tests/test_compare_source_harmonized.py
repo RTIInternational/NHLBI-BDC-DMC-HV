@@ -1170,7 +1170,7 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         self.assertEqual(unsupported[0]["rows"], 100)
         self.assertEqual(unsupported[0]["labels"], ["VISIT A", "VISIT B"])
 
-    def test_c9_source_carried_red_flag_warns(self) -> None:
+    def test_c9_all_out_src_demoted_to_info(self) -> None:
         ranges = {
             "weight": {
                 "common_phv_names": ["weight"],
@@ -1185,7 +1185,7 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
 
         result = check_c9_clinical_range(out, "weight", ranges, src_var=src)
 
-        self.assertEqual(result.status, "WARN")
+        self.assertEqual(result.status, "INFO")
         self.assertIn("[out+src]", result.message)
 
     def test_c9_uses_min_max_from_numeric_encoded_source(self) -> None:
@@ -1203,7 +1203,7 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
 
         result = check_c9_clinical_range(out, "weight", ranges, src_var=src)
 
-        self.assertEqual(result.status, "WARN")
+        self.assertEqual(result.status, "INFO")
         self.assertIn("[out+src]", result.message)
 
     def test_c9_detail_reports_exact_name_match(self) -> None:

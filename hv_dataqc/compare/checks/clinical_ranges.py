@@ -147,8 +147,19 @@ def check_c9_clinical_range(
     # source data ([out+src]): the raw data already contained the extreme value
     # so the harmonized output faithfully preserved it rather than introducing it.
     all_red_in_src = has_red and all("[out+src]" in i for i in red_issues)
+
+    # Demote WARN -> INFO when every harmonized output violation is annotated
+    # [out+src]: all violations are pre-existing in the raw source data and the
+    # pipeline preserved them faithfully.  [src only] lines are context-only and
+    # excluded from this test.  If any [out only] violation exists the result
+    # stays WARN or FAIL so it stays actionable.
+    output_violations = [i for i in issues if "[src only]" not in i]
+    all_out_src = bool(output_violations) and all("[out+src]" in i for i in output_violations)
+
     if has_red and not all_red_in_src:
         status = "FAIL"
+    elif all_out_src:
+        status = "INFO"
     else:
         status = "WARN"
     return CheckResult("C9", var_name, status,
