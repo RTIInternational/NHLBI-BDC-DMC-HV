@@ -3017,5 +3017,141 @@ class RenderDbGaPStudyIdTests(unittest.TestCase):
         self.assertNotIn("dbGaP", report)
 
 
+class MultiBlockVarLabelTests(unittest.TestCase):
+    """C2-C11 var_label must include all contributing source variable names (#641).
+
+    When two YAML blocks map to the same harmonized concept (e.g. MONDO:0004981),
+    the crosswalk builds a single match with _source_keys = ["ecga271", "mhea7"].
+    The display_name in compare.py should join those names with '+' rather than
+    showing only the primary block's name.
+    """
+
+    _TWO_BLOCK_YAML = """\
+- class_derivations:
+    Condition:
+      populated_from: pht000001
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00000001
+        condition_concept:
+          value: MONDO:test_afib
+        condition_status:
+          populated_from: phv00000002
+          value_mappings:
+            '1': PRESENT
+            '0': ABSENT
+---
+- class_derivations:
+    Condition:
+      populated_from: pht000001
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00000001
+        condition_concept:
+          value: MONDO:test_afib
+        condition_status:
+          populated_from: phv00000003
+          value_mappings:
+            '1': PRESENT
+            '0': ABSENT
+"""
+
+    def _setup(self, tmp_path: Path) -> tuple[Path, Path]:
+        """Write a cache dir (two PHVs) and yaml dir (two-block YAML) into tmp."""
+        pheno_dir = tmp_path / "pheno_variable_summaries"
+        pheno_dir.mkdir()
+        (pheno_dir / "phs000000.v1.pht000001.v1.p1.test.data_dict.xml").write_text(
+            '<?xml version="1.0"?>\n'
+            "<data_table>\n"
+            '  <variable id="phv00000001.v1"><name>subj_id</name></variable>\n'
+            '  <variable id="phv00000002.v1"><name>ecga271</name></variable>\n'
+            '  <variable id="phv00000003.v1"><name>mhea7</name></variable>\n'
+            "</data_table>\n",
+            encoding="utf-8",
+        )
+        yaml_dir = tmp_path / "yaml"
+        yaml_dir.mkdir()
+        (yaml_dir / "afib.yaml").write_text(self._TWO_BLOCK_YAML, encoding="utf-8")
+        return tmp_path, yaml_dir
+
+    def _source_vars(self) -> dict:
+        return {
+            "ecga271": {"pht000001": {"type": "categorical", "n_valid": 100, "n_total": 100, "distribution": {"PRESENT": {"n": 50}, "ABSENT": {"n": 50}}}},
+            "mhea7":   {"pht000001": {"type": "categorical", "n_valid": 100, "n_total": 100, "distribution": {"PRESENT": {"n": 40}, "ABSENT": {"n": 60}}}},
+        }
+
+    def test_two_block_crosswalk_populates_source_keys_with_both_names(self) -> None:
+        """build_variable_crosswalk sets _source_keys = ['ecga271', 'mhea7'] for
+        a two-block YAML where each block maps a different PHV to the same concept."""
+        with tempfile.TemporaryDirectory() as tmp:
+            cache_dir, yaml_dir = self._setup(Path(tmp))
+            matches = build_variable_crosswalk(
+                variables_by_name=self._source_vars(),
+                harmonized_vars={"condition_MONDO:test_afib": {"type": "categorical", "n_valid": 130}},
+                yaml_dir=yaml_dir,
+                cache_dir=cache_dir,
+                source_doc={"total_participants": 100, "total_rows_by_pht": {"pht000001": 100}},
+            )
+
+        self.assertEqual(len(matches), 1)
+        self.assertEqual(matches[0]["_source_keys"], ["ecga271", "mhea7"])
+
+    def test_two_block_match_display_name_joins_source_keys(self) -> None:
+        """The display_name computed from _source_keys is 'ecga271+mhea7', not just 'ecga271'."""
+        with tempfile.TemporaryDirectory() as tmp:
+            cache_dir, yaml_dir = self._setup(Path(tmp))
+            matches = build_variable_crosswalk(
+                variables_by_name=self._source_vars(),
+                harmonized_vars={"condition_MONDO:test_afib": {"type": "categorical", "n_valid": 130}},
+                yaml_dir=yaml_dir,
+                cache_dir=cache_dir,
+                source_doc={"total_participants": 100, "total_rows_by_pht": {"pht000001": 100}},
+            )
+
+        match = matches[0]
+        _source_keys = match.get("_source_keys") or []
+        src_var = match.get("_resolved_src") or {}
+        src_key = match.get("source_key", "")
+        if len(_source_keys) > 1:
+            display_name = "+".join(_source_keys)
+        else:
+            display_name = src_var.get("name", src_key)
+
+        self.assertEqual(display_name, "ecga271+mhea7")
+
+    def test_single_block_match_display_name_uses_primary_name(self) -> None:
+        """A single-block YAML (_source_keys has one entry) still falls back to src_var name."""
+        single_block_yaml = """\
+- class_derivations:
+    Condition:
+      populated_from: pht000001
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00000001
+        condition_concept:
+          value: MONDO:test_afib
+        condition_status:
+          populated_from: phv00000002
+          value_mappings:
+            '1': PRESENT
+            '0': ABSENT
+"""
+        with tempfile.TemporaryDirectory() as tmp:
+            cache_dir, yaml_dir = self._setup(Path(tmp))
+            (yaml_dir / "afib.yaml").write_text(single_block_yaml, encoding="utf-8")
+            matches = build_variable_crosswalk(
+                variables_by_name=self._source_vars(),
+                harmonized_vars={"condition_MONDO:test_afib": {"type": "categorical", "n_valid": 100}},
+                yaml_dir=yaml_dir,
+                cache_dir=cache_dir,
+                source_doc={"total_participants": 100, "total_rows_by_pht": {"pht000001": 100}},
+            )
+
+        self.assertEqual(len(matches), 1)
+        self.assertEqual(len(matches[0]["_source_keys"]), 1)
+        self.assertEqual(matches[0]["_source_keys"], ["ecga271"])
+
+
 if __name__ == "__main__":
     unittest.main()
+

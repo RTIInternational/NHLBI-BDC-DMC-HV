@@ -820,7 +820,11 @@ def main(argv: list[str] | None = None) -> None:
                 "_comparison_type_detail": comparison_type_detail,
             }
 
-        display_name = src_var.get("name", src_key)
+        _source_keys = match.get("_source_keys") or []
+        if len(_source_keys) > 1:
+            display_name = "+".join(_source_keys)
+        else:
+            display_name = src_var.get("name", src_key)
         expected_basis = src_var.get("_comparison_basis")
         value_map = None if expected_basis and expected_basis != "source_direct" else match.get("value_map")
 
