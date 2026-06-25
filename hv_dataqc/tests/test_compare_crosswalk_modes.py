@@ -166,6 +166,74 @@ class CompareCrosswalkModeTests(unittest.TestCase):
         self.assertEqual(expected["distribution"]["ABSENT"]["n"], 4)
         self.assertEqual(expected["distribution"]["UNKNOWN"]["n"], 3)
 
+    def test_condition_block_with_coded_concept_and_fixed_status_is_crosswalked(self) -> None:
+        """Condition blocks where condition_status is a fixed value but
+        condition_concept is a coded PHV (e.g. PADDX, STROKEDX) should
+        produce crosswalk entries — one per concept code — using the concept
+        PHV as primary.  Previously these were silently skipped, producing
+        the 'no YAML block proposed this concept' false positive (#670)."""
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            pheno_dir = tmp_path / "pheno_variable_summaries"
+            pheno_dir.mkdir()
+            (pheno_dir / "synthetic.pht003405.data_dict.xml").write_text(
+                '<?xml version="1.0"?>\n'
+                "<data_table>\n"
+                '  <variable id="phv000090.v1"><name>SUBJID</name></variable>\n'
+                '  <variable id="phv000091.v1"><name>PADDX</name></variable>\n'
+                "</data_table>\n",
+                encoding="utf-8",
+            )
+            yaml_dir = tmp_path / "yaml"
+            yaml_dir.mkdir()
+            (yaml_dir / "pad.yaml").write_text(
+                "- class_derivations:\n"
+                "    Condition:\n"
+                "      populated_from: pht003405\n"
+                "      slot_derivations:\n"
+                "        associated_participant:\n"
+                "          expr: 'uuid5(\"P\", str({phv000090}) + \":WHI\")'\n"
+                "        condition_concept:\n"
+                "          populated_from: phv000091\n"
+                "          value_mappings:\n"
+                "            '1': HP:0004417\n"
+                "            '2': HP:0002621\n"
+                "        condition_status:\n"
+                "          value: PRESENT\n",
+                encoding="utf-8",
+            )
+            paddx_summary = {
+                "type": "categorical",
+                "n_total": 100,
+                "n_valid": 10,
+                "n_missing": 90,
+                "distribution": {
+                    "1": {"n": 6, "pct": 6.0},
+                    "2": {"n": 4, "pct": 4.0},
+                },
+            }
+            matches = build_variable_crosswalk(
+                variables_by_name={"PADDX": {"pht003405": paddx_summary}},
+                harmonized_vars={
+                    "condition_HP:0004417": {"type": "categorical"},
+                    "condition_HP:0002621": {"type": "categorical"},
+                },
+                yaml_dir=yaml_dir,
+                cache_dir=tmp_path,
+                source_doc={"variables_by_pht": {"pht003405": {"PADDX": paddx_summary}}},
+            )
+
+        matched_keys = {m["harmonized_key"] for m in matches}
+        self.assertIn("condition_HP:0004417", matched_keys)
+        self.assertIn("condition_HP:0002621", matched_keys)
+        # The concept PHV is used as the primary PHV (concept_phv == phv_id)
+        for m in matches:
+            entries = m.get("_yaml_entries", [])
+            self.assertTrue(
+                any(e.get("phv_id") == "phv000091" for e in entries),
+                f"Expected phv000091 as primary PHV in {m['harmonized_key']}",
+            )
+
     def test_separate_concept_and_value_phvs_are_not_summarized_as_one_source(self) -> None:
         entry = {
             "yaml_file": "joint_diabetes.yaml",

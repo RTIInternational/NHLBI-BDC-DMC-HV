@@ -545,13 +545,22 @@ def _extract_crosswalk_from_class_derivations(
 
         value_phvs = [p for p in primary_phvs if p["is_value_slot"]]
         if not value_phvs:
-            # No value PHV found — value_quantity/condition_status/etc. is absent
-            # or commented out.  Emitting an entry here would use a structural PHV
-            # (e.g. associated_participant / SUBJID) as the source key, producing a
-            # misleading "subjid: N loss" C2 label instead of the correct
-            # "harmonized variable not matched in source" diagnostic.  Skip so the
-            # unmatched-harmonized reporter surfaces the concept CURIE directly.
-            continue
+            # Condition blocks may have a coded concept PHV (e.g. PADDX or
+            # STROKEDX via value_mappings) but a fixed condition_status value
+            # such as 'PRESENT'.  The concept PHV is the driving variable in
+            # that case — promote it to primary so the crosswalk builds
+            # per-concept source entries (concept_phv == phv_id path in
+            # build_expected_summary).  This resolves the "no YAML block
+            # proposed this concept" false positive for such blocks (#670).
+            concept_role_phvs = [p for p in primary_phvs if p.get("role") == "concept"]
+            if concept_role_phvs:
+                value_phvs = concept_role_phvs
+            else:
+                # No value PHV and no concept PHV — would use a structural PHV
+                # (e.g. associated_participant / SUBJID) as the source key,
+                # producing a misleading "subjid: N loss" C2 label.  Skip so
+                # the unmatched-harmonized reporter surfaces the concept CURIE.
+                continue
         primary = value_phvs[0]
 
         source_phv_roles: list[dict[str, str]] = []
