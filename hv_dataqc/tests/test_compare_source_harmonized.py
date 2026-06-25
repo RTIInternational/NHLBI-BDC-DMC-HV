@@ -69,6 +69,7 @@ from hv_dataqc.compare.crosswalk import (  # noqa: E402
     _build_variables_by_name,
     _pick_single_pht_summary,
 )
+from hv_dataqc.compare.yaml_crosswalk import build_yaml_crosswalk  # noqa: E402
 from hv_dataqc.compare.checks.visit_n import _synthesize_source_visit_counts, _build_visit_label_crosswalk  # noqa: E402
 from hv_dataqc.extract_harmonized.extract_harmonized_summaries import (  # noqa: E402
     merge_variable_summaries,
@@ -3150,6 +3151,39 @@ class MultiBlockVarLabelTests(unittest.TestCase):
         self.assertEqual(len(matches), 1)
         self.assertEqual(len(matches[0]["_source_keys"]), 1)
         self.assertEqual(matches[0]["_source_keys"], ["ecga271"])
+
+    def test_block_with_no_value_phv_is_skipped_not_mislabelled(self) -> None:
+        """A YAML block where value_quantity/condition_status is absent (commented out)
+        must not produce a crosswalk entry labelled with the participant-ID PHV (#644).
+
+        Tested via build_yaml_crosswalk (one level below build_variable_crosswalk)
+        so we can assert 0 entries without triggering the CrosswalkBuildError that
+        fires when the whole yaml_dir is empty."""
+        # Only associated_participant mapped; condition_status absent — simulates
+        # a block where value_quantity is commented out pending unit-conversion work.
+        no_value_yaml = """\
+- class_derivations:
+    Condition:
+      populated_from: pht000001
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00000001
+        condition_concept:
+          value: MONDO:test_afib
+"""
+        phv_names = {"phv00000001": "subj_id", "phv00000002": "ecga271"}
+
+        with tempfile.TemporaryDirectory() as tmp:
+            yaml_dir = Path(tmp) / "yaml"
+            yaml_dir.mkdir()
+            (yaml_dir / "afib.yaml").write_text(no_value_yaml, encoding="utf-8")
+            entries = build_yaml_crosswalk(yaml_dir, phv_names)
+
+        # The block produces no entries — it was skipped rather than emitting
+        # an entry labelled with the participant-ID variable.
+        self.assertEqual(entries, [])
+        source_keys = [e["source_key"] for e in entries]
+        self.assertNotIn("subj_id", source_keys)
 
 
 if __name__ == "__main__":

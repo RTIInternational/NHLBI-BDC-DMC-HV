@@ -542,7 +542,15 @@ def _extract_crosswalk_from_class_derivations(
         prefix = ENTITY_PREFIX.get(entity_class, f"{entity_class.lower()}_")
 
         value_phvs = [p for p in primary_phvs if p["is_value_slot"]]
-        primary = value_phvs[0] if value_phvs else primary_phvs[0]
+        if not value_phvs:
+            # No value PHV found — value_quantity/condition_status/etc. is absent
+            # or commented out.  Emitting an entry here would use a structural PHV
+            # (e.g. associated_participant / SUBJID) as the source key, producing a
+            # misleading "subjid: N loss" C2 label instead of the correct
+            # "harmonized variable not matched in source" diagnostic.  Skip so the
+            # unmatched-harmonized reporter surfaces the concept CURIE directly.
+            continue
+        primary = value_phvs[0]
 
         source_phv_roles: list[dict[str, str]] = []
         comparison_phvs: set[str] = set()
