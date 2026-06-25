@@ -32,12 +32,24 @@ def generate_markdown_report(
     yaml_dir: str | None = None,
 ) -> str:
     """Generate a human-readable Markdown report."""
-    # Extract dbGaP study ID (e.g. phs000280.v8.p2) from source directory names
+    # Extract dbGaP study ID (e.g. phs000280.v8.p2) from source directory names.
+    # Two directory naming conventions exist on SB:
+    #   BDC TOPMed:   nih-nhlbi-topmed-parent-hchs-sol-phs000810-v2-r1-c1
+    #   PilotParent:  parent-CHS_DS-CVD-MDS_-phs000287-v7-p1-c3
+    # The TOPMed form uses -r<N>-c<N>; the PilotParent form uses -p<N>-c<N>.
+    # Extract the participant-set number from the directory when available rather
+    # than hardcoding it.
     study_id_full = ""
     for sd in source_meta.get("source_dirs", []):
+        # BDC TOPMed form: phs000810-v2-r1-c1
         m = re.search(r'(phs\d+)[-_]v(\d+)[-_]r\d+[-_]c\d+', sd)
         if m:
             study_id_full = f"{m.group(1)}.v{m.group(2)}.p2"
+            break
+        # PilotParent form: phs000287-v7-p1-c3
+        m = re.search(r'(phs\d+)[-_]v(\d+)[-_]p(\d+)[-_]c\d+', sd)
+        if m:
+            study_id_full = f"{m.group(1)}.v{m.group(2)}.p{m.group(3)}"
             break
     dbgap_datasets_url = (
         f"https://dbgap.ncbi.nlm.nih.gov/beta/study/{study_id_full}/#phenotype-datasets"

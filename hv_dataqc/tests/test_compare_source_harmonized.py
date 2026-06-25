@@ -2983,5 +2983,39 @@ class JointDistributionOptionBTests(unittest.TestCase):
         self.assertEqual(result["_comparison_confidence"], "unsupported")
 
 
+class RenderDbGaPStudyIdTests(unittest.TestCase):
+    """Tests for the study_id extraction logic in generate_markdown_report (#643)."""
+
+    def _report(self, source_dirs: list[str]) -> str:
+        from hv_dataqc.compare.render import generate_markdown_report
+        return generate_markdown_report(
+            results=[],
+            cohort="TEST",
+            source_meta={"source_dirs": source_dirs, "cohort": "TEST"},
+            harmonized_meta={},
+        )
+
+    def test_bdc_topmed_form_resolves_study_id(self) -> None:
+        """BDC TOPMed directory (phs…-v…-r…-c…) should produce a dbGaP link."""
+        report = self._report(["nih-nhlbi-topmed-parent-hchs-sol-phs000810-v2-r1-c1"])
+        self.assertIn("phs000810.v2.p2", report)
+
+    def test_pilotparent_form_resolves_study_id(self) -> None:
+        """PilotParent directory (phs…-v…-p…-c…) should produce a dbGaP link."""
+        report = self._report(["parent-CHS_DS-CVD-MDS_-phs000287-v7-p1-c3"])
+        self.assertIn("phs000287.v7.p1", report)
+
+    def test_pilotparent_participant_set_extracted_from_dir(self) -> None:
+        """Participant set number should come from the directory, not be hardcoded."""
+        report = self._report(["parent-ARIC-phs000280-v9-p3-c1"])
+        self.assertIn("phs000280.v9.p3", report)
+
+    def test_no_matching_dir_produces_no_dbgap_link(self) -> None:
+        """When no recognised directory pattern is present, no dbGaP link is rendered."""
+        report = self._report(["some-unrecognised-directory"])
+        self.assertNotIn("dbgap.ncbi.nlm.nih.gov", report)
+        self.assertNotIn("dbGaP", report)
+
+
 if __name__ == "__main__":
     unittest.main()
