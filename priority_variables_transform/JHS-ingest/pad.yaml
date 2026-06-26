@@ -22,7 +22,7 @@
           value: "MONDO:0005386"
           range: string
         condition_status:
-          expr: 'case(({phv00401122} < 0.9, "PRESENT"), (True, "ABSENT"))'
+          expr: 'case(({phv00401122} < 0.9, "PRESENT"), ({phv00401122} >= 0.9, "ABSENT"))'
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
