@@ -1,0 +1,43 @@
+# Known false positives and expected anomalies for JHS comparison reports.
+#
+# Last reviewed: 2026-06-27
+# Report reviewed: jhs_comparison_report_20260626T141135Z.md
+
+known_issues:
+
+  # ── condition_MISSING_CONCEPT: C2 FAIL ───────────────────────────────────
+  - checks: [C2]
+    variable_key: "condition_MISSING_CONCEPT"
+    yaml_file: diabetes.yaml
+    status: expected_behavior
+    root_cause: sparse_variable
+    summary: >
+      701 null diab3cat rows across three exam tables produce Condition records
+      with null condition_concept; these are structural nulls (participants
+      attended the exam but had no diabetes categorization recorded).
+    detail: >
+      diabetes.yaml contains three diab3cat blocks (one per exam) using
+      case() expressions covering codes 0 (Non-Diabetic), 1 (Pre-Diabetic),
+      2 (Diabetic). When diab3cat is null for a participant, both
+      condition_concept and condition_status resolve to null. dm-bip still
+      emits the Condition row (participant/visit UUIDs are always non-null),
+      resulting in a null condition_concept in the harmonized output.
+
+      Null diab3cat counts from dbGaP var_reports:
+        phv00401131 (pht008729, Exam 1): n=3,849 valid, nulls=34 (0.9%)
+        phv00401319 (pht008730, Exam 2): n=2,464 valid, nulls=642 (26.1%)
+        phv00401422 (pht008731, Exam 3): n=2,792 valid, nulls=25 (0.9%)
+      Total: 701 null rows -> 701 condition_MISSING_CONCEPT records.
+
+      The 642 Exam 2 nulls (26%) are structurally expected: pht008730 contains
+      all participants present at Exam 2, but diab3cat was not computed for
+      participants who did not complete the full diabetes assessment at that
+      visit. The integer case() fix (commit 44e98e38) correctly handles
+      non-null values (codes 0/1/2 now map correctly), but null rows remain
+      because dm-bip does not drop Condition records with null concept when
+      other structural slots (participant UUID, visit UUID) are non-null.
+
+      Removing the diab3cat blocks is not an acceptable fix since they are
+      the sole source of MONDO:0006920 (prediabetes) records for JHS.
+    related_issues: [680, 684]
+    confirmed_date: "2026-06-27"
