@@ -136,6 +136,25 @@ def _close_file_logging() -> None:
 # Joint distribution helpers
 # ---------------------------------------------------------------------------
 
+def scope_columns_to_yaml_phvs(
+    yaml_phvs: set[str], phv_name_map: dict[str, str]
+) -> set[str]:
+    """Resolve spec-referenced PHV accessions to lowercased source column names.
+
+    Used to restrict variable summarization to only the columns the transform
+    specs reference.  Both QAQC (which reads ``variables_by_pht`` through the
+    spec crosswalk) and the spec-sourced S4 only look up spec PHVs, so dropping
+    every other column is safe — and avoids summarizing tens of thousands of
+    unused columns (FHS: ~90k columns -> a few hundred), which exhausts memory.
+
+    Each PHV is resolved to its column name via *phv_name_map*, falling back to
+    the PHV id itself when unresolved (mirroring the crosstab path's
+    ``phv_name_map.get(phv, phv)``).  The joint-distribution crosstabs read the
+    full DataFrame independently, so they are unaffected by this filter.
+    """
+    return {(phv_name_map.get(phv, phv)).lower() for phv in yaml_phvs}
+
+
 def _normalize_dist_key(value: Any) -> str:
     """Normalize a pandas cell value to a consistent string key for crosstabs.
 
@@ -649,6 +668,12 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
                         "and computes pairwise crosstabs during extraction. "
                         "Adds 'joint_distributions_by_pht' to the output JSON, enabling "
                         "exact (non-SKIP) comparisons for multi-PHV conditions in compare.")
+    p.add_argument("--no-scope-to-yaml", action="store_true",
+                   help="Disable the default behavior of restricting summarized columns to "
+                        "the PHVs referenced by --yaml-dir. With --yaml-dir and no explicit "
+                        "--phv-list, the extractor summarizes only spec-referenced PHVs "
+                        "(far fewer columns, much less memory). Pass this to summarize every "
+                        "column instead (the legacy full extract).")
 
     # --- output ---
     p.add_argument("--output-dir", metavar="DIR", default=None,
@@ -794,7 +819,14 @@ def main(argv: list[str] | None = None) -> None:
         phv_filter_set: set[str] = set()
         if args.phv_list:
             phv_filter_set = {c.strip().lower() for c in args.phv_list}
-            log.info("Column filter active: %d columns", len(phv_filter_set))
+            log.info("Column filter active (explicit --phv-list): %d columns", len(phv_filter_set))
+        elif yaml_phvs and not args.no_scope_to_yaml:
+            phv_filter_set = scope_columns_to_yaml_phvs(yaml_phvs, phv_name_map)
+            log.info(
+                "Column filter active (scoped to --yaml-dir PHVs): %d spec PHV(s) -> %d column name(s). "
+                "Pass --no-scope-to-yaml for the full extract.",
+                len(yaml_phvs), len(phv_filter_set),
+            )
 
         # ------------------------------------------------------------------
         # 5. Summarize variables across all pht frames
