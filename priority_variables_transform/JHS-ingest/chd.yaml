@@ -9,7 +9,10 @@
         condition_concept:
           value: MONDO:0005010
         condition_status:
-          expr: "case(({phv00401210} == 0, 'ABSENT'), ({phv00401210} == 1, 'PRESENT'))"
+          populated_from: phv00401210
+          value_mappings:
+            'No': ABSENT
+            'Yes': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
         associated_evidence:
@@ -27,7 +30,10 @@
         condition_concept:
           value: MONDO:0005010
         condition_status:
-          expr: "case(({phv00401475} == 0, 'ABSENT'), ({phv00401475} == 1, 'PRESENT'))"
+          populated_from: phv00401475
+          value_mappings:
+            'No': ABSENT
+            'Yes': PRESENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
         associated_evidence:

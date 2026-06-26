@@ -37,7 +37,10 @@
         condition_concept:
           value: HP:0000822
         condition_status:
-          expr: "case(({phv00401121} == 0, 'ABSENT'), ({phv00401121} == 1, 'PRESENT'))"
+          populated_from: phv00401121
+          value_mappings:
+            'No': ABSENT
+            'Yes': PRESENT
         condition_provenance:
           value: CASE_REPORT_FORM
         associated_evidence:
@@ -55,7 +58,10 @@
         condition_concept:
           value: HP:0000822
         condition_status:
-          expr: "case(({phv00401311} == 0, 'ABSENT'), ({phv00401311} == 1, 'PRESENT'))"
+          populated_from: phv00401311
+          value_mappings:
+            'No': ABSENT
+            'Yes': PRESENT
         condition_provenance:
           value: CASE_REPORT_FORM
         associated_evidence:
@@ -73,7 +79,10 @@
         condition_concept:
           value: HP:0000822
         condition_status:
-          expr: "case(({phv00401412} == 0, 'ABSENT'), ({phv00401412} == 1, 'PRESENT'))"
+          populated_from: phv00401412
+          value_mappings:
+            'No': ABSENT
+            'Yes': PRESENT
         condition_provenance:
           value: CASE_REPORT_FORM
         associated_evidence:

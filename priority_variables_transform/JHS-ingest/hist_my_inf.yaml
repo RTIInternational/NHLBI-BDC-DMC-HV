@@ -57,7 +57,10 @@
         condition_concept:
           value: MONDO:0005068
         condition_status:
-          expr: "case(({phv00401208} == 0, 'ABSENT'), ({phv00401208} == 1, 'HISTORICAL'))"
+          populated_from: phv00401208
+          value_mappings:
+            'No': ABSENT
+            'Yes': HISTORICAL
         condition_provenance:
           value: PATIENT_SELF_REPORT
         associated_evidence:
@@ -75,7 +78,10 @@
         condition_concept:
           value: MONDO:0005068
         condition_status:
-          expr: "case(({phv00401346} == 0, 'ABSENT'), ({phv00401346} == 1, 'HISTORICAL'))"
+          populated_from: phv00401346
+          value_mappings:
+            'No': ABSENT
+            'Yes': HISTORICAL
         condition_provenance:
           value: PATIENT_SELF_REPORT
         associated_evidence:
@@ -93,7 +99,10 @@
         condition_concept:
           value: MONDO:0005068
         condition_status:
-          expr: "case(({phv00401473} == 0, 'ABSENT'), ({phv00401473} == 1, 'HISTORICAL'))"
+          populated_from: phv00401473
+          value_mappings:
+            'No': ABSENT
+            'Yes': HISTORICAL
         condition_provenance:
           value: PATIENT_SELF_REPORT
         associated_evidence:
