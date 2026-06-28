@@ -991,6 +991,34 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         self.assertEqual(results[0].status, "INFO")
         self.assertIn("missing_sentinel_codes", results[0].detail)
 
+    def test_c12_unobserved_dbgap_code_is_info_not_warn(self) -> None:
+        """Codes defined in dbGaP but never observed in source data → INFO, not WARN."""
+        match = {
+            "_yaml_entries": [
+                {
+                    "yaml_file": "afib.yaml",
+                    "phv_id": "phv1",
+                    "value_map": {"N": "HP:0005110", "Y": "HP:0005110"},
+                    "source_summary": {
+                        "type": "categorical",
+                        # Only N and Y observed in actual data
+                        "distribution": {"N": {"n": 800}, "Y": {"n": 120}},
+                    },
+                }
+            ]
+        }
+        # dbGaP data dict defines A/K/M/R/U/N/Y but only N and Y appear in data
+        results = check_c12_value_mapping_coverage(
+            match, {"phv1": {"A", "K", "M", "N", "R", "U", "Y"}}
+        )
+
+        self.assertEqual(results[0].status, "INFO")
+        self.assertIn("missing_unobserved_codes", results[0].detail)
+        self.assertEqual(
+            sorted(results[0].detail["missing_unobserved_codes"]), ["A", "K", "M", "R", "U"]
+        )
+        self.assertNotIn("missing_semantic_codes", results[0].detail)
+
     def test_c12_uses_concept_phv_summary_for_concept_value_mappings(self) -> None:
         match = {
             "_source_summaries_by_phv": {

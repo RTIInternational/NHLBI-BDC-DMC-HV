@@ -14,6 +14,7 @@ from __future__ import annotations
 import re
 from collections import defaultdict
 from datetime import datetime, timezone
+from pathlib import Path
 
 from hv_dataqc.compare._common import CheckResult, md_escape
 
@@ -69,9 +70,13 @@ def generate_markdown_report(
     ]
     if source_meta.get("input_file"):
         lines.append(f"**Source file:** `{source_meta['input_file']}`")
+    for sd in source_meta.get("source_dirs", []):
+        lines.append(f"**Source dir:** `{Path(sd).name}`")
     lines.append(f"**Harmonized:** {harmonized_meta.get('source', '?')}")
     if harmonized_meta.get("input_file"):
         lines.append(f"**Harmonized file:** `{harmonized_meta['input_file']}`")
+    for md in harmonized_meta.get("mapped_data_dirs", []):
+        lines.append(f"**Harmonized dir:** `{Path(md).name}`")
     if yaml_dir:
         lines.append(f"**YAML dir:** `{yaml_dir}`")
     if study_id_full:
