@@ -68,7 +68,7 @@
                 populated_from: pht002198
                 slot_derivations:
                   value_decimal:
-                    expr: 'case(({phv00160541} == -333, "LLOD"), ({phv00160541} == -555, "ULOD"), (True, {phv00160540}))'
+                    expr: 'case(({phv00160540} != None and {phv00160541} != -333 and {phv00160541} != -555, {phv00160540}), ({phv00160541} == -333, "LLOD"), ({phv00160541} == -555, "ULOD"))'
                   unit:
                     value: pg/mL
                     range: string

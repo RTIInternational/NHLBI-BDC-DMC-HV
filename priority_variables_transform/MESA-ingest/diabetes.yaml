@@ -10,7 +10,7 @@
           value: MONDO:0005015
           range: string
         condition_status:
-          populated_from: phv00083005
+          expr: "str({phv00083005})"
           value_mappings:
             '0': ABSENT
             '1': PRESENT
@@ -32,14 +32,14 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         condition_concept:
-          populated_from: phv00082652
+          expr: "str({phv00082652})"
           value_mappings:
             '0': MONDO:0005015
             '1': HP:0025691
             '2': MONDO:0005015
             '3': MONDO:0005015
         condition_status:
-          populated_from: phv00082652
+          expr: "str({phv00082652})"
           value_mappings:
             '0': ABSENT
             '1': PRESENT
@@ -66,7 +66,7 @@
           value: MONDO:0005015
           range: string
         condition_status:
-          populated_from: phv00085242
+          expr: "str({phv00085242})"
           value_mappings:
             '0': ABSENT
             '1': PRESENT
@@ -89,14 +89,14 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         condition_concept:
-          populated_from: phv00084456
+          expr: "str({phv00084456})"
           value_mappings:
             '0': MONDO:0005015
             '1': HP:0025691
             '2': MONDO:0005015
             '3': MONDO:0005015
         condition_status:
-          populated_from: phv00084456
+          expr: "str({phv00084456})"
           value_mappings:
             '0': ABSENT
             '1': PRESENT

@@ -10,7 +10,7 @@
           value: OMOP:4336464
           range: string
         condition_status:
-          populated_from: phv00082876
+          expr: "str({phv00082876})"
           value_mappings:
             '0': ABSENT
             '1': PRESENT
@@ -60,7 +60,7 @@
           value: OMOP:4336464
           range: string
         condition_status:
-          populated_from: phv00082876
+          expr: "str({phv00082876})"
           value_mappings:
             '0': ABSENT
             '1': PRESENT

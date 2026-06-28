@@ -1,0 +1,28 @@
+cohort: MESA
+known_issues:
+
+  # ── dm031c C2 FAIL ────────────────────────────────────────────────────────
+  - checks: [C2]
+    variable_key: "dm031c"
+    yaml_file: diabetes.yaml
+    status: false_positive
+    root_cause: multi_concept_attribution
+    summary: >
+      dm031c maps a single source variable to multiple concepts
+      (MONDO:0005015 for codes 0/2/3; HP:0025691 for code 1). The C2 tool
+      tracks dm031c against HP:0025691 only, so codes 0/2/3 records appear
+      as N-loss (-82.8%). All source rows ARE harmonized correctly.
+    detail: >
+      dm031c (Diabetes Mellitus by 2003 ADA Fasting Criteria Algorithm)
+      encodes 4 categories: 0=NORMAL, 1=IFG (prediabetes), 2=UNTREATED
+      DIABETES, 3=TREATED DIABETES. diabetes.yaml creates one Condition
+      record per row, routing codes 0/2/3 to MONDO:0005015 (diabetes) and
+      code 1 to HP:0025691 (prediabetes/IFG).
+      C2 counts all dm031c source records (n~29,398) but only validates the
+      HP:0025691 harmonized pool (n~5,042 = code-1 rows). The 24,356 codes
+      0/2/3 rows are NOT lost -- they are harmonized as MONDO:0005015
+      Conditions (contributing to the diabet1 pool), but C2 counts them as
+      missing from dm031c. This is a structural limitation of C2's
+      per-concept attribution model for multi-concept source variables.
+    related_issues: [661]
+    confirmed_date: "2026-06-28"
