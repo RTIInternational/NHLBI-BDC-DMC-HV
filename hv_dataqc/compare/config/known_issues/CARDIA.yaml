@@ -1,0 +1,122 @@
+cohort: CARDIA
+known_issues:
+
+  # ── Multi-block Condition design (#651) ──────────────────────────────────
+  # Several CARDIA condition YAMLs create multiple Condition records per
+  # participant per table (one per evidence indicator), while C2 counts
+  # each source table's contribution once. This is intentional design:
+  # each indicator (e.g., ever-had / still-have / doctor-diagnosed) is a
+  # distinct clinical observation. The resulting N gain in C2 is expected.
+
+  - checks: [C2]
+    variable_key: "a12cbron"
+    yaml_file: chr_bronchitis.yaml
+    status: false_positive
+    root_cause: multi_block_condition_design
+    summary: >
+      pht001575 (Year 0) has 3 blocks (a12cbron ever-had, a12cbstl
+      still-have, a12cbdoc doctor-diagnosed), each generating one
+      Condition record per participant. C2 counts source table once;
+      harmonized produces up to 3× records. N gain (~21.9%) is expected
+      behavior for the multi-evidence-indicator design.
+    related_issues: [651]
+    confirmed_date: "2026-06-28"
+
+  - checks: [C2]
+    variable_key: "a08diab"
+    yaml_file: diabetes.yaml
+    status: false_positive
+    root_cause: multi_block_condition_design
+    summary: >
+      pht001869 and pht001871 (Year 20) each have 6 blocks covering
+      self-report, doctor-diagnosed, medication, fasting glucose, glucose
+      tolerance, and algorithm-derived diabetes indicators. Each generates
+      one Condition record per participant per indicator. N gain (~46.0%)
+      is expected.
+    related_issues: [651]
+    confirmed_date: "2026-06-28"
+
+  - checks: [C2]
+    variable_key: "a12emph"
+    yaml_file: emphysema.yaml
+    status: false_positive
+    root_cause: multi_block_condition_design
+    summary: >
+      pht001575 (Year 0) has 3 blocks (a12emph, a12emstl, a12emdoc);
+      pht001811 (Year 15) has 2 blocks (primary f08emph + PRESENT-only
+      secondary). Each generates one Condition record. N gain (~42.6%)
+      is expected.
+    related_issues: [651]
+    confirmed_date: "2026-06-28"
+
+  # ── Unknown-code '8' → UNKNOWN design (#653) ─────────────────────────────
+  # fam_stroke, hyperten, and stroke_isch_atk map source code '8' (don't
+  # know / refused) to UNKNOWN condition_status. The source extraction
+  # treats '8' as null/missing → excluded from source n_valid. Harmonized
+  # maps '8' to non-null UNKNOWN → included in harmonized n_valid.
+  # The N gain is the count of code-8 rows. Design intent confirmed:
+  # capturing patient-reported uncertainty as UNKNOWN is clinically
+  # meaningful; it preserves the observation rather than discarding it.
+
+  - checks: [C2]
+    variable_key: "a11mstrk"
+    yaml_file: fam_stroke.yaml
+    status: false_positive
+    root_cause: unknown_code_to_UNKNOWN_status
+    summary: >
+      fam_stroke.yaml maps code '8' (don't know) and 'M' (missing) to
+      UNKNOWN condition_status. Source treats these as null (n_valid=26,014);
+      harmonized includes them (n_valid=29,133, +12.0%). Additional factor:
+      3-block design (mother/father/sibling) multiplies records per
+      participant. Both are intentional design decisions.
+    related_issues: [653]
+    confirmed_date: "2026-06-28"
+
+  - checks: [C2]
+    variable_key: "a09hbpg1"
+    yaml_file: hyperten.yaml
+    status: false_positive
+    root_cause: unknown_code_to_UNKNOWN_status
+    summary: >
+      hyperten.yaml maps code '8' (don't know) to UNKNOWN for pht001656,
+      pht001715, pht001749, pht001761, pht001811 (Years 5, 7, 10, 15).
+      Source treats '8' as null; harmonized maps to UNKNOWN. The N gain
+      of ~51.0% (11,116 → 16,787) is almost entirely accounted for by the
+      ~28.4% missing-rate delta × ~19,981 total records = ~5,673 code-8 rows.
+    related_issues: [653]
+    confirmed_date: "2026-06-28"
+
+  - checks: [C2]
+    variable_key: "y01tia"
+    yaml_file: stroke_isch_atk.yaml
+    status: false_positive
+    root_cause: unknown_code_to_UNKNOWN_status
+    summary: >
+      stroke_isch_atk.yaml maps code '8' (don't know) to UNKNOWN for
+      pht001715, pht001761, pht001811 (Years 7, 10, 15). Source treats
+      '8' as null; harmonized maps to UNKNOWN (+19.8%, 13,953 → 16,717).
+      Secondary factor: pht001870 (CARDIA HOSPITALIZATIONS DIAGNOSIS)
+      generates ~263 records not in the source extraction pool — this is a
+      source extractor scope gap, not a YAML defect.
+    related_issues: [653]
+    confirmed_date: "2026-06-28"
+
+  # ── fam_income.yaml value_concept category mismatch (#652 Bug 2) ─────────
+  - checks: [C2]
+    variable_key: "c03incom"
+    yaml_file: fam_income.yaml
+    status: false_positive
+    root_cause: value_concept_not_in_value_enum
+    summary: >
+      C2/C7 category check reports source categories ['0.0'..'9.0'] missing
+      from harmonized. All 4 income tables are reported_type=encoded with
+      calculated_type=enum_integer (confirmed from var_report metadata) —
+      the var_report shows decoded text labels for display, but the BDC
+      extract stores integer codes. value_mappings have been added to all
+      4 blocks converting integer codes to dollar-range text labels (#652).
+      The C2/C7 category check failure is a tool limitation: income is
+      stored in value_quantity.value_concept, but the check looks at
+      value_enum. This cannot be resolved without restructuring the observation
+      model; document as false_positive for this check.
+    related_issues: [652]
+    confirmed_date: "2026-06-28"

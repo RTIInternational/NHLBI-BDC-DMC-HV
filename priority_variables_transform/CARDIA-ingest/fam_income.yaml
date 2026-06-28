@@ -18,6 +18,17 @@
                 slot_derivations:
                   value_concept:
                     populated_from: phv00115383
+                    value_mappings:
+                      '1': Less than $5,000
+                      '2': $5,000 through $11,999
+                      '3': $12,000 through $15,999
+                      '4': $16,000 through $24,999
+                      '5': $25,000 through $34,999
+                      '6': $35,000 through $49,999
+                      '7': $50,000 through $74,999
+                      '8': $75,000 and greater
+                      '9': Don't know
+                      '10': No response
                   unit:
                     value: USD
                     range: string
@@ -41,6 +52,17 @@
                 slot_derivations:
                   value_concept:
                     populated_from: phv00116607
+                    value_mappings:
+                      '0': No response
+                      '1': Less than $5,000
+                      '2': $5,000 through $11,999
+                      '3': $12,000 through $15,999
+                      '4': $16,000 through $24,999
+                      '5': $25,000 through $34,999
+                      '6': $35,000 through $49,999
+                      '7': $50,000 through $74,999
+                      '8': $75,000 and greater
+                      '9': Don't know
                   unit:
                     value: USD
                     range: string
@@ -64,6 +86,17 @@
                 slot_derivations:
                   value_concept:
                     populated_from: phv00118339
+                    value_mappings:
+                      '0': No response
+                      '1': Less than $5,000
+                      '2': $5,000 through $11,999
+                      '3': $12,000 through $15,999
+                      '4': $16,000 through $24,999
+                      '5': $25,000 through $34,999
+                      '6': $35,000 through $49,999
+                      '7': $50,000 through $74,999
+                      '8': $75,000 and greater
+                      '9': Don't know
                   unit:
                     value: USD
                     range: string
@@ -86,7 +119,19 @@
                 populated_from: pht001855
                 slot_derivations:
                   value_concept:
-                    populated_from: phv00120947
+                    expr: "case(({phv00120947} != None, str({phv00120947})))"
+                    value_mappings:
+                      '1': Less than $5,000
+                      '2': $5,000 through $11,999
+                      '3': $12,000 through $15,999
+                      '4': $16,000 through $24,999
+                      '5': $25,000 through $34,999
+                      '6': $35,000 through $49,999
+                      '7': $50,000 through $74,999
+                      '8': Don't know
+                      '9': No response
+                      '10': $75,000 through $99,999
+                      '11': $100,000 and greater
                   unit:
-                    value: USD
+                    expr: "case(({phv00120947} != None, 'USD'))"
                     range: string
