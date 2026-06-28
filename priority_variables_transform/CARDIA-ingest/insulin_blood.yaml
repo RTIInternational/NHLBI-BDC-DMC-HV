@@ -6,26 +6,24 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00113697}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113697}) + ":CARDIA YEAR 0")'
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OBA:2060174
         method_type:
           value: "blood assay"
-#        value_quantity:
-#          object_derivations:
-#          - class_derivations:
-#              Quantity:
-#                populated_from: pht001587
-#                slot_derivations:
-#                  value_decimal:
-#                    populated_from: phv00113698
-#                    unit_conversion:
-#                      source_unit: "u[IU]/mL"
-#                      target_unit: "pmol/L"
-#                  unit:
-#                    value: "pmol/L"
-#                    range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001587
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00113698
+                    unit_conversion:
+                      source_unit: "u[IU]/mL"
+                      target_unit: "pmol/L"
+                  unit:
+                    value: "pmol/L"
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001740
@@ -34,26 +32,24 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00117564}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00117564}) + ":CARDIA YEAR 7")'
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OBA:2060174
         method_type:
           value: "blood assay"
-#        value_quantity:
-#          object_derivations:
-#          - class_derivations:
-#              Quantity:
-#                populated_from: pht001740
-#                slot_derivations:
-#                  value_decimal:
-#                    populated_from: phv00117565
-#                    unit_conversion:
-#                      source_unit: "u[IU]/mL"
-#                      target_unit: "pmol/L"
-#                  unit:
-#                    value: "pmol/L"
-#                    range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001740
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00117565
+                    unit_conversion:
+                      source_unit: "u[IU]/mL"
+                      target_unit: "pmol/L"
+                  unit:
+                    value: "pmol/L"
+                    range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001740
@@ -62,23 +58,21 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00117564}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00117564}) + ":CARDIA YEAR 7")'
-        # age_at_observation:
-          # expr: "{nan} * 365"
         observation_type:
           value: OBA:2060174
         method_type:
           value: "blood assay"
-#        value_quantity:
-#          object_derivations:
-#          - class_derivations:
-#              Quantity:
-#                populated_from: pht001740
-#                slot_derivations:
-#                  value_decimal:
-#                    populated_from: phv00117566
-#                    unit_conversion:
-#                      source_unit: "u[IU]/mL"
-#                      target_unit: "pmol/L"
-#                  unit:
-#                    value: "pmol/L"
-#                    range: string
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001740
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00117566
+                    unit_conversion:
+                      source_unit: "u[IU]/mL"
+                      target_unit: "pmol/L"
+                  unit:
+                    value: "pmol/L"
+                    range: string
