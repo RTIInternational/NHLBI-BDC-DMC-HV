@@ -26,3 +26,76 @@ known_issues:
       per-concept attribution model for multi-concept source variables.
     related_issues: [661]
     confirmed_date: "2026-06-28"
+
+  # ── condition_MISSING_CONCEPT C2 FAIL ────────────────────────────────────
+  - checks: [C2]
+    variable_key: "condition_MISSING_CONCEPT"
+    yaml_file: diabetes.yaml
+    status: false_positive
+    root_cause: null_source_value_no_concept_match
+    summary: >
+      diabetes.yaml null-value rows produce Condition records with no
+      matched concept (condition_MISSING_CONCEPT). C2 flags these as
+      unmatched harmonized records. This is correct pipeline behavior:
+      null source rows produce a sentinel concept to avoid silent data loss.
+    confirmed_date: "2026-06-28"
+
+  # ── waistcm C4/C6 FAIL ───────────────────────────────────────────────────
+  - checks: [C4, C6]
+    variable_key: "waistcm1+waistcm2+waistcm3+waistcm4+waistcmf+waistcm5"
+    yaml_file: waist_circ.yaml
+    status: false_positive
+    root_cause: crosswalk_phv_collision
+    summary: >
+      phv00082687 (waistcm1) appears in both waist_circ.yaml (as
+      populated_from, producing OBA:1001085 circumference records ~98 cm)
+      and waist_hip.yaml (as numerator of waist÷hip ratio, producing
+      OMOP:4087501 records ~0.93). The C4/C6 crosswalk overwrites the
+      waist_circ PHV attribution with the waist_hip block, so the
+      harmonized pool for the waistcm source group resolves to ratio
+      records (mean ~0.93) rather than circumference records (mean ~99 cm).
+      Both YAML files are semantically correct; this is a crosswalk tool
+      limitation for PHVs shared across multiple YAML files.
+    confirmed_date: "2026-06-28"
+
+  # ── alcohol_servings C4/C6 FAIL ──────────────────────────────────────────
+  - checks: [C4, C6]
+    variable_key: "alcwk1c+rwinewk2+rwinewk3+rwinewk4+alcwkcf+rwinewk5"
+    yaml_file: alcohol_servings.yaml
+    status: false_positive
+    root_cause: null_exclusion_population_mismatch
+    summary: >
+      Source C4 mean (2.90 drinks/wk) is computed over all participants
+      including non-drinkers (null → 0). Harmonized records are only
+      produced for rows where the alcohol expression is non-null, so the
+      harmonized pool contains drinkers only (mean ~5.6 drinks/wk).
+      The harmonized values are correct; the apparent doubling is a
+      methodological artifact of C4 comparing different sub-populations.
+    confirmed_date: "2026-06-28"
+
+  # ── mcv5 C4/C6 SD FAIL ───────────────────────────────────────────────────
+  - checks: [C4, C6]
+    variable_key: "mcv5"
+    yaml_file: mcv.yaml
+    status: false_positive
+    root_cause: sentinel_value_clipping
+    summary: >
+      mcv.yaml clips values outside [50, 130] fL to None. Source SD of
+      32.70 fL indicates sentinel/flag values (e.g. -333, 999) in the raw
+      data that inflate the source distribution. After clipping, harmonized
+      SD of 5.93 fL is clinically realistic for MCV. Mean difference is
+      only 1.4%. The SD mismatch correctly reflects removal of non-physiologic
+      outliers; it is not a data loss issue.
+    confirmed_date: "2026-06-28"
+
+  # ── ldccamxavg5+ccafwm1 C6 SD borderline ─────────────────────────────────
+  - checks: [C6]
+    variable_key: "ldccamxavg5+ccafwm1"
+    yaml_file: carotid_imt.yaml
+    status: false_positive
+    root_cause: minor_rounding_or_population_difference
+    summary: >
+      SD mismatch is 0.2146 vs 0.2121 (d=0.0118, <1.2%). C4 passes.
+      The difference is within acceptable rounding/precision bounds and
+      does not indicate a meaningful data quality issue.
+    confirmed_date: "2026-06-28"
