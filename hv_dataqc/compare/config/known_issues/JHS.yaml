@@ -41,3 +41,98 @@ known_issues:
       the sole source of MONDO:0006920 (prediabetes) records for JHS.
     related_issues: [680, 684]
     confirmed_date: "2026-06-27"
+
+  # ── height C4/C6 FAIL ──────────────────────────────────────────────────────
+  - checks: [C4, C6]
+    variable_key: "bcfa12a+bcfa8a+height+bcfv12+bcfv8+antv1"
+    yaml_file: height.yaml
+    status: false_positive
+    root_cause: tooling_bug
+    summary: >
+      C4 pools raw source values in different units (feet from pht008737 Visit 6
+      bcfa, cm from all other tables); YAML correctly converts feet+inches to cm.
+    detail: >
+      pht008737 (bcfa, Visit 6) stores height in US customary units:
+      BCFA12A/BCFA8A in feet (mean ~5.08 ft), BCFA12B/BCFA8B in inches.
+      All other tables (analysis1/2/3, bcfv, antv) store height in cm
+      (mean ~168 cm). The YAML correctly converts feet+inches to cm via
+      expr: phv_feet * 30.48 + phv_inches * 2.54 for all pht008737 blocks.
+      The C4 comparison tool pools all raw source values numerically
+      regardless of unit (feet ~5 mixed with cm ~168), producing a
+      meaningless source mean of ~129. The harmonized mean of ~168.85 cm is
+      correct. This is a C4 tooling limitation with mixed-unit source pools.
+    related_issues: []
+    confirmed_date: "2026-06-27"
+
+  # ── urine albumin C4/C6 FAIL ───────────────────────────────────────────────
+  - checks: [C4, C6]
+    variable_key: "umali+umali_cresult+albuminuspot+urine_albumin+ur_albumin_24hr"
+    yaml_file: albumin_urine.yaml
+    status: false_positive
+    root_cause: tooling_bug
+    summary: >
+      C4 pools mg/dL source values (~5-7) with mg/L values (~55-70) from
+      JHS parallel-submission tables; YAML correctly converts all sources
+      to mg/L.
+    detail: >
+      JHS submitted the same biomarker data in parallel tables with different
+      units: cenB/cenC tables (pht008741/8742) store umali in mg/L (mean ~55-70);
+      analysis tables (pht008729/8730/8731) and pht001960 store AlbuminUSpot in
+      mg/dL (mean ~5-7, exactly 10x smaller). pht008759 stores ur_albumin_24hr
+      in mg/24hr (different dimension entirely).
+      The YAML correctly applies unit_conversion (mg/dL -> mg/L, x10) on all
+      mg/dL blocks. The C4 tool pools all raw source values numerically, mixing
+      mg/dL values (~5-7) with mg/L values (~55-70), producing an artificially
+      low source mean (~28 vs harmonized ~60, ratio ~2.12). All harmonized values
+      are in the correct unit (mg/L).
+    related_issues: []
+    confirmed_date: "2026-06-27"
+
+  # ── CRP C4/C6 FAIL ─────────────────────────────────────────────────────────
+  - checks: [C4, C6]
+    variable_key: "crphs2+crphs2_cresult+hscrp"
+    yaml_file: crp.yaml
+    status: false_positive
+    root_cause: tooling_bug
+    summary: >
+      C4 pools mg/dL source values (~0.53) with mg/L values (~5.6) from
+      JHS parallel-submission tables; YAML correctly converts all to mg/L.
+    detail: >
+      JHS submitted CRP in parallel tables: cenB/cenC tables (pht008741/8742)
+      store crphs2 in mg/L (N=2226+2772, mean ~5.6); analysis tables
+      (pht008729/8730/8731) and pht001945 store hscrp/HSCRP in mg/dL (mean
+      ~0.525-0.575, exactly 10x smaller). The Ns are identical between parallel
+      tables (pht008741 N=2226 = pht008730 N=2226; pht008742 N=2772 = pht008731
+      N=2772), confirming duplicate submissions at different scales.
+      The YAML correctly applies unit_conversion (mg/dL -> mg/L, x10) on mg/dL
+      sources. C4 pools mg/dL raw values with mg/L values, producing an
+      artificially low source mean (~2.0 vs harmonized ~5.5, ratio ~2.75).
+      Calculation reproduces the exact reported values (1.9966 source,
+      5.4913 harmonized) confirming the mechanism.
+    related_issues: []
+    confirmed_date: "2026-06-27"
+
+  # ── waist-hip ratio C4/C6 FAIL ─────────────────────────────────────────────
+  - checks: [C4, C6]
+    variable_key: "waist+bcfa5+bcfv5"
+    yaml_file: waist_hip.yaml
+    status: false_positive
+    root_cause: tooling_bug
+    summary: >
+      C4 compares raw circumference measurements (source, ~87 cm or ~40 in)
+      against the computed waist-hip ratio (harmonized, ~0.905); these are
+      structurally incomparable. YAML correctly computes waist / hip = ratio.
+    detail: >
+      The harmonized concept OMOP:4087501 is waist-hip ratio (dimensionless).
+      waist_hip.yaml computes the ratio as waist_phv / hip_phv for each table.
+      For pht008737 (bcfa, Visit 6): BCFA5 (waist, inches) / BCFA6 (hip, inches)
+      = ~40.4 / ~45.0 = ~0.897. For pht008730/8731 (cm): waist_cm / hip_cm ~
+      0.905. The C4 tool uses the source PHVs from waist_hip.yaml, which include
+      both waist and hip circumference measurements (the numerator and denominator
+      of the ratio). Pooling those raw circumferences produces a source mean of
+      ~87 (mix of waist and hip in cm and inches). The harmonized mean ~0.905 is
+      the correct adult waist-hip ratio. The separate waist circumference YAML
+      (OBA:1001085, bcfa5+waist+bcfv5) correctly PASSES C4 with mean preserved at
+      ~102.66 cm.
+    related_issues: []
+    confirmed_date: "2026-06-27"
