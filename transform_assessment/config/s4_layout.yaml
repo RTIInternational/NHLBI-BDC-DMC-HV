@@ -1,0 +1,35 @@
+# Table S4 output layout — canonical cohort columns and variable rows.
+#
+# Why this exists: the S4 spreadsheet expects a fixed column layout (one
+# phv/n pair per cohort, in a fixed order) and a fixed set of variable rows,
+# in the template's order. The spec-sourced generator otherwise emits only
+# cohorts/variables that happen to have data, in alphabetical order, which
+# does not line up with the template on paste.
+#
+# - cohorts: the ordered cohort columns. Every cohort here gets a phv/n
+#   column pair, even if it has no data (blank cells), so columns always
+#   align with the template header.
+#
+# - variables: OPTIONAL ordered list of the exact row labels the template
+#   uses, in template order. When present, the output emits exactly these
+#   rows in this order (blank cells where a variable/cohort has no data),
+#   and warns about any spec-derived variable whose label is not in the
+#   list (label drift to reconcile). When absent or empty, the generator
+#   falls back to the variables it derives from the specs, sorted by label.
+#
+#   Populate this from the current S4 template's Priority Variable column
+#   (the 153 rows) so the generated output is a drop-in paste. Until then,
+#   leaving it empty keeps the generator working with spec-derived rows.
+
+cohorts:
+  - ARIC
+  - CARDIA
+  - CHS
+  - COPDGene
+  - FHS
+  - HCHS/SOL
+  - JHS
+  - MESA
+  - WHI
+
+variables: []

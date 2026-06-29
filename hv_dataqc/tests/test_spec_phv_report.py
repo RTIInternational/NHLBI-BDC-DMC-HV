@@ -15,10 +15,13 @@ import json
 
 import yaml
 
+import csv
+
 from transform_assessment.spec_phv_report import (
     parse_spec_file,
     _col_n_valid,
     build_cohort_rows,
+    _write_csv,
 )
 
 
@@ -126,3 +129,49 @@ def test_build_cohort_rows_end_to_end(tmp_path, monkeypatch):
     assert rows["ast_sgot"]["phv_count"] == 2
     assert rows["ast_sgot"]["total_n"] == 4754 + 3732
     assert rows["ast_sgot"]["label"] == "AST SGOT"
+
+
+def _read_csv(path):
+    with path.open(newline="") as fh:
+        return list(csv.DictReader(fh))
+
+
+def test_layout_fixed_cohort_columns_with_blanks(tmp_path):
+    # FHS has data; the layout fixes 3 cohort columns, so ARIC/MESA stay blank
+    # but present, and FHS maps from internal key "FHS".
+    per_cohort = {"FHS": {"ast_sgot": {"label": "AST SGOT", "phv_count": 5, "total_n": 15584}}}
+    layout = {"cohorts": ["ARIC", "FHS", "MESA"], "cohort_keys": {}, "variables": []}
+    out = tmp_path / "s4.csv"
+    _write_csv(out, per_cohort, {"ast_sgot": "AST SGOT"}, layout)
+    rows = _read_csv(out)
+    r = rows[0]
+    assert r["variable"] == "AST SGOT"
+    assert r["ARIC_phv"] == "" and r["ARIC_n"] == ""
+    assert r["FHS_phv"] == "5" and r["FHS_n"] == "15584"
+    assert r["MESA_phv"] == "" and r["MESA_n"] == ""
+
+
+def test_layout_cohort_key_mapping(tmp_path):
+    # Display "HCHS/SOL" maps to internal cohort key "HCHS".
+    per_cohort = {"HCHS": {"crp": {"label": "CRP", "phv_count": 1, "total_n": 99}}}
+    layout = {"cohorts": ["HCHS/SOL"], "cohort_keys": {"HCHS/SOL": "HCHS"}, "variables": []}
+    out = tmp_path / "s4.csv"
+    _write_csv(out, per_cohort, {"crp": "CRP"}, layout)
+    r = _read_csv(out)[0]
+    assert r["HCHS/SOL_phv"] == "1" and r["HCHS/SOL_n"] == "99"
+
+
+def test_layout_variable_list_fixes_rows_and_order(tmp_path):
+    per_cohort = {"FHS": {
+        "ast_sgot": {"label": "AST SGOT", "phv_count": 5, "total_n": 15584},
+        "fibrin": {"label": "Fibrinogen", "phv_count": 8, "total_n": 15189},
+    }}
+    # Canonical list includes a row with no data ("BMI") and omits Fibrinogen
+    # (which should trigger the drift warning and be dropped).
+    layout = {"cohorts": ["FHS"], "cohort_keys": {}, "variables": ["BMI", "AST SGOT"]}
+    out = tmp_path / "s4.csv"
+    _write_csv(out, per_cohort, {"ast_sgot": "AST SGOT", "fibrin": "Fibrinogen"}, layout)
+    rows = _read_csv(out)
+    assert [r["variable"] for r in rows] == ["BMI", "AST SGOT"]  # fixed order, Fibrinogen dropped
+    assert rows[0]["FHS_phv"] == ""        # BMI has no data -> blank
+    assert rows[1]["FHS_phv"] == "5"       # AST populated

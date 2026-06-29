@@ -232,6 +232,9 @@ def main(argv: list[str] | None = None) -> int:
                    help="dbGaP cache dir for the matching --cohort; repeat in order.")
     p.add_argument("--output", type=Path, default=Path(__file__).parent / "spec_phv_report.csv",
                    help="Output CSV path.")
+    p.add_argument("--layout", type=Path, default=None,
+                   help=f"S4 layout config (canonical cohort columns + variable rows). "
+                        f"Default: {DEFAULT_LAYOUT_PATH}")
     p.add_argument("--debug-variable", metavar="VAR",
                    help="Print the resolved PHVs + per-PHV n for this variable (short name).")
     args = p.parse_args(argv)
@@ -255,7 +258,8 @@ def main(argv: list[str] | None = None) -> int:
         _debug(args, var_labels, per_cohort)
         return 0
 
-    _write_csv(args.output, per_cohort, var_labels)
+    layout = load_layout(args.layout)
+    _write_csv(args.output, per_cohort, var_labels, layout)
     print(f"\nWrote {args.output}")
     return 0
 
@@ -280,23 +284,83 @@ def _debug(args, var_labels, per_cohort) -> None:
             print(f"      {phv}  pht={pht}  col={col!r}  n_valid={n}")
 
 
-def _write_csv(output: Path, per_cohort, var_labels) -> None:
-    cohorts = sorted(per_cohort)
-    all_vars = sorted({v for rows in per_cohort.values() for v in rows})
+DEFAULT_LAYOUT_PATH = Path(__file__).parent / "config" / "s4_layout.yaml"
+
+
+def load_layout(path: Path | None) -> dict:
+    """Load the S4 layout config (canonical cohort columns + variable rows).
+
+    Returns a dict with:
+      - cohorts: ordered display cohort names (column order)
+      - cohort_keys: {display_name -> internal cohort key} for names that
+        differ between the template and the ingest-dir cohort (e.g.
+        "HCHS/SOL" -> "HCHS"). Names not listed map to themselves.
+      - variables: ordered template row labels (may be empty)
+    Returns empty/defaults if the file is absent.
+    """
+    effective = path or DEFAULT_LAYOUT_PATH
+    if not effective.exists():
+        return {"cohorts": [], "cohort_keys": {}, "variables": []}
+    cfg = yaml.safe_load(effective.read_text()) or {}
+    return {
+        "cohorts": list(cfg.get("cohorts") or []),
+        "cohort_keys": dict(cfg.get("cohort_keys") or {}),
+        "variables": list(cfg.get("variables") or []),
+    }
+
+
+def _write_csv(output: Path, per_cohort, var_labels, layout: dict | None = None) -> None:
+    layout = layout or {"cohorts": [], "cohort_keys": {}, "variables": []}
+
+    # Column order: the config's canonical cohort list (fixed columns, blanks
+    # for cohorts without data) if given, else the data-driven sorted set.
+    if layout.get("cohorts"):
+        display_cohorts = layout["cohorts"]
+        key_for = lambda disp: layout.get("cohort_keys", {}).get(disp, disp)
+    else:
+        display_cohorts = sorted(per_cohort)
+        key_for = lambda disp: disp
+
+    # Row order: the config's canonical variable list (fixed rows, blanks for
+    # variables without data) if given, else the data-driven sorted labels.
+    derived_labels = {
+        var_labels.get(v, v)
+        for rows in per_cohort.values() for v in rows
+    }
+    if layout.get("variables"):
+        row_labels = layout["variables"]
+        missing = sorted(derived_labels - set(row_labels))
+        if missing:
+            print(
+                f"WARNING: {len(missing)} spec-derived variable label(s) not in the "
+                f"layout variable list (label drift — will be omitted from the "
+                f"template-shaped output): {', '.join(missing)}",
+                file=sys.stderr,
+            )
+    else:
+        row_labels = sorted(derived_labels)
+
+    # Index rows by display label for lookup. per_cohort is keyed by internal
+    # cohort key and inner rows by spec short-name; build a label-indexed view.
+    by_label: dict[str, dict[str, dict]] = {}  # label -> {cohort_key -> row}
+    for ckey, rows in per_cohort.items():
+        for short, row in rows.items():
+            by_label.setdefault(row.get("label", short), {})[ckey] = row
+
     fieldnames = ["variable"]
-    for c in cohorts:
-        fieldnames += [f"{c}_phv", f"{c}_n"]
+    for disp in display_cohorts:
+        fieldnames += [f"{disp}_phv", f"{disp}_n"]
 
     with output.open("w", newline="", encoding="utf-8") as fh:
         writer = csv.DictWriter(fh, fieldnames=fieldnames)
         writer.writeheader()
-        for var in all_vars:
-            label = var_labels.get(var, var)
+        for label in row_labels:
             out = {"variable": label}
-            for c in cohorts:
-                row = per_cohort[c].get(var)
-                out[f"{c}_phv"] = row["phv_count"] if row else ""
-                out[f"{c}_n"] = (row["total_n"] if row and row["total_n"] is not None else "") if row else ""
+            label_rows = by_label.get(label, {})
+            for disp in display_cohorts:
+                row = label_rows.get(key_for(disp))
+                out[f"{disp}_phv"] = row["phv_count"] if row else ""
+                out[f"{disp}_n"] = (row["total_n"] if row and row["total_n"] is not None else "") if row else ""
             writer.writerow(out)
 
 
