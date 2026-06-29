@@ -674,6 +674,12 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
                         "--phv-list, the extractor summarizes only spec-referenced PHVs "
                         "(far fewer columns, much less memory). Pass this to summarize every "
                         "column instead (the legacy full extract).")
+    p.add_argument("--no-joint-distributions", action="store_true",
+                   help="Skip the multi-PHV case() joint-distribution crosstabs even when "
+                        "--yaml-dir is given. The crosstabs power QAQC's exact multi-PHV "
+                        "comparisons but can be tens of thousands of pairs (FHS: ~33k), which "
+                        "dominates output size and memory. Table S4 does not need them — it "
+                        "reads only variables_by_pht. Still scopes columns to --yaml-dir PHVs.")
 
     # --- output ---
     p.add_argument("--output-dir", metavar="DIR", default=None,
@@ -790,10 +796,16 @@ def main(argv: list[str] | None = None) -> None:
             yaml_dir_path = Path(args.yaml_dir)
             if yaml_dir_path.is_dir():
                 yaml_phvs = scan_yaml_for_phvs(yaml_dir_path)
-                phv_pairs = scan_yaml_for_phv_pairs(yaml_dir_path)
+                # Crosstabs are skippable: S4 only needs variables_by_pht, and
+                # the pair set can be huge (FHS ~33k pairs), dominating memory.
+                phv_pairs = (
+                    [] if args.no_joint_distributions
+                    else scan_yaml_for_phv_pairs(yaml_dir_path)
+                )
                 log.info(
-                    "YAML pre-scan (%s): found %d PHV(s), %d multi-PHV pair(s) to crosstab",
+                    "YAML pre-scan (%s): found %d PHV(s), %d multi-PHV pair(s) to crosstab%s",
                     yaml_dir_path, len(yaml_phvs), len(phv_pairs),
+                    " (joint distributions disabled)" if args.no_joint_distributions else "",
                 )
                 if log.isEnabledFor(logging.DEBUG):
                     for pa, pb in phv_pairs:

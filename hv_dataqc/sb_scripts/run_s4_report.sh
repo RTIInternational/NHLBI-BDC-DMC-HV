@@ -98,12 +98,15 @@ for COHORT in "${ALL_COHORTS[@]}"; do
             continue
         fi
         echo "=== [$COHORT] source extract ==="
+        # S4 only needs variables_by_pht.  Skip the multi-PHV joint-distribution
+        # crosstabs (QAQC-only; FHS produces ~33k pairs that dominate memory).
         (cd "$HV" && uv run python -m hv_dataqc.extract_source.extract_source_summaries \
             --cohort "$COHORT" \
             --source-root "$SOURCE_ROOT" \
             --output-dir "$OUT_DIR" \
             --yaml-dir "$SPECS_ROOT/${COHORT}-ingest" \
-            --cache-dir "$CACHE_DIR")
+            --cache-dir "$CACHE_DIR" \
+            --no-joint-distributions)
     fi
 
     # Locate the cohort's source-extract JSON (newest under latest_source)

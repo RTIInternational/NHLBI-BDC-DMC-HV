@@ -45,7 +45,14 @@ def write_json_atomic(
 ) -> None:
     """Write strict JSON via temp file then atomic replace.
 
-    Creates parent directories as needed.
+    Sanitizes the structure (``json_safe``) then streams it to disk.  Creates
+    parent directories as needed.
+
+    Note: very large structures hold a sanitized copy briefly during the
+    ``json_safe`` pass.  Callers producing huge artifacts (e.g. the source
+    extractor) should bound the structure itself — for example by not emitting
+    the multi-PHV joint-distribution crosstabs when they are not needed —
+    rather than relying on the writer to stream a multi-gigabyte dict.
     """
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp_path = path.with_name(f"{path.name}.tmp")
