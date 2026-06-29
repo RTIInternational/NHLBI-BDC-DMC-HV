@@ -69,10 +69,17 @@ _DATEFMT = "%H:%M:%S"
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
 
-# Console handler — added at module level so basic output is visible
+# Console handler — added at module level so basic output is visible.
+# Defaults to WARNING so the console stays readable (the per-PHT INFO lines —
+# hundreds for a big cohort — flood the terminal). The full INFO log is still
+# written to the run's log file via _add_file_logging. --verbose drops the
+# console back to INFO/DEBUG. Progress is surfaced via log.warning() ticks so
+# it shows even at the default console level.
 _console_handler = logging.StreamHandler(sys.stdout)
 _console_handler.setFormatter(logging.Formatter(_FMT, datefmt=_DATEFMT))
+_console_handler.setLevel(logging.WARNING)
 log.addHandler(_console_handler)
+# Logger stays at INFO so the file handler captures full detail.
 # Prevent propagation to root logger (avoids duplicate output)
 log.propagate = False
 
@@ -698,6 +705,7 @@ def main(argv: list[str] | None = None) -> None:
 
     if args.verbose:
         log.setLevel(logging.DEBUG)
+        _console_handler.setLevel(logging.DEBUG)  # restore full console output
 
     config = load_source_extract_config(Path(args.thresholds) if args.thresholds else None)
     source_cfg = config.get("source_extract", {}) if isinstance(config, dict) else {}
@@ -855,10 +863,17 @@ def main(argv: list[str] | None = None) -> None:
         mapped_participants_by_pht: dict[str, int] = {}
         rows_per_visit_combined: dict[str, int] = {}
 
+        _pht_seen = 0
+        _PROGRESS_EVERY = 50
         for pht_label, df in loaded:
             log.info("--- Processing %s (%d rows) ---", pht_label, len(df))
             total_rows_all += len(df)
             total_rows_by_pht[pht_label] = len(df)
+            # Progress tick at WARNING level so it shows even when the console
+            # is quiet (default). Periodic so it does not itself become noise.
+            _pht_seen += 1
+            if _pht_seen % _PROGRESS_EVERY == 0:
+                log.warning("  ... processed %d PHTs", _pht_seen)
 
             # Visit stratification
             visit_col = args.visit_col
@@ -1037,8 +1052,10 @@ def main(argv: list[str] | None = None) -> None:
         log.info("Writing %d variable summaries to %s", total_var_entries, out_path)
         _write_json_atomic(out_path, output_doc)
 
-        log.info("=== Done. Variables summarized: %d, Total rows: %d ===",
-                 total_var_entries, total_rows_all)
+        # Completion summary at WARNING level so it shows on the quiet default
+        # console (full per-PHT detail is in the run log file).
+        log.warning("Done: %d variable summaries, %d rows -> %s",
+                    total_var_entries, total_rows_all, out_path)
 
     finally:
         _close_file_logging()

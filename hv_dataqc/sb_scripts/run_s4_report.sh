@@ -6,13 +6,16 @@
 # JSONs for N.  No spreadsheets involved.
 #
 # By default it REUSES each cohort's existing latest_source extract under
-# QC-output-files/<COHORT>/.  Pass --extract to (re-)run the source extract
-# for any cohort first (slow; reads raw source TSVs in the enclave).
+# QC-output-files/<COHORT>/.  Pass --extract to run the source extract for
+# cohorts that don't have one yet (slow; reads raw source TSVs). Extracts that
+# already exist are reused (restart-safe) unless --force is given.
 #
 # Usage:
-#   ./run_s4_report.sh                       # all cohorts with spec dirs
+#   ./run_s4_report.sh                       # build from existing extracts
+#   ./run_s4_report.sh --check               # preflight only: per-cohort readiness, run nothing
+#   ./run_s4_report.sh --extract             # extract missing cohorts, then build
+#   ./run_s4_report.sh --extract --force     # re-extract every cohort (ignore existing)
 #   ./run_s4_report.sh --cohorts FHS,MESA    # subset
-#   ./run_s4_report.sh --extract             # run source extracts first
 #   ./run_s4_report.sh --list-cohorts        # show cohorts that have spec dirs
 set -euo pipefail
 
@@ -20,12 +23,16 @@ set -euo pipefail
 COHORT_FILTER=""
 DO_EXTRACT=false
 LIST_ONLY=false
+CHECK_ONLY=false
+FORCE=false
 while [ $# -gt 0 ]; do
     case "$1" in
         --cohorts)       COHORT_FILTER="${2:?--cohorts requires a value}"; shift 2 ;;
         --extract)       DO_EXTRACT=true; shift ;;
+        --force)         FORCE=true; shift ;;
+        --check)         CHECK_ONLY=true; shift ;;
         --list-cohorts)  LIST_ONLY=true; shift ;;
-        -h|--help)       sed -n '2,16p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+        -h|--help)       sed -n '2,18p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
         -*)              echo "Unknown flag: $1" >&2; exit 1 ;;
         *)               echo "Unknown arg: $1" >&2; exit 1 ;;
     esac
@@ -79,27 +86,95 @@ cache_subdir() {
     esac
 }
 
-# --- Per-cohort: ensure source extract, collect triples ---
-TRIPLE_ARGS=()
-USED_COHORTS=()
+# Locate a cohort's newest source-extract JSON (follows the latest_source
+# symlink; falls back to scanning source_<ts>/ run dirs). Empty if none.
+find_src_json() {
+    local out_dir="$1" j
+    # `|| true` guards against find exiting non-zero (missing dir / dangling
+    # symlink) under `set -e` inside command substitution.
+    j="$(find -L "$out_dir/latest_source" -maxdepth 1 -name "*_source_*.json" 2>/dev/null | sort | tail -n1 || true)"
+    [ -z "$j" ] && j="$(find "$out_dir" -path "*/source_*/*_source_*.json" 2>/dev/null | sort | tail -n1 || true)"
+    printf '%s' "$j"
+}
+
+find_source_root() {
+    # `|| true`: find exits non-zero if the search root is absent (e.g. running
+    # off-enclave), which would trip `set -e` inside a command substitution.
+    find /sbgenomics/project-files/PilotParentStudies_NoDRS -maxdepth 1 -type d -iname "$1" -print -quit 2>/dev/null || true
+}
+
+# --- Preflight: assess each cohort (cache present? extract present?) ---
+echo "=== Preflight (${#ALL_COHORTS[@]} cohort(s)) ==="
+PREFLIGHT_OK=()      # cohorts that can contribute to the report now
 for COHORT in "${ALL_COHORTS[@]}"; do
-    LC="$(echo "$COHORT" | tr '[:upper:]' '[:lower:]')"
     OUT_DIR="$OUT_BASE/$COHORT"
     CACHE_DIR="$HV/hv_dataqc/local_output/dbgap-cache/$(cache_subdir "$COHORT")"
+    SRC_JSON="$(find_src_json "$OUT_DIR")"
+    SOURCE_ROOT="$(find_source_root "$COHORT")"
 
-    if $DO_EXTRACT; then
-        SOURCE_ROOT="$(find /sbgenomics/project-files/PilotParentStudies_NoDRS -maxdepth 1 -type d -iname "$COHORT" -print -quit 2>/dev/null)"
-        if [ -z "$SOURCE_ROOT" ]; then
-            echo "WARNING: no source dir for $COHORT under PilotParentStudies_NoDRS — skipping" >&2
-            continue
+    have_cache="no"; [ -d "$CACHE_DIR" ] && have_cache="yes"
+    have_extract="no"; [ -n "$SRC_JSON" ] && have_extract="yes"
+    have_source="no"; [ -n "$SOURCE_ROOT" ] && have_source="yes"
+
+    # Decide status for this run's mode.
+    status="" ; note=""
+    if [ "$have_extract" = "yes" ] && { ! $DO_EXTRACT || ! $FORCE; }; then
+        # An extract exists; usable as long as cache is present.
+        if [ "$have_cache" = "yes" ]; then
+            status="READY"; note="reuse extract"
+            $DO_EXTRACT && [ "$FORCE" = "false" ] && note="reuse extract (skip re-extract; --force to redo)"
+        else
+            status="BLOCKED"; note="extract present but NO cache (fetch_cache.sh $(cache_subdir "$COHORT"))"
         fi
-        if [ ! -d "$CACHE_DIR" ]; then
-            echo "WARNING: no dbGaP cache for $COHORT ($CACHE_DIR) — skipping. Fetch: hv_dataqc/local_scripts/fetch_cache.sh $(cache_subdir "$COHORT")" >&2
-            continue
+    elif $DO_EXTRACT; then
+        # Need to extract: require cache + source dir.
+        if [ "$have_cache" = "yes" ] && [ "$have_source" = "yes" ]; then
+            status="WILL-EXTRACT"; note="extract then build"
+        elif [ "$have_cache" = "no" ]; then
+            status="BLOCKED"; note="no cache (fetch_cache.sh $(cache_subdir "$COHORT"))"
+        else
+            status="BLOCKED"; note="no source dir under PilotParentStudies_NoDRS"
         fi
-        echo "=== [$COHORT] source extract ==="
+    else
+        status="MISSING"; note="no extract; run with --extract (or run_extracts.sh $COHORT)"
+    fi
+
+    printf '  %-10s %-12s cache=%-3s extract=%-3s  %s\n' "$COHORT" "$status" "$have_cache" "$have_extract" "$note"
+    case "$status" in
+        READY|WILL-EXTRACT) PREFLIGHT_OK+=("$COHORT") ;;
+    esac
+done
+echo "  ----"
+echo "  ${#PREFLIGHT_OK[@]}/${#ALL_COHORTS[@]} cohort(s) will contribute: ${PREFLIGHT_OK[*]:-none}"
+echo
+
+if $CHECK_ONLY; then
+    echo "(--check: preflight only, nothing run)"
+    exit 0
+fi
+if [ ${#PREFLIGHT_OK[@]} -eq 0 ]; then
+    echo "ERROR: no cohort is ready. See preflight notes above (usually missing cache or extract)." >&2
+    exit 1
+fi
+
+# --- Per-cohort: extract if needed (restart-safe), collect triples ---
+TRIPLE_ARGS=()
+USED_COHORTS=()
+TOTAL=${#PREFLIGHT_OK[@]}
+i=0
+for COHORT in "${PREFLIGHT_OK[@]}"; do
+    i=$((i + 1))
+    OUT_DIR="$OUT_BASE/$COHORT"
+    CACHE_DIR="$HV/hv_dataqc/local_output/dbgap-cache/$(cache_subdir "$COHORT")"
+    SRC_JSON="$(find_src_json "$OUT_DIR")"
+
+    # Restart-safe: only extract when asked AND (no extract yet OR --force).
+    if $DO_EXTRACT && { [ -z "$SRC_JSON" ] || $FORCE; }; then
+        SOURCE_ROOT="$(find_source_root "$COHORT")"
+        echo "[$i/$TOTAL] $COHORT — source extract (this is the slow step)..."
         # S4 only needs variables_by_pht.  Skip the multi-PHV joint-distribution
-        # crosstabs (QAQC-only; FHS produces ~33k pairs that dominate memory).
+        # crosstabs (QAQC-only; FHS ~33k pairs dominate memory). Console is quiet
+        # by default; full log is in the run's *.log file.
         (cd "$HV" && uv run python -m hv_dataqc.extract_source.extract_source_summaries \
             --cohort "$COHORT" \
             --source-root "$SOURCE_ROOT" \
@@ -107,26 +182,17 @@ for COHORT in "${ALL_COHORTS[@]}"; do
             --yaml-dir "$SPECS_ROOT/${COHORT}-ingest" \
             --cache-dir "$CACHE_DIR" \
             --no-joint-distributions)
+        SRC_JSON="$(find_src_json "$OUT_DIR")"
+    elif $DO_EXTRACT; then
+        echo "[$i/$TOTAL] $COHORT — extract already present, skipping (--force to redo)"
+    else
+        echo "[$i/$TOTAL] $COHORT — reusing existing extract"
     fi
 
-    # Locate the cohort's source-extract JSON. The extractor writes to
-    # <OUT_DIR>/source_<ts>/ and points a `latest_source` *symlink* at it; use
-    # `find -L` so the symlinked dir is followed (GNU find does not follow a
-    # symlink start-point without -L). Fall back to scanning the run subdirs
-    # directly if the symlink is missing.
-    SRC_JSON="$(find -L "$OUT_DIR/latest_source" -maxdepth 1 -name "*_source_*.json" 2>/dev/null | sort | tail -n1)"
     if [ -z "$SRC_JSON" ]; then
-        SRC_JSON="$(find "$OUT_DIR" -path "*/source_*/*_source_*.json" 2>/dev/null | sort | tail -n1)"
-    fi
-    if [ -z "$SRC_JSON" ]; then
-        echo "WARNING: no source extract for $COHORT under $OUT_DIR — run with --extract or run_extracts.sh $COHORT first; skipping" >&2
+        echo "WARNING: $COHORT has no source extract after preflight — skipping" >&2
         continue
     fi
-    if [ ! -d "$CACHE_DIR" ]; then
-        echo "WARNING: no dbGaP cache for $COHORT ($CACHE_DIR) — skipping" >&2
-        continue
-    fi
-
     TRIPLE_ARGS+=(--cohort "$COHORT" --source-json "$SRC_JSON" --cache-dir "$CACHE_DIR")
     USED_COHORTS+=("$COHORT")
 done
