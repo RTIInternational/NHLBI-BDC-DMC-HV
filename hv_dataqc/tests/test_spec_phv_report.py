@@ -161,17 +161,49 @@ def test_layout_cohort_key_mapping(tmp_path):
     assert r["HCHS/SOL_phv"] == "1" and r["HCHS/SOL_n"] == "99"
 
 
-def test_layout_variable_list_fixes_rows_and_order(tmp_path):
+def test_layout_variable_list_fixes_rows_and_appends_unmatched(tmp_path):
     per_cohort = {"FHS": {
         "ast_sgot": {"label": "AST SGOT", "phv_count": 5, "total_n": 15584},
         "fibrin": {"label": "Fibrinogen", "phv_count": 8, "total_n": 15189},
     }}
-    # Canonical list includes a row with no data ("BMI") and omits Fibrinogen
-    # (which should trigger the drift warning and be dropped).
-    layout = {"cohorts": ["FHS"], "cohort_keys": {}, "variables": ["BMI", "AST SGOT"]}
+    # Template has BMI (no data) and AST SGOT; Fibrinogen is NOT a template row,
+    # so it should be appended after a blank separator + note, not dropped.
+    layout = {
+        "cohorts": ["FHS"], "cohort_keys": {},
+        "variables": ["BMI", "AST SGOT"],
+        "unmatched_note": "No template row:",
+    }
     out = tmp_path / "s4.csv"
     _write_csv(out, per_cohort, {"ast_sgot": "AST SGOT", "fibrin": "Fibrinogen"}, layout)
     rows = _read_csv(out)
-    assert [r["variable"] for r in rows] == ["BMI", "AST SGOT"]  # fixed order, Fibrinogen dropped
+    labels = [r["variable"] for r in rows]
+    # Template rows first, in order; then blank, note, then unmatched Fibrinogen.
+    assert labels[:2] == ["BMI", "AST SGOT"]
+    assert "" in labels and "No template row:" in labels
+    assert labels[-1] == "Fibrinogen"
     assert rows[0]["FHS_phv"] == ""        # BMI has no data -> blank
     assert rows[1]["FHS_phv"] == "5"       # AST populated
+    assert rows[-1]["FHS_phv"] == "8"      # appended Fibrinogen keeps its data
+
+
+def test_layout_case_insensitive_and_alias_matching(tmp_path):
+    # Spec labels differ from template by case ("bilirubin total") and by a
+    # genuine alias ("c-reactive protein CRP" -> "CRP c-reactive protein").
+    per_cohort = {"FHS": {
+        "bili": {"label": "bilirubin total", "phv_count": 6, "total_n": 16578},
+        "crp": {"label": "c-reactive protein CRP", "phv_count": 10, "total_n": 33787},
+    }}
+    layout = {
+        "cohorts": ["FHS"], "cohort_keys": {},
+        "variables": ["Bilirubin Total", "CRP c-reactive protein"],
+        "aliases": {"CRP c-reactive protein": ["c-reactive protein CRP"]},
+    }
+    out = tmp_path / "s4.csv"
+    _write_csv(out, per_cohort, {}, layout)
+    rows = {r["variable"]: r for r in _read_csv(out)}
+    # Case-insensitive match places "bilirubin total" into "Bilirubin Total".
+    assert rows["Bilirubin Total"]["FHS_phv"] == "6"
+    # Alias places the reworded CRP label into the template row.
+    assert rows["CRP c-reactive protein"]["FHS_phv"] == "10"
+    # No unmatched block (both resolved).
+    assert "" not in rows

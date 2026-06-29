@@ -306,11 +306,33 @@ def load_layout(path: Path | None) -> dict:
         "cohorts": list(cfg.get("cohorts") or []),
         "cohort_keys": dict(cfg.get("cohort_keys") or {}),
         "variables": list(cfg.get("variables") or []),
+        "aliases": dict(cfg.get("aliases") or {}),
+        "unmatched_note": cfg.get("unmatched_note") or "",
     }
 
 
+def _build_label_resolver(template_labels: list[str], aliases: dict) -> dict[str, str]:
+    """Map a normalized spec label -> the template label it belongs in.
+
+    Matching is case-insensitive (keys are lowercased/stripped). Each template
+    label maps to itself; each alias maps to its template label. Aliases win
+    only for genuine spelling differences — case is already handled by the
+    normalization, so plain capitalization variants need no alias entry.
+    """
+    def norm(s: str) -> str:
+        return str(s).strip().lower()
+
+    resolver: dict[str, str] = {}
+    for tpl in template_labels:
+        resolver[norm(tpl)] = tpl
+    for tpl, alts in aliases.items():
+        for alt in alts or []:
+            resolver[norm(alt)] = tpl
+    return resolver
+
+
 def _write_csv(output: Path, per_cohort, var_labels, layout: dict | None = None) -> None:
-    layout = layout or {"cohorts": [], "cohort_keys": {}, "variables": []}
+    layout = layout or {}
 
     # Column order: the config's canonical cohort list (fixed columns, blanks
     # for cohorts without data) if given, else the data-driven sorted set.
@@ -321,47 +343,68 @@ def _write_csv(output: Path, per_cohort, var_labels, layout: dict | None = None)
         display_cohorts = sorted(per_cohort)
         key_for = lambda disp: disp
 
-    # Row order: the config's canonical variable list (fixed rows, blanks for
-    # variables without data) if given, else the data-driven sorted labels.
-    derived_labels = {
-        var_labels.get(v, v)
-        for rows in per_cohort.values() for v in rows
-    }
-    if layout.get("variables"):
-        row_labels = layout["variables"]
-        missing = sorted(derived_labels - set(row_labels))
-        if missing:
-            print(
-                f"WARNING: {len(missing)} spec-derived variable label(s) not in the "
-                f"layout variable list (label drift — will be omitted from the "
-                f"template-shaped output): {', '.join(missing)}",
-                file=sys.stderr,
-            )
-    else:
-        row_labels = sorted(derived_labels)
-
-    # Index rows by display label for lookup. per_cohort is keyed by internal
-    # cohort key and inner rows by spec short-name; build a label-indexed view.
-    by_label: dict[str, dict[str, dict]] = {}  # label -> {cohort_key -> row}
+    # Index spec rows by their spec label -> {cohort_key -> row}.
+    by_label: dict[str, dict[str, dict]] = {}
     for ckey, rows in per_cohort.items():
         for short, row in rows.items():
             by_label.setdefault(row.get("label", short), {})[ckey] = row
+
+    def cells_for(label_rows: dict) -> dict:
+        out = {}
+        for disp in display_cohorts:
+            row = label_rows.get(key_for(disp))
+            out[f"{disp}_phv"] = row["phv_count"] if row else ""
+            out[f"{disp}_n"] = (row["total_n"] if row and row["total_n"] is not None else "") if row else ""
+        return out
 
     fieldnames = ["variable"]
     for disp in display_cohorts:
         fieldnames += [f"{disp}_phv", f"{disp}_n"]
 
+    template_labels = layout.get("variables") or []
     with output.open("w", newline="", encoding="utf-8") as fh:
         writer = csv.DictWriter(fh, fieldnames=fieldnames)
         writer.writeheader()
-        for label in row_labels:
-            out = {"variable": label}
-            label_rows = by_label.get(label, {})
-            for disp in display_cohorts:
-                row = label_rows.get(key_for(disp))
-                out[f"{disp}_phv"] = row["phv_count"] if row else ""
-                out[f"{disp}_n"] = (row["total_n"] if row and row["total_n"] is not None else "") if row else ""
-            writer.writerow(out)
+
+        if not template_labels:
+            # No canonical list: emit spec labels sorted (legacy behavior).
+            for label in sorted(by_label):
+                writer.writerow({"variable": label, **cells_for(by_label[label])})
+            return
+
+        # Resolve each spec label to its template row (case-insensitive + aliases).
+        resolver = _build_label_resolver(template_labels, layout.get("aliases") or {})
+        # template_label -> merged {cohort_key -> row}
+        matched: dict[str, dict[str, dict]] = {}
+        unmatched: list[str] = []
+        for spec_label, cohort_rows in by_label.items():
+            tpl = resolver.get(spec_label.strip().lower())
+            if tpl is None:
+                unmatched.append(spec_label)
+                continue
+            dest = matched.setdefault(tpl, {})
+            dest.update(cohort_rows)  # cohorts are disjoint per spec label
+
+        # 1) Canonical template rows in template order (blank where no data).
+        for label in template_labels:
+            writer.writerow({"variable": label, **cells_for(matched.get(label, {}))})
+
+        # 2) Trailing block: spec variables with no template row. Separated by a
+        #    blank row and a note so they are visibly distinct.
+        if unmatched:
+            blank = {fn: "" for fn in fieldnames}
+            writer.writerow(blank)
+            note = layout.get("unmatched_note") or (
+                "Variables below have spec data but no matching Table S4 row."
+            )
+            writer.writerow({**blank, "variable": note})
+            for spec_label in sorted(unmatched):
+                writer.writerow({"variable": spec_label, **cells_for(by_label[spec_label])})
+            print(
+                f"NOTE: {len(unmatched)} spec variable(s) had no template row; "
+                f"appended at the bottom: {', '.join(sorted(unmatched))}",
+                file=sys.stderr,
+            )
 
 
 if __name__ == "__main__":
