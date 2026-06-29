@@ -65,7 +65,7 @@ template.
 Inspect one variable's resolved phvs + per-phv N:
 
 ```bash
-uv run python transform_assessment/spec_phv_report.py \
+uv run python -m transform_assessment.spec_phv_report \
     --specs-root priority_variables_transform \
     --cohort FHS \
     --source-json <QC-output-files/FHS/latest_source/fhs_source_*.json> \

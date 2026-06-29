@@ -143,7 +143,11 @@ CSV="$S4_OUT/s4_report_${TS}.csv"
 
 echo
 echo "=== Building S4 over: ${USED_COHORTS[*]} ==="
-(cd "$HV" && uv run python transform_assessment/spec_phv_report.py \
+# Run as a module (-m) from the repo root so the hv_dataqc and
+# transform_assessment packages are both importable, regardless of whether
+# the project is pip-installed in the environment. (Running the file by path
+# only puts the script's own dir on sys.path, so `import hv_dataqc` fails.)
+(cd "$HV" && uv run python -m transform_assessment.spec_phv_report \
     --specs-root "$SPECS_ROOT" \
     "${TRIPLE_ARGS[@]}" \
     --output "$CSV")
