@@ -50,7 +50,7 @@ from typing import Any
 
 import yaml
 
-from hv_dataqc.hv_dataqc_common import load_phv_name_map
+from hv_dataqc.hv_dataqc_common import load_phv_name_map, write_xlsx, XLSX_FMT_COUNT
 
 _PHV_RE = re.compile(r"phv\d+", re.IGNORECASE)
 
@@ -231,7 +231,10 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--cache-dir", action="append", required=True, type=Path,
                    help="dbGaP cache dir for the matching --cohort; repeat in order.")
     p.add_argument("--output", type=Path, default=Path(__file__).parent / "spec_phv_report.csv",
-                   help="Output CSV path.")
+                   help="Output CSV path. A formatted .xlsx is also written alongside it "
+                        "(same stem, .xlsx) unless --no-xlsx is given.")
+    p.add_argument("--no-xlsx", action="store_true",
+                   help="Do not also write the formatted .xlsx (CSV only).")
     p.add_argument("--layout", type=Path, default=None,
                    help=f"S4 layout config (canonical cohort columns + variable rows). "
                         f"Default: {DEFAULT_LAYOUT_PATH}")
@@ -261,6 +264,10 @@ def main(argv: list[str] | None = None) -> int:
     layout = load_layout(args.layout)
     _write_csv(args.output, per_cohort, var_labels, layout)
     print(f"\nWrote {args.output}")
+    if not args.no_xlsx:
+        xlsx_path = args.output.with_suffix(".xlsx")
+        _write_xlsx(xlsx_path, per_cohort, var_labels, layout)
+        print(f"Wrote {xlsx_path}")
     return 0
 
 
@@ -331,11 +338,15 @@ def _build_label_resolver(template_labels: list[str], aliases: dict) -> dict[str
     return resolver
 
 
-def _write_csv(output: Path, per_cohort, var_labels, layout: dict | None = None) -> None:
+def _build_table(per_cohort, var_labels, layout: dict | None = None) -> tuple[list[str], list[list], list[str]]:
+    """Build the S4 table as (headers, rows) — shared by the CSV and xlsx writers.
+
+    Rows are value lists aligned to headers. When a canonical variable list is
+    configured, rows follow it (blank where no data), then unmatched spec
+    variables are appended after a blank separator + note row.
+    """
     layout = layout or {}
 
-    # Column order: the config's canonical cohort list (fixed columns, blanks
-    # for cohorts without data) if given, else the data-driven sorted set.
     if layout.get("cohorts"):
         display_cohorts = layout["cohorts"]
         key_for = lambda disp: layout.get("cohort_keys", {}).get(disp, disp)
@@ -343,68 +354,77 @@ def _write_csv(output: Path, per_cohort, var_labels, layout: dict | None = None)
         display_cohorts = sorted(per_cohort)
         key_for = lambda disp: disp
 
-    # Index spec rows by their spec label -> {cohort_key -> row}.
     by_label: dict[str, dict[str, dict]] = {}
     for ckey, rows in per_cohort.items():
         for short, row in rows.items():
             by_label.setdefault(row.get("label", short), {})[ckey] = row
 
-    def cells_for(label_rows: dict) -> dict:
-        out = {}
+    headers = ["variable"]
+    for disp in display_cohorts:
+        headers += [f"{disp}_phv", f"{disp}_n"]
+
+    def cells_for(label, label_rows: dict) -> list:
+        out = [label]
         for disp in display_cohorts:
             row = label_rows.get(key_for(disp))
-            out[f"{disp}_phv"] = row["phv_count"] if row else ""
-            out[f"{disp}_n"] = (row["total_n"] if row and row["total_n"] is not None else "") if row else ""
+            out.append(row["phv_count"] if row else "")
+            out.append(row["total_n"] if row and row["total_n"] is not None else "")
         return out
 
-    fieldnames = ["variable"]
-    for disp in display_cohorts:
-        fieldnames += [f"{disp}_phv", f"{disp}_n"]
-
     template_labels = layout.get("variables") or []
+    out_rows: list[list] = []
+
+    if not template_labels:
+        for label in sorted(by_label):
+            out_rows.append(cells_for(label, by_label[label]))
+        return headers, out_rows, []
+
+    resolver = _build_label_resolver(template_labels, layout.get("aliases") or {})
+    matched: dict[str, dict[str, dict]] = {}
+    unmatched: list[str] = []
+    for spec_label, cohort_rows in by_label.items():
+        tpl = resolver.get(spec_label.strip().lower())
+        if tpl is None:
+            unmatched.append(spec_label)
+            continue
+        matched.setdefault(tpl, {}).update(cohort_rows)
+
+    for label in template_labels:
+        out_rows.append(cells_for(label, matched.get(label, {})))
+
+    if unmatched:
+        blank = [""] * len(headers)
+        out_rows.append(blank)
+        note = layout.get("unmatched_note") or (
+            "Variables below have spec data but no matching Table S4 row."
+        )
+        out_rows.append([note] + [""] * (len(headers) - 1))
+        for spec_label in sorted(unmatched):
+            out_rows.append(cells_for(spec_label, by_label[spec_label]))
+
+    return headers, out_rows, sorted(unmatched)
+
+
+def _write_csv(output: Path, per_cohort, var_labels, layout: dict | None = None) -> None:
+    headers, rows, unmatched = _build_table(per_cohort, var_labels, layout)
     with output.open("w", newline="", encoding="utf-8") as fh:
-        writer = csv.DictWriter(fh, fieldnames=fieldnames)
-        writer.writeheader()
+        writer = csv.writer(fh)
+        writer.writerow(headers)
+        writer.writerows(rows)
+    if unmatched:
+        print(
+            f"NOTE: {len(unmatched)} spec variable(s) had no template row; "
+            f"appended at the bottom: {', '.join(unmatched)}",
+            file=sys.stderr,
+        )
 
-        if not template_labels:
-            # No canonical list: emit spec labels sorted (legacy behavior).
-            for label in sorted(by_label):
-                writer.writerow({"variable": label, **cells_for(by_label[label])})
-            return
 
-        # Resolve each spec label to its template row (case-insensitive + aliases).
-        resolver = _build_label_resolver(template_labels, layout.get("aliases") or {})
-        # template_label -> merged {cohort_key -> row}
-        matched: dict[str, dict[str, dict]] = {}
-        unmatched: list[str] = []
-        for spec_label, cohort_rows in by_label.items():
-            tpl = resolver.get(spec_label.strip().lower())
-            if tpl is None:
-                unmatched.append(spec_label)
-                continue
-            dest = matched.setdefault(tpl, {})
-            dest.update(cohort_rows)  # cohorts are disjoint per spec label
-
-        # 1) Canonical template rows in template order (blank where no data).
-        for label in template_labels:
-            writer.writerow({"variable": label, **cells_for(matched.get(label, {}))})
-
-        # 2) Trailing block: spec variables with no template row. Separated by a
-        #    blank row and a note so they are visibly distinct.
-        if unmatched:
-            blank = {fn: "" for fn in fieldnames}
-            writer.writerow(blank)
-            note = layout.get("unmatched_note") or (
-                "Variables below have spec data but no matching Table S4 row."
-            )
-            writer.writerow({**blank, "variable": note})
-            for spec_label in sorted(unmatched):
-                writer.writerow({"variable": spec_label, **cells_for(by_label[spec_label])})
-            print(
-                f"NOTE: {len(unmatched)} spec variable(s) had no template row; "
-                f"appended at the bottom: {', '.join(sorted(unmatched))}",
-                file=sys.stderr,
-            )
+def _write_xlsx(output: Path, per_cohort, var_labels, layout: dict | None = None) -> None:
+    headers, rows, _ = _build_table(per_cohort, var_labels, layout)
+    # Every numeric column (all *_phv and *_n counts) gets the integer-count
+    # format; the leading "variable" column stays text.
+    column_formats = [None] + [XLSX_FMT_COUNT] * (len(headers) - 1)
+    write_xlsx(output, headers, rows, column_formats=column_formats, sheet_title="Table S4")
 
 
 if __name__ == "__main__":
