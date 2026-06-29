@@ -16,6 +16,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 
+from hv_dataqc.hv_dataqc_common import write_xlsx, XLSX_FMT_COUNT, XLSX_FMT_DECIMAL
 from hv_dataqc.extract_harmonized.table_s5.aggregate import PooledRow, pool_all
 from hv_dataqc.extract_harmonized.table_s5.spec import (
     S5_LABEL_ALIASES,
@@ -129,6 +130,57 @@ def format_paste_tsv(pooled: dict[str, PooledRow]) -> tuple[str, list[dict]]:
     return "\n".join(lines), coverage
 
 
+# Per-column number formats for the standalone .xlsx, aligned to SHEET_COLUMNS.
+# Counts integer; continuous stats 2dp; enums text.
+_XLSX_COLUMN_FORMATS = {
+    "n": XLSX_FMT_COUNT,
+    "nulls_missing": XLSX_FMT_COUNT,
+    "participants": XLSX_FMT_COUNT,
+    "mean": XLSX_FMT_DECIMAL,
+    "median": XLSX_FMT_DECIMAL,
+    "max": XLSX_FMT_DECIMAL,
+    "min": XLSX_FMT_DECIMAL,
+    "sd": XLSX_FMT_DECIMAL,
+    "enums": None,
+}
+
+
+def _row_to_xlsx_values(row: PooledRow | None) -> list:
+    """Raw (unformatted) per-column values for the xlsx, in SHEET_COLUMNS order.
+
+    Numbers stay numeric so the cell number-format applies; enums stay text.
+    """
+    if row is None:
+        return [""] * len(SHEET_COLUMNS)
+    return [
+        row.n,
+        row.nulls_missing,
+        row.mean,
+        row.median,
+        row.maximum,
+        row.minimum,
+        row.sd,
+        _fmt_enums(row.enums),
+        row.participants,
+    ]
+
+
+def format_xlsx_table(pooled: dict[str, PooledRow]) -> tuple[list[str], list[list]]:
+    """Build (headers, rows) for the standalone S5 .xlsx.
+
+    Unlike the paste TSV (which is header-less and label-less to drop into the
+    template), the standalone file includes a leading variable-label column and
+    a header row so it is self-describing.
+    """
+    headers = ["variable"] + list(SHEET_COLUMNS)
+    rows: list[list] = []
+    for s5_label in TABLE_S5_LABELS:
+        lookup = S5_LABEL_ALIASES.get(s5_label, s5_label)
+        row = pooled.get(lookup) or (pooled.get(s5_label) if lookup != s5_label else None)
+        rows.append([s5_label] + _row_to_xlsx_values(row))
+    return headers, rows
+
+
 def format_coverage_tsv(coverage: list[dict]) -> str:
     """Render the coverage list as a TSV with a header row."""
     if not coverage:
@@ -175,6 +227,10 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
         help="Directory to write table_s5_paste_<ts>.tsv and "
              "s5_coverage_<ts>.tsv.  Defaults to cwd.",
     )
+    p.add_argument(
+        "--no-xlsx", action="store_true",
+        help="Do not also write the standalone formatted table_s5_<ts>.xlsx.",
+    )
     return p.parse_args(argv)
 
 
@@ -210,6 +266,13 @@ def main(argv: list[str] | None = None) -> None:
     print(coverage_summary(coverage))
     print(f"  Paste TSV    : {paste_path}")
     print(f"  Coverage TSV : {cov_path}")
+
+    if not args.no_xlsx:
+        xlsx_path = out_dir / f"table_s5_{ts}.xlsx"
+        headers, rows = format_xlsx_table(pooled)
+        column_formats = [None] + [_XLSX_COLUMN_FORMATS.get(c) for c in SHEET_COLUMNS]
+        write_xlsx(xlsx_path, headers, rows, column_formats=column_formats, sheet_title="Table S5")
+        print(f"  Formatted XLSX : {xlsx_path}")
 
 
 if __name__ == "__main__":

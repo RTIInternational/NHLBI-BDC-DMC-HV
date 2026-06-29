@@ -15,6 +15,7 @@ from hv_dataqc.extract_harmonized.table_s5.report import (
     coverage_summary,
     format_coverage_tsv,
     format_paste_tsv,
+    format_xlsx_table,
 )
 from hv_dataqc.extract_harmonized.table_s5.spec import (
     S5_LABEL_ALIASES,
@@ -431,6 +432,31 @@ class FormatPasteTsvTests(unittest.TestCase):
         self.assertIn("matched", summary)
         self.assertIn("missing", summary)
         self.assertIn(f"of {len(TABLE_S5_LABELS)}", summary)
+
+
+class XlsxTableTests(unittest.TestCase):
+
+    def test_format_xlsx_table_keeps_numbers_and_one_row_per_label(self) -> None:
+        label = TABLE_S5_LABELS[0]
+        row = pool_entries(
+            [{"n_valid": 15584, "n_missing": 434, "mean": 359.58, "median": 27.0,
+              "sd": 1104.92, "min": 1.0, "max": 37795.8, "_cohort": "FHS"}],
+            bdc_label=label,
+        )
+        headers, rows = format_xlsx_table({label: row})
+        # One row per S5 label, plus a leading "variable" column header.
+        self.assertEqual(headers[0], "variable")
+        self.assertEqual(len(rows), len(TABLE_S5_LABELS))
+        by_label = {r[0]: r for r in rows}
+        cells = by_label[label]
+        # Numbers stay numeric (so the xlsx cell format can apply); not strings.
+        n_idx = headers.index("n")
+        mean_idx = headers.index("mean")
+        self.assertEqual(cells[n_idx], 15584)
+        self.assertEqual(cells[mean_idx], 359.58)
+        # A label with no pooled data is a blank row, not dropped.
+        missing_label = next(l for l in TABLE_S5_LABELS if l != label)
+        self.assertEqual(by_label[missing_label][n_idx], "")
 
 
 if __name__ == "__main__":
