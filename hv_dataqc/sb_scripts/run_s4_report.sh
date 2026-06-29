@@ -109,10 +109,17 @@ for COHORT in "${ALL_COHORTS[@]}"; do
             --no-joint-distributions)
     fi
 
-    # Locate the cohort's source-extract JSON (newest under latest_source)
-    SRC_JSON="$(find "$OUT_DIR/latest_source" -maxdepth 1 -name "*_source_*.json" 2>/dev/null | sort | tail -n1)"
+    # Locate the cohort's source-extract JSON. The extractor writes to
+    # <OUT_DIR>/source_<ts>/ and points a `latest_source` *symlink* at it; use
+    # `find -L` so the symlinked dir is followed (GNU find does not follow a
+    # symlink start-point without -L). Fall back to scanning the run subdirs
+    # directly if the symlink is missing.
+    SRC_JSON="$(find -L "$OUT_DIR/latest_source" -maxdepth 1 -name "*_source_*.json" 2>/dev/null | sort | tail -n1)"
     if [ -z "$SRC_JSON" ]; then
-        echo "WARNING: no source extract for $COHORT under $OUT_DIR/latest_source — run with --extract or run_extracts.sh $COHORT first; skipping" >&2
+        SRC_JSON="$(find "$OUT_DIR" -path "*/source_*/*_source_*.json" 2>/dev/null | sort | tail -n1)"
+    fi
+    if [ -z "$SRC_JSON" ]; then
+        echo "WARNING: no source extract for $COHORT under $OUT_DIR — run with --extract or run_extracts.sh $COHORT first; skipping" >&2
         continue
     fi
     if [ ! -d "$CACHE_DIR" ]; then
