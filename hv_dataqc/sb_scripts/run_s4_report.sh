@@ -112,8 +112,10 @@ find_source_root() {
 # Skipped for --check (read-only) and --no-fetch. fetch_cache.sh is the
 # existing, tested fetcher; with no cohort arg it fetches/refreshes all.
 if $DO_FETCH && ! $CHECK_ONLY; then
-    echo "=== Fetching dbGaP caches (idempotent) ==="
-    if ! "$HV/hv_dataqc/local_scripts/fetch_cache.sh"; then
+    echo "=== Fetching dbGaP caches (idempotent, quiet) ==="
+    # --quiet keeps the per-file/per-cohort chatter out of the runner output;
+    # warnings + the final cache summary still print.
+    if ! "$HV/hv_dataqc/local_scripts/fetch_cache.sh" --quiet; then
         echo "WARNING: fetch_cache.sh returned non-zero; continuing with whatever caches exist." >&2
     fi
     echo
@@ -230,10 +232,14 @@ echo "=== Building S4 over: ${USED_COHORTS[*]} ==="
     "${TRIPLE_ARGS[@]}" \
     --output "$CSV")
 
-# Stable symlink to the latest
+# Stable symlinks to the latest CSV and xlsx.
+XLSX="${CSV%.csv}.xlsx"
 ln -sfn "$(basename "$CSV")" "$S4_OUT/latest_s4_report.csv"
+[ -f "$XLSX" ] && ln -sfn "$(basename "$XLSX")" "$S4_OUT/latest_s4_report.xlsx"
 
 echo
-echo "S4 written: $CSV"
-echo "Latest symlink: $S4_OUT/latest_s4_report.csv"
-echo "Paste the CSV (minus header) into the Table S4 template."
+echo "S4 written:"
+echo "  CSV : $CSV"
+[ -f "$XLSX" ] && echo "  XLSX: $XLSX   (template-shaped + formatted — open or use directly)"
+echo "Latest: $S4_OUT/latest_s4_report.{csv,xlsx}"
+echo "Download the .xlsx from the JupyterLab file browser (right-click -> Download)."
