@@ -76,7 +76,11 @@ def generate_markdown_report(
     if harmonized_meta.get("input_file"):
         lines.append(f"**Harmonized file:** `{harmonized_meta['input_file']}`")
     for md in harmonized_meta.get("mapped_data_dirs", []):
-        lines.append(f"**Harmonized dir:** `{Path(md).name}`")
+        # Show the top-level consent-group folder (grandparent of mapped-data),
+        # e.g. DMC_parent-CHS_HMB-MDS_-phs000287-v7-p1-c1_CHS_Processed_...
+        _p = Path(md)
+        _label = _p.parents[1].name if len(_p.parts) >= 3 else _p.name
+        lines.append(f"**Harmonized dir:** `{_label}`")
     if yaml_dir:
         lines.append(f"**YAML dir:** `{yaml_dir}`")
     if study_id_full:
@@ -153,6 +157,7 @@ def generate_markdown_report(
 
     check_names = {
         "CROSSWALK": "Crosswalk Resolution Failures",
+        "C0": "Entity File Coverage",
         "C1": "N Preservation", "C2": "N Loss Detection",
         "C3": "Missing Value Accounting", "C4": "Mean Preservation",
         "C5": "Mean After Conversion", "C6": "SD Preservation",
@@ -244,6 +249,15 @@ def generate_markdown_report(
         return sub
 
     _check_descriptions = {
+        "C0": (
+            "Pre-flight check: verifies that every entity TSV (Visit, Demography, "
+            "MeasurementObservation, etc.) produced rows in every consent group. "
+            "FAIL means an entity file was empty or missing for some groups while "
+            "other groups loaded it successfully — this signals a pipeline failure "
+            "(e.g. OOM, crashed run) rather than a data-quality issue. "
+            "Requires ``consent_group_file_status`` in the harmonized JSON "
+            "(hv-dataqc issue #690); skipped gracefully on older JSON artifacts."
+        ),
         "CROSSWALK": (
             "Source-column lookups that the YAML/cache could not resolve to a "
             "single PHT. When a column name appears in multiple source tables "
@@ -337,7 +351,7 @@ def generate_markdown_report(
         sub.append("</details>")
         return sub
 
-    for check_id in ["CROSSWALK", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12"]:
+    for check_id in ["CROSSWALK", "C0", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12"]:
         check_results = [r for r in results if r.check_id == check_id]
         if not check_results:
             continue

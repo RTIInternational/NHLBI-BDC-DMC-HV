@@ -110,4 +110,15 @@ def check_c0_entity_file_coverage(harmonized: dict) -> list[CheckResult]:
 
         results.append(CheckResult("C0", f"{entity}_file_coverage", "FAIL", msg, detail))
 
+    if not results and cg_status:
+        # All entities loaded in all consent groups — emit a single PASS summary.
+        n_groups = len(cg_status)
+        all_entities_list = sorted(all_entities)
+        results.append(CheckResult(
+            "C0", "entity_file_coverage", "PASS",
+            f"All {len(all_entities_list)} entity type(s) loaded successfully in all "
+            f"{n_groups} consent group(s).",
+            {"entities": all_entities_list, "consent_groups": sorted(cg_status.keys())},
+        ))
+
     return results
