@@ -51,6 +51,7 @@ from typing import Any
 import yaml
 
 from hv_dataqc.hv_dataqc_common import load_phv_name_map, XLSX_FMT_COUNT
+from hv_dataqc.extract_harmonized.label_map import load_label_map
 
 _PHV_RE = re.compile(r"phv\d+", re.IGNORECASE)
 
@@ -181,15 +182,35 @@ def _col_n_valid(
     return total if found else None
 
 
+def _resolve_label(
+    parsed: dict, var_labels: dict[str, str], obs_type_labels: dict[str, str]
+) -> str:
+    """Resolve a spec's publication label.
+
+    Order: by ``observation_type`` concept code (OMOP/OBA, the same join S5
+    uses — robust to filename-vs-var_name drift), then by filename stem treated
+    as a var_name, then the stem itself. This is what lets e.g. basophil_ct.yaml
+    (obs_type OBA:VT0002607) resolve to "basophils count" instead of falling
+    back to the raw stem.
+    """
+    ot = parsed.get("observation_type")
+    if ot and ot in obs_type_labels:
+        return obs_type_labels[ot]
+    stem = parsed["variable"]
+    return var_labels.get(stem, stem)
+
+
 def build_cohort_rows(
     specs_dir: Path,
     source_json: Path,
     cache_dir: Path,
     var_labels: dict[str, str],
+    obs_type_labels: dict[str, str] | None = None,
 ) -> dict[str, dict[str, Any]]:
     """Per-variable {phv_count, total_n, phvs, label} for one cohort's specs."""
     source_doc = json.loads(source_json.read_text())
     phv_name_map = load_phv_name_map(cache_dir)
+    obs_type_labels = obs_type_labels or {}
 
     rows: dict[str, dict[str, Any]] = {}
     for spec_path in sorted(specs_dir.glob("*.yaml")):
@@ -206,7 +227,7 @@ def build_cohort_rows(
                 total_n += n
                 n_seen = True
         rows[parsed["variable"]] = {
-            "label": var_labels.get(parsed["variable"], parsed["variable"]),
+            "label": _resolve_label(parsed, var_labels, obs_type_labels),
             "phv_count": len(phvs),
             "phvs": phvs,
             "phv_pht": phv_pht,
@@ -246,6 +267,9 @@ def main(argv: list[str] | None = None) -> int:
         p.error("--cohort, --source-json, --cache-dir must be repeated the same number of times")
 
     var_labels = load_var_labels(args.harmonized_vars)
+    # observation_type concept code -> var_label, the robust join (S5 uses the
+    # same map) that survives filename-stem vs var_name drift.
+    obs_type_labels = load_label_map(args.harmonized_vars)
 
     # cohort -> {variable -> row}
     per_cohort: dict[str, dict[str, dict]] = {}
@@ -254,7 +278,7 @@ def main(argv: list[str] | None = None) -> int:
         if not ingest_dir.is_dir():
             print(f"WARNING: no ingest dir for cohort {cohort}: {ingest_dir}", file=sys.stderr)
             continue
-        per_cohort[cohort] = build_cohort_rows(ingest_dir, src, cache, var_labels)
+        per_cohort[cohort] = build_cohort_rows(ingest_dir, src, cache, var_labels, obs_type_labels)
         print(f"{cohort}: {len(per_cohort[cohort])} variables from {ingest_dir.name}")
 
     if args.debug_variable:

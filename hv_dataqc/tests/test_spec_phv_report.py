@@ -21,8 +21,25 @@ from transform_assessment.spec_phv_report import (
     parse_spec_file,
     _col_n_valid,
     build_cohort_rows,
+    _resolve_label,
     _write_csv,
 )
+
+
+def test_resolve_label_prefers_observation_type():
+    # obs_type concept code wins over the var_name/stem fallback — this is what
+    # fixes basophil_ct.yaml (obs_type OBA:VT0002607) -> "basophils count"
+    # instead of the raw filename stem.
+    parsed = {"variable": "basophil_ct", "observation_type": "OBA:VT0002607"}
+    obs_labels = {"OBA:VT0002607": "basophils count"}
+    assert _resolve_label(parsed, {}, obs_labels) == "basophils count"
+
+
+def test_resolve_label_falls_back_to_var_name_then_stem():
+    # No obs_type match -> try var_name map -> else the stem itself.
+    parsed = {"variable": "ast_sgot", "observation_type": "OMOP:999"}
+    assert _resolve_label(parsed, {"ast_sgot": "AST SGOT"}, {}) == "AST SGOT"
+    assert _resolve_label({"variable": "weird", "observation_type": None}, {}, {}) == "weird"
 
 
 # A two-block spec mimicking ast_sgot.yaml: each block's value column lives in

@@ -116,27 +116,23 @@ for COHORT in "${ALL_COHORTS[@]}"; do
     have_extract="no"; [ -n "$SRC_JSON" ] && have_extract="yes"
     have_source="no"; [ -n "$SOURCE_ROOT" ] && have_source="yes"
 
-    # Decide status for this run's mode.
+    # Decide status. The dbGaP cache is required either way (to resolve PHV ->
+    # column for the N join), so a missing cache is BLOCKED in every mode — the
+    # actionable first step regardless of --extract.
     status="" ; note=""
-    if [ "$have_extract" = "yes" ] && { ! $DO_EXTRACT || ! $FORCE; }; then
-        # An extract exists; usable as long as cache is present.
-        if [ "$have_cache" = "yes" ]; then
-            status="READY"; note="reuse extract"
-            $DO_EXTRACT && [ "$FORCE" = "false" ] && note="reuse extract (skip re-extract; --force to redo)"
-        else
-            status="BLOCKED"; note="extract present but NO cache (fetch_cache.sh $(cache_subdir "$COHORT"))"
-        fi
+    if [ "$have_cache" = "no" ]; then
+        status="BLOCKED"; note="no cache (fetch_cache.sh $(cache_subdir "$COHORT"))"
+    elif [ "$have_extract" = "yes" ] && { ! $DO_EXTRACT || ! $FORCE; }; then
+        status="READY"; note="reuse extract"
+        $DO_EXTRACT && [ "$FORCE" = "false" ] && note="reuse extract (skip re-extract; --force to redo)"
     elif $DO_EXTRACT; then
-        # Need to extract: require cache + source dir.
-        if [ "$have_cache" = "yes" ] && [ "$have_source" = "yes" ]; then
+        if [ "$have_source" = "yes" ]; then
             status="WILL-EXTRACT"; note="extract then build"
-        elif [ "$have_cache" = "no" ]; then
-            status="BLOCKED"; note="no cache (fetch_cache.sh $(cache_subdir "$COHORT"))"
         else
             status="BLOCKED"; note="no source dir under PilotParentStudies_NoDRS"
         fi
     else
-        status="MISSING"; note="no extract; run with --extract (or run_extracts.sh $COHORT)"
+        status="MISSING"; note="cache present but no extract; run with --extract (or run_extracts.sh $COHORT)"
     fi
 
     printf '  %-10s %-12s cache=%-3s extract=%-3s  %s\n' "$COHORT" "$status" "$have_cache" "$have_extract" "$note"

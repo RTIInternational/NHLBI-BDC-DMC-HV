@@ -208,6 +208,14 @@ aliases:
     - insulin_in_blood
   Mean arterial pressure:
     - mean_art_press
+  # OMOP:35609491 resolves to "Alcohol" via harmonized_vars.tsv; template
+  # uses the fuller "Alcohol Consumption".
+  Alcohol Consumption:
+    - Alcohol
+  # The lymphocyte_ct spec's obs_type (OBA:VT0000717) is not in
+  # harmonized_vars.tsv's OBA column, so the label falls back to the stem.
+  Lymphocytes count:
+    - lymphocyte_ct
 
 # Printed above the trailing block of spec variables that match no template
 # row (IL-18, the combined pr_qrs_qt variable, etc.). They are appended after
