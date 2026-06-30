@@ -196,8 +196,25 @@ def discover_mapped_data_dirs(harmonized_root: Path, cohort: str) -> list[Path]:
 # Data loading
 # ---------------------------------------------------------------------------
 
-def load_entity(mapped_data_dirs: list[Path], entity: str) -> pd.DataFrame | None:
-    """Load and concatenate a specific entity TSV from all mapped-data dirs."""
+def load_entity(
+    mapped_data_dirs: list[Path],
+    entity: str,
+    cg_status: dict[str, dict] | None = None,
+) -> pd.DataFrame | None:
+    """Load and concatenate a specific entity TSV from all mapped-data dirs.
+
+    Args:
+        mapped_data_dirs: List of mapped-data/ directories to search.
+        entity: Entity name key from ENTITY_FILES (e.g. "Visit").
+        cg_status: Optional dict populated in-place with per-consent-group file
+            status for this entity.  Keys are consent-group labels (the
+            ``DMC_…`` directory name two levels above each mapped-data dir).
+            Values are status dicts with one of three shapes::
+
+                {"status": "loaded", "rows": N}
+                {"status": "empty",  "error": "<exception text>"}
+                {"status": "missing"}
+    """
     filename = ENTITY_FILES.get(entity)
     if not filename:
         return None
@@ -206,16 +223,23 @@ def load_entity(mapped_data_dirs: list[Path], entity: str) -> pd.DataFrame | Non
     found_files: list[tuple[str, int]] = []
 
     for d in mapped_data_dirs:
+        label = d.parent.parent.name
         tsv = d / filename
-        if tsv.exists():
-            try:
-                df = pd.read_csv(tsv, sep="\t", low_memory=False)
-                df.columns = df.columns.astype(str).str.strip()
-                frames.append(df)
-                label = d.parent.parent.name
-                found_files.append((label, len(df)))
-            except Exception as exc:
-                print(f"      WARNING: Could not read {tsv}: {exc}")
+        if not tsv.exists():
+            if cg_status is not None:
+                cg_status[label] = {"status": "missing"}
+            continue
+        try:
+            df = pd.read_csv(tsv, sep="\t", low_memory=False)
+            df.columns = df.columns.astype(str).str.strip()
+            frames.append(df)
+            found_files.append((label, len(df)))
+            if cg_status is not None:
+                cg_status[label] = {"status": "loaded", "rows": len(df)}
+        except Exception as exc:
+            print(f"      WARNING: Could not read {tsv}: {exc}")
+            if cg_status is not None:
+                cg_status[label] = {"status": "empty", "error": str(exc)}
 
     if not frames:
         return None
@@ -965,12 +989,22 @@ def _run_extract(
     rows_per_visit: dict[str, int] = {}
     participant_count_candidates: dict[str, int] = {}
     extraction_warnings: dict[str, Any] = {}
+    # Per-consent-group file status: {cg_label: {entity_name: {status, rows?, error?}}}
+    consent_group_file_status: dict[str, dict[str, dict]] = {}
+
+    def _load(entity_name: str) -> pd.DataFrame | None:
+        """Load an entity and record per-consent-group file status."""
+        _cg: dict[str, dict] = {}
+        df = load_entity(mapped_dirs, entity_name, cg_status=_cg)
+        for lbl, st in _cg.items():
+            consent_group_file_status.setdefault(lbl, {})[entity_name] = st
+        return df
 
     # ------------------------------------------------------------------
     # 1. Visit — MUST be loaded first to build UUID→label map
     # ------------------------------------------------------------------
     print("  [Visit] Loading (required first for UUID resolution)...")
-    visit_df = load_entity(mapped_dirs, "Visit")
+    visit_df = _load("Visit")
     visit_id_to_label: dict[str, str] = {}
 
     if visit_df is not None:
@@ -997,7 +1031,7 @@ def _run_extract(
     # 2. Demography
     # ------------------------------------------------------------------
     print("  [Demography] Loading...")
-    dem_df = load_entity(mapped_dirs, "Demography")
+    dem_df = _load("Demography")
     n_participants = 0
     if dem_df is not None:
         datasets_loaded.append("Demography")
@@ -1018,7 +1052,7 @@ def _run_extract(
     # 3. MeasurementObservation (standalone: bdy_hgt, bdy_wgt, bmi, hrt_rt)
     # ------------------------------------------------------------------
     print("  [MeasurementObservation] Loading...")
-    meas_df = load_entity(mapped_dirs, "MeasurementObservation")
+    meas_df = _load("MeasurementObservation")
     if meas_df is not None:
         datasets_loaded.append("MeasurementObservation")
         entity_counts["MeasurementObservation"] = len(meas_df)
@@ -1043,7 +1077,7 @@ def _run_extract(
     # 4. MeasurementObservationSet (blood_pressure, spirometry_*)
     # ------------------------------------------------------------------
     print("  [MeasurementObservationSet] Loading...")
-    meas_set_df = load_entity(mapped_dirs, "MeasurementObservationSet")
+    meas_set_df = _load("MeasurementObservationSet")
     if meas_set_df is not None:
         datasets_loaded.append("MeasurementObservationSet")
         entity_counts["MeasurementObservationSet"] = len(meas_set_df)
@@ -1067,7 +1101,7 @@ def _run_extract(
     # 5. Condition
     # ------------------------------------------------------------------
     print("  [Condition] Loading...")
-    cond_df = load_entity(mapped_dirs, "Condition")
+    cond_df = _load("Condition")
     if cond_df is not None:
         datasets_loaded.append("Condition")
         entity_counts["Condition"] = len(cond_df)
@@ -1087,7 +1121,7 @@ def _run_extract(
     # 6. Observation (smoking, etc.)
     # ------------------------------------------------------------------
     print("  [Observation] Loading...")
-    obs_df = load_entity(mapped_dirs, "Observation")
+    obs_df = _load("Observation")
     if obs_df is not None:
         datasets_loaded.append("Observation")
         entity_counts["Observation"] = len(obs_df)
@@ -1105,7 +1139,7 @@ def _run_extract(
     # 7. Participant / Person (for entity count tracking only)
     # ------------------------------------------------------------------
     for entity in ["Participant", "Person"]:
-        ent_df = load_entity(mapped_dirs, entity)
+        ent_df = _load(entity)
         if ent_df is not None:
             datasets_loaded.append(entity)
             entity_counts[entity] = len(ent_df)
@@ -1144,6 +1178,7 @@ def _run_extract(
         "datasets_loaded": datasets_loaded,
         "entity_counts": entity_counts,
         "rows_per_visit": rows_per_visit,
+        "consent_group_file_status": consent_group_file_status,
         "variables": variables,
     }
 

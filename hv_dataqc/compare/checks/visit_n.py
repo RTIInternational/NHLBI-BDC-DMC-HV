@@ -157,6 +157,7 @@ def check_c8_visit_distribution(
     source: dict, harmonized: dict,
     warn_lo_ratio: float = 0.95, warn_hi_ratio: float = 1.05,
     yaml_dir: Path | None = None,
+    consent_group_file_status: dict | None = None,
 ) -> list[CheckResult]:
     """C8: Visit-stratified row count comparison.
 
@@ -168,7 +169,41 @@ def check_c8_visit_distribution(
 
     When source and harmonized use incompatible visit label namespaces (zero
     overlap), falls back to total-count comparison.
+
+    Args:
+        source: Source summary dict.
+        harmonized: Harmonized summary dict.
+        warn_lo_ratio: Lower bound of acceptable harmonized/source ratio (warn).
+        warn_hi_ratio: Upper bound of acceptable harmonized/source ratio (warn).
+        yaml_dir: HV YAML transform directory; enables table-based synthesis.
+        consent_group_file_status: Per-consent-group entity file status from
+            the harmonized JSON (``consent_group_file_status`` field).  When
+            provided, empty Visit.tsv groups are noted in FAIL result details.
     """
+    # Build a short Visit-specific note from consent_group_file_status if present.
+    visit_cg_note: str | None = None
+    visit_cg_detail: dict | None = None
+    if consent_group_file_status and isinstance(consent_group_file_status, dict):
+        loaded_groups: list[tuple[str, int]] = []
+        failed_groups: list[str] = []
+        for cg_label, entity_map in consent_group_file_status.items():
+            st = entity_map.get("Visit", {})
+            if st.get("status") == "loaded":
+                loaded_groups.append((cg_label, int(st.get("rows", 0))))
+            elif st.get("status") in ("empty", "missing"):
+                failed_groups.append(cg_label)
+        if failed_groups and loaded_groups:
+            loaded_str = "; ".join(f"{lbl} ({_n(rows)} rows)" for lbl, rows in sorted(loaded_groups))
+            visit_cg_note = (
+                f"Visit.tsv empty/missing for {len(failed_groups)} consent group(s) "
+                f"({', '.join(sorted(failed_groups))}); loaded in: {loaded_str}. "
+                f"See C0 for details."
+            )
+            visit_cg_detail = {
+                "visit_tsv_loaded_groups": {lbl: rows for lbl, rows in loaded_groups},
+                "visit_tsv_failed_groups": sorted(failed_groups),
+                "c0_reference": "See C0 Entity File Coverage check for root cause.",
+            }
     results: list[CheckResult] = []
     src_visits = source.get("rows_per_visit", {})
     harmonized_visits = harmonized.get("rows_per_visit", {})
@@ -260,14 +295,17 @@ def check_c8_visit_distribution(
         detail: dict = {}
         if synthesis_note:
             detail["synthesis_note"] = synthesis_note
+        if visit_cg_detail:
+            detail.update(visit_cg_detail)
         if harmonized_n == src_n:
             results.append(CheckResult("C8", f"visit_{visit}", "PASS",
                                        f"Visit {visit}: N={_n(src_n)} ({src_label})",
                                        detail or None))
         elif harmonized_n == 0:
-            results.append(CheckResult("C8", f"visit_{visit}", "FAIL",
-                                       f"Visit {visit}: missing in harmonized (source N={_n(src_n)}, {src_label})",
-                                       detail or None))
+            msg = f"Visit {visit}: missing in harmonized (source N={_n(src_n)}, {src_label})"
+            if visit_cg_note:
+                msg += f" — {visit_cg_note}"
+            results.append(CheckResult("C8", f"visit_{visit}", "FAIL", msg, detail or None))
         else:
             ratio = harmonized_n / src_n if src_n > 0 else 0
             status = "WARN" if warn_lo_ratio <= ratio <= warn_hi_ratio else "FAIL"

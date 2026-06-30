@@ -91,6 +91,7 @@ from hv_dataqc.compare.checks.n_preservation import (
     check_c2_n_loss,
 )
 from hv_dataqc.compare.checks.visit_n import check_c8_visit_distribution
+from hv_dataqc.compare.checks.entity_completeness import check_c0_entity_file_coverage
 from hv_dataqc.compare.checks.clinical_ranges import check_c9_clinical_range
 from hv_dataqc.compare.checks.cross_variable import (
     check_c10_cross_variable,
@@ -763,6 +764,9 @@ def main(argv: list[str] | None = None) -> None:
     # Run checks
     all_results: list[CheckResult] = []
 
+    # C0 — pre-flight: entity file coverage per consent group (must run first)
+    all_results.extend(check_c0_entity_file_coverage(harmonized))
+
     # Collect all PHTs referenced by any YAML mapping so C1 can show the
     # YAML-scoped participant ceiling alongside the all-PHT union.
     mapped_phts: set[str] = {
@@ -942,6 +946,7 @@ def main(argv: list[str] | None = None) -> None:
         warn_lo_ratio=c8_t.get("warn_lo_ratio", 0.95),
         warn_hi_ratio=c8_t.get("warn_hi_ratio", 1.05),
         yaml_dir=yaml_dir,
+        consent_group_file_status=harmonized.get("consent_group_file_status"),
     ))
     all_results.extend(check_c10_cross_variable(harmonized_vars, clinical_ranges))
 
