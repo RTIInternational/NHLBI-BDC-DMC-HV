@@ -4,26 +4,32 @@
 # For each cohort present in the chosen DataRun, runs the harmonized
 # extractor (with the bdc_label map) to produce a per-cohort JSON, then
 # runs the S5 post-processor over all the JSONs to emit the paste-ready
-# TSV and coverage report.
+# TSV, a formatted .xlsx, and a coverage report.
+#
+# Resumable: each cohort's harmonized extract is cached per DataRun under
+# QC-output-files/<COHORT>/harmonized_<DataRun>/ and reused on re-run.
 #
 # Usage:
 #   ./run_s5_report.sh                              # latest DataRun, all cohorts
 #   ./run_s5_report.sh --datarun DataRun_20260412_1830  # pinned
 #   ./run_s5_report.sh --list-dataruns              # show available DataRuns
 #   ./run_s5_report.sh --cohorts ARIC,MESA          # restrict to two cohorts
+#   ./run_s5_report.sh --force                      # re-extract even if cached
 set -euo pipefail
 
 # --- Parse arguments ---
 PINNED_DATARUN=""
 LIST_ONLY=false
 COHORT_FILTER=""
+FORCE=false        # re-extract cohorts even if a same-DataRun extract exists
 
 while [ $# -gt 0 ]; do
     case "$1" in
         --datarun)       PINNED_DATARUN="${2:?--datarun requires a value}"; shift 2 ;;
         --list-dataruns) LIST_ONLY=true; shift ;;
         --cohorts)       COHORT_FILTER="${2:?--cohorts requires a value}"; shift 2 ;;
-        -h|--help)       sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+        --force)         FORCE=true; shift ;;
+        -h|--help)       sed -n '2,17p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
         -*)              echo "Unknown flag: $1" >&2; exit 1 ;;
         *)               echo "Unknown arg: $1" >&2; exit 1 ;;
     esac
@@ -147,30 +153,47 @@ fi
 echo "Cohorts to extract: ${!COHORT_MAPPED_DIRS[*]}"
 echo
 
-# --- Per-cohort harmonized extract ---
+# --- Per-cohort harmonized extract (resumable, keyed by DataRun) ---
+# Each cohort's harmonized extract is written to a stable, DataRun-stamped dir:
+#   QC-output-files/<COHORT>/harmonized_<DataRun>/
+# so a re-run reuses an existing same-DataRun extract instead of redoing it
+# (a checkpoint). --force redoes them. The S5 paste TSV / xlsx still go to a
+# fresh timestamped S5-output-files/<ts>/.
 RUN_TS=$(date -u +%Y%m%dT%H%M%SZ)
 S5_OUTPUT_DIR="/sbgenomics/workspace/S5-output-files/$RUN_TS"
 mkdir -p "$S5_OUTPUT_DIR"
+QC_BASE="/sbgenomics/workspace/QC-output-files"
 COHORT_JSONS=()
 
+TOTAL=${#COHORT_MAPPED_DIRS[@]}
+i=0
 for cohort in "${!COHORT_MAPPED_DIRS[@]}"; do
+    i=$((i + 1))
     cohort_lower=$(echo "$cohort" | tr '[:upper:]' '[:lower:]')
-    echo "=== Harmonized extract: $cohort ==="
-    cohort_out="$S5_OUTPUT_DIR/$cohort"
-    mkdir -p "$cohort_out"
-    # The extractor writes <cohort>_harmonized_<timestamp>.json under <cohort_out>/dataqc-runs/
-    # by default; we override with --output-dir for predictable paths.
-    (cd "$HV" && uv run python -m hv_dataqc.extract_harmonized.extract_harmonized_summaries \
-        --cohort "$cohort" \
-        --mapped-data-dirs ${COHORT_MAPPED_DIRS[$cohort]} \
-        --output-dir "$cohort_out")
-    # Find the produced JSON (newest in cohort_out, recursively).
-    cohort_json=$(find "$cohort_out" -name "${cohort_lower}_harmonized_*.json" -type f -print | sort | tail -1)
+    cohort_out="$QC_BASE/$cohort/harmonized_$CHOSEN_DATARUN"
+
+    # Reuse an existing same-DataRun extract unless --force.
+    existing=""
+    if ! $FORCE; then
+        existing=$(find "$cohort_out" -name "${cohort_lower}_harmonized_*.json" -type f 2>/dev/null | sort | tail -1 || true)
+    fi
+    if [ -n "$existing" ]; then
+        echo "[$i/$TOTAL] $cohort — reusing harmonized extract ($CHOSEN_DATARUN)"
+        cohort_json="$existing"
+    else
+        echo "[$i/$TOTAL] $cohort — harmonized extract ($CHOSEN_DATARUN)..."
+        mkdir -p "$cohort_out"
+        (cd "$HV" && uv run python -m hv_dataqc.extract_harmonized.extract_harmonized_summaries \
+            --cohort "$cohort" \
+            --mapped-data-dirs ${COHORT_MAPPED_DIRS[$cohort]} \
+            --output-dir "$cohort_out")
+        cohort_json=$(find "$cohort_out" -name "${cohort_lower}_harmonized_*.json" -type f -print | sort | tail -1)
+    fi
+
     if [ -z "$cohort_json" ]; then
-        echo "WARNING: no harmonized JSON produced for $cohort; skipping S5 aggregation"
+        echo "WARNING: no harmonized JSON for $cohort; skipping it in S5 aggregation"
     else
         COHORT_JSONS+=("$cohort_json")
-        echo "  -> $cohort_json"
     fi
     echo
 done

@@ -5,34 +5,39 @@
 # <cohort>-ingest/) for phv lists/counts, joined to per-cohort source-extract
 # JSONs for N.  No spreadsheets involved.
 #
-# By default it REUSES each cohort's existing latest_source extract under
-# QC-output-files/<COHORT>/.  Pass --extract to run the source extract for
-# cohorts that don't have one yet (slow; reads raw source TSVs). Extracts that
-# already exist are reused (restart-safe) unless --force is given.
+# With NO arguments it runs the whole idempotent pipeline:
+#   fetch dbGaP caches -> preflight -> extract any cohort missing an extract
+#   (reuse the rest) -> build CSV + xlsx. Re-running only does missing work.
 #
 # Usage:
-#   ./run_s4_report.sh                       # build from existing extracts
-#   ./run_s4_report.sh --check               # preflight only: per-cohort readiness, run nothing
-#   ./run_s4_report.sh --extract             # extract missing cohorts, then build
-#   ./run_s4_report.sh --extract --force     # re-extract every cohort (ignore existing)
+#   ./run_s4_report.sh                       # do everything (idempotent)
+#   ./run_s4_report.sh --check               # preflight only: readiness, run nothing
+#   ./run_s4_report.sh --no-fetch            # skip the cache fetch (use existing caches)
+#   ./run_s4_report.sh --no-extract          # build from existing extracts only
+#   ./run_s4_report.sh --force               # re-extract every cohort (ignore existing)
 #   ./run_s4_report.sh --cohorts FHS,MESA    # subset
 #   ./run_s4_report.sh --list-cohorts        # show cohorts that have spec dirs
 set -euo pipefail
 
 # --- Parse arguments ---
+# Defaults make a no-arg run do the whole idempotent pipeline:
+#   fetch caches -> preflight -> extract any missing cohort -> build CSV+xlsx.
 COHORT_FILTER=""
-DO_EXTRACT=false
+DO_EXTRACT=true     # extract cohorts that lack an extract; --no-extract to skip
+DO_FETCH=true       # fetch_cache.sh first (idempotent); --no-fetch to skip
 LIST_ONLY=false
 CHECK_ONLY=false
 FORCE=false
 while [ $# -gt 0 ]; do
     case "$1" in
         --cohorts)       COHORT_FILTER="${2:?--cohorts requires a value}"; shift 2 ;;
-        --extract)       DO_EXTRACT=true; shift ;;
+        --extract)       DO_EXTRACT=true; shift ;;          # accepted (already default)
+        --no-extract)    DO_EXTRACT=false; shift ;;
+        --no-fetch)      DO_FETCH=false; shift ;;
         --force)         FORCE=true; shift ;;
         --check)         CHECK_ONLY=true; shift ;;
         --list-cohorts)  LIST_ONLY=true; shift ;;
-        -h|--help)       sed -n '2,18p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+        -h|--help)       sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
         -*)              echo "Unknown flag: $1" >&2; exit 1 ;;
         *)               echo "Unknown arg: $1" >&2; exit 1 ;;
     esac
@@ -102,6 +107,17 @@ find_source_root() {
     # off-enclave), which would trip `set -e` inside a command substitution.
     find /sbgenomics/project-files/PilotParentStudies_NoDRS -maxdepth 1 -type d -iname "$1" -print -quit 2>/dev/null || true
 }
+
+# --- Fetch dbGaP caches (idempotent; fast when already cached) ---
+# Skipped for --check (read-only) and --no-fetch. fetch_cache.sh is the
+# existing, tested fetcher; with no cohort arg it fetches/refreshes all.
+if $DO_FETCH && ! $CHECK_ONLY; then
+    echo "=== Fetching dbGaP caches (idempotent) ==="
+    if ! "$HV/hv_dataqc/local_scripts/fetch_cache.sh"; then
+        echo "WARNING: fetch_cache.sh returned non-zero; continuing with whatever caches exist." >&2
+    fi
+    echo
+fi
 
 # --- Preflight: assess each cohort (cache present? extract present?) ---
 echo "=== Preflight (${#ALL_COHORTS[@]} cohort(s)) ==="
