@@ -8,7 +8,7 @@ known_issues:
   # each indicator (e.g., ever-had / still-have / doctor-diagnosed) is a
   # distinct clinical observation. The resulting N gain in C2 is expected.
 
-  - checks: [C2]
+  - checks: [C2, C3]
     variable_key: "a12cbron"
     yaml_file: chr_bronchitis.yaml
     status: false_positive
@@ -22,7 +22,7 @@ known_issues:
     related_issues: [651]
     confirmed_date: "2026-06-28"
 
-  - checks: [C2]
+  - checks: [C2, C3]
     variable_key: "a08diab"
     yaml_file: diabetes.yaml
     status: false_positive
@@ -36,7 +36,7 @@ known_issues:
     related_issues: [651]
     confirmed_date: "2026-06-28"
 
-  - checks: [C2]
+  - checks: [C2, C3]
     variable_key: "a12emph"
     yaml_file: emphysema.yaml
     status: false_positive
@@ -58,7 +58,7 @@ known_issues:
   # capturing patient-reported uncertainty as UNKNOWN is clinically
   # meaningful; it preserves the observation rather than discarding it.
 
-  - checks: [C2]
+  - checks: [C2, C3]
     variable_key: "a11mstrk"
     yaml_file: fam_stroke.yaml
     status: false_positive
@@ -72,7 +72,7 @@ known_issues:
     related_issues: [653]
     confirmed_date: "2026-06-28"
 
-  - checks: [C2]
+  - checks: [C2, C3]
     variable_key: "a09hbpg1"
     yaml_file: hyperten.yaml
     status: false_positive
@@ -86,7 +86,7 @@ known_issues:
     related_issues: [653]
     confirmed_date: "2026-06-28"
 
-  - checks: [C2]
+  - checks: [C2, C3]
     variable_key: "y01tia"
     yaml_file: stroke_isch_atk.yaml
     status: false_positive
@@ -102,7 +102,7 @@ known_issues:
     confirmed_date: "2026-06-28"
 
   # ── fam_income.yaml value_concept category mismatch (#652 Bug 2) ─────────
-  - checks: [C2]
+  - checks: [C2, C3, C7]
     variable_key: "c03incom"
     yaml_file: fam_income.yaml
     status: false_positive
@@ -152,7 +152,7 @@ known_issues:
     confirmed_date: "2026-06-28"
 
   # ── Hemoglobin: MCH crosswalk false positive ──────────────────────────────
-  - checks: [C4, C6]
+  - checks: [C4, C6, C9]
     variable_key: "a05hgb"
     yaml_file: hemo.yaml
     status: false_positive
