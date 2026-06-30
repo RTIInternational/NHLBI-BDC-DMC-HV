@@ -92,6 +92,7 @@ from hv_dataqc.compare.checks.n_preservation import (
 )
 from hv_dataqc.compare.checks.visit_n import check_c8_visit_distribution
 from hv_dataqc.compare.checks.entity_completeness import check_c0_entity_file_coverage
+from hv_dataqc.compare.known_issues import apply_known_issues, load_known_issues
 from hv_dataqc.compare.checks.clinical_ranges import check_c9_clinical_range
 from hv_dataqc.compare.checks.cross_variable import (
     check_c10_cross_variable,
@@ -647,6 +648,12 @@ def main(argv: list[str] | None = None) -> None:
         print(f"ERROR: --cache-dir not found: {cache_dir}", file=sys.stderr)
         sys.exit(2)
 
+    # Load known_issues suppression list for this cohort (optional; silently
+    # skipped when no file exists for the cohort).
+    known_issues_list = load_known_issues(cohort)
+    if known_issues_list:
+        print(f"Loaded {len(known_issues_list)} known_issue(s) for {cohort}")
+
     # Load clinical ranges
     cr_path = (
         Path(args.clinical_ranges)
@@ -1030,6 +1037,11 @@ def main(argv: list[str] | None = None) -> None:
     # multiple harmonized concepts) and consolidate per-variable C9 violations
     # that fired against different range definitions.
     all_results = _dedup_check_results(all_results)
+
+    # Apply known_issues suppression: matching FAIL/WARN results -> SKIP.
+    all_results, n_suppressed = apply_known_issues(all_results, known_issues_list)
+    if n_suppressed:
+        print(f"Suppressed {n_suppressed} result(s) via known_issues")
 
     # Summary
     counts: dict[str, int] = {}
