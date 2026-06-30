@@ -1,8 +1,8 @@
 cohort: MESA
 known_issues:
 
-  # ── dm031c C2 FAIL ────────────────────────────────────────────────────────
-  - checks: [C2]
+  # ── dm031c C1/C2/C3 FAIL ───────────────────────────────────────────────────
+  - checks: [C1, C2, C3]
     variable_key: "dm031c"
     yaml_file: diabetes.yaml
     status: false_positive
@@ -26,6 +26,23 @@ known_issues:
       per-concept attribution model for multi-concept source variables.
     related_issues: [661]
     confirmed_date: "2026-06-28"
+
+  # ── diabet1 C1/C3 FAIL (multi_concept_attribution spillover) ───────────────
+  - checks: [C1, C3]
+    variable_key: "diabet1"
+    yaml_file: diabetes.yaml
+    status: false_positive
+    root_cause: multi_concept_attribution
+    summary: >
+      The C1 source crosswalk attributes all dm031c (phv00082652) rows to the
+      MONDO:0005015 (diabetes) pool. However, diabetes.yaml routes code-1 rows
+      (~5,042) to HP:0025691 (prediabetes/IFG) and only codes 0/2/3 to
+      MONDO:0005015. Those ~5,042 code-1 rows appear as N-loss (~10.7%) from
+      the diabet1 source pool, and C3 flags the corresponding missing-rate
+      increase. All rows ARE harmonized; this is the same structural
+      multi-concept attribution limitation documented in the dm031c entry above.
+    related_issues: [661]
+    confirmed_date: "2026-06-30"
 
   # ── condition_MISSING_CONCEPT C2 FAIL ────────────────────────────────────
   - checks: [C2]
@@ -99,3 +116,22 @@ known_issues:
       The difference is within acceptable rounding/precision bounds and
       does not indicate a meaningful data quality issue.
     confirmed_date: "2026-06-28"
+
+  # ── ecglvh1c C7 FAIL (label namespace mismatch) ──────────────────────────
+  - checks: [C7]
+    variable_key: "ecglvh1c"
+    yaml_file: lvh_ekg.yaml
+    status: false_positive
+    root_cause: categorical_label_namespace_mismatch
+    summary: >
+      C7 compares source variable category labels against harmonized
+      condition_status values. Source variables include flag-style PHVs
+      (major51, phv00174569; major55, phv00175080) whose category labels
+      are text strings ('LEFT VENTRICULAR HYPERTROPHY', '') and continuous
+      PHVs (ecglvh1c, ecglvh5c, lvhcv5) whose only listed category is
+      'NO' or 'NOLVH'. Harmonized condition_status uses the bdchm enum
+      ABSENT/PRESENT. C7 cannot reconcile these two label namespaces and
+      reports missing categories. This is a C7 structural limitation for
+      condition variables using text-labeled or flag-style source PHVs, not
+      a data quality error.
+    confirmed_date: "2026-06-30"
