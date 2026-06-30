@@ -77,7 +77,7 @@ XLSX_FMT_COUNT = "#,##0"        # integer counts with thousands separators
 XLSX_FMT_DECIMAL = "#,##0.00"  # 2-decimal stats with thousands separators
 
 
-def _coerce_number(value: Any) -> Any:
+def coerce_number(value: Any) -> Any:
     """Return value as int/float if it is numeric (or a numeric string), else as-is.
 
     Writing real numbers (not pre-formatted strings) is what lets the cell
@@ -137,7 +137,7 @@ def write_xlsx(
     for row in rows:
         out_cells: list[Any] = []
         for ci, raw in enumerate(row):
-            val = _coerce_number(raw) if fmts[ci] is not None else raw
+            val = coerce_number(raw) if fmts[ci] is not None else raw
             out_cells.append(val)
             shown = "" if val is None else str(val)
             if len(shown) > widths[ci]:

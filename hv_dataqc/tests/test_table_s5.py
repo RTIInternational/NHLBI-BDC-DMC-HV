@@ -16,6 +16,7 @@ from hv_dataqc.extract_harmonized.table_s5.report import (
     format_coverage_tsv,
     format_paste_tsv,
     format_xlsx_table,
+    write_s5_xlsx,
 )
 from hv_dataqc.extract_harmonized.table_s5.spec import (
     S5_LABEL_ALIASES,
@@ -457,6 +458,32 @@ class XlsxTableTests(unittest.TestCase):
         # A label with no pooled data is a blank row, not dropped.
         missing_label = next(l for l in TABLE_S5_LABELS if l != label)
         self.assertEqual(by_label[missing_label][n_idx], "")
+
+    def test_write_s5_xlsx_header_and_formats(self) -> None:
+        import tempfile
+        from pathlib import Path
+        from openpyxl import load_workbook
+
+        label = TABLE_S5_LABELS[0]
+        row = pool_entries(
+            [{"n_valid": 3096, "n_missing": 6634, "mean": 60.30, "median": 51.33,
+              "sd": 33.67, "min": 6.26, "max": 422.97, "_cohort": "FHS"}],
+            bdc_label=label,
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "s5.xlsx"
+            write_s5_xlsx(out, {label: row})
+            ws = load_workbook(out).active
+            # Template header: title in A1, column labels across, A2 label.
+            self.assertIn("Table S5", ws["A1"].value)
+            self.assertEqual(ws.cell(1, 2).value, "n")
+            self.assertEqual(ws.cell(1, 3).value, "nulls/missing")  # display label
+            self.assertEqual(ws["A2"].value, "Priority Variable")
+            # Data starts at row 3 with numeric, formatted cells.
+            self.assertEqual(ws.cell(3, 1).value, label)
+            self.assertEqual(ws.cell(3, 2).value, 3096)
+            self.assertEqual(ws.cell(3, 2).number_format, "#,##0")
+            self.assertEqual(ws.cell(3, 4).number_format, "#,##0.00")  # mean
 
 
 if __name__ == "__main__":

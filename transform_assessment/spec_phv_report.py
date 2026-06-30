@@ -50,7 +50,7 @@ from typing import Any
 
 import yaml
 
-from hv_dataqc.hv_dataqc_common import load_phv_name_map, write_xlsx, XLSX_FMT_COUNT
+from hv_dataqc.hv_dataqc_common import load_phv_name_map, XLSX_FMT_COUNT
 
 _PHV_RE = re.compile(r"phv\d+", re.IGNORECASE)
 
@@ -362,13 +362,27 @@ def _build_table(per_cohort, var_labels, layout: dict | None = None) -> tuple[li
     headers = ["variable"]
     for disp in display_cohorts:
         headers += [f"{disp}_phv", f"{disp}_n"]
+    headers += ["TOTALS_phv", "TOTALS_n"]  # row totals across cohorts
 
     def cells_for(label, label_rows: dict) -> list:
         out = [label]
+        tot_phv = 0
+        tot_n = 0
+        any_data = False
         for disp in display_cohorts:
             row = label_rows.get(key_for(disp))
-            out.append(row["phv_count"] if row else "")
-            out.append(row["total_n"] if row and row["total_n"] is not None else "")
+            phv = row["phv_count"] if row else ""
+            n = row["total_n"] if row and row["total_n"] is not None else ""
+            out.append(phv)
+            out.append(n)
+            if isinstance(phv, (int, float)):
+                tot_phv += phv
+                any_data = True
+            if isinstance(n, (int, float)):
+                tot_n += n
+                any_data = True
+        out.append(tot_phv if any_data else "")
+        out.append(tot_n if any_data else "")
         return out
 
     template_labels = layout.get("variables") or []
@@ -419,12 +433,85 @@ def _write_csv(output: Path, per_cohort, var_labels, layout: dict | None = None)
         )
 
 
+_S4_TITLE = "Table S4: Raw variables and sample sizes by priority variable before harmonization"
+_S4_CAPTION = "Number of relevant raw variables (phv) and data points (excluding missing values)"
+
+
 def _write_xlsx(output: Path, per_cohort, var_labels, layout: dict | None = None) -> None:
+    """Write the S4 xlsx replicating the template's 4-row merged header.
+
+    Header rows:
+      1. title (merged across all columns)
+      2. "Priority Variable" (A) | caption (merged across the cohort columns)
+      3. cohort names, each merged across its phv/n pair (+ TOTALS)
+      4. "phv" / "n" under each group
+      5+ data; counts get the #,##0 format.
+    """
+    from openpyxl import Workbook
+    from openpyxl.utils import get_column_letter
+    from openpyxl.styles import Alignment
+
     headers, rows, _ = _build_table(per_cohort, var_labels, layout)
-    # Every numeric column (all *_phv and *_n counts) gets the integer-count
-    # format; the leading "variable" column stays text.
-    column_formats = [None] + [XLSX_FMT_COUNT] * (len(headers) - 1)
-    write_xlsx(output, headers, rows, column_formats=column_formats, sheet_title="Table S4")
+    # Column groups: variable (1 col) then pairs. The header labels are derived
+    # from the "<group>_phv"/"<group>_n" header names built in _build_table.
+    groups: list[str] = []
+    for h in headers[1:]:
+        if h.endswith("_phv"):
+            groups.append(h[:-4])
+    ncols = len(headers)
+    last_col = get_column_letter(ncols)
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Table S4"
+    center = Alignment(horizontal="center")
+
+    # Row 1: title across everything.
+    ws["A1"] = _S4_TITLE
+    ws.merge_cells(f"A1:{last_col}1")
+    # Row 2: A = "Priority Variable", caption spans the data columns.
+    ws["A2"] = "Priority Variable"
+    ws["B2"] = _S4_CAPTION
+    ws.merge_cells(f"B2:{last_col}2")
+    ws["B2"].alignment = center
+    # Row 3: group names, each merged over its phv/n pair.
+    # Row 4: phv / n labels.
+    col = 2
+    for g in groups:
+        gl, gr = get_column_letter(col), get_column_letter(col + 1)
+        ws[f"{gl}3"] = g
+        ws.merge_cells(f"{gl}3:{gr}3")
+        ws[f"{gl}3"].alignment = center
+        ws[f"{gl}4"] = "phv"
+        ws[f"{gr}4"] = "n"
+        col += 2
+
+    # Data rows start at row 5; numeric count columns get the count format.
+    from hv_dataqc.hv_dataqc_common import coerce_number
+    for r in rows:
+        ws.append(r)
+        excel_row = ws.max_row
+        for ci in range(2, ncols + 1):  # skip the variable label column
+            cell = ws.cell(row=excel_row, column=ci)
+            val = coerce_number(cell.value)
+            cell.value = val
+            if isinstance(val, (int, float)) and not isinstance(val, bool):
+                cell.number_format = XLSX_FMT_COUNT
+
+    # Column widths + freeze the 4-row header.
+    ws.column_dimensions["A"].width = 40
+    for ci in range(2, ncols + 1):
+        ws.column_dimensions[get_column_letter(ci)].width = 10
+    ws.freeze_panes = "B5"
+
+    output.parent.mkdir(parents=True, exist_ok=True)
+    tmp = output.with_name(f"{output.name}.tmp")
+    try:
+        wb.save(tmp)
+        tmp.replace(output)
+    finally:
+        if tmp.exists():
+            tmp.unlink()
 
 
 if __name__ == "__main__":

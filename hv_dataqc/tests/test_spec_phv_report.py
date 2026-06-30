@@ -186,6 +186,24 @@ def test_layout_variable_list_fixes_rows_and_appends_unmatched(tmp_path):
     assert rows[-1]["FHS_phv"] == "8"      # appended Fibrinogen keeps its data
 
 
+def test_totals_column_sums_across_cohorts(tmp_path):
+    per_cohort = {
+        "ARIC": {"ast_sgot": {"label": "AST SGOT", "phv_count": 2, "total_n": 100}},
+        "FHS": {"ast_sgot": {"label": "AST SGOT", "phv_count": 5, "total_n": 15584}},
+    }
+    layout = {"cohorts": ["ARIC", "FHS"], "cohort_keys": {}, "variables": ["AST SGOT"]}
+    out = tmp_path / "s4.csv"
+    _write_csv(out, per_cohort, {}, layout)
+    r = _read_csv(out)[0]
+    assert r["TOTALS_phv"] == "7"          # 2 + 5
+    assert r["TOTALS_n"] == "15684"        # 100 + 15584
+    # A no-data row leaves TOTALS blank, not 0.
+    out2 = tmp_path / "s4b.csv"
+    layout2 = {**layout, "variables": ["BMI"]}
+    _write_csv(out2, per_cohort, {}, layout2)
+    assert _read_csv(out2)[0]["TOTALS_phv"] == ""
+
+
 def test_layout_case_insensitive_and_alias_matching(tmp_path):
     # Spec labels differ from template by case ("bilirubin total") and by a
     # genuine alias ("c-reactive protein CRP" -> "CRP c-reactive protein").

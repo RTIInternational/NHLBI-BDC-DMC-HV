@@ -16,7 +16,11 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-from hv_dataqc.hv_dataqc_common import write_xlsx, XLSX_FMT_COUNT, XLSX_FMT_DECIMAL
+from hv_dataqc.hv_dataqc_common import (
+    coerce_number,
+    XLSX_FMT_COUNT,
+    XLSX_FMT_DECIMAL,
+)
 from hv_dataqc.extract_harmonized.table_s5.aggregate import PooledRow, pool_all
 from hv_dataqc.extract_harmonized.table_s5.spec import (
     S5_LABEL_ALIASES,
@@ -144,6 +148,57 @@ _XLSX_COLUMN_FORMATS = {
     "enums": None,
 }
 
+# Header labels as they appear in the S5 template (SHEET_COLUMNS uses snake_case).
+_S5_COLUMN_HEADER = {"nulls_missing": "nulls/missing"}
+_S5_TITLE = "Table S5: Priority Variables after harmonization - Continuous"
+
+
+def write_s5_xlsx(path: "Path", pooled: dict) -> None:
+    """Write the S5 xlsx replicating the template header.
+
+    Row 1: title in A1, then the column labels (n, nulls/missing, ...,
+    participants) across B1+. Row 2: "Priority Variable" in A2. Data row 3+,
+    with counts as #,##0 and continuous stats as #,##0.00.
+    """
+    from openpyxl import Workbook
+    from openpyxl.utils import get_column_letter
+
+    headers, rows = format_xlsx_table(pooled)  # headers[0] == "variable"
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Table S5"
+
+    ws["A1"] = _S5_TITLE
+    for ci, col in enumerate(SHEET_COLUMNS, start=2):
+        ws.cell(row=1, column=ci, value=_S5_COLUMN_HEADER.get(col, col))
+    ws["A2"] = "Priority Variable"
+
+    fmts = [None] + [_XLSX_COLUMN_FORMATS.get(c) for c in SHEET_COLUMNS]
+    for r in rows:
+        ws.append(r)
+        excel_row = ws.max_row
+        for ci, fmt in enumerate(fmts, start=1):
+            if fmt is None:
+                continue
+            cell = ws.cell(row=excel_row, column=ci)
+            cell.value = coerce_number(cell.value)
+            if isinstance(cell.value, (int, float)) and not isinstance(cell.value, bool):
+                cell.number_format = fmt
+
+    ws.column_dimensions["A"].width = 36
+    for ci in range(2, len(SHEET_COLUMNS) + 2):
+        ws.column_dimensions[get_column_letter(ci)].width = 14
+    ws.freeze_panes = "B3"
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(f"{path.name}.tmp")
+    try:
+        wb.save(tmp)
+        tmp.replace(path)
+    finally:
+        if tmp.exists():
+            tmp.unlink()
+
 
 def _row_to_xlsx_values(row: PooledRow | None) -> list:
     """Raw (unformatted) per-column values for the xlsx, in SHEET_COLUMNS order.
@@ -269,9 +324,7 @@ def main(argv: list[str] | None = None) -> None:
 
     if not args.no_xlsx:
         xlsx_path = out_dir / f"table_s5_{ts}.xlsx"
-        headers, rows = format_xlsx_table(pooled)
-        column_formats = [None] + [_XLSX_COLUMN_FORMATS.get(c) for c in SHEET_COLUMNS]
-        write_xlsx(xlsx_path, headers, rows, column_formats=column_formats, sheet_title="Table S5")
+        write_s5_xlsx(xlsx_path, pooled)
         print(f"  Formatted XLSX : {xlsx_path}")
 
 
