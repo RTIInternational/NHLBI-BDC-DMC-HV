@@ -1,6 +1,7 @@
 """Validate all trans-spec YAML files against the linkml-map transformer model."""
 
 import sys
+import warnings
 from pathlib import Path
 
 import yaml
@@ -10,13 +11,22 @@ from linkml_map.validator import validate_spec
 # validation failures so CI stays green while issues are tracked separately.
 # Remove entries as they are fixed.
 KNOWN_ISSUES = {
-    "priority_variables_transform/FHS-ingest/pr_qrs_qt.yaml": "observations nesting inside MeasurementObservationSet not in linkml-map schema",
     "priority_variables_transform/FHS-ingest/_manifest-fhs.yaml": "version tracking manifest, not a transformation spec",
 }
 
 
 def validate_block(block: dict, block_index: int) -> list[str]:
-    errors = validate_spec(block)
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        errors = list(validate_spec(block))
+    # Gate on the deprecated slot-level `object_derivations` construct (#636):
+    # migrate any new occurrence to list-based `class_derivations`. This keeps
+    # the gate from going blind to reintroductions of the deprecated form.
+    if any("object_derivations" in str(w.message) for w in caught):
+        errors.append(
+            "uses deprecated 'object_derivations'; migrate to list-based "
+            "'class_derivations' (see #636)"
+        )
     return [f"  block {block_index}: {e}" for e in errors]
 
 

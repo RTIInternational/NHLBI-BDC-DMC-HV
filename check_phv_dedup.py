@@ -6,6 +6,19 @@ from pathlib import Path
 
 import yaml
 
+
+def iter_nested_class_derivs(slot_def):
+    """Yield (class_name, class_spec) for a slot's nested class derivations,
+    handling both list-based class_derivations and legacy object_derivations."""
+    slot_def = slot_def or {}
+    for cd in slot_def.get("class_derivations") or []:
+        if isinstance(cd, dict):
+            yield cd.get("name"), cd
+    for od in slot_def.get("object_derivations") or []:
+        for name, spec in ((od or {}).get("class_derivations") or {}).items():
+            yield name, spec
+
+
 # Known duplicates tracked in #455. Remove entries as they are fixed.
 KNOWN_ISSUES = {
     "phv00001581",  # FHS tot_chol_bld.yaml — missing observation_type in block 60
@@ -42,8 +55,10 @@ def extract_value_phvs(block, block_index):
 
         elif class_name == "MeasurementObservation":
             concept = (slots.get("observation_type") or {}).get("value")
-            for obj_deriv in (slots.get("value_quantity") or {}).get("object_derivations") or []:
-                qty_slots = ((obj_deriv or {}).get("class_derivations") or {}).get("Quantity", {}).get("slot_derivations") or {}
+            for qty_name, qty in iter_nested_class_derivs(slots.get("value_quantity")):
+                if qty_name != "Quantity":
+                    continue
+                qty_slots = qty.get("slot_derivations") or {}
                 for val_slot in ("value_decimal", "value_integer", "value_string"):
                     slot_def = qty_slots.get(val_slot) or {}
                     if "populated_from" in slot_def and "value_mappings" not in slot_def and "expr" not in slot_def:
