@@ -13,14 +13,13 @@
           value: "Food Frequency Questionnaire"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004317
-                slot_derivations:
-                  value_decimal:
-                    expr: (({phv00218787} + {phv00218788} + {phv00218789} + {phv00218790}
-                      + {phv00218791} + {phv00218792} + {phv00218793}) / 30) * 7
-                  unit:
-                    value: '{#}/wk'
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht004317
+            slot_derivations:
+              value_decimal:
+                expr: (({phv00218787} + {phv00218788} + {phv00218789} + {phv00218790}
+                  + {phv00218791} + {phv00218792} + {phv00218793}) / 30) * 7
+              unit:
+                value: '{#}/wk'
+                range: string

@@ -11,13 +11,12 @@
         method_type:
           value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004124
-                slot_derivations:
-                  value_decimal:
-                    expr: "{phv00207683} * 6"
+          class_derivations:
+          - name: Quantity
+            populated_from: pht004124
+            slot_derivations:
+              value_decimal:
+                expr: "{phv00207683} * 6"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004051
@@ -31,13 +30,12 @@
         method_type:
           value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004051
-                slot_derivations:
-                  value_decimal:
-                    expr: "{phv00203874} * 6"
+          class_derivations:
+          - name: Quantity
+            populated_from: pht004051
+            slot_derivations:
+              value_decimal:
+                expr: "{phv00203874} * 6"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004063
@@ -53,15 +51,14 @@
         method_type:
           value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004063
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00204739
-                  unit:
-                    value: "pmol/L"
+          class_derivations:
+          - name: Quantity
+            populated_from: pht004063
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00204739
+              unit:
+                value: "pmol/L"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006444
