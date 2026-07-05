@@ -1,6 +1,27 @@
 cohort: CARDIA
 known_issues:
 
+  # ── C0: Consent-group pipeline failure ───────────────────────────────────
+  # The c2 consent group produces an empty Person.tsv (0 bytes). This is a
+  # dm-bip pipeline issue (issue #335): the pht001748 demographics table is
+  # blank in the c2 group. No YAML fix is possible; tracking here so the
+  # C0 FAIL is documented and not confused with a transform defect.
+
+  - checks: [C0]
+    variable_key: "Person_file_coverage"
+    yaml_file: null
+    status: false_positive
+    root_cause: consent_group_pipeline_failure
+    summary: >
+      The c2 consent group (DMC_nih-nhlbi-topmed-parent-cardia-phs000285-v3-r1-c2)
+      produces an empty Person.tsv (0 bytes or parse failure). The c1 group loads
+      3,147 rows successfully. Root cause is dm-bip issue #335: pht001748
+      (demographics) is empty in the c2 extract. No YAML change can resolve this;
+      the fix requires a dm-bip pipeline correction. The C0 FAIL is a pipeline
+      infrastructure issue, not a data-quality or transform defect.
+    related_issues: [335]
+    confirmed_date: "2026-07-05"
+
   # ── Multi-block Condition design (#651) ──────────────────────────────────
   # Several CARDIA condition YAMLs create multiple Condition records per
   # participant per table (one per evidence indicator), while C2 counts
@@ -8,7 +29,7 @@ known_issues:
   # each indicator (e.g., ever-had / still-have / doctor-diagnosed) is a
   # distinct clinical observation. The resulting N gain in C2 is expected.
 
-  - checks: [C2, C3]
+  - checks: [C1, C2, C3]
     variable_key: "a12cbron"
     yaml_file: chr_bronchitis.yaml
     status: false_positive
@@ -22,7 +43,7 @@ known_issues:
     related_issues: [651]
     confirmed_date: "2026-06-28"
 
-  - checks: [C2, C3]
+  - checks: [C1, C2, C3]
     variable_key: "a08diab"
     yaml_file: diabetes.yaml
     status: false_positive
@@ -36,7 +57,7 @@ known_issues:
     related_issues: [651]
     confirmed_date: "2026-06-28"
 
-  - checks: [C2, C3]
+  - checks: [C1, C2, C3]
     variable_key: "a12emph"
     yaml_file: emphysema.yaml
     status: false_positive
@@ -58,7 +79,7 @@ known_issues:
   # capturing patient-reported uncertainty as UNKNOWN is clinically
   # meaningful; it preserves the observation rather than discarding it.
 
-  - checks: [C2, C3]
+  - checks: [C1, C2, C3]
     variable_key: "a11mstrk"
     yaml_file: fam_stroke.yaml
     status: false_positive
@@ -86,7 +107,7 @@ known_issues:
     related_issues: [653]
     confirmed_date: "2026-06-28"
 
-  - checks: [C2, C3]
+  - checks: [C1, C2, C3]
     variable_key: "y01tia"
     yaml_file: stroke_isch_atk.yaml
     status: false_positive
@@ -102,7 +123,7 @@ known_issues:
     confirmed_date: "2026-06-28"
 
   # ── fam_income.yaml value_concept category mismatch (#652 Bug 2) ─────────
-  - checks: [C2, C3, C7]
+  - checks: [C1, C2, C3, C7]
     variable_key: "c03incom"
     yaml_file: fam_income.yaml
     status: false_positive
@@ -211,7 +232,7 @@ known_issues:
       variables across exam years.
     confirmed_date: "2026-06-28"
   # ── Alcohol servings: crosswalk source scope mismatch ────────────────────
-  - checks: [C2, C3, C6]
+  - checks: [C1, C2, C3, C6]
     variable_key: "a07liqr"
     yaml_file: alcohol_servings.yaml
     status: false_positive
@@ -227,7 +248,7 @@ known_issues:
     confirmed_date: "2026-06-30"
 
   # ── Angina: multi-block Condition design ─────────────────────────────────
-  - checks: [C2, C3]
+  - checks: [C1, C2, C3]
     variable_key: "a09angin"
     yaml_file: angina.yaml
     status: false_positive
@@ -244,24 +265,28 @@ known_issues:
     related_issues: [651]
     confirmed_date: "2026-06-30"
 
-  # ── BMI: crosswalk source scope mismatch (one PHT missing) ───────────────
-  - checks: [C2, C3, C4, C6]
+  # ── BMI: source pool uses wrong-form PHTs for Years 10 and 15 ───────────
+  - checks: [C1, C2, C3, C4, C6]
     variable_key: "a20bmi"
     yaml_file: bmi.yaml
     status: false_positive
     root_cause: crosswalk_source_scope_mismatch
     summary: >
-      bmi.yaml has 14 blocks across 7 exam-year tables (pht001583, pht001632,
-      pht001671, pht001720, pht001785, pht001857, pht003298). The source
-      crosswalk pooled only 6 source variables from 6 tables (a20bmi, b20bmi,
-      c20bmi, d20bmi, e20bmi, f20bmi); one table is absent from the crosswalk
-      pool. This produces a N gain in C2/C3 and mean/SD mismatches in C4/C6
-      because the harmonized aggregates all 7 visits while the source pool
-      covers only 6.
-    confirmed_date: "2026-06-30"
+      bmi.yaml correctly uses the F20 (Form 20 = anthropometry) tables, which
+      are the only ones that contain BMI variables: pht001583 (A4F20/Yr0
+      A20BMI), pht001632 (B2F20/Yr2 B20BMI), pht001671 (C1F20/Yr5 C20BMI),
+      pht001720 (D1F20A/Yr7 D20BMI), pht001785 (E1F20/Yr10 E20BMI), pht001857
+      (F2F20/Yr15 F20BMI), pht003298 (HeartGO baseline). The source crosswalk
+      has three errors: (1) uses pht001779 (E1F11/Yr10) and pht001818
+      (F1F10/Yr15) — non-anthropometry forms with NO BMI variable (confirmed
+      against data dict XML); (2) includes pht001669 (C1F17/Yr5) which also
+      has no BMI; (3) omits Year 2 entirely (pht001632 missing from pool).
+      N gain = Years 2, 10, 15 BMI records present in harmonized but missing
+      from source pool. YAML is more complete and correct than source extraction.
+    confirmed_date: "2026-07-05"
 
   # ── Cig_smok: PHV correction causes source/harmonized crosswalk mismatch ─
-  - checks: [C2, C3]
+  - checks: [C1, C2, C3]
     variable_key: "a09yrsqt"
     yaml_file: cig_smok.yaml
     status: false_positive
@@ -279,7 +304,7 @@ known_issues:
     confirmed_date: "2026-06-30"
 
   # ── Insulin: source crosswalk incomplete (recently added YAML) ───────────
-  - checks: [C2]
+  - checks: [C1, C2]
     variable_key: "measurement_OBA:2060174"
     yaml_file: insulin_blood.yaml
     status: false_positive
