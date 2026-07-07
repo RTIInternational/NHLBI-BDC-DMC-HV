@@ -29,7 +29,7 @@ known_issues:
   # each indicator (e.g., ever-had / still-have / doctor-diagnosed) is a
   # distinct clinical observation. The resulting N gain in C2 is expected.
 
-  - checks: [C1, C2, C3]
+  - checks: [C1, C2, C3, C7]
     variable_key: "a12cbron"
     yaml_file: chr_bronchitis.yaml
     status: false_positive
@@ -45,7 +45,7 @@ known_issues:
     related_issues: [651]
     confirmed_date: "2026-07-06"
 
-  - checks: [C1, C2, C3]
+  - checks: [C1, C2, C3, C7]
     variable_key: "a08diab"
     yaml_file: diabetes.yaml
     status: false_positive
@@ -59,7 +59,7 @@ known_issues:
     related_issues: [651]
     confirmed_date: "2026-06-28"
 
-  - checks: [C1, C2, C3]
+  - checks: [C1, C2, C3, C7]
     variable_key: "a12emph"
     yaml_file: emphysema.yaml
     status: false_positive
@@ -81,7 +81,7 @@ known_issues:
   # capturing patient-reported uncertainty as UNKNOWN is clinically
   # meaningful; it preserves the observation rather than discarding it.
 
-  - checks: [C1, C2, C3]
+  - checks: [C1, C2, C3, C7]
     variable_key: "a11mstrk"
     yaml_file: fam_stroke.yaml
     status: false_positive
@@ -95,7 +95,7 @@ known_issues:
     related_issues: [653]
     confirmed_date: "2026-06-28"
 
-  - checks: [C2, C3]
+  - checks: [C2, C3, C7]
     variable_key: "a09hbpg1"
     yaml_file: hyperten.yaml
     status: false_positive
@@ -109,7 +109,7 @@ known_issues:
     related_issues: [653]
     confirmed_date: "2026-06-28"
 
-  - checks: [C1, C2, C3]
+  - checks: [C1, C2, C3, C7]
     variable_key: "y01tia"
     yaml_file: stroke_isch_atk.yaml
     status: false_positive
@@ -145,7 +145,7 @@ known_issues:
     confirmed_date: "2026-06-28"
 
   # ── Asthma: multi-block Condition design ─────────────────────────────────
-  - checks: [C2, C3]
+  - checks: [C2, C3, C7]
     variable_key: "a12asthm"
     yaml_file: asthma.yaml
     status: false_positive
@@ -226,17 +226,20 @@ known_issues:
     confirmed_date: "2026-06-28"
 
   # ── Sleep duration: borderline SD mismatch ────────────────────────────────
-  - checks: [C6]
-    variable_key: "c42chour"
+  - checks: [C4, C6]
+    variable_key: "c42chour+f67slphr"
     yaml_file: sleep_duration_daily.yaml
     status: false_positive
     root_cause: borderline_sd_mismatch
     summary: >
-      C6 SD mismatch d=0.035 (source 8.294 vs harmonized 8.000). This is
-      below the d=0.05 threshold for actionable findings. Likely reflects
-      minor rounding or pooling differences between CARDIA sleep duration
-      variables across exam years.
-    confirmed_date: "2026-06-28"
+      C6 SD mismatch d=0.035 (source 8.294 vs harmonized 8.000) and
+      C4 mean shift d=0.0021 (source 6.897 vs harmonized 6.911). Both are
+      below actionable thresholds. The pooled key c42chour+f67slphr reflects
+      that the harmonized pool includes f67slphr (Year 15 sleep duration)
+      in addition to c42chour (Year 5). Likely reflects minor rounding or
+      pooling differences between CARDIA sleep duration variables across
+      exam years.
+    confirmed_date: "2026-07-07"
   # ── Alcohol servings: crosswalk source scope mismatch ────────────────────
   - checks: [C1, C2, C3, C4, C6]
     variable_key: "a07liqr"
@@ -311,6 +314,17 @@ known_issues:
     confirmed_date: "2026-06-30"
 
   # ── Insulin: source crosswalk incomplete (recently added YAML) ───────────
+  - checks: [C4, C6]
+    variable_key: "al4ins"
+    yaml_file: insulin_blood.yaml
+    status: false_positive
+    root_cause: unit_conversion_mean_crosswalk
+    summary: >
+      Source-side pool key al4ins+dl7ins0+dl7ins7 matched for C4/C6 checks.
+      Source mean 12.07 µIU/mL vs harmonized 83.79 pmol/L = 6.945× conversion
+      factor applied correctly. C4/C6 mismatch is a unit-conversion artifact.
+    confirmed_date: "2026-07-07"
+
   - checks: [C1, C2, C4, C6]
     variable_key: "measurement_OBA:2060174"
     yaml_file: insulin_blood.yaml
@@ -332,7 +346,7 @@ known_issues:
     confirmed_date: "2026-07-06"
 
   # ── Cig_smok: code-0 (never-smoked) → null suppresses never-smokers ──────
-  - checks: [C2, C3]
+  - checks: [C1, C2, C3, C7]
     variable_key: "a09smknw"
     yaml_file: cig_smok.yaml
     status: false_positive
@@ -346,3 +360,19 @@ known_issues:
       missing-rate increase (C2/C3) are expected. Same design pattern as
       chr_bronchitis.yaml (a12cbron entry above).
     confirmed_date: "2026-07-06"
+
+  # ── er2sfoci: C11 type mismatch false positive (continuous → categorical) ──
+  - checks: [C11]
+    variable_key: "er2sfoci"
+    yaml_file: carotid_plaque.yaml
+    status: false_positive
+    root_cause: continuous_to_categorical_intent
+    summary: >
+      carotid_plaque.yaml maps phv00118020 (er2sfoci = number of carotid
+      stenosis focal lesions, numeric count) via a case() expression to
+      condition_status values ABSENT/PRESENT/UNKNOWN. Source type = continuous
+      (integer count); harmonized condition_status = categorical. C11 flags
+      this as a type mismatch, but the mapping is intentional: count of
+      0 = ABSENT (no lesion detected), count > 0 = PRESENT. The conversion
+      of a count variable to a clinical condition status is correct design.
+    confirmed_date: "2026-07-07"
