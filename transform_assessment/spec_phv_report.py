@@ -10,21 +10,33 @@ aptamers mis-mapped to clinical concepts survive only in the sheets and in
 
 Two inputs, both spec/enclave-derived — no sheets:
 
-1. **PHV list / count / harmonized variable** come from the specs. For each
-   ``<variable>.yaml`` the value-source PHVs are the ``populated_from`` (and
-   ``{phv}`` refs in ``expr``) found *under the value slot subtree*
-   (``value_quantity`` / ``value_decimal`` / ``value_integer`` /
-   ``value_concept`` / ``value_enum``). PHVs that only appear in
-   ``associated_participant`` / ``associated_visit`` / ``age_at_observation``
-   are NOT value sources and are excluded from the count.
+1. **PHV list / count / harmonized variable** come from the specs. Each
+   ``<variable>.yaml`` is loaded via linkml-map's normalizing loader
+   (``load_specification``), which flattens the local ``observations``
+   nesting into walkable ``class_derivations`` (see linkml/linkml-map issue
+   #112). Every MeasurementObservation — flat, or nested inside a
+   MeasurementObservationSet — contributes its own ``observation_type`` and
+   the value-source PHVs under its value slots (``value_quantity`` /
+   ``value_decimal`` / ``value_integer`` / ``value_concept`` /
+   ``value_enum``). PHVs that only appear in ``associated_participant`` /
+   ``associated_visit`` / ``age_at_observation`` are provenance, not value
+   sources, and are excluded from the count.
+
+   A spec file therefore yields **one row per distinct observation_type**:
+   ``blood_pressure.yaml`` -> Systolic + Diastolic, ``spirometry.yaml`` ->
+   FEV1 / FVC / FEV1-FVC / ..., each with its own PHVs and N. Concepts that
+   resolve to the same label (whether across files, or a variable coded OBA
+   in some cohorts and OMOP in others — HDL, LDL, triglycerides) merge back
+   into a single row rather than splitting.
 
 2. **N** comes from a source-extraction JSON produced by
    ``extract_source_summaries.py`` on SB, joined PHV -> column -> n_valid via
    the dbGaP cache's PHV name map. Run the source extract first (the
    ``run_extracts.sh``/``--yaml-dir`` path); this script consumes its JSON.
 
-The bdc_label for each spec file is resolved from ``harmonized_vars.tsv``
-(short ``var_name`` == spec filename stem).
+The label for each concept is resolved from ``harmonized_vars.tsv`` by its
+``observation_type`` concept code (OMOP/OBA), falling back to the spec
+filename stem treated as a ``var_name``, then the stem itself.
 
 Usage::
 
@@ -45,6 +57,8 @@ import csv
 import json
 import re
 import sys
+import tempfile
+from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
@@ -64,78 +78,154 @@ _VALUE_SLOTS = ("value_decimal", "value_integer", "value_coded", "value_concept"
 _INGEST_DIR_RE = re.compile(r"^(?P<cohort>.+)-ingest$")
 
 
-def _phvs_in_subtree(node: Any) -> set[str]:
-    """All distinct PHV accessions referenced anywhere under *node*.
+def _regroup_by_entity(path: Path) -> dict:
+    """Regroup one spec file's blocks into the per-entity ``class_derivations``
+    list form that ``linkml_map.load_specification`` expects.
 
-    Catches both ``populated_from: phvNNNN`` and ``{phvNNNN}`` refs inside
-    ``expr`` strings, recursively, by stringifying the subtree.  Lowercased.
+    A per-variable spec file is a YAML list of ``{class_derivations: {Entity:
+    ...}}`` blocks.  ``load_specification`` requires the composed dict form
+    (``{class_derivations: [{Entity: ...}, ...]}``).  This is the same grouping
+    dm-bip's ``compose_specs`` does, inlined here for one file so S4 needs
+    neither the dm-bip package (whose pin conflicts with our linkml-map @main)
+    nor a cohort-wide compose step.  Restore ``dm_bip.map_data.compose_specs``
+    once dm-bip's linkml-map dependency catches up to the version carrying the
+    nested-derivation fix (linkml/linkml-map d5abfd0).
     """
-    return {m.group(0).lower() for m in _PHV_RE.finditer(json.dumps(node, default=str))}
+    blocks = yaml.safe_load(path.read_text()) or []
+    if isinstance(blocks, dict):
+        blocks = [blocks]
+    entity_blocks: dict[str, list[dict]] = defaultdict(list)
+    for block in blocks:
+        cds = (block or {}).get("class_derivations")
+        if not isinstance(cds, dict):
+            continue
+        for entity in cds:
+            entity_blocks[entity].append(cds)
+    return {"class_derivations": [{e: d[e]} for e, lst in entity_blocks.items() for d in lst]}
 
 
-def _value_source_phvs(body: Any) -> dict[str, str | None]:
-    """Map value-source PHV -> its PHT for one MeasurementObservation block.
+def _load_spec(path: Path):
+    """Load a per-variable spec via linkml-map's normalizing loader.
 
-    Collects PHVs only from the value slots (and the value_quantity
-    object_derivation that wraps them).  The PHT is the ``populated_from`` on
-    the nested Quantity (or the outer block for flat slots) — needed to
-    disambiguate columns whose name recurs across PHTs (e.g. "AST").
+    The loader normalizes the local ``observations``/``object_derivations``
+    nesting into list-based ``class_derivations`` (linkml/linkml-map, see the
+    deprecation of ``object_derivations``), so nested MeasurementObservations
+    inside a MeasurementObservationSet become walkable rather than being
+    dropped.
+    """
+    from linkml_map.utils.loaders import load_specification
+
+    tmp = Path(tempfile.mktemp(suffix=".yaml"))
+    tmp.write_text(yaml.dump(_regroup_by_entity(path), sort_keys=False))
+    try:
+        return load_specification(tmp)
+    finally:
+        tmp.unlink()
+
+
+def _as_list(derivations) -> list:
+    """ClassDerivation collections normalize to either a list or a name->cd
+    dict depending on nesting depth; iterate values either way."""
+    if not derivations:
+        return []
+    return derivations if isinstance(derivations, list) else list(derivations.values())
+
+
+def _value_source_phvs(mo_sd: dict) -> dict[str, str | None]:
+    """Map value-source PHV -> its PHT for one MeasurementObservation.
+
+    *mo_sd* is a MeasurementObservation's ``slot_derivations`` dict from the
+    typed spec.  Collects PHVs only from the value slots (and the
+    ``value_quantity`` Quantity that wraps them).  The PHT is the
+    ``populated_from`` on the nested Quantity (or the MO itself for flat slots)
+    — needed to disambiguate columns whose name recurs across PHTs (e.g. "AST").
     """
     phv_pht: dict[str, str | None] = {}
-    sd = (body or {}).get("slot_derivations", {})
-    if not isinstance(sd, dict):
-        return phv_pht
-    outer_pht = (body or {}).get("populated_from")
+    outer_pht = getattr(mo_sd.get("_mo"), "populated_from", None)
 
-    # value_quantity wraps a nested Quantity object_derivation carrying its
-    # own populated_from (the PHT the value column lives in).
-    vq = sd.get("value_quantity")
-    if isinstance(vq, dict):
-        for od in vq.get("object_derivations", []):
-            for cd in (od.get("class_derivations", {}) or {}).values():
-                q_pht = (cd or {}).get("populated_from") or outer_pht
-                inner = (cd or {}).get("slot_derivations", {}) or {}
-                for slot in _VALUE_SLOTS:
-                    if slot in inner:
-                        for phv in _phvs_in_subtree(inner[slot]):
-                            phv_pht.setdefault(phv, q_pht)
+    vq = mo_sd.get("value_quantity")
+    if vq is not None:
+        for q in _as_list(getattr(vq, "class_derivations", None)):
+            q_pht = getattr(q, "populated_from", None) or outer_pht
+            inner = getattr(q, "slot_derivations", None) or {}
+            for slot in _VALUE_SLOTS:
+                sd = inner.get(slot)
+                if sd is not None:
+                    for phv in _slot_phvs(sd):
+                        phv_pht.setdefault(phv, q_pht)
 
     # flat (non-nested) value slots directly on the MO
     for slot in _VALUE_SLOTS:
-        if slot in sd:
-            for phv in _phvs_in_subtree(sd[slot]):
+        sd = mo_sd.get(slot)
+        if sd is not None:
+            for phv in _slot_phvs(sd):
                 phv_pht.setdefault(phv, outer_pht)
 
     return phv_pht
 
 
+def _slot_phvs(slot_derivation) -> set[str]:
+    """PHVs on one SlotDerivation: its ``populated_from`` plus any in ``expr``."""
+    phvs: set[str] = set()
+    pf = getattr(slot_derivation, "populated_from", None)
+    if isinstance(pf, str):
+        phvs.update(m.group(0).lower() for m in _PHV_RE.finditer(pf))
+    expr = getattr(slot_derivation, "expr", None)
+    if isinstance(expr, str):
+        phvs.update(m.group(0).lower() for m in _PHV_RE.finditer(expr))
+    return phvs
+
+
+def _measurement_observations(spec) -> list:
+    """Every MeasurementObservation slot_derivations dict in the spec — both
+    flat top-level MOs and those nested under a MeasurementObservationSet's
+    ``observations`` slot.  Each dict is tagged with its owning ClassDerivation
+    under the ``_mo`` key so the PHT is recoverable."""
+    out: list[dict] = []
+
+    def collect(cd) -> None:
+        sd = getattr(cd, "slot_derivations", None) or {}
+        # A MeasurementObservationSet nests its MOs under `observations`.
+        obs = sd.get("observations")
+        nested = _as_list(getattr(obs, "class_derivations", None)) if obs is not None else []
+        if nested:
+            for mo in nested:
+                collect(mo)
+        else:
+            tagged = dict(sd)
+            tagged["_mo"] = cd
+            out.append(tagged)
+
+    for cd in _as_list(getattr(spec, "class_derivations", None)):
+        collect(cd)
+    return out
+
+
 def parse_spec_file(path: Path) -> dict[str, Any]:
-    """Return {variable, value_phvs (set), observation_type} for one spec file.
+    """Return {variable, concepts} for one spec file.
 
-    A spec file is a list of class_derivation blocks all describing the same
-    harmonized variable across PHTs; we union their value-source PHVs.
+    A spec file may define several distinct harmonized concepts (e.g.
+    ``blood_pressure.yaml`` -> systolic + diastolic), each a MeasurementObservation
+    with its own ``observation_type`` and value-source PHVs.  ``concepts`` is a
+    list of ``{observation_type, phv_pht}``, one per distinct observation_type,
+    unioning value-source PHVs across every MO (and PHT) that shares it.
     """
-    blocks = yaml.safe_load(path.read_text()) or []
-    if isinstance(blocks, dict):
-        blocks = [blocks]
+    spec = _load_spec(path)
 
-    phv_pht: dict[str, str | None] = {}
-    observation_type: str | None = None
-    for block in blocks:
-        for cls, body in (block.get("class_derivations", {}) or {}).items():
-            for phv, pht in _value_source_phvs(body).items():
-                # First PHT wins; a PHV should map to one value column/PHT.
-                phv_pht.setdefault(phv, pht)
-            sd = (body or {}).get("slot_derivations", {}) or {}
-            ot = sd.get("observation_type")
-            if isinstance(ot, dict) and ot.get("value") and observation_type is None:
-                observation_type = str(ot["value"])
+    by_type: dict[str | None, dict[str, str | None]] = defaultdict(dict)
+    for mo_sd in _measurement_observations(spec):
+        ot = mo_sd.get("observation_type")
+        otval = getattr(ot, "value", None) if ot is not None else None
+        for phv, pht in _value_source_phvs(mo_sd).items():
+            # First PHT wins; a PHV should map to one value column/PHT.
+            by_type[otval].setdefault(phv, pht)
 
-    return {
-        "variable": path.stem,                 # short var_name, e.g. "ast_sgot"
-        "phv_pht": phv_pht,                     # value-source phv -> pht
-        "observation_type": observation_type,
-    }
+    concepts = [
+        {"observation_type": otval, "phv_pht": phv_pht}
+        for otval, phv_pht in by_type.items()
+        if phv_pht
+    ]
+    return {"variable": path.stem, "concepts": concepts}
 
 
 def load_var_labels(harmonized_vars_tsv: Path) -> dict[str, str]:
@@ -183,20 +273,28 @@ def _col_n_valid(
 
 
 def _resolve_label(
-    parsed: dict, var_labels: dict[str, str], obs_type_labels: dict[str, str]
+    observation_type: str | None,
+    stem: str,
+    var_labels: dict[str, str],
+    obs_type_labels: dict[str, str],
 ) -> str:
-    """Resolve a spec's publication label.
+    """Resolve one concept's publication label.
 
     Order: by ``observation_type`` concept code (OMOP/OBA, the same join S5
     uses — robust to filename-vs-var_name drift), then by filename stem treated
     as a var_name, then the stem itself. This is what lets e.g. basophil_ct.yaml
     (obs_type OBA:VT0002607) resolve to "basophils count" instead of falling
     back to the raw stem.
+
+    Resolving by concept code also collapses cross-vocabulary synonyms: a
+    variable coded OBA in some cohorts and OMOP in others (HDL, LDL,
+    triglycerides) lands on one label per code, so same-label concepts merge
+    into a single row rather than splitting.  In every dual-coded case in the
+    current specs it is the OBA code that resolves, giving an effective
+    prefer-OBA / fall-back-OMOP behavior for free.
     """
-    ot = parsed.get("observation_type")
-    if ot and ot in obs_type_labels:
-        return obs_type_labels[ot]
-    stem = parsed["variable"]
+    if observation_type and observation_type in obs_type_labels:
+        return obs_type_labels[observation_type]
     return var_labels.get(stem, stem)
 
 
@@ -207,17 +305,35 @@ def build_cohort_rows(
     var_labels: dict[str, str],
     obs_type_labels: dict[str, str] | None = None,
 ) -> dict[str, dict[str, Any]]:
-    """Per-variable {phv_count, total_n, phvs, label} for one cohort's specs."""
+    """Per-label {phv_count, total_n, phvs, label} for one cohort's specs.
+
+    One spec file may contribute several rows (e.g. blood_pressure.yaml ->
+    Systolic + Diastolic), one per distinct ``observation_type``.  Concepts
+    resolving to the same label — whether across files or across vocabularies
+    within a file — merge into one row (PHVs unioned, N summed once per PHV).
+    Rows are keyed by resolved label; ``_build_table`` groups on label anyway.
+    """
     source_doc = json.loads(source_json.read_text())
     phv_name_map = load_phv_name_map(cache_dir)
     obs_type_labels = obs_type_labels or {}
 
-    rows: dict[str, dict[str, Any]] = {}
+    # label -> merged {phv -> pht, observation_types set}
+    merged: dict[str, dict[str, Any]] = {}
     for spec_path in sorted(specs_dir.glob("*.yaml")):
         parsed = parse_spec_file(spec_path)
-        phv_pht: dict[str, str | None] = parsed["phv_pht"]
-        if not phv_pht:
-            continue
+        for concept in parsed["concepts"]:
+            label = _resolve_label(
+                concept["observation_type"], parsed["variable"], var_labels, obs_type_labels
+            )
+            slot = merged.setdefault(label, {"phv_pht": {}, "observation_types": set()})
+            for phv, pht in concept["phv_pht"].items():
+                slot["phv_pht"].setdefault(phv, pht)
+            if concept["observation_type"]:
+                slot["observation_types"].add(concept["observation_type"])
+
+    rows: dict[str, dict[str, Any]] = {}
+    for label, slot in merged.items():
+        phv_pht = slot["phv_pht"]
         phvs = sorted(phv_pht)
         total_n = 0
         n_seen = False
@@ -226,13 +342,13 @@ def build_cohort_rows(
             if n is not None:
                 total_n += n
                 n_seen = True
-        rows[parsed["variable"]] = {
-            "label": _resolve_label(parsed, var_labels, obs_type_labels),
+        rows[label] = {
+            "label": label,
             "phv_count": len(phvs),
             "phvs": phvs,
             "phv_pht": phv_pht,
             "total_n": total_n if n_seen else None,
-            "observation_type": parsed["observation_type"],
+            "observation_type": sorted(slot["observation_types"]) or None,
         }
     return rows
 
@@ -298,9 +414,21 @@ def main(argv: list[str] | None = None) -> int:
 def _debug(args, var_labels, per_cohort) -> None:
     var = args.debug_variable
     print(f"\n=== DEBUG variable={var!r} ({var_labels.get(var, var)}) ===")
+
+    def find_row(rows: dict) -> dict | None:
+        # Rows are keyed by resolved label; accept an exact key, the label a
+        # var_name resolves to, or a case-insensitive label match.
+        if var in rows:
+            return rows[var]
+        target = var_labels.get(var, var).strip().lower()
+        for label, row in rows.items():
+            if label.strip().lower() in (var.strip().lower(), target):
+                return row
+        return None
+
     for cohort, src, cache in zip(args.cohort, args.source_json, args.cache_dir):
         rows = per_cohort.get(cohort, {})
-        row = rows.get(var)
+        row = find_row(rows)
         if not row:
             print(f"  {cohort}: (not present)")
             continue

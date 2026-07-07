@@ -30,16 +30,14 @@ def test_resolve_label_prefers_observation_type():
     # obs_type concept code wins over the var_name/stem fallback — this is what
     # fixes basophil_ct.yaml (obs_type OBA:VT0002607) -> "basophils count"
     # instead of the raw filename stem.
-    parsed = {"variable": "basophil_ct", "observation_type": "OBA:VT0002607"}
     obs_labels = {"OBA:VT0002607": "basophils count"}
-    assert _resolve_label(parsed, {}, obs_labels) == "basophils count"
+    assert _resolve_label("OBA:VT0002607", "basophil_ct", {}, obs_labels) == "basophils count"
 
 
 def test_resolve_label_falls_back_to_var_name_then_stem():
     # No obs_type match -> try var_name map -> else the stem itself.
-    parsed = {"variable": "ast_sgot", "observation_type": "OMOP:999"}
-    assert _resolve_label(parsed, {"ast_sgot": "AST SGOT"}, {}) == "AST SGOT"
-    assert _resolve_label({"variable": "weird", "observation_type": None}, {}, {}) == "weird"
+    assert _resolve_label("OMOP:999", "ast_sgot", {"ast_sgot": "AST SGOT"}, {}) == "AST SGOT"
+    assert _resolve_label(None, "weird", {}, {}) == "weird"
 
 
 # A two-block spec mimicking ast_sgot.yaml: each block's value column lives in
@@ -104,11 +102,152 @@ def test_only_value_phvs_counted(tmp_path):
     spec = tmp_path / "ast_sgot.yaml"
     spec.write_text(yaml.safe_dump(_SPEC))
     parsed = parse_spec_file(spec)
+    # Single concept (both blocks share OMOP:4263457) -> one concept group.
+    assert len(parsed["concepts"]) == 1
+    concept = parsed["concepts"][0]
+    assert concept["observation_type"] == "OMOP:4263457"
     # Two value PHVs; the four participant/visit/age PHVs are excluded.
-    assert set(parsed["phv_pht"]) == {"phv00007567", "phv00172165"}
-    assert parsed["phv_pht"]["phv00007567"] == "pht000030"
-    assert parsed["phv_pht"]["phv00172165"] == "pht002889"
-    assert parsed["observation_type"] == "OMOP:4263457"
+    phv_pht = concept["phv_pht"]
+    assert set(phv_pht) == {"phv00007567", "phv00172165"}
+    assert phv_pht["phv00007567"] == "pht000030"
+    assert phv_pht["phv00172165"] == "pht002889"
+
+
+# A nested MeasurementObservationSet mimicking blood_pressure.yaml: one set
+# whose `observations` hold two MeasurementObservations (systolic + diastolic),
+# each with its own observation_type and value PHV, in the same PHT.
+_NESTED_BP = [
+    {
+        "class_derivations": {
+            "MeasurementObservationSet": {
+                "populated_from": "pht000035",
+                "slot_derivations": {
+                    "associated_participant": {"expr": "uuid5(str({phv00010138}))"},
+                    "observations": {
+                        "object_derivations": [
+                            {"class_derivations": {"MeasurementObservation": {
+                                "populated_from": "pht000035",
+                                "slot_derivations": {
+                                    "observation_type": {"value": "OMOP:4152194"},
+                                    "value_quantity": {"object_derivations": [
+                                        {"class_derivations": {"Quantity": {
+                                            "populated_from": "pht000035",
+                                            "slot_derivations": {
+                                                "value_decimal": {"populated_from": "phv00009905"},
+                                            },
+                                        }}}
+                                    ]},
+                                },
+                            }}},
+                            {"class_derivations": {"MeasurementObservation": {
+                                "populated_from": "pht000035",
+                                "slot_derivations": {
+                                    "observation_type": {"value": "OMOP:4154790"},
+                                    "value_quantity": {"object_derivations": [
+                                        {"class_derivations": {"Quantity": {
+                                            "populated_from": "pht000035",
+                                            "slot_derivations": {
+                                                "value_decimal": {"populated_from": "phv00009906"},
+                                            },
+                                        }}}
+                                    ]},
+                                },
+                            }}},
+                        ]
+                    },
+                },
+            }
+        }
+    }
+]
+
+
+def test_nested_set_splits_into_one_concept_per_observation_type(tmp_path):
+    spec = tmp_path / "blood_pressure.yaml"
+    spec.write_text(yaml.safe_dump(_NESTED_BP))
+    parsed = parse_spec_file(spec)
+    by_type = {c["observation_type"]: c for c in parsed["concepts"]}
+    # Two distinct concepts, each with its own value PHV — not one merged row.
+    assert set(by_type) == {"OMOP:4152194", "OMOP:4154790"}
+    assert set(by_type["OMOP:4152194"]["phv_pht"]) == {"phv00009905"}
+    assert set(by_type["OMOP:4154790"]["phv_pht"]) == {"phv00009906"}
+    assert by_type["OMOP:4152194"]["phv_pht"]["phv00009905"] == "pht000035"
+
+
+def test_nested_set_yields_two_labeled_rows(tmp_path, monkeypatch):
+    specs_dir = tmp_path / "FHS-ingest"
+    specs_dir.mkdir()
+    (specs_dir / "blood_pressure.yaml").write_text(yaml.safe_dump(_NESTED_BP))
+    source_json = tmp_path / "src.json"
+    source_json.write_text(json.dumps({"variables_by_pht": {"pht000035": {
+        "bp_sys": {"n_valid": 100}, "bp_dia": {"n_valid": 90},
+    }}}))
+    monkeypatch.setattr(
+        "transform_assessment.spec_phv_report.load_phv_name_map",
+        lambda _c: {"phv00009905": "BP_SYS", "phv00009906": "BP_DIA"},
+    )
+    obs_labels = {"OMOP:4152194": "Systolic blood pressure",
+                  "OMOP:4154790": "Diastolic blood pressure"}
+    rows = build_cohort_rows(specs_dir, source_json, tmp_path / "cache", {}, obs_labels)
+    # One spec file -> two labeled rows, each with its own single PHV and N.
+    assert set(rows) == {"Systolic blood pressure", "Diastolic blood pressure"}
+    assert rows["Systolic blood pressure"]["phv_count"] == 1
+    assert rows["Systolic blood pressure"]["total_n"] == 100
+    assert rows["Diastolic blood pressure"]["phv_count"] == 1
+    assert rows["Diastolic blood pressure"]["total_n"] == 90
+
+
+def test_dual_coded_concepts_merge_to_one_row(tmp_path, monkeypatch):
+    # Same file, two blocks coded differently (OBA vs OMOP) but resolving to
+    # the SAME label must not split — HDL stays one row.
+    spec = [
+        {"class_derivations": {"MeasurementObservation": {
+            "populated_from": "pht000395",
+            "slot_derivations": {
+                "observation_type": {"value": "OBA:VT0000184"},
+                "value_quantity": {"object_derivations": [
+                    {"class_derivations": {"Quantity": {
+                        "populated_from": "pht000395",
+                        "slot_derivations": {"value_decimal": {"populated_from": "phv00055263"}},
+                    }}}
+                ]},
+            },
+        }}},
+        {"class_derivations": {"MeasurementObservation": {
+            "populated_from": "pht004801",
+            "slot_derivations": {
+                "observation_type": {"value": "OMOP:4041720"},
+                "value_quantity": {"object_derivations": [
+                    {"class_derivations": {"Quantity": {
+                        "populated_from": "pht004801",
+                        "slot_derivations": {"value_decimal": {"populated_from": "phv00227099"}},
+                    }}}
+                ]},
+            },
+        }}},
+    ]
+    specs_dir = tmp_path / "FHS-ingest"
+    specs_dir.mkdir()
+    (specs_dir / "hdl.yaml").write_text(yaml.safe_dump(spec))
+    source_json = tmp_path / "src.json"
+    source_json.write_text(json.dumps({"variables_by_pht": {
+        "pht000395": {"hdl1": {"n_valid": 10}},
+        "pht004801": {"hdl2": {"n_valid": 5}},
+    }}))
+    monkeypatch.setattr(
+        "transform_assessment.spec_phv_report.load_phv_name_map",
+        lambda _c: {"phv00055263": "HDL1", "phv00227099": "HDL2"},
+    )
+    # OBA:VT0000184 resolves to "HDL" by concept code; OMOP:4041720 does NOT
+    # resolve, so it falls back to the stem "hdl" -> var_label "HDL".  Both
+    # land on "HDL" and collapse into one row rather than splitting.  This is
+    # the real harmonized_vars.tsv situation (stem hdl -> "HDL", OBA -> "HDL",
+    # OMOP:4041720 unmapped) — the OBA-preferred / stem-fallback merge.
+    obs_labels = {"OBA:VT0000184": "HDL"}
+    rows = build_cohort_rows(specs_dir, source_json, tmp_path / "cache", {"hdl": "HDL"}, obs_labels)
+    assert set(rows) == {"HDL"}
+    assert rows["HDL"]["phv_count"] == 2
+    assert rows["HDL"]["total_n"] == 15
 
 
 def test_n_resolved_per_pht_no_double_count():
@@ -143,9 +282,10 @@ def test_build_cohort_rows_end_to_end(tmp_path, monkeypatch):
         lambda _cache: {"phv00007567": "A40", "phv00172165": "AST"},
     )
     rows = build_cohort_rows(specs_dir, source_json, tmp_path / "cache", {"ast_sgot": "AST SGOT"})
-    assert rows["ast_sgot"]["phv_count"] == 2
-    assert rows["ast_sgot"]["total_n"] == 4754 + 3732
-    assert rows["ast_sgot"]["label"] == "AST SGOT"
+    # Rows are keyed by resolved label (stem "ast_sgot" -> "AST SGOT").
+    assert rows["AST SGOT"]["phv_count"] == 2
+    assert rows["AST SGOT"]["total_n"] == 4754 + 3732
+    assert rows["AST SGOT"]["label"] == "AST SGOT"
 
 
 def _read_csv(path):
