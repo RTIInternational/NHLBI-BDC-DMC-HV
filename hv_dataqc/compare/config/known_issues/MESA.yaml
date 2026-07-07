@@ -27,8 +27,8 @@ known_issues:
     related_issues: [661]
     confirmed_date: "2026-06-28"
 
-  # ── diabet1 C1/C3 FAIL (multi_concept_attribution spillover) ───────────────
-  - checks: [C1, C3]
+  # ── diabet1 C1/C2/C3 FAIL (multi_concept_attribution spillover) ───────────
+  - checks: [C1, C2, C3]
     variable_key: "diabet1"
     yaml_file: diabetes.yaml
     status: false_positive
@@ -38,11 +38,12 @@ known_issues:
       MONDO:0005015 (diabetes) pool. However, diabetes.yaml routes code-1 rows
       (~5,042) to HP:0025691 (prediabetes/IFG) and only codes 0/2/3 to
       MONDO:0005015. Those ~5,042 code-1 rows appear as N-loss (~10.7%) from
-      the diabet1 source pool, and C3 flags the corresponding missing-rate
-      increase. All rows ARE harmonized; this is the same structural
-      multi-concept attribution limitation documented in the dm031c entry above.
+      the diabet1 source pool, and C2/C3 flag the corresponding N loss and
+      missing-rate increase. All rows ARE harmonized; this is the same
+      structural multi-concept attribution limitation documented in the dm031c
+      entry above.
     related_issues: [661]
-    confirmed_date: "2026-06-30"
+    confirmed_date: "2026-07-06"
 
   # ── condition_MISSING_CONCEPT C2 FAIL ────────────────────────────────────
   - checks: [C2]
@@ -117,21 +118,73 @@ known_issues:
       does not indicate a meaningful data quality issue.
     confirmed_date: "2026-06-28"
 
-  # ── ecglvh1c C7 FAIL (label namespace mismatch) ──────────────────────────
-  - checks: [C7]
+  # ── ecglvh1c C2/C3/C7 FAIL (sparse PHV multi-block + label namespace) ─────
+  - checks: [C2, C3, C7]
     variable_key: "ecglvh1c"
     yaml_file: lvh_ekg.yaml
     status: false_positive
     root_cause: categorical_label_namespace_mismatch
     summary: >
-      C7 compares source variable category labels against harmonized
-      condition_status values. Source variables include flag-style PHVs
-      (major51, phv00174569; major55, phv00175080) whose category labels
-      are text strings ('LEFT VENTRICULAR HYPERTROPHY', '') and continuous
-      PHVs (ecglvh1c, ecglvh5c, lvhcv5) whose only listed category is
-      'NO' or 'NOLVH'. Harmonized condition_status uses the bdchm enum
-      ABSENT/PRESENT. C7 cannot reconcile these two label namespaces and
-      reports missing categories. This is a C7 structural limitation for
-      condition variables using text-labeled or flag-style source PHVs, not
-      a data quality error.
-    confirmed_date: "2026-06-30"
+      C2/C3: lvh_ekg.yaml uses 8 blocks across 4 source tables. Several PHVs
+      are sparse within their table (major51/phv00174569: n=74 in pht001116
+      n=6,429; lvhcv5/phv00218150: n=0 in pht003086 n=198;
+      lvhcv5/phv00176547: n=4,359 in pht003091 n=6,429). Null source values
+      generate null-status Condition records, producing 36.8% apparent N loss
+      (C2) and a 24.8pp missing-rate increase (C3). All measured LVH events
+      are harmonized correctly. This reflects the study design: not all
+      participants had an ECG/LVH measurement at every exam.
+      C7: source variables include flag-style PHVs (major51, phv00174569;
+      major55, phv00175080) whose category labels are text strings
+      ('LEFT VENTRICULAR HYPERTROPHY', '') and continuous PHVs (ecglvh1c,
+      ecglvh5c, lvhcv5) whose only listed category is 'NO' or 'NOLVH'.
+      Harmonized condition_status uses ABSENT/PRESENT. C7 cannot reconcile
+      these namespaces; this is a structural limitation, not a data error.
+    confirmed_date: "2026-07-06"
+
+  # ── dm032c–dm035c C2/C3 FAIL (multi_concept_attribution, Exams 2–5) ───────
+  - checks: [C2, C3]
+    variable_key: "dm032c"
+    yaml_file: diabetes.yaml
+    status: false_positive
+    root_cause: multi_concept_attribution
+    summary: >
+      Same structure as dm031c: diabetes.yaml routes dm032c/dm033c/dm034c/
+      dm03fc/dm035c code-1 rows (IFG/prediabetes) to HP:0025691 and codes
+      0/2/3 to MONDO:0005015. C2 tracks the exam 2-5 source pool against
+      HP:0025691 only, so the majority of rows (codes 0/2/3 → MONDO) appear
+      as N-loss. C3 flags the corresponding missing-rate increase. All source
+      rows are harmonized correctly.
+    related_issues: [661]
+    confirmed_date: "2026-07-06"
+
+  # ── fgfruit5c C4/C6 FAIL (crosswalk source scope mismatch) ──────────────
+  - checks: [C4, C6]
+    variable_key: "fgfruit5c"
+    yaml_file: fruit_serving.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      fruit_serving.yaml computes weekly fruit servings as the sum of two
+      sub-component PHVs (phv00218767 + phv00218768) * 7. The crosswalk
+      maps this PHV pair to the source summary variable fgfruit5c (a
+      pre-computed composite, units: servings/day, mean ~1.96). The
+      harmonized mean (~17.2 servings/week) is correct; the C4/C6 mismatch
+      reflects the different aggregation scope (sum of raw components * 7
+      vs. the pre-built daily summary). The harmonized data is semantically
+      correct; this is a crosswalk tool limitation.
+    confirmed_date: "2026-07-06"
+
+  # ── fgvgreenleafy5c C4/C6 FAIL (crosswalk source scope mismatch) ─────────
+  - checks: [C4, C6]
+    variable_key: "fgvgreenleafy5c"
+    yaml_file: vege_serving.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      vege_serving.yaml computes weekly green leafy vegetable servings as
+      the sum of 7 sub-component PHVs (phv00218787 through phv00218793) * 7.
+      The crosswalk maps to fgvgreenleafy5c (pre-computed daily summary,
+      mean ~0.24). The harmonized mean (~18.5 servings/week) is correct;
+      the mismatch is the same sum-of-components vs. daily-summary scope
+      difference as fgfruit5c. The harmonized data is semantically correct.
+    confirmed_date: "2026-07-06"
