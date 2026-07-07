@@ -33,15 +33,17 @@ known_issues:
     variable_key: "a12cbron"
     yaml_file: chr_bronchitis.yaml
     status: false_positive
-    root_cause: multi_block_condition_design
+    root_cause: code_zero_null_suppression
     summary: >
-      pht001575 (Year 0) has 3 blocks (a12cbron ever-had, a12cbstl
-      still-have, a12cbdoc doctor-diagnosed), each generating one
-      Condition record per participant. C2 counts source table once;
-      harmonized produces up to 3× records. N gain (~21.9%) is expected
-      behavior for the multi-evidence-indicator design.
+      pht001575 (Year 0): code 0 (never-reported) maps to null, removing
+      those participants from harmonized output entirely. This is intentional
+      design — "never had" = no Condition record — but causes N LOSS vs.
+      source (17,883 → 15,418, ~13.8%) and ~5,249 null-status rows in the
+      harmonized. C2 N-loss and C3 missing-rate change are expected. The
+      multi-block structure (3 indicators per participant) and later PHTs
+      (pht001715, pht001761, pht001811) do not exhibit the same null pattern.
     related_issues: [651]
-    confirmed_date: "2026-06-28"
+    confirmed_date: "2026-07-06"
 
   - checks: [C1, C2, C3]
     variable_key: "a08diab"
@@ -143,7 +145,7 @@ known_issues:
     confirmed_date: "2026-06-28"
 
   # ── Asthma: multi-block Condition design ─────────────────────────────────
-  - checks: [C3]
+  - checks: [C2, C3]
     variable_key: "a12asthm"
     yaml_file: asthma.yaml
     status: false_positive
@@ -152,11 +154,15 @@ known_issues:
       asthma.yaml has 23 blocks across 10 tables (pht001575, pht001584,
       pht001626, pht001715, pht001721, pht001761, pht001811, pht001869,
       pht001870, pht001871). Multiple blocks per table produce multiple
-      Condition records per participant per visit. C3 missing-rate change
-      (d=5.6%) is expected from the same multi-evidence-indicator design
-      as chr_bronchitis, emphysema, and diabetes (#651).
+      Condition records per participant per visit. pht001575 code 0
+      (never-had) maps to UNKNOWN, creating extra records vs. source
+      count → C2 N gain (~9.3%) is expected. Several later-PHT blocks
+      map only code '2' (PRESENT), so non-PRESENT rows produce
+      null-status Condition records → ~17,003 null-status rows and C3
+      missing-rate change (d=5.6%) are expected from the same
+      multi-evidence-indicator design as chr_bronchitis and emphysema (#651).
     related_issues: [651]
-    confirmed_date: "2026-06-28"
+    confirmed_date: "2026-07-06"
 
   # ── Weight: lbs→kg unit conversion crosswalk artifact ────────────────────
   - checks: [C6]

@@ -16,6 +16,7 @@
             '1': OMOP:40766945
             '2': OMOP:45883537
             '88': None
+            'M': None
 - class_derivations:
     Observation:
       populated_from: pht001573
@@ -30,17 +31,7 @@
           range: string
         value_enum:
           populated_from: phv00113224
-- class_derivations:
-    Observation:
-      populated_from: pht001818
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120063}) + ":CARDIA")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120063}) + ":CARDIA YEAR 15")'
-          range: string
-        observation_type:
-          value: OMOP:4282779
-          range: string
-        value_enum:
-          populated_from: phv00120073
+          value_mappings:
+            '0': None
+            '1': OMOP:45883537
+            '2': OMOP:40766945
