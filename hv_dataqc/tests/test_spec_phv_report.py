@@ -297,6 +297,58 @@ def test_context_slot_does_not_break_parse(tmp_path):
     assert set(concept["phv_pht"]) == {"phv00159853"}
 
 
+def test_ignore_observation_types_drops_concepts(tmp_path, monkeypatch):
+    # A file with a real concept + a metadata concept the config says to ignore
+    # (e.g. the spirometry metadata OMOP codes). The ignored concept must not
+    # form a row nor contribute its phv to any row.
+    spec = [
+        {"class_derivations": {"MeasurementObservation": {
+            "populated_from": "pht000001",
+            "slot_derivations": {
+                "observation_type": {"value": "OMOP:4241837"},   # FEV1 (kept)
+                "value_quantity": {"object_derivations": [
+                    {"class_derivations": {"Quantity": {
+                        "populated_from": "pht000001",
+                        "slot_derivations": {"value_decimal": {"populated_from": "phv00000001"}},
+                    }}}
+                ]},
+            },
+        }}},
+        {"class_derivations": {"MeasurementObservation": {
+            "populated_from": "pht000001",
+            "slot_derivations": {
+                "observation_type": {"value": "OMOP:3002094"},   # metadata (ignored)
+                "value_quantity": {"object_derivations": [
+                    {"class_derivations": {"Quantity": {
+                        "populated_from": "pht000001",
+                        "slot_derivations": {"value_decimal": {"populated_from": "phv00000002"}},
+                    }}}
+                ]},
+            },
+        }}},
+    ]
+    specs_dir = tmp_path / "SPIROMICS-ingest"
+    specs_dir.mkdir()
+    (specs_dir / "spirometry.yaml").write_text(yaml.safe_dump(spec))
+    source_json = tmp_path / "src.json"
+    source_json.write_text(json.dumps({"variables_by_pht": {"pht000001": {
+        "fev1": {"n_valid": 42}, "meta": {"n_valid": 999},
+    }}}))
+    monkeypatch.setattr(
+        "transform_assessment.spec_phv_report.load_phv_name_map",
+        lambda _c: {"phv00000001": "FEV1", "phv00000002": "META"},
+    )
+    rows = build_cohort_rows(
+        specs_dir, source_json, tmp_path / "cache",
+        {}, {"OMOP:4241837": "FEV1"}, ignore_observation_types={"OMOP:3002094"},
+    )
+    # Only the kept concept produces a row; the ignored metadata phv is absent,
+    # so the count and N reflect FEV1 alone (not the inflated 999).
+    assert set(rows) == {"FEV1"}
+    assert rows["FEV1"]["phv_count"] == 1
+    assert rows["FEV1"]["total_n"] == 42
+
+
 def test_n_resolved_per_pht_no_double_count():
     # Same column name "AST" in two PHTs with different n_valid.
     source_doc = {

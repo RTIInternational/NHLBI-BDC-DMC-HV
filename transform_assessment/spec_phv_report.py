@@ -302,6 +302,7 @@ def build_cohort_rows(
     cache_dir: Path,
     var_labels: dict[str, str],
     obs_type_labels: dict[str, str] | None = None,
+    ignore_observation_types: set[str] | None = None,
 ) -> dict[str, dict[str, Any]]:
     """Per-label {phv_count, total_n, phvs, label} for one cohort's specs.
 
@@ -310,16 +311,24 @@ def build_cohort_rows(
     resolving to the same label — whether across files or across vocabularies
     within a file — merge into one row (PHVs unioned, N summed once per PHV).
     Rows are keyed by resolved label; ``_build_table`` groups on label anyway.
+
+    ``ignore_observation_types`` names concept codes whose MeasurementObservation
+    is metadata, not a reportable variable (e.g. the spirometry metadata OMOP
+    codes); those concepts are dropped so they neither form a row nor inflate a
+    real variable's phv count.
     """
     source_doc = json.loads(source_json.read_text())
     phv_name_map = load_phv_name_map(cache_dir)
     obs_type_labels = obs_type_labels or {}
+    ignore_observation_types = ignore_observation_types or set()
 
     # label -> merged {phv -> pht, observation_types set}
     merged: dict[str, dict[str, Any]] = {}
     for spec_path in sorted(specs_dir.glob("*.yaml")):
         parsed = parse_spec_file(spec_path)
         for concept in parsed["concepts"]:
+            if concept["observation_type"] in ignore_observation_types:
+                continue
             label = _resolve_label(
                 concept["observation_type"], parsed["variable"], var_labels, obs_type_labels
             )
@@ -384,6 +393,8 @@ def main(argv: list[str] | None = None) -> int:
     # observation_type concept code -> var_label, the robust join (S5 uses the
     # same map) that survives filename-stem vs var_name drift.
     obs_type_labels = load_label_map(args.harmonized_vars)
+    layout = load_layout(args.layout)
+    ignore_ots = layout.get("ignore_observation_types") or set()
 
     # cohort -> {variable -> row}
     per_cohort: dict[str, dict[str, dict]] = {}
@@ -392,14 +403,15 @@ def main(argv: list[str] | None = None) -> int:
         if not ingest_dir.is_dir():
             print(f"WARNING: no ingest dir for cohort {cohort}: {ingest_dir}", file=sys.stderr)
             continue
-        per_cohort[cohort] = build_cohort_rows(ingest_dir, src, cache, var_labels, obs_type_labels)
+        per_cohort[cohort] = build_cohort_rows(
+            ingest_dir, src, cache, var_labels, obs_type_labels, ignore_ots
+        )
         print(f"{cohort}: {len(per_cohort[cohort])} variables from {ingest_dir.name}")
 
     if args.debug_variable:
         _debug(args, var_labels, per_cohort)
         return 0
 
-    layout = load_layout(args.layout)
     _write_csv(args.output, per_cohort, var_labels, layout)
     print(f"\nWrote {args.output}")
     if not args.no_xlsx:
@@ -457,7 +469,7 @@ def load_layout(path: Path | None) -> dict:
     """
     effective = path or DEFAULT_LAYOUT_PATH
     if not effective.exists():
-        return {"cohorts": [], "cohort_keys": {}, "variables": []}
+        return {"cohorts": [], "cohort_keys": {}, "variables": [], "ignore_observation_types": set()}
     cfg = yaml.safe_load(effective.read_text()) or {}
     return {
         "cohorts": list(cfg.get("cohorts") or []),
@@ -465,6 +477,7 @@ def load_layout(path: Path | None) -> dict:
         "variables": list(cfg.get("variables") or []),
         "aliases": dict(cfg.get("aliases") or {}),
         "unmatched_note": cfg.get("unmatched_note") or "",
+        "ignore_observation_types": set(cfg.get("ignore_observation_types") or []),
     }
 
 

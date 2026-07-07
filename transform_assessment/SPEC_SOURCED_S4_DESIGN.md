@@ -62,6 +62,13 @@ map to separate rows in the S4 template, so S4 emits **one row per
   dual-coded case in the current specs it is the OBA code that resolves (the
   OMOP half is unmapped in `harmonized_vars.tsv`), giving prefer-OBA /
   fall-back-OMOP behavior for free.
+- **Spirometry metadata codes ignored.** The spirometry specs carry 6 OMOP
+  codes (`3002094, 3005600, 3011708, 3022891, 3024594, 4196583`) that are
+  metadata for the 3 real spirometry variables (FEV1, FVC, FEV1/FVC), not
+  separate measurements — per Anne Thessen, 2026-07-07. They are listed in
+  `s4_layout.yaml`'s `ignore_observation_types` and dropped in
+  `build_cohort_rows`, so they neither form a stray "spirometry" row nor
+  inflate the 3 real rows' phv counts.
 
 ## Remaining questions for the team
 
@@ -70,11 +77,9 @@ map to separate rows in the S4 template, so S4 emits **one row per
    from? Re-harmonizing from `main` + `thessen-s5-fixes` should clear the
    aptamer contamination; the residual extreme values flagged in QC are in
    the source data and stay.
-3. **Spirometry coverage gap (Anne).** 6 spirometry concept codes in the
-   specs (`OMOP:3002094, 3005600, 3011708, 3022891, 3024594, 4196583`) have
-   no row in `harmonized_vars.tsv`, so they don't resolve to a label and
-   currently group under the stem "spirometry" in the unmatched block. Are
-   those spirometry measures in scope, and what labels/rows should they get?
+3. ~~Spirometry coverage gap~~ — RESOLVED (Anne, 2026-07-07): the 6 codes are
+   metadata for the 3 spirometry variables, not measurements. Now ignored via
+   `s4_layout.yaml` `ignore_observation_types` (see Multi-concept split above).
 4. **harmonized_vars.tsv source + freshness (Anne).** It is a manual export
    of the curator variable-properties sheet, committed ~Jan 2026, copied in
    from `sb_for_bdc`. Is it the right source for S4's concept→label

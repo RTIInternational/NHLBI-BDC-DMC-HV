@@ -42,6 +42,21 @@ cohorts:
   - MESA
   - WHI
 
+# observation_type concept codes to drop entirely — the MeasurementObservation
+# carrying one is not a reportable variable. These 6 OMOP codes appear only in
+# the spirometry specs (spirometry.yaml / spirometry_pre_bd / _post_bd) and are
+# metadata for the 3 real spirometry variables (FEV1, FVC, FEV1/FVC), not
+# separate measurements — per Anne Thessen, 2026-07-07. Ignoring them prevents a
+# stray "spirometry" catch-all row and keeps the 3 spirometry rows' phv counts
+# to genuine value columns.
+ignore_observation_types:
+  - OMOP:3002094
+  - OMOP:3005600
+  - OMOP:3011708
+  - OMOP:3022891
+  - OMOP:3024594
+  - OMOP:4196583
+
 variables:
   - 8-epi-PGF2a in urine
   - AHI Apnea-Hypopnea Index
