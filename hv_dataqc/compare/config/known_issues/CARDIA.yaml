@@ -238,7 +238,7 @@ known_issues:
       variables across exam years.
     confirmed_date: "2026-06-28"
   # ── Alcohol servings: crosswalk source scope mismatch ────────────────────
-  - checks: [C1, C2, C3, C6]
+  - checks: [C1, C2, C3, C4, C6]
     variable_key: "a07liqr"
     yaml_file: alcohol_servings.yaml
     status: false_positive
@@ -248,10 +248,11 @@ known_issues:
       CARDIA exam years. The source crosswalk captures only pht001568 (Year 0,
       key a07liqr+a07beer+a07wine, n_valid=10,849), while the harmonized pools
       data from all exam-year tables, producing ~3× more rows (n_valid=32,177).
-      N gain (C2/C3) and SD mismatch (C6) are artifacts of the crosswalk seeing
+      N gain (C2/C3), mean mismatch (C4, source 1.11 vs harmonized 4.15, ratio
+      3.75×), and SD mismatch (C6) are all artifacts of the crosswalk seeing
       only one of the contributing PHTs. Same pattern as fruit_serving and
       vege_serving.
-    confirmed_date: "2026-06-30"
+    confirmed_date: "2026-07-06"
 
   # ── Angina: multi-block Condition design ─────────────────────────────────
   - checks: [C1, C2, C3]
@@ -310,7 +311,7 @@ known_issues:
     confirmed_date: "2026-06-30"
 
   # ── Insulin: source crosswalk incomplete (recently added YAML) ───────────
-  - checks: [C1, C2]
+  - checks: [C1, C2, C4, C6]
     variable_key: "measurement_OBA:2060174"
     yaml_file: insulin_blood.yaml
     status: false_positive
@@ -324,5 +325,24 @@ known_issues:
       Additionally, the unit conversion u[IU]/mL caused a pint UndefinedUnitError
       in the current run, producing all-null output; this is being fixed
       separately (see insulin_blood.yaml unit conversion fix).
+      C4/C6 mismatches (source 12.07 µIU/mL vs harmonized 83.79 pmol/L) are
+      the µIU/mL → pmol/L conversion (factor 6.945); the harmonized value is
+      correct and the mismatch is a unit_conversion_mean_crosswalk artifact.
     related_issues: []
-    confirmed_date: "2026-06-30"
+    confirmed_date: "2026-07-06"
+
+  # ── Cig_smok: code-0 (never-smoked) → null suppresses never-smokers ──────
+  - checks: [C2, C3]
+    variable_key: "a09smknw"
+    yaml_file: cig_smok.yaml
+    status: false_positive
+    root_cause: code_zero_null_suppression
+    summary: >
+      cig_smok.yaml pht001573 block (A10SMOKE Year 2) maps code '0' (never
+      smoked) to None, intentionally excluding never-smokers from the
+      harmonized Observation pool. Source extraction includes all rows
+      (n_valid=4,948); harmonized output only includes ever-smokers who
+      have a smoking-status code mapped to a non-null value. N loss and
+      missing-rate increase (C2/C3) are expected. Same design pattern as
+      chr_bronchitis.yaml (a12cbron entry above).
+    confirmed_date: "2026-07-06"
