@@ -60,6 +60,7 @@ import csv
 import json
 import re
 import sys
+import warnings
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
@@ -118,11 +119,22 @@ def _normalize_spec(path: Path) -> dict:
     schema (e.g. spirometry's ``context`` / ``relative_timing`` bronchodilator
     qualifiers), which the model rejects with ``extra_forbidden``.  Walking the
     normalized dict lets those unknown slots pass through harmlessly.
+
+    The specs use the deprecated ``object_derivations`` spelling throughout;
+    the flattening we rely on is exactly what triggers linkml-map's per-file
+    DeprecationWarning, so we silence that one category here (it is expected,
+    and migrating the specs is a spec-authoring concern, not S4's).
     """
     from linkml_map.transformer.transformer import Transformer
 
     obj = _regroup_by_entity(path)
-    Transformer._normalize_spec_dict(obj)
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore",
+            message=".*object_derivations.*deprecated.*",
+            category=DeprecationWarning,
+        )
+        Transformer._normalize_spec_dict(obj)
     return obj
 
 
