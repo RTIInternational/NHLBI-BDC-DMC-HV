@@ -183,11 +183,17 @@ def _extract_conversion_factor(expr: str) -> float | None:
 
     Returns None for compound expressions involving multiple PHVs, additions,
     or any pattern that cannot be expressed as a single scalar factor.
+
+    A single PHV that appears more than once (e.g. a null-guard ternary such as
+    ``None if str({phv}) in ('M', '') else float({phv}) * 6.945``) is treated
+    as a single-PHV expression; the scalar is still unambiguous.
     """
-    # Require exactly one PHV — compound exprs don't produce a single factor
-    if len(re.findall(r"phv\d+", expr)) != 1:
+    # Require exactly one *unique* PHV — compound exprs don't produce a single factor
+    if len(set(re.findall(r"phv\d+", expr))) != 1:
         return None
-    m = _SCALAR_MULT_RE.search(expr)
+    # Normalize: strip float() / int() wrappers so "float({phv}) * N" → "{phv} * N"
+    normalized = re.sub(r"(?:float|int)\((\{phv\d+\})\)", r"\1", expr)
+    m = _SCALAR_MULT_RE.search(normalized)
     if not m:
         return None
     # Group layout: (op1, scalar1) for PHV*scalar, (scalar2, op2) for scalar*PHV

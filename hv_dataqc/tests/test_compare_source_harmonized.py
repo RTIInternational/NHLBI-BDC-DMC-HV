@@ -1918,6 +1918,46 @@ class CrosswalkConceptExtractionTests(unittest.TestCase):
         self.assertIn(("phv000003", "value"), roles)
         self.assertEqual(cw[0]["conversion_factor"], 2.0)
 
+    def test_scalar_factor_extracted_from_null_guard_ternary_expr(self) -> None:
+        """Regression: expr with two occurrences of the same PHV (null-guard ternary)
+        must still yield a conversion_factor.
+        Pattern: ``None if str({phv}) in ('M', '') else float({phv}) * 6.945``
+        Previously failed because the check required len(findall) == 1 (found 2)."""
+        cd = {
+            "MeasurementObservation": {
+                "populated_from": "pht001234",
+                "slot_derivations": {
+                    "associated_participant": {"populated_from": "phv000001"},
+                    "observation_type": {"value": "OBA:2060174"},
+                    "value_quantity": {
+                        "object_derivations": [
+                            {
+                                "class_derivations": {
+                                    "Quantity": {
+                                        "slot_derivations": {
+                                            "value_decimal": {
+                                                "expr": (
+                                                    "None if str({phv000002}) in ('M', '') "
+                                                    "else float({phv000002}) * 6.945"
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                },
+            }
+        }
+        phv_names = {"phv000001": "TOPICID", "phv000002": "AL4INS"}
+        cw: list[dict] = []
+
+        _extract_crosswalk_from_class_derivations(cd, "insulin_blood.yaml", phv_names, cw)
+
+        self.assertEqual(len(cw), 1)
+        self.assertAlmostEqual(cw[0]["conversion_factor"], 6.945, places=4)
+
     def test_case_expr_observation_type_generates_multiple_entries(self) -> None:
         """case() on observation_type generates one crosswalk entry per CURIE.
         Regression: hdl.yaml was silently producing no matched entries."""
