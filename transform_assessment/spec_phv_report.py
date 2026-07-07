@@ -11,10 +11,13 @@ aptamers mis-mapped to clinical concepts survive only in the sheets and in
 Two inputs, both spec/enclave-derived — no sheets:
 
 1. **PHV list / count / harmonized variable** come from the specs. Each
-   ``<variable>.yaml`` is loaded via linkml-map's normalizing loader
-   (``load_specification``), which flattens the local ``observations``
-   nesting into walkable ``class_derivations`` (see linkml/linkml-map issue
-   #112). Every MeasurementObservation — flat, or nested inside a
+   ``<variable>.yaml`` is normalized via linkml-map's
+   ``Transformer._normalize_spec_dict`` (applied to the plain dict, NOT the
+   strict pydantic model — some specs carry local slots like spirometry's
+   ``context``/``relative_timing`` that the model rejects), which flattens
+   the local ``observations`` nesting into walkable ``class_derivations``
+   (see linkml/linkml-map issue #112). Every MeasurementObservation — flat,
+   or nested inside a
    MeasurementObservationSet — contributes its own ``observation_type`` and
    the value-source PHVs under its value slots (``value_quantity`` /
    ``value_decimal`` / ``value_integer`` / ``value_concept`` /
@@ -57,7 +60,6 @@ import csv
 import json
 import re
 import sys
-import tempfile
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
@@ -104,99 +106,95 @@ def _regroup_by_entity(path: Path) -> dict:
     return {"class_derivations": [{e: d[e]} for e, lst in entity_blocks.items() for d in lst]}
 
 
-def _load_spec(path: Path):
-    """Load a per-variable spec via linkml-map's normalizing loader.
+def _normalize_spec(path: Path) -> dict:
+    """Regroup one spec file per-entity and normalize it *as a dict*.
 
-    The loader normalizes the local ``observations``/``object_derivations``
-    nesting into list-based ``class_derivations`` (linkml/linkml-map, see the
-    deprecation of ``object_derivations``), so nested MeasurementObservations
-    inside a MeasurementObservationSet become walkable rather than being
-    dropped.
+    ``Transformer._normalize_spec_dict`` flattens the local ``observations`` /
+    ``object_derivations`` nesting into list-based ``class_derivations``
+    (linkml/linkml-map issue #112) so nested MeasurementObservations become
+    walkable — older linkml-map dropped them.  We normalize the plain dict and
+    walk that, deliberately NOT building the strict ``TransformationSpecification``
+    pydantic model: some live specs carry local slots beyond the linkml-map
+    schema (e.g. spirometry's ``context`` / ``relative_timing`` bronchodilator
+    qualifiers), which the model rejects with ``extra_forbidden``.  Walking the
+    normalized dict lets those unknown slots pass through harmlessly.
     """
-    from linkml_map.utils.loaders import load_specification
+    from linkml_map.transformer.transformer import Transformer
 
-    tmp = Path(tempfile.mktemp(suffix=".yaml"))
-    tmp.write_text(yaml.dump(_regroup_by_entity(path), sort_keys=False))
-    try:
-        return load_specification(tmp)
-    finally:
-        tmp.unlink()
+    obj = _regroup_by_entity(path)
+    Transformer._normalize_spec_dict(obj)
+    return obj
 
 
 def _as_list(derivations) -> list:
-    """ClassDerivation collections normalize to either a list or a name->cd
-    dict depending on nesting depth; iterate values either way."""
+    """A ``class_derivations`` collection normalizes to either a list or a
+    name->cd dict depending on nesting depth; iterate values either way."""
     if not derivations:
         return []
     return derivations if isinstance(derivations, list) else list(derivations.values())
 
 
-def _value_source_phvs(mo_sd: dict) -> dict[str, str | None]:
-    """Map value-source PHV -> its PHT for one MeasurementObservation.
+def _value_source_phvs(mo: dict) -> dict[str, str | None]:
+    """Map value-source PHV -> its PHT for one MeasurementObservation dict.
 
-    *mo_sd* is a MeasurementObservation's ``slot_derivations`` dict from the
-    typed spec.  Collects PHVs only from the value slots (and the
-    ``value_quantity`` Quantity that wraps them).  The PHT is the
-    ``populated_from`` on the nested Quantity (or the MO itself for flat slots)
-    — needed to disambiguate columns whose name recurs across PHTs (e.g. "AST").
+    Collects PHVs only from the value slots (and the ``value_quantity`` Quantity
+    that wraps them).  The PHT is the ``populated_from`` on the nested Quantity
+    (or the MO itself for flat slots) — needed to disambiguate columns whose
+    name recurs across PHTs (e.g. "AST").  ``context`` / ``activity`` and other
+    non-value slots are ignored, so their phvs never inflate the count.
     """
     phv_pht: dict[str, str | None] = {}
-    outer_pht = getattr(mo_sd.get("_mo"), "populated_from", None)
+    outer_pht = mo.get("populated_from")
+    sd = mo.get("slot_derivations") or {}
 
-    vq = mo_sd.get("value_quantity")
-    if vq is not None:
-        for q in _as_list(getattr(vq, "class_derivations", None)):
-            q_pht = getattr(q, "populated_from", None) or outer_pht
-            inner = getattr(q, "slot_derivations", None) or {}
+    vq = sd.get("value_quantity")
+    if isinstance(vq, dict):
+        for q in _as_list(vq.get("class_derivations")):
+            q_pht = q.get("populated_from") or outer_pht
+            inner = q.get("slot_derivations") or {}
             for slot in _VALUE_SLOTS:
-                sd = inner.get(slot)
-                if sd is not None:
-                    for phv in _slot_phvs(sd):
+                if slot in inner:
+                    for phv in _slot_phvs(inner[slot]):
                         phv_pht.setdefault(phv, q_pht)
 
     # flat (non-nested) value slots directly on the MO
     for slot in _VALUE_SLOTS:
-        sd = mo_sd.get(slot)
-        if sd is not None:
-            for phv in _slot_phvs(sd):
+        if slot in sd:
+            for phv in _slot_phvs(sd[slot]):
                 phv_pht.setdefault(phv, outer_pht)
 
     return phv_pht
 
 
-def _slot_phvs(slot_derivation) -> set[str]:
-    """PHVs on one SlotDerivation: its ``populated_from`` plus any in ``expr``."""
+def _slot_phvs(slot_derivation: dict) -> set[str]:
+    """PHVs on one slot_derivation dict: its ``populated_from`` plus any in
+    an ``expr`` string."""
     phvs: set[str] = set()
-    pf = getattr(slot_derivation, "populated_from", None)
-    if isinstance(pf, str):
-        phvs.update(m.group(0).lower() for m in _PHV_RE.finditer(pf))
-    expr = getattr(slot_derivation, "expr", None)
-    if isinstance(expr, str):
-        phvs.update(m.group(0).lower() for m in _PHV_RE.finditer(expr))
+    for key in ("populated_from", "expr"):
+        val = (slot_derivation or {}).get(key)
+        if isinstance(val, str):
+            phvs.update(m.group(0).lower() for m in _PHV_RE.finditer(val))
     return phvs
 
 
-def _measurement_observations(spec) -> list:
-    """Every MeasurementObservation slot_derivations dict in the spec — both
-    flat top-level MOs and those nested under a MeasurementObservationSet's
-    ``observations`` slot.  Each dict is tagged with its owning ClassDerivation
-    under the ``_mo`` key so the PHT is recoverable."""
+def _measurement_observations(spec: dict) -> list[dict]:
+    """Every MeasurementObservation dict in the normalized spec — both flat
+    top-level MOs and those nested under a MeasurementObservationSet's
+    ``observations`` slot."""
     out: list[dict] = []
 
-    def collect(cd) -> None:
-        sd = getattr(cd, "slot_derivations", None) or {}
+    def collect(cd: dict) -> None:
+        sd = cd.get("slot_derivations") or {}
         # A MeasurementObservationSet nests its MOs under `observations`.
         obs = sd.get("observations")
-        nested = _as_list(getattr(obs, "class_derivations", None)) if obs is not None else []
+        nested = _as_list(obs.get("class_derivations")) if isinstance(obs, dict) else []
         if nested:
             for mo in nested:
                 collect(mo)
         else:
-            tagged = dict(sd)
-            tagged["_mo"] = cd
-            out.append(tagged)
+            out.append(cd)
 
-    for cd in _as_list(getattr(spec, "class_derivations", None)):
+    for cd in _as_list(spec.get("class_derivations")):
         collect(cd)
     return out
 
@@ -210,13 +208,13 @@ def parse_spec_file(path: Path) -> dict[str, Any]:
     list of ``{observation_type, phv_pht}``, one per distinct observation_type,
     unioning value-source PHVs across every MO (and PHT) that shares it.
     """
-    spec = _load_spec(path)
+    spec = _normalize_spec(path)
 
     by_type: dict[str | None, dict[str, str | None]] = defaultdict(dict)
-    for mo_sd in _measurement_observations(spec):
-        ot = mo_sd.get("observation_type")
-        otval = getattr(ot, "value", None) if ot is not None else None
-        for phv, pht in _value_source_phvs(mo_sd).items():
+    for mo in _measurement_observations(spec):
+        ot = (mo.get("slot_derivations") or {}).get("observation_type")
+        otval = ot.get("value") if isinstance(ot, dict) else None
+        for phv, pht in _value_source_phvs(mo).items():
             # First PHT wins; a PHV should map to one value column/PHT.
             by_type[otval].setdefault(phv, pht)
 

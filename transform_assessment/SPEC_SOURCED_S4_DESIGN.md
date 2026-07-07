@@ -37,13 +37,19 @@ FVC / FEV1-FVC / ...), LTRC `body_measures.yaml` / `labs_cbc.yaml`. These
 map to separate rows in the S4 template, so S4 emits **one row per
 `observation_type`**, not one per file.
 
-- **Parsing** goes through linkml-map's normalizing loader
-  (`load_specification`), which flattens the local `observations` /
-  `object_derivations` nesting into walkable `class_derivations` (linkml/
-  linkml-map issue #112). Older linkml-map *dropped* that nesting silently;
-  the fix landed on `main` (commit `d5abfd0`, "Implicit cross-table join
-  resolution for nested class derivations"), so HV pins **linkml-map @ main**
-  (not a release — `v0.5.2` predates the fix).
+- **Parsing** normalizes each spec with linkml-map's
+  `Transformer._normalize_spec_dict` and walks the resulting **dict**, which
+  flattens the local `observations` / `object_derivations` nesting into
+  walkable `class_derivations` (linkml/linkml-map issue #112). Older
+  linkml-map *dropped* that nesting silently; the fix landed on `main`
+  (commit `d5abfd0`), so HV pins **linkml-map @ main** (not a release —
+  `v0.5.2` predates the fix). We deliberately do NOT build the strict
+  `TransformationSpecification` pydantic model (`load_specification`): some
+  live specs carry local slots beyond the schema — spirometry pre/post-BD
+  MOs have a `context` slot with `activity` / `relative_timing`
+  (bronchodilator timing) — which the model rejects with `extra_forbidden`.
+  Walking the normalized dict lets those unknown slots pass through
+  harmlessly; only the value slots are read for phv counts.
 - **dm-bip is deliberately NOT a dependency.** Its `compose_specs` (aggregate
   per-variable blocks by entity) is the only piece S4 needs, and it is
   reimplemented inline (`_regroup_by_entity`, ~10 lines). dm-bip's `main`

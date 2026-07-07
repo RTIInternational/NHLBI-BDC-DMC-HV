@@ -250,6 +250,53 @@ def test_dual_coded_concepts_merge_to_one_row(tmp_path, monkeypatch):
     assert rows["HDL"]["total_n"] == 15
 
 
+def test_context_slot_does_not_break_parse(tmp_path):
+    # Spirometry pre/post-bronchodilator MOs carry a `context` slot (with a
+    # nested activity / relative_timing) that is a local extension beyond the
+    # linkml-map schema.  We walk the normalized dict rather than building the
+    # strict pydantic model, so `context` must pass through harmlessly and the
+    # value PHV is still collected from value_quantity.
+    # Structure mirrors the real spirometry pre/post-BD specs exactly: Context
+    # and Activity carry their slots directly (no slot_derivations wrapper).
+    spec = [
+        {"class_derivations": {"MeasurementObservationSet": {
+            "populated_from": "pht002239",
+            "slot_derivations": {"observations": {"object_derivations": [
+                {"class_derivations": {"MeasurementObservation": {
+                    "populated_from": "pht002239",
+                    "slot_derivations": {
+                        "observation_type": {"value": "OMOP:4241837"},
+                        "context": {"object_derivations": [
+                            {"class_derivations": {"Context": {
+                                "activity": {"object_derivations": [
+                                    {"class_derivations": {"Activity": {
+                                        "activity_type": "BRONCHODILATOR_MEDICATION_USE"}}}
+                                ]},
+                                "relative_timing": "BEFORE",
+                            }}}
+                        ]},
+                        "value_quantity": {"object_derivations": [
+                            {"class_derivations": {"Quantity": {
+                                "populated_from": "pht002239",
+                                "slot_derivations": {"value_decimal": {"populated_from": "phv00159853"}},
+                            }}}
+                        ]},
+                    },
+                }}},
+            ]}},
+        }}}
+    ]
+    p = tmp_path / "spirometry.yaml"
+    p.write_text(yaml.safe_dump(spec))
+    parsed = parse_spec_file(p)
+    # One concept, value phv collected; the context/activity phvs (none here)
+    # and the relative_timing string do not crash or inflate the count.
+    assert len(parsed["concepts"]) == 1
+    concept = parsed["concepts"][0]
+    assert concept["observation_type"] == "OMOP:4241837"
+    assert set(concept["phv_pht"]) == {"phv00159853"}
+
+
 def test_n_resolved_per_pht_no_double_count():
     # Same column name "AST" in two PHTs with different n_valid.
     source_doc = {
