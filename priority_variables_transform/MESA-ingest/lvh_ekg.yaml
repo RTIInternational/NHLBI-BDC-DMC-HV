@@ -10,7 +10,7 @@
           value: HP:0001712
           range: string
         condition_status:
-          expr: "str({phv00082842})"
+          populated_from: phv00082842
           value_mappings:
             '0': ABSENT
             '1': PRESENT
@@ -35,7 +35,7 @@
           value: HP:0001712
           range: string
         condition_status:
-          expr: "str({phv00084552})"
+          populated_from: phv00084552
           value_mappings:
             '0': ABSENT
             '1': PRESENT
@@ -60,7 +60,7 @@
           value: HP:0001712
           range: string
         condition_status:
-          expr: "str({phv00174569})"
+          populated_from: phv00174569
           value_mappings:
             '0': ABSENT
             '1': PRESENT
@@ -85,7 +85,33 @@
           value: HP:0001712
           range: string
         condition_status:
-          expr: "str({phv00175080})"
+          populated_from: phv00175080
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            Left Ventricular Hypertrophy: PRESENT
+        condition_provenance:
+          value: CLINICAL_DIAGNOSIS
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        associated_evidence:
+          value: "Electrocardiogram"
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht003086
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
+        condition_concept:
+          value: HP:0001712
+          range: string
+        condition_status:
+          populated_from: phv00175124
           value_mappings:
             '0': ABSENT
             '1': PRESENT
@@ -110,32 +136,7 @@
           value: HP:0001712
           range: string
         condition_status:
-          expr: "str({phv00175124})"
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-        associated_evidence:
-          value: "Electrocardiogram"
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht003086
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
-        condition_concept:
-          value: HP:0001712
-          range: string
-        condition_status:
-          expr: "str({phv00218150})"
+          populated_from: phv00218150
           value_mappings:
             '0': ABSENT
             '1': PRESENT
@@ -160,10 +161,11 @@
           value: HP:0001712
           range: string
         condition_status:
-          expr: "str({phv00176503})"
+          populated_from: phv00176503
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            Left Ventricular Hypertrophy: PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
@@ -185,7 +187,7 @@
           value: HP:0001712
           range: string
         condition_status:
-          expr: "str({phv00176547})"
+          populated_from: phv00176547
           value_mappings:
             '0': ABSENT
             '1': PRESENT
