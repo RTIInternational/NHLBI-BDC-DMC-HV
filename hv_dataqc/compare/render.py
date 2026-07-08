@@ -208,6 +208,34 @@ def generate_markdown_report(
             )
         return sub
 
+    def _render_c14_detail(r: CheckResult) -> list[str]:
+        """Render C14 concept and visit breakdown tables to help locate the YAML source."""
+        if r.status != "WARN":
+            return []
+        sub: list[str] = []
+        top_concepts: list[dict] = r.detail.get("top_duplicate_concepts", [])
+        visit_breakdown: dict[str, int] = r.detail.get("visit_breakdown", {})
+        if top_concepts:
+            sub.append("")
+            sub.append(
+                "  **Top concepts with duplicate rows** "
+                "(search YAML files for `condition_concept`/`observation_concept`):"
+            )
+            sub.append("")
+            sub.append("  | Concept | Dup rows |")
+            sub.append("  |---------|--------:|")
+            for item in top_concepts:
+                sub.append(f"  | `{md_escape(item['concept'])}` | {item['n_dup_rows']:,} |")
+        if visit_breakdown:
+            sub.append("")
+            sub.append("  **Duplicate rows by visit:**")
+            sub.append("")
+            sub.append("  | Visit | Dup rows |")
+            sub.append("  |-------|--------:|")
+            for visit, n in sorted(visit_breakdown.items(), key=lambda x: -x[1]):
+                sub.append(f"  | {md_escape(str(visit))} | {n:,} |")
+        return sub
+
     def _render_c7_detail(r: CheckResult) -> list[str]:
         """Render C7 distribution table and mismatch detail as indented markdown."""
         sub: list[str] = []
@@ -404,6 +432,8 @@ def generate_markdown_report(
                     lines.extend(_render_c2_detail(r))
                 if check_id == "C7":
                     lines.extend(_render_c7_detail(r))
+                if check_id == "C14":
+                    lines.extend(_render_c14_detail(r))
                 if r.detail.get("direction") == "source_unmatched_summary":
                     lines.extend(_render_unmatched_source(r))
             if collapse:

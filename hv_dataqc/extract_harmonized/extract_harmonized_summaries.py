@@ -358,18 +358,41 @@ def compute_duplicate_stats(df: pd.DataFrame, entity: str) -> dict:
             "n_duplicate_rows": 0,
             "n_duplicate_groups": 0,
             "pct_duplicated": 0.0,
+            "top_duplicate_concepts": [],
+            "visit_breakdown": {},
         }
     sub = df[cols]
     dup_mask = sub.duplicated(keep=False)
     n_dup_rows = int(dup_mask.sum())
     n_dup_groups = int(sub[dup_mask].drop_duplicates().shape[0]) if n_dup_rows > 0 else 0
     pct = round(100.0 * n_dup_rows / n_total, 2)
+
+    # Concept and visit breakdown -- helps map duplicates to specific YAML blocks.
+    # Only computed when there are duplicates (avoids unnecessary work on clean entities).
+    top_duplicate_concepts: list[dict] = []
+    visit_breakdown: dict[str, int] = {}
+    if n_dup_rows > 0:
+        concept_col = next(
+            (c for c in ["condition_concept", "observation_concept"] if c in df.columns),
+            None,
+        )
+        if concept_col:
+            top = df.loc[dup_mask, concept_col].value_counts().head(10)
+            top_duplicate_concepts = [
+                {"concept": str(k), "n_dup_rows": int(v)} for k, v in top.items()
+            ]
+        if "associated_visit" in df.columns:
+            visit_counts = df.loc[dup_mask, "associated_visit"].value_counts().head(10)
+            visit_breakdown = {str(k): int(v) for k, v in visit_counts.items()}
+
     return {
         "entity": entity,
         "n_total_rows": n_total,
         "n_duplicate_rows": n_dup_rows,
         "n_duplicate_groups": n_dup_groups,
         "pct_duplicated": pct,
+        "top_duplicate_concepts": top_duplicate_concepts,
+        "visit_breakdown": visit_breakdown,
     }
 
 

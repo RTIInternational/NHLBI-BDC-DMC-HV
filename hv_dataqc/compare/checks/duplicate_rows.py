@@ -60,12 +60,20 @@ def check_c14_duplicate_rows(harmonized: dict) -> list[CheckResult]:
             continue
 
         all_ok = False
+        top_concepts = stats.get("top_duplicate_concepts", [])
+        visit_breakdown = stats.get("visit_breakdown", {})
+        # Build a compact inline hint from top concept (if available)
+        top_hint = ""
+        if top_concepts:
+            top_concept = top_concepts[0]["concept"]
+            top_hint = f" Top concept: {top_concept}."
         results.append(CheckResult(
             "C14",
             f"{entity}_duplicates",
             "WARN",
             f"{entity}: {n_dup} exact duplicate row(s) in {n_groups} duplicate group(s) "
-            f"({pct:.1f}% of {n_total} total rows). "
+            f"({pct:.1f}% of {n_total} total rows)."
+            f"{top_hint} "
             "Likely cause: multi-block YAML without discriminating condition, or "
             "populated_from table scope wider than intended.",
             {
@@ -74,6 +82,8 @@ def check_c14_duplicate_rows(harmonized: dict) -> list[CheckResult]:
                 "n_duplicate_rows": n_dup,
                 "n_duplicate_groups": n_groups,
                 "pct_duplicated": pct,
+                "top_duplicate_concepts": top_concepts,
+                "visit_breakdown": visit_breakdown,
             },
         ))
 
