@@ -2,7 +2,7 @@
 hv_dataqc.compare — Source vs. Harmonized comparison orchestrator.
 
 Compare aggregate summaries from extract_source_summaries.py (raw dbGaP source)
-and extract_harmonized_summaries.py (dm-bip harmonized output). Runs checks C1–C12
+and extract_harmonized_summaries.py (dm-bip harmonized output). Runs checks C1–C14
 and produces a Markdown + JSON report.
 
 No hardcoded paths. All paths are explicit CLI arguments.
@@ -21,6 +21,8 @@ CHECKS:
   C10 Cross-Variable Consistency — SBP > DBP, FEV1 < FVC, etc.
   C11 Variable Type Consistency  — source/harmonized agree on continuous vs. categorical
   C12 Value Mapping Coverage     — YAML value_mappings cover dbGaP coded values
+  C13 UUID Format Validation     — associated_participant/visit are valid UUIDs
+  C14 Duplicate Row Detection    — no exact duplicate rows in harmonized entity output
 
 USAGE:
   python -m hv_dataqc.compare \\
@@ -99,6 +101,8 @@ from hv_dataqc.compare.checks.cross_variable import (
     check_c12_value_mapping_coverage,
 )
 from hv_dataqc.compare.checks.type_consistency import check_c11_type_consistency
+from hv_dataqc.compare.checks.uuid_validation import check_c13_uuid_format
+from hv_dataqc.compare.checks.duplicate_rows import check_c14_duplicate_rows
 from hv_dataqc.compare.render import generate_markdown_report
 from hv_dataqc.compare.report_io import (
     THRESHOLDS_PATH,
@@ -956,6 +960,8 @@ def main(argv: list[str] | None = None) -> None:
         consent_group_file_status=harmonized.get("consent_group_file_status"),
     ))
     all_results.extend(check_c10_cross_variable(harmonized_vars, clinical_ranges))
+    all_results.extend(check_c13_uuid_format(harmonized))
+    all_results.extend(check_c14_duplicate_rows(harmonized))
 
     # Flag unmatched variables.  A pooled YAML match contributes ALL of its
     # contributing source columns to matched_src (not just the first), so

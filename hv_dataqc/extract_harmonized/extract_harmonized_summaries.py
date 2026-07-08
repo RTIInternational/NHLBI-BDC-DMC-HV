@@ -309,6 +309,71 @@ def participant_count_from_entity(df: pd.DataFrame, preferred_cols: tuple[str, .
 
 
 # ---------------------------------------------------------------------------
+# Structural integrity stats (UUID validity and duplicate rows)
+# Populated by the extractor and consumed by C13/C14 compare checks.
+# ---------------------------------------------------------------------------
+
+_UUID_RE = re.compile(
+    r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
+    re.IGNORECASE,
+)
+
+
+def compute_uuid_validity_stats(df: pd.DataFrame, entity: str) -> dict:
+    """Check associated_participant and associated_visit columns for UUID format.
+
+    Returns aggregate counts only -- no participant-level values are retained
+    beyond the first 3 sample malformed strings (which are derived IDs, not
+    source PHV values).
+    """
+    result: dict = {"entity": entity, "n_total_rows": len(df)}
+    for col, bad_key, sample_key in [
+        ("associated_participant", "n_invalid_participant_uuid", "sample_invalid_participant"),
+        ("associated_visit",       "n_invalid_visit_uuid",       "sample_invalid_visit"),
+    ]:
+        if col not in df.columns:
+            result[bad_key] = 0
+            result[sample_key] = []
+            continue
+        non_null = df[col].dropna().astype(str)
+        invalid_mask = ~non_null.str.match(_UUID_RE)
+        invalid_series = non_null[invalid_mask]
+        result[bad_key] = int(invalid_series.shape[0])
+        result[sample_key] = invalid_series.unique()[:3].tolist()
+    return result
+
+
+def compute_duplicate_stats(df: pd.DataFrame, entity: str) -> dict:
+    """Count exact duplicate rows across all non-id columns.
+
+    A row is a duplicate if every non-id column value is identical to another
+    row in the same DataFrame. Returns only aggregate counts.
+    """
+    cols = [c for c in df.columns if c.lower() != "id"]
+    n_total = len(df)
+    if not cols or n_total == 0:
+        return {
+            "entity": entity,
+            "n_total_rows": n_total,
+            "n_duplicate_rows": 0,
+            "n_duplicate_groups": 0,
+            "pct_duplicated": 0.0,
+        }
+    sub = df[cols]
+    dup_mask = sub.duplicated(keep=False)
+    n_dup_rows = int(dup_mask.sum())
+    n_dup_groups = int(sub[dup_mask].drop_duplicates().shape[0]) if n_dup_rows > 0 else 0
+    pct = round(100.0 * n_dup_rows / n_total, 2)
+    return {
+        "entity": entity,
+        "n_total_rows": n_total,
+        "n_duplicate_rows": n_dup_rows,
+        "n_duplicate_groups": n_dup_groups,
+        "pct_duplicated": pct,
+    }
+
+
+# ---------------------------------------------------------------------------
 # Summary statistics
 # ---------------------------------------------------------------------------
 
@@ -991,13 +1056,20 @@ def _run_extract(
     extraction_warnings: dict[str, Any] = {}
     # Per-consent-group file status: {cg_label: {entity_name: {status, rows?, error?}}}
     consent_group_file_status: dict[str, dict[str, dict]] = {}
+    # C13/C14 structural integrity stats accumulated per entity
+    uuid_validation: dict[str, dict] = {}
+    duplicate_stats: dict[str, dict] = {}
 
     def _load(entity_name: str) -> pd.DataFrame | None:
-        """Load an entity and record per-consent-group file status."""
+        """Load an entity, record per-consent-group file status, and collect
+        structural integrity stats (UUID validity + duplicate rows) for C13/C14."""
         _cg: dict[str, dict] = {}
         df = load_entity(mapped_dirs, entity_name, cg_status=_cg)
         for lbl, st in _cg.items():
             consent_group_file_status.setdefault(lbl, {})[entity_name] = st
+        if df is not None:
+            uuid_validation[entity_name] = compute_uuid_validity_stats(df, entity_name)
+            duplicate_stats[entity_name] = compute_duplicate_stats(df, entity_name)
         return df
 
     # ------------------------------------------------------------------
@@ -1179,6 +1251,8 @@ def _run_extract(
         "entity_counts": entity_counts,
         "rows_per_visit": rows_per_visit,
         "consent_group_file_status": consent_group_file_status,
+        "uuid_validation": uuid_validation,
+        "duplicate_stats": duplicate_stats,
         "variables": variables,
     }
 
