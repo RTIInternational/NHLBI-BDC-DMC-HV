@@ -120,12 +120,48 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         self.assertEqual(comparison["expected_type"], "continuous")
         self.assertEqual(comparison["basis"], "dbgap_phv_type_consensus")
 
-    def test_determine_comparison_type_uses_yaml_intent_when_dbgap_missing(self) -> None:
+    def test_determine_comparison_type_entity_class_overrides_dbgap(self) -> None:
         comparison = determine_comparison_type(
             {
                 "entity_class": "Condition",
                 "concept_value_map": {"1": "MONDO:0000001"},
             },
+            {"type": "continuous"},
+            {},
+        )
+
+        self.assertEqual(comparison["expected_type"], "categorical")
+        self.assertEqual(comparison["basis"], "entity_class_always_categorical")
+
+    def test_determine_comparison_type_coded_values_override_numeric_type(self) -> None:
+        # PHV declared NUMERIC in dbGaP but has coded values (0=NO, 1=YES) --
+        # should be classified as categorical, not continuous.
+        comparison = determine_comparison_type(
+            {"_source_phvs": ["phv00000001"]},
+            {"type": "continuous"},
+            {"phv00000001": "continuous"},
+            phv_value_codes={"phv00000001": {"0", "1"}},
+        )
+
+        self.assertEqual(comparison["expected_type"], "categorical")
+        self.assertEqual(comparison["basis"], "dbgap_phv_type_consensus")
+
+    def test_determine_comparison_type_no_coded_values_uses_type_tag(self) -> None:
+        # PHV has no coded values (genuinely continuous) -- <type> tag should win.
+        comparison = determine_comparison_type(
+            {"_source_phvs": ["phv00000002"]},
+            {"type": "categorical"},
+            {"phv00000002": "continuous"},
+            phv_value_codes={},
+        )
+
+        self.assertEqual(comparison["expected_type"], "continuous")
+        self.assertEqual(comparison["basis"], "dbgap_phv_type_consensus")
+
+    def test_determine_comparison_type_yaml_intent_fallback(self) -> None:
+        # No entity class, no dbGaP type, value_map present -- yaml_intent wins.
+        comparison = determine_comparison_type(
+            {"value_map": {"0": "ABSENT", "1": "PRESENT"}},
             {"type": "continuous"},
             {},
         )

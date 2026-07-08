@@ -822,7 +822,7 @@ def main(argv: list[str] | None = None) -> None:
 
         # Determine the expected comparison type from source/dbGaP/YAML intent.
         # The harmonized observed type is validated against this via C11.
-        comparison_type_detail = determine_comparison_type(match, src_var, phv_type_map)
+        comparison_type_detail = determine_comparison_type(match, src_var, phv_type_map, phv_value_codes)
         comparison_type = comparison_type_detail.get("expected_type")
         if comparison_type and src_var.get("type") != comparison_type:
             src_var = {

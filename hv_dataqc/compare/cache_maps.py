@@ -151,13 +151,22 @@ def load_phv_type_map(cache_dir: Path) -> dict[str, str]:
     return phv_type
 
 
-def authoritative_source_type_for_match(match: dict, phv_type_map: dict[str, str]) -> str | None:
+def authoritative_source_type_for_match(
+    match: dict,
+    phv_type_map: dict[str, str],
+    phv_value_codes: dict[str, set[str]] | None = None,
+) -> str | None:
     """Return dbGaP source type for a crosswalk match when all PHVs agree.
 
     Pooled YAML matches can aggregate several source PHVs.  A single
     ``match["phv_id"]`` may be only the first contributor, so use all resolved
     source PHVs where available and override the observed source summary only
     when the dbGaP types are unanimous.
+
+    When ``phv_value_codes`` is provided, coded-value presence takes priority
+    over the dbGaP ``<type>`` tag.  dbGaP marks many encoded variables as
+    NUMERIC (e.g. 0=NO, 1=YES binary flags); the presence of ``<value>``
+    elements is the more reliable categorical signal.
     """
     phv_ids = list(
         dict.fromkeys(
@@ -166,6 +175,20 @@ def authoritative_source_type_for_match(match: dict, phv_type_map: dict[str, str
             + ([match.get("phv_id")] if match.get("phv_id") else [])
         )
     )
+
+    # Coded-value presence is more reliable than the <type> tag.
+    # If *all* source PHVs have coded values -> categorical.
+    # If *none* do -> fall through to <type> tag (existing logic).
+    # Mixed evidence -> return None so yaml_intent can decide.
+    if phv_value_codes is not None and phv_ids:
+        canon_ids = [_canonical_phv_id(p) for p in phv_ids]
+        with_codes = [p for p in canon_ids if phv_value_codes.get(p)]
+        without_codes = [p for p in canon_ids if not phv_value_codes.get(p)]
+        if with_codes and not without_codes:
+            return "categorical"
+        if with_codes and without_codes:
+            return None  # mixed evidence -- let yaml_intent decide
+
     types = {
         phv_type_map.get(_canonical_phv_id(phv_id))
         for phv_id in phv_ids
@@ -201,15 +224,40 @@ def determine_comparison_type(
     match: dict,
     src_var: dict,
     phv_type_map: dict[str, str],
+    phv_value_codes: dict[str, set[str]] | None = None,
 ) -> dict[str, Any]:
     """Determine the source-driven type expected for a source/harmonized match.
 
     The harmonized extractor's observed type is deliberately excluded from this
     decision; it is what C11 validates against the expected source/YAML type.
+
+    Priority order (highest to lowest):
+    1. BDCHM entity class -- Condition/Demography/DrugExposure/Procedure are
+       always categorical by model definition; no source evidence can override.
+    2. dbGaP coded-value presence -- a PHV with <value code=...> entries is
+       categorical regardless of its <type> tag (e.g. NUMERIC 0=NO, 1=YES).
+    3. dbGaP <type> tag consensus -- unanimous type across all source PHVs.
+    4. YAML transform intent (value_mappings, conversion_factor, etc.)
+    5. Observed source-extract type.
     """
-    dbgap_type = authoritative_source_type_for_match(match, phv_type_map)
     yaml_type = _yaml_intent_type_for_match(match)
     observed_source_type = src_var.get("type")
+
+    # Priority 1: entity class is an absolute override -- these BDCHM classes
+    # always produce categorical output regardless of source PHV type.
+    entries = match.get("_yaml_entries") or [match]
+    entity_classes = {entry.get("entity_class") for entry in entries if entry.get("entity_class")}
+    if entity_classes and entity_classes <= {"Condition", "Demography", "DrugExposure", "Procedure"}:
+        return {
+            "expected_type": "categorical",
+            "basis": "entity_class_always_categorical",
+            "dbgap_type": None,
+            "yaml_intent_type": yaml_type,
+            "observed_source_type": observed_source_type,
+        }
+
+    # Priorities 2-3: dbGaP evidence (coded-value presence, then <type> tag).
+    dbgap_type = authoritative_source_type_for_match(match, phv_type_map, phv_value_codes)
 
     if dbgap_type:
         expected_type = dbgap_type
