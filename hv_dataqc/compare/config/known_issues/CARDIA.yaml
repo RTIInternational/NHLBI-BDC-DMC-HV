@@ -360,19 +360,3 @@ known_issues:
       missing-rate increase (C2/C3) are expected. Same design pattern as
       chr_bronchitis.yaml (a12cbron entry above).
     confirmed_date: "2026-07-06"
-
-  # ── er2sfoci: C11 type mismatch false positive (continuous → categorical) ──
-  - checks: [C11]
-    variable_key: "er2sfoci"
-    yaml_file: carotid_plaque.yaml
-    status: false_positive
-    root_cause: continuous_to_categorical_intent
-    summary: >
-      carotid_plaque.yaml maps phv00118020 (er2sfoci = number of carotid
-      stenosis focal lesions, numeric count) via a case() expression to
-      condition_status values ABSENT/PRESENT/UNKNOWN. Source type = continuous
-      (integer count); harmonized condition_status = categorical. C11 flags
-      this as a type mismatch, but the mapping is intentional: count of
-      0 = ABSENT (no lesion detected), count > 0 = PRESENT. The conversion
-      of a count variable to a clinical condition status is correct design.
-    confirmed_date: "2026-07-07"
