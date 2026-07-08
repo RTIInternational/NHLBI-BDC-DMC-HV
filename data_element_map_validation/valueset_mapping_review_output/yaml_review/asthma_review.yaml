@@ -1,0 +1,133 @@
+# YAML CONSTRUCTION REVIEW — HCHS-ingest/asthma.yaml
+# Prepared: 2026-06-16
+# Issue: phv00526889 (RSEA47A "Asthma: Mother") was folded into Block 1's
+#        condition_status expression for a ONESELF block instead of having
+#        its own Condition block with relationship_to_participant = OMOP:4277283.
+#        Additionally phv00526887 (RSEA45 labeled "Age Started: COPD" in curie CSV)
+#        is used as a 0/1 flag in Block 1 — verify label against HCHS codebook.
+#
+# Changes from current asthma.yaml:
+#   Block 1: condition_status expr simplified — phv00526889 removed
+#   Block 3: NEW — RSEA47A family history block (mother)
+# ===========================================================================
+
+# Block 0: ASTHMA_EVER (phv00226252) — participant self-report, simple ever/never
+# UNCHANGED
+- class_derivations:
+    Condition:
+      populated_from: pht004715
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
+        condition_concept:
+          value: MONDO:0004979
+          range: string
+        condition_status:
+          populated_from: phv00226252
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+
+# Block 1: RSEA32/33/34/36 — participant detail with age onset/offset and provenance
+# CHANGED: condition_status expr — removed phv00526889 (mother variable does not
+#          belong in self-report status logic). Simplified to:
+#          ABSENT if RSEA32==0, PRESENT if RSEA45==1, else HISTORICAL.
+# NOTE: phv00526887 (RSEA45) is labeled "Age Started: COPD" in curie CSV but
+#       is treated as 0/1 here — please verify variable label against codebook.
+- class_derivations:
+    Condition:
+      populated_from: pht004715
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
+        age_at_condition_start:
+          expr: case(({phv00226387} == 1, {phv00258081} * 365))
+        age_at_condition_end:
+          expr: case(({phv00226387} == 1, case(({phv00526878} != 0, {phv00526878} * 365))))
+        condition_concept:
+          value: MONDO:0004979
+          range: string
+        condition_status:
+          expr: case(({phv00226387} == 0, 'ABSENT'), ({phv00526887} == 1, 'PRESENT'), (True, 'HISTORICAL'))
+        condition_provenance:
+          populated_from: phv00226388
+          value_mappings:
+            '0': PATIENT_SELF-REPORTED_CONDITION
+            '1': CLINICAL_DIAGNOSIS
+            '9': UNKNOWN
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+
+# Block 2: ASTHMA_EVER_MD / ASTHMA_CURR / ASTHMA_CURR_MD — MD-diagnosed track
+# UNCHANGED
+- class_derivations:
+    Condition:
+      populated_from: pht004715
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
+        age_at_condition_start:
+          expr: case(({phv00226387} == 1, {phv00258081} * 365))
+        age_at_condition_end:
+          expr: case(({phv00226387} == 1, case(({phv00526878} != 0, {phv00526878} * 365))))
+        condition_concept:
+          value: MONDO:0004979
+          range: string
+        condition_status:
+          expr: 'case(({phv00526179} == 0, ''ABSENT''), ({phv00526180} == 0, ''HISTORICAL''), (True, ''PRESENT''))'
+        condition_provenance:
+          expr: case(({phv00526179} == 1 and {phv00526181} == 1, 'CLINICAL_DIAGNOSIS'), (True, 'PATIENT_SELF-REPORTED_CONDITION'))
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+
+# Block 3: RSEA47A (phv00526889) — family history of asthma, mother
+# NEW BLOCK — this variable was previously only referenced (incorrectly) inside
+# Block 1's condition_status expression. It must produce its own Condition record.
+# CURIE stays MONDO:0004979 (the disease); relationship_to_participant carries the
+# "mother" distinction per the fam_stroke.yaml pattern used across studies.
+- class_derivations:
+    Condition:
+      populated_from: pht004715
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
+        condition_concept:
+          value: MONDO:0004979
+          range: string
+        condition_status:
+          populated_from: phv00526889
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
+        relationship_to_participant:
+          value: OMOP:4277283
+          range: string

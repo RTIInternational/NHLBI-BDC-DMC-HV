@@ -2330,7 +2330,6 @@ class StaleArtifactTests(unittest.TestCase):
         self.assertEqual(warnings, [])
 
     def test_cache_newer_than_source_warns(self) -> None:
-        import time
         with tempfile.TemporaryDirectory() as tmp:
             cache = Path(tmp) / "cache"
             yaml_d = Path(tmp) / "yaml"
