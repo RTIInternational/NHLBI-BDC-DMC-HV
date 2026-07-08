@@ -165,6 +165,8 @@ def generate_markdown_report(
         "C9": "Clinical Range", "C10": "Cross-Variable Consistency",
         "C11": "Variable Type Consistency",
         "C12": "Value Mapping Coverage",
+        "C13": "UUID Format Validation",
+        "C14": "Duplicate Row Detection",
     }
 
     def _render_c2_detail(r: CheckResult) -> list[str]:
@@ -334,6 +336,22 @@ def generate_markdown_report(
             "unmapped code can be expected transform behavior while still being a "
             "YAML completeness issue."
         ),
+        "C13": (
+            "Checks that every ``associated_participant`` and ``associated_visit`` value "
+            "in the harmonized output is a valid UUID string. Malformed values indicate "
+            "a broken ID expression in the YAML — e.g. a null source PHV propagating "
+            "through ``uuid5()`` to produce a non-UUID string that silently passes all "
+            "per-variable checks. Requires ``uuid_validation`` in the harmonized JSON "
+            "(hv-dataqc issue #703); skipped gracefully on older JSON artifacts."
+        ),
+        "C14": (
+            "Checks that the harmonized output contains no exact duplicate rows within "
+            "each entity class (all non-id columns identical). Duplicates indicate YAML "
+            "design issues such as multi-block transforms without a discriminating "
+            "condition, or a populated_from table scope that is wider than intended. "
+            "Requires ``duplicate_stats`` in the harmonized JSON "
+            "(hv-dataqc issue #704); skipped gracefully on older JSON artifacts."
+        ),
     }
 
     def _render_unmatched_source(r: CheckResult) -> list[str]:
@@ -351,7 +369,7 @@ def generate_markdown_report(
         sub.append("</details>")
         return sub
 
-    for check_id in ["CROSSWALK", "C0", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12"]:
+    for check_id in ["CROSSWALK", "C0", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12", "C13", "C14"]:
         check_results = [r for r in results if r.check_id == check_id]
         if not check_results:
             continue
