@@ -2,9 +2,10 @@
 # Source: pht008729.v2 (analysis1), Visit 1 only
 # Variable: phv00401122.v1 (abi) — Ankle Brachial Index, numeric, range 0.44-2.17
 # PAD criterion: ABI < 0.9 (standard clinical diagnostic threshold per ACC/AHA)
-# All participants with a valid ABI measurement are emitted:
+# All participants in pht008729 are emitted:
 #   - ABI < 0.9  → condition_status: PRESENT (PAD confirmed)
 #   - ABI >= 0.9 → condition_status: ABSENT (PAD ruled out)
+#   - ABI null   → condition_status: UNKNOWN (measurement not taken)
 # Previous source (pht008725 phv00400971 PADEVER) removed: that variable is a
 # cumulative AFU self-report accumulating incident diagnoses over 10+ years of
 # follow-up, making it unsuitable as a baseline PAD prevalence indicator.
@@ -22,7 +23,7 @@
           value: "MONDO:0005386"
           range: string
         condition_status:
-          expr: 'case(({phv00401122} < 0.9, "PRESENT"), ({phv00401122} >= 0.9, "ABSENT"))'
+          expr: 'case(({phv00401122} < 0.9, "PRESENT"), ({phv00401122} >= 0.9, "ABSENT"), (True, "UNKNOWN"))'
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
           range: string
