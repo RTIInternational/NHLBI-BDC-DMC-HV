@@ -1,0 +1,26 @@
+- class_derivations:
+    SdohObservation:
+      populated_from: pht000997
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078385}) + ":WHI")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078385}) + ":WHI SCREENING")'
+          range: string
+        category:
+          value: EDUCATIONAL_ATTAINMENT
+          range: string
+        value_enum:
+          populated_from: phv00078387
+          value_mappings:
+            '1': OMOP:45877928
+            '2': OMOP:1990362
+            '3': OMOP:1990362
+            '4': OMOP:1990281
+            '5': OMOP:37079292
+            '6': OMOP:45881537
+            '7': OMOP:45882538
+            '8': OMOP:45884846
+            '9': OMOP:45880652
+            '10': OMOP:45880652
+            '11': OMOP:45880652
