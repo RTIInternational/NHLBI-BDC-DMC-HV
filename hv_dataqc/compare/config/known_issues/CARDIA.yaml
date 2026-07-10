@@ -29,21 +29,25 @@ known_issues:
   # each indicator (e.g., ever-had / still-have / doctor-diagnosed) is a
   # distinct clinical observation. The resulting N gain in C2 is expected.
 
-  - checks: [C1, C2, C3, C7]
+  - checks: [C1, C2, C3, C7, C12]
     variable_key: "a12cbron"
     yaml_file: chr_bronchitis.yaml
     status: false_positive
-    root_cause: code_zero_null_suppression
+    root_cause: undocumented_codes_in_source_data
     summary: >
-      pht001575 (Year 0): code 0 (never-reported) maps to null, removing
-      those participants from harmonized output entirely. This is intentional
-      design — "never had" = no Condition record — but causes N LOSS vs.
-      source (17,883 → 15,418, ~13.8%) and ~5,249 null-status rows in the
-      harmonized. C2 N-loss and C3 missing-rate change are expected. The
-      multi-block structure (3 indicators per participant) and later PHTs
-      (pht001715, pht001761, pht001811) do not exhibit the same null pattern.
+      pht001575 (Year 0) source data contains codes 0, 3, M (and related
+      indicator PHVs phv00113377/phv00113378 have 5 distinct values) that
+      are NOT documented in dbGaP (only 1=No, 2=Yes documented for A12CBRON).
+      Per coding policy, undocumented codes are not explicitly mapped; pipeline
+      default produces null-status Condition records for uncovered codes --
+      identical data output to explicit null mapping. C12 FAIL for
+      phv00113376-phv00113378 (pht001575) and phv00117056 (pht001715, 4
+      distinct values vs 3 mapped) is expected. N loss (17,883 -> 15,418,
+      ~13.8%) and ~5,249 null-status rows expected from multi-block design and
+      uncovered codes. Note: pht003298 (Year 20) uses 0=ABSENT, 1=PRESENT
+      (different coding scheme, confirmed from data dict).
     related_issues: [651]
-    confirmed_date: "2026-07-06"
+    confirmed_date: "2026-07-09"
 
   - checks: [C1, C2, C3, C7]
     variable_key: "a08diab"
@@ -59,18 +63,24 @@ known_issues:
     related_issues: [651]
     confirmed_date: "2026-06-28"
 
-  - checks: [C1, C2, C3, C7]
+  - checks: [C1, C2, C3, C7, C12]
     variable_key: "a12emph"
     yaml_file: emphysema.yaml
     status: false_positive
-    root_cause: multi_block_condition_design
+    root_cause: undocumented_codes_in_source_data
     summary: >
-      pht001575 (Year 0) has 3 blocks (a12emph, a12emstl, a12emdoc);
-      pht001811 (Year 15) has 2 blocks (primary f08emph + PRESENT-only
-      secondary). Each generates one Condition record. N gain (~42.6%)
-      is expected.
+      pht001575 (Year 0) source data contains codes 0, 3, 4, 9, M (confirmed
+      via C12: phv00113380/phv00113381 have 7 distinct values, phv00113382 has
+      6) that are NOT documented in dbGaP (only 1=No, 2=Yes documented).
+      pht001715 phv00117054 has 4 distinct values vs 3 mapped (1, 2, 8). Per
+      coding policy, undocumented codes are not explicitly mapped; pipeline
+      default produces null-status Condition records. C12 FAIL for
+      phv00113380-phv00113382 (pht001575) and phv00117054 (pht001715) is
+      expected. Multi-block design (3 blocks pht001575, 2 blocks pht001811)
+      with uncovered codes produces N gain (~30.4%, 11,698 -> 15,256) and
+      ~8,712 null-status rows.
     related_issues: [651]
-    confirmed_date: "2026-06-28"
+    confirmed_date: "2026-07-09"
 
   # ── Unknown-code '8' → UNKNOWN design (#653) ─────────────────────────────
   # fam_stroke, hyperten, and stroke_isch_atk map source code '8' (don't
@@ -95,7 +105,7 @@ known_issues:
     related_issues: [653]
     confirmed_date: "2026-06-28"
 
-  - checks: [C2, C3, C7]
+  - checks: [C2, C3, C7, C12]
     variable_key: "a09hbpg1"
     yaml_file: hyperten.yaml
     status: false_positive
@@ -104,12 +114,14 @@ known_issues:
       hyperten.yaml maps code '8' (don't know) to UNKNOWN for pht001656,
       pht001715, pht001749, pht001761, pht001811 (Years 5, 7, 10, 15).
       Source treats '8' as null; harmonized maps to UNKNOWN. The N gain
-      of ~51.0% (11,116 → 16,787) is almost entirely accounted for by the
-      ~28.4% missing-rate delta × ~19,981 total records = ~5,673 code-8 rows.
+      of ~51.0% (11,116 -> 16,787) is almost entirely accounted for by the
+      ~28.4% missing-rate delta x ~19,981 total records = ~5,673 code-8 rows.
+      Code 'M' observed in real data for pht001656/pht001715 but undocumented
+      in dbGaP; removed per coding policy. C12 FAIL for those PHVs expected.
     related_issues: [653]
-    confirmed_date: "2026-06-28"
+    confirmed_date: "2026-07-09"
 
-  - checks: [C1, C2, C3, C7]
+  - checks: [C1, C2, C3, C7, C12]
     variable_key: "y01tia"
     yaml_file: stroke_isch_atk.yaml
     status: false_positive
@@ -117,12 +129,14 @@ known_issues:
     summary: >
       stroke_isch_atk.yaml maps code '8' (don't know) to UNKNOWN for
       pht001715, pht001761, pht001811 (Years 7, 10, 15). Source treats
-      '8' as null; harmonized maps to UNKNOWN (+19.8%, 13,953 → 16,717).
+      '8' as null; harmonized maps to UNKNOWN (+19.8%, 13,953 -> 16,717).
       Secondary factor: pht001870 (CARDIA HOSPITALIZATIONS DIAGNOSIS)
-      generates ~263 records not in the source extraction pool — this is a
-      source extractor scope gap, not a YAML defect.
+      generates ~263 records not in the source extraction pool -- source
+      extractor scope gap, not a YAML defect. Code 'M' observed in real data
+      for 3 blocks but undocumented in dbGaP; removed per coding policy.
+      C12 FAIL for affected PHVs expected.
     related_issues: [653]
-    confirmed_date: "2026-06-28"
+    confirmed_date: "2026-07-09"
 
   # ── fam_income.yaml value_concept category mismatch (#652 Bug 2) ─────────
   - checks: [C1, C2, C3, C7]
@@ -360,3 +374,38 @@ known_issues:
       missing-rate increase (C2/C3) are expected. Same design pattern as
       chr_bronchitis.yaml (a12cbron entry above).
     confirmed_date: "2026-07-06"
+
+  # ── CHD: undocumented codes removed (open issue #219) ─────────────────────
+  # chd.yaml Year 20 blocks (pht001869/pht001870/pht001871) had '2': PRESENT
+  # and '8': UNKNOWN added from hv_dataqc-observed source codes. These are NOT
+  # documented in dbGaP; removed per coding policy pending issue #219 resolution.
+
+  - checks: [C12]
+    variable_key: "a09chd"
+    yaml_file: chd.yaml
+    status: false_positive
+    root_cause: undocumented_codes_in_source_data
+    summary: >
+      chd.yaml Year 20 blocks (pht001869: phv00121263/phv00121288,
+      pht001870: phv00121461, pht001871: phv00121479/phv00121505) had codes
+      2 and 8 observed in real data (C12 showed 4 distinct codes for several
+      PHVs) but these are NOT documented in dbGaP for CARDIA condition
+      variables. Removed per coding policy (issue #219 unresolved). C12 FAIL
+      for affected PHVs is expected. Data output is unchanged -- pipeline
+      default produces null-status Condition records for uncovered codes.
+    related_issues: [219]
+    confirmed_date: "2026-07-09"
+
+  # ── PAD: M sentinel removed ────────────────────────────────────────────────
+
+  - checks: [C12]
+    variable_key: "y00pad"
+    yaml_file: pad.yaml
+    status: false_positive
+    root_cause: undocumented_codes_in_source_data
+    summary: >
+      pad.yaml pht001811 block had code 'M' observed in real data but
+      undocumented in dbGaP. Removed per coding policy. If 'M' appears
+      in source data, C12 will FAIL for the affected PHV. Data output
+      unchanged -- pipeline default produces null-status records.
+    confirmed_date: "2026-07-09"
