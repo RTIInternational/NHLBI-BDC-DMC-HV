@@ -6,8 +6,10 @@
           source_key: phv00084441
           lookup_key: phv00087848
       slot_derivations:
-        identity:
+        id:
           expr: 'uuid5("https://w3id.org/bdchm/Person", str({dbGaP_Subject_ID}))'
+        identity:
+          expr: 'str({dbGaP_Subject_ID})'
         species:
           value: NCBITaxon:9606
         vital_status:
@@ -19,6 +21,6 @@
                 populated_from: pht001116
                 slot_derivations:
                   cause:
-                    expr: 'case(({pht001123.phv00087883} == 1, "ICD10CM:I20-I25"), ({pht001123.phv00087883} == 2, "ICD10CM:I63.9"), ({pht001123.phv00087883} == 3, "ICD10CM:I70"), ({pht001123.phv00087883} == 4, "ICD10CM:V00-X58"))'
+                    expr: 'case(({pht001123.phv00087883} == 1, "ICD10CM:I20-I25"), ({pht001123.phv00087883} == 2, "ICD10CM:I63.9"), ({pht001123.phv00087883} == 3, "ICD10CM:I70"), ({pht001123.phv00087883} == 4, "ICD10CM:I00-I99"))'
                   order:
                     value: 1
