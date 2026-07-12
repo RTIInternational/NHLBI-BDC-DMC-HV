@@ -19,6 +19,10 @@
           - class_derivations:
               CauseOfDeath:
                 populated_from: pht001116
+                joins:
+                  pht001123:
+                    source_key: phv00084441
+                    lookup_key: phv00087848
                 slot_derivations:
                   cause:
                     expr: 'case(({pht001123.phv00087883} == 1, "ICD10CM:I20-I25"), ({pht001123.phv00087883} == 2, "ICD10CM:I63.9"), ({pht001123.phv00087883} == 3, "ICD10CM:I70"), ({pht001123.phv00087883} == 4, "ICD10CM:I00-I99"))'
