@@ -167,6 +167,7 @@ def generate_markdown_report(
         "C12": "Value Mapping Coverage",
         "C13": "UUID Format Validation",
         "C14": "Duplicate Row Detection",
+        "C15": "Entity Column Schema Consistency",
     }
 
     def _render_c2_detail(r: CheckResult) -> list[str]:
@@ -380,6 +381,16 @@ def generate_markdown_report(
             "Requires ``duplicate_stats`` in the harmonized JSON "
             "(hv-dataqc issue #704); skipped gracefully on older JSON artifacts."
         ),
+        "C15": (
+            "Checks that each entity TSV has consistent column schemas across all consent "
+            "groups, and that required columns (e.g. ``condition_concept`` in Condition.tsv) "
+            "are present. A cross-consent-group column mismatch indicates a structural "
+            "pipeline inconsistency -- one run may have dropped or added columns. A missing "
+            "required column silently degrades all C1/C2/C7 statistics for that entity "
+            "without producing any other error signal. "
+            "Requires ``columns`` data in ``consent_group_file_status`` "
+            "(re-run extract_harmonized_summaries.py to populate)."
+        ),
     }
 
     def _render_unmatched_source(r: CheckResult) -> list[str]:
@@ -397,7 +408,7 @@ def generate_markdown_report(
         sub.append("</details>")
         return sub
 
-    for check_id in ["CROSSWALK", "C0", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12", "C13", "C14"]:
+    for check_id in ["CROSSWALK", "C0", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12", "C13", "C14", "C15"]:
         check_results = [r for r in results if r.check_id == check_id]
         if not check_results:
             continue

@@ -103,6 +103,7 @@ from hv_dataqc.compare.checks.cross_variable import (
 from hv_dataqc.compare.checks.type_consistency import check_c11_type_consistency
 from hv_dataqc.compare.checks.uuid_validation import check_c13_uuid_format
 from hv_dataqc.compare.checks.duplicate_rows import check_c14_duplicate_rows
+from hv_dataqc.compare.checks.column_coverage import check_c15_column_coverage
 from hv_dataqc.compare.render import generate_markdown_report
 from hv_dataqc.compare.report_io import (
     THRESHOLDS_PATH,
@@ -962,6 +963,7 @@ def main(argv: list[str] | None = None) -> None:
     all_results.extend(check_c10_cross_variable(harmonized_vars, clinical_ranges))
     all_results.extend(check_c13_uuid_format(harmonized))
     all_results.extend(check_c14_duplicate_rows(harmonized))
+    all_results.extend(check_c15_column_coverage(harmonized, yaml_dir=yaml_dir))
 
     # Flag unmatched variables.  A pooled YAML match contributes ALL of its
     # contributing source columns to matched_src (not just the first), so

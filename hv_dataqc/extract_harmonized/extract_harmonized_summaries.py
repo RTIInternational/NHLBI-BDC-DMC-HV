@@ -235,7 +235,11 @@ def load_entity(
             frames.append(df)
             found_files.append((label, len(df)))
             if cg_status is not None:
-                cg_status[label] = {"status": "loaded", "rows": len(df)}
+                cg_status[label] = {
+                    "status": "loaded",
+                    "rows": len(df),
+                    "columns": sorted(df.columns.tolist()),
+                }
         except Exception as exc:
             print(f"      WARNING: Could not read {tsv}: {exc}")
             if cg_status is not None:
