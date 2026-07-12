@@ -17,11 +17,19 @@ Two sub-checks are performed:
 
 2. **YAML-driven column presence** (FAIL): When *yaml_dir* is provided, each
    loaded entity is checked against the union of all ``slot_derivations`` keys
-   defined for that entity across all cohort YAML files.  ``id`` is always
-   added since the pipeline generates it unconditionally.  A slot that appears
-   in the YAML spec but is absent from the TSV indicates that the pipeline
-   silently dropped a mapped field -- all C1/C2/C7 stats for that slot will
-   be wrong without any other error signal.
+   defined for that entity across all cohort YAML files.  Two slot types are
+   intentionally excluded from this check:
+
+   * ``id`` is only included when the YAML explicitly derives it (e.g. via
+     ``uuid5()`` in ``visit.yaml``).  For all other entities the pipeline does
+     not emit ``id`` as a TSV column — it is the row key handled internally.
+   * Composite object slots (those whose value contains ``class_derivations``
+     or ``object_derivations``, e.g. ``value_quantity``) are flattened into
+     sub-columns in TSV output and never appear as a single column.
+
+   A slot that appears in the YAML spec but is absent from the TSV indicates
+   that the pipeline silently dropped a mapped field -- all C1/C2/C7 stats
+   for that slot will be wrong without any other error signal.
 
    Sub-check 2 is SKIPPED when *yaml_dir* is not provided.
 """
@@ -40,8 +48,12 @@ def build_expected_columns_from_yaml(yaml_dir: Path) -> dict[str, set[str]]:
 
     Scans every ``*.yaml`` file in *yaml_dir*, collects the keys of each
     ``slot_derivations`` block grouped by ``class_derivations`` entity name.
-    ``id`` is always included because the pipeline generates it for every
-    entity regardless of what the YAML defines.
+    Composite object slots (those with nested ``class_derivations`` or
+    ``object_derivations``) are excluded because they are flattened into
+    sub-columns in TSV output and never appear as a single column.  ``id``
+    is only included when the YAML explicitly derives it — it is NOT added
+    unconditionally, since the pipeline only emits it for entities whose YAML
+    defines an explicit ``id`` derivation (e.g. ``visit.yaml``).
 
     Args:
         yaml_dir: Directory containing the cohort's ``*-ingest`` YAML files
@@ -76,8 +88,17 @@ def build_expected_columns_from_yaml(yaml_dir: Path) -> dict[str, set[str]]:
                 if not isinstance(slot_derivations, dict):
                     continue
                 slots = expected.setdefault(class_name, set())
-                slots.add("id")  # always emitted by the pipeline
-                slots.update(slot_derivations.keys())
+                for slot_name, slot_def in slot_derivations.items():
+                    # Skip composite object slots — they have nested
+                    # class_derivations or object_derivations and get
+                    # flattened in TSV output, never appearing as a
+                    # single column (e.g. value_quantity -> Quantity).
+                    if isinstance(slot_def, dict) and (
+                        "class_derivations" in slot_def
+                        or "object_derivations" in slot_def
+                    ):
+                        continue
+                    slots.add(slot_name)
 
     return expected
 
