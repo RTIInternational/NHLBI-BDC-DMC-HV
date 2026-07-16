@@ -157,6 +157,24 @@ known_issues:
     related_issues: [661]
     confirmed_date: "2026-07-06"
 
+  # ── hipcm C4/C6 FAIL (crosswalk PHV collision) ──────────────────────────
+  - checks: [C4, C6]
+    variable_key: "hipcm1+hipcm2+hipcm3+hipcm4+hipcmf+hipcm5"
+    yaml_file: waist_hip.yaml
+    status: false_positive
+    root_cause: crosswalk_phv_collision
+    summary: >
+      Hip circumference PHVs (phv00082688, phv00084489, etc.) appear in both
+      waist_circ.yaml (OBA:1001085, as raw circumference ~105 cm) and
+      waist_hip.yaml (OMOP:4087501, as denominator of waist÷hip ratio ~0.93).
+      The C4/C6 crosswalk resolves the hipcm source group to the waist-hip
+      ratio pool (mean ~0.93) instead of the circumference pool (mean ~105 cm),
+      producing a spurious 99% mean mismatch. The OBA:1001085 hip circumference
+      PASSES C4 correctly (mean preserved ~105 cm). Same root cause as the
+      waistcm entry above — PHVs shared across two YAML files with different
+      harmonized concepts.
+    confirmed_date: "2026-07-16"
+
   # ── fgfruit5c C4/C6 FAIL (crosswalk source scope mismatch) ──────────────
   - checks: [C4, C6]
     variable_key: "fgfruit5c"
