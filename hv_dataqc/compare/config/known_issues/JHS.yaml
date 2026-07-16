@@ -5,6 +5,36 @@
 
 known_issues:
 
+  # ── C1: 34% participant loss ──────────────────────────────────────────────
+  - checks: [C1]
+    variable_key: "_total"
+    yaml_file: null
+    status: known_issue
+    root_cause: anchor_table_coverage
+    summary: >
+      JHS harmonized output only covers 3,883 participants (pht008729 Exam 1
+      anchor) vs 5,885 in the all-PHT union. The 2,002 missing participants
+      attended ancillary or supplemental visits captured only in older tables
+      (e.g. pht001920) that are not the anchor for any current YAML block.
+    detail: >
+      The JHS dbGaP submission includes both the current analysis tables
+      (pht008729 Exam 1, pht008730 Exam 2, pht008731 Exam 3, N~2,800–3,900)
+      and older visit tables (pht001920 etc., N=5,885) from an earlier data
+      freeze. The current YAML files use the analysis tables as the anchor for
+      participant UUID generation. Participants who appear only in pht001920
+      and similar older tables (2,002 individuals) are not anchored to any
+      current block and therefore produce no harmonized output.
+
+      This is a deliberate coverage scope decision: the older tables predate
+      the v7 restructuring and have overlapping variable definitions that
+      complicate deduplication. Full coverage would require adding explicit
+      YAML blocks sourced from pht001920 and verifying variable definitions.
+      Investigation with find_participant_gap.py on SB is needed to determine
+      whether these 2,002 participants have priority-variable data that is
+      completely missing from the harmonized output.
+    related_issues: []
+    confirmed_date: "2026-07-16"
+
   # ── condition_MISSING_CONCEPT: C2 FAIL ───────────────────────────────────
   - checks: [C2]
     variable_key: "condition_MISSING_CONCEPT"
