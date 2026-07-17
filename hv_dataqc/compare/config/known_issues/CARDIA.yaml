@@ -366,13 +366,13 @@ known_issues:
     status: false_positive
     root_cause: code_zero_null_suppression
     summary: >
-      cig_smok.yaml pht001573 block (A10SMOKE Year 2) maps code '0' (never
-      smoked) to None, intentionally excluding never-smokers from the
-      harmonized Observation pool. Source extraction includes all rows
-      (n_valid=4,948); harmonized output only includes ever-smokers who
-      have a smoking-status code mapped to a non-null value. N loss and
-      missing-rate increase (C2/C3) are expected. Same design pattern as
-      chr_bronchitis.yaml (a12cbron entry above).
+      cig_smok.yaml pht001573 block (A10SMOKE, Year 0 -- table A4F10,
+      confirmed from dbGaP data dict) maps code '0' (never smoked) to None,
+      intentionally excluding never-smokers from the harmonized Observation
+      pool. Source extraction includes all rows (n_valid=4,948); harmonized
+      output only includes ever-smokers who have a smoking-status code mapped
+      to a non-null value. N loss and missing-rate increase (C2/C3) are
+      expected. Same design pattern as chr_bronchitis.yaml (a12cbron above).
     confirmed_date: "2026-07-06"
 
   # ── CHD: undocumented codes removed (open issue #219) ─────────────────────
