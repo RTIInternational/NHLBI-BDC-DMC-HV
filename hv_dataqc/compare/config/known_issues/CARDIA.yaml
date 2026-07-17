@@ -409,3 +409,53 @@ known_issues:
       in source data, C12 will FAIL for the affected PHV. Data output
       unchanged -- pipeline default produces null-status records.
     confirmed_date: "2026-07-09"
+
+  # ── Height: mixed-unit source pool crosswalk artifact ────────────────────
+  - checks: [C4, C6]
+    variable_key: "e12hgt"
+    yaml_file: bdy_hgt.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      bdy_hgt.yaml correctly converts feet-encoded ancillary tables to cm.
+      The C4 source pool aggregates raw values from both feet-encoded variables
+      (pht001781 E1F11/Yr10 ancillary) and cm-encoded main exam tables,
+      producing a meaningless pooled source mean (~139 cm, mix of feet and cm).
+      Harmonized mean (~170.6 cm) is the correct adult height in cm. C6 SD
+      mismatch (48.18 vs 9.58) is the same artifact: source SD inflated by
+      mixing units. Same pattern as JHS and MESA height.
+    confirmed_date: "2026-07-17"
+
+  # ── Urine albumin: unit conversion SD crosswalk artifact ─────────────────
+  - checks: [C6]
+    variable_key: "fl1ualb+el8ualb"
+    yaml_file: albumin_urine.yaml
+    status: false_positive
+    root_cause: unit_conversion_sd_crosswalk
+    summary: >
+      albumin_urine.yaml converts urine albumin from mg/dL to mg/L (x10).
+      C6 source SD=17.75 vs harmonized SD=177.51 -- ratio is exactly 10,
+      the linear unit conversion factor. SD scales identically to the mean
+      under a linear transformation. This is the expected result of the
+      correct unit conversion; no data quality issue.
+    confirmed_date: "2026-07-17"
+
+  # ── Urine creatinine: unit-mix crosswalk artifact ─────────────────────────
+  - checks: [C4, C6]
+    variable_key: "fl1ucret+el8ucret+fl1creat"
+    yaml_file: creat_urin.yaml
+    status: false_positive
+    root_cause: unit_conversion_mean_crosswalk
+    summary: >
+      The source pool mixes three variables at different unit scales:
+      phv00119619 (EL8UCRET, pht001803, mg/dL, range 9-608),
+      phv00120675 (FL1UCRET, pht001849, unit not stated but same range
+      9.4-787.6 as EL8UCRET -> mg/dL), and phv00120751 (FL1CREAT,
+      pht001852, mg/mL, range 0.095-3.69). The source pool uses raw values
+      including FL1CREAT at mg/mL scale (~1.47 mean), pulling the pooled
+      source mean down. The harmonized pool correctly applies x100 to
+      FL1CREAT -> mg/dL (~147 mg/dL), so harmonized mean (156.47) is slightly
+      higher than the mixed-unit source mean (147.17). The ~6% delta is
+      entirely explained by the unit heterogeneity in the source pool.
+      All three YAML blocks output in mg/dL; the YAML is correct.
+    confirmed_date: "2026-07-17"
