@@ -25,6 +25,6 @@
                     lookup_key: phv00087848
                 slot_derivations:
                   cause:
-                    expr: 'case(({pht001123.phv00087883} == 1, "ICD10CM:I20-I25"), ({pht001123.phv00087883} == 2, "ICD10CM:I63.9"), ({pht001123.phv00087883} == 3, "ICD10CM:I70"), ({pht001123.phv00087883} == 4, "ICD10CM:I00-I99"))'
+                    expr: 'case(({pht001123.phv00087882} != 1, None), ({pht001123.phv00087883} == 1, "ICD10CM:I20-I25"), ({pht001123.phv00087883} == 2, "ICD10CM:I63.9"), ({pht001123.phv00087883} == 3, "ICD10CM:I70"), ({pht001123.phv00087883} == 4, "ICD10CM:I00-I99"), ({pht001123.phv00087883} == 5, "ICD10CM:R99"), ({pht001123.phv00087883} == 6, "ICD10CM:R99"), ({pht001123.phv00087883} == 9, "ICD10CM:R99"), ({pht001123.phv00087883} == 999, "ICD10CM:R99"))'
                   order:
-                    value: 1
+                    expr: 'case(({pht001123.phv00087882} == 1, 1))'
