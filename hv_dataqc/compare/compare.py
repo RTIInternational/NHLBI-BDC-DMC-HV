@@ -2,7 +2,7 @@
 hv_dataqc.compare — Source vs. Harmonized comparison orchestrator.
 
 Compare aggregate summaries from extract_source_summaries.py (raw dbGaP source)
-and extract_harmonized_summaries.py (dm-bip harmonized output). Runs checks C1–C14
+and extract_harmonized_summaries.py (dm-bip harmonized output). Runs checks C1–C16
 and produces a Markdown + JSON report.
 
 No hardcoded paths. All paths are explicit CLI arguments.
@@ -23,6 +23,10 @@ CHECKS:
   C12 Value Mapping Coverage     — YAML value_mappings cover dbGaP coded values
   C13 UUID Format Validation     — associated_participant/visit are valid UUIDs
   C14 Duplicate Row Detection    — no exact duplicate rows in harmonized entity output
+  C15 Column Coverage            — YAML-defined slots present as columns in harmonized TSV;
+                                   cross-consent-group column schema consistency
+  C16 id/identity Slot Pattern   — Person/Participant YAML blocks have explicit 'id' uuid5
+                                   derivation; 'identity' is raw source string, not uuid5
 
 USAGE:
   python -m hv_dataqc.compare \\
@@ -104,6 +108,7 @@ from hv_dataqc.compare.checks.type_consistency import check_c11_type_consistency
 from hv_dataqc.compare.checks.uuid_validation import check_c13_uuid_format
 from hv_dataqc.compare.checks.duplicate_rows import check_c14_duplicate_rows
 from hv_dataqc.compare.checks.column_coverage import check_c15_column_coverage
+from hv_dataqc.compare.checks.spec_validation import check_c16_id_slot
 from hv_dataqc.compare.render import generate_markdown_report
 from hv_dataqc.compare.report_io import (
     THRESHOLDS_PATH,
@@ -964,6 +969,7 @@ def main(argv: list[str] | None = None) -> None:
     all_results.extend(check_c13_uuid_format(harmonized))
     all_results.extend(check_c14_duplicate_rows(harmonized))
     all_results.extend(check_c15_column_coverage(harmonized, yaml_dir=yaml_dir))
+    all_results.extend(check_c16_id_slot(yaml_dir=yaml_dir))
 
     # Flag unmatched variables.  A pooled YAML match contributes ALL of its
     # contributing source columns to matched_src (not just the first), so
