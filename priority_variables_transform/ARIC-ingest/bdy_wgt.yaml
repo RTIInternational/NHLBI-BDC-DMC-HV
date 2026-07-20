@@ -19,7 +19,7 @@
                 populated_from: pht004032
                 slot_derivations:
                   value_decimal:
-                    expr: 'None if not str({phv00203154}).strip().isdigit() else float({phv00203154}) * 0.453592'
+                    expr: 'None if str({phv00203154}) in ("A", "O", "M", "R", "N", "U", "T", "L", "H", "") else float({phv00203154}) * 0.453592'
                   unit:
                     value: kg
                     range: string
@@ -44,7 +44,7 @@
                 populated_from: pht004033
                 slot_derivations:
                   value_decimal:
-                    expr: 'None if not str({phv00203166}).strip().isdigit() else float({phv00203166}) * 0.453592'
+                    expr: 'None if str({phv00203166}) in ("A", "O", "M", "R", "N", "U", "T", "L", "H", "") else float({phv00203166}) * 0.453592'
                   unit:
                     value: kg
                     range: string
@@ -69,7 +69,7 @@
                 populated_from: pht004034
                 slot_derivations:
                   value_decimal:
-                    expr: 'None if not str({phv00203176}).strip().isdigit() else float({phv00203176}) * 0.453592'
+                    expr: 'None if str({phv00203176}) in ("A", "O", "M", "R", "N", "U", "T", "L", "H", "") else float({phv00203176}) * 0.453592'
                   unit:
                     value: kg
                     range: string
@@ -94,7 +94,7 @@
                 populated_from: pht004035
                 slot_derivations:
                   value_decimal:
-                    expr: 'None if not str({phv00203187}).strip().isdigit() else float({phv00203187}) * 0.453592'
+                    expr: 'None if str({phv00203187}) in ("A", "O", "M", "R", "N", "U", "T", "L", "H", "") else float({phv00203187}) * 0.453592'
                   unit:
                     value: kg
                     range: string
