@@ -1,0 +1,70 @@
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht010064
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00429460}) + ":LTRC")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00429460}) + ":LTRC Baseline")'
+        observations:
+          object_derivations:
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht010064
+                slot_derivations:
+                  observation_type:
+                    value: OMOP:4241837
+                  body_position:
+                    value: SITTING_POSITION
+                  method_type:
+                    value: pre-bronchodilator spirometry
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht010064
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00429461
+                            unit:
+                              value: L
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht010064
+                slot_derivations:
+                  observation_type:
+                    value: OMOP:4176265
+                  body_position:
+                    value: SITTING_POSITION
+                  method_type:
+                    value: pre-bronchodilator spirometry
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht010064
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00429462
+                            unit:
+                              value: L
+          - class_derivations:
+              MeasurementObservation:
+                populated_from: pht010064
+                slot_derivations:
+                  observation_type:
+                    value: OMOP:3011505
+                  body_position:
+                    value: SITTING_POSITION
+                  method_type:
+                    value: pre-bronchodilator spirometry
+                  value_quantity:
+                    object_derivations:
+                    - class_derivations:
+                        Quantity:
+                          populated_from: pht010064
+                          slot_derivations:
+                            value_decimal:
+                              populated_from: phv00429463
+                            unit:
+                              value: '%'

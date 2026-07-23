@@ -1,0 +1,11 @@
+- class_derivations:
+    Person:
+      populated_from: pht010057
+      slot_derivations:
+        identity:
+          expr: 'uuid5("https://w3id.org/bdchm/Person", str({dbGaP_Subject_ID}))'
+        species:
+          value: NCBITaxon:9606
+        # vital_status: not available — LTRC is a cross-sectional biobank; no mortality follow-up data in phs001662.v4
+        # age_at_death: not available — no death registry or survival table in LTRC dbGaP release
+        # cause_of_death: not available — no mortality cause data in LTRC dbGaP release

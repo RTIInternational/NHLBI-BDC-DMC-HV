@@ -1,0 +1,33 @@
+{
+  "submitted_date": "2026-06-13",
+  "study": "CHS",
+  "curator": "Stephanie",
+  "changes": {
+    "CHS::confirmed::`tak_aceinhib.yaml`, `tak_aldorecepblk.yaml`, `tak_angiorecepblk.yaml`, `tak_betablk.yaml`, `tak_calchanblk.yaml`, `tak_cenactag.yaml`": {
+      "study": "CHS",
+      "change_request": "ATC:C02",
+      "original_curie": "",
+      "slot": "drug_concept",
+      "yaml_files": [],
+      "notes": "We should not map a generic antihypertensive variable to C02, but if must we can use C02 — confirm what the source variable captures, and if it means \"any BP drug,\" represent it as the five-group value set.  However, if the variable specifically means ATC residual \"Antihypertensives\" group (methyldopa/clonidine/hydralazine-type agents) → then C02 is correct. Is therevgeneric antihypertensive class?\n\nIf the variable means \"any drug used to treat high blood pressure\" (the usual meaning in a cohort survey) → use a value set spanning {C02, C03, C07, C08, C09}, or map each drug to its specific class. No single node works.\nIf the variable specifically means the ATC residual \"Antihypertensives\" group (methyldopa/clonidine/hydralazine-type agents) → then C02 is correct.\n\nSuggestion - Each yaml files should have its own ATC class. \n\nYAML file\nDrug class\nATC class\ntak_aceinhib - ACE inhibitorsC09A (plain) — all plain ACE inhibitors; combinations in C09B ClinGentak_angiorecepblkAngiotensin receptor blockers (ARBs)C09C (plain) — combinations C09Dtak_betablkBeta blockersC07 (Beta blocking agents)tak_calchanblkCalcium channel blockersC08 (Calcium channel blockers)tak_cenactagCentrally acting agentsC02A — Antiadrenergic agents, centrally acting biorxivtak_aldorecepblkAldosterone receptor blockersC03DA — Aldosterone antagonists, under C03D (aldosterone antagonists and other potassium-sparing agents)",
+      "applied": true,
+      "saved_date": "2026-06-13",
+      "applied_date": "2026-06-13",
+      "applied_by": "Stephanie",
+      "apply_results": []
+    },
+    "CHS::confirmed::`asthma.yaml`": {
+      "study": "CHS",
+      "change_request": "MONDO:0004979",
+      "original_curie": "",
+      "slot": "condition_concept",
+      "yaml_files": [],
+      "notes": "http://purl.obolibrary.org/obo/MONDO_0004979",
+      "applied": true,
+      "saved_date": "2026-06-13",
+      "applied_date": "2026-06-13",
+      "applied_by": "Stephanie",
+      "apply_results": []
+    }
+  }
+}

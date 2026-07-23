@@ -4,9 +4,7 @@ import sys
 from pathlib import Path
 
 import yaml
-from linkml_map.datamodel.transformer_model import TransformationSpecification
-from linkml_runtime.processing.referencevalidator import ReferenceValidator
-from linkml_runtime.utils.introspection import package_schemaview
+from linkml_map.validator import validate_spec
 
 # Known issues to be fixed by curation team. These files are excluded from
 # validation failures so CI stays green while issues are tracked separately.
@@ -17,24 +15,14 @@ KNOWN_ISSUES = {
 }
 
 
-def make_normalizer() -> ReferenceValidator:
-    normalizer = ReferenceValidator(
-        package_schemaview("linkml_map.datamodel.transformer_model")
-    )
-    normalizer.expand_all = True
-    return normalizer
-
-
-def validate_block(
-    block: dict, normalizer: ReferenceValidator, block_index: int
-) -> list[str]:
-    errors = []
-    try:
-        normalized = normalizer.normalize(block)
-        TransformationSpecification(**normalized)
-    except (TypeError, ValueError) as e:
-        errors.append(f"  block {block_index}: {e}")
-    return errors
+def validate_block(block: dict, block_index: int) -> list[str]:
+    # Suppress only the object_derivations deprecation warning — renamed to
+    # class_derivations; migration is tracked separately.
+    errors = [
+        e for e in validate_spec(block)
+        if not ("[warning]" in str(e) and "object_derivations" in str(e))
+    ]
+    return [f"  block {block_index}: {e}" for e in errors]
 
 
 def main() -> int:
@@ -49,7 +37,6 @@ def main() -> int:
         print(f"No YAML files found under {base_dir}")
         return 1
 
-    normalizer = make_normalizer()
     total_files = 0
     total_blocks = 0
     failed_files = []
@@ -79,7 +66,7 @@ def main() -> int:
 
         for i, block in enumerate(blocks):
             total_blocks += 1
-            file_errors.extend(validate_block(block, normalizer, i))
+            file_errors.extend(validate_block(block, i))
 
         if file_errors:
             failed_files.append((file_path, file_errors))

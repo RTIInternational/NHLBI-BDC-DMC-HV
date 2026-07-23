@@ -1,0 +1,52 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht010057
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00429048}) + ":LTRC")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00429048}) + ":LTRC Baseline")'
+        observation_type:
+          value: OBA:VT0001253
+        body_position:
+          value: STANDING_POSITION
+        method_type:
+          value: anthropometry
+        age_at_observation:
+          expr: '{phv00429049} * 365'
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht010057
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00429059
+                  unit:
+                    value: cm
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht010057
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00429048}) + ":LTRC")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00429048}) + ":LTRC Baseline")'
+        observation_type:
+          value: OBA:VT0001259
+        body_position:
+          value: STANDING_POSITION
+        method_type:
+          value: anthropometry
+        age_at_observation:
+          expr: '{phv00429049} * 365'
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht010057
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00429060
+                  unit:
+                    value: kg
