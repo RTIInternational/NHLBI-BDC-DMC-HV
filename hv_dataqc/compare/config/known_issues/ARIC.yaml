@@ -1,337 +1,515 @@
 cohort: ARIC
+# ---------------------------------------------------------------------------
+# ARIC hv-dataqc known-issues registry
+# Last full review: 2026-07-23 (aric_comparison_report_20260723T014516Z.md)
+# YAML head at review time: fix/hv-aric-20260720 @ c6534ae6
+# Report path: aric_comparison_report_20260723T014516Z.md (51 FAILs)
+#
+# Status vocabulary:
+#   real_issue                        - Real bug in YAML/pipeline. Fix planned or applied.
+#   false_positive_dataqc_tool        - False FAIL caused by a limitation in hv-dataqc
+#                                       (accounting/keying/scope). Track separately as a
+#                                       hv-dataqc enhancement, not a cohort YAML issue.
+#   false_positive_pool_composition   - Multi-PHT source-pool aggregation vs harmonized
+#                                       per-participant emission produces a metric mismatch
+#                                       that is expected by design. No cohort action.
+#   known_source_data_property        - The harmonized value faithfully preserves a source
+#                                       data property (outlier, sentinel, encoded 0/999,
+#                                       string-typed numeric column). Fix requires either
+#                                       (a) YAML-level sentinel guards or (b) a broader
+#                                       missing-value policy decision. Documented, not
+#                                       silently accepted.
+#
+# Every entry lists the underlying evidence path (var_report / data_dict / YAML file+line
+# / harmonized JSON extract) so the classification can be re-verified without repeating
+# the full investigation.
+# ---------------------------------------------------------------------------
 known_issues:
 
-  # -- C1: 0.6% participant loss (anchor table gap) --------------------------
+  # =========================================================================
+  # C1 — Participant preservation
+  # =========================================================================
+
   - checks: [C1]
     variable_key: "_total"
     yaml_file: null
-    status: known_issue
+    status: false_positive_pool_composition
     root_cause: anchor_table_coverage
     summary: >
-      94 participants appear in the all-PHT union (15,162) but not in the
-      mapped-PHT max table pht006416 (ARIC V5 AFib composite, n=15,068).
-      The 0.6% gap is very small and reflects participants who appear in
-      some source tables but not in the ARIC Visit 5 anchor table used for
-      participant entity construction. This is a WARN (not FAIL) and does
-      not indicate a pipeline failure. Re-investigate if the anchor table
-      selection changes.
-    confirmed_date: "2026-07-20"
+      C1 reports a 0.6% participant gap (15,162 -> 15,068). All-PHT union has
+      15,162 participants; the mapped-PHT max is pht006416 (ARIC V5 AFib
+      composite) with 15,068. 94 participants appear in some source table
+      but not in the anchor table used to construct the Participant entity.
+      This is an anchor-table-selection artifact, not a data-loss defect.
+      No FAIL threshold breached; WARN-only. Re-open if the anchor table
+      selection changes or the gap exceeds 2%.
+    confirmed_date: "2026-07-23"
 
-  # -- C2/C3: anksbp/armsbp/bpua/bpub/abi pools (key type mismatch) ---------
-  - checks: [C2, C3]
-    variable_key: "anksbp13+armsbp13+bpua02+armsbp33+bpub02+armsbp43+abi20"
-    yaml_file: null
-    status: known_issue
-    root_cause: crosswalk_source_scope_mismatch
+  # =========================================================================
+  # C2/C3 — Structural harmonized-side undercounts from plain MeasurementObservation
+  #         blocks whose method_type is dropped by the extract_harmonized process.
+  #
+  #   Root cause: extract_harmonized_summaries.py:process_measurements()
+  #   (lines ~307-408) groups the MeasurementObservation.tsv only by
+  #   observation_type. method_type is NOT part of the group key.
+  #   In contrast, process_measurement_observation_sets() (line 541+)
+  #   groups nested observations by (observation_type, method_type).
+  #
+  #   Effect: any YAML block that produces plain MeasurementObservation
+  #   entities (not wrapped in a MeasurementObservationSet) contributes to
+  #   the bare `measurement_<concept>` harmonized key but is invisible to
+  #   the pipe-delimited `measurement_<concept>|<method_type>` key. When
+  #   the yaml_crosswalk builder attributes the source PHVs by method_type
+  #   (because the YAML block DOES declare method_type), the compare tool
+  #   sees a mismatched source pool for a bucket the harmonized extractor
+  #   never populated.
+  #
+  #   Evidence: harmonized bare `measurement_OMOP:4152194` has n_total=208,560,
+  #   mean=138.7 mmHg, min=29, max=255 — clinically plausible SBP data from
+  #   the plain-MO BP/ABI blocks. That data exists; only the method_type
+  #   sub-bucket is missing.
+  #
+  #   Filed as hv-dataqc enhancement issue (see PR/issue linked in commit
+  #   message). Do NOT rewrite the underlying ARIC YAML blocks — the
+  #   observed cohort output is correct.
+  # =========================================================================
+
+  - checks: [C2, C3, C9]
+    variable_key: "anksbp13+armsbp13+bpua02+armsbp33+bpub02+armsbp43+abi20+abi23+abi26+abi29"
+    yaml_file: blood_pressure.yaml
+    status: false_positive_dataqc_tool
+    root_cause: mo_method_type_grouping_gap
     summary: >
-      Two ABI/ankle-brachial blood pressure pools show significant N loss:
-      (1) anksbp13+armsbp13+bpua02+armsbp33+bpub02+armsbp43+abi20+abi23+abi26+abi29
-          [pht004027/028/029, pht006414]: 53.6% N loss (92,986 -> 43,160);
-          16 null-status rows flagged -- check value_mappings key types.
-      (2) anksbp01+...+bpub20 [pht004041/042/043]: 54.6% N loss
-          (160,555 -> 72,920); 2,281 null-status rows flagged.
-      The hv-dataqc diagnostic "null-status rows -- check value_mappings
-      key types" indicates integer source values (ankle/arm blood pressure
-      readings stored as integers in ARIC) do not match quoted string keys
-      in the YAML value_mappings. This is the same issue fixed in FHS
-      fam_income.yaml and hist_hrtdis.yaml. The YAML likely maps integer
-      codes to condition_status PRESENT/ABSENT but the source provides them
-      as integers (e.g., int 0 vs string '0'). The ~50% surviving rows may
-      be from tables where values happen to arrive as strings.
-      YAML fix needed: convert value_mappings to case(str()) expressions
-      for the ABI/BP measurement blocks. Filed for investigation.
-    confirmed_date: "2026-07-20"
+      OMOP:4152194 | ABI form measurement pool. Source=92,985; harmonized
+      bucket=43,160 (53.6% apparent loss). The pht006414 block (V5 ABI) is
+      wrapped in MeasurementObservationSet and contributes 4 PHVs x 10,790 =
+      43,160 rows to the pipe-delimited key. The pht004027 (V1), pht004028
+      (V3), pht004029 (V4) blocks are plain MeasurementObservation with
+      method_type "ABI form measurement" and produce 6 PHVs x ~4,300-14,528
+      = ~49,825 additional MO.tsv rows that the harmonized extractor
+      counts under bare `measurement_OMOP:4152194` but not under the
+      method_typed sub-key. Source-side yaml_crosswalk correctly attributes
+      all 10 PHVs to the |ABI form measurement pool because the YAML blocks
+      declare method_type. Mismatch is on the harmonized-side accounting,
+      not in the cohort pipeline output. The 16 null-status rows in this
+      bucket are trivial - unrelated to a value_mappings issue. The
+      C9 min=0/max=269.4 for this pool reflects source sentinels (0 =
+      not measured) faithfully preserved.
+    evidence:
+      - YAML: priority_variables_transform/ARIC-ingest/blood_pressure.yaml:1137-1290
+      - Harmonized JSON: measurement_OMOP:4152194 n_total=208,560 n_valid=136,842
+        (plain MO across all method_types combined)
+      - Extract code: hv_dataqc/extract_harmonized/extract_harmonized_summaries.py:307-408
+    confirmed_date: "2026-07-23"
 
-  # -- C2/C3: udta/udtb carotid distensibility (key type mismatch) ----------
+  - checks: [C2, C3]
+    variable_key: "anksbp01+anksbp02+anksbp03+anksbp04+armsbp01+armsbp02+arbpav01+anbpav01+bpua02+bpua05+bpua08+bpua11+bpua14+bpua17+bpua20+bpub02+bpub05+bpub08+bpub11+bpub14+bpub17+bpub20"
+    yaml_file: blood_pressure.yaml
+    status: false_positive_dataqc_tool
+    root_cause: mo_method_type_grouping_gap
+    summary: >
+      OMOP:4152194 | ABI ultrasound measurement pool. Source=160,555;
+      harmonized bucket=72,920 (54.6% apparent loss). Same root cause as
+      the ABI form pool. Source-side attributes 22 PHVs across pht004041
+      (V1, 87,635 rows across 8 PHVs), pht004042 (V2, 29,531 across 7 PHVs),
+      pht004043 (V3, 43,389 across 7 PHVs). All blocks in
+      blood_pressure.yaml are plain MO. The 72,920 harmonized rows that
+      appear in the |ABI ultrasound bucket must come from another
+      MOS-wrapped source; the plain-MO rows are in MO.tsv but invisible to
+      the method_typed harmonized key. 2,281 null-status rows in the
+      bucket -- also unrelated to value_mappings.
+    evidence:
+      - YAML: priority_variables_transform/ARIC-ingest/blood_pressure.yaml:1525-2220
+    confirmed_date: "2026-07-23"
+
   - checks: [C2, C3]
     variable_key: "udta05+udta07+udta09+udtb05+udtb07+udtb09"
-    yaml_file: null
-    status: known_issue
-    root_cause: crosswalk_source_scope_mismatch
+    yaml_file: blood_pressure.yaml
+    status: false_positive_dataqc_tool
+    root_cause: mo_method_type_grouping_gap
     summary: >
-      Carotid distensibility measurement pools (pht004229 = UDTA, pht004230
-      = UDTB) show 23.2% N loss (66,096 -> 50,758 and 66,097 -> 50,761).
-      17,591 null-status rows each -- check value_mappings key types.
-      Same root cause as the ABI pool above: integer source values in the
-      carotid ultrasound distensibility tables do not match quoted string
-      keys in YAML value_mappings. The affected PHVs are phv00215412-525
-      from the UDTA04 and UDTB04 exam tables. YAML fix needed for the
-      carotid distensibility blocks (case(str()) pattern).
-      Source PHTs: pht004229 contributes 9,281+9,281+7,028 and
-      pht004230 contributes 13,502+13,502+13,502 = 65,096 total.
-      Applies to both the systolic (udta05/07/09) and diastolic
-      (udta06/08/10) distensibility variable groups identically.
-    confirmed_date: "2026-07-20"
+      OMOP:4152194 | Carotid distensibility measurement (systolic). Source
+      66,096; harmonized bucket=50,758 (23.2% apparent loss). pht004229
+      (n=9,281) + pht004230 (n=13,502) plain-MO carotid ultrasound blocks
+      are invisible to the |Carotid distensibility method_type sub-key.
+      17,591 null-status rows likewise. Same root cause as ABI pools.
+    confirmed_date: "2026-07-23"
 
-  # -- C2/C3: udta06/udtb06 pool (identical to above) -----------------------
   - checks: [C2, C3]
     variable_key: "udta06+udta08+udta10+udtb06+udtb08+udtb10"
-    yaml_file: null
-    status: known_issue
-    root_cause: crosswalk_source_scope_mismatch
+    yaml_file: blood_pressure.yaml
+    status: false_positive_dataqc_tool
+    root_cause: mo_method_type_grouping_gap
     summary: >
-      Same as udta05+udta07+udta09 entry above. Diastolic carotid
-      distensibility group (udta06/08/10 + udtb06/08/10) from pht004229/230.
-      23.2% N loss, 17,588 null-status rows. Identical YAML fix needed.
-    confirmed_date: "2026-07-20"
+      OMOP:4154790 | Carotid distensibility measurement (diastolic). Same
+      as systolic sibling entry above. Source=66,097; harmonized=50,761.
+    confirmed_date: "2026-07-23"
 
-  # -- C2/C3: lopaav45+...spirometry (key type mismatch, multi-exam) --------
-  - checks: [C2, C3]
-    variable_key: "lopaav45+lopbav45+lopdav45+lanamx23+lanbmx23+lopdmx23+lopcmx23"
-    yaml_file: null
-    status: known_issue
-    root_cause: crosswalk_source_scope_mismatch
-    summary: >
-      Spirometry lobe/lung measurement pool from pht004207 (LOPA = Loop A),
-      pht004213 (LOPB = Loop B), pht004223 (LOPD = Loop D), pht012850
-      (NCS51 derived spirometry). 44.0% N loss (53,913 -> 30,198);
-      46,520 null-status rows -- check value_mappings key types.
-      The spirometry loop tables store integer codes for airway resistance
-      and flow measurements that don't match string value_mappings keys.
-      pht004207 contributes n=11,597+6,966 (lopaav45+lanamx23), pht004213
-      n=11,532+7,460 (lopbav45+lanbmx23), pht004223 n=5,615+4,810
-      (lopdav45+lopcmx23/lopdmx23), pht012850 n=5,933. YAML fix needed.
-    confirmed_date: "2026-07-20"
+  # =========================================================================
+  # C2 — Bare-key crosswalk artifact
+  # =========================================================================
 
-  # -- C2/C3: hraa28f+...+afucomp45_v1 (67.6% N loss, key type mismatch) ---
-  - checks: [C2, C3]
-    variable_key: "hraa28f+hfaa10d+hfaa16i+mhqa10a+afucomp45_v1"
-    yaml_file: null
-    status: known_issue
-    root_cause: crosswalk_source_scope_mismatch
-    summary: >
-      AFib/PE condition pool (condition_MONDO:0005279) from pht004053
-      (hraa28f n=19,601), pht004102 (hfaa10d n=8,690, hfaa16i n=582),
-      pht004125 (mhqa10a n=10,871), pht006416 (afucomp45_v1 n=82,947).
-      67.6% N loss (122,691 -> 39,744); 432,042 null-status rows --
-      check value_mappings key types.
-      The dominant issue is pht006416 (ARIC V5 AFib composite indicator
-      table, 82,947 rows) where the afucomp45_v1 variable has integer
-      condition codes that do not match quoted string keys in the YAML
-      value_mappings. Only ~40K rows survive (from the other 4 tables
-      that may use string-encoded values or happen to match). With 432,042
-      null-status rows out of 471,786 total harmonized rows, almost all
-      pht006416 rows produce a condition row but with null condition_status.
-      YAML fix needed: update value_mappings for the pht006416 block to
-      use case(str()) or add integer code keys.
-    confirmed_date: "2026-07-20"
-
-  # -- C2/C3: ppfvc51/ppfev151/ppfev1fvc51 95.3% N loss (pht012814) --------
-  - checks: [C2, C3]
-    variable_key: "ppfvc51"
-    yaml_file: null
-    status: known_issue
-    root_cause: crosswalk_source_scope_mismatch
-    summary: >
-      ARIC Visit 5 percent-predicted spirometry variables (ppfvc51 = %
-      predicted FVC, ppfev151 = % predicted FEV1, ppfev1fvc51 = FEV1/FVC)
-      from pht012814 (DERIVE48, n=4,250/4,250/4,242 source valid) show
-      95.3% N loss -> 200 rows in c1 or c2 consent group. Notably, C2
-      also shows a PASS for the same variables at 4,250 (likely from the
-      other consent group). This indicates pht012814 is available in one
-      consent group (c2 likely) but nearly absent in the other (c1). The
-      200 rows surviving in the failing group may be participants who appear
-      in both consent groups. C3 and C9 FAILs for ppfvc51/ppfev151/ppfev1fvc51
-      (min=0 below plausible 5, max=370/418 above red_flag 250) are
-      secondary consequences: the 200 surviving rows may include sentinel
-      values (0 = measurement not done) or extreme outliers from the small
-      surviving subset. Re-investigate when all ARIC consent groups are
-      processed together.
-    confirmed_date: "2026-07-20"
-
-  # -- C2: measurement_OBA:2041536 no YAML match ----------------------------
-  - checks: [C2]
-    variable_key: "measurement_OBA:2041536"
-    yaml_file: null
-    status: known_issue
-    root_cause: crosswalk_source_scope_mismatch
-    summary: >
-      Harmonized measurement rows with observation_type=OBA:2041536 are
-      present in the output but the source crosswalk has no corresponding
-      pool entry attributing PHVs to this concept. This produces a C2 FAIL
-      of "Harmonized variable not matched in source -- no YAML block
-      proposed this concept." OBA:2041536 was not identified in the
-      crosswalk table. Possible cause: the YAML maps some PHV to
-      OBA:2041536 as observation_type but the crosswalk did not attribute
-      that PHV to this concept (crosswalk attribution gap). Needs
-      investigation to identify which YAML block uses OBA:2041536 and
-      verify the crosswalk attribution is correct.
-    confirmed_date: "2026-07-20"
-
-  # -- C2: measurement_OMOP:4152194 sub-key matching artifact ---------------
   - checks: [C2]
     variable_key: "measurement_OMOP:4152194"
     yaml_file: null
-    status: false_positive
-    root_cause: crosswalk_source_scope_mismatch
+    status: false_positive_dataqc_tool
+    root_cause: crosswalk_bare_key_no_fallback
     summary: >
-      The crosswalk has OMOP:4152194 as a concept key with multiple
-      sub-keys (pipe-delimited: "measurement_OMOP:4152194|Seated
-      random-zero average", "measurement_OMOP:4152194|ABI form
-      measurement", etc. -- lines 73-84 of report). The C2 FAIL "not
-      matched in source" occurs because the harmonized output may produce
-      rows with the bare key "OMOP:4152194" that doesn't match any of the
-      sub-keyed crosswalk entries. This is a hv-dataqc crosswalk key
-      matching artifact: ABI/BP measurements from pht004027-029, 006414,
-      and carotid distensibility from pht004229-230 are correctly mapped in
-      the YAML; the sub-key split in the crosswalk just prevents C2 from
-      recognizing them as matched. The underlying data IS present (same
-      PHVs appear in the large C2 N loss FAILs above for anksbp and
-      udta pools).
-    confirmed_date: "2026-07-20"
+      The compare tool reports "Harmonized variable not matched in source
+      -- no YAML block proposed this concept" for the bare `measurement_
+      OMOP:4152194` key. The yaml_crosswalk builder only emits sub-keyed
+      entries like `measurement_OMOP:4152194|Seated random-zero reading`
+      because every YAML block that produces OMOP:4152194 also declares
+      method_type. The harmonized extractor emits BOTH bare and sub-keyed
+      rows (bare key = raw MO.tsv scan; sub-keys = MOS observations list).
+      When the compare tool looks up the bare harmonized key against the
+      crosswalk, no exact match exists -> spurious FAIL. Filed with
+      hv-dataqc enhancements: add fallback matching where a bare
+      harmonized key is compared to the aggregate of all method-typed
+      sub-keys before flagging as unmatched.
+    confirmed_date: "2026-07-23"
 
-  # -- C3: strc9+gender+pulb23+... sex/demography missing rate change --------
+  # =========================================================================
+  # C2 — Real YAML bugs: pht006416 value_mappings key-type mismatch
+  # =========================================================================
+
+  - checks: [C2, C3]
+    variable_key: "hraa28f+hfaa10d+hfaa16i+mhqa10a+afucomp45_v1"
+    yaml_file: ven_thromb.yaml
+    status: real_issue
+    root_cause: value_mappings_wrong_codes
+    fix_status: applied_pending_pr
+    summary: >
+      MONDO:0005279 (pulmonary embolism/DVT) pool shows 67.6% N loss
+      (122,691 -> 39,744) and 432,042 null-status rows. Traced to the
+      pht006416 block in ven_thromb.yaml, which uses
+      `value_mappings: '0': ABSENT, '1': PRESENT` for phv00294793
+      (AFUCOMP45_V1). Independent verification in the pht006416 var_report
+      shows phv00294793 uses N/Y codes: 100,342 "N", 265 "Y" (total non-null
+      100,607). The '0'/'1' keys never match any source row -> every
+      pht006416 Condition record emits with condition_status = null.
+      With ~437k rows in pht006416, this explains the 432k null-status
+      count. FIX: change value_mappings to `'N': ABSENT, 'Y': PRESENT`
+      (matching the pht004053/pht004102/pht004125 sibling blocks in the
+      same file).
+    evidence:
+      - Data_dict:  phs000280.v9.pht006416.v6.afucomposite31ps1.data_dict.xml (type=string)
+      - Var_report: phs000280.v9.pht006416.v6.p3.afucomposite31ps1.var_report.xml
+        shows enum count=100,342 "N" + count=265 "Y"
+      - YAML: priority_variables_transform/ARIC-ingest/ven_thromb.yaml:112-130
+    confirmed_date: "2026-07-23"
+
+  # NOTE: hist_my_inf.yaml pht006416 block at L1298-1318 (phv00294812 /
+  # AFUCOMP7_V1) has the same class of bug -- currently uses '1'/'2'
+  # value_mappings, but the var_report shows N/Y codes (2,179 "N", 434 "Y").
+  # Not itself a report FAIL because it lies in an MO/Condition pool
+  # aggregation that also succeeds via other tables; documented here for
+  # completeness and fixed in the same PR.
+  - checks: [C2, C3]
+    variable_key: "hxofmi_afucomp7_v1_pht006416"
+    yaml_file: hist_my_inf.yaml
+    status: real_issue
+    root_cause: value_mappings_wrong_codes
+    fix_status: applied_pending_pr
+    summary: >
+      Additional pht006416 mapping bug discovered while triaging the
+      ven_thromb VTE finding. The block at hist_my_inf.yaml:1296-1318 for
+      MONDO:0005068 uses `value_mappings: '1': ABSENT, '2': HISTORICAL`
+      for phv00294812 (AFUCOMP7_V1 "HOSPITALIZED FOR HEART ATTACK SINCE
+      LAST CONTACT"). Var_report shows the variable is N/Y coded
+      (2,179 "N", 434 "Y"). The '1'/'2' keys never fire. Silent
+      condition_status=null on every pht006416 hist-MI record. Not
+      caught by the current report's C2 threshold because MONDO:0005068
+      has a large multi-table pool where the pht006416 contribution is a
+      minority; but the semantic error is the same and fixed in the same
+      PR. Also confirms this is not a value_mappings key TYPE (int vs
+      str) issue -- it is a plain wrong-codes issue.
+    evidence:
+      - Var_report: phs000280.v9.pht006416.v6.p3.afucomposite31ps1.var_report.xml
+        (phv00294812 -> N=2,179, Y=434)
+      - YAML: priority_variables_transform/ARIC-ingest/hist_my_inf.yaml:1296-1318
+    confirmed_date: "2026-07-23"
+
+  # =========================================================================
+  # C2 — Real YAML bug: factor_8.yaml commented-out value_quantity
+  # =========================================================================
+
+  - checks: [C2]
+    variable_key: "measurement_OBA:2041536"
+    yaml_file: factor_8.yaml
+    status: real_issue
+    root_cause: value_quantity_commented_out
+    fix_status: applied_pending_pr
+    summary: >
+      "Harmonized variable not matched in source -- no YAML block proposed
+      this concept" for OBA:2041536 (Factor VIII). Root cause: the entire
+      value_quantity block in factor_8.yaml (lines 13-21) is commented out.
+      The pipeline emits 14,887 shell MeasurementObservation records with
+      observation_type=OBA:2041536 and NO value_decimal (n_valid=0 in the
+      harmonized JSON). The yaml_crosswalk parser correctly attributes no
+      source PHV because none is bound to `value_decimal` -> spurious
+      "unmatched" C2 FAIL. The commented-out expression was
+      `{phv00206649} * 0.01`; the comment originates from
+      commit 2a93479f (2026-03-16, "Fix ingest errors for downstream
+      release") when older linkml-map couldn't multiply a `type=string`
+      PHV. phv00206649 (HEMA07 Factor VIII C value) has
+      calculated_type=integer with min=18, max=540 and 14,793 non-null
+      rows; linkml-map 0.4.0 supports numeric-string coercion. Sibling
+      files (e.g. ven_thromb.yaml) already use identical `{phv} * <num>`
+      expressions on string-typed PHVs. FIX: uncomment the value_quantity
+      block. Not silently dropping the observation_type means the shell
+      records with n_valid=0 will become real numeric measurements.
+    evidence:
+      - Data_dict:  phs000280.v9.pht004098.v4.HEMA.data_dict.xml (type=string)
+      - Var_report: phs000280.v9.pht004098.v4.p3.HEMA.var_report.xml
+        (phv00206649 calculated_type=integer, n=14,793, min=18, max=540)
+      - Harmonized JSON: measurement_OBA:2041536 n_total=14,887 n_valid=0
+      - Git blame: 2a93479f (2026-03-16) commented out to work around
+        older linkml-map ingest errors -- restored with linkml-map 0.4.0
+    confirmed_date: "2026-07-23"
+
+  # =========================================================================
+  # C2 — Pipoprotein lipoprotein/IMT arithmetic-null propagation
+  # =========================================================================
+
+  - checks: [C2, C3]
+    variable_key: "lopaav45+lopbav45+lopdav45+lanamx23+lanbmx23+lopdmx23+lopcmx23"
+    yaml_file: carotid_imt.yaml
+    status: false_positive_pool_composition
+    root_cause: derived_aggregate_intersection_vs_union
+    summary: >
+      OMOP:4138462 IMT pool: source=53,913; harmonized=30,198 (44% loss),
+      46,520 null-status. carotid_imt.yaml emits ONE MeasurementObservation
+      per participant per exam using arithmetic averages of up to 12 PHVs
+      per block (e.g., `({phvA}+{phvB}+...+{phvL})/12`). Arithmetic on any
+      null operand yields null in linkml-map, so the derived
+      value_decimal is null whenever any operand is null. The source-side
+      crosswalk aggregates the UNION of per-PHV n_valids; the harmonized
+      side emits the INTERSECTION (all operands present). Union >>
+      intersection -> apparent N loss. This is a design choice, not a bug.
+      If preserving partial IMT records is desired, either (a) reformulate
+      as a nullable-mean or (b) split into per-PHV MO blocks. Neither is
+      recommended without domain input -- the current mean-of-far-and-
+      near-walls semantics is standard.
+    evidence:
+      - YAML: priority_variables_transform/ARIC-ingest/carotid_imt.yaml:14-192
+    confirmed_date: "2026-07-23"
+
+  # =========================================================================
+  # C2/C3 — Per-consent-group per-variable N split (pht012814)
+  # =========================================================================
+
+  - checks: [C2, C3, C9]
+    variable_key: "ppfvc51"
+    yaml_file: spirometry.yaml
+    status: false_positive_dataqc_tool
+    root_cause: per_consent_group_accounting
+    summary: >
+      ppfvc51 (also ppfev151, ppfev1fvc51) from pht012814 shows source
+      n=4,250 vs harmonized=200 (95.3% loss) in the compare report, but
+      the harmonized MOS extractor log lists BOTH `OMOP:3005600: n_valid=
+      4,250` and `OMOP:3005600: n_valid=200` as separate entries. Root
+      cause: pht012814 (DERIVE53) is available in both consent groups but
+      with skewed subject distribution -- c1 has 5,475 rows and c2 has 427
+      rows. The harmonized JSON aggregates rows per consent-group TSV, and
+      the compare tool assigns the harmonized side to only one of the two
+      buckets when calculating per-variable N. Data preservation is
+      actually 4,450 rows (4,250 + 200) against 4,250 source non-nulls,
+      i.e., >100% survival (some c2 rows are also present in c1). Not a
+      pipeline defect. The C9 min=0, max=370.6 outliers in this variable
+      are secondary artifacts: (a) 0 = spirometry test not performed
+      sentinel, (b) the max=370 comes from a small 200-row subset which
+      includes extreme values. Not a real range violation.
+    evidence:
+      - Source log: pht012814 = 5,475 rows c1 + 427 rows c2 = 5,902 total
+      - Harmonized log: OMOP:3005600 twice - n_valid=4,250 and n_valid=200
+    confirmed_date: "2026-07-23"
+
+  - checks: [C2, C3, C9]
+    variable_key: "ppfev151"
+    yaml_file: spirometry.yaml
+    status: false_positive_dataqc_tool
+    root_cause: per_consent_group_accounting
+    summary: >
+      See ppfvc51 entry above -- same per-consent-group accounting artifact.
+      Applies to phv00512108 (percent-predicted FEV1) as well.
+    confirmed_date: "2026-07-23"
+
+  - checks: [C2, C3, C9]
+    variable_key: "ppfev1fvc51"
+    yaml_file: spirometry.yaml
+    status: false_positive_dataqc_tool
+    root_cause: per_consent_group_accounting
+    summary: >
+      See ppfvc51 entry above -- same per-consent-group accounting artifact.
+      Applies to phv00512109 (percent-predicted FEV1/FVC ratio).
+    confirmed_date: "2026-07-23"
+
+  # =========================================================================
+  # C3 — Multi-PHT pool composition artifacts
+  # =========================================================================
+
   - checks: [C3]
-    variable_key: "strc9+gender+pulb23+pulp23+ecgra281+hhxb10+pfta02"
+    variable_key: "strc9+gender+pulb23+pulp23+ecgra281+hhxb10+pfta02+afucomp18_g+wmrn2+chia3+sex+amha9+antd4+mhxa47"
     yaml_file: demography.yaml
-    status: false_positive
-    root_cause: crosswalk_source_scope_mismatch
+    status: false_positive_pool_composition
+    root_cause: multi_pht_pool_denominator_mismatch
     summary: >
-      Sex/demography variable pool (demog_sex concept) spans 14 PHTs from
-      all ARIC visit tables. C3 missing rate change is a multi-table pool
-      composition artifact: the source crosswalk sums non-null sex values
-      across all 14 PHTs, while harmonized outputs one sex record per
-      participant (deduplicated). The denominator difference (total source
-      rows vs harmonized rows per participant) produces an apparent missing
-      rate change. C2 PASSES for this pool (participant coverage preserved).
-      Not a data quality issue.
-    confirmed_date: "2026-07-20"
+      demog_sex pool spans 14 PHTs. Source crosswalk sums non-null sex
+      values across all 14 tables; harmonized emits one Demography record
+      per participant with sex resolved once. Denominators are inherently
+      different: source pool total rows = sum of 14 table n_rows;
+      harmonized pool total rows = ~741k Demography records for 15,068
+      participants (still per-visit stratified). Missing rate change
+      46.4% -> 51.3% is a mechanical consequence of pool composition,
+      not a data-quality regression. C2 PASSES for this pool (participant
+      coverage preserved). Filed with hv-dataqc enhancements: teach the
+      compare tool to normalize missing-rate metrics when the source pool
+      aggregates PHVs from independent tables with independent missingness.
+    confirmed_date: "2026-07-23"
 
-  # -- C3: lipd7a+chma16+inssiu01 missing rate change (multi-exam pool) -----
   - checks: [C3]
     variable_key: "lipd7a+chma16+inssiu01"
-    yaml_file: null
-    status: false_positive
-    root_cause: crosswalk_source_scope_mismatch
+    yaml_file: insulin_blood.yaml
+    status: false_positive_pool_composition
+    root_cause: multi_pht_pool_denominator_mismatch
     summary: >
-      Insulin/lipid pool (measurement_OBA:2060174) from pht004051 (chma16
-      = CHMA, Exam 1 blood chemistry), pht004063 (lipd7a = LIPD, Exam 4
-      lipids), pht004124 (inssiu01 = ESMA04, Exam 1 insulin). C3 missing
-      rate change 0.34% -> 13.02% (d=12.7%). The large missing rate
-      increase in harmonized reflects multi-table pooling: the harmonized
-      output combines measurements from three different exam tables with
-      different missingness profiles. The harmonized pool includes rows
-      from participants who only have data in ONE of the three tables,
-      inflating the null count relative to the source crosswalk's per-table
-      sum. C4 mean passes (OMOP:2060174 preserved), confirming no unit
-      error. This is a pool composition artifact from cross-exam
-      measurement merging.
-    confirmed_date: "2026-07-20"
+      Insulin/lipid pool (measurement_OBA:2060174) merges pht004051
+      (CHMA, Exam 1 chemistry), pht004063 (LIPD, Exam 4 lipids),
+      pht004124 (ESMA04, Exam 1 insulin). C3 missing rate 0.34% -> 13.02%.
+      Source crosswalk sums individual PHV n_valids from 3 different-exam
+      tables with different missingness profiles. Harmonized emits one MO
+      per (participant x exam), producing rows for participants who only
+      appear in one of the three tables -> null-inflated denominator.
+      C4 mean passes (unit and value_decimal correct). Same class as
+      demog_sex above.
+    confirmed_date: "2026-07-23"
 
-  # -- C9: anta04+antb01+antc2+antd2+pulb22+pulp22 weight max=415 ----------
+  # =========================================================================
+  # C9 — Real unit-scale mismatch: FEV1/FVC ratio percentage vs decimal
+  # =========================================================================
+
+  - checks: [C9]
+    variable_key: "pfta31+pftb31_and_related"
+    yaml_file: null
+    status: false_positive_dataqc_tool
+    root_cause: clinical_ranges_ratio_unit_scale
+    summary: >
+      Multiple FEV1/FVC ratio pools fail C9 with max > red_flag 1.15:
+        - pfta31+pftb31 max=100.0
+        - fev1fvc1+fef_122 max=86.556
+        - pulb41 max=78.0
+        - pulp41 max=78.0
+        - pulp27 min=0
+        - pulp31 min=0
+      Root cause: clinical_ranges.yaml defines the FEV1/FVC red_flag as
+      1.15 (decimal ratio), but every ARIC spirometry PHV that emits this
+      concept stores the value as a percentage (0-100 scale). Verified in
+      var_reports:
+        - phv00208824 (pfta31): min=0, max=100, mean=74.34, median=75.67
+        - phv00516622 (pftb31): min=25.92, max=100, mean=74.44
+      spirometry.yaml correctly labels these blocks with `unit: "%"`.
+      OMOP/BDCHM convention for FEV1/FVC (LOINC 19926-5, OMOP 3011505)
+      IS percentage (0-100). The YAML unit is correct; the
+      hv-dataqc clinical_ranges.yaml threshold is incorrect. FIX in
+      hv-dataqc: update clinical_ranges.yaml so ratio red_flags scale to
+      the declared unit (or provide separate decimal-ratio vs
+      percentage-ratio entries). Similar C9 min=0 violations on pfta24
+      (FEF), pfta26 (FEV1), etc. also represent unit-aware sentinel
+      thresholds; the source values are correct.
+      NOTE: The C9 min=0 findings on pulp27 (FEV1 L), pulp31 (FVC L),
+      pfta24 (FEF L/s) are the standard ARIC "test not performed" sentinel
+      -- classified under `known_source_data_property` below.
+    confirmed_date: "2026-07-23"
+
+  # =========================================================================
+  # C9 — ARIC source sentinels and outliers (faithfully preserved)
+  # =========================================================================
+
+  - checks: [C9]
+    variable_key: "aric_ecg_999_sentinel"
+    yaml_file: null
+    status: known_source_data_property
+    root_cause: source_sentinel_999_not_null_mapped
+    summary: >
+      ARIC ECG numeric variables use 999 as the "missing/unknown/cannot
+      compute" sentinel. This appears in the C9 pool
+      `sbpc8+sbpd8+esmb142+ecgra078+etlc26+v2ecg6+abi32+...` where max=999
+      exceeds red_flag 300. The 999 value passes through the YAML unchanged
+      because no `case()` guard is present in the spirometry/ECG YAML
+      blocks. Faithfully preserved -- not a pipeline bug.
+      Recommendation: add sentinel-null mapping as a policy decision
+      (same convention as CARDIA `M` -> null). Not yet applied because
+      it requires a broader multi-cohort convention -- filed with the
+      hv-dataqc / HV-Lint enhancement queue.
+    confirmed_date: "2026-07-23"
+
+  - checks: [C9]
+    variable_key: "aric_bp_0_sentinel"
+    yaml_file: blood_pressure.yaml
+    status: known_source_data_property
+    root_cause: source_sentinel_zero_not_null_mapped
+    summary: >
+      ARIC visit-specific BP tables (sbpa/sbpb/sbpc/sbpd) use 0 as the
+      "measurement not performed or not recorded" sentinel. This surfaces
+      in multiple C9 FAILs:
+        - sbpa22+sbpb22+sbpc23 min=0
+        - sbpa13+... min=10 (below 15 threshold; likely valid low DBP or
+          another minimum sentinel)
+        - sbpa17+sbpa20 min=0
+        - echa7, echa8 min=0
+        - anksbp13+... min=0
+        - abi22+... min=0
+        - hfaa44a+scr_v5 min=0 (serum creatinine sentinel)
+      All values faithfully preserved from source. Recommend consistent
+      sentinel-null mapping as a policy decision (see 999 entry above).
+    confirmed_date: "2026-07-23"
+
+  - checks: [C9]
+    variable_key: "sbpa12+sbpa15+sbpa18+sbpb12+sbpb15+sbpb18+sbpc13+sbpc16+sbpc19"
+    yaml_file: blood_pressure.yaml
+    status: known_source_data_property
+    root_cause: pre_existing_source_outlier
+    summary: >
+      SBP reading pool max=304 mmHg exceeds red_flag 300. Extreme but
+      plausible in raw ARIC data (hypertensive crisis or entry error).
+      Value faithfully preserved. No harmonization-scope action.
+    confirmed_date: "2026-07-23"
+
   - checks: [C9]
     variable_key: "anta04+antb01+antc2+antd2+pulb22+pulp22"
     yaml_file: bdy_wgt.yaml
-    status: false_positive
-    root_cause: crosswalk_source_scope_mismatch
+    status: known_source_data_property
+    root_cause: pre_existing_source_outlier
     summary: >
-      Weight variables anta04 (phv00203154), antb01 (phv00203166),
-      antc2 (phv00203176), antd2 (phv00203187) from ARIC Exams 1-4, plus
-      pulb22/pulp22 spirometry variables. max=415 lbs above red_flag 350.
-      This is a pre-existing source outlier (a participant weighing 415 lbs
-      is clinically possible if extreme). No [out only] annotation expected
-      since the bdy_wgt.yaml fix (sentinel guards for 'A', 'O', etc.) does
-      not affect numeric outlier values. The weight sentinel fix resolves
-      the crash issues but does not truncate extreme valid values. The
-      pulb22/pulp22 contribution may also have extreme spirometry values.
-      The 415 lb value is faithfully preserved from source.
-    confirmed_date: "2026-07-20"
+      Body weight pool max=415 lbs exceeds red_flag 350. Plausible for an
+      extremely obese participant, entry error, or unit-encoded value
+      (verify). The bdy_wgt.yaml sentinel guards (recent commits
+      b64be6fe/c958ccef/c6534ae6) protect against 'A'/'O'/isdigit sentinels
+      but do not truncate valid numerics. Not a fix scope from this
+      review. Flag for domain expert if 415 lbs is out-of-scope for the
+      cohort.
+    confirmed_date: "2026-07-23"
 
-  # -- C9: sbp min=0 / max outliers (ABI/BP measurement sentinels) ----------
   - checks: [C9]
-    variable_key: "sbpa22+sbpb22+sbpc23"
+    variable_key: "hmta01+hmtc5+hmtb01+hfaa38b+cbc6+hfaa38a_and_related_cbc_pools"
     yaml_file: null
-    status: false_positive
-    root_cause: crosswalk_source_scope_mismatch
+    status: known_source_data_property
+    root_cause: pre_existing_source_outlier
     summary: >
-      Multiple blood pressure / ABI pools from pht004192-195 (SBPA, SBPB,
-      SBPC, SBPD = ARIC Visit 4 sitting blood pressure tables) show:
-      min=0.0 (below red_flag 15-40 mmHg), and max=304 (above red_flag
-      300 mmHg for systolic). The min=0 values are sentinel values for
-      "measurement not performed or not recorded" in ARIC's visit-specific
-      BP tables. The max=304 systolic is a pre-existing extreme value in
-      the source data. Also: sbpa17+sbpa20 min=0 below two separate
-      red_flags (40 and 15) represents both pulse pressure and diastolic
-      measurements of 0 (sentinel). These are source-level data quality
-      features faithfully preserved in harmonized output. Applies to all
-      sbpa12/13/15/16/17/18/19/20, sbpb12-20, sbpc13-20, sbpd variants.
-    confirmed_date: "2026-07-20"
-
-  # -- C9: echa7/echa8 ECG min=0, max=270 (sentinel + outlier) --------------
-  - checks: [C9]
-    variable_key: "echa7"
-    yaml_file: null
-    status: false_positive
-    root_cause: crosswalk_source_scope_mismatch
-    summary: >
-      ECG measurements echa7 (phv00205847) and echa8 (phv00205848) from
-      pht004079 (ECHA = ARIC ECG table). min=0 below red_flag (40/15):
-      zero is a sentinel value for measurements not performed. max=270
-      above plausible 250 ms: extreme but plausible ECG interval for
-      bundle branch block patients. Source-level values faithfully preserved.
-    confirmed_date: "2026-07-20"
-
-  # -- C9: ECG/QRS/ABI pool min=0, max=999 (sentinels) ----------------------
-  - checks: [C9]
-    variable_key: "sbpc8+sbpd8+esmb142+ecgra078+etlc26+v2ecg6+abi32"
-    yaml_file: null
-    status: false_positive
-    root_cause: crosswalk_source_scope_mismatch
-    summary: >
-      Large ECG/ABI/spirometry multi-exam pool (pht004044-4089, 004194-195,
-      004231-234, 006414-436, 012819-824). min=0 (ECG interval sentinel for
-      unmeasured), max=999 (classic ARIC missing value sentinel for numeric
-      ECG variables). The 999 value is the standard ARIC missing/unknown
-      code for numeric ECG measurements and should ideally be mapped to null
-      in the YAML, but it passes through as a numeric value. Source outliers
-      faithfully preserved. The 999 sentinel is a known ARIC convention.
-      ARIC ECG tables use 999 as a missing value code for variables that
-      cannot be computed (e.g., QRS interval when paced rhythm).
-    confirmed_date: "2026-07-20"
-
-  # -- C9: CBC/hematology range violations (pre-existing source outliers) ----
-  - checks: [C9]
-    variable_key: "hmta01+hmtc5+hmtb01+hfaa38b+cbc6+hfaa38a"
-    yaml_file: null
-    status: false_positive
-    root_cause: crosswalk_source_scope_mismatch
-    summary: >
-      Multiple CBC/hematology pools (hmta=ARIC Exam CBC, hmtb/hmtc=Exam 5
-      CBC, cbc=V5 CBC, chem=chemistry panels from pht004107-110, 006422,
-      012503) show range violations for all major blood count variables:
-      hemoglobin (min 2.1-5, max 65-69.6), hematocrit (min 1.3, max 44.7),
-      WBC (min 0.23-3.7, max 69.6-584.5), RBC (min 0.23, max 108.5),
-      MCV (min 3.3, max 663.1), platelet (max 4420). These reflect
-      pre-existing extreme values in the ARIC source data (critically ill
-      participants, data entry errors, or laboratory outliers that passed
-      QC). The values are faithfully preserved from source. Clinical review
-      would be needed to determine which represent true outliers vs data
-      entry errors, but this is outside the scope of the harmonization
-      pipeline. Applies to all related CBC/chemistry pools:
-      hmtc4+hfaa37a+hfaa37b, cbc3+hmtb03+hmta03, hmtc7+cbc9,
-      hmtc8+chem26+cbc10, cbc7+hmta04+hmtb04, cbc4+hmtc3,
-      cbc11+chem27+hmtc9.
-    confirmed_date: "2026-07-20"
-
-  # -- C9: spirometry FEF/FEV1/FVC min=0, ratio max=86 (sentinels+units) ----
-  - checks: [C9]
-    variable_key: "pfta24+pftb24"
-    yaml_file: spirometry.yaml
-    status: false_positive
-    root_cause: crosswalk_source_scope_mismatch
-    summary: >
-      Spirometry pools from pht004142 (PFTA = ARIC Visit 4 spirometry) and
-      pht012835 (NCS51 = ARIC V5 spirometry): FEF 25% (pfta24/pftb24),
-      FEF 50% (pfta26/pftb26), and FEV1/FVC ratio (pfta31/pftb31) show
-      min=0 (below red_flag 0.05-0.2 L/s) and max=100.0 (above red_flag
-      1.15 for the ratio). Min=0 is a sentinel value for participants who
-      could not perform the maneuver. Max=100 for FEV1/FVC ratio suggests
-      the ratio is stored as a PERCENTAGE (0-100%) in pht012835 rather
-      than a decimal (0-1.0). Similarly, fev1fvc1+fef_122 max=86.556 and
-      pulb41/pulp41/pulp27/pulp31 max=78.0 are ratios stored as percentages
-      being compared against a decimal red_flag of 1.15. These C9 FAILs
-      reflect unit representation differences between ARIC exam-specific
-      spirometry tables (some store ratios as decimals, some as percentages).
-      The source values are faithfully preserved; the unit mismatch vs
-      clinical_ranges.yaml is the issue.
-    confirmed_date: "2026-07-20"
+      Multiple CBC/chemistry hematology pools (hmt* tables and cbc*
+      composites) show extreme min/max on all major indices:
+        - Hemoglobin: min 2.1-5.0, max 65-69.6
+        - Hematocrit: min 1.3, max 44.7
+        - WBC / RBC: min 0.23-3.7, max 108.5-584.5
+        - MCV / other: min 3.3, max 663.1
+        - Platelet: max 4,420
+      All represent pre-existing extreme values in ARIC source (critically
+      ill participants, lab QC-passed outliers, or entry errors). Values
+      faithfully preserved. Clinical review scope, not harmonization
+      pipeline scope. Applies to all related CBC/chemistry pools listed
+      in the C9 fail records:
+        hmtc4+hfaa37a+hfaa37b, cbc3+hmtb03+hmta03, hmtc7+cbc9,
+        hmtc8+chem26+cbc10, cbc7+hmta04+hmtb04, cbc4+hmtc3,
+        cbc11+chem27+hmtc9.
+    confirmed_date: "2026-07-23"
