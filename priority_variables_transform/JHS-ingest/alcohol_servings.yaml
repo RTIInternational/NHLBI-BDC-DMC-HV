@@ -1,3 +1,6 @@
+# JHS alcohol servings: 2 blocks covering Exams 1 and 3 (pht008729, pht008731).
+# pht008730 (analysis2, Exam 2) has no alcohol servings variable -- Exam 2 is a
+# source data gap in JHS. Only Exams 1 and 3 are available for this concept.
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008731
@@ -24,30 +27,6 @@
                     value: "{#}/wk"
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001926
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00124667}) + ":JHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00124667}) + ":JHS Exam 1")'
-        # age_at_observation:
-          # expr: "{nan} * 365"
-        observation_type:
-          value: OMOP:35609491
-        method_type:
-          value: "questionnaire"
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001926
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00124671
-                  unit:
-                    value: "{#}/wk"
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht008729
       slot_derivations:
         associated_participant:
@@ -70,34 +49,3 @@
                     populated_from: phv00401090
                   unit:
                     value: "{#}/wk"
-# pht008720
-# human readable transform logic
-# phv00400743 : number of days per some unit of time that any alcohol was consumed
-# phv00400744 : specifies the unit of time in phv00400743
-# phv00400745 : average drinks per day
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht008720
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00400740}) + ":JHS")' 
-        associated_visit: 
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400740}) + ":JHS Exam 3")'
-        observation_type: 
-          value: OMOP:35609491
-        method_type:
-          value: "questionnaire"
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008720
-                slot_derivations:
-                  value_decimal:
-                    expr: "case(
-                      ({phv00400744} == 1, {phv00400745} * {phv00400743}),
-                      ({phv00400744} == 2, {phv00400745} * {phv00400743} / 4),
-                      ({phv00400744} == 3, {phv00400745} * {phv00400743} / 52)
-                      )"
-                  unit: 
-                    value: '{#}/wk'

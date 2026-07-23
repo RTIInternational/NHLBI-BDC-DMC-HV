@@ -22,9 +22,7 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00118957
-                    unit_conversion:
-                      source_unit: "[in_us]"
-                      target_unit: "cm"
+                    expr: "None if str({phv00118957}) in ('M', '') else float({phv00118957}) * 2.54"
                   unit:
                     value: "cm"
                     range: string
@@ -52,9 +50,7 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00114609
-                    unit_conversion:
-                      source_unit: "[in_us]"
-                      target_unit: "cm"
+                    expr: "None if str({phv00114609}) in ('M', '') else float({phv00114609}) * 2.54"
                   unit:
                     value: "cm"
                     range: string
@@ -82,9 +78,7 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00115704
-                    unit_conversion:
-                      source_unit: "[in_us]"
-                      target_unit: "cm"
+                    expr: "None if str({phv00115704}) in ('M', '') else float({phv00115704}) * 2.54"
                   unit:
                     value: "cm"
                     range: string
@@ -112,9 +106,7 @@
                 slot_derivations:
                   value_decimal:
                     populated_from: phv00119506
-                    unit_conversion:
-                      source_unit: "[in_us]"
-                      target_unit: "cm"
+                    expr: "None if str({phv00119506}) in ('M', '') else float({phv00119506}) * 2.54"
                   unit:
                     value: "cm"
                     range: string

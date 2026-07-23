@@ -19,4 +19,7 @@
                 populated_from: pht001563
                 slot_derivations:
                   value_decimal:
-                    expr: "{phv00112690} * 100"
+                    expr: "None if str({phv00112690}) in ('M', 'L', 'H', '') else float({phv00112690})"
+                  unit:
+                    value: "10*3/uL"
+                    range: string

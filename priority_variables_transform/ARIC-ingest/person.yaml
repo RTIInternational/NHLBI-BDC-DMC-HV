@@ -6,8 +6,10 @@
           source_key: phv00098579
           lookup_key: phv00203839
       slot_derivations:
-        identity:
+        id:
           expr: 'uuid5("https://w3id.org/bdchm/Person", str({dbGaP_Subject_ID}))'
+        identity:
+          expr: 'str({dbGaP_Subject_ID})'
         species:
           value: NCBITaxon:9606
         vital_status:
@@ -19,6 +21,10 @@
           - class_derivations:
               CauseOfDeath:
                 populated_from: pht001440
+                joins:
+                  pht004049:
+                    source_key: phv00098579
+                    lookup_key: phv00203839
                 slot_derivations:
                   cause:
                     expr: 'case(({pht004049.phv00420047} is not None, "ICD10CM:" + str({pht004049.phv00420047})))'
@@ -27,6 +33,10 @@
           - class_derivations:
               CauseOfDeath:
                 populated_from: pht001440
+                joins:
+                  pht004049:
+                    source_key: phv00098579
+                    lookup_key: phv00203839
                 slot_derivations:
                   cause:
                     expr: 'case(({pht004049.phv00203820} is not None, "ICD10CM:" + str({pht004049.phv00203820})))'
@@ -35,6 +45,10 @@
           - class_derivations:
               CauseOfDeath:
                 populated_from: pht001440
+                joins:
+                  pht004049:
+                    source_key: phv00098579
+                    lookup_key: phv00203839
                 slot_derivations:
                   cause:
                     expr: 'case(({pht004049.phv00203822} is not None, "ICD10CM:" + str({pht004049.phv00203822})))'
@@ -43,6 +57,10 @@
           - class_derivations:
               CauseOfDeath:
                 populated_from: pht001440
+                joins:
+                  pht004049:
+                    source_key: phv00098579
+                    lookup_key: phv00203839
                 slot_derivations:
                   cause:
                     expr: 'case(({pht004049.phv00203824} is not None, "ICD10CM:" + str({pht004049.phv00203824})))'
@@ -51,6 +69,10 @@
           - class_derivations:
               CauseOfDeath:
                 populated_from: pht001440
+                joins:
+                  pht004049:
+                    source_key: phv00098579
+                    lookup_key: phv00203839
                 slot_derivations:
                   cause:
                     expr: 'case(({pht004049.phv00203826} is not None, "ICD10CM:" + str({pht004049.phv00203826})))'
@@ -59,6 +81,10 @@
           - class_derivations:
               CauseOfDeath:
                 populated_from: pht001440
+                joins:
+                  pht004049:
+                    source_key: phv00098579
+                    lookup_key: phv00203839
                 slot_derivations:
                   cause:
                     expr: 'case(({pht004049.phv00203828} is not None, "ICD10CM:" + str({pht004049.phv00203828})))'
@@ -67,6 +93,10 @@
           - class_derivations:
               CauseOfDeath:
                 populated_from: pht001440
+                joins:
+                  pht004049:
+                    source_key: phv00098579
+                    lookup_key: phv00203839
                 slot_derivations:
                   cause:
                     expr: 'case(({pht004049.phv00203829} is not None, "ICD10CM:" + str({pht004049.phv00203829})))'
@@ -75,6 +105,10 @@
           - class_derivations:
               CauseOfDeath:
                 populated_from: pht001440
+                joins:
+                  pht004049:
+                    source_key: phv00098579
+                    lookup_key: phv00203839
                 slot_derivations:
                   cause:
                     expr: 'case(({pht004049.phv00203821} is not None, "ICD10CM:" + str({pht004049.phv00203821})))'
@@ -83,6 +117,10 @@
           - class_derivations:
               CauseOfDeath:
                 populated_from: pht001440
+                joins:
+                  pht004049:
+                    source_key: phv00098579
+                    lookup_key: phv00203839
                 slot_derivations:
                   cause:
                     expr: 'case(({pht004049.phv00203823} is not None, "ICD10CM:" + str({pht004049.phv00203823})))'
@@ -91,6 +129,10 @@
           - class_derivations:
               CauseOfDeath:
                 populated_from: pht001440
+                joins:
+                  pht004049:
+                    source_key: phv00098579
+                    lookup_key: phv00203839
                 slot_derivations:
                   cause:
                     expr: 'case(({pht004049.phv00203825} is not None, "ICD10CM:" + str({pht004049.phv00203825})))'
@@ -99,6 +141,10 @@
           - class_derivations:
               CauseOfDeath:
                 populated_from: pht001440
+                joins:
+                  pht004049:
+                    source_key: phv00098579
+                    lookup_key: phv00203839
                 slot_derivations:
                   cause:
                     expr: 'case(({pht004049.phv00203827} is not None, "ICD10CM:" + str({pht004049.phv00203827})))'

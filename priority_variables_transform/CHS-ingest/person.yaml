@@ -9,8 +9,10 @@
           source_key: phv00098755
           lookup_key: phv00100808
       slot_derivations:
-        identity:
+        id:
           expr: 'uuid5("https://w3id.org/bdchm/Person", str({dbGaP_Subject_ID}))'
+        identity:
+          expr: 'str({dbGaP_Subject_ID})'
         species:
           value: NCBITaxon:9606
           range: string
@@ -21,6 +23,10 @@
           - class_derivations:
               CauseOfDeath:
                 populated_from: pht001447
+                joins:
+                  pht001464:
+                    source_key: phv00098755
+                    lookup_key: phv00100773
                 slot_derivations:
                   cause:
                     expr: 'case(({pht001464.phv00100775} == 1, "ICD10CM:I20-I25"), ({pht001464.phv00100775} == 2, "ICD10CM:I60-I69"), ({pht001464.phv00100775} == 3, "ICD10CM:I70"), ({pht001464.phv00100775} == 4, "ICD10CM:I00-I99"))'
@@ -29,6 +35,10 @@
           - class_derivations:
               CauseOfDeath:
                 populated_from: pht001447
+                joins:
+                  pht001466:
+                    source_key: phv00098755
+                    lookup_key: phv00100808
                 slot_derivations:
                   cause:
                     expr: 'case(({pht001466.phv00100832} == 1, "ICD10CM:I20-I25"), ({pht001466.phv00100832} == 2, "ICD10CM:I60-I69"), ({pht001466.phv00100832} == 3, "ICD10CM:I70"), ({pht001466.phv00100832} == 4, "ICD10CM:I00-I99"))'

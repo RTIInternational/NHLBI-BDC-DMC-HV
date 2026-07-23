@@ -2,25 +2,31 @@
     Person:
       populated_from: pht000998
       joins:
-        pht003407:
+        pht006220:
           source_key: phv00078435
-          lookup_key: phv00193141
+          lookup_key: phv00283412
       slot_derivations:
-        identity:
+        id:
           expr: 'uuid5("https://w3id.org/bdchm/Person", str({dbGaP_Subject_ID}))'
+        identity:
+          expr: 'str({dbGaP_Subject_ID})'
         species:
           value: NCBITaxon:9606
         vital_status:
-          expr: 'case(({pht003407.phv00193496} == 1, "OMOP:434489"), ({pht003407.phv00193496} == 0, "OMOP:4230556"))'
+          expr: 'case(({pht006220.phv00283413} == 1, "OMOP:434489"), ({pht006220.phv00283413} == 0, "OMOP:4230556"), (True, None))'
         age_at_death:
-          expr: 'case(({pht003407.phv00193496} == 1, ({phv00078437} * 365) + {pht003407.phv00193498}))'
+          expr: 'case(({pht006220.phv00283413} == 1, ({phv00078437} * 365) + {pht006220.phv00283414}), (True, None))'
         cause_of_death:
           object_derivations:
           - class_derivations:
               CauseOfDeath:
                 populated_from: pht000998
+                joins:
+                  pht006220:
+                    source_key: phv00078435
+                    lookup_key: phv00283412
                 slot_derivations:
                   cause:
-                    expr: 'case(({pht003407.phv00193497} == 1, "ICD10CM:C50"), ({pht003407.phv00193497} == 10, "ICD10CM:C34"), ({pht003407.phv00193497} == 11, "ICD10CM:I20-I25"), ({pht003407.phv00193497} == 12, "ICD10CM:I60-I69"), ({pht003407.phv00193497} == 18, "ICD10CM:I00-I99"), ({pht003407.phv00193497} == 31, "ICD10CM:G30"), ({pht003407.phv00193497} == 32, "ICD10CM:J44"))'
+                    expr: 'case(({pht006220.phv00283416} == 1, "ICD10CM:C50"), ({pht006220.phv00283416} == 2, "ICD10CM:C56"), ({pht006220.phv00283416} == 3, "ICD10CM:C54"), ({pht006220.phv00283416} == 4, "ICD10CM:C18"), ({pht006220.phv00283416} == 5, "ICD10CM:C19"), ({pht006220.phv00283416} == 6, "ICD10CM:C20"), ({pht006220.phv00283416} == 7, "ICD10CM:C55"), ({pht006220.phv00283416} == 10, "ICD10CM:C34"), ({pht006220.phv00283416} == 11, "ICD10CM:I20-I25"), ({pht006220.phv00283416} == 12, "ICD10CM:I60-I69"), ({pht006220.phv00283416} == 13, "ICD10CM:I26"), ({pht006220.phv00283416} == 14, "ICD10CM:I20-I25"), ({pht006220.phv00283416} == 18, "ICD10CM:I00-I99"), ({pht006220.phv00283416} == 31, "ICD10CM:G30"), ({pht006220.phv00283416} == 32, "ICD10CM:J44"), ({pht006220.phv00283416} == 33, "ICD10CM:J18"), ({pht006220.phv00283416} == 34, "ICD10CM:J84.10"), ({pht006220.phv00283416} == 35, "ICD10CM:N18"), ({pht006220.phv00283416} == 36, "ICD10CM:A41"), ({pht006220.phv00283416} == 37, "ICD10CM:C25"), ({pht006220.phv00283416} == 38, "ICD10CM:C85"), ({pht006220.phv00283416} == 39, "ICD10CM:C95"), ({pht006220.phv00283416} == 40, "ICD10CM:C71"), ({pht006220.phv00283416} == 41, "ICD10CM:C90.0"), ({pht006220.phv00283416} == 42, "ICD10CM:F03"), ({pht006220.phv00283416} == 43, "ICD10CM:G12.21"), ({pht006220.phv00283416} == 44, "ICD10CM:G20"), ({pht006220.phv00283416} == 45, "ICD10CM:K74"), (True, None))'
                   order:
-                    value: 1
+                    expr: 'case(({pht006220.phv00283413} == 1, 1), (True, None))'

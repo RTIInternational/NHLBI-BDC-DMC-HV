@@ -1,6 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-<<<<<<<< HEAD:priority_variables_transform/CARDIA-ingest/bnp.yaml
       populated_from: pht001674
       slot_derivations:
         associated_participant:
@@ -11,25 +10,10 @@
           value: OBA:2045303
         method_type:
           value: "blood assay"
-========
-      populated_from: pht010057
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00429048}) + ":LTRC")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00429048}) + ":LTRC Baseline")'
-        observation_type:
-          value: OBA:2045455
-        method_type:
-          value: "calculated"
-        age_at_observation:
-          expr: '{phv00429049} * 365'
->>>>>>>> main:priority_variables_transform/LTRC-ingest/bmi.yaml
         value_quantity:
           object_derivations:
           - class_derivations:
               Quantity:
-<<<<<<<< HEAD:priority_variables_transform/CARDIA-ingest/bnp.yaml
                 populated_from: pht001674
                 slot_derivations:
                   value_decimal:
@@ -37,11 +21,3 @@
                   unit:
                     value: "pg/mL"
                     range: string
-========
-                populated_from: pht010057
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00429058
-                  unit:
-                    value: kg/m2
->>>>>>>> main:priority_variables_transform/LTRC-ingest/bmi.yaml

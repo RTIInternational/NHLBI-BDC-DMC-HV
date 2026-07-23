@@ -957,6 +957,7 @@
                               value: L
                               range: string
 
+
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht000832
@@ -1094,6 +1095,7 @@
                             unit:
                               value: L
                               range: string
+
 
 - class_derivations:
     MeasurementObservationSet:
@@ -1283,7 +1285,7 @@
                   qualifier:
                     value: MAXIMUM
                   age_at_observation:
-                    expr: 'case(({phv00257830} == 1, {pht003099.phv00177946} * 365), case({phv00257830} == 7, {pht003099.phv00177936} * 365))'
+                    expr: 'case(({phv00257830} == 1, {pht003099.phv00177946} * 365), ({phv00257830} == 7, {pht003099.phv00177936} * 365))'
                   value_quantity:
                     object_derivations:
                     - class_derivations:
@@ -1307,7 +1309,7 @@
                   qualifier:
                     value: MAXIMUM
                   age_at_observation:
-                    expr: 'case(({phv00257830} == 1, {pht003099.phv00177946} * 365), case({phv00257830} == 7, {pht003099.phv00177936} * 365))'
+                    expr: 'case(({phv00257830} == 1, {pht003099.phv00177946} * 365), ({phv00257830} == 7, {pht003099.phv00177936} * 365))'
                   value_quantity:
                     object_derivations:
                     - class_derivations:
@@ -1331,7 +1333,7 @@
                   qualifier:
                     value: MAXIMUM
                   age_at_observation:
-                    expr: 'case(({phv00257830} == 1, {pht003099.phv00177946} * 365), case({phv00257830} == 7, {pht003099.phv00177936} * 365))'
+                    expr: 'case(({phv00257830} == 1, {pht003099.phv00177946} * 365), ({phv00257830} == 7, {pht003099.phv00177936} * 365))'
                   value_quantity:
                     object_derivations:
                     - class_derivations:
