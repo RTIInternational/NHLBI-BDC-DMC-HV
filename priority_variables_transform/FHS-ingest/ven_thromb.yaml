@@ -2,6 +2,10 @@
     Condition:
       populated_from: pht006005
       slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00273700}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00273700}) + ":FHS NEW OFFSPRING SPOUSE EXAM 1")'
         condition_concept:
           value: MONDO:0005279
           range: string
@@ -23,6 +27,10 @@
     Condition:
       populated_from: pht000692
       slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00070736}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00070736}) + ":FHS ORIGINAL EXAM 28")'
         condition_concept:
           value: MONDO:0005279
           range: string
@@ -43,6 +51,10 @@
     Condition:
       populated_from: pht000074
       slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00021427}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00021427}) + ":FHS GENERATION 3 EXAM 1")'
         condition_concept:
           value: MONDO:0005279
           range: string
@@ -66,7 +78,7 @@
       populated_from: pht000744
       slot_derivations:
         associated_participant:
-          populated_from: phv00071949
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00071949}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
@@ -88,7 +100,7 @@
       populated_from: pht000744
       slot_derivations:
         associated_participant:
-          populated_from: phv00071949
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00071949}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
@@ -110,7 +122,7 @@
       populated_from: pht000744
       slot_derivations:
         associated_participant:
-          populated_from: phv00071949
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00071949}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
@@ -132,7 +144,7 @@
       populated_from: pht000744
       slot_derivations:
         associated_participant:
-          populated_from: phv00071949
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00071949}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
@@ -154,7 +166,7 @@
       populated_from: pht000744
       slot_derivations:
         associated_participant:
-          populated_from: phv00071949
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00071949}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
@@ -176,7 +188,7 @@
       populated_from: pht000744
       slot_derivations:
         associated_participant:
-          populated_from: phv00071949
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00071949}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071949}) + ":" + case(({phv00071908} == ''0'', ''FHS ORIGINAL SOE''), ({phv00071908} == ''1'', ''FHS OFFSPRING SOE''), ({phv00071908} == ''2'', ''FHS OFFSPRING NEW SPOUSE SOE''), ({phv00071908} == ''3'', ''FHS GENERATION 3 SOE''), ({phv00071908} == ''7'', ''FHS OMNI 1 SOE''), ({phv00071908} == ''72'', ''FHS OMNI 2 SOE''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
@@ -186,49 +198,31 @@
           populated_from: phv00071929
           value_mappings:
             Maybe PE: UNKNOWN
+        associated_evidence:
+          value: 'Final Diagnostic Summary'
+          range: string
         condition_provenance:
           value: OMOP:4822160
           range: string
-# - class_derivations:
-#     Condition:
-#       populated_from: FHS
-#       slot_derivations:
-#         condition_concept:
-#           value: MONDO:0005279
-#           range: string
-#         condition_status:
-#           populated_from: phv00460989
-#           value_mappings:
-#             '0': ABSENT
-#             '1': PRESENT
-#         condition_provenance:
-#           value: PATIENT_SELF-REPORTED_CONDITION
-#           range: string
-#         associated_evidence:
-#           value: Final Diagnostic Summary
-#           range: string
-#         relationship_to_participant:
-#           value: ONESELF
-#           range: string
-# - class_derivations:
-#     Condition:
-#       populated_from: FHS
-#       slot_derivations:
-#         condition_concept:
-#           value: MONDO:0005279
-#           range: string
-#         condition_status:
-#           populated_from: phv00461919
-#           value_mappings:
-#             '0': ABSENT
-#             '1': PRESENT
-#             '2': UNKNOWN
-#         condition_provenance:
-#           value: PATIENT_SELF-REPORTED_CONDITION
-#           range: string
-#         relationship_to_participant:
-#           value: ONESELF
-#           range: string
+- class_derivations:
+    Condition:
+      populated_from: pht010724
+      slot_derivations:
+        condition_concept:
+          value: MONDO:0005279
+          range: string
+        condition_status:
+          populated_from: phv00461919
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': UNKNOWN
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht006005
@@ -554,47 +548,28 @@
           populated_from: phv00071933
           value_mappings:
             Maybe DVT: UNKNOWN
+        associated_evidence:
+          value: 'Final Diagnostic Summary'
+          range: string
         condition_provenance:
           value: OMOP:4822160
           range: string
-# - class_derivations:
-#     Condition:
-#       populated_from: FHS
-#       slot_derivations:
-#         condition_concept:
-#           value: MONDO:0005399
-#           range: string
-#         condition_status:
-#           populated_from: phv00460988
-#           value_mappings:
-#             '0': ABSENT
-#             '1': PRESENT
-#             '2': UNKNOWN
-#         condition_provenance:
-#           value: PATIENT_SELF-REPORTED_CONDITION
-#           range: string
-#         associated_evidence:
-#           value: Final Diagnostic Summary
-#           range: string
-#         relationship_to_participant:
-#           value: ONESELF
-#           range: string
-# - class_derivations:
-#     Condition:
-#       populated_from: FHS
-#       slot_derivations:
-#         condition_concept:
-#           value: MONDO:0005399
-#           range: string
-#         condition_status:
-#           populated_from: phv00461918
-#           value_mappings:
-#             '0': ABSENT
-#             '1': PRESENT
-#             '2': UNKNOWN
-#         condition_provenance:
-#           value: PATIENT_SELF-REPORTED_CONDITION
-#           range: string
-#         relationship_to_participant:
-#           value: ONESELF
-#           range: string
+- class_derivations:
+    Condition:
+      populated_from: pht010724
+      slot_derivations:
+        condition_concept:
+          value: MONDO:0005399
+          range: string
+        condition_status:
+          populated_from: phv00461918
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': UNKNOWN
+        condition_provenance:
+          value: PATIENT_SELF-REPORTED_CONDITION
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string

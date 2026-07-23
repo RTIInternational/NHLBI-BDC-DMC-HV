@@ -1,0 +1,54 @@
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001791
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00119266}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119266}) + ":CARDIA YEAR 10")'
+        drug_concept:
+          expr: 'case(({phv00119314} == 2, "RxCUI:7393"))'
+        exposure_provenance:
+          value: PATIENT_SELF_REPORTED_MEDICATION
+          range: string
+        exposure_status:
+          populated_from: phv00119314
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT
+- class_derivations:
+    DrugExposure:
+      populated_from: pht001825
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120326}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120326}) + ":CARDIA YEAR 15")'
+        drug_concept:
+          expr: 'case(({phv00120338} == 2, "RxCUI:7393"))'
+        exposure_provenance:
+          value: PATIENT_SELF_REPORTED_MEDICATION
+          range: string
+        exposure_status:
+          populated_from: phv00120338
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT
+- class_derivations:
+    DrugExposure:
+      populated_from: pht003298
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190551}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190551}) + ":CARDIA YEAR 20")'
+        drug_concept:
+          expr: 'case(({phv00190573} == 1, "ATC:C10A"))'
+        exposure_provenance:
+          value: PATIENT_SELF_REPORTED_MEDICATION
+          range: string
+        exposure_status:
+          populated_from: phv00190573
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT

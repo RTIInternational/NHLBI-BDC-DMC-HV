@@ -1,9 +1,13 @@
 - class_derivations:
     Condition:
       populated_from: pht003316
+      joins:
+        pht003099:
+          source_key: phv00190814
+          lookup_key: phv00177926
       slot_derivations:
         associated_participant:
-          populated_from: phv00190814
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190814}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190814}) + ":" + case(({phv00190815} == ''0'', ''FHS ORIGINAL SFS''), ({phv00190815} == ''1'', ''FHS OFFSPRING SFS''), ({phv00190815} == ''2'', ''FHS NEW OFFSPRING SPOUSE SFS''), ({phv00190815} == ''3'', ''FHS GENERATION 3 SFS''), ({phv00190815} == ''7'', ''FHS OMNI 1 SFS''), ({phv00190815} == ''72'', ''FHS OMNI 2 SFS''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
@@ -24,12 +28,14 @@
         relationship_to_participant:
           value: ONESELF
           range: string
+        age_at_condition_start:
+          expr: "case(({phv00190820} == '1', ({pht003099.phv00177930} * 365) + int({phv00190821})))"
 - class_derivations:
     Condition:
       populated_from: pht000009
       slot_derivations:
         associated_participant:
-          populated_from: phv00001035
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00001035}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001035}) + ":FHS ORIGINAL EXAM 1")'
         condition_concept:
@@ -54,7 +60,7 @@
       populated_from: pht005147
       slot_derivations:
         associated_participant:
-          populated_from: phv00255463
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00255463}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00255463}) + ":FHS OFFSPRING EXAM 8")'
         condition_concept:
@@ -77,9 +83,13 @@
 - class_derivations:
     Condition:
       populated_from: pht003316
+      joins:
+        pht003099:
+          source_key: phv00190814
+          lookup_key: phv00177926
       slot_derivations:
         associated_participant:
-          populated_from: phv00190814
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190814}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190814}) + ":" + case(({phv00190815} == ''0'', ''FHS ORIGINAL SFS''), ({phv00190815} == ''1'', ''FHS OFFSPRING SFS''), ({phv00190815} == ''2'', ''FHS NEW OFFSPRING SPOUSE SFS''), ({phv00190815} == ''3'', ''FHS GENERATION 3 SFS''), ({phv00190815} == ''7'', ''FHS OMNI 1 SFS''), ({phv00190815} == ''72'', ''FHS OMNI 2 SFS''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
@@ -99,12 +109,18 @@
         relationship_to_participant:
           value: ONESELF
           range: string
+        age_at_condition_start:
+          expr: "case(({phv00190817} == '1', ({pht003099.phv00177930} * 365) + int({phv00190823})))"
 - class_derivations:
     Condition:
       populated_from: pht003316
+      joins:
+        pht003099:
+          source_key: phv00190814
+          lookup_key: phv00177926
       slot_derivations:
         associated_participant:
-          populated_from: phv00190814
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190814}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190814}) + ":" + case(({phv00190815} == ''0'', ''FHS ORIGINAL SFS''), ({phv00190815} == ''1'', ''FHS OFFSPRING SFS''), ({phv00190815} == ''2'', ''FHS NEW OFFSPRING SPOUSE SFS''), ({phv00190815} == ''3'', ''FHS GENERATION 3 SFS''), ({phv00190815} == ''7'', ''FHS OMNI 1 SFS''), ({phv00190815} == ''72'', ''FHS OMNI 2 SFS''), (True, ''FHS UNKNOWN VISIT'')))'
         condition_concept:
@@ -124,3 +140,5 @@
         relationship_to_participant:
           value: ONESELF
           range: string
+        age_at_condition_start:
+          expr: "case(({phv00190816} == '1', ({pht003099.phv00177930} * 365) + int({phv00190822})))"

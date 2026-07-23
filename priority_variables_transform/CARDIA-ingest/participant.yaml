@@ -8,3 +8,23 @@
           value: 'Coronary Artery Risk Development in Young Adults (CARDIA) Study - Cohort'
         associated_person:
           expr: 'uuid5("https://w3id.org/bdchm/Person", str({dbGaP_Subject_ID}))'
+- class_derivations:
+    Participant:
+      populated_from: pht003298
+      slot_derivations:
+        identity:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190551}) + ":CARDIA")'
+        member_of_research_study:
+          value: 'Coronary Artery Risk Development in Young Adults (CARDIA) Study - Cohort'
+        associated_person:
+          expr: 'uuid5("https://w3id.org/bdchm/Person", str({dbGaP_Subject_ID}))'
+- class_derivations:
+    Participant:
+      populated_from: pht001999
+      slot_derivations:
+        identity:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00129484}) + ":CARDIA")'
+        member_of_research_study:
+          value: 'Coronary Artery Risk Development in Young Adults (CARDIA) Study - Cohort'
+        associated_person:
+          expr: 'uuid5("https://w3id.org/bdchm/Person", str({dbGaP_Subject_ID}))'

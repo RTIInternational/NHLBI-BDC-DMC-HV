@@ -3,7 +3,7 @@
       populated_from: pht002072
       slot_derivations:
         associated_participant:
-          populated_from: phv00141869
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00141869}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00141869}) + ":FHS OFFSPRING EXAM 6")'
         age_at_observation:
@@ -11,6 +11,8 @@
         observation_type:
           value: OMOP:8842
           range: string
+        method_type:
+          value: 'immunoassay'
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -20,7 +22,7 @@
                   value_decimal:
                     expr: 'case(
                              ({phv00141866} >= 0.79, ({phv00141866} / 1000)),
-                             ({phv00141868} == 1, "LLOD"), 
+                             ({phv00141868} == 1, None), 
                              (True, {phv00141866} / 1000)
                           )'
                   unit:
@@ -43,12 +45,14 @@
       populated_from: pht006018
       slot_derivations:
         associated_participant:
-          populated_from: phv00276803
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00276803}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276803}) + ":" + case(({phv00276845} == ''0'', ''FHS ORIGINAL CHF''), ({phv00276845} == ''1'', ''FHS OFFSPRING CHF''), ({phv00276845} == ''2'', ''FHS NEW OFFSPRING CHF''), ({phv00276845} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00276845} == ''7'', ''FHS OMNI 1 CHF''), ({phv00276845} == ''72'', ''FHS OMNI 2 CHF''), (True, ''FHS UNKNOWN VISIT'')))'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276803}) + ":" + case(({phv00276845} == ''0'', ''FHS ORIGINAL CHF''), ({phv00276845} == ''1'', ''FHS OFFSPRING CHF''), ({phv00276845} == ''2'', ''FHS NEW OFFSPRING SPOUSE CHF''), ({phv00276845} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00276845} == ''7'', ''FHS OMNI 1 CHF''), ({phv00276845} == ''72'', ''FHS OMNI 2 CHF''), (True, ''FHS UNKNOWN VISIT'')))'
         observation_type:
           value: OMOP:8842
           range: string
+        method_type:
+          value: 'blood assay'
         value_quantity:
           object_derivations:
           - class_derivations:

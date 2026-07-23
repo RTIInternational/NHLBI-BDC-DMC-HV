@@ -1,0 +1,186 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003298
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190551}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190551}) + ":CARDIA YEAR 20")'
+        age_at_observation:
+          expr: "None if str({phv00190622}) == 'M' else float({phv00190622}) * 365"
+        observation_type:
+          value: OMOP:42872742
+        method_type:
+          value: "computed tomography"
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht003298
+                slot_derivations:
+                  value_decimal:
+                    expr: "None if str({phv00190613}) == 'M' else float({phv00190613})"
+                  unit:
+                    value: "{score}"
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001754
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00118009}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00118009}) + ":CARDIA YEAR 10")'
+        observation_type:
+          value: OMOP:42872742
+        method_type:
+          value: "computed tomography"
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001754
+                slot_derivations:
+                  value_decimal:
+                    expr: "None if str({phv00118019}) == 'M' else float({phv00118019})"
+                  unit:
+                    value: "{score}"
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001854
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120763}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120763}) + ":CARDIA YEAR 15")'
+        observation_type:
+          value: OMOP:42872742
+        method_type:
+          value: "computed tomography"
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001854
+                slot_derivations:
+                  value_decimal:
+                    expr: "None if str({phv00120784}) == 'M' else float({phv00120784})"
+                  unit:
+                    value: "{score}"
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001854
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120763}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120763}) + ":CARDIA YEAR 15")'
+        observation_type:
+          value: OMOP:42872742
+        method_type:
+          value: "computed tomography"
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001854
+                slot_derivations:
+                  value_decimal:
+                    expr: "None if str({phv00120785}) == 'M' else float({phv00120785})"
+                  unit:
+                    value: "{score}"
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001854
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120763}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120763}) + ":CARDIA YEAR 15")'
+        observation_type:
+          value: OMOP:42872742
+        method_type:
+          value: "computed tomography"
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001854
+                slot_derivations:
+                  value_decimal:
+                    expr: "None if str({phv00120786}) == 'M' else float({phv00120786})"
+                  unit:
+                    value: "{score}"
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001854
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120763}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120763}) + ":CARDIA YEAR 15")'
+        observation_type:
+          value: OMOP:42872742
+        method_type:
+          value: "computed tomography"
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001854
+                slot_derivations:
+                  value_decimal:
+                    expr: "None if str({phv00120787}) == 'M' else float({phv00120787})"
+                  unit:
+                    value: "{score}"
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001854
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120763}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120763}) + ":CARDIA YEAR 15")'
+        observation_type:
+          value: OMOP:42872742
+        method_type:
+          value: "computed tomography"
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001854
+                slot_derivations:
+                  value_decimal:
+                    expr: "None if str({phv00120812}) == 'M' else float({phv00120812})"
+                  unit:
+                    value: "{score}"
+                    range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001854
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120763}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120763}) + ":CARDIA YEAR 15")'
+        observation_type:
+          value: OMOP:42872742
+        method_type:
+          value: "computed tomography"
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht001854
+                slot_derivations:
+                  value_decimal:
+                    expr: "None if str({phv00120813}) == 'M' else float({phv00120813})"
+                  unit:
+                    value: "{score}"
+                    range: string

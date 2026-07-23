@@ -1,0 +1,89 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001111
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
+        age_at_observation:
+          expr: '{phv00082639} * 365'
+        observation_type:
+          value: OMOP:45772840
+          range: string
+        method_type:
+          value: "Electrocardiogram"
+          range: string
+        value_enum:
+          populated_from: phv00082702
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': PRESENT
+
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001121
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
+        age_at_observation:
+          expr: '{phv00087071} * 365'
+        observation_type:
+          value: OMOP:45772840
+          range: string
+        method_type:
+          value: "Electrocardiogram"
+          range: string
+        value_enum:
+          populated_from: phv00087149
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '9': UNKNOWN
+
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003086
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
+        age_at_observation:
+          expr: '{phv00174588} * 365'
+        observation_type:
+          value: OMOP:45772840
+          range: string
+        method_type:
+          value: "Electrocardiogram"
+          range: string
+        value_enum:
+          populated_from: phv00174642
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003091
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00176007}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
+        age_at_observation:
+          expr: '{phv00176011} * 365'
+        observation_type:
+          value: OMOP:45772840
+          range: string
+        method_type:
+          value: "Electrocardiogram"
+          range: string
+        value_enum:
+          populated_from: phv00176065
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT

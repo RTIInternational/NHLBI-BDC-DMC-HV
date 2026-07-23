@@ -1,0 +1,265 @@
+  Loaded ARIC: 27,306 PHVs across 351 PHTs
+Found 100 YAML files to validate
+
+======================================================================
+HV-Lint Phase 3 Results
+======================================================================
+Files checked:  100
+Blocks checked: 1121
+Findings:       None - all checks passed!
+  Loaded ARIC: 27,987 PHVs (6,605 coded)
+Found 100 YAML files to validate
+Enabled checks: 3.10, 3.12, 3.13, 3.14, 3.15, 3.16, 3.9
+
+======================================================================
+HV-Lint Phase 3: Semantic Validation Results
+======================================================================
+Files checked:  100
+Blocks checked: 1121
+Findings:       53 ERROR, 47 WARNING, 62 INFO
+
+----------------------------------------------------------------------
+
+ARIC-ingest/afib.yaml:
+  INFO   block  14  [3.9] value_mappings on Condition.condition_status (phv00507818) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+  ERROR  block  15  [3.15] value_mappings on Condition.condition_status (phv00516826) has code '0' which does not exist in dbGaP coded values for INCSELFREPAF51 ù possible typo or cross-cohort copy-paste error. Valid codes: ['1', 'T']
+  INFO   block  15  [3.9] value_mappings on Condition.condition_status (phv00516826) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+  ERROR  block  16  [3.15] value_mappings on Condition.condition_status (phv00516895) has code '0' which does not exist in dbGaP coded values for INCSELFREPAF61 ù possible typo or cross-cohort copy-paste error. Valid codes: ['1', 'T']
+  INFO   block  16  [3.9] value_mappings on Condition.condition_status (phv00516895) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+
+ARIC-ingest/asthma.yaml:
+  INFO   block   8  [3.9] value_mappings on Condition.condition_status (phv00507815) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+  ERROR  block   9  [3.15] value_mappings on Condition.condition_status (phv00516823) has code '0' which does not exist in dbGaP coded values for INCSELFREPAST51 ù possible typo or cross-cohort copy-paste error. Valid codes: ['1', 'T']
+  INFO   block   9  [3.9] value_mappings on Condition.condition_status (phv00516823) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+  ERROR  block  10  [3.15] value_mappings on Condition.condition_status (phv00516892) has code '0' which does not exist in dbGaP coded values for INCSELFREPAST61 ù possible typo or cross-cohort copy-paste error. Valid codes: ['1', 'T']
+  INFO   block  10  [3.9] value_mappings on Condition.condition_status (phv00516892) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+
+ARIC-ingest/carotid_plaque.yaml:
+  ERROR  block   2  [3.15] value_mappings on Condition.condition_status (phv00204777) has code 'T' which does not exist in dbGaP coded values for INTPLQ01 ù possible typo or cross-cohort copy-paste error. Valid codes: ['0', '1']
+  ERROR  block   3  [3.15] value_mappings on Condition.condition_status (phv00204778) has code '2' which does not exist in dbGaP coded values for COMPLQ01 ù possible typo or cross-cohort copy-paste error. Valid codes: ['0', '1']
+  ERROR  block   3  [3.15] value_mappings on Condition.condition_status (phv00204778) has code '3' which does not exist in dbGaP coded values for COMPLQ01 ù possible typo or cross-cohort copy-paste error. Valid codes: ['0', '1']
+  ERROR  block   3  [3.15] value_mappings on Condition.condition_status (phv00204778) has code '4' which does not exist in dbGaP coded values for COMPLQ01 ù possible typo or cross-cohort copy-paste error. Valid codes: ['0', '1']
+  ERROR  block   3  [3.15] value_mappings on Condition.condition_status (phv00204778) has code 'T' which does not exist in dbGaP coded values for COMPLQ01 ù possible typo or cross-cohort copy-paste error. Valid codes: ['0', '1']
+  ERROR  block   3  [3.9] value_mappings on Condition.condition_status (phv00204778) missing dbGaP code '0' ("Plaque") ù possible data loss
+  ERROR  block   4  [3.15] value_mappings on Condition.condition_status (phv00204779) has code 'T' which does not exist in dbGaP coded values for LCOMPS01 ù possible typo or cross-cohort copy-paste error. Valid codes: ['1', '2', '3', '4']
+  ERROR  block   5  [3.15] value_mappings on Condition.condition_status (phv00204780) has code 'T' which does not exist in dbGaP coded values for RCOMPS01 ù possible typo or cross-cohort copy-paste error. Valid codes: ['1', '2', '3', '4']
+  ERROR  block   6  [3.15] value_mappings on Condition.condition_status (phv00204781) has code 'T' which does not exist in dbGaP coded values for LBIFPS01 ù possible typo or cross-cohort copy-paste error. Valid codes: ['1', '2', '3', '4']
+  ERROR  block   7  [3.15] value_mappings on Condition.condition_status (phv00204782) has code 'T' which does not exist in dbGaP coded values for RBIFPS01 ù possible typo or cross-cohort copy-paste error. Valid codes: ['1', '2', '3', '4']
+  ERROR  block   8  [3.15] value_mappings on Condition.condition_status (phv00204783) has code 'T' which does not exist in dbGaP coded values for RINTPS01 ù possible typo or cross-cohort copy-paste error. Valid codes: ['1', '2', '3', '4']
+  ERROR  block   9  [3.15] value_mappings on Condition.condition_status (phv00204784) has code 'T' which does not exist in dbGaP coded values for LINTPS01 ù possible typo or cross-cohort copy-paste error. Valid codes: ['1', '2', '3', '4']
+  ERROR  block  10  [3.15] value_mappings on Condition.condition_status (phv00204787) has code 'T' which does not exist in dbGaP coded values for INTPS01 ù possible typo or cross-cohort copy-paste error. Valid codes: ['1', '2', '3', '4']
+  ERROR  block  11  [3.15] value_mappings on Condition.condition_status (phv00204788) has code 'T' which does not exist in dbGaP coded values for LPLQSD01 ù possible typo or cross-cohort copy-paste error. Valid codes: ['1', '2', '3', '4']
+  ERROR  block  12  [3.15] value_mappings on Condition.condition_status (phv00204789) has code 'T' which does not exist in dbGaP coded values for RPLQSD01 ù possible typo or cross-cohort copy-paste error. Valid codes: ['1', '2', '3', '4']
+  ERROR  block  15  [3.9] value_mappings on Condition.condition_status (phv00204792) missing dbGaP code '.' ("Else if not equal to 0 or not equal to 1") ù possible data loss
+  INFO   block  31  [3.9] value_mappings on Condition.condition_status (phv00512002) missing dbGaP code '.' ("Missing") ù likely intentional skip
+  INFO   block  32  [3.9] value_mappings on Condition.condition_status (phv00512003) missing dbGaP code '.' ("Missing") ù likely intentional skip
+  INFO   block  33  [3.9] value_mappings on Condition.condition_status (phv00512004) missing dbGaP code '.' ("Missing") ù likely intentional skip
+  INFO   block  34  [3.9] value_mappings on Condition.condition_status (phv00512006) missing dbGaP code '.' ("Missing") ù likely intentional skip
+  INFO   block  35  [3.9] value_mappings on Condition.condition_status (phv00512008) missing dbGaP code '.' ("Missing") ù likely intentional skip
+  INFO   block  36  [3.9] value_mappings on Condition.condition_status (phv00512009) missing dbGaP code '.' ("Missing") ù likely intentional skip
+  INFO   block  37  [3.9] value_mappings on Condition.condition_status (phv00512010) missing dbGaP code '.' ("Missing") ù likely intentional skip
+  INFO   block  38  [3.9] value_mappings on Condition.condition_status (phv00512014) missing dbGaP code '.' ("Missing") ù likely intentional skip
+  INFO   block  39  [3.9] value_mappings on Condition.condition_status (phv00512015) missing dbGaP code '.' ("Missing") ù likely intentional skip
+  INFO   block  40  [3.9] value_mappings on Condition.condition_status (phv00512016) missing dbGaP code '.' ("Missing") ù likely intentional skip
+
+ARIC-ingest/cause_of_death.yaml:
+  WARNI  block  16  [3.9] value_mappings on Person.vital_status (phv00203900) missing dbGaP code 'N' ("No") ù possible data loss
+  WARNI  block  17  [3.9] value_mappings on Person.vital_status (phv00204451) missing dbGaP code 'A' ("Alive") ù possible data loss
+  WARNI  block  18  [3.9] value_mappings on Person.vital_status (phv00506881) missing dbGaP code '0' ("Alive") ù possible data loss
+
+ARIC-ingest/cig_smok.yaml:
+  INFO   block   4  [3.9] value_mappings on Observation.value_enum (phv00204859) missing dbGaP code '.' ("No responses or contradictory answers") ù likely intentional skip
+  INFO   block   5  [3.9] value_mappings on Observation.value_enum (phv00206780) missing dbGaP code 'N' ("No/ Not Recorded") ù likely intentional skip
+  INFO   block  11  [3.9] value_mappings on Observation.value_enum (phv00511992) missing dbGaP code '.' ("No responses or contradictory answers") ù likely intentional skip
+
+ARIC-ingest/demography.yaml:
+  ERROR  block   0  [3.15] value_mappings on Demography.race (phv00204215) has code 'N' which does not exist in dbGaP coded values for HRAZ09 ù possible typo or cross-cohort copy-paste error. Valid codes: ['A', 'B', 'I', 'O', 'U', 'W']
+  ERROR  block   0  [3.9] value_mappings on Demography.race (phv00204215) missing dbGaP code 'A' ("Asian/Pacific Islander") ù possible data loss
+  INFO   block   0  [3.9] value_mappings on Demography.race (phv00204215) missing dbGaP code 'I' ("American Indian/ Native Alaskan") ù likely intentional skip
+  ERROR  block   0  [3.9] value_mappings on Demography.race (phv00204215) missing dbGaP code 'O' ("Other") ù possible data loss
+  INFO   block   0  [3.9] value_mappings on Demography.race (phv00204215) missing dbGaP code 'U' ("Unknown/not recorded") ù likely intentional skip
+  ERROR  block   0  [3.9] value_mappings on Demography.race (phv00204215) missing dbGaP code 'W' ("White/Caucasian") ù possible data loss
+  ERROR  block   2  [3.9] value_mappings on Demography.race (phv00204710) missing dbGaP code 'A' ("Asian") ù possible data loss
+  ERROR  block   2  [3.9] value_mappings on Demography.race (phv00204710) missing dbGaP code 'I' ("American Indian or Alaskan Indian") ù possible data loss
+  INFO   block   4  [3.9] value_mappings on Demography.race (phv00296578) missing dbGaP code 'H' ("Native Hawaiian or Other Pacific Islander") ù likely intentional skip
+  INFO   block   4  [3.9] value_mappings on Demography.race (phv00296578) missing dbGaP code 'I' ("American Indian/Native Alaskan") ù likely intentional skip
+  ERROR  block   4  [3.9] value_mappings on Demography.race (phv00296578) missing dbGaP code 'O' ("Other") ù possible data loss
+  ERROR  block   4  [3.9] value_mappings on Demography.race (phv00296578) missing dbGaP code 'S' ("Asian") ù possible data loss
+  INFO   block   4  [3.9] value_mappings on Demography.race (phv00296578) missing dbGaP code 'U' ("Unknown/not recorded") ù likely intentional skip
+  ERROR  block   8  [3.9] value_mappings on Demography.race (phv00511017) missing dbGaP code 'N' ("Otherwise") ù possible data loss
+  ERROR  block   9  [3.9] value_mappings on Demography.race (phv00511026) missing dbGaP code 'H' ("Hispanic") ù possible data loss
+  WARNI  block   9  [3.9] value_mappings on Demography.ethnicity (phv00511026) missing dbGaP code 'A' ("Asian") ù possible data loss
+  WARNI  block   9  [3.9] value_mappings on Demography.ethnicity (phv00511026) missing dbGaP code 'B' ("Black") ù possible data loss
+  WARNI  block   9  [3.9] value_mappings on Demography.ethnicity (phv00511026) missing dbGaP code 'C' ("Caucasian") ù possible data loss
+
+ARIC-ingest/diabetes.yaml:
+  INFO   block   4  [3.9] value_mappings on Condition.condition_status (phv00204752) missing dbGaP code 'T' ("Diabetes=Missing") ù likely intentional skip
+  INFO   block   5  [3.9] value_mappings on Condition.condition_status (phv00204753) missing dbGaP code 'T' ("Diabetes=Missing") ù likely intentional skip
+  INFO   block   6  [3.9] value_mappings on Condition.condition_status (phv00204898) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+  INFO   block   7  [3.9] value_mappings on Condition.condition_status (phv00204899) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+  ERROR  block  14  [3.15] value_mappings on Condition.condition_status (phv00209161) has code 'U' which does not exist in dbGaP coded values for REXB2A ù possible typo or cross-cohort copy-paste error. Valid codes: ['N', 'Y']
+  INFO   block  22  [3.9] value_mappings on Condition.condition_status (phv00507813) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+  INFO   block  24  [3.9] value_mappings on Condition.condition_status (phv00511978) missing dbGaP code '.' ("Missing") ù likely intentional skip
+  INFO   block  25  [3.9] value_mappings on Condition.condition_status (phv00511979) missing dbGaP code '.' ("Missing") ù likely intentional skip
+  ERROR  block  29  [3.15] value_mappings on Condition.condition_status (phv00512095) has code 'T' which does not exist in dbGaP coded values for DIABTS57 ù possible typo or cross-cohort copy-paste error. Valid codes: ['0', '1']
+  ERROR  block  34  [3.15] value_mappings on Condition.condition_status (phv00516821) has code '0' which does not exist in dbGaP coded values for INCSELFREPDM51 ù possible typo or cross-cohort copy-paste error. Valid codes: ['1', 'T']
+  INFO   block  34  [3.9] value_mappings on Condition.condition_status (phv00516821) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+  ERROR  block  35  [3.15] value_mappings on Condition.condition_status (phv00516890) has code '0' which does not exist in dbGaP coded values for INCSELFREPDM61 ù possible typo or cross-cohort copy-paste error. Valid codes: ['1', 'T']
+  INFO   block  35  [3.9] value_mappings on Condition.condition_status (phv00516890) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+
+ARIC-ingest/fast_gluc_bld.yaml:
+  WARNI  block   2  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+  WARNI  block   3  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+  WARNI  block   4  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+  WARNI  block   5  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+
+ARIC-ingest/glucose_bld.yaml:
+  WARNI  block  10  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+  WARNI  block  11  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+
+ARIC-ingest/hdl.yaml:
+  WARNI  block  11  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+  WARNI  block  12  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+  WARNI  block  13  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+  WARNI  block  14  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+  WARNI  block  15  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+  WARNI  block  16  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+
+ARIC-ingest/hist_cor_angio.yaml:
+  WARNI  block   4  [3.15] value_mappings on Procedure.procedure_status (phv00207215) has code 'U' which does not exist in dbGaP coded values for HHXD7A ù possible typo or cross-cohort copy-paste error. Valid codes: ['N', 'Y']
+  WARNI  block   5  [3.15] value_mappings on Procedure.procedure_status (phv00208853) has code 'T' which does not exist in dbGaP coded values for PHEA08 ù possible typo or cross-cohort copy-paste error. Valid codes: ['N', 'Y']
+  WARNI  block   6  [3.15] value_mappings on Procedure.procedure_status (phv00208854) has code 'T' which does not exist in dbGaP coded values for PHEA09A ù possible typo or cross-cohort copy-paste error. Valid codes: ['N', 'Y']
+
+ARIC-ingest/hist_cor_bypg.yaml:
+  WARNI  block   6  [3.15] value_mappings on Procedure.procedure_status (phv00207208) has code 'U' which does not exist in dbGaP coded values for HHXD5A ù possible typo or cross-cohort copy-paste error. Valid codes: ['N', 'Y']
+  WARNI  block   7  [3.12] Procedure.procedure_status: phv00208846 (PHEA07A) description "[Invasive procedures]. Have you ever had surgery on your heart, or on the arteri" contains domain keyword(s) ['neck'] ù conflicts with file domain ['coronary']
+  WARNI  block   7  [3.15] value_mappings on Procedure.procedure_status (phv00208846) has code 'T' which does not exist in dbGaP coded values for PHEA07A ù possible typo or cross-cohort copy-paste error. Valid codes: ['N', 'Y']
+  WARNI  block   9  [3.15] value_mappings on Procedure.procedure_status (phv00294685) has code 'U' which does not exist in dbGaP coded values for AFUcomp13a_G ù possible typo or cross-cohort copy-paste error. Valid codes: ['N', 'Y']
+
+ARIC-ingest/hist_cvd.yaml:
+  INFO   block   0  [3.9] value_mappings on Condition.condition_status (phv00203904) missing dbGaP code 'U' ("Unknown") ù likely intentional skip
+  INFO   block  11  [3.9] value_mappings on Condition.condition_status (phv00511958) missing dbGaP code '.' ("Missing") ù likely intentional skip
+  INFO   block  15  [3.9] value_mappings on Condition.condition_status (phv00512028) missing dbGaP code '.' ("Missing") ù likely intentional skip
+
+ARIC-ingest/hist_hrtdis.yaml:
+  INFO   block  10  [3.9] value_mappings on Condition.condition_status (phv00204834) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+  INFO   block  20  [3.9] value_mappings on Condition.condition_status (phv00511958) missing dbGaP code '.' ("Missing") ù likely intentional skip
+  INFO   block  20  [3.9] value_mappings on Condition.condition_status (phv00511958) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+  INFO   block  21  [3.9] value_mappings on Condition.condition_status (phv00512028) missing dbGaP code '.' ("Missing") ù likely intentional skip
+
+ARIC-ingest/hist_hrtfail.yaml:
+  ERROR  block   0  [3.15] value_mappings on Condition.condition_status (phv00204697) has code 'N' which does not exist in dbGaP coded values for PREVHF01 ù possible typo or cross-cohort copy-paste error. Valid codes: ['0', '1']
+  ERROR  block   0  [3.15] value_mappings on Condition.condition_status (phv00204697) has code 'U' which does not exist in dbGaP coded values for PREVHF01 ù possible typo or cross-cohort copy-paste error. Valid codes: ['0', '1']
+  ERROR  block   0  [3.15] value_mappings on Condition.condition_status (phv00204697) has code 'Y' which does not exist in dbGaP coded values for PREVHF01 ù possible typo or cross-cohort copy-paste error. Valid codes: ['0', '1']
+  ERROR  block   0  [3.9] value_mappings on Condition.condition_status (phv00204697) missing dbGaP code '0' ("No") ù possible data loss
+  ERROR  block   0  [3.9] value_mappings on Condition.condition_status (phv00204697) missing dbGaP code '1' ("Yes") ù possible data loss
+  ERROR  block   5  [3.15] value_mappings on Condition.condition_status (phv00419913) has code 'U' which does not exist in dbGaP coded values for MCU6 ù possible typo or cross-cohort copy-paste error. Valid codes: ['N', 'Y']
+  INFO   block  10  [3.9] value_mappings on Condition.condition_status (phv00507817) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+  INFO   block  19  [3.9] value_mappings on Condition.condition_status (phv00516825) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+  INFO   block  20  [3.9] value_mappings on Condition.condition_status (phv00516894) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+
+ARIC-ingest/hist_my_inf.yaml:
+  ERROR  block  30  [3.15] value_mappings on Condition.condition_status (phv00507335) has code 'M' which does not exist in dbGaP coded values for MDDXMI72 ù possible typo or cross-cohort copy-paste error. Valid codes: ['0', '1']
+  ERROR  block  34  [3.15] value_mappings on Condition.condition_status (phv00511964) has code 'M' which does not exist in dbGaP coded values for ECGMI41 ù possible typo or cross-cohort copy-paste error. Valid codes: ['0', '1', 'T']
+  INFO   block  34  [3.9] value_mappings on Condition.condition_status (phv00511964) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+  ERROR  block  35  [3.15] value_mappings on Condition.condition_status (phv00512072) has code 'M' which does not exist in dbGaP coded values for MDDXMI52 ù possible typo or cross-cohort copy-paste error. Valid codes: ['0', '1', 'T']
+  INFO   block  35  [3.9] value_mappings on Condition.condition_status (phv00512072) missing dbGaP code 'T' ("missing") ù likely intentional skip
+  ERROR  block  37  [3.15] value_mappings on Condition.condition_status (phv00512122) has code 'M' which does not exist in dbGaP coded values for HXOFMI52 ù possible typo or cross-cohort copy-paste error. Valid codes: ['0', '1', 'T']
+  INFO   block  37  [3.9] value_mappings on Condition.condition_status (phv00512122) missing dbGaP code 'T' ("missing") ù likely intentional skip
+
+ARIC-ingest/hrtrt.yaml:
+  WARNI  block   0  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+  WARNI  block   1  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+
+ARIC-ingest/hypertension.yaml:
+  INFO   block  15  [3.9] value_mappings on Condition.condition_status (phv00507812) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+  INFO   block  16  [3.9] value_mappings on Condition.condition_status (phv00511966) missing dbGaP code '.' ("Missing") ù likely intentional skip
+  INFO   block  17  [3.9] value_mappings on Condition.condition_status (phv00511967) missing dbGaP code '.' ("Missing") ù likely intentional skip
+  INFO   block  18  [3.9] value_mappings on Condition.condition_status (phv00511968) missing dbGaP code '.' ("Missing") ù likely intentional skip
+  ERROR  block  20  [3.15] value_mappings on Condition.condition_status (phv00516820) has code '0' which does not exist in dbGaP coded values for INCSELFREPHBP51 ù possible typo or cross-cohort copy-paste error. Valid codes: ['1', 'T']
+  INFO   block  20  [3.9] value_mappings on Condition.condition_status (phv00516820) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+  ERROR  block  21  [3.15] value_mappings on Condition.condition_status (phv00516889) has code '0' which does not exist in dbGaP coded values for INCSELFREPHBP61 ù possible typo or cross-cohort copy-paste error. Valid codes: ['1', 'T']
+  INFO   block  21  [3.9] value_mappings on Condition.condition_status (phv00516889) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+
+ARIC-ingest/insulin_blood.yaml:
+  WARNI  block   0  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+  WARNI  block   1  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+
+ARIC-ingest/pad.yaml:
+  ERROR  block   7  [3.15] value_mappings on Condition.condition_status (phv00202871) has code 'S' which does not exist in dbGaP coded values for incpad4 ù possible typo or cross-cohort copy-paste error. Valid codes: ['0', '1']
+  ERROR  block   9  [3.15] value_mappings on Condition.condition_status (phv00204796) has code '0' which does not exist in dbGaP coded values for PAD01 ù possible typo or cross-cohort copy-paste error. Valid codes: ['.']
+  ERROR  block   9  [3.15] value_mappings on Condition.condition_status (phv00204796) has code '1' which does not exist in dbGaP coded values for PAD01 ù possible typo or cross-cohort copy-paste error. Valid codes: ['.']
+  ERROR  block   9  [3.9] value_mappings on Condition.condition_status (phv00204796) missing dbGaP code '.' ("Otherwise: PAD01 not equal to 1, PAD01 not equal to 2") ù possible data loss
+  INFO   block  13  [3.9] value_mappings on Condition.condition_status (phv00512021) missing dbGaP code '.' ("Missing") ù likely intentional skip
+  INFO   block  14  [3.9] value_mappings on Condition.condition_status (phv00512022) missing dbGaP code '.' ("Missing") ù likely intentional skip
+  INFO   block  15  [3.9] value_mappings on Condition.condition_status (phv00512026) missing dbGaP code '.' ("Missing") ù likely intentional skip
+  ERROR  block  16  [3.15] value_mappings on Condition.condition_status (phv00512027) has code 'S' which does not exist in dbGaP coded values for INCPAD ù possible typo or cross-cohort copy-paste error. Valid codes: ['.', '0', '1']
+  INFO   block  16  [3.9] value_mappings on Condition.condition_status (phv00512027) missing dbGaP code '.' ("Missing") ù likely intentional skip
+
+ARIC-ingest/stroke.yaml:
+  WARNI  block  18  [3.12] Condition.associated_participant: phv00207055 (SUBJECT_ID) description "De-identified ARIC subject ID [Heart Failure Hospital Record Abstraction Form, H" contains domain keyword(s) ['heart'] ù conflicts with file domain ['cerebrovascular']
+  WARNI  block  18  [3.12] Condition.associated_visit: phv00207055 (SUBJECT_ID) description "De-identified ARIC subject ID [Heart Failure Hospital Record Abstraction Form, H" contains domain keyword(s) ['heart'] ù conflicts with file domain ['cerebrovascular']
+  WARNI  block  18  [3.12] Condition.condition_status: phv00206814 (HFAA14A) description "Section 3: Medical History. Neurology: Stroke/TIA [Heart Failure Hospital Record" contains domain keyword(s) ['heart'] ù conflicts with file domain ['cerebrovascular']
+  WARNI  block  19  [3.12] Condition.associated_participant: phv00207055 (SUBJECT_ID) description "De-identified ARIC subject ID [Heart Failure Hospital Record Abstraction Form, H" contains domain keyword(s) ['heart'] ù conflicts with file domain ['cerebrovascular']
+  WARNI  block  19  [3.12] Condition.associated_visit: phv00207055 (SUBJECT_ID) description "De-identified ARIC subject ID [Heart Failure Hospital Record Abstraction Form, H" contains domain keyword(s) ['heart'] ù conflicts with file domain ['cerebrovascular']
+  WARNI  block  19  [3.12] Condition.condition_status: phv00206998 (HFAA75) description "Q75 - Stroke [Heart Failure Hospital Record Abstraction Form, HFA]" contains domain keyword(s) ['heart'] ù conflicts with file domain ['cerebrovascular']
+  WARNI  block  20  [3.12] Condition.associated_participant: phv00207055 (SUBJECT_ID) description "De-identified ARIC subject ID [Heart Failure Hospital Record Abstraction Form, H" contains domain keyword(s) ['heart'] ù conflicts with file domain ['cerebrovascular']
+  WARNI  block  20  [3.12] Condition.associated_visit: phv00207055 (SUBJECT_ID) description "De-identified ARIC subject ID [Heart Failure Hospital Record Abstraction Form, H" contains domain keyword(s) ['heart'] ù conflicts with file domain ['cerebrovascular']
+  WARNI  block  20  [3.12] Condition.condition_status: phv00207025 (HFAA16Q) description "Section 3: Medical History. HFA16q. Precipitating fact: Stroke/TIA [Heart Failur" contains domain keyword(s) ['heart'] ù conflicts with file domain ['cerebrovascular']
+  ERROR  block  33  [3.15] value_mappings on Condition.condition_status (phv00210410) has code 'Y' which does not exist in dbGaP coded values for STIA01 ù possible typo or cross-cohort copy-paste error. Valid codes: ['M', 'N']
+  ERROR  block  73  [3.15] value_mappings on Condition.condition_status (phv00294651) has code 'U' which does not exist in dbGaP coded values for AFUcomp29_A ù possible typo or cross-cohort copy-paste error. Valid codes: ['N', 'Y']
+  INFO   block  82  [3.9] value_mappings on Condition.condition_status (phv00507338) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+  INFO   block  86  [3.9] value_mappings on Condition.condition_status (phv00512029) missing dbGaP code '.' ("Missing") ù likely intentional skip
+  INFO   block  89  [3.9] value_mappings on Condition.condition_status (phv00512290) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+  INFO   block  90  [3.9] value_mappings on Condition.condition_status (phv00512397) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+  INFO   block  92  [3.9] value_mappings on Condition.condition_status (phv00516827) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+  INFO   block  93  [3.9] value_mappings on Condition.condition_status (phv00516896) missing dbGaP code 'T' ("Missing") ù likely intentional skip
+
+ARIC-ingest/tot_chol_bld.yaml:
+  WARNI  block  11  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+  WARNI  block  12  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+  WARNI  block  13  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+
+ARIC-ingest/triglyc_bld.yaml:
+  WARNI  block   6  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+  WARNI  block   7  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+  WARNI  block   8  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+  WARNI  block   9  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+  WARNI  block  10  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+  WARNI  block  11  [3.16] Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit slot ù Quantity without unit is semantically incomplete
+
+FAILED: 53 findings at or above 'error'
+  OMOP concept lookup: 3,467,592 concepts (Athena extract)
+  Loaded ARIC: 27,987 PHVs
+Found 100 YAML files to validate
+
+======================================================================
+HV-Lint Check 3.11: value_mappings Label <-> OMOP Alignment
+======================================================================
+Files checked:  100
+Blocks checked: 1121
+Findings:       None ù all value_mappings semantically consistent
+
+======================================================================
+Phase 3 ù dbGaP Cross-Reference (3.1û3.5)
+======================================================================
+
+
+======================================================================
+Phase 3 ù Semantic Validation (3.9, 3.10, 3.12û3.16)
+======================================================================
+
+
+======================================================================
+Phase 3 ù Value Semantic Alignment (3.11)
+======================================================================
+
+
+======================================================================
+Phase 3 Manager: Summary
+======================================================================
+  dbGaP Cross-Reference (3.1û3.5)................... PASSED
+  Semantic Validation (3.9, 3.10, 3.12û3.16)........ FAILED
+  Value Semantic Alignment (3.11)................... PASSED
+
+1 component(s) failed.

@@ -131,6 +131,8 @@
             '1': PRESENT
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -151,7 +153,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: CLINICAL_DIAGNOSIS
         associated_evidence:
           value: "adjudicated event"
         relationship_to_participant:
