@@ -43,9 +43,16 @@ sheet, re-download the S1 tab first, then re-run the build script.
 
 ## The review sheet
 
-`hv_dataqc/extract_harmonized/config/TableS1_review.tsv` (generated; see the
-build script archived with the session). S1 + adjacent `var_name` / `status` /
-`note` columns so one sheet carries everything for Anne:
+`hv_dataqc/extract_harmonized/config/TableS1_review.xlsx` (generated; see the
+build script archived with the session). Emitted as `.xlsx`, not `.tsv`: xlsx
+is UTF-8 native (a TSV re-import guessed Windows-1252 and mangled em-dashes and
+the Greek letters in Anne's IL-1β / 8-epi-PGF2α descriptions), and it carries
+formatting so the sheet drops in looking like S1 without manual re-styling
+(bold frozen header, wrapped note/description columns, review rows peach-filled,
+ignore rows green-filled). The Ontology CURIE column is left unstyled — S1's own
+yellow cells are Anne's annotation of the newly-added OBA codes and reapply on
+paste-back. S1 + adjacent `var_name` / `status` / `note` columns so one sheet
+carries everything for Anne:
 
 Columns: `BDCHM Element, Variable Label, var_name, status, note, Data Type,
 UCUM Unit, Ontology CURIE, OMOP Concept ID, Variable Description`.
