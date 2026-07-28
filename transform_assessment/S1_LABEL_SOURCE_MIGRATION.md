@@ -1,8 +1,18 @@
 # Migrating the label source from `harmonized_vars.tsv` to Table S1
 
-**Status:** review sheet built (2026-07-27); code migration pending Anne's
-feedback on the flagged rows. Do the code changes in a fresh session once the
-review sheet comes back.
+**Status:** review sheet built (2026-07-27); Anne reviewed it (2026-07-28). Do
+the code migration in a fresh session.
+
+**START HERE (next session):** Anne's feedback is IN THE SHEET, not in text.
+Read it from the reviewed workbook she returned — `~/Downloads/Data
+Harmonization Supplementary Data.xlsx`, tab **`Table S1 augmented`** (the tab
+carrying our `var_name` / `status` / `note` columns; header confirmed
+2026-07-28). If a newer download exists, prefer the most recent. The file may
+be open in Excel (a `~$…` lock file alongside it) — read a copy if openpyxl
+balks. Reconcile her decisions on the 12 review rows (6 renamed-label var_name
+confirmations, 4 code mismatches: Basophils / CD40 / Cigarette smoking / IL-18,
+2 stray codes: vege_serving OMOP:37311566 and lympho_ct OBA:VT0000217) and the
+6 ignore rows into the migration below before touching code.
 
 ## Background
 
