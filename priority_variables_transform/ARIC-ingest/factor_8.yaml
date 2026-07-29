@@ -10,19 +10,6 @@
           value: OBA:2041536
         method_type:
           value: "blood assay"
-        # value_quantity was commented out in commit 2a93479f (2026-03-16)
-        # to work around a pre-0.4.0 linkml-map ingest error on a
-        # string-typed multiplication. hv-dataqc report 2026-07-23 showed
-        # OBA:2041536 emitting 14,887 shell rows with n_valid=0 as a result.
-        # Restored 2026-07-23 to mirror the sibling factor_7.yaml block
-        # (OBA:2041535 Factor VII) which uses `populated_from: phv00206651`
-        # (raw) with `unit: "%{normal}"`. phv00206649 (HEMA07 Factor VIII C
-        # value) has calculated_type=integer, n=14,793, min=18, max=540,
-        # mean=131.7 -- consistent with Factor VII (min=17, max=616,
-        # mean=118.9) and stored as raw percent-of-normal. Do NOT re-apply
-        # the previous `* 0.01` scaling: it would incorrectly convert
-        # percent-of-normal to a fraction (0.18-5.40 range), producing
-        # values inconsistent with factor_7.yaml.
         value_quantity:
           object_derivations:
           - class_derivations:
@@ -30,6 +17,6 @@
                 populated_from: pht004098
                 slot_derivations:
                   value_decimal:
-                    populated_from: phv00206649
+                    expr: '{phv00206649} * 0.01'
                   unit:
-                    value: "%{normal}"
+                    value: "[IU]/mL"
