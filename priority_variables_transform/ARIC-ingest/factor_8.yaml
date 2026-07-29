@@ -10,11 +10,13 @@
           value: OBA:2041536
         method_type:
           value: "blood assay"
-#        value_quantity:
-#          object_derivations:
-#          - class_derivations:
-#              Quantity:
-#                populated_from: pht004098
-#                slot_derivations:
-#                  value_decimal:
-#                    expr: "{phv00206649} * 0.01"
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004098
+                slot_derivations:
+                  value_decimal:
+                    expr: '{phv00206649} * 0.01'
+                  unit:
+                    value: "[IU]/mL"
