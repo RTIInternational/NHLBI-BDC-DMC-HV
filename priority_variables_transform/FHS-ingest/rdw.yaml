@@ -14,16 +14,15 @@
         method_type:
           value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002889
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172185
-                  unit:
-                    value: '%'
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht002889
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00172185
+              unit:
+                value: '%'
+                range: string
 
 - class_derivations:
     MeasurementObservation:
@@ -39,13 +38,12 @@
           value: OMOP:37397924
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004802
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00227032
-                  unit:
-                    value: '%'
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht004802
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00227032
+              unit:
+                value: '%'
+                range: string
