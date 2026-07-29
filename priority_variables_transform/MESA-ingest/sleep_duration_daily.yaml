@@ -15,13 +15,12 @@
           value: "questionnaire"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001120
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00087048
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001120
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00087048
+              unit:
+                value: h
+                range: string

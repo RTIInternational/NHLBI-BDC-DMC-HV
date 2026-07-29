@@ -13,12 +13,11 @@
         method_type:
           value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001019
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00079869
-                  unit:
-                    value: "{ratio}"
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001019
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00079869
+              unit:
+                value: "{ratio}"

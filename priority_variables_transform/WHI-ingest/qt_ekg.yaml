@@ -15,12 +15,11 @@
         method_type:
           value: "Electrocardiogram"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002118
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00155366
-                  unit:
-                    value: "ms"
+          class_derivations:
+          - name: Quantity
+            populated_from: pht002118
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00155366
+              unit:
+                value: "ms"

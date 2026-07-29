@@ -7,163 +7,151 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00083440}) + ":MESA AIR SPIROMETRY")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001112
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4176265
-                    range: string
-                  age_at_observation:
-                    expr: '{phv00083452} * 365'
-                  body_position:
-                    value: "SITTING_POSITION"
-                    range: string
-                  method_type:
-                    value: "spirometry"
-                    range: string
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001112
-                          slot_derivations:
-                            value_decimal:
-                              expr: '{phv00083474} / 1000'
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001112
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4241837
-                    range: string
-                  age_at_observation:
-                    expr: '{phv00083452} * 365'
-                  body_position:
-                    value: "SITTING_POSITION"
-                    range: string
-                  method_type:
-                    value: "spirometry"
-                    range: string
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001112
-                          slot_derivations:
-                            value_decimal:
-                              expr: '{phv00083475} / 1000'
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001112
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3011505
-                    range: string
-                  age_at_observation:
-                    expr: '{phv00083452} * 365'
-                  body_position:
-                    value: "SITTING_POSITION"
-                    range: string
-                  method_type:
-                    value: "spirometry"
-                    range: string
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001112
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00083482
-                            unit:
-                              value: '{ratio}'
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001112
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3002094
-                    range: string
-                  age_at_observation:
-                    expr: '{phv00083452} * 365'
-                  body_position:
-                    value: "SITTING_POSITION"
-                    range: string
-                  method_type:
-                    value: "spirometry"
-                    range: string
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001112
-                          slot_derivations:
-                            value_decimal:
-                              expr: '{phv00083605} / 1000'
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001112
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3022891
-                    range: string
-                  age_at_observation:
-                    expr: '{phv00083452} * 365'
-                  body_position:
-                    value: "SITTING_POSITION"
-                    range: string
-                  method_type:
-                    value: "spirometry"
-                    range: string
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001112
-                          slot_derivations:
-                            value_decimal:
-                              expr: '{phv00083604} / 1000'
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001112
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3024594
-                    range: string
-                  age_at_observation:
-                    expr: '{phv00083452} * 365'
-                  body_position:
-                    value: "SITTING_POSITION"
-                    range: string
-                  method_type:
-                    value: "spirometry"
-                    range: string
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001112
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00083612
-                            unit:
-                              value: '%'
-                              range: string
+          class_derivations:
+          - name: MeasurementObservation
+            populated_from: pht001112
+            slot_derivations:
+              observation_type:
+                value: OMOP:4176265
+                range: string
+              age_at_observation:
+                expr: '{phv00083452} * 365'
+              body_position:
+                value: "SITTING_POSITION"
+                range: string
+              method_type:
+                value: "spirometry"
+                range: string
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001112
+                  slot_derivations:
+                    value_decimal:
+                      expr: '{phv00083474} / 1000'
+                    unit:
+                      value: L
+                      range: string
+          - name: MeasurementObservation
+            populated_from: pht001112
+            slot_derivations:
+              observation_type:
+                value: OMOP:4241837
+                range: string
+              age_at_observation:
+                expr: '{phv00083452} * 365'
+              body_position:
+                value: "SITTING_POSITION"
+                range: string
+              method_type:
+                value: "spirometry"
+                range: string
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001112
+                  slot_derivations:
+                    value_decimal:
+                      expr: '{phv00083475} / 1000'
+                    unit:
+                      value: L
+                      range: string
+          - name: MeasurementObservation
+            populated_from: pht001112
+            slot_derivations:
+              observation_type:
+                value: OMOP:3011505
+                range: string
+              age_at_observation:
+                expr: '{phv00083452} * 365'
+              body_position:
+                value: "SITTING_POSITION"
+                range: string
+              method_type:
+                value: "spirometry"
+                range: string
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001112
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00083482
+                    unit:
+                      value: '{ratio}'
+                      range: string
+          - name: MeasurementObservation
+            populated_from: pht001112
+            slot_derivations:
+              observation_type:
+                value: OMOP:3002094
+                range: string
+              age_at_observation:
+                expr: '{phv00083452} * 365'
+              body_position:
+                value: "SITTING_POSITION"
+                range: string
+              method_type:
+                value: "spirometry"
+                range: string
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001112
+                  slot_derivations:
+                    value_decimal:
+                      expr: '{phv00083605} / 1000'
+                    unit:
+                      value: L
+                      range: string
+          - name: MeasurementObservation
+            populated_from: pht001112
+            slot_derivations:
+              observation_type:
+                value: OMOP:3022891
+                range: string
+              age_at_observation:
+                expr: '{phv00083452} * 365'
+              body_position:
+                value: "SITTING_POSITION"
+                range: string
+              method_type:
+                value: "spirometry"
+                range: string
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001112
+                  slot_derivations:
+                    value_decimal:
+                      expr: '{phv00083604} / 1000'
+                    unit:
+                      value: L
+                      range: string
+          - name: MeasurementObservation
+            populated_from: pht001112
+            slot_derivations:
+              observation_type:
+                value: OMOP:3024594
+                range: string
+              age_at_observation:
+                expr: '{phv00083452} * 365'
+              body_position:
+                value: "SITTING_POSITION"
+                range: string
+              method_type:
+                value: "spirometry"
+                range: string
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001112
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00083612
+                    unit:
+                      value: '%'
+                      range: string
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht001114
@@ -173,163 +161,151 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00083675}) + ":MESA LUNG SPIROMETRY")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001114
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4176265
-                    range: string
-                  age_at_observation:
-                    expr: '{phv00083687} * 365'
-                  body_position:
-                    value: "SITTING_POSITION"
-                    range: string
-                  method_type:
-                    value: "spirometry"
-                    range: string
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001114
-                          slot_derivations:
-                            value_decimal:
-                              expr: '{phv00083709} / 1000'
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001114
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4241837
-                    range: string
-                  age_at_observation:
-                    expr: '{phv00083687} * 365'
-                  body_position:
-                    value: "SITTING_POSITION"
-                    range: string
-                  method_type:
-                    value: "spirometry"
-                    range: string
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001114
-                          slot_derivations:
-                            value_decimal:
-                              expr: '{phv00083710} / 1000'
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001114
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3011505
-                    range: string
-                  age_at_observation:
-                    expr: '{phv00083687} * 365'
-                  body_position:
-                    value: "SITTING_POSITION"
-                    range: string
-                  method_type:
-                    value: "spirometry"
-                    range: string
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001114
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00083717
-                            unit:
-                              value: '{ratio}'
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001114
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3002094
-                    range: string
-                  age_at_observation:
-                    expr: '{phv00083687} * 365'
-                  body_position:
-                    value: "SITTING_POSITION"
-                    range: string
-                  method_type:
-                    value: "spirometry"
-                    range: string
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001114
-                          slot_derivations:
-                            value_decimal:
-                              expr: '{phv00083835} / 1000'
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001114
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3022891
-                    range: string
-                  age_at_observation:
-                    expr: '{phv00083687} * 365'
-                  body_position:
-                    value: "SITTING_POSITION"
-                    range: string
-                  method_type:
-                    value: "spirometry"
-                    range: string
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001114
-                          slot_derivations:
-                            value_decimal:
-                              expr: '{phv00083834} / 1000'
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001114
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3024594
-                    range: string
-                  age_at_observation:
-                    expr: '{phv00083687} * 365'
-                  body_position:
-                    value: "SITTING_POSITION"
-                    range: string
-                  method_type:
-                    value: "spirometry"
-                    range: string
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001114
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00083842
-                            unit:
-                              value: '%'
-                              range: string
+          class_derivations:
+          - name: MeasurementObservation
+            populated_from: pht001114
+            slot_derivations:
+              observation_type:
+                value: OMOP:4176265
+                range: string
+              age_at_observation:
+                expr: '{phv00083687} * 365'
+              body_position:
+                value: "SITTING_POSITION"
+                range: string
+              method_type:
+                value: "spirometry"
+                range: string
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001114
+                  slot_derivations:
+                    value_decimal:
+                      expr: '{phv00083709} / 1000'
+                    unit:
+                      value: L
+                      range: string
+          - name: MeasurementObservation
+            populated_from: pht001114
+            slot_derivations:
+              observation_type:
+                value: OMOP:4241837
+                range: string
+              age_at_observation:
+                expr: '{phv00083687} * 365'
+              body_position:
+                value: "SITTING_POSITION"
+                range: string
+              method_type:
+                value: "spirometry"
+                range: string
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001114
+                  slot_derivations:
+                    value_decimal:
+                      expr: '{phv00083710} / 1000'
+                    unit:
+                      value: L
+                      range: string
+          - name: MeasurementObservation
+            populated_from: pht001114
+            slot_derivations:
+              observation_type:
+                value: OMOP:3011505
+                range: string
+              age_at_observation:
+                expr: '{phv00083687} * 365'
+              body_position:
+                value: "SITTING_POSITION"
+                range: string
+              method_type:
+                value: "spirometry"
+                range: string
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001114
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00083717
+                    unit:
+                      value: '{ratio}'
+                      range: string
+          - name: MeasurementObservation
+            populated_from: pht001114
+            slot_derivations:
+              observation_type:
+                value: OMOP:3002094
+                range: string
+              age_at_observation:
+                expr: '{phv00083687} * 365'
+              body_position:
+                value: "SITTING_POSITION"
+                range: string
+              method_type:
+                value: "spirometry"
+                range: string
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001114
+                  slot_derivations:
+                    value_decimal:
+                      expr: '{phv00083835} / 1000'
+                    unit:
+                      value: L
+                      range: string
+          - name: MeasurementObservation
+            populated_from: pht001114
+            slot_derivations:
+              observation_type:
+                value: OMOP:3022891
+                range: string
+              age_at_observation:
+                expr: '{phv00083687} * 365'
+              body_position:
+                value: "SITTING_POSITION"
+                range: string
+              method_type:
+                value: "spirometry"
+                range: string
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001114
+                  slot_derivations:
+                    value_decimal:
+                      expr: '{phv00083834} / 1000'
+                    unit:
+                      value: L
+                      range: string
+          - name: MeasurementObservation
+            populated_from: pht001114
+            slot_derivations:
+              observation_type:
+                value: OMOP:3024594
+                range: string
+              age_at_observation:
+                expr: '{phv00083687} * 365'
+              body_position:
+                value: "SITTING_POSITION"
+                range: string
+              method_type:
+                value: "spirometry"
+                range: string
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001114
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00083842
+                    unit:
+                      value: '%'
+                      range: string
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht001122
@@ -339,200 +315,184 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087666}) + ":MESA FAMILY SPIROMETRY")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001122
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4176265
-                    range: string
-                  age_at_observation:
-                    expr: '{phv00087678} * 365'
-                  body_position:
-                    value: "SITTING_POSITION"
-                    range: string
-                  method_type:
-                    value: "spirometry"
-                    range: string
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001122
-                          slot_derivations:
-                            value_decimal:
-                              expr: '{phv00087700} / 1000'
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001122
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4241837
-                    range: string
-                  age_at_observation:
-                    expr: '{phv00087678} * 365'
-                  body_position:
-                    value: "SITTING_POSITION"
-                    range: string
-                  method_type:
-                    value: "spirometry"
-                    range: string
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001122
-                          slot_derivations:
-                            value_decimal:
-                              expr: '{phv00087701} / 1000'
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001122
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3011505
-                    range: string
-                  age_at_observation:
-                    expr: '{phv00087678} * 365'
-                  method_type:
-                    value: LOWER LIMIT OF NORMAL
-                    range: string
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001122
-                          slot_derivations:
-                            value_decimal:
-                              expr: '{phv00087687} * 0.01'
-                            unit:
-                              value: '{ratio}'
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001122
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3011505
-                    range: string
-                  age_at_observation:
-                    expr: '{phv00087678} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001122
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00087708
-                            unit:
-                              value: '{ratio}'
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001122
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3011505
-                    range: string
-                  age_at_observation:
-                    expr: '{phv00087678} * 365'
-                  method_type:
-                    value: PREDICTED
-                    range: string
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001122
-                          slot_derivations:
-                            value_decimal:
-                              expr: '{phv00087833} * 0.01'
-                            unit:
-                              value: '{ratio}'
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001122
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3002094
-                    range: string
-                  age_at_observation:
-                    expr: '{phv00087678} * 365'
-                  body_position:
-                    value: "SITTING_POSITION"
-                    range: string
-                  method_type:
-                    value: "spirometry"
-                    range: string
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001122
-                          slot_derivations:
-                            value_decimal:
-                              expr: '{phv00087831} / 1000'
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001122
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3022891
-                    range: string
-                  age_at_observation:
-                    expr: '{phv00087678} * 365'
-                  body_position:
-                    value: "SITTING_POSITION"
-                    range: string
-                  method_type:
-                    value: "spirometry"
-                    range: string
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001122
-                          slot_derivations:
-                            value_decimal:
-                              expr: '{phv00087830} / 1000'
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001122
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3024594
-                    range: string
-                  age_at_observation:
-                    expr: '{phv00087678} * 365'
-                  body_position:
-                    value: "SITTING_POSITION"
-                    range: string
-                  method_type:
-                    value: "spirometry"
-                    range: string
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001122
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00087838
-                            unit:
-                              value: '%'
-                              range: string
+          class_derivations:
+          - name: MeasurementObservation
+            populated_from: pht001122
+            slot_derivations:
+              observation_type:
+                value: OMOP:4176265
+                range: string
+              age_at_observation:
+                expr: '{phv00087678} * 365'
+              body_position:
+                value: "SITTING_POSITION"
+                range: string
+              method_type:
+                value: "spirometry"
+                range: string
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001122
+                  slot_derivations:
+                    value_decimal:
+                      expr: '{phv00087700} / 1000'
+                    unit:
+                      value: L
+                      range: string
+          - name: MeasurementObservation
+            populated_from: pht001122
+            slot_derivations:
+              observation_type:
+                value: OMOP:4241837
+                range: string
+              age_at_observation:
+                expr: '{phv00087678} * 365'
+              body_position:
+                value: "SITTING_POSITION"
+                range: string
+              method_type:
+                value: "spirometry"
+                range: string
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001122
+                  slot_derivations:
+                    value_decimal:
+                      expr: '{phv00087701} / 1000'
+                    unit:
+                      value: L
+                      range: string
+          - name: MeasurementObservation
+            populated_from: pht001122
+            slot_derivations:
+              observation_type:
+                value: OMOP:3011505
+                range: string
+              age_at_observation:
+                expr: '{phv00087678} * 365'
+              method_type:
+                value: LOWER LIMIT OF NORMAL
+                range: string
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001122
+                  slot_derivations:
+                    value_decimal:
+                      expr: '{phv00087687} * 0.01'
+                    unit:
+                      value: '{ratio}'
+                      range: string
+          - name: MeasurementObservation
+            populated_from: pht001122
+            slot_derivations:
+              observation_type:
+                value: OMOP:3011505
+                range: string
+              age_at_observation:
+                expr: '{phv00087678} * 365'
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001122
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00087708
+                    unit:
+                      value: '{ratio}'
+                      range: string
+          - name: MeasurementObservation
+            populated_from: pht001122
+            slot_derivations:
+              observation_type:
+                value: OMOP:3011505
+                range: string
+              age_at_observation:
+                expr: '{phv00087678} * 365'
+              method_type:
+                value: PREDICTED
+                range: string
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001122
+                  slot_derivations:
+                    value_decimal:
+                      expr: '{phv00087833} * 0.01'
+                    unit:
+                      value: '{ratio}'
+                      range: string
+          - name: MeasurementObservation
+            populated_from: pht001122
+            slot_derivations:
+              observation_type:
+                value: OMOP:3002094
+                range: string
+              age_at_observation:
+                expr: '{phv00087678} * 365'
+              body_position:
+                value: "SITTING_POSITION"
+                range: string
+              method_type:
+                value: "spirometry"
+                range: string
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001122
+                  slot_derivations:
+                    value_decimal:
+                      expr: '{phv00087831} / 1000'
+                    unit:
+                      value: L
+                      range: string
+          - name: MeasurementObservation
+            populated_from: pht001122
+            slot_derivations:
+              observation_type:
+                value: OMOP:3022891
+                range: string
+              age_at_observation:
+                expr: '{phv00087678} * 365'
+              body_position:
+                value: "SITTING_POSITION"
+                range: string
+              method_type:
+                value: "spirometry"
+                range: string
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001122
+                  slot_derivations:
+                    value_decimal:
+                      expr: '{phv00087830} / 1000'
+                    unit:
+                      value: L
+                      range: string
+          - name: MeasurementObservation
+            populated_from: pht001122
+            slot_derivations:
+              observation_type:
+                value: OMOP:3024594
+                range: string
+              age_at_observation:
+                expr: '{phv00087678} * 365'
+              body_position:
+                value: "SITTING_POSITION"
+                range: string
+              method_type:
+                value: "spirometry"
+                range: string
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001122
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00087838
+                    unit:
+                      value: '%'
+                      range: string
