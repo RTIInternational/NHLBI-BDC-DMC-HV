@@ -21,12 +21,16 @@
                 range: string
               context:
                 class_derivations:
-                - name: Context
-                  activity:
-                    class_derivations:
-                    - name: Activity
-                      activity_type: BRONCHODILATOR_MEDICATION_USE
-                  relative_timing: BEFORE                    
+                  Context:
+                    slot_derivations:
+                      activity:
+                        class_derivations:
+                          Activity:
+                            slot_derivations:
+                              activity_type:
+                                value: BRONCHODILATOR_MEDICATION_USE
+                      relative_timing:
+                        value: BEFORE
               value_quantity:
                 class_derivations:
                 - name: Quantity
@@ -50,12 +54,16 @@
                 range: string
               context:
                 class_derivations:
-                - name: Context
-                  activity:
-                    class_derivations:
-                    - name: Activity
-                      activity_type: BRONCHODILATOR_MEDICATION_USE
-                  relative_timing: BEFORE                    
+                  Context:
+                    slot_derivations:
+                      activity:
+                        class_derivations:
+                          Activity:
+                            slot_derivations:
+                              activity_type:
+                                value: BRONCHODILATOR_MEDICATION_USE
+                      relative_timing:
+                        value: BEFORE
               value_quantity:
                 class_derivations:
                 - name: Quantity
@@ -79,12 +87,16 @@
                 range: string
               context:
                 class_derivations:
-                - name: Context
-                  activity:
-                    class_derivations:
-                    - name: Activity
-                      activity_type: BRONCHODILATOR_MEDICATION_USE
-                  relative_timing: BEFORE                    
+                  Context:
+                    slot_derivations:
+                      activity:
+                        class_derivations:
+                          Activity:
+                            slot_derivations:
+                              activity_type:
+                                value: BRONCHODILATOR_MEDICATION_USE
+                      relative_timing:
+                        value: BEFORE
               value_quantity:
                 class_derivations:
                 - name: Quantity
