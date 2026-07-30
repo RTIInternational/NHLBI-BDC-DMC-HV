@@ -13,13 +13,12 @@
         method_type:
           value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001739
-                slot_derivations:
-                  value_decimal:
-                    expr: "{phv00117557} * 0.01"
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001739
+            slot_derivations:
+              value_decimal:
+                expr: "{phv00117557} * 0.01"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001694
@@ -35,10 +34,9 @@
         method_type:
           value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001694
-                slot_derivations:
-                  value_decimal:
-                    expr: "{phv00116362} * 0.01"
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001694
+            slot_derivations:
+              value_decimal:
+                expr: "{phv00116362} * 0.01"
