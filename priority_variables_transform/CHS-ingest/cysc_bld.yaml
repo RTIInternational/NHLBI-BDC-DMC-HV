@@ -17,57 +17,7 @@
             populated_from: pht001462
             slot_derivations:
               value_decimal:
-                expr: '{phv00100770} / 10'
+                populated_from: phv00100770
               unit:
-                value: mg/dL
-                range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001490
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00105099}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
-        age_at_observation:
-          expr: '{phv00105622} * 365'
-        observation_type:
-          value: OBA:2052375
-          range: string
-        method_type:
-          value: "blood assay"
-        value_quantity:
-          class_derivations:
-          - name: Quantity
-            populated_from: pht001490
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00106429} / 10'
-              unit:
-                value: mg/dL
-                range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001491
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00106520}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00106520}) + ":CHS YEAR 5 OLD")'
-        age_at_observation:
-          expr: '{phv00106844} * 365'     
-        observation_type:
-          value: OBA:2052375
-          range: string
-        method_type:
-          value: "blood assay"
-        value_quantity:
-          class_derivations:
-          - name: Quantity
-            populated_from: pht001491
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00107354} / 10'
-              unit:
-                value: mg/dL
+                value: mg/L
                 range: string

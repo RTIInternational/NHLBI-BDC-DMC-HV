@@ -16,7 +16,19 @@
               body_position:
                 value: SITTING_POSITION
               method_type:
-                value: post-bronchodilator spirometry
+                value: spirometry
+              context:
+                class_derivations:
+                  Context:
+                    slot_derivations:
+                      activity:
+                        class_derivations:
+                          Activity:
+                            slot_derivations:
+                              activity_type:
+                                value: BRONCHODILATOR_MEDICATION_USE
+                      relative_timing:
+                        value: AFTER
               value_quantity:
                 class_derivations:
                 - name: Quantity
@@ -34,7 +46,19 @@
               body_position:
                 value: SITTING_POSITION
               method_type:
-                value: post-bronchodilator spirometry
+                value: spirometry
+              context:
+                class_derivations:
+                  Context:
+                    slot_derivations:
+                      activity:
+                        class_derivations:
+                          Activity:
+                            slot_derivations:
+                              activity_type:
+                                value: BRONCHODILATOR_MEDICATION_USE
+                      relative_timing:
+                        value: AFTER
               value_quantity:
                 class_derivations:
                 - name: Quantity
@@ -52,7 +76,19 @@
               body_position:
                 value: SITTING_POSITION
               method_type:
-                value: post-bronchodilator spirometry
+                value: calculated
+              context:
+                class_derivations:
+                  Context:
+                    slot_derivations:
+                      activity:
+                        class_derivations:
+                          Activity:
+                            slot_derivations:
+                              activity_type:
+                                value: BRONCHODILATOR_MEDICATION_USE
+                      relative_timing:
+                        value: AFTER
               value_quantity:
                 class_derivations:
                 - name: Quantity
