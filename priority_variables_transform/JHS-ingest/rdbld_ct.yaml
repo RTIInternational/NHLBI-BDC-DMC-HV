@@ -13,12 +13,11 @@
         method_type:
           value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001959
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00127629
-                  unit:
-                    value: "10*6/uL"
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001959
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00127629
+              unit:
+                value: "10*6/uL"

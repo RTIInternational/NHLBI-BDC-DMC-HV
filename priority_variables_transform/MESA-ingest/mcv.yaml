@@ -13,13 +13,12 @@
           value: "blood assay"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004319
-                slot_derivations:
-                  value_decimal:
-                    expr: "case(({phv00218996} < 50, None), ({phv00218996} > 130, None), (True, {phv00218996}))"
-                  unit:
-                    value: fL
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht004319
+            slot_derivations:
+              value_decimal:
+                expr: "case(({phv00218996} < 50, None), ({phv00218996} > 130, None), (True, {phv00218996}))"
+              unit:
+                value: fL
+                range: string

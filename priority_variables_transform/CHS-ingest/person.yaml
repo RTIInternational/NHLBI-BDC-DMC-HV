@@ -17,20 +17,18 @@
         vital_status:
           expr: 'case(({pht001464.phv00100774} == 1, "OMOP:434489"), ({pht001464.phv00100774} == 0, "OMOP:4230556"))'
         cause_of_death:
-          object_derivations:
-          - class_derivations:
-              CauseOfDeath:
-                populated_from: pht001447
-                slot_derivations:
-                  cause:
-                    expr: 'case(({pht001464.phv00100775} == 1, "ICD10CM:I20-I25"), ({pht001464.phv00100775} == 2, "ICD10CM:I60-I69"), ({pht001464.phv00100775} == 3, "ICD10CM:I70"), ({pht001464.phv00100775} == 4, "ICD10CM:I00-I99"))'
-                  order:
-                    value: 1
-          - class_derivations:
-              CauseOfDeath:
-                populated_from: pht001447
-                slot_derivations:
-                  cause:
-                    expr: 'case(({pht001466.phv00100832} == 1, "ICD10CM:I20-I25"), ({pht001466.phv00100832} == 2, "ICD10CM:I60-I69"), ({pht001466.phv00100832} == 3, "ICD10CM:I70"), ({pht001466.phv00100832} == 4, "ICD10CM:I00-I99"))'
-                  order:
-                    value: 2
+          class_derivations:
+          - name: CauseOfDeath
+            populated_from: pht001447
+            slot_derivations:
+              cause:
+                expr: 'case(({pht001464.phv00100775} == 1, "ICD10CM:I20-I25"), ({pht001464.phv00100775} == 2, "ICD10CM:I60-I69"), ({pht001464.phv00100775} == 3, "ICD10CM:I70"), ({pht001464.phv00100775} == 4, "ICD10CM:I00-I99"))'
+              order:
+                value: 1
+          - name: CauseOfDeath
+            populated_from: pht001447
+            slot_derivations:
+              cause:
+                expr: 'case(({pht001466.phv00100832} == 1, "ICD10CM:I20-I25"), ({pht001466.phv00100832} == 2, "ICD10CM:I60-I69"), ({pht001466.phv00100832} == 3, "ICD10CM:I70"), ({pht001466.phv00100832} == 4, "ICD10CM:I00-I99"))'
+              order:
+                value: 2

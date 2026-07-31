@@ -7,51 +7,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00112462}) + ":CARDIA YEAR 0")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001560
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  method_type:
-                    value: "Seated random-zero average"
-                  body_position:
-                    value: SITTING_POSITION
-                  body_site:
-                    value: "Right arm"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001560
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00112494
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001560
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  method_type:
-                    value: "Seated random-zero average"
-                  body_position:
-                    value: SITTING_POSITION
-                  body_site:
-                    value: "Right arm"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001560
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00112495
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - name: MeasurementObservation
+            populated_from: pht001560
+            slot_derivations:
+              observation_type:
+                value: OMOP:4152194
+              method_type:
+                value: "Seated random-zero average"
+              body_position:
+                value: SITTING_POSITION
+              body_site:
+                value: "Right arm"
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001560
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00112494
+                    unit:
+                      value: "mm[Hg]"
+          - name: MeasurementObservation
+            populated_from: pht001560
+            slot_derivations:
+              observation_type:
+                value: OMOP:4154790
+              method_type:
+                value: "Seated random-zero average"
+              body_position:
+                value: SITTING_POSITION
+              body_site:
+                value: "Right arm"
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001560
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00112495
+                    unit:
+                      value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht001650
@@ -61,52 +57,48 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00115203}) + ":CARDIA YEAR 5")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001650
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  # age_at_observation:
-                    # expr: "{nan} * 365"
-                  method_type:
-                    value: "Seated random-zero average"
-                  body_position:
-                    value: SITTING_POSITION
-                  body_site:
-                    value: "Right arm"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001650
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00115205
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001650
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  # age_at_observation:
-                    # expr: "{nan} * 365"
-                  method_type:
-                    value: "Seated random-zero average"
-                  body_position:
-                    value: SITTING_POSITION
-                  body_site:
-                    value: "Right arm"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001650
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00115204
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - name: MeasurementObservation
+            populated_from: pht001650
+            slot_derivations:
+              observation_type:
+                value: OMOP:4152194
+              # age_at_observation:
+                # expr: "{nan} * 365"
+              method_type:
+                value: "Seated random-zero average"
+              body_position:
+                value: SITTING_POSITION
+              body_site:
+                value: "Right arm"
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001650
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00115205
+                    unit:
+                      value: "mm[Hg]"
+          - name: MeasurementObservation
+            populated_from: pht001650
+            slot_derivations:
+              observation_type:
+                value: OMOP:4154790
+              # age_at_observation:
+                # expr: "{nan} * 365"
+              method_type:
+                value: "Seated random-zero average"
+              body_position:
+                value: SITTING_POSITION
+              body_site:
+                value: "Right arm"
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001650
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00115204
+                    unit:
+                      value: "mm[Hg]"

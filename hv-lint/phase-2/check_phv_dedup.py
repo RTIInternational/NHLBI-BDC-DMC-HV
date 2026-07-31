@@ -79,6 +79,18 @@ def _get_cohort_from_path(file_path: Path) -> str:
     return "UNKNOWN"
 
 
+def iter_nested_class_derivs(slot_def):
+    """Yield (class_name, class_spec) for a slot's nested class derivations,
+    handling both list-based class_derivations and legacy object_derivations."""
+    slot_def = slot_def or {}
+    for cd in slot_def.get("class_derivations") or []:
+        if isinstance(cd, dict):
+            yield cd.get("name"), cd
+    for od in slot_def.get("object_derivations") or []:
+        for name, spec in ((od or {}).get("class_derivations") or {}).items():
+            yield name, spec
+
+
 def extract_value_phvs(block: dict, block_index: int):
     """Yield (phv, concept, block_index) for value-bearing populated_from fields.
 
@@ -105,8 +117,10 @@ def extract_value_phvs(block: dict, block_index: int):
 
         elif class_name == "MeasurementObservation":
             concept = (slots.get("observation_type") or {}).get("value")
-            for obj_deriv in (slots.get("value_quantity") or {}).get("object_derivations") or []:
-                qty_slots = ((obj_deriv or {}).get("class_derivations") or {}).get("Quantity", {}).get("slot_derivations") or {}
+            for qty_name, qty in iter_nested_class_derivs(slots.get("value_quantity")):
+                if qty_name != "Quantity":
+                    continue
+                qty_slots = qty.get("slot_derivations") or {}
                 for val_slot in ("value_decimal", "value_integer", "value_string"):
                     slot_def = qty_slots.get(val_slot) or {}
                     if "populated_from" in slot_def and "value_mappings" not in slot_def and "expr" not in slot_def:
