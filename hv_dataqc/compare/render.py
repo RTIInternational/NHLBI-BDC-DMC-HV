@@ -168,6 +168,7 @@ def generate_markdown_report(
         "C13": "UUID Format Validation",
         "C14": "Duplicate Row Detection",
         "C15": "Entity Column Schema Consistency",
+        "C16": "id/identity Slot Pattern",
     }
 
     def _render_c2_detail(r: CheckResult) -> list[str]:
@@ -391,6 +392,12 @@ def generate_markdown_report(
             "Requires ``columns`` data in ``consent_group_file_status`` "
             "(re-run extract_harmonized_summaries.py to populate)."
         ),
+        "C16": (
+            "Checks that Person and Participant YAML blocks have an explicit ``id`` slot "
+            "derivation using ``uuid5()``, and that ``identity`` holds the raw source string "
+            "rather than a UUID. Misuse of ``identity`` for uuid5() silently produces "
+            "incompatible IDs in the harmonized output."
+        ),
     }
 
     def _render_unmatched_source(r: CheckResult) -> list[str]:
@@ -408,7 +415,7 @@ def generate_markdown_report(
         sub.append("</details>")
         return sub
 
-    for check_id in ["CROSSWALK", "C0", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12", "C13", "C14", "C15"]:
+    for check_id in ["CROSSWALK", "C0", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12", "C13", "C14", "C15", "C16"]:
         check_results = [r for r in results if r.check_id == check_id]
         if not check_results:
             continue
