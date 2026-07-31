@@ -11,12 +11,11 @@
         method_type:
           value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004102
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00206929
-                  unit:
-                    value: "mm[Hg]"
+          class_derivations:
+          - name: Quantity
+            populated_from: pht004102
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00206929
+              unit:
+                value: "mm[Hg]"

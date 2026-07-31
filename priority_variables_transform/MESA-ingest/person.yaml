@@ -13,12 +13,11 @@
         vital_status:
           expr: 'case(({pht001123.phv00087882} == 0, "OMOP:4230556"), ({pht001123.phv00087882} == 1, "OMOP:434489"))'
         cause_of_death:
-          object_derivations:
-          - class_derivations:
-              CauseOfDeath:
-                populated_from: pht001116
-                slot_derivations:
-                  cause:
-                    expr: 'case(({pht001123.phv00087883} == 1, "ICD10CM:I20-I25"), ({pht001123.phv00087883} == 2, "ICD10CM:I63.9"), ({pht001123.phv00087883} == 3, "ICD10CM:I70"), ({pht001123.phv00087883} == 4, "ICD10CM:V00-X58"))'
-                  order:
-                    value: 1
+          class_derivations:
+          - name: CauseOfDeath
+            populated_from: pht001116
+            slot_derivations:
+              cause:
+                expr: 'case(({pht001123.phv00087883} == 1, "ICD10CM:I20-I25"), ({pht001123.phv00087883} == 2, "ICD10CM:I63.9"), ({pht001123.phv00087883} == 3, "ICD10CM:I70"), ({pht001123.phv00087883} == 4, "ICD10CM:V00-X58"))'
+              order:
+                value: 1

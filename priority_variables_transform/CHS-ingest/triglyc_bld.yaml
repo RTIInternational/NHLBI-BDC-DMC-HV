@@ -9,16 +9,15 @@
         observation_type:
           expr: case(({phv00099923} >= 12, 'OMOP:4041722'), (True, 'OBA:VT0002644'))
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001451
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00100041
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001451
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00100041
+              unit:
+                value: mg/dL
+                range: string
         method_type:
           expr: case(({phv00099923} >= 12, 'Fasted minimum 12 hours'))
 - class_derivations:
@@ -35,16 +34,15 @@
           value: OBA:VT0002644
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001452
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00100425
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001452
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00100425
+              unit:
+                value: mg/dL
+                range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001490
@@ -57,16 +55,15 @@
           value: OBA:VT0002644
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001490
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00105864
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001490
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00105864
+              unit:
+                value: mg/dL
+                range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001491
@@ -81,13 +78,12 @@
           value: OBA:VT0002644
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001491
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00106990
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001491
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00106990
+              unit:
+                value: mg/dL
+                range: string
