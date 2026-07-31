@@ -16,15 +16,14 @@
         method_type:
           value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008731
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401384
-                  unit:
-                    value: "{#}/wk"
+          class_derivations:
+          - name: Quantity
+            populated_from: pht008731
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00401384
+              unit:
+                value: "{#}/wk"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008729
@@ -40,12 +39,11 @@
         method_type:
           value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008729
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401090
-                  unit:
-                    value: "{#}/wk"
+          class_derivations:
+          - name: Quantity
+            populated_from: pht008729
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00401090
+              unit:
+                value: "{#}/wk"

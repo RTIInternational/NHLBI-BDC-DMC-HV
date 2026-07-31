@@ -13,13 +13,12 @@
           value: "blood assay"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004319
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00218994
-                  unit:
-                    value: pg/{cell}
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht004319
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00218994
+              unit:
+                value: pg/{cell}
+                range: string

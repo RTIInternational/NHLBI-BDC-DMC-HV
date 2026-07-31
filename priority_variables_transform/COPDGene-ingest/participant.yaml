@@ -2,8 +2,10 @@
     Participant:
       populated_from: pht016246
       slot_derivations:
-        identity:
+        id:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00569495}) + ":COPDGene")'
+        identity:
+          populated_from: phv00569495
         member_of_research_study:
           value: 'Genetic Epidemiology of COPD (COPDGene)'
         associated_person:
