@@ -15,12 +15,11 @@
         age_at_death:
           expr: 'case(({pht003407.phv00193496} == 1, ({phv00078437} * 365) + {pht003407.phv00193498}))'
         cause_of_death:
-          object_derivations:
-          - class_derivations:
-              CauseOfDeath:
-                populated_from: pht000998
-                slot_derivations:
-                  cause:
-                    expr: 'case(({pht003407.phv00193497} == 1, "ICD10CM:C50"), ({pht003407.phv00193497} == 10, "ICD10CM:C34"), ({pht003407.phv00193497} == 11, "ICD10CM:I20-I25"), ({pht003407.phv00193497} == 12, "ICD10CM:I60-I69"), ({pht003407.phv00193497} == 18, "ICD10CM:I00-I99"), ({pht003407.phv00193497} == 31, "ICD10CM:G30"), ({pht003407.phv00193497} == 32, "ICD10CM:J44"))'
-                  order:
-                    value: 1
+          class_derivations:
+          - name: CauseOfDeath
+            populated_from: pht000998
+            slot_derivations:
+              cause:
+                expr: 'case(({pht003407.phv00193497} == 1, "ICD10CM:C50"), ({pht003407.phv00193497} == 10, "ICD10CM:C34"), ({pht003407.phv00193497} == 11, "ICD10CM:I20-I25"), ({pht003407.phv00193497} == 12, "ICD10CM:I60-I69"), ({pht003407.phv00193497} == 18, "ICD10CM:I00-I99"), ({pht003407.phv00193497} == 31, "ICD10CM:G30"), ({pht003407.phv00193497} == 32, "ICD10CM:J44"))'
+              order:
+                value: 1

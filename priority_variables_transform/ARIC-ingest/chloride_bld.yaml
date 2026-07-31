@@ -11,12 +11,11 @@
         method_type:
           value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012851
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00519777
-                  unit:
-                    value: "mmol/L"
+          class_derivations:
+          - name: Quantity
+            populated_from: pht012851
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00519777
+              unit:
+                value: "mmol/L"

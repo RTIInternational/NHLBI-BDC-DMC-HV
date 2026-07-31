@@ -13,13 +13,12 @@
         method_type:
           value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001563
-                slot_derivations:
-                  value_decimal:
-                    expr: "None if str({phv00112690}) in ('M', 'L', 'H', '') else float({phv00112690})"
-                  unit:
-                    value: "10*3/uL"
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001563
+            slot_derivations:
+              value_decimal:
+                expr: "None if str({phv00112690}) in ('M', 'L', 'H', '') else float({phv00112690})"
+              unit:
+                value: "10*3/uL"
+                range: string
