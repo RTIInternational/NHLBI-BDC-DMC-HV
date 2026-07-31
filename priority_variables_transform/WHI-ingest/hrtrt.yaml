@@ -15,15 +15,14 @@
         method_type:
           value: "Electrocardiogram"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006223
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00283538
-                  unit:
-                    value: "{beats}/min"
+          class_derivations:
+          - name: Quantity
+            populated_from: pht006223
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00283538
+              unit:
+                value: "{beats}/min"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002118
@@ -41,12 +40,11 @@
         method_type:
           value: "Electrocardiogram"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002118
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00155154
-                  unit:
-                    value: "{beats}/min"
+          class_derivations:
+          - name: Quantity
+            populated_from: pht002118
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00155154
+              unit:
+                value: "{beats}/min"

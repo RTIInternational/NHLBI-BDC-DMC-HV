@@ -13,13 +13,12 @@
           value: OBA:2045443
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006018
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00276851
-                  unit:
-                    value: '%'
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht006018
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00276851
+              unit:
+                value: '%'
+                range: string

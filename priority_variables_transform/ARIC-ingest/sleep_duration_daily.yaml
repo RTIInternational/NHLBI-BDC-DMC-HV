@@ -11,12 +11,11 @@
         method_type:
           value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006479
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00298019
-                  unit:
-                    value: "h"
+          class_derivations:
+          - name: Quantity
+            populated_from: pht006479
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00298019
+              unit:
+                value: "h"
