@@ -18,12 +18,11 @@
         method_type:
           value: average
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht013308
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00528714
-                  unit:
-                    value: '{beats}/min'
+          class_derivations:
+          - name: Quantity
+            populated_from: pht013308
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00528714
+              unit:
+                value: '{beats}/min'

@@ -13,12 +13,11 @@
         age_at_observation:
           expr: '{phv00429049} * 365'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht010057
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00429058
-                  unit:
-                    value: kg/m2
+          class_derivations:
+          - name: Quantity
+            populated_from: pht010057
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00429058
+              unit:
+                value: kg/m2

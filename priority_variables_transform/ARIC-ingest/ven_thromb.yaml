@@ -120,8 +120,10 @@
         condition_status:
           populated_from: phv00294793
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            # AFU pht006416 uses N/Y/U encoding per data dict
+            'N': ABSENT
+            'Y': PRESENT
+            'U': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
         associated_evidence:
