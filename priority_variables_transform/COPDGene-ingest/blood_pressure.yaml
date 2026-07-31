@@ -12,48 +12,44 @@
             str({phv00159568}) + ':COPDGene P3')), ({phv00568798} == 'P3B',
             uuid5('https://w3id.org/bdchm/Visit', str({phv00159568}) + ':COPDGene P3B')))
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht002239
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: SITTING_POSITION
-                  method_type:
-                    value: automated sphygmomanometer
-                  age_at_observation:
-                    expr: '{phv00568808} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht002239
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00159590
-                            unit:
-                              value: 'mm[Hg]'
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht002239
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: SITTING_POSITION
-                  method_type:
-                    value: automated sphygmomanometer
-                  age_at_observation:
-                    expr: '{phv00568808} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht002239
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00159583
-                            unit:
-                              value: 'mm[Hg]'
+          class_derivations:
+          - name: MeasurementObservation
+            populated_from: pht002239
+            slot_derivations:
+              observation_type:
+                value: OMOP:4152194
+              body_position:
+                value: SITTING_POSITION
+              method_type:
+                value: automated sphygmomanometer
+              age_at_observation:
+                expr: '{phv00568808} * 365'
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht002239
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00159590
+                    unit:
+                      value: 'mm[Hg]'
+          - name: MeasurementObservation
+            populated_from: pht002239
+            slot_derivations:
+              observation_type:
+                value: OMOP:4154790
+              body_position:
+                value: SITTING_POSITION
+              method_type:
+                value: automated sphygmomanometer
+              age_at_observation:
+                expr: '{phv00568808} * 365'
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht002239
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00159583
+                    unit:
+                      value: 'mm[Hg]'
