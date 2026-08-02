@@ -22,19 +22,18 @@
           value: "questionnaire"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002239
-                slot_derivations:
-                  value_concept:
-                    populated_from: phv00569009
-                    value_mappings:
-                      '1': Under $15,000
-                      '2': $15,000-$35,000
-                      '3': $35,000-$50,000
-                      '4': $50,000-$75,000
-                      '5': More than $75,000
-                  unit:
-                    value: USD
-                    range: string
+          class_derivations:
+            Quantity:
+              populated_from: pht002239
+              slot_derivations:
+                value_concept:
+                  populated_from: phv00569009
+                  value_mappings:
+                    '1': Under $15,000
+                    '2': $15,000-$35,000
+                    '3': $35,000-$50,000
+                    '4': $50,000-$75,000
+                    '5': More than $75,000
+                unit:
+                  value: USD
+                  range: string
