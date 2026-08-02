@@ -119,10 +119,6 @@
           value: MONDO:0005279
         condition_status:
           populated_from: phv00294793
-          # phv00294793 (AFUCOMP45_V1) is a string-typed dbGaP variable using
-          # N/Y codes (var_report: N=100,342, Y=265). The previous '0'/'1' keys
-          # never matched -> condition_status was silently null on all pht006416
-          # rows (see hv-dataqc report 2026-07-23, 432,042 null-status rows).
           value_mappings:
             'N': ABSENT
             'Y': PRESENT
