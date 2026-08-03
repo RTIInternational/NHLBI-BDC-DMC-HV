@@ -138,11 +138,15 @@ the sheet instead of hardcoded in `s4_layout.yaml`.
 ## Open items
 
 **`OMOP:134057` is claimed by two rows** — `cvd` (Cardiovascular disease) and
-`hist_cvd` (History of cardiovascular disease). Whichever loads second wins the
-lookup, so one of them silently can't be reached by code. Pre-existing and not
-currently harmful (only an archived spec uses the code), but it needs one of the
-two rows corrected. Worth raising with the curator alongside the other S1
-questions.
+`hist_cvd` (History of cardiovascular disease). Inherited from
+`harmonized_vars.tsv`, which had the same collision, so it is not new with S1.
+
+It is currently inert: *no* live spec sets an `observation_type` for either
+variable, so both resolve by filename stem (`cvd.yaml` / `hist_cvd.yaml`) and
+land on distinct rows. The code→label map is never consulted for them. It
+becomes a real bug the moment someone adds an `observation_type` to either
+spec — whichever S1 row loads second wins, and one variable silently takes the
+other's label. Worth correcting in S1 before that happens.
 
 **Regenerating `TableS1.tsv`:** the workbook download is the full S1–S6
 supplementary data, not just S1. Read its `Table S1` sheet and write the first
