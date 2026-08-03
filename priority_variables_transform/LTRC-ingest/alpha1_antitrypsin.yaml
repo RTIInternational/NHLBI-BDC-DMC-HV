@@ -12,12 +12,11 @@
         method_type:
           value: "clinical laboratory assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht010059
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00429118
-                  unit:
-                    value: mg/dL
+          class_derivations:
+          - name: Quantity
+            populated_from: pht010059
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00429118
+              unit:
+                value: mg/dL

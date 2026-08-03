@@ -13,15 +13,14 @@
         method_type:
           value: "urine assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001849
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00120675
-                  unit:
-                    value: "mg/dL"
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001849
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00120675
+              unit:
+                value: "mg/dL"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001803
@@ -37,15 +36,14 @@
         method_type:
           value: "urine assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001803
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00119619
-                  unit:
-                    value: "mg/dL"
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001803
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00119619
+              unit:
+                value: "mg/dL"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001852
@@ -61,16 +59,15 @@
         method_type:
           value: "urine assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001852
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00120751
-                    unit_conversion:
-                      source_unit: "mg/mL"
-                      target_unit: "mg/dL"
-                  unit:
-                    value: "mg/dL"
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001852
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00120751
+                unit_conversion:
+                  source_unit: "mg/mL"
+                  target_unit: "mg/dL"
+              unit:
+                value: "mg/dL"
+                range: string

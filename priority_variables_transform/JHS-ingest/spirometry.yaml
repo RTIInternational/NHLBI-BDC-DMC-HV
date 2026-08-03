@@ -7,61 +7,61 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128197}) + ":JHS PULMONARY")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001969
-                slot_derivations:
-                  observation_type:
-                    value: "OMOP:4176265"
-                  method_type:
-                    value: "Best curve"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001969
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00128209
-                            unit:
-                              value: "L"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001969
-                slot_derivations:
-                  observation_type:
-                    value: "OMOP:4241837"
-                  method_type:
-                    value: "Best curve"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001969
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00128210
-                            unit:
-                              value: "L"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001969
-                slot_derivations:
-                  observation_type:
-                    value: "OMOP:3011505"
-                  method_type:
-                    value: "Best curve"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001969
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00128214
-                            unit:
-                              value: "%"
+          class_derivations:
+          - name: MeasurementObservation
+            populated_from: pht001969
+            slot_derivations:
+              observation_type:
+                value: "OMOP:4176265"
+              method_type:
+                value: "spirometry"
+              qualifier:
+                value: MAXIMUM
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001969
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00128209
+                    unit:
+                      value: "L"
+          - name: MeasurementObservation
+            populated_from: pht001969
+            slot_derivations:
+              observation_type:
+                value: "OMOP:4241837"
+              method_type:
+                value: "spirometry"
+              qualifier:
+                value: MAXIMUM
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001969
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00128210
+                    unit:
+                      value: "L"
+          - name: MeasurementObservation
+            populated_from: pht001969
+            slot_derivations:
+              observation_type:
+                value: "OMOP:3011505"
+              method_type:
+                value: "calculated"
+              qualifier:
+                value: MAXIMUM
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001969
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00128214
+                    unit:
+                      value: "%"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht001969
@@ -71,61 +71,55 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128197}) + ":JHS PULMONARY")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001969
-                slot_derivations:
-                  observation_type:
-                    value: "OMOP:4176265"
-                  method_type:
-                    value: "Second best curve"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001969
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00128219
-                            unit:
-                              value: "L"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001969
-                slot_derivations:
-                  observation_type:
-                    value: "OMOP:4241837"
-                  method_type:
-                    value: "Second best curve"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001969
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00128220
-                            unit:
-                              value: "L"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001969
-                slot_derivations:
-                  observation_type:
-                    value: "OMOP:3011505"
-                  method_type:
-                    value: "Second best curve"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001969
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00128224
-                            unit:
-                              value: "%"
+          class_derivations:
+          - name: MeasurementObservation
+            populated_from: pht001969
+            slot_derivations:
+              observation_type:
+                value: "OMOP:4176265"
+              method_type:
+                value: "spirometry, Second best curve"
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001969
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00128219
+                    unit:
+                      value: "L"
+          - name: MeasurementObservation
+            populated_from: pht001969
+            slot_derivations:
+              observation_type:
+                value: "OMOP:4241837"
+              method_type:
+                value: "spirometry, Second best curve"
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001969
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00128220
+                    unit:
+                      value: "L"
+          - name: MeasurementObservation
+            populated_from: pht001969
+            slot_derivations:
+              observation_type:
+                value: "OMOP:3011505"
+              method_type:
+                value: "calculated, Second best curve"
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001969
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00128224
+                    unit:
+                      value: "%"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht001969
@@ -135,61 +129,55 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00128197}) + ":JHS PULMONARY")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001969
-                slot_derivations:
-                  observation_type:
-                    value: "OMOP:4176265"
-                  method_type:
-                    value: "Third best curve"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001969
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00128229
-                            unit:
-                              value: "L"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001969
-                slot_derivations:
-                  observation_type:
-                    value: "OMOP:4241837"
-                  method_type:
-                    value: "Third best curve"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001969
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00128230
-                            unit:
-                              value: "L"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht001969
-                slot_derivations:
-                  observation_type:
-                    value: "OMOP:3011505"
-                  method_type:
-                    value: "Third best curve"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht001969
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00128234
-                            unit:
-                              value: "%"
+          class_derivations:
+          - name: MeasurementObservation
+            populated_from: pht001969
+            slot_derivations:
+              observation_type:
+                value: "OMOP:4176265"
+              method_type:
+                value: "spirometry, Third best curve"
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001969
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00128229
+                    unit:
+                      value: "L"
+          - name: MeasurementObservation
+            populated_from: pht001969
+            slot_derivations:
+              observation_type:
+                value: "OMOP:4241837"
+              method_type:
+                value: "spirometry, Third best curve"
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001969
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00128230
+                    unit:
+                      value: "L"
+          - name: MeasurementObservation
+            populated_from: pht001969
+            slot_derivations:
+              observation_type:
+                value: "OMOP:3011505"
+              method_type:
+                value: "calculated, Third best curve"
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht001969
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00128234
+                    unit:
+                      value: "%"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht008729
@@ -201,40 +189,36 @@
         age_at_observation:
           expr: "{phv00401085} * 365"
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht008729
-                slot_derivations:
-                  observation_type:
-                    value: "OMOP:4176265"
-                  method_type:
-                    value: "spirometry"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht008729
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00401162
-                            unit:
-                              value: "L"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht008729
-                slot_derivations:
-                  observation_type:
-                    value: "OMOP:4241837"
-                  method_type:
-                    value: "spirometry"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht008729
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00401163
-                            unit:
-                              value: "L"
+          class_derivations:
+          - name: MeasurementObservation
+            populated_from: pht008729
+            slot_derivations:
+              observation_type:
+                value: "OMOP:4176265"
+              method_type:
+                value: "spirometry"
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht008729
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00401162
+                    unit:
+                      value: "L"
+          - name: MeasurementObservation
+            populated_from: pht008729
+            slot_derivations:
+              observation_type:
+                value: "OMOP:4241837"
+              method_type:
+                value: "spirometry"
+              value_quantity:
+                class_derivations:
+                - name: Quantity
+                  populated_from: pht008729
+                  slot_derivations:
+                    value_decimal:
+                      populated_from: phv00401163
+                    unit:
+                      value: "L"

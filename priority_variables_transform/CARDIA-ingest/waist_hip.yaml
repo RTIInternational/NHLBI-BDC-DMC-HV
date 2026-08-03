@@ -15,13 +15,12 @@
         body_position:
           value: STANDING_POSITION
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003298
-                slot_derivations:
-                  value_decimal:
-                    expr: "None if str({phv00190567}) == 'M' else float({phv00190567})"
-                  unit:
-                    value: "{ratio}"
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht003298
+            slot_derivations:
+              value_decimal:
+                expr: "None if str({phv00190567}) == 'M' else float({phv00190567})"
+              unit:
+                value: "{ratio}"
+                range: string
