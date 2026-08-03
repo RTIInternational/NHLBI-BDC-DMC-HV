@@ -1,35 +1,26 @@
-"""Table S5 row spec — labels, ordering, and alias map.
+"""Table S5 row spec — labels and ordering.
 
 This module captures the S5 spreadsheet's column-A label set and the row
-order it expects, plus aliases for cases where the spreadsheet's label
-diverges from ``harmonized_vars.tsv``'s ``var_label`` column (mostly
-casing or word-order drift).
+order it expects.
 
 The spec is shipped as Python constants rather than a TSV/CSV config so
-edits go through code review. If the alias list grows past ~20 entries,
-worth moving to a TSV alongside ``harmonized_vars.tsv``.
+edits go through code review.
+
+``S5_LABEL_ALIASES`` is retained but empty. Every one of its 11 former
+entries existed to reconcile an S5 label against ``harmonized_vars.tsv``'s
+``var_label`` column; Table S1 replaced that file and matches all 11
+directly, so the aliases became dead config. Kept as an extension point —
+lookups still consult it — because a future S5 label revision could
+reintroduce drift against S1.
 """
 
 from __future__ import annotations
 
-# S5 column-A labels whose form doesn't match harmonized_vars.tsv's
-# var_label.  Maps S5 spreadsheet form -> harmonized_vars.tsv form.
-# When looking up a stat for an S5 label, try the aliased form first,
-# then the literal label.  The spreadsheet form is the user-facing one
-# we preserve in TABLE_S5_LABELS below.
-S5_LABEL_ALIASES: dict[str, str] = {
-    "Alcohol Consumption": "Alcohol",
-    "Basophils Count": "basophils count",
-    "CRP c-reactive protein": "c-reactive protein CRP",
-    "Fruit consumption": "Fruits",
-    "Mean corpuscular hemoglobin": "mean corpuscular hemoglobin",
-    "Mean corpuscular hemoglobin concentration": "mean corpuscular hemoglobin concentration",
-    "Mean corpuscular volume": "mean corpuscular volume",
-    "Mean platelet volume": "mean platelet volume",
-    "Monocytes count": "monocytes count",
-    "Vegetable consumption": "Vegetables",
-    "Von Willebrand factor": "von Willebrand factor",
-}
+# S5 column-A labels whose form doesn't match Table S1's "Variable Label".
+# Maps S5 spreadsheet form -> Table S1 form. When looking up a stat for an
+# S5 label, the aliased form is tried first, then the literal label. The
+# spreadsheet form is the user-facing one preserved in TABLE_S5_LABELS.
+S5_LABEL_ALIASES: dict[str, str] = {}
 
 # Ordered list of priority variable labels for Table S5.  Defines the
 # exact row order for the paste-ready output that goes into cell B3 of

@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import math
 import unittest
+from unittest import mock
 
+from hv_dataqc.extract_harmonized.table_s5 import spec as table_s5_spec
 from hv_dataqc.extract_harmonized.table_s5.aggregate import (
     PooledRow,
     group_by_bdc_label,
@@ -325,7 +327,9 @@ class FormatPasteTsvTests(unittest.TestCase):
         self.assertEqual(statuses, {"missing"})
 
     def test_aliased_label_uses_alias_lookup(self) -> None:
-        # S5 expects "Fruit consumption" but harmonized_vars.tsv uses "Fruits".
+        # S5_LABEL_ALIASES is empty under Table S1 (S1 matches every S5 label
+        # directly), so patch one in to exercise the aliasing mechanism itself
+        # — it stays available for future S5-vs-S1 label drift.
         pooled = {
             "Fruits": PooledRow(
                 bdc_label="Fruits", n=50, nulls_missing=0, participants=50,
@@ -335,7 +339,10 @@ class FormatPasteTsvTests(unittest.TestCase):
                 n_contributors=1,
             ),
         }
-        paste, coverage = format_paste_tsv(pooled)
+        with mock.patch.dict(
+            table_s5_spec.S5_LABEL_ALIASES, {"Fruit consumption": "Fruits"}, clear=False
+        ):
+            paste, coverage = format_paste_tsv(pooled)
         # "Fruit consumption" row in S5 should be filled via the alias.
         idx = TABLE_S5_LABELS.index("Fruit consumption")
         cells = paste.split("\n")[idx].split("\t")
@@ -344,6 +351,11 @@ class FormatPasteTsvTests(unittest.TestCase):
         cov_row = next(r for r in coverage if r["s5_label"] == "Fruit consumption")
         self.assertEqual(cov_row["status"], "aliased")
         self.assertEqual(cov_row["lookup_label"], "Fruits")
+
+    def test_alias_map_is_empty_under_table_s1(self) -> None:
+        # All 11 former aliases reconciled S5 against the retired
+        # harmonized_vars.tsv. If one reappears, S1 and S5 have drifted.
+        self.assertEqual(table_s5_spec.S5_LABEL_ALIASES, {})
 
     def test_coverage_tsv_has_header(self) -> None:
         pooled = {
