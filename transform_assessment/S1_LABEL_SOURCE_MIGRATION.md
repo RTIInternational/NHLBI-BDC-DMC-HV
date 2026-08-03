@@ -1,8 +1,38 @@
 # Migrating the label source from `harmonized_vars.tsv` to Table S1
 
-**Status:** review sheet built (2026-07-27); reviewed and returned (2026-07-28);
-review rows reconciled and the resulting spec corrections applied (2026-08-03).
-Do the code migration next.
+**Status: complete (2026-08-03).** Review sheet built (2026-07-27); reviewed and
+returned (2026-07-28); review rows reconciled and the resulting spec corrections
+applied; code migration landed. `harmonized_vars.tsv` is deleted and Table S1 is
+the only label source.
+
+**What the code migration changed** — `label_map.py` reads `config/TableS1.tsv`,
+handling S1's column names (`Variable Label` / `OMOP Concept ID` /
+`Ontology CURIE`), its already-`OMOP:`-prefixed codes, and the `Deprecated
+Codes` column. It gained `load_ignored_codes` (S1's `status=ignore` rows,
+replacing the hardcoded list in `s4_layout.yaml`) and `load_var_labels` (was
+duplicated in `spec_phv_report.py`). The 11-entry `S5_LABEL_ALIASES` map and the
+8-entry `aliases:` block in `s4_layout.yaml` both went away — every one existed
+to paper over a `harmonized_vars.tsv` label, and S1 matches all of them
+directly.
+
+**Migrating fixed a live defect.** `COPD status`, `Stroke status`, and `Sleep
+apnea status` render as *empty rows* in the published S4:
+`harmonized_vars.tsv` called them `COPD` / `Stroke` / `Sleep apnea`, so their
+data went to an unmatched block instead of the template row. S1 carries the
+template's wording. `COPD` was still unsuffixed in S1 and was corrected there.
+
+**One trap worth knowing.** S1 records some codes on rows that annotate rather
+than define a variable — e.g. a `(stray code from lympho_ct)` row carrying
+`OBA:VT0000217`. That code is *white blood cell count*'s current, correct code
+in ten cohorts' specs, so registering the annotation row's label routed nine
+cohorts of real data into a junk row. `label_map.py` skips `status=ignore` rows
+(with a parenthetical-label fallback for annotation rows S1 hasn't marked yet).
+The `BARE_NAME_ALIASES` resolution needs the same guard — `lympho_ct` is one of
+its two targets.
+
+**S1 cleanup still owed** (see "Open items" below): delete the stray-code row
+outright and give the six spirometry rows real labels, so the parenthetical
+fallback can be dropped.
 
 **Spec-side outcome:** reconciling the specs against S1 surfaced four wrong
 `observation_type` concept codes, now corrected in
@@ -102,7 +132,29 @@ cleared, `review` disappears as a value and `status` carries only `ignore`.
 3011708, 3022891, 3024594, 4196583`) flagged 2026-07-07 — now declarative in
 the sheet instead of hardcoded in `s4_layout.yaml`.
 
-## Code migration (next session, after Anne)
+## Open items
+
+**S1 edits owed** (small, no code change needed once done):
+
+1. **Delete the `(stray code from lympho_ct)` row.** It carries
+   `OBA:VT0000217` under `var_name` `lympho_ct`, but that code is
+   `whtbld_ct`'s current, correct code in ten cohorts. Do *not* move it into
+   `lympho_ct`'s `Deprecated Codes` — that would encode a false claim which
+   only works because current codes outrank deprecated ones. ARIC's spec was
+   already corrected to `OBA:VT0000717`, so nothing references the stray code.
+2. **Give the six spirometry rows real labels** (e.g. `Spirometry metadata`)
+   instead of parentheticals. They already carry `status=ignore`, which is what
+   the pipeline keys on.
+
+Once both land, the parenthetical-label fallback in `label_map._is_ignored` can
+be dropped in favour of `status=ignore` alone.
+
+**Regenerating `TableS1.tsv`:** the workbook download is the full S1–S6
+supplementary data, not just S1. Read its `Table S1` sheet and write the first
+10 columns as TSV (strip CRLF). `TableS1.xlsx` is deliberately *not* kept in the
+repo — nothing reads it and a second copy only drifts.
+
+## Code migration — done 2026-08-03
 
 1. **`label_map.py`** — read the S1-derived file: `Variable Label` -> label,
    `OMOP Concept ID` (already `OMOP:`-prefixed) and `Ontology CURIE` (OBA) as
@@ -142,8 +194,18 @@ the sheet instead of hardcoded in `s4_layout.yaml`.
    codes (Lymphocytes count, AST SGOT, ...) now resolve (the gain, not just
    no-loss).
 
-## Verification before committing the migration
+## Verification
 
-Run the S4 build against real specs on SB and confirm: (a) no row regresses to
-a bare-stem label, (b) the newly-covered OBA vars resolve to real labels, and
-(c) BP still emits 2 rows (multi-concept split intact).
+Done statically (no source extracts needed — label resolution doesn't depend on
+them): resolving every live spec `observation_type` against S1 leaves **26**
+labels reaching no template row, down from 34 before the migration, plus 5
+LTRC-only variables suppressed for having no cohort column. None of the 26 is a
+regression: 6 are structural non-variables (`participant`, `person`, `visit`,
+`research_study`/`researchstudy`, `demography`), 7 are `var_name` drift where a
+cohort spells a variable differently from S1, and 13 are genuinely absent from
+S1. `COPD status` / `Stroke status` / `Sleep apnea status` no longer appear —
+they now land in their template rows.
+
+Still to confirm on SB, since these need real extracts: (a) BP still emits 2
+rows (multi-concept split intact), and (b) per-cohort phv/n counts match the
+previous run for variables whose labels didn't change.
