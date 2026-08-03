@@ -972,10 +972,10 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--extract-config", metavar="YAML",
                    help=f"Harmonized extractor config YAML (default: {_DEFAULT_EXTRACT_CONFIG})")
     p.add_argument("--label-map", metavar="TSV", default=None,
-                   help="harmonized_vars.tsv path. Resolves observation_type "
+                   help="Table S1 TSV path. Resolves observation_type "
                         "to bdc_label for each measurement / observation entry. "
                         "Pass an empty string to skip (default: shipped TSV at "
-                        "extract_harmonized/config/harmonized_vars.tsv).")
+                        "extract_harmonized/config/TableS1.tsv).")
     return p.parse_args(argv)
 
 
