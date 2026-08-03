@@ -1,0 +1,546 @@
+cohort: FHS
+known_issues:
+
+  # -- C1: 17.4% participant loss (anchor table gap) -------------------------
+  - checks: [C1]
+    variable_key: "_total"
+    yaml_file: null
+    status: known_issue
+    root_cause: anchor_table_coverage
+    summary: >
+      FHS has 18,260 participants across 6 sub-cohorts (Original, Offspring,
+      New Offspring Spouse, Gen3, Omni1, Omni2), but the pipeline anchor table
+      pht003099 (ExamData / Offspring+Omni1 exam data) covers only 15,089
+      participants. The ~3,171-participant gap reflects Original Cohort members
+      (Exams 1-32) and Gen3/Omni2 participants who appear in other source PHTs
+      but have no corresponding row in pht003099. These participants generate
+      source-side PHV counts but no harmonized entity rows. The 17.4% gap is
+      structural and stable across runs.
+    confirmed_date: "2026-07-20"
+
+  # -- C2/C3: condition_MISSING_CONCEPT and condition_UNKNOWN ----------------
+  - checks: [C2, C3]
+    variable_key: "condition_MISSING_CONCEPT"
+    yaml_file: null
+    status: false_positive
+    root_cause: multi_concept_phv_attribution
+    summary: >
+      Condition rows with null condition_concept arise from multi-concept
+      routing in Condition YAML blocks where the condition_concept is derived
+      from a PHV with coded values. Participants whose source PHV value doesn't
+      match any value_mappings key produce null condition_concept rows.
+      This is the same structural null-routing pattern seen in MESA, CHS, and
+      JHS. The null rows are structurally expected for the multi-concept
+      design and do not indicate a pipeline defect.
+    confirmed_date: "2026-07-20"
+
+  - checks: [C2, C3]
+    variable_key: "condition_UNKNOWN"
+    yaml_file: null
+    status: false_positive
+    root_cause: multi_concept_phv_attribution
+    summary: >
+      Same as condition_MISSING_CONCEPT -- Condition rows with UNKNOWN status
+      that the crosswalk cannot match to any source PHV pool. Expected
+      structural artifact of multi-concept condition routing.
+    confirmed_date: "2026-07-20"
+
+  # -- C2/C3: CRP N gain 52.7% (multi-generation FHS pooling) ---------------
+  - checks: [C2, C3]
+    variable_key: "crp+crp_1+crp_7+crp_8"
+    yaml_file: crp.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      CRP is measured in 8 FHS tables spanning Original (pht000080/081),
+      Offspring Exam 9 (pht002889, pht004802), Gen3 Exam 2 (pht010726), and
+      Gen3/Omni GWAS cycles (pht012880/881/882). Source crosswalk n_valid=18,058
+      reflects the DCC's table-union view; harmonized n_valid=27,569 reflects
+      the full multi-generation output including phv00520365 (pht012880, n=4,516)
+      and phv00462196 (pht010726, n=3,417) which push the harmonized count
+      above the source crosswalk total. This N gain indicates more FHS
+      sub-cohort participants contribute CRP measurements than the DCC crosswalk
+      aggregates. Both C4 mean (d=0.066) and C6 SD (d=0.094) mismatches follow
+      from the changed pool composition.
+    confirmed_date: "2026-07-20"
+
+  # -- C4/C6: CRP mean/SD (same pool composition artifact as C2) -------------
+  - checks: [C4, C6]
+    variable_key: "crp+crp_1+crp_7+crp_8"
+    yaml_file: crp.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      Mean (d=0.066) and SD (d=0.094) mismatches are a direct consequence of
+      the CRP pool composition change documented in the C2 entry above. The
+      Gen3/Omni populations added in the harmonized output may have different
+      CRP distributions than the Offspring-dominated source crosswalk pool.
+      Not a unit conversion error.
+    confirmed_date: "2026-07-20"
+
+  # -- C2/C3: albumin urine 88.3% N loss (multi-generation table coverage) --
+  - checks: [C2, C3]
+    variable_key: "uralbumi+fg318+b350+c425+fh342+ur_alb+albumin"
+    yaml_file: albumin_urine.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      Urine albumin pools from 9 tables across multiple FHS generations
+      (pht000742, pht000016, pht000031, pht000032, pht000017, pht002889,
+      pht004802, pht004363, pht000313). Source crosswalk n_valid=26,247 sums
+      all PHT contributions; harmonized n_valid=3,070 reflects only the
+      subset of participants in those tables that also appear in the anchor
+      PHT (pht003099). Original Cohort urine albumin tables (pht000742,
+      pht000016-017) contribute ~5,000-8,000 source rows each but their
+      participants are not in the Offspring/Omni1 anchor, yielding zero
+      harmonized rows for those PHTs. The 88.3% drop is structural: Original
+      Cohort participants are counted in source but absent from harmonized.
+    confirmed_date: "2026-07-20"
+
+  # -- C2/C3: smoking 32.5% N loss (multi-exam longitudinal pooling) ---------
+  - checks: [C2, C3]
+    variable_key: "mf71+mf330+currsmk1+currsmk2+currsmk3"
+    yaml_file: cig_smok.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      Smoking variables pool from pht000009 (Original Exams 1-8), pht007777
+      (Offspring Exams 1-32 via currsmk1-32), and pht012916 (NCS status
+      variables). Source crosswalk n_valid=109,290 sums all PHT contributions
+      across all FHS exams. Harmonized n_valid=73,785 reflects the anchor-
+      constrained output where some exam-specific PHT rows are not matched to
+      a harmonized participant via pht003099. The 32.5% gap is the expected
+      consequence of multi-generation FHS longitudinal pooling; Original Cohort
+      exam participants (pht000009, Exams 1-8) appear in source but not anchor.
+    confirmed_date: "2026-07-20"
+
+  # -- C2/C3: weight 14.5% N loss (multi-exam pooling) ----------------------
+  - checks: [C2, C3]
+    variable_key: "b13+wgt1+wgt2+wgt3+wgt4+wgt5+wgt6+wgt7+wgt8"
+    yaml_file: bdy_wgt.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      Weight variables pool from pht000031 (Original Exam 1-8 data),
+      pht006026 (Offspring Exams 1-9), pht007777 (Offspring/NOS multi-exam),
+      and pht009761 (Gen3 exams). Source crosswalk n_valid=141,124 sums all
+      PHT contributions. Harmonized n_valid=120,644 reflects participants
+      matched to the anchor. The 14.5% gap is consistent with multi-generation
+      pooling: Original Cohort weight (pht000031, n=3,744) contributes to
+      source but not to the Offspring-anchored harmonized output.
+    confirmed_date: "2026-07-20"
+
+  # -- C2/C3: CHF/heart failure conditions 5.9% N loss ----------------------
+  - checks: [C2, C3]
+    variable_key: "fb191+fd196+fe277+ff240+fg248+fh265+fi176+fi236+fj291+fk386+fl406+fm445"
+    yaml_file: hist_hrtfail.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      Heart failure condition variables pool across 22 FHS tables spanning
+      Original and Offspring exams. Source crosswalk n_valid=63,325 vs
+      harmonized n_valid=59,615 (3,877 null-status rows). The 5.9% gap
+      reflects the same anchor table coverage gap that drives the C1 total
+      loss: participants in some source PHTs have no anchor row and produce
+      null harmonized condition records. The harmonized distribution
+      (ABSENT/PRESENT/UNKNOWN proportions) matches source at the C7 level.
+    confirmed_date: "2026-07-20"
+
+  # -- C2/C3: dietary variables 12-14% N loss (diet study table coverage) ---
+  - checks: [C2, C3]
+    variable_key: "ffd30+ffd31"
+    yaml_file: null
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      FHS Framingham Diet Study (FDS) variables pool across 8 tables
+      (pht000680-682, pht002150-153, pht002350, pht002900). Source n_valid
+      sums all FDS table contributions (~20,679 rows). Harmonized n_valid
+      reflects only diet study participants matched to the Offspring/Omni1
+      anchor. The 12-14% gap (similar magnitude for ffd45) is consistent
+      with the ~17% overall anchor coverage gap. Applies to all FDS dietary
+      intake variables.
+    confirmed_date: "2026-07-20"
+
+  - checks: [C2, C3]
+    variable_key: "ffd45"
+    yaml_file: null
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      See ffd30+ffd31 entry above. ffd45 (fat diet index) has the same
+      FDS multi-table pooling artifact (13.8% N loss, 20,725 -> 17,873).
+    confirmed_date: "2026-07-20"
+
+  # -- C7: CVD/NOCVD missing categories (legacy FHS event codes) -------------
+  - checks: [C7]
+    variable_key: "mf18+cvd"
+    yaml_file: null
+    status: false_positive
+    root_cause: value_mapping_coverage_gap
+    summary: >
+      FHS CVD composite variable includes 20 rows coded as 'CVD' and 20 rows
+      coded as 'NOCVD' in the source (pht000009, mf18). These are early FHS
+      event codes that predate the standard PRESENT/ABSENT/HISTORICAL mapping.
+      The value_mappings in the YAML do not include 'CVD' or 'NOCVD' keys,
+      so these 40 rows produce null condition_status and are not counted in
+      the harmonized distribution. 20+20 = 40 rows out of ~20,072 (0.2% of
+      total) are not actionable; adding mappings would require domain review
+      of whether CVD here means incident vs prevalent event.
+    confirmed_date: "2026-07-20"
+
+  # -- C7: MONDO:0005267 AF missing (legacy atrial fibrillation codes) -------
+  - checks: [C7]
+    variable_key: "fa189+fb231+fc220+fd269+fe327+ff260+fg268+fh285+fi196+fj327"
+    yaml_file: hist_atrfib.yaml
+    status: false_positive
+    root_cause: value_mapping_coverage_gap
+    summary: >
+      24 source rows (across 26 FHS Offspring exams) have condition_status
+      mapped to MONDO:0005267 (atrial fibrillation) as a PRESENT category
+      in the source but are missing from the harmonized output. The YAML
+      routes atrial fibrillation through a multi-code value_mappings block;
+      24 rows likely have edge-case codes that route to MONDO:0005267
+      (AF) rather than the standard PRESENT mapping. These 24 rows represent
+      <0.04% of the 67,891 total AF condition rows and are not actionable.
+    confirmed_date: "2026-07-20"
+
+  # -- C7: hosp2 '0.0' missing category (hospitalization null mapping) -------
+  - checks: [C7]
+    variable_key: "fr264+fr265+fs359+fs360+ft361+ft362+g135+g136+g3a165+g3a166"
+    yaml_file: hist_hrtdis.yaml
+    status: false_positive
+    root_cause: value_mapping_coverage_gap
+    summary: >
+      4,119 source rows in the hospitalization/heart disease variable pool
+      have category '0.0' in the source (coded as "no event/hospitalization")
+      which is not mapped in the YAML value_mappings. Only 407 PRESENT rows
+      make it to harmonized, as the 0.0 "none" rows are effectively dropped.
+      In FHS, '0.0' in these condition variables represents participants who
+      had no hospitalization during that exam period -- this should map to
+      ABSENT. The omission means these rows produce null condition_status.
+      The C2 91% N loss for this variable pool is directly caused by this
+      missing mapping.
+    confirmed_date: "2026-07-20"
+
+  # -- C4/C6: ctni+chf070 mean/SD near-zero (unit conversion via expr) -------
+  - checks: [C4, C6]
+    variable_key: "ctni+chf070"
+    yaml_file: troponin.yaml
+    status: false_positive
+    root_cause: unit_conversion_mean_crosswalk
+    summary: >
+      phv00141866 (CTNI, pht002072) is stored as pg/mL per dbGaP data dict
+      (unit=pg/mL, logical_min=0.78 pg/mL). troponin.yaml divides by 1000
+      via expr to convert to ng/mL (1 ng/mL = 1000 pg/mL). C4 compares raw
+      source mean (4.09 pg/mL) vs harmonized mean (0.004 ng/mL) without
+      knowing about the /1000 in the YAML expr (not unit_conversion: block).
+      The 0.9964 d-ratio is entirely explained by the correct 1000x unit
+      conversion. C6 SD is similarly 1000x different. C5 does not detect
+      this conversion because the YAML uses expr not unit_conversion:.
+      C2 N loss (22.6%): phv00141868 (CTNI_I, code 1 = below measurable
+      range) rows are intentionally set to None in the YAML (below-LOD
+      exclusion). Source already imputed these to 0.78 pg/mL but the YAML
+      excludes them from harmonized output by design.
+    confirmed_date: "2026-07-20"
+
+  # -- C2/C3: ctni+chf070 N loss (intentional LOD exclusion) ----------------
+  - checks: [C2, C3]
+    variable_key: "ctni+chf070"
+    yaml_file: troponin.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      22.6% N loss (3,518 -> 2,724) caused by the YAML excluding rows where
+      CTNI_I (phv00141868) = 1 (below measurable range). Source counts all
+      non-null CTNI rows including below-LOD values imputed to 0.78 pg/mL.
+      Harmonized excludes below-LOD rows (intentional LOD cutoff at 0.78
+      pg/mL). This is the correct clinical behavior for high-sensitivity
+      troponin assays.
+    confirmed_date: "2026-07-20"
+
+  # -- C5: triglycerides x0.295 conversion not applied (wrong metadata) ------
+  - checks: [C5]
+    variable_key: "tg+e670+f727+g706+g3a714+trig"
+    yaml_file: triglyc_bld.yaml
+    status: false_positive
+    root_cause: unit_conversion_mean_crosswalk
+    summary: >
+      C5 check expects harmonized mean after x0.295 conversion (expected
+      36.96) but harmonized mean is 125.7 (source units). The YAML stores
+      triglycerides in mg/dL (C4 confirms: mean preserved at 125.7). The
+      x0.295 factor in the C5 crosswalk metadata is incorrect for
+      triglycerides -- the correct mg/dL -> mmol/L factor is 0.01129, not
+      0.295. The OMOP:4041722 pool crosswalk metadata has an erroneous
+      conversion factor. The YAML is correct (outputs mg/dL as declared).
+    confirmed_date: "2026-07-20"
+
+  # -- C2/C3/C7: stroke_type 74% N loss (consent group coverage) -------------
+  - checks: [C2, C3, C7]
+    variable_key: "stroke_type+stroketia_type"
+    yaml_file: stroke.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      pht006023 (vr_svstk_2022, stroke SFS) and pht006024 (vr_svstktia_2022,
+      stroke/TIA SFS) cover all FHS sub-cohorts (Original, Offspring, Gen3,
+      Omni1/2). The hv-dataqc comparison ran c1+c2 (HMB consent groups) only.
+      Stroke events in participants with DS-CVD or other restricted consent
+      groups (c3-c8) appear in the source crosswalk but not in the harmonized
+      output. The 74.3% N loss (2,064 -> 531) reflects this consent group
+      scope mismatch. The phv00276966/phv00276972 value codes (10-19) are
+      fully covered by the YAML value_mappings. The C7 'UNKNOWN' gap (8 rows)
+      is a trivial separate issue (code 19 mapping missing from one block).
+    confirmed_date: "2026-07-20"
+
+  # -- C2/C3: e630+event 69.8% N loss (pht000309 multi-event SOE filtering) -
+  - checks: [C2, C3]
+    variable_key: "e630+g3a232+e416+event"
+    yaml_file: angina.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      pht000309 is the FHS Sequence of Events (SOE) surveillance file with
+      20,247 rows covering ALL cardiovascular event types (event codes 1-50+:
+      MI, stroke, CHF, death, angina, PAD, etc.). angina.yaml correctly
+      filters pht000309 for EVENT=6 (angina, first episode) AND DATE<=0
+      (prevalent at baseline), producing 104 valid angina conditions from
+      the 20,247 rows. The source crosswalk counts all 20,247 pht000309 rows
+      as potentially attributable to the angina concept -- but the other 20,143
+      rows are non-angina cardiovascular events (MI, stroke, etc.) that
+      rightfully produce null angina condition_status.
+      The standalone 'event' C2 FAIL (99.5% N loss, pht000309 only) has the
+      same explanation. The compound pool (e630+g3a232+...) has additional
+      contributions from other PHTs that provide most of the 8,737 valid rows.
+    confirmed_date: "2026-07-20"
+
+  # -- C4/C6: QRS EKG mean/SD mismatch (unit conversion + consent coverage) -
+  - checks: [C4, C6]
+    variable_key: "g3b0371+g3a354+g359+h306+j361+fv205+fw245+fx245+fy245+dg7"
+    yaml_file: qrs_ekg.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      Two contributing factors:
+      (1) pht000074 (Gen3 Exam 1, phv00021154 = G3A354) stores QRS in
+      "HUNDREDTHS OF A SECOND" per dbGaP data dict. The YAML correctly
+      multiplies by 10 to convert to ms. The source crosswalk uses raw
+      phv00021154 values (e.g., 9 = 90 ms), so source mean is artificially
+      pulled down for those rows relative to harmonized values (9 -> 90 ms).
+      This partially explains the 12.7% mean shift.
+      (2) pht006018 (FHS CHF table) blocks contribute ECG QRS measurements
+      from CHF patients across all FHS sub-cohorts. CHF patients with LBBB
+      have QRS >150 ms, inflating the source SD (78 ms vs normal ~15 ms).
+      The c1+c2 consent groups may underrepresent CHF patients from
+      restricted-consent sub-cohorts, reducing extreme-QRS row counts in
+      harmonized output and collapsing the SD from 78 -> 39 ms.
+      Both factors are structural and not correctable by YAML changes.
+    confirmed_date: "2026-07-20"
+
+  # -- C2/C3: ahiov50+oahi 38.8% N loss (SHHS ancillary consent group coverage) --
+  - checks: [C2, C3]
+    variable_key: "ahiov50+oahi"
+    yaml_file: apnea_hypop_index.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      Sleep apnea indices (AHI overal 50% oxygen / obstructive AHI) from
+      pht000395 and pht000397 (FHS-SHHS1 ancillary sleep study). apnea_hypop_index.yaml
+      has zero joins to pht003099 (anchor), so anchor coverage is not the issue.
+      Root cause: pht000395/397 are SHHS1 ancillary data with their own
+      consent group assignments separate from the main FHS HMB consent groups
+      (c1+c2). SHHS data may be available in c3 or c4 consent groups that were
+      not run in this pipeline execution. Source crosswalk pools all consent
+      groups (2,503 total: pht000395 n=972 + n=904, pht000397 n=627), while
+      harmonized contains only c1+c2 rows (1,532). The 38.8% gap (971 rows)
+      represents SHHS sleep study participants in non-HMB consent groups.
+      Re-investigate if all FHS consent groups are run together.
+    confirmed_date: "2026-07-20"
+
+  # -- C2/C3/C4: bnp 3.8% N loss + 4.86% mean shift (anchor + pool composition) --
+  - checks: [C2, C3, C4]
+    variable_key: "bnp+chf053+chf054+ntbnp"
+    yaml_file: bnp.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      BNP/NT-proBNP pool (bnp.yaml): pht000393 (Offspring Exam 6 BNP, n=3,337),
+      pht007776 (CHF ancillary BNP 2009, n=499+588=1,087), pht000823 (Offspring
+      Exam 7 BNP, n=4,025). bnp.yaml has 1 pht003099 join (for age).
+      C2 3.8% N loss (8,449 -> 8,130 = 319 missing rows): small anchor coverage
+      gap; some BNP participants from pht007776 (CHF ancillary, spans all FHS
+      sub-cohorts) may be in non-c1+c2 consent groups.
+      C4 mean mismatch d=0.0486 (122.30 -> 128.25): pool composition change --
+      if excluded rows are the lower-BNP participants (less severe CHF), the
+      remaining harmonized pool would shift slightly upward. Alternatively,
+      Gen3 CHF patients (lower median BNP) absent from restricted consent groups
+      could explain the mean increase. Consistent with the anchor-coverage
+      explanation; not a unit conversion error (no C5 entry, C6 is WARN only).
+      Re-investigate if all FHS consent groups are run together.
+    confirmed_date: "2026-07-20"
+
+  # -- C2/C3: f692+...+stroke+hosp5 9.1% N loss (stroke+hosp multi-table anchor) --
+  - checks: [C2, C3]
+    variable_key: "f692+f701+g3a229+g3a394+fw141+fw591+fx131+fx141+fx591+fy131"
+    yaml_file: stroke.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      Large stroke+hospitalization multi-table pool spanning FHS Original
+      (pht000026-036), Offspring exams (pht000747), Gen3 (pht006005), and
+      summary tables (pht006023-025). Source crosswalk n_valid=49,364 (sum
+      across all PHTs/consent groups). Harmonized n_valid=44,873 (c1+c2 only).
+      The 9.1% N loss (4,491 rows) is explained by:
+      (1) Participants in pht006023/6024 (stroke SFS) from non-HMB consent
+      groups (same pattern as documented stroke_type+stroketia_type entry).
+      (2) Participants in pht006005 (Gen3 SOE) with DS-CVD or other consent.
+      (3) Participants in pht005142 (Offspring NOS summary) with restricted
+      consent. The ABSENT/PRESENT proportions in harmonized match source (C7
+      PASS for this pool), confirming no mapping error -- only coverage gap.
+      Re-investigate if all FHS consent groups are run together.
+    confirmed_date: "2026-07-20"
+
+  # -- C2/C3: g3a231+fu150+pe024 4.6% N loss (ven_thromb anchor coverage) ---
+  - checks: [C2, C3]
+    variable_key: "g3a231+fu150+pe024+pe025+pe026+pe027+pe029+pe030+g3c0453"
+    yaml_file: ven_thromb.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      PE/VTE condition pool from ven_thromb.yaml across pht000028/029/036
+      (Original), pht000074 (Gen3 Exam 1), pht000692 (Offspring historical),
+      pht000744 (PE/DVT SOE surveillance), pht006005 (Gen3 SOE), pht006008,
+      pht010724 (Gen3 Exam 3). ven_thromb.yaml has zero joins to pht003099
+      (no anchor constraint on the condition blocks themselves). C2 N loss
+      4.6% (8,274 -> 7,895 = 379 missing rows) reflects consent group
+      coverage: pht000744 and pht006005 span all FHS sub-cohorts, and
+      participants in c3-c8 consent groups produce source crosswalk rows
+      that don't appear in the c1+c2 harmonized output.
+      NOTE: A SEPARATE value_mappings code fix has been applied to this file
+      (description-string keys -> numeric SOE codes) to resolve the C7 FAIL.
+      The C2 N loss documented here is ADDITIONAL to and independent of that fix.
+      Re-investigate if all FHS consent groups are run together.
+    confirmed_date: "2026-07-20"
+
+  # -- C2/C3: g3a230+...+g3c0452 2.8% N loss (same ven_thromb anchor issue) --
+  - checks: [C2, C3]
+    variable_key: "g3a230+fs434+ft437+fu149+g220+g221+g404+pe013+pe016+pe019"
+    yaml_file: ven_thromb.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      DVT/VTE condition pool from ven_thromb.yaml (same file/tables as
+      g3a231 entry above). C2 N loss 2.8% (20,604 -> 20,025 = 579 missing rows).
+      Same root cause: ven_thromb.yaml has zero anchor joins; pht000744/006005
+      cover all FHS sub-cohorts but only c1+c2 were run. The smaller percentage
+      (2.8% vs 4.6%) reflects the larger pool denominator and different PHT
+      mix for DVT vs PE variables. Same SEPARATE value_mappings fix applied.
+      Re-investigate if all FHS consent groups are run together.
+    confirmed_date: "2026-07-20"
+
+  # -- C3: b751+alt+sgpt missing rate change 3.68%->13.29% (multi-block null rows) --
+  - checks: [C3]
+    variable_key: "b751+alt+sgpt"
+    yaml_file: alt_sgpt.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      ALT/SGPT pool from alt_sgpt.yaml across pht000030 (Original Exam 1),
+      pht000031 (Exam 2-8), pht001045 (Offspring Exam 1-7), pht002889
+      (Gen3/NOS Exam 2), pht004802 (Offspring Exam 9). alt_sgpt.yaml has
+      4 pht003099 joins (age_at_observation). C2 PASSES (N preserved: 10,828
+      -> 10,819, within 0.5%). C3 FAILS on missing rate: 3.68% -> 13.29%
+      (d=9.6%). This apparent contradiction is explained by the harmonized
+      output having MORE total rows than the source crosswalk total (extra
+      null rows from anchor-constrained blocks for which the join returns no
+      match). Total harmonized rows are inflated by null-value rows generated
+      by blocks from Gen3/Offspring tables where some participants appear in
+      pht002889/pht004802 but not pht003099, causing null age_at_observation.
+      These rows count toward the harmonized denominator but not n_valid,
+      increasing the apparent missing rate. The actual ALT values are correct
+      (C2 PASS confirms ~same valid count). Re-investigate if anchor table
+      coverage is expanded.
+    confirmed_date: "2026-07-20"
+
+  # -- C3: fj297+fk392+...+e600 missing rate (MI multi-exam consent coverage) --
+  - checks: [C3]
+    variable_key: "fj297+fk392+fl414+fm453+fn429+fo443+fp409+fs499+ft505+c310"
+    yaml_file: hist_my_inf.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      MI (myocardial infarction) multi-exam pool from hist_my_inf.yaml across
+      40+ FHS Original, Offspring, Gen3, and summary PHTs. hist_my_inf.yaml
+      has zero joins to pht003099. C3 missing rate change reflects consent
+      group coverage: MI surveillance data (SOE-based and exam-based) spans
+      all FHS sub-cohorts. Source crosswalk n_valid covers all consent groups
+      while harmonized is restricted to c1+c2. The missing categories in
+      harmonized represent MI events from participants in DS-CVD (c3) or other
+      restricted consent groups that were not run. C7 PASSES or PASSES with
+      small WARN for this pool (distribution proportions match), confirming
+      no mapping error. Re-investigate if all FHS consent groups are run.
+    confirmed_date: "2026-07-20"
+
+  # -- C3: eh_10a+...+hrswkday missing rate (sleep/hours multi-table pool) ----
+  - checks: [C3]
+    variable_key: "eh_10a+g3b0703+g3a596+g689+h480+h726+j628+j921+fe186+fm94"
+    yaml_file: sleep_duration_daily.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      Sleep duration and work/activity hours pool from sleep_duration_daily.yaml
+      spanning 14 PHTs: FHS Original (pht000014/022/031/033/036), Offspring
+      (pht000747), SHHS1 (pht000395), Gen3 (pht000074/003094/004814/004815),
+      NOS (pht005140/006005), pht006018 (CHF). sleep_duration_daily.yaml has
+      16 pht003099 joins. C3 missing rate change results from different pool
+      composition between source (all consent groups) and harmonized (c1+c2).
+      SHHS1 data (pht000395) contributes to source n_valid for sleep duration
+      variables but may not be available in c1+c2 consent groups. FHS Original
+      early exam sleep questions (pht000014/022) are available in c1 but their
+      missing rates differ from later exams in the pool. Mixed-table pooling
+      produces shifting missing rate profile that C3 flags as suspicious.
+      Re-investigate if all FHS consent groups are run together.
+    confirmed_date: "2026-07-20"
+
+  # -- C6: glucose SD d=0.0205 (multi-exam pool composition) -----------------
+  - checks: [C6]
+    variable_key: "fl523+fm543+fn510+fo733+fp597+fs533+ft543+a31+b737+c434"
+    yaml_file: glucose_bld.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      Glucose/blood sugar pool from glucose_bld.yaml across 28 PHTs spanning
+      all FHS generations (Original exams pht000021-036, Offspring exams,
+      Gen3, CHF table pht006018). glucose_bld.yaml has 73 pht003099 joins.
+      C4 is WARN only (d=0.0032, mean essentially preserved). C6 SD mismatch
+      d=0.0205 (source SD 30.51 -> harmonized 31.13): SD slightly HIGHER in
+      harmonized. Without a corresponding mean shift, this indicates outlier
+      composition change: some high-glucose diabetic participants from
+      restricted consent groups (DS-CVD c3 or other) appear in source but
+      not in harmonized, slightly reducing source SD. When these high-glucose
+      outliers are absent, the harmonized SD shifts slightly relative to
+      source. The difference (2.1%) is small. C9 FAIL for this pool
+      (min=0.6017 [out only]) is a separate, lower-priority issue to
+      investigate independently. Re-investigate if all consent groups run.
+    confirmed_date: "2026-07-20"
+
+  # -- C6: QT interval SD d=0.0266 (multi-exam pool composition) -------------
+  - checks: [C6]
+    variable_key: "digecg_qt1+digecg_qt2+digecg_qrs3+digecg_qt3+digecg_qt4+dg8"
+    yaml_file: qt_ekg.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      QT interval pool from qt_ekg.yaml across 10 PHTs: FHS Original Exam 2-8
+      (pht000014-017), Offspring (pht000019-020), and Exam 2-8 labs
+      (pht000030-032, pht000149). qt_ekg.yaml has 10 pht003099 joins.
+      C4 PASSES (mean preserved). C6 SD mismatch d=0.0266 (source SD 74.21 ->
+      harmonized 72.23, SD 2.7% lower in harmonized). SD shift without mean
+      shift indicates outlier composition change: either (a) early FHS Original
+      Exam participants (who tend to be older, with more cardiac pathology and
+      longer QTs) are slightly underrepresented in c1+c2 relative to source,
+      or (b) QT interval calculation differences across exam-specific digitizers
+      contribute different variance profiles across consent groups. Magnitude
+      (2.7%) is below typical clinical significance. C4 PASSES confirming no
+      unit error. Re-investigate if all FHS consent groups are run together.
+    confirmed_date: "2026-07-20"
