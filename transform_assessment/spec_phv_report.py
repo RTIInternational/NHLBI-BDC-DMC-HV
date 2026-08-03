@@ -37,7 +37,7 @@ Two inputs, both spec/enclave-derived — no sheets:
    the dbGaP cache's PHV name map. Run the source extract first (the
    ``run_extracts.sh``/``--yaml-dir`` path); this script consumes its JSON.
 
-The label for each concept is resolved from ``harmonized_vars.tsv`` by its
+The label for each concept is resolved from Table S1 by its
 ``observation_type`` concept code (OMOP/OBA), falling back to the spec
 filename stem treated as a ``var_name``, then the stem itself.
 
@@ -68,7 +68,11 @@ from typing import Any
 import yaml
 
 from hv_dataqc.hv_dataqc_common import load_phv_name_map, XLSX_FMT_COUNT
-from hv_dataqc.extract_harmonized.label_map import load_label_map
+from hv_dataqc.extract_harmonized.label_map import (
+    load_ignored_codes,
+    load_label_map,
+    load_var_labels,
+)
 
 _PHV_RE = re.compile(r"phv\d+", re.IGNORECASE)
 
@@ -238,19 +242,6 @@ def parse_spec_file(path: Path) -> dict[str, Any]:
     return {"variable": path.stem, "concepts": concepts}
 
 
-def load_var_labels(harmonized_vars_tsv: Path) -> dict[str, str]:
-    """Map spec short name (var_name) -> publication label (var_label)."""
-    labels: dict[str, str] = {}
-    with harmonized_vars_tsv.open(newline="", encoding="utf-8") as fh:
-        reader = csv.DictReader(fh, delimiter="\t")
-        for row in reader:
-            name = (row.get("var_name") or "").strip()
-            label = (row.get("var_label") or "").strip()
-            if name:
-                labels[name] = label or name
-    return labels
-
-
 def _col_n_valid(
     source_doc: dict, phv: str, pht: str | None, phv_name_map: dict[str, str]
 ) -> int | None:
@@ -376,10 +367,10 @@ def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--specs-root", required=True, type=Path,
                    help="priority_variables_transform/ root containing <cohort>-ingest dirs.")
-    p.add_argument("--harmonized-vars", type=Path,
+    p.add_argument("--table-s1", "--harmonized-vars", dest="table_s1", type=Path,
                    default=Path(__file__).resolve().parents[1]
-                   / "hv_dataqc/extract_harmonized/config/harmonized_vars.tsv",
-                   help="harmonized_vars.tsv for var_name -> var_label labels.")
+                   / "hv_dataqc/extract_harmonized/config/TableS1.tsv",
+                   help="Table S1 TSV: the authoritative variable-label source.")
     p.add_argument("--cohort", action="append", required=True,
                    help="Cohort label; repeat per cohort (matches <cohort>-ingest dir).")
     p.add_argument("--source-json", action="append", required=True, type=Path,
@@ -401,12 +392,15 @@ def main(argv: list[str] | None = None) -> int:
     if not (len(args.cohort) == len(args.source_json) == len(args.cache_dir)):
         p.error("--cohort, --source-json, --cache-dir must be repeated the same number of times")
 
-    var_labels = load_var_labels(args.harmonized_vars)
-    # observation_type concept code -> var_label, the robust join (S5 uses the
+    var_labels = load_var_labels(args.table_s1)
+    # observation_type concept code -> label, the robust join (S5 uses the
     # same map) that survives filename-stem vs var_name drift.
-    obs_type_labels = load_label_map(args.harmonized_vars)
+    obs_type_labels = load_label_map(args.table_s1)
     layout = load_layout(args.layout)
-    ignore_ots = layout.get("ignore_observation_types") or set()
+    # S1's status=ignore rows are authoritative; the layout key may add to them.
+    ignore_ots = load_ignored_codes(args.table_s1) | (
+        layout.get("ignore_observation_types") or set()
+    )
 
     # cohort -> {variable -> row}
     per_cohort: dict[str, dict[str, dict]] = {}
@@ -513,12 +507,18 @@ def _build_label_resolver(template_labels: list[str], aliases: dict) -> dict[str
     return resolver
 
 
-def _build_table(per_cohort, var_labels, layout: dict | None = None) -> tuple[list[str], list[list], list[str]]:
-    """Build the S4 table as (headers, rows) — shared by the CSV and xlsx writers.
+def _build_table(
+    per_cohort, var_labels, layout: dict | None = None
+) -> tuple[list[str], list[list], list[str], list[str]]:
+    """Build the S4 table as (headers, rows, appendix, hidden).
 
     Rows are value lists aligned to headers. When a canonical variable list is
     configured, rows follow it (blank where no data), then unmatched spec
     variables are appended after a blank separator + note row.
+
+    ``appendix`` names the unmatched variables that made it into the output;
+    ``hidden`` names those dropped because every cohort holding them lacks a
+    column in this layout, so the row would have been entirely empty.
     """
     layout = layout or {}
 
@@ -566,7 +566,7 @@ def _build_table(per_cohort, var_labels, layout: dict | None = None) -> tuple[li
     if not template_labels:
         for label in sorted(by_label):
             out_rows.append(cells_for(label, by_label[label]))
-        return headers, out_rows, []
+        return headers, out_rows, [], []
 
     resolver = _build_label_resolver(template_labels, layout.get("aliases") or {})
     matched: dict[str, dict[str, dict]] = {}
@@ -581,31 +581,81 @@ def _build_table(per_cohort, var_labels, layout: dict | None = None) -> tuple[li
     for label in template_labels:
         out_rows.append(cells_for(label, matched.get(label, {})))
 
-    if unmatched:
-        blank = [""] * len(headers)
-        out_rows.append(blank)
+    # An unmatched variable whose only cohorts have no column would render as a
+    # row of empty cells, so drop it. Its data isn't lost — there is nowhere in
+    # this layout to show it. Returned separately so callers can report it.
+    appendix = {lbl: cells_for(lbl, by_label[lbl]) for lbl in sorted(unmatched)}
+    hidden = [lbl for lbl, cells in appendix.items() if not any(c != "" for c in cells[1:])]
+    for lbl in hidden:
+        del appendix[lbl]
+
+    # Unmatched variables follow the template rows under a note row, so a
+    # reviewer sees what the specs hold that Table S1 doesn't name. No blank
+    # separator: the published S4 has no empty rows, and one here would read
+    # as the end of the table. Set append_unmatched: false for a paste-ready
+    # sheet of template rows only; they still reach the side report either way.
+    if appendix and layout.get("append_unmatched", True):
         note = layout.get("unmatched_note") or (
             "Variables below have spec data but no matching Table S4 row."
         )
         out_rows.append([note] + [""] * (len(headers) - 1))
-        for spec_label in sorted(unmatched):
-            out_rows.append(cells_for(spec_label, by_label[spec_label]))
+        out_rows.extend(appendix.values())
 
-    return headers, out_rows, sorted(unmatched)
+    return headers, out_rows, sorted(appendix), hidden
 
 
 def _write_csv(output: Path, per_cohort, var_labels, layout: dict | None = None) -> None:
-    headers, rows, unmatched = _build_table(per_cohort, var_labels, layout)
+    headers, rows, unmatched, hidden = _build_table(per_cohort, var_labels, layout)
     with output.open("w", newline="", encoding="utf-8") as fh:
         writer = csv.writer(fh)
         writer.writerow(headers)
         writer.writerows(rows)
     if unmatched:
         print(
-            f"NOTE: {len(unmatched)} spec variable(s) had no template row; "
-            f"appended at the bottom: {', '.join(unmatched)}",
+            f"NOTE: {len(unmatched)} spec variable(s) had no template row: "
+            f"{', '.join(unmatched)}",
             file=sys.stderr,
         )
+    if hidden:
+        print(
+            f"NOTE: {len(hidden)} spec variable(s) omitted entirely — their only "
+            f"cohorts have no column in this layout: {', '.join(hidden)}",
+            file=sys.stderr,
+        )
+    if unmatched or hidden:
+        _write_unmatched_report(output, per_cohort, unmatched, hidden, layout)
+
+
+def _write_unmatched_report(
+    output: Path, per_cohort, unmatched: list[str], hidden: list[str],
+    layout: dict | None,
+) -> None:
+    """Write the variables that reached no template row to a side CSV.
+
+    These are a reconciliation worklist — a spec variable Table S1 doesn't
+    name, or names differently — not part of the paste-ready S4.
+    """
+    cols = set((layout or {}).get("cohorts") or [])
+    disp = {"HCHS": "HCHS/SOL"}
+    where: dict[str, list[str]] = {}
+    for cohort, rows in per_cohort.items():
+        for row in rows.values():
+            where.setdefault(row.get("label", ""), []).append(cohort)
+
+    path = output.with_name(f"{output.stem}_unmatched.csv")
+    with path.open("w", newline="", encoding="utf-8") as fh:
+        w = csv.writer(fh)
+        w.writerow(["variable", "status", "cohorts", "cohorts_without_column"])
+        for label in list(unmatched) + list(hidden):
+            cohorts = sorted(set(where.get(label, [])))
+            no_col = [c for c in cohorts if disp.get(c, c) not in cols]
+            w.writerow([
+                label,
+                "omitted (no cohort column)" if label in hidden else "no template row",
+                ", ".join(cohorts),
+                ", ".join(no_col),
+            ])
+    print(f"Wrote {path}", file=sys.stderr)
 
 
 _S4_TITLE = "Table S4: Raw variables and sample sizes by priority variable before harmonization"
@@ -626,7 +676,7 @@ def _write_xlsx(output: Path, per_cohort, var_labels, layout: dict | None = None
     from openpyxl.utils import get_column_letter
     from openpyxl.styles import Alignment
 
-    headers, rows, _ = _build_table(per_cohort, var_labels, layout)
+    headers, rows, _, _ = _build_table(per_cohort, var_labels, layout)
     # Column groups: variable (1 col) then pairs. The header labels are derived
     # from the "<group>_phv"/"<group>_n" header names built in _build_table.
     groups: list[str] = []

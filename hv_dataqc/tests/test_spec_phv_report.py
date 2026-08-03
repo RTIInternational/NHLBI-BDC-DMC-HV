@@ -417,29 +417,56 @@ def test_layout_cohort_key_mapping(tmp_path):
     assert r["HCHS/SOL_phv"] == "1" and r["HCHS/SOL_n"] == "99"
 
 
-def test_layout_variable_list_fixes_rows_and_appends_unmatched(tmp_path):
+def _unmatched_fixture():
     per_cohort = {"FHS": {
         "ast_sgot": {"label": "AST SGOT", "phv_count": 5, "total_n": 15584},
         "fibrin": {"label": "Fibrinogen", "phv_count": 8, "total_n": 15189},
     }}
-    # Template has BMI (no data) and AST SGOT; Fibrinogen is NOT a template row,
-    # so it should be appended after a blank separator + note, not dropped.
     layout = {
         "cohorts": ["FHS"], "cohort_keys": {},
         "variables": ["BMI", "AST SGOT"],
         "unmatched_note": "No template row:",
     }
+    labels = {"ast_sgot": "AST SGOT", "fibrin": "Fibrinogen"}
+    return per_cohort, layout, labels
+
+
+def test_unmatched_variables_follow_template_rows_without_a_blank_separator(tmp_path):
+    # Fibrinogen has data but no template row, so it lands under the note row.
+    # The published S4 contains no empty rows; one here would read as the end
+    # of the table.
+    per_cohort, layout, labels = _unmatched_fixture()
     out = tmp_path / "s4.csv"
-    _write_csv(out, per_cohort, {"ast_sgot": "AST SGOT", "fibrin": "Fibrinogen"}, layout)
+    _write_csv(out, per_cohort, labels, layout)
     rows = _read_csv(out)
-    labels = [r["variable"] for r in rows]
-    # Template rows first, in order; then blank, note, then unmatched Fibrinogen.
-    assert labels[:2] == ["BMI", "AST SGOT"]
-    assert "" in labels and "No template row:" in labels
-    assert labels[-1] == "Fibrinogen"
+    lbls = [r["variable"] for r in rows]
+    assert lbls == ["BMI", "AST SGOT", "No template row:", "Fibrinogen"]
+    assert "" not in lbls
     assert rows[0]["FHS_phv"] == ""        # BMI has no data -> blank
     assert rows[1]["FHS_phv"] == "5"       # AST populated
     assert rows[-1]["FHS_phv"] == "8"      # appended Fibrinogen keeps its data
+
+
+def test_append_unmatched_false_emits_only_template_rows(tmp_path):
+    per_cohort, layout, labels = _unmatched_fixture()
+    layout = {**layout, "append_unmatched": False}
+    out = tmp_path / "s4.csv"
+    _write_csv(out, per_cohort, labels, layout)
+    assert [r["variable"] for r in _read_csv(out)] == ["BMI", "AST SGOT"]
+
+
+def test_unmatched_variables_go_to_a_side_report(tmp_path):
+    per_cohort, layout, labels = _unmatched_fixture()
+    out = tmp_path / "s4.csv"
+    _write_csv(out, per_cohort, labels, layout)
+    side = out.with_name("s4_unmatched.csv")
+    assert side.exists()
+    rows = _read_csv(side)
+    assert [r["variable"] for r in rows] == ["Fibrinogen"]
+    assert rows[0]["status"] == "no template row"
+    assert rows[0]["cohorts"] == "FHS"
+
+
 
 
 def test_totals_column_sums_across_cohorts(tmp_path):

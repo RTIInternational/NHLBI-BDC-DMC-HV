@@ -17,19 +17,21 @@
 #   list (label drift to reconcile). When absent or empty, the generator
 #   falls back to the variables it derives from the specs, sorted by label.
 #
-#   Populate this from the current S4 template's Priority Variable column
-#   (the 153 rows) so the generated output is a drop-in paste. Until then,
-#   leaving it empty keeps the generator working with spec-derived rows.
-#
-# - aliases: maps a template variable label to the alternate spec label(s)
-#   that mean the same variable. Matching is ALSO case-insensitive, so only
-#   add aliases here for real spelling/word-order differences (not mere case).
-#   A spec-derived variable whose label matches a template label (case-
-#   insensitively) or any of its aliases is placed in that template row.
+#   This list is the S4 template's Priority Variable column verbatim (148
+#   rows), so the generated output is a drop-in paste.
 #
 # - unmatched_note: text printed above the trailing block of spec variables
-#   that match no template row (appended after a blank separator so they are
-#   visibly distinct from the canonical template rows).
+#   that match no template row. There is NO blank separator row — the
+#   published S4 contains no empty rows, and one here reads as the end of
+#   the table.
+#
+# - append_unmatched: defaults to true. Set false for a paste-ready sheet of
+#   template rows only; unmatched variables still reach the side report
+#   (<output>_unmatched.csv) either way.
+#
+# Codes to drop entirely (observation_types that are metadata rather than a
+# reportable variable) come from Table S1's status=ignore rows, not from this
+# file. An optional ignore_observation_types list here is merged in addition.
 
 cohorts:
   - ARIC
@@ -41,21 +43,6 @@ cohorts:
   - JHS
   - MESA
   - WHI
-
-# observation_type concept codes to drop entirely — the MeasurementObservation
-# carrying one is not a reportable variable. These 6 OMOP codes appear only in
-# the spirometry specs (spirometry.yaml / spirometry_pre_bd / _post_bd) and are
-# metadata for the 3 real spirometry variables (FEV1, FVC, FEV1/FVC), not
-# separate measurements — per Anne Thessen, 2026-07-07. Ignoring them prevents a
-# stray "spirometry" catch-all row and keeps the 3 spirometry rows' phv counts
-# to genuine value columns.
-ignore_observation_types:
-  - OMOP:3002094
-  - OMOP:3005600
-  - OMOP:3011708
-  - OMOP:3022891
-  - OMOP:3024594
-  - OMOP:4196583
 
 variables:
   - 8-epi-PGF2a in urine
@@ -206,31 +193,6 @@ variables:
   - Waist circumference
   - Waist-hip ratio
   - White blood cell count
-
-# Template label -> spec label(s) that mean the same variable. Case-insensitive
-# matching is automatic, so list only genuine spelling / word-order / wording
-# differences here (NOT mere capitalization).
-aliases:
-  CRP c-reactive protein:
-    - c-reactive protein CRP
-  Fruit consumption:
-    - Fruits
-  Vegetable consumption:
-    - Vegetables
-  Lactate in blood:
-    - lactate
-  Insulin in blood:
-    - insulin_in_blood
-  Mean arterial pressure:
-    - mean_art_press
-  # OMOP:35609491 resolves to "Alcohol" via harmonized_vars.tsv; template
-  # uses the fuller "Alcohol Consumption".
-  Alcohol Consumption:
-    - Alcohol
-  # The lymphocyte_ct spec's obs_type (OBA:VT0000717) is not in
-  # harmonized_vars.tsv's OBA column, so the label falls back to the stem.
-  Lymphocytes count:
-    - lymphocyte_ct
 
 # Printed above the trailing block of spec variables that match no template
 # row (IL-18, the combined pr_qrs_qt variable, etc.). They are appended after
