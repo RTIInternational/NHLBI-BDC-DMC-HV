@@ -17,9 +17,15 @@ specs against S1 surfaced these four disagreements.
 | Variable | Old code | New code | Cohorts | Occurrences | Basis |
 |---|---|---|---|---|---|
 | `cig_smok` | `OMOP:4282779` | `OMOP:35811013` | 10 | 101 | Curator: "We need to use 35811013. The trans specs are incorrect." |
-| `vege_serving` | `OMOP:4042886` | `OMOP:37311566` | 6 | 40 | Wrong semantic class; see below |
+| `vege_serving` | `OMOP:4042886` | `OMOP:37311566` | 6 | 40 | Wrong semantic class; see §2 |
 | `cd40` | `OMOP:4209737` | `OBA:2052305` | MESA | 1 | Curator: "Use the OBA CURIE for CD40. The trans spec is wrong." |
 | `lympho_ct` | `OBA:VT0000217` | `OBA:VT0000717` | ARIC | 1 | Mis-code: `VT0000217` is White blood cell count |
+| `troponin` | `OMOP:8842` | `OMOP:4021291` | FHS | 2 | `8842` is a UCUM *unit*, not a concept; see §5 |
+| `carotid_imt` | `OBA:2050108` | `OMOP:4138462` | JHS | 6 | `2050108` is a *drug*, not a measurement; see §6 |
+
+The first four came from the Table S1 curator review. The last two were found
+afterwards by resolving every live `observation_type` against S1, and were
+verified in Athena and against the BDCHM schema before being changed.
 
 Note the direction differs per case. For `cig_smok`, `cd40`, and `lympho_ct` a
 minority of specs disagreed with the rest and with S1. For `vege_serving` the
@@ -105,14 +111,49 @@ rather than a deliberate choice:
 
 **The `whtbld_ct` specs are correct and were deliberately left untouched.**
 
+## 5. `troponin`: `OMOP:8842` -> `OMOP:4021291` (FHS only)
+
+2 occurrences. **`OMOP:8842` is not a clinical concept at all** — Athena gives
+it as `nanogram per milliliter`, Vocabulary `UCUM`, Domain `Unit`, Concept
+class `Unit`. A unit code had been written into the concept slot; the spec's own
+`unit: ng/mL` sits a few lines below it.
+
+`OMOP:4021291` is SNOMED "Troponin measurement" (Domain Measurement, Standard,
+Valid), is what ARIC / CARDIA / WHI already use, is what S1 lists, and is the
+BDCHM `MeasurementObservationTypeEnum` value `TROPONIN`.
+
+## 6. `carotid_imt`: `OBA:2050108` -> `OMOP:4138462` (JHS only)
+
+6 occurrences. **`2050108` is a drug** — Athena gives OMOP concept 2050108 as
+`levofloxacin 250 MG Oral Tablet [NEOBIT]`, Vocabulary `RxNorm Extension`,
+Domain `Drug`. An antibiotic stood in place of an ultrasound measurement. The
+`OBA:` prefix is also wrong, since 2050108 is an OMOP concept id, not an OBA
+term — which is likely why the error survived review.
+
+`OMOP:4138462` is used by ARIC / CHS / FHS / MESA, is what S1 lists, and is the
+BDCHM enum value `CAROTID_IMT`.
+
 ## What was NOT changed
 
 - All `value_enum` answer codes in `cig_smok` specs.
 - `whtbld_ct.yaml` (all cohorts) and `LTRC-ingest/labs_cbc.yaml`, which use
   `OBA:VT0000217` correctly for white blood cell count.
-- `SPIROMICS-ingest/cig_smok.yaml` and `FHS-ingest/vege_serving.yaml`, which
-  already carried the correct codes.
-- Every other spec file. Only the four codes above were touched.
+- `SPIROMICS-ingest/cig_smok.yaml`, `FHS-ingest/vege_serving.yaml`,
+  `ARIC/CARDIA/WHI troponin.yaml` and `ARIC/CHS/FHS/MESA carotid_imt.yaml`,
+  which already carried the correct codes.
+- **FHS's fasting-lipid codes** — `OMOP:4041720` (Plasma fasting HDL
+  cholesterol measurement), `OMOP:4041722` (Plasma fasting triglyceride
+  measurement), `OMOP:4042590` (Serum fasting triglyceride measurement). All
+  three are valid Standard SNOMED Measurement concepts and are *more* specific
+  than S1's generic `OMOP:4076704` HDL / `OMOP:4032789` Triglycerides; they
+  match the specs' own `method_type: fasting minimum 12 hrs`, and the
+  plasma/serum pair is a real specimen distinction. An initial reading treated
+  them as redundant because method and units matched across the three codes in
+  one file; Athena showed that was wrong. Whether S4 reports fasting lipids as
+  separate rows or rolls them into HDL/Triglycerides is a curator decision.
+- **`edu_lvl`** in all six cohorts, pending a decision on which concept code to
+  standardize on — see "Open items" below.
+- Every other spec file. Only the six codes in the summary table were touched.
 
 ## Verification
 
@@ -124,13 +165,67 @@ rather than a deliberate choice:
 - The 5 pre-existing validator errors in `spirometry*.yaml` are unrelated and
   untouched by this work; the validator exits 0.
 
+## Open items (decisions needed, no code changed)
+
+**A. `cig_smok` conflicts with the BDCHM schema.** The curator directed
+`OMOP:35811013`, but `MeasurementObservationTypeEnum` binds
+`SMOKING_STATUS` to the *old* code `OMOP:4282779`. `OMOP:35811013` is not a
+permissible value. The specs and the schema now disagree, and one of them has
+to move: either the enum's `SMOKING_STATUS` meaning is updated to
+`OMOP:35811013`, or the curator decision is revisited. (LTRC's spec already
+carried a comment noting this code "not in BaseObservationTypeEnum", so the
+mismatch predates this change — it is not newly introduced, but it is now the
+curator-endorsed code rather than an incidental one.) Same situation, less
+urgently, for `vege_serving` `OMOP:37311566` and Basophils `OMOP:3006315`,
+neither of which is in the enum either.
+
+**B. `edu_lvl` — four different shapes across six cohorts.** The BDCHM schema
+settles the modeling question but not the code choice. `Observation` defines
+`observation_type` as **required**, range `BaseObservationTypeEnum`; `category`
+is optional, range `GravityDomainEnum` on `SdohObservation`. So the two slots
+are not interchangeable and `category` alone is not sufficient:
+
+| Cohorts | `observation_type` | `category` | Status |
+|---|---|---|---|
+| HCHS, JHS | `OMOP:42528763` | `EDUCATIONAL_ATTAINMENT` | Correct shape |
+| CHS | `OMOP:4022643` | *(absent)* | Missing the category |
+| ARIC, MESA | *(absent)* | `EDUCATIONAL_ATTAINMENT` | Violates required slot |
+| COPDGene, FHS | `EDUCATIONAL_ATTAINMENT` | `EDUCATIONAL_ATTAINMENT` | Enum in a CURIE slot |
+
+`EDUCATIONAL_ATTAINMENT` is a `GravityDomainEnum` value and is **not** in any
+observation-type enum, so COPDGene/FHS are putting a category value in the
+concept slot. Note `BaseObservationTypeEnum` has no values of its own; it
+inherits `EducationalAttainmentObservationTypeEnum`, whose seven values are
+*answer* codes (8TH_GRADE_OR_LESS, HIGH_SCHOOL_GRADUATE_GED, ...) — i.e. the
+`value_enum` domain, not the observation-type domain. Neither `OMOP:4022643`
+nor `OMOP:42528763` is a permissible `observation_type` value today.
+
+The code choice is genuine: `OMOP:4022643` (SNOMED, Observable Entity, synonym
+"Level of educational attainment" — what S1 lists) vs `OMOP:42528763` (LOINC,
+Clinical Observation, "Highest level of educ", tagged SDOH / ordinal / point in
+time). Both describe education level. Once one is chosen, all six cohorts
+should get it in `observation_type` plus `category: EDUCATIONAL_ATTAINMENT`,
+and the enum needs a matching permissible value.
+
+**C. `alpha1_antitrypsin` has no Table S1 row.** LTRC emits `OBA:2050075`,
+which *is* in the BDCHM enum as `ALPHA-1_ANTITRYPSIN_IN_SERUM`, so the spec is
+correct — S1 is simply missing the variable. Add a row, or confirm it is out of
+scope for the published tables.
+
+**D. Enum coverage generally.** 36 of the 127 distinct `observation_type` codes
+in the live specs are not permissible values of
+`MeasurementObservationTypeEnum`. Most predate this work (the six
+spirometry-metadata codes are among them and are deliberately `status=ignore`).
+Worth a separate reconciliation pass between the specs, Table S1, and the
+schema enums; it is out of scope here.
+
 ## Review
 
-The full diff is the ground truth and is small — 143 lines, every one a
-single-token code swap:
+The full diff is the ground truth and is small — every line a single-token code
+swap:
 
 ```
-git diff priority_variables_transform/
+git diff main -- priority_variables_transform/
 ```
 
 Questions to confirm:
@@ -139,4 +234,7 @@ Questions to confirm:
    the six FFQ-based cohorts, or is there a reason those were deliberately
    coded to the substance concept?
 2. `cig_smok` -> `OMOP:35811013`: any cohort where `OMOP:4282779` was
-   intentional rather than copied?
+   intentional rather than copied? See open item A — this code is not currently
+   in the BDCHM enum.
+3. FHS fasting lipids: keep the fasting/specimen-specific codes as distinct S4
+   rows, or roll them up into HDL / Triglycerides?
