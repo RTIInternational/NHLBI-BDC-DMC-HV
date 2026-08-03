@@ -15,7 +15,4 @@
           value: "Electrocardiogram"
           range: string
         value_enum:
-          populated_from: phv00226273
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+          expr: "case(({phv00226273} == 'Pacemaker', 'PRESENT'), (True, 'ABSENT'))"
