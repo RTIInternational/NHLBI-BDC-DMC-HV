@@ -11,16 +11,15 @@
         observation_type:
           expr: 'case(({phv00083303} >= 12, "OMOP:4041722"), (True, "OBA:VT0002644"))'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00082950
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001111
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00082950
+              unit:
+                value: mg/dL
+                range: string
         method_type:
           expr: 'case(({phv00083303} >= 12, "Fasted minimum 12 hours"))'
 - class_derivations:
@@ -36,16 +35,15 @@
         observation_type:
           expr: 'case(({phv00084980} >= 12, "OMOP:4041722"), (True, "OBA:VT0002644"))'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001116
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00084968
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001116
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00084968
+              unit:
+                value: mg/dL
+                range: string
         method_type:
           expr: 'case(({phv00084980} >= 12, "Fasted minimum 12 hours-CALCULATED FROM
             NMR LIPOPROFILE-3 SPECTRAL ANALYSIS"), (True, "CALCULATED FROM NMR
@@ -64,16 +62,15 @@
           value: OBA:VT0002644
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001118
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00085918
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001118
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00085918
+              unit:
+                value: mg/dL
+                range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001119
@@ -88,16 +85,15 @@
           value: OBA:VT0002644
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001119
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00086400
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001119
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00086400
+              unit:
+                value: mg/dL
+                range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001120
@@ -112,16 +108,15 @@
           value: OBA:VT0002644
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001120
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00086831
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001120
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00086831
+              unit:
+                value: mg/dL
+                range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001121
@@ -135,16 +130,15 @@
         observation_type:
           expr: 'case(({phv00087524} >= 12, "OMOP:4041722"), (True, "OBA:VT0002644"))'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001121
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00087101
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001121
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00087101
+              unit:
+                value: mg/dL
+                range: string
         method_type:
           expr: 'case(({phv00087524} >= 12, "Fasted minimum 12 hours"))'
 - class_derivations:
@@ -161,16 +155,15 @@
           value: OBA:VT0002644
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003086
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00175237
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht003086
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00175237
+              unit:
+                value: mg/dL
+                range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003091
@@ -185,13 +178,12 @@
           value: OBA:VT0002644
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003091
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00176660
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht003091
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00176660
+              unit:
+                value: mg/dL
+                range: string

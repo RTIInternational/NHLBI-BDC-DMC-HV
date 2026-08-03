@@ -14,16 +14,15 @@
         method_type:
           value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002889
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172186
-                  unit:
-                    value: 10*3/uL
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht002889
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00172186
+              unit:
+                value: 10*3/uL
+                range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
@@ -40,16 +39,15 @@
         method_type:
           value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004802
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00227033
-                  unit:
-                    value: 10*3/uL
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht004802
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00227033
+              unit:
+                value: 10*3/uL
+                range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001045
@@ -66,13 +64,12 @@
         method_type:
           value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001045
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00081034
-                  unit:
-                    value: 10*3/uL
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001045
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00081034
+              unit:
+                value: 10*3/uL
+                range: string

@@ -13,15 +13,14 @@
         method_type:
           value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008731
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401384
-                  unit:
-                    value: "{#}/wk"
+          class_derivations:
+          - name: Quantity
+            populated_from: pht008731
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00401384
+              unit:
+                value: "{#}/wk"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001926
@@ -37,15 +36,14 @@
         method_type:
           value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001926
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00124671
-                  unit:
-                    value: "{#}/wk"
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001926
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00124671
+              unit:
+                value: "{#}/wk"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008729
@@ -61,15 +59,14 @@
         method_type:
           value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008729
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401090
-                  unit:
-                    value: "{#}/wk"
+          class_derivations:
+          - name: Quantity
+            populated_from: pht008729
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00401090
+              unit:
+                value: "{#}/wk"
 # pht008720
 # human readable transform logic
 # phv00400743 : number of days per some unit of time that any alcohol was consumed
@@ -88,16 +85,15 @@
         method_type:
           value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008720
-                slot_derivations:
-                  value_decimal:
-                    expr: "case(
-                      ({phv00400744} == 1, {phv00400745} * {phv00400743}),
-                      ({phv00400744} == 2, {phv00400745} * {phv00400743} / 4),
-                      ({phv00400744} == 3, {phv00400745} * {phv00400743} / 52)
-                      )"
-                  unit: 
-                    value: '{#}/wk'
+          class_derivations:
+          - name: Quantity
+            populated_from: pht008720
+            slot_derivations:
+              value_decimal:
+                expr: "case(
+                  ({phv00400744} == 1, {phv00400745} * {phv00400743}),
+                  ({phv00400744} == 2, {phv00400745} * {phv00400743} / 4),
+                  ({phv00400744} == 3, {phv00400745} * {phv00400743} / 52)
+                  )"
+              unit: 
+                value: '{#}/wk'

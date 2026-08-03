@@ -14,16 +14,15 @@
         method_type:
           value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000031
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00008109} / 100'
-                  unit:
-                    value: 10*6/uL
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht000031
+            slot_derivations:
+              value_decimal:
+                expr: '{phv00008109} / 100'
+              unit:
+                value: 10*6/uL
+                range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
@@ -38,16 +37,15 @@
           value: OBA:VT0001586
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002889
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172179
-                  unit:
-                    value: 10*6/uL
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht002889
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00172179
+              unit:
+                value: 10*6/uL
+                range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
@@ -64,16 +62,15 @@
         method_type:
           value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004802
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00227026
-                  unit:
-                    value: 10*6/uL
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht004802
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00227026
+              unit:
+                value: 10*6/uL
+                range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001045
@@ -90,16 +87,15 @@
         method_type:
           value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001045
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00081029
-                  unit:
-                    value: 10*6/uL
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001045
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00081029
+              unit:
+                value: 10*6/uL
+                range: string
 
 - class_derivations:
     MeasurementObservation:
@@ -115,13 +111,12 @@
           value: OBA:VT0001586
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000030
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00007641} / 100'
-                  unit:
-                    value: 10*6/uL
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht000030
+            slot_derivations:
+              value_decimal:
+                expr: '{phv00007641} / 100'
+              unit:
+                value: 10*6/uL
+                range: string

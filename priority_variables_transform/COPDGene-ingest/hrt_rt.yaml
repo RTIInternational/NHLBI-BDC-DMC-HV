@@ -20,12 +20,11 @@
         method_type:
           value: resting vital signs
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002239
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00159584
-                  unit:
-                    expr: '{beats}/min'
+          class_derivations:
+          - name: Quantity
+            populated_from: pht002239
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00159584
+              unit:
+                expr: '{beats}/min'

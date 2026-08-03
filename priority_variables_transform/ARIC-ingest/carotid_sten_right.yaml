@@ -15,12 +15,11 @@
         method_type:
           value: "carotid ultrasound"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004061
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00204552
-                  unit:
-                    value: "%"
+          class_derivations:
+          - name: Quantity
+            populated_from: pht004061
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00204552
+              unit:
+                value: "%"

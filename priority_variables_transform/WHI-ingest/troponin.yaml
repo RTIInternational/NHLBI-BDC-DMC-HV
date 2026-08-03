@@ -11,10 +11,9 @@
         method_type:
           value: "blood assay worst value"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006223
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00283653
+          class_derivations:
+          - name: Quantity
+            populated_from: pht006223
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00283653

@@ -13,15 +13,14 @@
         method_type:
           value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001563
-                slot_derivations:
-                  value_decimal:
-                    expr: "None if str({phv00112691}) == 'M' else float({phv00112691})"
-                  unit:
-                    value: "10*3/uL"
+          class_derivations:
+          - name: Quantity
+            populated_from: pht001563
+            slot_derivations:
+              value_decimal:
+                expr: "None if str({phv00112691}) == 'M' else float({phv00112691})"
+              unit:
+                value: "10*3/uL"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003298
@@ -37,13 +36,12 @@
         method_type:
           value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003298
-                slot_derivations:
-                  value_decimal:
-                    expr: "None if str({phv00190609}) == 'M' else float({phv00190609})"
-                  unit:
-                    value: "10*3/uL"
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht003298
+            slot_derivations:
+              value_decimal:
+                expr: "None if str({phv00190609}) == 'M' else float({phv00190609})"
+              unit:
+                value: "10*3/uL"
+                range: string

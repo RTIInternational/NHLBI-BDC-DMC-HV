@@ -10,16 +10,15 @@
           value: OMOP:36303297
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000160
-                slot_derivations:
-                  value_integer:
-                    populated_from: phv00023792
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht000160
+            slot_derivations:
+              value_integer:
+                populated_from: phv00023792
+              unit:
+                value: '{score}'
+                range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000172
@@ -32,13 +31,12 @@
           value: OMOP:36303297
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000172
-                slot_derivations:
-                  value_integer:
-                    populated_from: phv00023899
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - name: Quantity
+            populated_from: pht000172
+            slot_derivations:
+              value_integer:
+                populated_from: phv00023899
+              unit:
+                value: '{score}'
+                range: string
