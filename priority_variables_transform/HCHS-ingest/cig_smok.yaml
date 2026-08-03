@@ -19,7 +19,7 @@
         age_at_observation:
           expr: '{phv00226251} * 365'
         observation_type:
-          value: OMOP:4282779
+          value: OMOP:35811013
           range: string
         value_enum:
           expr: 'case(({phv00258106} == 0, "OMOP:45883537"), (True, None))'
@@ -34,7 +34,7 @@
         age_at_observation:
           expr: '{phv00226251} * 365'
         observation_type:
-          value: OMOP:4282779
+          value: OMOP:35811013
           range: string
         value_enum:
           expr: 'case(({phv00258106} == 1 and {phv00258107} == 1, "OMOP:40766945"), ({phv00258106} == 1 and {phv00258107} == 2, "OMOP:40766945"), ({phv00258106} == 1 and {phv00258107} == 3, "OMOP:45883458"), (True, None))'
