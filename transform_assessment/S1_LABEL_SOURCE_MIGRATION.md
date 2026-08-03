@@ -1,18 +1,44 @@
 # Migrating the label source from `harmonized_vars.tsv` to Table S1
 
-**Status:** review sheet built (2026-07-27); Anne reviewed it (2026-07-28). Do
-the code migration in a fresh session.
+**Status:** review sheet built (2026-07-27); reviewed and returned (2026-07-28);
+review rows reconciled and the resulting spec corrections applied (2026-08-03).
+Do the code migration next.
 
-**START HERE (next session):** Anne's feedback is IN THE SHEET, not in text.
-Read it from the reviewed workbook she returned — `~/Downloads/Data
-Harmonization Supplementary Data.xlsx`, tab **`Table S1 augmented`** (the tab
-carrying our `var_name` / `status` / `note` columns; header confirmed
-2026-07-28). If a newer download exists, prefer the most recent. The file may
-be open in Excel (a `~$…` lock file alongside it) — read a copy if openpyxl
-balks. Reconcile her decisions on the 12 review rows (6 renamed-label var_name
-confirmations, 4 code mismatches: Basophils / CD40 / Cigarette smoking / IL-18,
-2 stray codes: vege_serving OMOP:37311566 and lympho_ct OBA:VT0000217) and the
-6 ignore rows into the migration below before touching code.
+**Spec-side outcome:** reconciling the specs against S1 surfaced four wrong
+`observation_type` concept codes, now corrected in
+`priority_variables_transform/` — see
+[`SPEC_CODE_CORRECTIONS_20260803.md`](SPEC_CODE_CORRECTIONS_20260803.md), which
+is the document to hand to the transform spec owner for review. Those edits are
+independent of the label_map migration below and can land separately.
+
+**Review outcome (2026-08-03) — all 12 review rows resolved.** The curator's
+decisions came back as *threaded cell comments* on the `note` column of the
+`Table S1 augmented` tab, not as cell edits (openpyxl: load without
+`read_only`, then read `cell.comment.text`). Resolutions:
+
+- **6 renamed labels** (Alcohol Consumption, CRP c-reactive protein, Fruit
+  consumption, Sleep apnea status, Stroke status, Vegetable consumption) —
+  "confirming it still applies". Carried-over `var_name`s stand; no change.
+- **Basophils Count** — S1's `OMOP:4172647` was the error; corrected in S1 to
+  the spec's `OMOP:3006315`.
+- **CD40 / Cigarette smoking** — S1 authoritative, specs wrong. Fixed in the
+  specs.
+- **IL-18** — added as a real S1 row (`OMOP:3043144`).
+- **lympho_ct `OBA:VT0000217`** — confirmed an ARIC-only typo for
+  `OBA:VT0000717`. Fixed in the spec.
+- **vege_serving `OMOP:37311566`** — resolved the *opposite* way from first
+  reading: `OMOP:4042886` (Vegetable, a *substance*) is wrong for a
+  servings-intake measurement, and the six specs using it were corrected to
+  `OMOP:37311566`. S1's row was corrected to match. Rationale in
+  `SPEC_CODE_CORRECTIONS_20260803.md` §2.
+
+**Sheet end-state:** the `note` column is scaffolding for this review round and
+is dropped once the review rows are cleared — no code reads it. `status` is
+retained: the pipeline reads `status=ignore` to replace
+`ignore_observation_types` in `config/s4_layout.yaml` (consumed as a plain set
+of codes at `spec_phv_report.py:342`). `var_name` is retained — `label_map.py`
+and `spec_phv_report.py` both key on it and S1 has no native equivalent. A new
+`Deprecated Codes` column records superseded codes (see open question below).
 
 ## Background
 
@@ -68,23 +94,13 @@ Columns: `BDCHM Element, Variable Label, var_name, status, note, Data Type,
 UCUM Unit, Ontology CURIE, OMOP Concept ID, Variable Description`.
 
 `status`: blank = normal; `ignore` = drop this obs_type; `review` = needs a
-decision. 139 variable rows, 12 review, 6 ignore.
-
-**Review rows (12) for Anne:**
-- 6 renamed labels — confirm the carried-over var_name still applies
-  (Alcohol Consumption, CRP c-reactive protein, Fruit consumption,
-  Sleep apnea status, Stroke status, Vegetable consumption).
-- 4 code mismatches — a live spec emits a different (or absent) OMOP than S1:
-  Basophils Count (spec `OMOP:3006315` vs S1 `OMOP:4172647`), CD40 in blood
-  (spec `OMOP:4209737` vs S1 OBA-only), Cigarette smoking (spec `OMOP:4282779`
-  vs S1 `OMOP:35811013`), Interleukin 18 (spec `OMOP:3043144`, no S1 row).
-- 2 stray spec codes: FHS vege_serving also emits `OMOP:37311566` (not in S1);
-  ARIC lympho_ct emits `OBA:VT0000217` which S1 resolves to *White blood cell
-  count*, not Lymphocytes — possible mis-code.
+decision. It went out with 139 variable rows, 12 review, 6 ignore. All 12
+review rows came back resolved (see the review outcome above); once they are
+cleared, `review` disappears as a value and `status` carries only `ignore`.
 
 **Ignore rows (6):** the spirometry-metadata OMOP codes (`3002094, 3005600,
-3011708, 3022891, 3024594, 4196583`) Anne flagged 2026-07-07 — now declarative
-in the sheet instead of hardcoded in `s4_layout.yaml`.
+3011708, 3022891, 3024594, 4196583`) flagged 2026-07-07 — now declarative in
+the sheet instead of hardcoded in `s4_layout.yaml`.
 
 ## Code migration (next session, after Anne)
 
@@ -92,6 +108,17 @@ in the sheet instead of hardcoded in `s4_layout.yaml`.
    `OMOP Concept ID` (already `OMOP:`-prefixed) and `Ontology CURIE` (OBA) as
    code keys, derived `var_name` for the bare-uppercase key + `BARE_NAME_ALIASES`.
    Preserve all three key forms so `bdc_label` and S5 aggregation are unchanged.
+
+   **Decide: does `Deprecated Codes` become a fourth key form?** The reviewed
+   sheet added this column to record codes a variable *used* to carry (e.g.
+   `OMOP:4209737` on CD40, `OMOP:4282779` on Cigarette smoking,
+   `OMOP:4042886` on Vegetable consumption). Mapping them to the same label
+   would make S4 resolve historical/uncorrected specs instead of dumping them
+   in the `unmatched` block — shrinking that block rather than just relocating
+   it. Argues against: it silently masks specs that still carry a corrected
+   code, which is exactly what the unmatched block is for surfacing. A middle
+   option is to resolve them but mark the row, so they are visible and not
+   silently absorbed.
 2. **`spec_phv_report.py`** — point `load_label_map` / `load_var_labels` at the
    S1 file; column-name updates only.
 3. **Retire `s4_layout.yaml` (goal — verify first):**
@@ -102,7 +129,8 @@ in the sheet instead of hardcoded in `s4_layout.yaml`.
    - `aliases` — **all 8 confirmed dead under S1** (each spec's real
      observation_type code resolves through S1 to the template label; verified
      2026-07-27). Drop the map. Re-verify by resolving live spec codes after
-     the label_map swap before deleting.
+     the label_map swap before deleting — note the 2026-07-27 check predates
+     the four spec code corrections, so redo it against the current specs.
    - `ignore_observation_types` — moves to S1 `status=ignore` rows; pipeline
      reads them from the sheet.
    - `unmatched_note` — keep exposed, not hidden in code (Sigfried's
