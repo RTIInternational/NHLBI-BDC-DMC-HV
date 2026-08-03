@@ -201,31 +201,18 @@ class AnnotationRowTests(unittest.TestCase):
         self.assertNotIn("stray code from lympho_ct", lookup.values())
         self.assertNotIn("lympho_ct", labels)
 
-    def test_parenthetical_label_is_honoured_without_a_status(self) -> None:
-        # Fallback for annotation rows S1 has not yet marked status=ignore.
-        tsv = _write_tsv(
-            f"{_HEADER}\n"
-            f"{_row('White blood cell count', 'whtbld_ct', curie='OBA:VT0000217')}\n"
-            f"{_row('(stray code from lympho_ct)', 'lympho_ct', curie='OBA:VT0000217')}\n"
-        )
-        try:
-            lookup = load_label_map(tsv)
-        finally:
-            tsv.unlink()
-        self.assertEqual(lookup["OBA:VT0000217"], "White blood cell count")
-
     def test_shipped_s1_stray_code_resolves_to_the_real_variable(self) -> None:
         # OBA:VT0000217 is white blood cell count in ten cohorts' specs.
-        # Regression: it briefly resolved to S1's annotation-row label.
+        # Regression: it briefly resolved to an S1 annotation row's label.
         lookup = load_label_map()
         self.assertEqual(lookup["OBA:VT0000217"], "White blood cell count")
         self.assertEqual(lookup["OBA:VT0000717"], "Lymphocytes count")
         self.assertEqual(load_var_labels()["lympho_ct"], "Lymphocytes count")
 
-    def test_ignore_rows_are_collected_despite_annotation_labels(self) -> None:
-        # The 6 spirometry metadata rows carry parenthetical labels AND
-        # status=ignore — the annotation guard must not skip them.
+    def test_ignore_row_labels_stay_out_of_the_label_map(self) -> None:
+        # The 6 spirometry rows share one label; it must not become a variable.
         self.assertEqual(len(load_ignored_codes()), 6)
+        self.assertNotIn("Spirometry metadata", load_label_map().values())
 
 
 class LoadIgnoredCodesTests(unittest.TestCase):

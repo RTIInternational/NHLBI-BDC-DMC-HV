@@ -15,24 +15,27 @@ duplicated in `spec_phv_report.py`). The 11-entry `S5_LABEL_ALIASES` map and the
 to paper over a `harmonized_vars.tsv` label, and S1 matches all of them
 directly.
 
-**Migrating fixed a live defect.** `COPD status`, `Stroke status`, and `Sleep
-apnea status` render as *empty rows* in the published S4:
+**Migrating fixed a generator defect.** `COPD status`, `Stroke status`, and
+`Sleep apnea status` came out empty in *our generated* S4:
 `harmonized_vars.tsv` called them `COPD` / `Stroke` / `Sleep apnea`, so their
-data went to an unmatched block instead of the template row. S1 carries the
-template's wording. `COPD` was still unsuffixed in S1 and was corrected there.
+data went to the unmatched block instead of the template row. (The published
+spreadsheet has always had these populated — the defect was ours, not S1's.)
+S1 carries the template's wording. `COPD` was still unsuffixed in S1 and was
+corrected there.
 
 **One trap worth knowing.** S1 records some codes on rows that annotate rather
-than define a variable — e.g. a `(stray code from lympho_ct)` row carrying
-`OBA:VT0000217`. That code is *white blood cell count*'s current, correct code
-in ten cohorts' specs, so registering the annotation row's label routed nine
-cohorts of real data into a junk row. `label_map.py` skips `status=ignore` rows
-(with a parenthetical-label fallback for annotation rows S1 hasn't marked yet).
-The `BARE_NAME_ALIASES` resolution needs the same guard — `lympho_ct` is one of
-its two targets.
+than define a variable. Their labels must not enter the label map: S1 briefly
+carried a `(stray code from lympho_ct)` row holding `OBA:VT0000217`, which is
+*white blood cell count*'s current, correct code in ten cohorts' specs, so
+registering that row's label routed nine cohorts of real data into a junk row.
+`label_map._is_ignored` skips `status=ignore` rows, and the `BARE_NAME_ALIASES`
+resolution needs the same guard separately — `lympho_ct` is one of its two
+targets. Both have regression tests.
 
-**S1 cleanup still owed** (see "Open items" below): delete the stray-code row
-outright and give the six spirometry rows real labels, so the parenthetical
-fallback can be dropped.
+**S1 cleanup done 2026-08-03:** the stray-code row was deleted (155 rows now)
+and the six spirometry rows relabelled `Spirometry metadata`, so `status=ignore`
+alone identifies annotation rows and the parenthetical-label fallback was
+removed.
 
 **Spec-side outcome:** reconciling the specs against S1 surfaced four wrong
 `observation_type` concept codes, now corrected in
@@ -134,20 +137,12 @@ the sheet instead of hardcoded in `s4_layout.yaml`.
 
 ## Open items
 
-**S1 edits owed** (small, no code change needed once done):
-
-1. **Delete the `(stray code from lympho_ct)` row.** It carries
-   `OBA:VT0000217` under `var_name` `lympho_ct`, but that code is
-   `whtbld_ct`'s current, correct code in ten cohorts. Do *not* move it into
-   `lympho_ct`'s `Deprecated Codes` — that would encode a false claim which
-   only works because current codes outrank deprecated ones. ARIC's spec was
-   already corrected to `OBA:VT0000717`, so nothing references the stray code.
-2. **Give the six spirometry rows real labels** (e.g. `Spirometry metadata`)
-   instead of parentheticals. They already carry `status=ignore`, which is what
-   the pipeline keys on.
-
-Once both land, the parenthetical-label fallback in `label_map._is_ignored` can
-be dropped in favour of `status=ignore` alone.
+**`OMOP:134057` is claimed by two rows** — `cvd` (Cardiovascular disease) and
+`hist_cvd` (History of cardiovascular disease). Whichever loads second wins the
+lookup, so one of them silently can't be reached by code. Pre-existing and not
+currently harmful (only an archived spec uses the code), but it needs one of the
+two rows corrected. Worth raising with the curator alongside the other S1
+questions.
 
 **Regenerating `TableS1.tsv`:** the workbook download is the full S1–S6
 supplementary data, not just S1. Read its `Table S1` sheet and write the first

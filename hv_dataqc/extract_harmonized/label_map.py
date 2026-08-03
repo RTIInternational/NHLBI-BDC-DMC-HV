@@ -63,20 +63,13 @@ def _split_codes(raw: str) -> list[str]:
 def _is_ignored(row: dict) -> bool:
     """True for S1 rows that annotate rather than define a variable.
 
-    Such a row records a code that is metadata (the spirometry codes) or
-    superseded, and its label must never enter the label map — otherwise real
-    data gets routed into a row named after the annotation. ``OBA:VT0000217``
-    is white blood cell count in ten cohorts' specs and briefly resolved to a
-    stray-code note this way.
-
-    ``status=ignore`` is the intended marker. A parenthetical label is also
-    honoured because S1 has carried annotation rows with an empty ``status``;
-    once those are marked or removed, the label check becomes redundant.
+    Such a row records a code that is metadata (the spirometry codes) rather
+    than a reportable variable. Its label must never enter the label map, or
+    real data gets routed into a row named after the annotation — S1 briefly
+    carried a "(stray code from lympho_ct)" row holding ``OBA:VT0000217``,
+    which is white blood cell count's code in ten cohorts' specs.
     """
-    if (row.get(_STATUS_COL) or "").strip().lower() == "ignore":
-        return True
-    label = (row.get(_LABEL_COL) or "").strip()
-    return label.startswith("(") and label.endswith(")")
+    return (row.get(_STATUS_COL) or "").strip().lower() == "ignore"
 
 
 def load_label_map(path: Path | str | None = None) -> dict[str, str]:
