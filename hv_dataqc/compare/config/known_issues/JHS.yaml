@@ -1,0 +1,168 @@
+# Known false positives and expected anomalies for JHS comparison reports.
+#
+# Last reviewed: 2026-06-27
+# Report reviewed: jhs_comparison_report_20260626T141135Z.md
+
+known_issues:
+
+  # ── C1: 34% participant loss ──────────────────────────────────────────────
+  - checks: [C1]
+    variable_key: "_total"
+    yaml_file: null
+    status: known_issue
+    root_cause: anchor_table_coverage
+    summary: >
+      JHS harmonized output only covers 3,883 participants (pht008729 Exam 1
+      anchor) vs 5,885 in the all-PHT union. The 2,002 missing participants
+      attended ancillary or supplemental visits captured only in older tables
+      (e.g. pht001920) that are not the anchor for any current YAML block.
+    detail: >
+      The JHS dbGaP submission includes both the current analysis tables
+      (pht008729 Exam 1, pht008730 Exam 2, pht008731 Exam 3, N~2,800–3,900)
+      and older visit tables (pht001920 etc., N=5,885) from an earlier data
+      freeze. The current YAML files use the analysis tables as the anchor for
+      participant UUID generation. Participants who appear only in pht001920
+      and similar older tables (2,002 individuals) are not anchored to any
+      current block and therefore produce no harmonized output.
+
+      This is a deliberate coverage scope decision: the older tables predate
+      the v7 restructuring and have overlapping variable definitions that
+      complicate deduplication. Full coverage would require adding explicit
+      YAML blocks sourced from pht001920 and verifying variable definitions.
+      Investigation with find_participant_gap.py on SB is needed to determine
+      whether these 2,002 participants have priority-variable data that is
+      completely missing from the harmonized output.
+    related_issues: []
+    confirmed_date: "2026-07-16"
+
+  # ── condition_MISSING_CONCEPT: C2 FAIL ───────────────────────────────────
+  - checks: [C2]
+    variable_key: "condition_MISSING_CONCEPT"
+    yaml_file: diabetes.yaml
+    status: expected_behavior
+    root_cause: sparse_variable
+    summary: >
+      701 null diab3cat rows across three exam tables produce Condition records
+      with null condition_concept; these are structural nulls (participants
+      attended the exam but had no diabetes categorization recorded).
+    detail: >
+      diabetes.yaml contains three diab3cat blocks (one per exam) using
+      case() expressions covering codes 0 (Non-Diabetic), 1 (Pre-Diabetic),
+      2 (Diabetic). When diab3cat is null for a participant, both
+      condition_concept and condition_status resolve to null. dm-bip still
+      emits the Condition row (participant/visit UUIDs are always non-null),
+      resulting in a null condition_concept in the harmonized output.
+
+      Null diab3cat counts from dbGaP var_reports:
+        phv00401131 (pht008729, Exam 1): n=3,849 valid, nulls=34 (0.9%)
+        phv00401319 (pht008730, Exam 2): n=2,464 valid, nulls=642 (26.1%)
+        phv00401422 (pht008731, Exam 3): n=2,792 valid, nulls=25 (0.9%)
+      Total: 701 null rows -> 701 condition_MISSING_CONCEPT records.
+
+      The 642 Exam 2 nulls (26%) are structurally expected: pht008730 contains
+      all participants present at Exam 2, but diab3cat was not computed for
+      participants who did not complete the full diabetes assessment at that
+      visit. The integer case() fix (commit 44e98e38) correctly handles
+      non-null values (codes 0/1/2 now map correctly), but null rows remain
+      because dm-bip does not drop Condition records with null concept when
+      other structural slots (participant UUID, visit UUID) are non-null.
+
+      Removing the diab3cat blocks is not an acceptable fix since they are
+      the sole source of MONDO:0006920 (prediabetes) records for JHS.
+    related_issues: [680, 684]
+    confirmed_date: "2026-06-27"
+
+  # ── height C4/C6 FAIL ──────────────────────────────────────────────────────
+  - checks: [C4, C6]
+    variable_key: "bcfa12a+bcfa8a+height+bcfv12+bcfv8+antv1"
+    yaml_file: height.yaml
+    status: false_positive
+    root_cause: tooling_bug
+    summary: >
+      C4 pools raw source values in different units (feet from pht008737 Visit 6
+      bcfa, cm from all other tables); YAML correctly converts feet+inches to cm.
+    detail: >
+      pht008737 (bcfa, Visit 6) stores height in US customary units:
+      BCFA12A/BCFA8A in feet (mean ~5.08 ft), BCFA12B/BCFA8B in inches.
+      All other tables (analysis1/2/3, bcfv, antv) store height in cm
+      (mean ~168 cm). The YAML correctly converts feet+inches to cm via
+      expr: phv_feet * 30.48 + phv_inches * 2.54 for all pht008737 blocks.
+      The C4 comparison tool pools all raw source values numerically
+      regardless of unit (feet ~5 mixed with cm ~168), producing a
+      meaningless source mean of ~129. The harmonized mean of ~168.85 cm is
+      correct. This is a C4 tooling limitation with mixed-unit source pools.
+    related_issues: []
+    confirmed_date: "2026-06-27"
+
+  # ── urine albumin C4/C6 FAIL ───────────────────────────────────────────────
+  - checks: [C4, C6]
+    variable_key: "umali+umali_cresult+albuminuspot+urine_albumin+ur_albumin_24hr"
+    yaml_file: albumin_urine.yaml
+    status: false_positive
+    root_cause: tooling_bug
+    summary: >
+      C4 pools mg/dL source values (~5-7) with mg/L values (~55-70) from
+      JHS parallel-submission tables; YAML correctly converts all sources
+      to mg/L.
+    detail: >
+      JHS submitted the same biomarker data in parallel tables with different
+      units: cenB/cenC tables (pht008741/8742) store umali in mg/L (mean ~55-70);
+      analysis tables (pht008729/8730/8731) and pht001960 store AlbuminUSpot in
+      mg/dL (mean ~5-7, exactly 10x smaller). pht008759 stores ur_albumin_24hr
+      in mg/24hr (different dimension entirely).
+      The YAML correctly applies unit_conversion (mg/dL -> mg/L, x10) on all
+      mg/dL blocks. The C4 tool pools all raw source values numerically, mixing
+      mg/dL values (~5-7) with mg/L values (~55-70), producing an artificially
+      low source mean (~28 vs harmonized ~60, ratio ~2.12). All harmonized values
+      are in the correct unit (mg/L).
+    related_issues: []
+    confirmed_date: "2026-06-27"
+
+  # ── CRP C4/C6 FAIL ─────────────────────────────────────────────────────────
+  - checks: [C4, C6]
+    variable_key: "crphs2+crphs2_cresult+hscrp"
+    yaml_file: crp.yaml
+    status: false_positive
+    root_cause: tooling_bug
+    summary: >
+      C4 pools mg/dL source values (~0.53) with mg/L values (~5.6) from
+      JHS parallel-submission tables; YAML correctly converts all to mg/L.
+    detail: >
+      JHS submitted CRP in parallel tables: cenB/cenC tables (pht008741/8742)
+      store crphs2 in mg/L (N=2226+2772, mean ~5.6); analysis tables
+      (pht008729/8730/8731) and pht001945 store hscrp/HSCRP in mg/dL (mean
+      ~0.525-0.575, exactly 10x smaller). The Ns are identical between parallel
+      tables (pht008741 N=2226 = pht008730 N=2226; pht008742 N=2772 = pht008731
+      N=2772), confirming duplicate submissions at different scales.
+      The YAML correctly applies unit_conversion (mg/dL -> mg/L, x10) on mg/dL
+      sources. C4 pools mg/dL raw values with mg/L values, producing an
+      artificially low source mean (~2.0 vs harmonized ~5.5, ratio ~2.75).
+      Calculation reproduces the exact reported values (1.9966 source,
+      5.4913 harmonized) confirming the mechanism.
+    related_issues: []
+    confirmed_date: "2026-06-27"
+
+  # ── waist-hip ratio C4/C6 FAIL ─────────────────────────────────────────────
+  - checks: [C4, C6]
+    variable_key: "waist+bcfa5+bcfv5"
+    yaml_file: waist_hip.yaml
+    status: false_positive
+    root_cause: tooling_bug
+    summary: >
+      C4 compares raw circumference measurements (source, ~87 cm or ~40 in)
+      against the computed waist-hip ratio (harmonized, ~0.905); these are
+      structurally incomparable. YAML correctly computes waist / hip = ratio.
+    detail: >
+      The harmonized concept OMOP:4087501 is waist-hip ratio (dimensionless).
+      waist_hip.yaml computes the ratio as waist_phv / hip_phv for each table.
+      For pht008737 (bcfa, Visit 6): BCFA5 (waist, inches) / BCFA6 (hip, inches)
+      = ~40.4 / ~45.0 = ~0.897. For pht008730/8731 (cm): waist_cm / hip_cm ~
+      0.905. The C4 tool uses the source PHVs from waist_hip.yaml, which include
+      both waist and hip circumference measurements (the numerator and denominator
+      of the ratio). Pooling those raw circumferences produces a source mean of
+      ~87 (mix of waist and hip in cm and inches). The harmonized mean ~0.905 is
+      the correct adult waist-hip ratio. The separate waist circumference YAML
+      (OBA:1001085, bcfa5+waist+bcfv5) correctly PASSES C4 with mean preserved at
+      ~102.66 cm.
+    related_issues: []
+    confirmed_date: "2026-06-27"

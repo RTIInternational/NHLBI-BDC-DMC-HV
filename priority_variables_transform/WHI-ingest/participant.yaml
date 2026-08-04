@@ -2,8 +2,10 @@
     Participant:
       populated_from: pht000998
       slot_derivations:
-        identity:
+        id:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078435}) + ":WHI")'
+        identity:
+          expr: 'str({phv00078435})'
         member_of_research_study:
           value: "Women's Health Initiative (WHI)"
         associated_person:
