@@ -192,19 +192,14 @@ generator. Both arrived in the `origin/main` merge on this branch (`62e7a7e6`):
 
 ```
 origin/main (b1d2b8da)
-  └─ s4-s5-tooling   cc0e2c64   pushed
-       └─ s4-spec-codes  …       local; run S4 from here
+  └─ s4-s5-tooling   a3f23e6e   ← work here; run S4 from here
 ```
 
-`s4-spec-codes` is a fast-forward ahead of `s4-s5-tooling`, so merging it there
-is trivial — but doing so pulls all of `main` plus the six concept-code fixes
-into what was a tooling-only branch.
-
-`origin/s4-spec-codes` is **stale and holds no work that isn't local**: its two
-commits (`ca8a0dd2`, `f4deb029`) are byte-identical patches to local
-`be10a45c` / `0c133794` under different SHAs, left over from a branch rebuild.
-Do not `git pull` — it would merge the duplicates back in. Push with
-`--force-with-lease`.
+**`s4-spec-codes` no longer exists.** It was merged into `s4-s5-tooling`
+(fast-forward) on 2026-08-04 and deleted locally and on the remote. Anything in
+earlier notes telling you to work on or run S4 from `s4-spec-codes` is stale.
+The merge brought all of `main`, the six concept-code fixes, and this
+investigation's docs into what had been a tooling-only branch.
 
 The six concept-code fixes are the entire delta from `main` in
 `priority_variables_transform/` (20 files, one-line `observation_type` swaps plus
