@@ -686,7 +686,13 @@ def validate_class_derivations(
                                 f"on {path_prefix}{class_name}.{slot_name}"
                             ))
                             continue
-                        nested_cls = cd.get("name")
+                        if "name" in cd:
+                            nested_cls, nested_spec = cd.get("name"), cd
+                        elif len(cd) == 1:
+                            # dict-keyed form: `- ClassName: {...}`
+                            nested_cls, nested_spec = next(iter(cd.items()))
+                        else:
+                            nested_cls, nested_spec = None, cd
                         # -- Check 2.5b: nested class matches slot range --
                         expected_range = ctx.slot_ranges.get(
                             class_name, {}
@@ -706,7 +712,7 @@ def validate_class_derivations(
                         # name-keyed dict would collapse.
                         if nested_cls:
                             findings.extend(validate_class_derivations(
-                                {nested_cls: cd}, block_idx, rel_path,
+                                {nested_cls: nested_spec}, block_idx, rel_path,
                                 ctx, nested_path
                             ))
 
