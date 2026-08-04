@@ -1,85 +1,95 @@
-# Pre-harmonized Data QA/QC Report
+# transform_assessment
 
-This directory contains scripts and files for generating pre-harmonized data counts by variable and PHV, filtered to Corey's PHV validation lists.
+Generates Tables S4/S5 for the Data Harmonization supplementary data, sourced
+from the transform specs in `priority_variables_transform/` rather than from the
+curator spreadsheets. Table S1 is the concept-code → publication-label source.
 
-## Files
+## Open questions for the team
 
-- `preharmonized_qaqc_report.py`: Main script to generate the report
-- `preharmonized_qaqc_report.csv`: Generated CSV output (created when script runs)
-- `valid-phvs/`: Directory containing PHV validation lists for each cohort
-- `CLAUDE.md`: Instructions and requirements for the report generation
+Live decisions blocking or shaping this work. Nothing here is settleable without
+the person named.
 
-## Data Sources
+**For the curator — [`S1_QUESTIONS_20260803.md`](S1_QUESTIONS_20260803.md).**
+Drafted, reviewed, **still unsent** (as of 2026-08-04; none of its questions have
+been resolved since). Three questions: whether LTRC/SPIROMICS should be S4
+columns, seven `var_name` spellings that drift from S1, and thirteen spec
+variables with no S1 row. It was written to be sent "after the next S4 run" so it
+could cite real numbers — but given the state of those numbers (see the count
+investigation below), that gate may never cleanly arrive. Consider sending it
+independently.
 
-### Input Data
-- **Description**: Contains pre-harmonized variable mappings with PHV identifiers, cohort assignments, and observation counts
-- **Sources**: 
-  - [Export_BDCHM_noFHS-noCOPDGene_phv_mappings: Export_BDCHM_noFHS-noCOPDGene_p](https://docs.google.com/spreadsheets/d/1Fg6YFMldjDJWXTjFLJc4eVyXpOWeGoHJyg68i7u0LC4/edit?gid=1528582058#gid=1528582058)
-  - [FHS_VariableProperties](https://docs.google.com/spreadsheets/d/1a1JgdRlhdcPfy7uETJiU7GhdB9cDK4ZbeBIIii8os1Q/edit?gid=1781777648#gid=1781777648)
-  - [COPDGene_FullMatchWithManuals_Join_Dedup_XML_BDC Mapped Variables V1](https://docs.google.com/spreadsheets/d/1bpRKs73p5nQqFoJECrCGFy7GEkxOZ4nP/edit?gid=308728753#gid=308728753)
+**For the schema owner — specs and BDCHM enums disagree.** Raised in
+[`history/SPEC_CODE_CORRECTIONS_20260803.md`](history/SPEC_CODE_CORRECTIONS_20260803.md)
+§"Open items"; unresolved:
 
+- `cig_smok` now uses the curator-directed `OMOP:35811013`, but
+  `MeasurementObservationTypeEnum` binds `SMOKING_STATUS` to the old
+  `OMOP:4282779`. One of them has to move. Same shape, less urgent, for
+  `vege_serving` `OMOP:37311566` and Basophils `OMOP:3006315`.
+- `edu_lvl` has four different shapes across six cohorts, and neither candidate
+  concept code is a permissible `observation_type` value today.
+- `alpha1_antitrypsin` (LTRC) is correctly coded but has no Table S1 row.
+- 36 of 127 distinct `observation_type` codes in the live specs are not
+  permissible enum values. Most predate this work; worth a reconciliation pass.
 
-### Output Template Reference
-- **Template**: [Data Harmonization Supplementary Data - Table S4](https://docs.google.com/spreadsheets/d/1PDaX266_H0haa0aabMYQ6UNtEKT5-ClMarP0FvNntN8/edit?gid=1605543644#gid=1605543644)
-- **Description**: Template format for the final publication table with merged cells and multiple header lines
+**For CARDIA spec owners — asked 2026-08-04 in Slack, awaiting answer.** Seven
+`value_decimal` expressions in `CARDIA-ingest/alcohol_servings.yaml` are
+commented out; will they return for ingest? Anne Thessen's read is that the 3
+live phvs are beer/wine/liquor components and the disabled expressions summed
+them — see [`SPEC_SOURCED_S4_DESIGN.md`](SPEC_SOURCED_S4_DESIGN.md).
 
-## Generated Output
+## The count investigation (active)
 
-The script generates `preharmonized_qaqc_report.csv` with the following structure:
+**The generated S4 does not reproduce the published S4, and the published sheet
+is not trustworthy either.** This is the main open work — see
+[`s4_count_investigation/HANDOFF.md`](s4_count_investigation/HANDOFF.md).
 
-- **Columns**: `variable`, `ARIC_phv`, `ARIC_n`, `CARDIA_phv`, `CARDIA_n`, `CHS_phv`, `CHS_n`, etc.
-- **PHV columns**: Count of unique PHVs for each variable/cohort combination (after filtering)
-- **N columns**: Sum of observation counts for each variable/cohort combination (after filtering)
+Short version: comparing four dated exports of the Google Sheet shows the
+published numbers changed twice in ways that do not correspond to any change in
+the transform specs, and the 2026-06-25 export contains a duplicated row. Counts
+were pasted positionally into cell B5 before xlsx generation existed, so nothing
+joined a count to its label. Row alignment has to be established before any
+per-row diagnosis is meaningful.
 
-## Usage Instructions
+## What's here
 
-### Running the Script
+**Current pipeline**
+
+- `spec_phv_report.py` — the spec-sourced S4/S5 generator. Design and rationale
+  in [`SPEC_SOURCED_S4_DESIGN.md`](SPEC_SOURCED_S4_DESIGN.md).
+- `config/s4_layout.yaml` — canonical cohort columns and template row order.
+- `compare_s4_to_published.py` — compares one generated run against one
+  published sheet.
+- `spec_code_fixes_20260803.tsv` — the six concept-code corrections, in the form
+  handed to the spec owner.
+
+**Investigation** — `s4_count_investigation/`
+
+- `HANDOFF.md` — state of the investigation; start here.
+- `xslx/` — four dated exports of the Google Sheet, the only record of its
+  history.
+- `compare_s4_versions.py` — compares published versions to each other and
+  checks row alignment.
+- `old_pipeline/` — the superseded pipeline that produced the published numbers
+  (`preharmonized_qaqc_report.py`, `valid-phvs/`, and its notes). Symlinked from
+  this directory so it still runs. It is evidence, not dead code: its filtering
+  rules and its paste-at-line-5 workflow are what the investigation is trying to
+  reconstruct.
+
+**History** — `history/`, completed work kept for its reasoning
+
+- `S1_LABEL_SOURCE_MIGRATION.md` — the `harmonized_vars.tsv` → Table S1
+  migration.
+- `SPEC_CODE_CORRECTIONS_20260803.md` — per-code rationale for the six
+  concept-code fixes, and what was deliberately *not* changed.
+
+## Running S4
+
+On Seven Bridges (a local run is not a substitute — only 5 cohorts have dbGaP
+caches locally):
+
 ```bash
-uv run python preharmonized_qaqc_report.py
+./hv_dataqc/sb_scripts/run_s4_report.sh      # no args, idempotent
 ```
 
-### Using the Output with the Template
-1. Open the [template spreadsheet](https://docs.google.com/spreadsheets/d/1PDaX266_H0haa0aabMYQ6UNtEKT5-ClMarP0FvNntN8/edit?gid=1605543644#gid=1605543644)
-2. Copy all rows from `preharmonized_qaqc_report.csv` **except the header row**
-3. Paste the data starting at **line 5** of the template (after the merged header section)
-4. The template's merged cells and formatting will automatically apply to create the publication-ready Table S4
-
-## Cohort Status
-
-Based on the latest run:
-
-### Cohorts in Input Data
-- ARIC, CARDIA, CHS, HCHS/SOL, JHS, MESA, WHI
-
-### Cohorts with PHV Validation Lists
-- CHS, COPDGene, FHS, HCHS/SOL, MESA, WHI
-
-### Missing PHV Validation Lists
-The following cohorts appear in the input data but don't have PHV validation files:
-- **ARIC**: No `valid-phvs/aric-ingest.tsv` file found
-- **CARDIA**: No `valid-phvs/cardia-ingest.tsv` file found  
-- **JHS**: No `valid-phvs/jhs-ingest.tsv` file found
-
-*Note: Data for these cohorts is included without PHV filtering (all PHVs counted) since no validation lists exist.*
-
-### Unused PHV Validation Lists
-The following cohorts have PHV validation files but don't appear in the input data:
-- **COPDGene**: Has `valid-phvs/copdgene-ingest.tsv` but no data rows
-- **FHS**: Has `valid-phvs/fhs-ingest.tsv` but no data rows
-
-## Filtering Logic
-
-For each priority variable and cohort combination:
-1. Find all rows matching the variable name (BDCHM Label column)
-2. Filter to rows for the specific cohort
-3. **If a validation list exists** (`valid-phvs/{cohort}-ingest.tsv`): exclude PHVs not in the list
-4. **If no validation list exists**: include all PHVs for that cohort
-5. Count unique PHVs remaining after filtering
-6. Sum the observation counts (`var_report.variable.total.stats.stat.n`) for remaining rows
-
-## Notes
-
-- The script handles special cohort name mappings (e.g., "HCHS/SOL" → `hchs-ingest.tsv`)
-- Empty cells in the CSV indicate no valid data for that variable/cohort combination
-- PHV counts represent unique PHVs per variable/cohort after validation filtering
-- Observation counts (n) are cumulative across all valid PHVs for each variable/cohort
+Output lands in `/sbgenomics/workspace/S4-output-files/`.

@@ -1,6 +1,22 @@
-# Spec-sourced S4/S5 — what's settled, what's left
+# Spec-sourced S4/S5 — design
 
-## Settled
+Why the S4/S5 generator is built the way it is. Open questions for the team live
+in [`README.md`](README.md), not here.
+
+> **⚠️ Not independently reviewed.** The "Multi-concept split" section below was
+> written from inside the implementation, by whoever was writing the
+> implementation. It has never been read critically by someone who could push
+> back on it, and at least one of its claims has already drifted from the code
+> (see the Parsing bullet). That matters more than it looks: the design decision
+> recorded there — key variable identity on `observation_type` — is very likely
+> what made 282 non-measurement spec files invisible to the generator and cost a
+> session to diagnose. See "How the `observation_type` assumption spread" below.
+>
+> **Siggie: this section needs your review when there's time for it.** Not
+> urgent, but don't treat it as settled just because it's written down
+> confidently. The rest of the doc is lower-stakes.
+
+## Why specs, not sheets
 
 - **Specs are authoritative, sheets have drifted.** Live `FHS-ingest/
   ast_sgot.yaml` maps the 5 correct clinical phvs; `fibrin.yaml` maps 8.
@@ -14,9 +30,7 @@
   `thessen-s5-fixes` is unmerged, mostly spirometry/method_type, and does
   not touch ast_sgot/fibrin.
 
-## Approach
-
-Source S4 from the transform specs, not the sheets:
+Sourcing:
 
 - phv list / count / harmonized concept / cohort ← ingest YAMLs
   (`populated_from` phvs, `observation_type.value`, ingest dir)
@@ -28,6 +42,28 @@ Source S4 from the transform specs, not the sheets:
 The sheets are then not needed for any table data (phv membership,
 mapping, or n).
 
+## How the `observation_type` assumption spread
+
+Worth reading before the next section, because it is a caution about how that
+section is written.
+
+Emitting one row per `observation_type` is a correct statement about
+**measurement** files, where one file really can define several concepts. It
+says nothing about how to *find* variables in general. But `observation_type`
+became the identity join everywhere, and Condition / DrugExposure / Procedure /
+Demography specs have no `observation_type` — so 282 files became structurally
+invisible and 50 S4 rows silently rendered empty.
+
+The tell is that every justification recorded for the concept-code join is a
+measurement justification: the dual-coding bullet below argues it entirely in
+terms of collapsing HDL/LDL/triglyceride synonyms across OBA and OMOP. The other
+classes were never considered. The design was not wrong; it was written from one
+case and then applied universally.
+
+**The lesson for reading the rest of this doc:** it describes the measurement
+path in confident detail and is silent on everything else. Treat that silence as
+unexamined rather than as "not applicable."
+
 ## Multi-concept split (built)
 
 One spec file can define several harmonized concepts, each a
@@ -37,19 +73,37 @@ FVC / FEV1-FVC / ...), LTRC `body_measures.yaml` / `labs_cbc.yaml`. These
 map to separate rows in the S4 template, so S4 emits **one row per
 `observation_type`**, not one per file.
 
-- **Parsing** normalizes each spec with linkml-map's
-  `Transformer._normalize_spec_dict` and walks the resulting **dict**, which
-  flattens the local `observations` / `object_derivations` nesting into
-  walkable `class_derivations` (linkml/linkml-map issue #112). Older
-  linkml-map *dropped* that nesting silently; the fix landed on `main`
-  (commit `d5abfd0`), so HV pins **linkml-map @ main** (not a release —
-  `v0.5.2` predates the fix). We deliberately do NOT build the strict
-  `TransformationSpecification` pydantic model (`load_specification`): some
-  live specs carry local slots beyond the schema — spirometry pre/post-BD
-  MOs have a `context` slot with `activity` / `relative_timing`
-  (bronchodilator timing) — which the model rejects with `extra_forbidden`.
-  Walking the normalized dict lets those unknown slots pass through
-  harmlessly; only the value slots are read for phv counts.
+- **Parsing** is two steps, and an earlier version of this bullet conflated
+  them — worth stating precisely, since the difference is where the fragility
+  lives:
+  1. `_regroup_by_entity` reads the raw YAML and regroups a per-variable spec
+     file (a *list* of `{class_derivations: {Entity: ...}}` blocks) into the
+     composed *dict* form (`{class_derivations: [{Entity: ...}, ...]}`). This
+     step, not normalization, is what produces walkable `class_derivations`.
+     It is the same grouping dm-bip's `compose_specs` does, inlined.
+  2. `Transformer._normalize_spec_dict` then flattens the local `observations` /
+     `object_derivations` nesting (linkml/linkml-map issue #112) so nested
+     MeasurementObservations survive. Older linkml-map *dropped* that nesting
+     silently; the fix landed on `main` (commit `d5abfd0`), so HV pins
+     **linkml-map @ main** — `v0.5.2` predates it.
+
+  We deliberately do NOT build the strict `TransformationSpecification` pydantic
+  model (`load_specification`): some live specs carry local slots beyond the
+  schema — spirometry pre/post-BD MOs have a `context` slot with `activity` /
+  `relative_timing` (bronchodilator timing) — which the model rejects with
+  `extra_forbidden`. Walking the normalized dict lets those unknown slots pass
+  through harmlessly; only the value slots are read for phv counts. Note the
+  result is *not* uniformly a dict: `_as_list` exists because
+  `class_derivations` normalizes to either a list or a name→cd dict depending on
+  nesting depth.
+
+  **Fragility worth watching.** Step 2 depends on the specs using the deprecated
+  `object_derivations` spelling — the flattening we rely on is exactly what
+  triggers linkml-map's per-file `DeprecationWarning` (which
+  `_normalize_spec` suppresses by message match). Spec files are being migrated
+  to `class_derivations` (`e320be99`, `b72391a6`, `482a0152`). If that migration
+  completes, this code path may stop firing, and the suppression will hide the
+  signal that it did. Not currently tested for.
 - **dm-bip is deliberately NOT a dependency.** Its `compose_specs` (aggregate
   per-variable blocks by entity) is the only piece S4 needs, and it is
   reimplemented inline (`_regroup_by_entity`, ~10 lines). dm-bip's `main`
@@ -70,17 +124,114 @@ map to separate rows in the S4 template, so S4 emits **one row per
   `build_cohort_rows`, so they neither form a stray "spirometry" row nor
   inflate the 3 real rows' phv counts.
 
-## Remaining questions for the team
+## Non-measurement classes (designed, not yet built)
 
-1. Confirm spec-sourced S4 is the agreed direction (vs. patching sheets).
-2. For S5: which spec snapshot were the enclave harmonized TSVs built
-   from? Re-harmonizing from `main` + `thessen-s5-fixes` should clear the
-   aptamer contamination; the residual extreme values flagged in QC are in
-   the source data and stay.
-3. ~~Spirometry coverage gap~~ — RESOLVED (Anne, 2026-07-07): the 6 codes are
-   metadata for the 3 spirometry variables, not measurements. Now ignored via
-   `s4_layout.yaml` `ignore_observation_types` (see Multi-concept split above).
-4. **harmonized_vars.tsv source + freshness (Anne).** It is a manual export
-   of the curator variable-properties sheet, committed ~Jan 2026, copied in
-   from `sb_for_bdc`. Is it the right source for S4's concept→label
-   resolution, and is it current?
+The generator currently extracts phvs only from measurement value slots
+(`_VALUE_SLOTS` in `spec_phv_report.py`), so **282 spec files are structurally
+invisible** — Condition (173), DrugExposure (95), Procedure (14), and
+Demography/Person (23) carry their identity in slots that are never read. The
+effect is 50 empty rows in S4: every `Taking <drug>` row, the disease/status
+rows, and the demographics rows. `TableS1.tsv` retains all 48 non-measurement
+rows with a `var_name` matching spec filename stems, so label resolution is
+already solved; the parser just never asks.
+
+**What counts as a "relevant raw variable" per class** (settled with Siggie,
+2026-08-04, by reading one representative spec per class):
+
+| class | phv source | representative spec |
+|---|---|---|
+| MeasurementObservation | `class_derivations → slot_derivations → value_decimal → populated_from` | `CARDIA-ingest/alcohol_servings.yaml` |
+| Condition | `condition_status → populated_from` | `ARIC-ingest/diabetes.yaml` |
+| Demography | `sex` / `race` / `ethnicity` → `populated_from` | `ARIC-ingest/demography.yaml` |
+| DrugExposure | `drug_concept → expr` | `ARIC-ingest/tak_statin.yaml` |
+
+Ruled out everywhere: `associated_participant` and `associated_visit` (join
+keys, not variables — counting them would inflate every row), and `identity` /
+`id` / `species` on Person. `condition_concept` is a constant, not a phv, so it
+contributes nothing even though it carries the variable's identity. Age slots
+(`age_at_condition_start`, `age_at_death`) need no decision: **there is no age
+variable in S4**.
+
+Caveat on DrugExposure: `drug_concept` holds its phv only inside a `case()`
+predicate (`case(({phv00204156} == 1, "ATC:C10A"))`) — reachable, since
+`_slot_phvs` already parses phvs out of `expr` strings. One phv per `case()`
+line holds **in ARIC**; the other 94 DrugExposure specs have not been swept for
+multi-phv predicates. Sweep before hardcoding the assumption.
+
+### Demography and Person need slot-level mapping, not filename stems
+
+Most classes are one file per variable, so a filename-stem lookup resolves them.
+Demography and Person are not: one file feeds several S4 rows from sibling
+slots. Verified against the BDCHM schema and all 23 live specs — Demography's
+attributes are exactly `sex`/`race`/`ethnicity` with no naming variants (JHS
+lacks `ethnicity`, which is real data, not drift), and Person carries the death
+variables under slot names that do not match the S4 labels:
+
+```yaml
+slot_variables:
+  Demography: {sex: Sex, race: Race, ethnicity: Ethnicity}
+  Person:     {vital_status: Death, cause_of_death: Cause of death}
+```
+
+That covers 5 of the 48 non-measurement rows; the other 43 stay per-file on
+filename stem. **The extractor dispatches on S1's `BDCHM Element` column**:
+these two classes use the slot map, the rest use the stem lookup.
+
+**Do not assume one file per (cohort, class).** CARDIA had both
+`cause_of_death.yaml` and `person.yaml` defining a `cause_of_death` slot on
+`Person`. That specific duplication is gone — `cause_of_death.yaml` was deleted
+on `main` in the 2026-08-04 CARDIA PR — but the shape can recur, and an
+extractor that picks one file arbitrarily will silently undercount. **Detect and
+report** any (cohort, class, slot) whose phvs come from more than one file;
+don't resolve it silently. Union, authoritative-file, and "the duplication is a
+spec bug to fix" are all plausible answers and the right one depends on the
+case.
+
+### Combined phvs: 3 is the correct count for CARDIA alcohol
+
+`CARDIA-ingest/alcohol_servings.yaml` has 10 measurement blocks but only 3 live
+value phvs; the other 7 carry summing expressions that were commented out within
+a day of being written (`07e2e819` → `2a93479f` → `1623e1f1`, 2026-03-16/17).
+This looked like a large undercount against the published S4's 67.
+
+Per Anne Thessen (2026-08-04): the 3 live phvs are almost certainly **beer,
+wine, and liquor servings per week**, and the disabled expressions summed them
+into total alcohol per week. So the components are the real raw variables and
+**3 is the honest count** — the sum would have been a 4th derived value, not 27
+additional raw variables. Anne could not find these in dbGaP to confirm, so this
+is domain inference, not a lookup.
+
+Two consequences beyond this file:
+
+- Wherever multiple phvs combine into one harmonized variable, an S4-vs-S5
+  comparison will **look like data loss**. It is not, and the writeup needs to
+  say so. Whether CARDIA alcohol is the only such case is unverified — the
+  known-stub scan found value-less `Quantity` blocks in this file only (7 of
+  2,615 across all 842 specs), but live `expr` sums elsewhere would not show up
+  in that scan.
+- Leaving `slot_derivations:` empty except for comments is a schema error in its
+  own right, and today it is silently invisible to both the validator and the
+  generator. A validator check for value-less `Quantity` blocks would fire
+  exactly once right now, which is the right size for a new check.
+
+## Open on this design
+
+Team-facing questions have moved to [`README.md`](README.md). Two remain
+specific to this design:
+
+1. Confirm spec-sourced S4 is the agreed direction (vs. patching sheets). Never
+   explicitly confirmed, though the work has proceeded on that assumption since
+   ~2026-06.
+2. For S5: which spec snapshot were the enclave harmonized TSVs built from?
+   Re-harmonizing from `main` + `thessen-s5-fixes` should clear the aptamer
+   contamination; the residual extreme values flagged in QC are in the source
+   data and stay.
+
+Resolved, kept because the reasoning still governs code:
+
+- **Spirometry coverage gap** — RESOLVED (Anne Thessen, 2026-07-07): the 6 codes
+  are metadata for the 3 spirometry variables, not measurements. Now ignored via
+  `s4_layout.yaml` `ignore_observation_types` (see Multi-concept split above).
+- **`harmonized_vars.tsv` freshness** — OBSOLETE. The file was a manual export of
+  the curator variable-properties sheet and has been deleted; Table S1 is now the
+  only label source. See [`history/S1_LABEL_SOURCE_MIGRATION.md`](history/S1_LABEL_SOURCE_MIGRATION.md).

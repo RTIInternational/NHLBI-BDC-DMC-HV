@@ -1,9 +1,17 @@
 # Transform spec concept-code corrections (2026-08-03)
 
-**For review by the transform spec owner.** Four `observation_type` concept
-codes in `priority_variables_transform/*/*.yaml` are corrected here. Nothing
-else in the specs changes — every edit is a one-line `observation_type: value:`
-replacement. 18 files, 143 lines, no structural edits.
+**Completed work, kept for its reasoning.** Six `observation_type` concept codes
+in `priority_variables_transform/*/*.yaml` are corrected here — the header
+originally said four, before two more were found by resolving every live code
+against S1. Nothing else in the specs changes: every edit is a one-line
+`observation_type: value:` replacement, 20 files. A TSV of the same swaps
+(`../spec_code_fixes_20260803.tsv`) went to the spec owner in place of this
+document; **the per-code rationale below and the "What was NOT changed" section
+exist only here.**
+
+The "Open items" section at the bottom records four decisions that are still
+unresolved — they are surfaced in [`../README.md`](../README.md) so they don't
+get lost in a document about completed work.
 
 These originate from a curator review of **Table S1** (the harmonized-variable
 label table in the "Data Harmonization Supplementary Data" workbook). Table S1
