@@ -1180,7 +1180,7 @@
               qualifier:
                 value: MAXIMUM
               age_at_observation:
-                expr: 'case(({phv00257830} == 1, {pht003099.phv00177946} * 365), case({phv00257830} == 7, {pht003099.phv00177936} * 365))'
+                expr: 'case(({phv00257830} == 1, {pht003099.phv00177946} * 365), ({phv00257830} == 7, {pht003099.phv00177936} * 365))'
               value_quantity:
                 class_derivations:
                 - name: Quantity
@@ -1202,7 +1202,7 @@
               qualifier:
                 value: MAXIMUM
               age_at_observation:
-                expr: 'case(({phv00257830} == 1, {pht003099.phv00177946} * 365), case({phv00257830} == 7, {pht003099.phv00177936} * 365))'
+                expr: 'case(({phv00257830} == 1, {pht003099.phv00177946} * 365), ({phv00257830} == 7, {pht003099.phv00177936} * 365))'
               value_quantity:
                 class_derivations:
                 - name: Quantity
@@ -1224,7 +1224,7 @@
               qualifier:
                 value: MAXIMUM
               age_at_observation:
-                expr: 'case(({phv00257830} == 1, {pht003099.phv00177946} * 365), case({phv00257830} == 7, {pht003099.phv00177936} * 365))'
+                expr: 'case(({phv00257830} == 1, {pht003099.phv00177946} * 365), ({phv00257830} == 7, {pht003099.phv00177936} * 365))'
               value_quantity:
                 class_derivations:
                 - name: Quantity

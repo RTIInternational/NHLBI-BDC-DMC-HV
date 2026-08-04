@@ -481,7 +481,7 @@
                 value: 'OMOP:4152194'
                 range: string
               age_at_observation:
-                expr: 'case(({phv00254011} == 1, {pht003099.phv00177946} * 365), case({phv00254011} == 7, {pht003099.phv00177936} * 365))'
+                expr: 'case(({phv00254011} == 1, {pht003099.phv00177946} * 365), ({phv00254011} == 7, {pht003099.phv00177936} * 365))'
               method_type:
                 value: 'auscultatory method'
               body_position:
@@ -505,7 +505,7 @@
                 value: 'OMOP:4154790'
                 range: string
               age_at_observation:
-                expr: 'case(({phv00254011} == 1, {pht003099.phv00177946} * 365), case({phv00254011} == 7, {pht003099.phv00177936} * 365))'
+                expr: 'case(({phv00254011} == 1, {pht003099.phv00177946} * 365), ({phv00254011} == 7, {pht003099.phv00177936} * 365))'
               method_type:
                 value: 'auscultatory method'
               body_position:
@@ -939,7 +939,7 @@
                 value: 'OMOP:4152194'
                 range: string
               age_at_observation:
-                expr: 'case(({phv00545189} == 1, {pht003099.phv00177948} * 365), case({phv00545189} == 7, {pht003099.phv00177938} * 365))'
+                expr: 'case(({phv00545189} == 1, {pht003099.phv00177948} * 365), ({phv00545189} == 7, {pht003099.phv00177938} * 365))'
               body_position:
                 value: 'SITTING_POSITION'
               body_site:
@@ -961,7 +961,7 @@
                 value: 'OMOP:4154790'
                 range: string
               age_at_observation:
-                expr: 'case(({phv00545189} == 1, {pht003099.phv00177948} * 365), case({phv00545189} == 7, {pht003099.phv00177938} * 365))'
+                expr: 'case(({phv00545189} == 1, {pht003099.phv00177948} * 365), ({phv00545189} == 7, {pht003099.phv00177938} * 365))'
               body_position:
                 value: 'SITTING_POSITION'
               body_site:

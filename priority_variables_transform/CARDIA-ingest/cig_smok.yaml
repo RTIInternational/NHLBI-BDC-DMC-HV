@@ -11,11 +11,12 @@
           value: OMOP:35811013
           range: string
         value_enum:
-          populated_from: phv00113169
+          populated_from: phv00113168
           value_mappings:
-            '1': OMOP:45883537
-            '2': OMOP:40766945
+            '1': OMOP:40766945
+            '2': OMOP:45883537
             '88': None
+            'M': None
 - class_derivations:
     Observation:
       populated_from: pht001573
@@ -30,37 +31,7 @@
           range: string
         value_enum:
           populated_from: phv00113224
-- class_derivations:
-    Observation:
-      populated_from: pht001818
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120063}) + ":CARDIA")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120063}) + ":CARDIA YEAR 15")'
-          range: string
-        observation_type:
-          value: OMOP:35811013
-          range: string
-        value_enum:
-          populated_from: phv00120073
-- class_derivations:
-    Observation:
-      populated_from: pht001999
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00129484}) + ":CARDIA")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00129484}) + ":CARDIA YEAR 20")'
-          range: string
-        age_at_observation:
-          expr: "None if str({phv00129493}) == 'M' else float({phv00129493}) * 365"
-        observation_type:
-          value: OMOP:35811013
-          range: string
-        value_enum:
-          populated_from: phv00129542
           value_mappings:
-            '0': OMOP:45883537
-            '1': OMOP:45883458
+            '0': None
+            '1': OMOP:45883537
             '2': OMOP:40766945
