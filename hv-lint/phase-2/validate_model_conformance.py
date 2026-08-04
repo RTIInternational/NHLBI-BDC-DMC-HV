@@ -689,8 +689,13 @@ def validate_class_derivations(
                         if "name" in cd:
                             nested_cls, nested_spec = cd.get("name"), cd
                         elif len(cd) == 1:
-                            # dict-keyed form: `- ClassName: {...}`
+                            # dict-keyed form: `- ClassName: {...}`; a null body
+                            # (`- X:`) parses as {X: None}, which would silently
+                            # skip recursion below -- coerce to keep parity with
+                            # the `- name: X` form
                             nested_cls, nested_spec = next(iter(cd.items()))
+                            if not isinstance(nested_spec, dict):
+                                nested_spec = {}
                         else:
                             nested_cls, nested_spec = None, cd
                         # -- Check 2.5b: nested class matches slot range --

@@ -55,7 +55,8 @@ def iter_nested_class_derivs(slot_def):
         elif len(cd) == 1:
             # dict-keyed form: `- ClassName: {...}`
             cls_name, spec = next(iter(cd.items()))
-            yield cls_name, spec
+            # a null body (`- X:`) parses as {X: None}; callers expect a dict
+            yield cls_name, spec if isinstance(spec, dict) else {}
     for od in slot_def.get("object_derivations") or []:
         for name, spec in ((od or {}).get("class_derivations") or {}).items():
             yield name, spec
