@@ -44,6 +44,14 @@ cohorts:
   - MESA
   - WHI
 
+# Display name -> internal cohort key, for the cases where the template's
+# column header differs from the ingest directory (HCHS-ingest reports itself
+# as "HCHS"). Names not listed here map to themselves. Without this, the
+# HCHS/SOL column renders entirely blank: the lookup misses and every cell
+# falls back to empty.
+cohort_keys:
+  HCHS/SOL: HCHS
+
 variables:
   - 8-epi-PGF2a in urine
   - AHI Apnea-Hypopnea Index
