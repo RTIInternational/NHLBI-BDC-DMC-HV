@@ -2,8 +2,10 @@
     Participant:
       populated_from: pht001440
       slot_derivations:
-        identity:
+        id:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00098579}) + ":ARIC")'
+        identity:
+          expr: 'str({phv00098579})'
         member_of_research_study:
           value: 'Atherosclerosis Risk in Communities (ARIC)'
         associated_person:
