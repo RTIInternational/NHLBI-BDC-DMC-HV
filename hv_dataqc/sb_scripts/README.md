@@ -111,3 +111,35 @@ uv run python NHLBI-BDC-DMC-HV/hv_dataqc/extract_harmonized/extract_harmonized_s
 **Note:** Use `--mapped-data-dirs` instead of `--harmonized-root` for the
 harmonized extract — `--harmonized-root` tries to process all cohorts and
 can OOM on SB.
+
+## Building Table S5
+
+### `run_s5_report.sh` (recommended)
+
+Builds the paste-ready TSV for the Data Harmonization Supplementary Data –
+Table S5 spreadsheet. For each cohort present in the chosen DataRun, runs
+the harmonized extractor (with the shipped `bdc_label` map) to produce a
+per-cohort JSON, then aggregates across cohorts by `bdc_label` and emits
+the paste-ready TSV plus a coverage report.
+
+```bash
+# Use latest DataRun, all cohorts present
+./NHLBI-BDC-DMC-HV/hv_dataqc/sb_scripts/run_s5_report.sh
+
+# Pin to a specific DataRun
+./NHLBI-BDC-DMC-HV/hv_dataqc/sb_scripts/run_s5_report.sh \
+    --datarun DataRun_20260412_1830
+
+# Restrict to a subset of cohorts
+./NHLBI-BDC-DMC-HV/hv_dataqc/sb_scripts/run_s5_report.sh \
+    --cohorts ARIC,MESA
+
+# List available DataRuns
+./NHLBI-BDC-DMC-HV/hv_dataqc/sb_scripts/run_s5_report.sh --list-dataruns
+```
+
+Output goes to `/sbgenomics/workspace/S5-output-files/<RUN_TS>/` with
+per-cohort harmonized JSONs, the final `table_s5_paste_<ts>.tsv` (paste
+into cell B3 of the template), and `s5_coverage_<ts>.tsv` showing which
+S5 labels matched / aliased / went missing. The whole run dir is also
+packaged as `/sbgenomics/workspace/s5_report_<RUN_TS>.tgz` for download.

@@ -4,6 +4,10 @@ Validates that the BDC dm-bip harmonized output faithfully preserves the
 source dbGaP data — checking N preservation, distribution matching, clinical
 ranges, visit structure, and cross-variable consistency.
 
+> **Just need to regenerate a report?** See **[QUICK_RUN.md](QUICK_RUN.md)**
+> for the easiest steps to produce the S4, S5, and QAQC reports. The rest
+> of this README is background and architecture.
+
 ---
 
 ## Components

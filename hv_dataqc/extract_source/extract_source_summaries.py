@@ -69,10 +69,17 @@ _DATEFMT = "%H:%M:%S"
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
 
-# Console handler — added at module level so basic output is visible
+# Console handler — added at module level so basic output is visible.
+# Defaults to WARNING so the console stays readable (the per-PHT INFO lines —
+# hundreds for a big cohort — flood the terminal). The full INFO log is still
+# written to the run's log file via _add_file_logging. --verbose drops the
+# console back to INFO/DEBUG. Progress is surfaced via log.warning() ticks so
+# it shows even at the default console level.
 _console_handler = logging.StreamHandler(sys.stdout)
 _console_handler.setFormatter(logging.Formatter(_FMT, datefmt=_DATEFMT))
+_console_handler.setLevel(logging.WARNING)
 log.addHandler(_console_handler)
+# Logger stays at INFO so the file handler captures full detail.
 # Prevent propagation to root logger (avoids duplicate output)
 log.propagate = False
 
@@ -135,6 +142,25 @@ def _close_file_logging() -> None:
 # ---------------------------------------------------------------------------
 # Joint distribution helpers
 # ---------------------------------------------------------------------------
+
+def scope_columns_to_yaml_phvs(
+    yaml_phvs: set[str], phv_name_map: dict[str, str]
+) -> set[str]:
+    """Resolve spec-referenced PHV accessions to lowercased source column names.
+
+    Used to restrict variable summarization to only the columns the transform
+    specs reference.  Both QAQC (which reads ``variables_by_pht`` through the
+    spec crosswalk) and the spec-sourced S4 only look up spec PHVs, so dropping
+    every other column is safe — and avoids summarizing tens of thousands of
+    unused columns (FHS: ~90k columns -> a few hundred), which exhausts memory.
+
+    Each PHV is resolved to its column name via *phv_name_map*, falling back to
+    the PHV id itself when unresolved (mirroring the crosstab path's
+    ``phv_name_map.get(phv, phv)``).  The joint-distribution crosstabs read the
+    full DataFrame independently, so they are unaffected by this filter.
+    """
+    return {(phv_name_map.get(phv, phv)).lower() for phv in yaml_phvs}
+
 
 def _normalize_dist_key(value: Any) -> str:
     """Normalize a pandas cell value to a consistent string key for crosstabs.
@@ -649,6 +675,18 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
                         "and computes pairwise crosstabs during extraction. "
                         "Adds 'joint_distributions_by_pht' to the output JSON, enabling "
                         "exact (non-SKIP) comparisons for multi-PHV conditions in compare.")
+    p.add_argument("--no-scope-to-yaml", action="store_true",
+                   help="Disable the default behavior of restricting summarized columns to "
+                        "the PHVs referenced by --yaml-dir. With --yaml-dir and no explicit "
+                        "--phv-list, the extractor summarizes only spec-referenced PHVs "
+                        "(far fewer columns, much less memory). Pass this to summarize every "
+                        "column instead (the legacy full extract).")
+    p.add_argument("--no-joint-distributions", action="store_true",
+                   help="Skip the multi-PHV case() joint-distribution crosstabs even when "
+                        "--yaml-dir is given. The crosstabs power QAQC's exact multi-PHV "
+                        "comparisons but can be tens of thousands of pairs (FHS: ~33k), which "
+                        "dominates output size and memory. Table S4 does not need them — it "
+                        "reads only variables_by_pht. Still scopes columns to --yaml-dir PHVs.")
 
     # --- output ---
     p.add_argument("--output-dir", metavar="DIR", default=None,
@@ -667,6 +705,7 @@ def main(argv: list[str] | None = None) -> None:
 
     if args.verbose:
         log.setLevel(logging.DEBUG)
+        _console_handler.setLevel(logging.DEBUG)  # restore full console output
 
     config = load_source_extract_config(Path(args.thresholds) if args.thresholds else None)
     source_cfg = config.get("source_extract", {}) if isinstance(config, dict) else {}
@@ -765,10 +804,16 @@ def main(argv: list[str] | None = None) -> None:
             yaml_dir_path = Path(args.yaml_dir)
             if yaml_dir_path.is_dir():
                 yaml_phvs = scan_yaml_for_phvs(yaml_dir_path)
-                phv_pairs = scan_yaml_for_phv_pairs(yaml_dir_path)
+                # Crosstabs are skippable: S4 only needs variables_by_pht, and
+                # the pair set can be huge (FHS ~33k pairs), dominating memory.
+                phv_pairs = (
+                    [] if args.no_joint_distributions
+                    else scan_yaml_for_phv_pairs(yaml_dir_path)
+                )
                 log.info(
-                    "YAML pre-scan (%s): found %d PHV(s), %d multi-PHV pair(s) to crosstab",
+                    "YAML pre-scan (%s): found %d PHV(s), %d multi-PHV pair(s) to crosstab%s",
                     yaml_dir_path, len(yaml_phvs), len(phv_pairs),
+                    " (joint distributions disabled)" if args.no_joint_distributions else "",
                 )
                 if log.isEnabledFor(logging.DEBUG):
                     for pa, pb in phv_pairs:
@@ -794,7 +839,14 @@ def main(argv: list[str] | None = None) -> None:
         phv_filter_set: set[str] = set()
         if args.phv_list:
             phv_filter_set = {c.strip().lower() for c in args.phv_list}
-            log.info("Column filter active: %d columns", len(phv_filter_set))
+            log.info("Column filter active (explicit --phv-list): %d columns", len(phv_filter_set))
+        elif yaml_phvs and not args.no_scope_to_yaml:
+            phv_filter_set = scope_columns_to_yaml_phvs(yaml_phvs, phv_name_map)
+            log.info(
+                "Column filter active (scoped to --yaml-dir PHVs): %d spec PHV(s) -> %d column name(s). "
+                "Pass --no-scope-to-yaml for the full extract.",
+                len(yaml_phvs), len(phv_filter_set),
+            )
 
         # ------------------------------------------------------------------
         # 5. Summarize variables across all pht frames
@@ -811,10 +863,17 @@ def main(argv: list[str] | None = None) -> None:
         mapped_participants_by_pht: dict[str, int] = {}
         rows_per_visit_combined: dict[str, int] = {}
 
+        _pht_seen = 0
+        _PROGRESS_EVERY = 50
         for pht_label, df in loaded:
             log.info("--- Processing %s (%d rows) ---", pht_label, len(df))
             total_rows_all += len(df)
             total_rows_by_pht[pht_label] = len(df)
+            # Progress tick at WARNING level so it shows even when the console
+            # is quiet (default). Periodic so it does not itself become noise.
+            _pht_seen += 1
+            if _pht_seen % _PROGRESS_EVERY == 0:
+                log.warning("  ... processed %d PHTs", _pht_seen)
 
             # Visit stratification
             visit_col = args.visit_col
@@ -993,8 +1052,10 @@ def main(argv: list[str] | None = None) -> None:
         log.info("Writing %d variable summaries to %s", total_var_entries, out_path)
         _write_json_atomic(out_path, output_doc)
 
-        log.info("=== Done. Variables summarized: %d, Total rows: %d ===",
-                 total_var_entries, total_rows_all)
+        # Completion summary at WARNING level so it shows on the quiet default
+        # console (full per-PHT detail is in the run log file).
+        log.warning("Done: %d variable summaries, %d rows -> %s",
+                    total_var_entries, total_rows_all, out_path)
 
     finally:
         _close_file_logging()
