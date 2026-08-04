@@ -65,9 +65,7 @@
             slot_derivations:
               value_decimal:
                 populated_from: phv00120751
-                unit_conversion:
-                  source_unit: "mg/mL"
-                  target_unit: "mg/dL"
+                expr: "None if str({phv00120751}) in ('M', 'L', 'H', '') else float({phv00120751}) * 100"
               unit:
                 value: "mg/dL"
                 range: string

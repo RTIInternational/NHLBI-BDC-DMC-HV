@@ -1,0 +1,51 @@
+# Known false positives and expected anomalies for <COHORT> comparison reports.
+#
+# Items here have been investigated and confirmed to be tooling artifacts or
+# intentional design behavior — NOT real data quality problems.
+#
+# Use this file to record findings during a comparison review session so future
+# reviewers can dismiss these on first glance without re-investigating.
+#
+# ─────────────────────────────────────────────
+# Field reference
+# ─────────────────────────────────────────────
+#
+# checks:
+#   List of check IDs this entry covers. One or more of: C1, C2, C3, C4, C5,
+#   C6, C7, C8, C9, C10, C11, C12.
+#
+# variable_key:
+#   Substring sufficient to uniquely identify the row in the report's variable
+#   key column (e.g. "ecga271+mhea7", "diabetes2+diabetes2_indicator"). Does
+#   not need to be the full key.
+#
+# status:
+#   false_positive   — the check fires but there is no real data problem
+#   expected_behavior — the pattern is correct by design; the check result is
+#                       structurally unavoidable (e.g. sparse presence-only var)
+#
+# root_cause:
+#   tooling_bug         — a known limitation or bug in hv_dataqc itself
+#   expected_multi_record — intentional multi-block/multi-provenance design that
+#                            produces more harmonized records than source
+#   sparse_variable     — variable has very low prevalence; missing-rate metrics
+#                          are structurally misleading for presence-only vars
+#   expected_conditional_concept — concept PHV != value PHV; tool cannot split
+#                                   expected N across concept groups from marginals
+#
+# summary:
+#   One plain-text sentence. Reviewers will read this first.
+#
+# detail:
+#   Optional. Quantitative evidence, YAML block structure, marginal calculations.
+#
+# related_issues:
+#   List of RTIInternational/NHLBI-BDC-DMC-HV issue numbers (integers).
+#   Leave empty [] if no tracking issue.
+#
+# confirmed_date: YYYY-MM-DD of last review/verification.
+#
+# yaml_file:
+#   Optional. The HCHS-ingest YAML file whose design causes this pattern.
+
+known_issues: []
