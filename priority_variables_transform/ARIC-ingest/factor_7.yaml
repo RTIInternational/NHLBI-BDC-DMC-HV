@@ -16,7 +16,7 @@
             populated_from: pht004098
             slot_derivations:
               value_decimal:
-                populated_from: phv00206651
+                expr: 'None if str({phv00206651}).strip() in ("A", "O", "M", "R", "N", "U", "T", "L", "H", "", ".", "NA", "nan", "NaN") else float({phv00206651})'
               unit:
                 value: "%{normal}"
 - class_derivations:
@@ -37,6 +37,6 @@
             populated_from: pht004099
             slot_derivations:
               value_decimal:
-                populated_from: phv00206657
+                expr: 'None if str({phv00206657}).strip() in ("A", "O", "M", "R", "N", "U", "T", "L", "H", "", ".", "NA", "nan", "NaN") else float({phv00206657})'
               unit:
                 value: "%{normal}"

@@ -16,7 +16,7 @@
             populated_from: pht004098
             slot_derivations:
               value_decimal:
-                # Factor VIII C value (string type); guard against non-numeric sentinels
-                expr: 'None if str({phv00206649}).strip() in ("", ".", "NA", "nan", "NaN") else float({phv00206649}) * 0.01'
+                # Factor VIII C value (string type); guard against ARIC letter sentinels and non-numeric strings
+                expr: 'None if str({phv00206649}).strip() in ("A", "O", "M", "R", "N", "U", "T", "L", "H", "", ".", "NA", "nan", "NaN") else float({phv00206649}) * 0.01'
               unit:
                 value: "[IU]/mL"

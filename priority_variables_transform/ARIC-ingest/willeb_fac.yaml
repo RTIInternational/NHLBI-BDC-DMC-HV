@@ -16,6 +16,6 @@
             populated_from: pht004098
             slot_derivations:
               value_decimal:
-                populated_from: phv00206654
+                expr: 'None if str({phv00206654}).strip() in ("A", "O", "M", "R", "N", "U", "T", "L", "H", "", ".", "NA", "nan", "NaN") else float({phv00206654})'
               unit:
                 value: "%{normal}"
