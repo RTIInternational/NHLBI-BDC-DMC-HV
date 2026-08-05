@@ -12,13 +12,13 @@
           value: "Food Frequency Questionnaire"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001565
-            slot_derivations:
-              value_decimal:
-                expr: ({phv00112712} + {phv00112713} + {phv00112714} + {phv00112715} + {phv00112716}) * 7
-              unit: 
-                value: '{#}/wk'
+          - Quantity:
+              populated_from: pht001565
+              slot_derivations:
+                value_decimal:
+                  expr: ({phv00112712} + {phv00112713} + {phv00112714} + {phv00112715} + {phv00112716}) * 7
+                unit: 
+                  value: '{#}/wk'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001712
@@ -33,13 +33,13 @@
           value: "Food Frequency Questionnaire"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001712
-            slot_derivations:
-              value_decimal:
-                expr: ({phv00116764} + {phv00116765} + {phv00116766} + {phv00116767} + {phv00116768}) * 7
-              unit: 
-                value: '{#}/wk' 
+          - Quantity:
+              populated_from: pht001712
+              slot_derivations:
+                value_decimal:
+                  expr: ({phv00116764} + {phv00116765} + {phv00116766} + {phv00116767} + {phv00116768}) * 7
+                unit: 
+                  value: '{#}/wk' 
 
 - class_derivations:
     MeasurementObservation:
@@ -55,13 +55,13 @@
           value: "Food Frequency Questionnaire"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001713
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00116930
-              unit: 
-                value: "{#}/wk"
+          - Quantity:
+              populated_from: pht001713
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00116930
+                unit: 
+                  value: "{#}/wk"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001566
@@ -76,10 +76,10 @@
           value: "Food Frequency Questionnaire"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001566
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00112878
-              unit: 
-                value: "{#}/wk"
+          - Quantity:
+              populated_from: pht001566
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00112878
+                unit: 
+                  value: "{#}/wk"

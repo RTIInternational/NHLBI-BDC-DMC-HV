@@ -19,12 +19,12 @@
           value: OMOP:35609491
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht002239
-            slot_derivations:
-              value_decimal:
-                expr: "case(({phv00568915} == '0', 0), ({phv00568915} == '1',\
-                  \ 0), ({phv00568915} == '2', 1), ({phv00568915} == '3', 3),\
-                  \ ({phv00568915} == '4', 5))"
-              unit:
-                value: '{#}/wk'
+          - Quantity:
+              populated_from: pht002239
+              slot_derivations:
+                value_decimal:
+                  expr: "case(({phv00568915} == '0', 0), ({phv00568915} == '1',\
+                    \ 0), ({phv00568915} == '2', 1), ({phv00568915} == '3', 3),\
+                    \ ({phv00568915} == '4', 5))"
+                unit:
+                  value: '{#}/wk'

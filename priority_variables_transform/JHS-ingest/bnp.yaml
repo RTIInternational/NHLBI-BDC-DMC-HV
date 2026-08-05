@@ -12,33 +12,33 @@
           value: "blood assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht008733
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00401563
-              unit: 
-                value: pg/mL
+          - Quantity:
+              populated_from: pht008733
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00401563
+                unit: 
+                  value: pg/mL
 # phv00401564 is a categorical var indicating if bnp fell below detection limit or was an abnormally high value
         range_low:
           class_derivations:
-          - name: Quantity
-            populated_from: pht008733
-            slot_derivations:
-              value_decimal:
-                value: '2'
-                range: string
-              unit:
-                value: pg/mL
-                range: string 
+          - Quantity:
+              populated_from: pht008733
+              slot_derivations:
+                value_decimal:
+                  value: '2'
+                  range: string
+                unit:
+                  value: pg/mL
+                  range: string 
         range_high:
           class_derivations:
-          - name: Quantity
-            populated_from: pht008733
-            slot_derivations:
-              value_decimal:
-                value: '100'
-                range: string
-              unit:
-                value: pg/mL
-                range: string   
+          - Quantity:
+              populated_from: pht008733
+              slot_derivations:
+                value_decimal:
+                  value: '100'
+                  range: string
+                unit:
+                  value: pg/mL
+                  range: string   

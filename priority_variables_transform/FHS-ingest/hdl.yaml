@@ -16,14 +16,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht000395
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00055263
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht000395
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00055263
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
@@ -42,17 +42,17 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht002889
-            slot_derivations:
-              value_decimal:
-                expr: 'case(
-                         ({phv00172176} > 16.0, {phv00172176}),
-                         ({phv00172201} == 1, None)
-                      )'
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht002889
+              slot_derivations:
+                value_decimal:
+                  expr: 'case(
+                           ({phv00172176} > 16.0, {phv00172176}),
+                           ({phv00172201} == 1, None)
+                        )'
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004801
@@ -71,14 +71,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht004801
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00227018
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht004801
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00227018
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
@@ -97,26 +97,26 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht004802
-            slot_derivations:
-              value_decimal:
-                expr: case(({phv00227059} > 16.0, {phv00227059}),({phv00227068}
-                  == 1, None))
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht004802
+              slot_derivations:
+                value_decimal:
+                  expr: case(({phv00227059} > 16.0, {phv00227059}),({phv00227068}
+                    == 1, None))
+                unit:
+                  value: mg/dL
+                  range: string
         range_low:
           class_derivations:
-          - name: Quantity
-            populated_from: pht004802
-            slot_derivations:
-              value_decimal:
-                value: '16'
-                range: string
-              unit:
-                value: mg/dL
-                range: string                    
+          - Quantity:
+              populated_from: pht004802
+              slot_derivations:
+                value_decimal:
+                  value: '16'
+                  range: string
+                unit:
+                  value: mg/dL
+                  range: string                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht005143
@@ -135,14 +135,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht005143
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00255345
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht005143
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00255345
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006010
@@ -161,14 +161,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht006010
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00275405
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht006010
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00275405
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006011
@@ -187,14 +187,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht006011
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00275414
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht006011
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00275414
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006026
@@ -213,14 +213,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht006026
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00277040
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht006026
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00277040
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006026
@@ -239,14 +239,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht006026
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00277041
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht006026
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00277041
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -263,14 +263,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht009761
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00544810
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00544810
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -287,14 +287,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht009761
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00544811
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00544811
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -311,14 +311,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht009761
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00544812
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00544812
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -335,14 +335,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht009761
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00544813
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00544813
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -359,14 +359,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht009761
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00544814
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00544814
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -385,14 +385,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00369935
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00369935
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -411,14 +411,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00369936
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00369936
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -437,14 +437,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00369937
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00369937
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -463,14 +463,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00369938
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00369938
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -489,14 +489,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00369939
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00369939
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -515,14 +515,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00369940
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00369940
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -541,14 +541,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00369941
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00369941
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -567,14 +567,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00369942
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00369942
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -593,14 +593,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00369943
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00369943
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009755
@@ -619,14 +619,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht009755
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00423781
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht009755
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00423781
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -645,14 +645,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht009761
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00423914
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00423914
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -671,14 +671,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht009761
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00423915
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00423915
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -697,14 +697,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht009761
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00423916
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00423916
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -723,14 +723,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht009761
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00423917
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00423917
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000031
@@ -749,14 +749,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht000031
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00007973
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht000031
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00007973
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000013
@@ -778,14 +778,14 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht000013
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00001582
-              unit:
-                value: mg/dL
-                range: string
+          - Quantity:
+              populated_from: pht000013
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00001582
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000013
@@ -803,11 +803,11 @@
           range: string          
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht000013
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00001589
-              unit:
-                value: mg/dL
-                range: string                    
+          - Quantity:
+              populated_from: pht000013
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00001589
+                unit:
+                  value: mg/dL
+                  range: string                    

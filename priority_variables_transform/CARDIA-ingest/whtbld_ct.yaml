@@ -14,10 +14,10 @@
           value: "blood assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001563
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00112686
-              unit:
-                value: "10*3/uL"
+          - Quantity:
+              populated_from: pht001563
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00112686
+                unit:
+                  value: "10*3/uL"

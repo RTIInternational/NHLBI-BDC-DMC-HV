@@ -12,11 +12,11 @@
           value: "blood assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001674
-            slot_derivations:
-              value_decimal:
-                expr: "None if str({phv00115951}) == 'M' else float({phv00115951})"
-              unit:
-                value: "pg/mL"
-                range: string
+          - Quantity:
+              populated_from: pht001674
+              slot_derivations:
+                value_decimal:
+                  expr: "None if str({phv00115951}) == 'M' else float({phv00115951})"
+                unit:
+                  value: "pg/mL"
+                  range: string

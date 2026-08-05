@@ -14,14 +14,14 @@
           range: string
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht002140
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00156621
-              unit:
-                value: pg/mL
-                range: string
+          - Quantity:
+              populated_from: pht002140
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00156621
+                unit:
+                  value: pg/mL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002140
@@ -38,11 +38,11 @@
           range: string
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht002140
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00156622
-              unit:
-                value: pg/mL
-                range: string
+          - Quantity:
+              populated_from: pht002140
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00156622
+                unit:
+                  value: pg/mL
+                  range: string

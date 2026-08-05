@@ -14,11 +14,11 @@
           range: string
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht004317
-            slot_derivations:
-              value_decimal:
-                expr: ({phv00218767} + {phv00218768}) * 7
-              unit:
-                value: '{#}/wk'
-                range: string
+          - Quantity:
+              populated_from: pht004317
+              slot_derivations:
+                value_decimal:
+                  expr: ({phv00218767} + {phv00218768}) * 7
+                unit:
+                  value: '{#}/wk'
+                  range: string

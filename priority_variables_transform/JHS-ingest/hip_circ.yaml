@@ -18,17 +18,17 @@
           value: "STANDING_POSITION"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht008737
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00401614
-                unit_conversion:
-                  source_unit: "[in_us]"
-                  target_unit: "cm"
-              unit:
-                value: "cm"
-                range: string
+          - Quantity:
+              populated_from: pht008737
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00401614
+                  unit_conversion:
+                    source_unit: "[in_us]"
+                    target_unit: "cm"
+                unit:
+                  value: "cm"
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008730
@@ -49,13 +49,13 @@
           value: "STANDING_POSITION"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht008730
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00401288
-              unit:
-                value: "cm"
+          - Quantity:
+              populated_from: pht008730
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00401288
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008738
@@ -76,13 +76,13 @@
           value: "STANDING_POSITION"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht008738
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00401629
-              unit:
-                value: "cm"
+          - Quantity:
+              populated_from: pht008738
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00401629
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008731
@@ -103,10 +103,10 @@
           value: "STANDING_POSITION"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht008731
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00401389
-              unit:
-                value: "cm"
+          - Quantity:
+              populated_from: pht008731
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00401389
+                unit:
+                  value: "cm"

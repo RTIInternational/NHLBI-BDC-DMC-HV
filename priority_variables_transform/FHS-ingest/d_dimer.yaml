@@ -15,11 +15,11 @@
           value: 'blood assay'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht000085
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00021744} * 0.001'
-              unit:
-                value: ug/mL
-                range: string
+          - Quantity:
+              populated_from: pht000085
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00021744} * 0.001'
+                unit:
+                  value: ug/mL
+                  range: string
