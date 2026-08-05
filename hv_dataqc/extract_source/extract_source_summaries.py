@@ -222,9 +222,9 @@ def _compute_joint_distributions(
             # Not in this table — skip silently (cross-table pair or unmapped PHV)
             continue
 
-        # Extra check to prevent quasi-identifier use
-        # Extremely low risk of reidentification, but excluding them is a simple and 
-        # conservative safeguard.axis (see function docstring).
+        # Extra check to prevent quasi-identifier use. Extremely low risk of
+        # reidentification, but excluding them is a simple and conservative
+        # safeguard (see function docstring).
         if is_join_unsafe_column(name_a, actual_a, name_b, actual_b):
             skipped_unsafe += 1
             log.debug(

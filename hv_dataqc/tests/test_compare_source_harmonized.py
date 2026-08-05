@@ -70,7 +70,7 @@ from hv_dataqc.compare.crosswalk import (  # noqa: E402
     _pick_single_pht_summary,
 )
 from hv_dataqc.compare.yaml_crosswalk import build_yaml_crosswalk  # noqa: E402
-from hv_dataqc.compare.checks.visit_n import _synthesize_source_visit_counts, _build_visit_label_crosswalk  # noqa: E402
+from hv_dataqc.compare.checks.visit_n import _synthesize_source_visit_counts  # noqa: E402
 from hv_dataqc.extract_harmonized.extract_harmonized_summaries import (  # noqa: E402
     merge_variable_summaries,
     process_measurements,
@@ -1340,7 +1340,6 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
             src,
             out,
             "fanout",
-            gain_warn_pct=2.0,
             gain_fail_pct=10.0,
         )
 

@@ -33,13 +33,12 @@ c1:
 # |loss_pct| <= pass_pct  -> PASS
 # loss_pct in (pass_pct, warn_pct] -> WARN
 # loss_pct > warn_pct      -> FAIL
-# Small gains within pass_pct still PASS. Larger gains use gain_warn_pct /
-# gain_fail_pct because over-counts often indicate join fan-out.
+# Small gains within pass_pct still PASS. Larger gains WARN, and gains above
+# gain_fail_pct FAIL because over-counts often indicate join fan-out.
 c2:
   pass_pct: 0.5         # <=0.5% -> PASS   (was 1.0%)
   warn_pct: 2.0         # <=2.0% -> WARN   (was 5.0%)
-  gain_warn_pct: 2.0    # <=2.0% gain -> WARN
-  gain_fail_pct: 10.0   # >10.0% gain -> FAIL
+  gain_fail_pct: 10.0   # >10.0% gain -> FAIL (<=10% gain -> WARN)
 
 # -- C3: Missing value rate (percentage points) -----------------------------
 # Two code paths:

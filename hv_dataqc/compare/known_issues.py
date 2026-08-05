@@ -41,7 +41,6 @@ known_issue entry are preserved in ``detail``.
 
 from __future__ import annotations
 
-import re
 import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -168,7 +167,7 @@ def apply_known_issues(
         new_detail = {
             **r.detail,
             "original_message": r.message,
-            "known_issue": {k: v for k, v in match.items()},
+            "known_issue": dict(match),
         }
         # Rebuild result with SKIP status
         from hv_dataqc.compare._common import CheckResult as CR

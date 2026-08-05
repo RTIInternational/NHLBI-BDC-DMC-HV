@@ -885,7 +885,6 @@ def main(argv: list[str] | None = None) -> None:
         all_results.append(check_c2_n_loss(
             src_var, harmonized_var, var_label,
             pass_pct=c2_t.get("pass_pct", 0.5), warn_pct=c2_t.get("warn_pct", 2.0),
-            gain_warn_pct=c2_t.get("gain_warn_pct"),
             gain_fail_pct=c2_t.get("gain_fail_pct"),
             per_pht_src=match.get("_per_pht_src"),
         ))

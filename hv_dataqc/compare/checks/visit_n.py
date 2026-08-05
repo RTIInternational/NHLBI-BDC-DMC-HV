@@ -7,7 +7,6 @@ total_rows_by_pht + visit.yaml mappings.
 
 from __future__ import annotations
 
-import re
 from pathlib import Path
 
 import yaml

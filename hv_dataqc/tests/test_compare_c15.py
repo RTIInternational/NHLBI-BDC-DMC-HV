@@ -114,9 +114,12 @@ class TestBuildExpectedColumns(unittest.TestCase):
             _write_yaml(d, "Condition", ["condition_concept", "associated_participant"])
             result = build_expected_columns_from_yaml(d)
         self.assertIn("Condition", result)
-        self.assertIn("id", result["Condition"])  # always added
         self.assertIn("condition_concept", result["Condition"])
         self.assertIn("associated_participant", result["Condition"])
+        # 'id' is NOT auto-added — it is only expected when the YAML explicitly
+        # derives it (e.g. visit.yaml). See fix e15c71cd, which removed the
+        # unconditional id injection that false-flagged non-Visit entities.
+        self.assertNotIn("id", result["Condition"])
 
     def test_aggregates_across_multiple_yaml_files(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -304,13 +307,15 @@ class TestC15YamlColumnsFail(unittest.TestCase):
         fail = next(r for r in fail_results if "required_columns" in r.variable)
         self.assertIn("condition_concept", fail.detail["missing_yaml_columns"])
 
-    def test_fail_id_missing_from_tsv(self) -> None:
-        """'id' is always added to YAML spec; missing it is a hard FAIL."""
+    def test_fail_yaml_derived_id_missing_from_tsv(self) -> None:
+        """When the YAML explicitly derives 'id' (e.g. visit.yaml), a TSV missing
+        it is a hard FAIL. Entities whose YAML does not derive 'id' are not
+        flagged — 'id' is no longer injected unconditionally (fix e15c71cd)."""
         with tempfile.TemporaryDirectory() as tmp:
             d = Path(tmp)
-            _write_yaml(d, "Person", ["identity"])
-            cols = ["identity", "sex"]  # no id
-            harmonized = _cg_status(groups={"c1": {"Person": cols}})
+            _write_yaml(d, "Visit", ["id", "visit_category"])
+            cols = ["visit_category", "associated_participant"]  # no id
+            harmonized = _cg_status(groups={"c1": {"Visit": cols}})
             results = check_c15_column_coverage(harmonized, yaml_dir=d)
         fail_results = [r for r in results if r.status == "FAIL"]
         self.assertTrue(any("id" in r.detail.get("missing_yaml_columns", []) for r in fail_results))

@@ -120,7 +120,7 @@ def check_c1_n_preservation(
 def check_c2_n_loss(
     src_var: dict, harmonized_var: dict, var_name: str,
     pass_pct: float = 0.5, warn_pct: float = 2.0,
-    gain_warn_pct: float | None = None, gain_fail_pct: float | None = None,
+    gain_fail_pct: float | None = None,
     expected_n: int | None = None,
     per_pht_src: list[dict] | None = None,
 ) -> CheckResult:
@@ -214,8 +214,7 @@ def check_c2_n_loss(
                            f"Significant N loss: {_n(src_n)} -> {_n(harmonized_n)} ({loss_pct}%)",
                            detail_base)
     gain_pct = round(-loss_pct, 1)
-    gain_warn = warn_pct if gain_warn_pct is None else gain_warn_pct
-    gain_fail = gain_warn if gain_fail_pct is None else gain_fail_pct
+    gain_fail = warn_pct if gain_fail_pct is None else gain_fail_pct
     detail_base["gain_pct"] = gain_pct
     status = "FAIL" if gain_pct > gain_fail else "WARN"
     severity = "Large" if status == "FAIL" else "Moderate"
