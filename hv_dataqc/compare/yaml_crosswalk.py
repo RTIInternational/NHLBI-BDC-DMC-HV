@@ -534,15 +534,18 @@ def _extract_crosswalk_from_class_derivations(
         if not primary_phvs or not concept_codes:
             continue
 
-        # method_type creates a compound harmonized key ``|<method_type>`` for
-        # any MeasurementObservation block that has a method_type slot, whether
-        # it is nested inside a MeasurementObservationSet or is a standalone MO.
-        # The dm-bip harmonized extractor groups by (observation_type, method_type)
-        # when method_type is present and emits keys like
-        # ``measurement_OMOP:XXX|<method_type>``.  Standalone MO files without
-        # a method_type slot (bdy_hgt, bmi, hrt_rt, ...) keep bare keys.
+        # method_type creates a compound harmonized key ``|<method_type>`` ONLY
+        # for MeasurementObservation blocks nested inside a
+        # MeasurementObservationSet. process_measurement_observation_sets() in
+        # the harmonized extractor groups those by (observation_type, method_type)
+        # and emits ``measurement_<concept>|<method_type>``. Standalone
+        # MeasurementObservation files (bmi, bdy_hgt, labs, ...) are grouped by
+        # observation_type ONLY by process_measurements(), so they must keep bare
+        # ``measurement_<concept>`` keys even when they declare a method_type
+        # slot -- otherwise the crosswalk key never matches the harmonized key
+        # and the concept is falsely reported "not matched in source".
         method_type_val: str | None = None
-        if entity_class == "MeasurementObservation" and "method_type" in slots:
+        if entity_class == "MeasurementObservation" and inside_mos and "method_type" in slots:
             mt = slots["method_type"]
             if isinstance(mt, dict):
                 method_type_val = (

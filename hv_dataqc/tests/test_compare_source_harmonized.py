@@ -1953,6 +1953,61 @@ class CrosswalkConceptExtractionTests(unittest.TestCase):
         self.assertIn(("phv000003", "value"), roles)
         self.assertEqual(cw[0]["conversion_factor"], 2.0)
 
+    def test_standalone_measurement_with_method_type_keeps_bare_key(self) -> None:
+        """A STANDALONE MeasurementObservation with a method_type slot must keep a
+        BARE harmonized_key (no |method suffix). process_measurements() groups
+        standalone MO by observation_type only, so a |method-suffixed crosswalk key
+        is falsely reported 'not matched in source' (ARIC measurement regression,
+        e.g. bmi.yaml method_type: 'calculated')."""
+        cd = {
+            "MeasurementObservation": {
+                "populated_from": "pht004063",
+                "slot_derivations": {
+                    "associated_participant": {"populated_from": "phv000001"},
+                    "observation_type": {"value": "OBA:2045455"},
+                    "method_type": {"value": "calculated"},
+                    "value_quantity": {
+                        "object_derivations": [
+                            {"class_derivations": {"Quantity": {"slot_derivations": {
+                                "value_decimal": {"populated_from": "phv000003"}}}}}
+                        ]
+                    },
+                },
+            }
+        }
+        phv_names = {"phv000001": "ID", "phv000003": "BMI"}
+        cw: list[dict] = []
+        _extract_crosswalk_from_class_derivations(cd, "bmi.yaml", phv_names, cw)  # inside_mos=False
+        self.assertEqual(len(cw), 1)
+        self.assertEqual(cw[0]["harmonized_key"], "measurement_OBA:2045455")
+        self.assertIsNone(cw[0]["method_type"])
+
+    def test_mos_nested_measurement_with_method_type_keeps_suffix(self) -> None:
+        """MO nested inside a MeasurementObservationSet keeps the |method suffix,
+        mirroring process_measurement_observation_sets() (observation_type+method_type)."""
+        inner = {
+            "MeasurementObservation": {
+                "populated_from": "pht000001",
+                "slot_derivations": {
+                    "associated_participant": {"populated_from": "phv000001"},
+                    "observation_type": {"value": "OMOP:4152194"},
+                    "method_type": {"value": "auscultatory"},
+                    "value_quantity": {
+                        "object_derivations": [
+                            {"class_derivations": {"Quantity": {"slot_derivations": {
+                                "value_decimal": {"populated_from": "phv000003"}}}}}
+                        ]
+                    },
+                },
+            }
+        }
+        phv_names = {"phv000001": "ID", "phv000003": "SBP"}
+        cw: list[dict] = []
+        _extract_crosswalk_from_class_derivations(inner, "bp.yaml", phv_names, cw, inside_mos=True)
+        self.assertEqual(len(cw), 1)
+        self.assertEqual(cw[0]["harmonized_key"], "measurement_OMOP:4152194|auscultatory")
+        self.assertEqual(cw[0]["method_type"], "auscultatory")
+
     def test_scalar_factor_extracted_from_null_guard_ternary_expr(self) -> None:
         """Regression: expr with two occurrences of the same PHV (null-guard ternary)
         must still yield a conversion_factor.
