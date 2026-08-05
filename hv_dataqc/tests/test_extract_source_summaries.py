@@ -17,6 +17,8 @@ from hv_dataqc.extract_source.extract_source_summaries import (
     compute_variable_summary,
     count_rows_per_visit,
     infer_variable_type,
+    is_join_unsafe_column,
+    is_quasi_identifier_column,
     is_system_column,
     load_source_data,
     load_source_type_map,
@@ -60,6 +62,59 @@ class ExtractSourceSummaryTests(unittest.TestCase):
         self.assertTrue(is_system_column("_internal_flag"))
         self.assertTrue(is_system_column("topmed_flag_status"))
         self.assertFalse(is_system_column("blood_pressure"))
+
+    def test_study_native_participant_ids_are_system_columns(self) -> None:
+        # FHS shareid and CARDIA individual_id enumerate individual subjects and
+        # must be treated as identifiers (regression: previously uncaught).
+        self.assertTrue(is_system_column("shareid"))
+        self.assertTrue(is_system_column("SHAREID"))
+        self.assertTrue(is_system_column("individual_id"))
+        self.assertTrue(is_system_column("Individual_ID"))
+        self.assertFalse(is_system_column("idtype"))  # a discriminator, not an ID
+
+    def test_is_quasi_identifier_column_flags_dates_and_ages(self) -> None:
+        for name in ("cvddate", "chddate", "EX_DATE", "DATE", "visitdt", "dob", "age_s1", "AGE"):
+            self.assertTrue(is_quasi_identifier_column(name), name)
+        for name in ("idtype", "a09mdnow", "ffd30", "blood_pressure", "package"):
+            self.assertFalse(is_quasi_identifier_column(name), name)
+
+    def test_is_join_unsafe_column_combines_id_and_quasi_identifier(self) -> None:
+        self.assertTrue(is_join_unsafe_column("idtype", "shareid"))     # id axis
+        self.assertTrue(is_join_unsafe_column("cvd", "cvddate"))        # date axis
+        self.assertTrue(is_join_unsafe_column("individual_id", "a09mdnow"))
+        self.assertFalse(is_join_unsafe_column("g3a539", "g3a540"))     # both coded
+
+    def test_compute_joint_distributions_excludes_identifier_and_date_pairs(self) -> None:
+        df = pd.DataFrame(
+            {
+                "IDTYPE": [1, 1, 2],
+                "shareid": [1001, 1002, 1003],
+                "STATUS": [1, 1, 0],
+                "cvddate": ["2001-01-01", "2002-02-02", "2003-03-03"],
+                "FLAG": ["Y", "Y", "N"],
+            }
+        )
+        names = {
+            "phv000001": "IDTYPE",
+            "phv000002": "shareid",
+            "phv000003": "STATUS",
+            "phv000004": "cvddate",
+            "phv000005": "FLAG",
+        }
+
+        joint = _compute_joint_distributions(
+            df,
+            [
+                ("phv000001", "phv000002"),  # IDTYPE x shareid  -> excluded (id)
+                ("phv000003", "phv000004"),  # STATUS x cvddate  -> excluded (date)
+                ("phv000003", "phv000005"),  # STATUS x FLAG      -> kept (coded)
+            ],
+            names,
+        )
+
+        # Only the coded-value pair survives; no subject ids or dates appear.
+        self.assertEqual(list(joint.keys()), ["phv000003+phv000005"])
+        self.assertEqual(joint["phv000003+phv000005"], {"0": {"N": 1}, "1": {"Y": 2}})
 
     def test_infer_variable_type_uses_dtype_and_distinct_threshold(self) -> None:
         self.assertEqual(infer_variable_type(pd.Series(["Y", "N", "Y"])), "categorical")

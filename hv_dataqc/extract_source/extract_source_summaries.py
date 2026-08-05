@@ -209,6 +209,7 @@ def _compute_joint_distributions(
     col_lower_map = {c.lower(): c for c in df.columns}
 
     joint_dists: dict[str, dict] = {}
+    skipped_unsafe = 0
     for phv_a, phv_b in phv_pairs:
         # phv_a < phv_b (canonical sorted order from scan_yaml_for_phv_pairs)
         # Resolve column name: prefer phv_name_map, fall back to PHV ID itself
@@ -219,6 +220,17 @@ def _compute_joint_distributions(
 
         if actual_a is None or actual_b is None or actual_a == actual_b:
             # Not in this table — skip silently (cross-table pair or unmapped PHV)
+            continue
+
+        # Extra check to prevent quasi-identifier use
+        # Extremely low risk of reidentification, but excluding them is a simple and 
+        # conservative safeguard.axis (see function docstring).
+        if is_join_unsafe_column(name_a, actual_a, name_b, actual_b):
+            skipped_unsafe += 1
+            log.debug(
+                "  Crosstab skipped (disclosure guard): %s × %s (%s × %s)",
+                phv_a, phv_b, actual_a, actual_b,
+            )
             continue
 
         try:
@@ -238,6 +250,13 @@ def _compute_joint_distributions(
         except Exception as exc:  # noqa: BLE001
             log.debug("  Crosstab failed for %s × %s: %s", phv_a, phv_b, exc)
 
+    if skipped_unsafe:
+        log.info(
+            "  Disclosure guard: excluded %d identifier/quasi-identifier pair(s) "
+            "from joint distributions",
+            skipped_unsafe,
+        )
+
     return joint_dists
 
 
@@ -253,6 +272,10 @@ _SKIP_EXACT: frozenset[str] = frozenset(
         "topmed_subject_id",
         "sample_id",
         "sample.id",
+        "shareid",
+        "share_id",
+        "individual_id",
+        "indiv_id",
         "consent",
         "consent_short_name",
         "_source_file",
@@ -269,9 +292,41 @@ def is_system_column(col: str) -> bool:
         return True
     if canon.startswith("_"):
         return True
-    # Patterns that flag ID / provenance columns
-    if re.search(r"subject.?id|sample.?id|topmed_flag", canon):
+    # Patterns that flag ID / provenance columns. share.?id / individual.?id
+    if re.search(r"subject.?id|sample.?id|share.?id|individual.?id|indiv.?id|topmed_flag", canon):
         return True
+    return False
+
+
+# Column-name patterns for date / age quasi-identifiers. When such a column is
+# one axis of a bivariate crosstab, individual cells can narrow to a single
+# participant (a value paired with an exact date or age), so these columns are
+# excluded from exported joint distributions. Extremely low risk of
+# reidentification, but excluding them is a simple and conservative safeguard.
+_QI_DATE_RE = re.compile(r"date|_dt$|\bdt$|visitdt|\bdob\b|birth", re.IGNORECASE)
+_QI_AGE_RE = re.compile(r"(^|_)age($|_|\d)|\bage\b", re.IGNORECASE)
+
+
+def is_quasi_identifier_column(col: str) -> bool:
+    """Return True for date/age columns that are unsafe to crosstab.
+
+    A date or age value paired with any second variable can isolate individual
+    participants; such columns are excluded from joint-distribution crosstabs.
+    """
+    canon = (col or "").strip().lower()
+    if not canon:
+        return False
+    return bool(_QI_DATE_RE.search(canon) or _QI_AGE_RE.search(canon))
+
+
+def is_join_unsafe_column(*names: str) -> bool:
+    """Return True if any provided name is an identifier or quasi-identifier.
+    """
+    for name in names:
+        if not name:
+            continue
+        if is_system_column(name) or is_quasi_identifier_column(name):
+            return True
     return False
 
 
