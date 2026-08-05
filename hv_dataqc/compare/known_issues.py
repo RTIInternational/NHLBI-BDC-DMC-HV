@@ -42,6 +42,7 @@ known_issue entry are preserved in ``detail``.
 from __future__ import annotations
 
 import re
+import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -68,8 +69,19 @@ def load_known_issues(cohort: str) -> list[dict]:
     path = _CONFIG_DIR / f"{cohort.upper()}.yaml"
     if not path.exists():
         return []
-    with path.open(encoding="utf-8") as fh:
-        data = yaml.safe_load(fh) or {}
+    try:
+        with path.open(encoding="utf-8") as fh:
+            data = yaml.safe_load(fh) or {}
+    except yaml.YAMLError as exc:
+        # A malformed known_issues config is human-edited documentation metadata
+        # and must not abort the whole compare run. Warn and proceed with no
+        # suppression applied, so the full report is still produced.
+        print(
+            f"WARNING: could not parse known_issues config {path.name}: {exc}\n"
+            "  Proceeding with NO known-issue suppression for this cohort.",
+            file=sys.stderr,
+        )
+        return []
     entries = data.get("known_issues") or []
     if not isinstance(entries, list):
         return []
