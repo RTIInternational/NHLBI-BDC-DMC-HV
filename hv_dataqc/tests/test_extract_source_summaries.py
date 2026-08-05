@@ -14,6 +14,7 @@ import pandas as pd
 
 from hv_dataqc.extract_source.extract_source_summaries import (
     _compute_joint_distributions,
+    apply_quasi_identifier_suppression,
     compute_variable_summary,
     count_rows_per_visit,
     infer_variable_type,
@@ -23,6 +24,7 @@ from hv_dataqc.extract_source.extract_source_summaries import (
     load_source_data,
     load_source_type_map,
 )
+from hv_dataqc.hv_dataqc_common import MAX_CATEGORICAL_KEYS, categorical_stats
 
 
 class ExtractSourceSummaryTests(unittest.TestCase):
@@ -115,6 +117,42 @@ class ExtractSourceSummaryTests(unittest.TestCase):
         # Only the coded-value pair survives; no subject ids or dates appear.
         self.assertEqual(list(joint.keys()), ["phv000003+phv000005"])
         self.assertEqual(joint["phv000003+phv000005"], {"0": {"N": 1}, "1": {"Y": 2}})
+
+    def test_categorical_stats_normalizes_keys_and_sums_collisions(self) -> None:
+        # "1" and "1.0" are the same logical value; they must collapse to one
+        # key with summed count (H1 — prevents false C7/C12 mismatches).
+        summary = categorical_stats(pd.Series(["1", "1.0", "1", "2"]))
+        self.assertEqual(summary["distribution"]["1"]["n"], 3)
+        self.assertEqual(summary["distribution"]["2"]["n"], 1)
+        self.assertNotIn("1.0", summary["distribution"])
+        self.assertEqual(summary["n_distinct"], 2)
+
+    def test_categorical_stats_caps_high_cardinality_distribution(self) -> None:
+        # A high-cardinality (free-text/date-like) column must not enumerate a
+        # long tail of near-unique values (H5). Keep top-K + __other__.
+        values = [f"v{i}" for i in range(MAX_CATEGORICAL_KEYS + 25)]
+        summary = categorical_stats(pd.Series(values))
+        self.assertTrue(summary.get("distribution_truncated"))
+        self.assertLessEqual(len(summary["distribution"]), MAX_CATEGORICAL_KEYS + 1)
+        self.assertIn("__other__", summary["distribution"])
+        self.assertEqual(summary["n_distinct"], MAX_CATEGORICAL_KEYS + 25)
+        # Counts still reconcile to n_valid.
+        self.assertEqual(
+            sum(v["n"] for v in summary["distribution"].values()), summary["n_valid"]
+        )
+
+    def test_apply_quasi_identifier_suppression(self) -> None:
+        cat = {"type": "categorical", "n_valid": 3, "distribution": {"2001-01-01": {"n": 1}}}
+        # Date column -> distribution emptied, counts retained, flagged.
+        out = apply_quasi_identifier_suppression(cat, "exdate")
+        self.assertEqual(out["distribution"], {})
+        self.assertEqual(out["distribution_suppressed"], "quasi_identifier")
+        self.assertEqual(out["n_valid"], 3)
+        # Non-QI categorical column -> unchanged (same object).
+        self.assertIs(apply_quasi_identifier_suppression(cat, "idtype"), cat)
+        # Continuous summary -> never touched even for a QI name.
+        cont = {"type": "continuous", "mean": 45.0, "min": 20, "max": 80}
+        self.assertIs(apply_quasi_identifier_suppression(cont, "age_s1"), cont)
 
     def test_infer_variable_type_uses_dtype_and_distinct_threshold(self) -> None:
         self.assertEqual(infer_variable_type(pd.Series(["Y", "N", "Y"])), "categorical")

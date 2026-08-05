@@ -216,6 +216,27 @@ def check_c7_categorical_distribution(
             if len(stats["source_categories"]) == 1:
                 stats.pop("source_categories", None)
         src_dist = translated
+    else:
+        # No value_map: still normalize source keys so dtype/formatting
+        # differences (e.g. "1.0" vs "1") do not cause false category
+        # mismatches. Mirrors the harmonized-key normalization below and the
+        # value_map source normalization above. New source artifacts are
+        # already normalized by categorical_stats; this also protects older
+        # artifacts. Existing pct values are preserved (not recomputed, so the
+        # sentinel-aware denominator downstream is unchanged); only keys that
+        # genuinely collapse together have their n and pct summed.
+        normalized_src: dict[str, Any] = {}
+        for cat, stats in src_dist.items():
+            norm_cat = normalize_category_key(cat)
+            if norm_cat in normalized_src:
+                existing = normalized_src[norm_cat]
+                existing["n"] = int(existing.get("n", 0) or 0) + int(stats.get("n", 0) or 0)
+                existing["pct"] = round(
+                    float(existing.get("pct", 0) or 0) + float(stats.get("pct", 0) or 0), 2
+                )
+            else:
+                normalized_src[norm_cat] = dict(stats)
+        src_dist = normalized_src
 
     # Normalize harmonized keys — pipeline may serialize values as JSON arrays
     # or Python reprs such as "['OMOP:8527']" / "('OMOP:8527',)".

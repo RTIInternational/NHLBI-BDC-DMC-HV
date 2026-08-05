@@ -330,6 +330,20 @@ def is_join_unsafe_column(*names: str) -> bool:
     return False
 
 
+def apply_quasi_identifier_suppression(summary: dict[str, Any], col: str) -> dict[str, Any]:
+    """Drop the value-level distribution for quasi-identifier columns.
+
+    The aggregate counts (n_total/n_valid/n_missing/n_distinct) are kept, 
+    but the per-value distribution is emptied. Continuous summaries (min/max/
+    mean only) are left unchanged. Returns a shallow copy when it modifies.
+    """
+    if summary.get("type") == "categorical" and summary.get("distribution") and is_quasi_identifier_column(col):
+        summary = dict(summary)
+        summary["distribution"] = {}
+        summary["distribution_suppressed"] = "quasi_identifier"
+    return summary
+
+
 # ---------------------------------------------------------------------------
 # Type inference
 # ---------------------------------------------------------------------------
@@ -954,6 +968,9 @@ def main(argv: list[str] | None = None) -> None:
                 )
                 if forced_type:
                     summary["_type_source"] = "dbGaP_data_dictionary"
+                # Suppress value enumeration for date/age quasi-identifier
+                # columns (kept for aggregate stats, not per-value distribution).
+                summary = apply_quasi_identifier_suppression(summary, col)
                 summary["_col_original"] = col
                 summary["_pht"] = pht_label
                 if col in phv_name_map:
