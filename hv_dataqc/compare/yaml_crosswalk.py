@@ -21,7 +21,11 @@ from hv_dataqc.compare.helpers import _canonical_phv_id
 def _iter_nested_class_derivs(slot_def):
     """Yield (class_name, class_spec) for a slot's nested class derivations,
     handling list-based class_derivations in both `- name: X` and dict-keyed
-    `- X: {...}` form, plus legacy object_derivations."""
+    `- X: {...}` form, plus legacy object_derivations.
+
+    Deliberately local: this module is outside hv-lint/ and importing from a
+    hyphenated script tree would invert the dependency. The canonical copy is
+    hv-lint/_derivations.py -- keep the two in sync."""
     slot_def = slot_def or {}
     for cd in slot_def.get("class_derivations") or []:
         if not isinstance(cd, dict):

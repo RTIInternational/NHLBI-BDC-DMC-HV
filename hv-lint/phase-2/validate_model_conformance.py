@@ -46,6 +46,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
+from _derivations import classify_derivation_item  # noqa: E402
 
 TRANSFORM_DIR = find_transform_dir()
 
@@ -686,18 +687,20 @@ def validate_class_derivations(
                                 f"on {path_prefix}{class_name}.{slot_name}"
                             ))
                             continue
-                        if "name" in cd:
-                            nested_cls, nested_spec = cd.get("name"), cd
-                        elif len(cd) == 1:
-                            # dict-keyed form: `- ClassName: {...}`; a null body
-                            # (`- X:`) parses as {X: None}, which would silently
-                            # skip recursion below -- coerce to keep parity with
-                            # the `- name: X` form
-                            nested_cls, nested_spec = next(iter(cd.items()))
-                            if not isinstance(nested_spec, dict):
-                                nested_spec = {}
-                        else:
-                            nested_cls, nested_spec = None, cd
+                        nested_cls, nested_spec = classify_derivation_item(cd)
+                        if nested_cls is None:
+                            # Neither `- name: X` nor a single class-keyed
+                            # mapping. Report it: falling through would skip
+                            # both 2.5b and the recursion with no finding.
+                            findings.append(Finding(
+                                rel_path, block_idx, "2.5", "ERROR",
+                                f"class_derivation item {cd_idx} on "
+                                f"{path_prefix}{class_name}.{slot_name} is not a "
+                                f"recognized derivation: expected `- name: X` or "
+                                f"a single class-keyed mapping `- X: {{...}}`, "
+                                f"got keys {sorted(cd)}"
+                            ))
+                            continue
                         # -- Check 2.5b: nested class matches slot range --
                         expected_range = ctx.slot_ranges.get(
                             class_name, {}
