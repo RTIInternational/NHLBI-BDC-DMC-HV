@@ -13,14 +13,14 @@
           value: "Food Frequency Questionnaire"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001451
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00100131
-              unit:
-                value: mg/d
-                range: string
+          - Quantity:
+              populated_from: pht001451
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00100131
+                unit:
+                  value: mg/d
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001494
@@ -38,11 +38,11 @@
           value: "Food Frequency Questionnaire"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001494
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00109552
-              unit:
-                value: mg/d
-                range: string
+          - Quantity:
+              populated_from: pht001494
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00109552
+                unit:
+                  value: mg/d
+                  range: string

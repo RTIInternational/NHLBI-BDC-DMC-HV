@@ -16,10 +16,10 @@
           value: "Electrocardiogram"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht002118
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00155364
-              unit:
-                value: "ms"
+          - Quantity:
+              populated_from: pht002118
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00155364
+                unit:
+                  value: "ms"

@@ -14,13 +14,13 @@
           value: "urine assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001849
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00120675
-              unit:
-                value: "mg/dL"
+          - Quantity:
+              populated_from: pht001849
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00120675
+                unit:
+                  value: "mg/dL"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001803
@@ -37,13 +37,13 @@
           value: "urine assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001803
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00119619
-              unit:
-                value: "mg/dL"
+          - Quantity:
+              populated_from: pht001803
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00119619
+                unit:
+                  value: "mg/dL"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001852
@@ -60,12 +60,12 @@
           value: "urine assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001852
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00120751
-                expr: "None if str({phv00120751}) in ('M', 'L', 'H', '') else float({phv00120751}) * 100"
-              unit:
-                value: "mg/dL"
-                range: string
+          - Quantity:
+              populated_from: pht001852
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00120751
+                  expr: "None if str({phv00120751}) in ('M', 'L', 'H', '') else float({phv00120751}) * 100"
+                unit:
+                  value: "mg/dL"
+                  range: string

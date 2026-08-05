@@ -12,23 +12,23 @@
           range: string
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht004111
-            slot_derivations:
-              value_concept:
-                populated_from: phv00207402
-                value_mappings:
-                  '1': < $5,000
-                  '2': $5,000 - $7,999
-                  '3': $8,000 - $11,999
-                  '4': $12,000 - $15,999
-                  '5': $16,000 - $24,999
-                  '6': $25,000 - $34,999
-                  '7': $35,999 - $49,999
-                  '8': '> $50,000'
-              unit:
-                value: USD
-                range: string
+          - Quantity:
+              populated_from: pht004111
+              slot_derivations:
+                value_concept:
+                  populated_from: phv00207402
+                  value_mappings:
+                    '1': < $5,000
+                    '2': $5,000 - $7,999
+                    '3': $8,000 - $11,999
+                    '4': $12,000 - $15,999
+                    '5': $16,000 - $24,999
+                    '6': $25,000 - $34,999
+                    '7': $35,999 - $49,999
+                    '8': '> $50,000'
+                unit:
+                  value: USD
+                  range: string
 - class_derivations:
     Observation:
       populated_from: pht004145
@@ -43,22 +43,22 @@
           range: string
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht004145
-            slot_derivations:
-              value_concept:
-                populated_from: phv00209018
-                value_mappings:
-                  A: < $5,000
-                  B: $5,000 - $7,999
-                  C: $8,000 - $11,999
-                  D: $12,000 - $15,999
-                  E: $16,000 - $24,999
-                  F: $25,000 - $34,999
-                  G: $35,999 - $49,999
-                  H: $50,000 - $74,999
-                  I: $75,000 - $99,999
-                  J: '> $100,000'
-              unit:
-                value: USD
-                range: string
+          - Quantity:
+              populated_from: pht004145
+              slot_derivations:
+                value_concept:
+                  populated_from: phv00209018
+                  value_mappings:
+                    A: < $5,000
+                    B: $5,000 - $7,999
+                    C: $8,000 - $11,999
+                    D: $12,000 - $15,999
+                    E: $16,000 - $24,999
+                    F: $25,000 - $34,999
+                    G: $35,999 - $49,999
+                    H: $50,000 - $74,999
+                    I: $75,000 - $99,999
+                    J: '> $100,000'
+                unit:
+                  value: USD
+                  range: string

@@ -14,14 +14,14 @@
           range: string
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001984
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00128762
-              unit:
-                value: 10*6/uL
-                range: string
+          - Quantity:
+              populated_from: pht001984
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00128762
+                unit:
+                  value: 10*6/uL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004319
@@ -38,11 +38,11 @@
           range: string
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht004319
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00218990
-              unit:
-                value: 10*6/uL
-                range: string
+          - Quantity:
+              populated_from: pht004319
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00218990
+                unit:
+                  value: 10*6/uL
+                  range: string

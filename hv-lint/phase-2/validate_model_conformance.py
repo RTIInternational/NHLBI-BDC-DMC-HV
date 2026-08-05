@@ -46,6 +46,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
+from _derivations import classify_derivation_item  # noqa: E402
 
 TRANSFORM_DIR = find_transform_dir()
 
@@ -686,7 +687,20 @@ def validate_class_derivations(
                                 f"on {path_prefix}{class_name}.{slot_name}"
                             ))
                             continue
-                        nested_cls = cd.get("name")
+                        nested_cls, nested_spec = classify_derivation_item(cd)
+                        if nested_cls is None:
+                            # Neither `- name: X` nor a single class-keyed
+                            # mapping. Report it: falling through would skip
+                            # both 2.5b and the recursion with no finding.
+                            findings.append(Finding(
+                                rel_path, block_idx, "2.5", "ERROR",
+                                f"class_derivation item {cd_idx} on "
+                                f"{path_prefix}{class_name}.{slot_name} is not a "
+                                f"recognized derivation: expected `- name: X` or "
+                                f"a single class-keyed mapping `- X: {{...}}`, "
+                                f"got keys {sorted(cd)}"
+                            ))
+                            continue
                         # -- Check 2.5b: nested class matches slot range --
                         expected_range = ctx.slot_ranges.get(
                             class_name, {}
@@ -706,7 +720,7 @@ def validate_class_derivations(
                         # name-keyed dict would collapse.
                         if nested_cls:
                             findings.extend(validate_class_derivations(
-                                {nested_cls: cd}, block_idx, rel_path,
+                                {nested_cls: nested_spec}, block_idx, rel_path,
                                 ctx, nested_path
                             ))
 

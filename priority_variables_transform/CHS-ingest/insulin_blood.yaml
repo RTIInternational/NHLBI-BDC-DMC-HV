@@ -13,14 +13,14 @@
           value: "blood assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001451
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00100044} * 6'
-              unit:
-                value: pmol/L
-                range: string
+          - Quantity:
+              populated_from: pht001451
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00100044} * 6'
+                unit:
+                  value: pmol/L
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001452
@@ -38,14 +38,14 @@
           value: "blood assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001452
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00100428} * 6'
-              unit:
-                value: pmol/L
-                range: string
+          - Quantity:
+              populated_from: pht001452
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00100428} * 6'
+                unit:
+                  value: pmol/L
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001490
@@ -63,14 +63,14 @@
           value: "blood assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001490
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00105866} * 6'
-              unit:
-                value: pmol/L
-                range: string
+          - Quantity:
+              populated_from: pht001490
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00105866} * 6'
+                unit:
+                  value: pmol/L
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001491
@@ -88,11 +88,11 @@
           value: "blood assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001491
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00106993} * 6'
-              unit:
-                value: pmol/L
-                range: string
+          - Quantity:
+              populated_from: pht001491
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00106993} * 6'
+                unit:
+                  value: pmol/L
+                  range: string

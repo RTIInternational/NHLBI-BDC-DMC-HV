@@ -14,11 +14,11 @@
           range: string
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht004319
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00218998
-              unit:
-                value: 10*3/uL
-                range: string
+          - Quantity:
+              populated_from: pht004319
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00218998
+                unit:
+                  value: 10*3/uL
+                  range: string

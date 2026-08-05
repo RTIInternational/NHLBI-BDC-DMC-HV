@@ -12,13 +12,13 @@
           value: "blood assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht004124
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00207678
-              unit:
-                value: "mg/dL"
+          - Quantity:
+              populated_from: pht004124
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00207678
+                unit:
+                  value: "mg/dL"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006444
@@ -33,13 +33,13 @@
           value: "blood assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht006444
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00296695
-              unit:
-                value: "mg/dL"
+          - Quantity:
+              populated_from: pht006444
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00296695
+                unit:
+                  value: "mg/dL"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012814
@@ -56,11 +56,11 @@
           value: "blood assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht012814
-            slot_derivations:
-              value_decimal:
-                expr: "{phv00512077} * 18"
+          - Quantity:
+              populated_from: pht012814
+              slot_derivations:
+                value_decimal:
+                  expr: "{phv00512077} * 18"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012813
@@ -77,11 +77,11 @@
           value: "blood assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht012813
-            slot_derivations:
-              value_decimal:
-                expr: "{phv00511990} * 18"
+          - Quantity:
+              populated_from: pht012813
+              slot_derivations:
+                value_decimal:
+                  expr: "{phv00511990} * 18"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012504
@@ -98,11 +98,11 @@
           value: "blood assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht012504
-            slot_derivations:
-              value_decimal:
-                expr: "{phv00507387} * 18"
+          - Quantity:
+              populated_from: pht012504
+              slot_derivations:
+                value_decimal:
+                  expr: "{phv00507387} * 18"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012815
@@ -119,8 +119,8 @@
           value: "blood assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht012815
-            slot_derivations:
-              value_decimal:
-                expr: "{phv00512301} * 18"
+          - Quantity:
+              populated_from: pht012815
+              slot_derivations:
+                value_decimal:
+                  expr: "{phv00512301} * 18"

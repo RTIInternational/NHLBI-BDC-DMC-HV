@@ -14,14 +14,14 @@
           value: "Tanita"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht008737
-            slot_derivations:
-              value_decimal:
-                expr: 'case(({phv00401596} <= 0, None),(True, {phv00401596} * 30.48 + {phv00401597} * 2.54))'
-              unit:
-                value: "cm"
-                range: string
+          - Quantity:
+              populated_from: pht008737
+              slot_derivations:
+                value_decimal:
+                  expr: 'case(({phv00401596} <= 0, None),(True, {phv00401596} * 30.48 + {phv00401597} * 2.54))'
+                unit:
+                  value: "cm"
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008737
@@ -38,14 +38,14 @@
           value: "Balance Beam"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht008737
-            slot_derivations:
-              value_decimal:
-                expr: 'case(({phv00401616} <= 0, None),(True, {phv00401616} * 30.48 + {phv00401618} * 2.54))'
-              unit:
-                value: "cm"
-                range: string
+          - Quantity:
+              populated_from: pht008737
+              slot_derivations:
+                value_decimal:
+                  expr: 'case(({phv00401616} <= 0, None),(True, {phv00401616} * 30.48 + {phv00401618} * 2.54))'
+                unit:
+                  value: "cm"
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008731
@@ -62,13 +62,13 @@
           value: "Analysis derived"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht008731
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00401387
-              unit:
-                value: "cm"
+          - Quantity:
+              populated_from: pht008731
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00401387
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008738
@@ -85,13 +85,13 @@
           value: "Tanita"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht008738
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00401635
-              unit:
-                value: "cm"
+          - Quantity:
+              populated_from: pht008738
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00401635
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008730
@@ -108,13 +108,13 @@
           value: "Analysis derived"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht008730
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00401286
-              unit:
-                value: "cm"
+          - Quantity:
+              populated_from: pht008730
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00401286
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008729
@@ -131,13 +131,13 @@
           value: "Analysis derived"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht008729
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00401094
-              unit:
-                value: "cm"
+          - Quantity:
+              populated_from: pht008729
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00401094
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008738
@@ -154,13 +154,13 @@
           value: "Balance Beam"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht008738
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00401631
-              unit:
-                value: "cm"
+          - Quantity:
+              populated_from: pht008738
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00401631
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001940
@@ -177,10 +177,10 @@
           value: "Anthropometry"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001940
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00125860
-              unit:
-                value: "cm"
+          - Quantity:
+              populated_from: pht001940
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00125860
+                unit:
+                  value: "cm"
