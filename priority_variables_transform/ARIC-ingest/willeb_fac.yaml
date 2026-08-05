@@ -12,10 +12,10 @@
           value: "blood assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht004098
-            slot_derivations:
-              value_decimal:
-                expr: 'None if {phv00206654} is None or str({phv00206654}) in ("A", "O", "M", "R", "N", "U", "T", "L", "H", "", ".", "NA", "nan", "NaN") else float({phv00206654})'
-              unit:
-                value: "%{normal}"
+          - Quantity:
+              populated_from: pht004098
+              slot_derivations:
+                value_decimal:
+                  expr: 'None if {phv00206654} is None or str({phv00206654}) in ("A", "O", "M", "R", "N", "U", "T", "L", "H", "", ".", "NA", "nan", "NaN") else float({phv00206654})'
+                unit:
+                  value: "%{normal}"
