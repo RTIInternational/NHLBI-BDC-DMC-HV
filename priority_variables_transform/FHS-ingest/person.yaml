@@ -9,8 +9,10 @@
           source_key: phv00177926
           lookup_key: phv00030516
       slot_derivations:
-        identity:
+        id:
           expr: 'uuid5("https://w3id.org/bdchm/Person", str({dbGaP_Subject_ID}))'
+        identity:
+          expr: 'str({dbGaP_Subject_ID})'
         species:
           value: NCBITaxon:9606
         vital_status:
@@ -21,6 +23,10 @@
           class_derivations:
           - name: CauseOfDeath
             populated_from: pht003099
+            joins:
+              pht000094:
+                source_key: phv00177926
+                lookup_key: phv00030516
             slot_derivations:
               cause:
                 # pht000094.phv00030515 = icd_sys (ICD version: 8 or 9)
@@ -30,6 +36,10 @@
                 value: 1
           - name: CauseOfDeath
             populated_from: pht003099
+            joins:
+              pht000094:
+                source_key: phv00177926
+                lookup_key: phv00030516
             slot_derivations:
               cause:
                 # pht000094.phv00030513 = icdecod2 (secondary cause of death)
@@ -38,6 +48,10 @@
                 value: 2
           - name: CauseOfDeath
             populated_from: pht003099
+            joins:
+              pht000094:
+                source_key: phv00177926
+                lookup_key: phv00030516
             slot_derivations:
               cause:
                 # pht000094.phv00030514 = icdecod3 (tertiary cause of death)
