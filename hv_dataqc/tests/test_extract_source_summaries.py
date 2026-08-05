@@ -58,6 +58,48 @@ class ExtractSourceSummaryTests(unittest.TestCase):
         self.assertEqual(sorted(df["VALUE"].astype(int).tolist()), [10, 20, 30])
         self.assertEqual(set(df["_consent_group"]), {"consent_c1", "consent_c2"})
 
+    def test_multi_dedup_preserves_repeated_measures_rows(self) -> None:
+        # Long-format MULTI table: subject B has two distinct measurement rows
+        # (different visits). These must be preserved -- H3 regression: dedup on
+        # the subject-ID column alone collapsed them to one row per subject.
+        with tempfile.TemporaryDirectory() as tmp:
+            c1 = Path(tmp) / "consent_c1"
+            c1.mkdir()
+            (c1 / "synthetic.pht000002.MULTI.txt").write_text(
+                " synthetic_key \t VISIT \t VALUE \n"
+                "A\t1\t10\n"
+                "B\t1\t20\n"
+                "B\t2\t25\n",  # same subject, different visit -> distinct row
+                encoding="utf-8",
+            )
+            loaded = list(load_source_data([c1], participant_col="synthetic_key"))
+
+        self.assertEqual(len(loaded), 1)
+        _, df = loaded[0]
+        # All three distinct rows retained (B's two visits both kept); the old
+        # subject-ID dedup would have collapsed this to 2 rows.
+        self.assertEqual(len(df), 3)
+        self.assertEqual(sorted(df["VALUE"].astype(int).tolist()), [10, 20, 25])
+
+    def test_multi_dedup_still_drops_cross_consent_group_copies(self) -> None:
+        # The same data row appearing in two consent groups is a true duplicate
+        # and must still collapse to one (differing only by _consent_group).
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            c1 = root / "consent_c1"
+            c2 = root / "consent_c2"
+            c1.mkdir()
+            c2.mkdir()
+            body = " synthetic_key \t VALUE \n" "A\t10\n" "B\t20\n"
+            (c1 / "synthetic.pht000003.MULTI.txt").write_text(body, encoding="utf-8")
+            (c2 / "synthetic.pht000003.MULTI.txt").write_text(body, encoding="utf-8")
+            loaded = list(load_source_data([c1, c2], participant_col="synthetic_key"))
+
+        self.assertEqual(len(loaded), 1)
+        _, df = loaded[0]
+        self.assertEqual(len(df), 2)  # A/10 and B/20, each once
+        self.assertEqual(sorted(df["VALUE"].astype(int).tolist()), [10, 20])
+
     def test_system_columns_are_excluded_by_exact_and_pattern_rules(self) -> None:
         self.assertTrue(is_system_column("dbgap_subject_id"))
         self.assertTrue(is_system_column("sample.id"))

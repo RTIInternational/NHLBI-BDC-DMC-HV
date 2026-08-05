@@ -525,26 +525,22 @@ def load_source_data(
         gc.collect()
 
         if pht_is_multi.get(pht_id):
-            # MULTI files list the same subjects in multiple consent groups.
-            # Deduplicate to get exactly one row per participant.
-            subj_col = participant_col
-            if subj_col is None or subj_col not in combined.columns:
-                for candidate in ("dbgap_subject_id", "topmed_subject_id", "subject_id"):
-                    if candidate in combined.columns:
-                        subj_col = candidate
-                        break
-            if subj_col and subj_col in combined.columns:
-                combined = combined.drop_duplicates(subset=[subj_col], keep="first")
+            # MULTI files list the same subjects in multiple consent groups, so
+            # the same data row can appear once per consent group. Deduplicate on
+            # the DATA columns only (excluding injected provenance columns such as
+            # _consent_group) to drop those cross-consent-group copies while
+            # PRESERVING legitimately distinct rows -- e.g. long-format tables with
+            # multiple visits/measurements per subject. Deduplicating on the
+            # subject-ID column alone silently truncated repeated-measures tables.
+            data_cols = [c for c in combined.columns if not str(c).startswith("_")]
+            if data_cols:
+                combined = combined.drop_duplicates(subset=data_cols, keep="first")
                 log.info(
-                    "  MULTI dedup %s: %d -> %d rows (on column '%s')",
-                    pht_id, row_count_before, len(combined), subj_col,
+                    "  MULTI dedup %s: %d -> %d rows (on %d data column(s))",
+                    pht_id, row_count_before, len(combined), len(data_cols),
                 )
             else:
-                log.warning(
-                    "  MULTI file %s: no participant-ID column found for dedup "
-                    "(pass --participant-col to specify one)",
-                    pht_id,
-                )
+                log.warning("  MULTI file %s: no data columns found for dedup", pht_id)
 
         log.info("  PHT %s: %d rows from %d file(s)", pht_id, len(combined), len(pht_file_lists[pht_id]))
         yielded += 1
