@@ -16,14 +16,14 @@
           range: string
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001116
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00084463} * 0.01'
-              unit:
-                value: '[IU]/mL'
-                range: string
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00084463} * 0.01'
+                unit:
+                  value: '[IU]/mL'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
@@ -39,14 +39,14 @@
           range: string
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001116
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00085019} * 0.01'
-              unit:
-                value: '[IU]/mL'
-                range: string
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00085019} * 0.01'
+                unit:
+                  value: '[IU]/mL'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002105
@@ -60,11 +60,11 @@
           range: string
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht002105
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00160522} * 0.01'
-              unit:
-                value: '[IU]/mL'
-                range: string
+          - Quantity:
+              populated_from: pht002105
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00160522} * 0.01'
+                unit:
+                  value: '[IU]/mL'
+                  range: string

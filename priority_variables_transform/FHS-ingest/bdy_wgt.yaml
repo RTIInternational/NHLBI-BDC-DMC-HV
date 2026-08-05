@@ -17,14 +17,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht000031
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00007676
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht000031
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00007676
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006026
@@ -44,14 +44,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht006026
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00277055} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht006026
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00277055} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006026
@@ -71,14 +71,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht006026
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00277056} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht006026
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00277056} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006026
@@ -96,14 +96,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht006026
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00520310} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht006026
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00520310} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -123,14 +123,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370126} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370126} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -150,24 +150,24 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: case(({phv00370127} < 300, {phv00370127} * 0.453592), (True, "'ULOD'"))
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: case(({phv00370127} < 300, {phv00370127} * 0.453592), (True, "'ULOD'"))
+                unit:
+                  value: kg
+                  range: string
         range_high:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: 300 * 0.453592
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: 300 * 0.453592
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -187,14 +187,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370128} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370128} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -214,14 +214,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370129} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370129} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -241,14 +241,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370130} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370130} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -268,14 +268,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370131} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370131} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -295,14 +295,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370132} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370132} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -322,14 +322,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370133} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370133} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -349,14 +349,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370134} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370134} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -376,14 +376,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370135} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370135} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -403,14 +403,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370136} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370136} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -430,14 +430,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370137} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370137} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -457,14 +457,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370138} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370138} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -484,14 +484,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370139} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370139} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -511,14 +511,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370140} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370140} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -538,14 +538,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370141} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370141} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -565,14 +565,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370142} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370142} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -592,14 +592,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370143} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370143} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -619,24 +619,24 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: case(({phv00370144} < 300, {phv00370144} * 0.453592), (True, "'ULOD'"))
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: case(({phv00370144} < 300, {phv00370144} * 0.453592), (True, "'ULOD'"))
+                unit:
+                  value: kg
+                  range: string
         range_high:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: 300 * 0.453592
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: 300 * 0.453592
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -656,24 +656,24 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: case(({phv00370145} < 300, {phv00370145} * 0.453592), (True, "'ULOD'"))
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: case(({phv00370145} < 300, {phv00370145} * 0.453592), (True, "'ULOD'"))
+                unit:
+                  value: kg
+                  range: string
         range_high:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: 300 * 0.453592
-              unit:
-                value: kg
-                range: string                    
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: 300 * 0.453592
+                unit:
+                  value: kg
+                  range: string                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -693,24 +693,24 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: case(({phv00370146} < 300, {phv00370146} * 0.453592), (True, "'ULOD'"))
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: case(({phv00370146} < 300, {phv00370146} * 0.453592), (True, "'ULOD'"))
+                unit:
+                  value: kg
+                  range: string
         range_high:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: 300 * 0.453592
-              unit:
-                value: kg
-                range: string                    
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: 300 * 0.453592
+                unit:
+                  value: kg
+                  range: string                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -730,24 +730,24 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: case(({phv00370147} < 300, {phv00370147} * 0.453592), (True, "'ULOD'"))
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: case(({phv00370147} < 300, {phv00370147} * 0.453592), (True, "'ULOD'"))
+                unit:
+                  value: kg
+                  range: string
         range_high:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: 300 * 0.453592
-              unit:
-                value: kg
-                range: string                    
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: 300 * 0.453592
+                unit:
+                  value: kg
+                  range: string                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -767,24 +767,24 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: case(({phv00370148} < 300, {phv00370148} * 0.453592), (True, "'ULOD'"))
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: case(({phv00370148} < 300, {phv00370148} * 0.453592), (True, "'ULOD'"))
+                unit:
+                  value: kg
+                  range: string
         range_high:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: 300 * 0.453592
-              unit:
-                value: kg
-                range: string                    
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: 300 * 0.453592
+                unit:
+                  value: kg
+                  range: string                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -804,14 +804,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370149} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370149} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -831,14 +831,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370150} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370150} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -858,14 +858,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370151} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370151} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -885,14 +885,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370152} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370152} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -912,14 +912,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370153} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370153} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -939,14 +939,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370154} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370154} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -966,14 +966,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370155} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370155} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -993,14 +993,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370156} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370156} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -1020,14 +1020,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht007777
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00370157} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00370157} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1047,14 +1047,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht009761
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00423945} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00423945} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1074,14 +1074,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht009761
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00423946} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00423946} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1101,14 +1101,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht009761
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00423947} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00423947} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1128,14 +1128,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht009761
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00423948} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00423948} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1153,14 +1153,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht009761
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00544874} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00544874} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1178,14 +1178,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht009761
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00544875} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00544875} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1203,14 +1203,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht009761
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00544876} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00544876} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1228,14 +1228,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht009761
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00544877} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00544877} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1253,14 +1253,14 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht009761
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00544878} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00544878} * 0.453592'
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -1278,11 +1278,11 @@
           value: 'STANDING_POSITION'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht009761
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00544879} * 0.453592'
-              unit:
-                value: kg
-                range: string
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00544879} * 0.453592'
+                unit:
+                  value: kg
+                  range: string

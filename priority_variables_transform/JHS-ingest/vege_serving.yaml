@@ -14,8 +14,8 @@
           value: "questionnaire"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht008729
-            slot_derivations:
-              value_decimal:
-                expr: "{phv00401250} * 7"
+          - Quantity:
+              populated_from: pht008729
+              slot_derivations:
+                value_decimal:
+                  expr: "{phv00401250} * 7"

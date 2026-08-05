@@ -14,13 +14,13 @@
           value: "questionnaire"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001963
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00127678
-              unit:
-                value: "h"
+          - Quantity:
+              populated_from: pht001963
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00127678
+                unit:
+                  value: "h"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008764
@@ -37,10 +37,10 @@
           value: "questionnaire"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht008764
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00403066
-              unit:
-                value: "h"
+          - Quantity:
+              populated_from: pht008764
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00403066
+                unit:
+                  value: "h"

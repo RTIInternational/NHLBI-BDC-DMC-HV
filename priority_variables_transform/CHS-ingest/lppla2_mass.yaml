@@ -15,11 +15,11 @@
           value: "blood assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001449
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00098769
-              unit:
-                value: ng/mL
-                range: string
+          - Quantity:
+              populated_from: pht001449
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00098769
+                unit:
+                  value: ng/mL
+                  range: string

@@ -11,255 +11,255 @@
             == ''VISIT_4'', ''SPIROMICS Visit 4'')))'
         observations:
           class_derivations:
-          - name: MeasurementObservation
-            populated_from: pht013308
-            slot_derivations:
-              observation_type:
-                value: OMOP:4176265
-              body_position:
-                value: SITTING_POSITION
-              method_type:
-                value: spirometry
-              age_at_observation:
-                expr: '{phv00528706} * 365'
-              context:
-                class_derivations:
-                  Context:
-                    slot_derivations:
-                      activity:
-                        class_derivations:
-                          Activity:
-                            slot_derivations:
-                              activity_type:
-                                value: BRONCHODILATOR_MEDICATION_USE
-                      relative_timing:
-                        value: AFTER
-              value_quantity:
-                class_derivations:
-                - name: Quantity
-                  populated_from: pht013308
-                  slot_derivations:
-                    value_decimal:
-                      populated_from: phv00528858
-                    unit:
-                      value: L
-          - name: MeasurementObservation
-            populated_from: pht013308
-            slot_derivations:
-              observation_type:
-                value: OMOP:4241837
-              body_position:
-                value: SITTING_POSITION
-              method_type:
-                value: spirometry
-              age_at_observation:
-                expr: '{phv00528706} * 365'
-              context:
-                class_derivations:
-                  Context:
-                    slot_derivations:
-                      activity:
-                        class_derivations:
-                          Activity:
-                            slot_derivations:
-                              activity_type:
-                                value: BRONCHODILATOR_MEDICATION_USE
-                      relative_timing:
-                        value: AFTER
-              value_quantity:
-                class_derivations:
-                - name: Quantity
-                  populated_from: pht013308
-                  slot_derivations:
-                    value_decimal:
-                      populated_from: phv00528856
-                    unit:
-                      value: L
-          - name: MeasurementObservation
-            populated_from: pht013308
-            slot_derivations:
-              observation_type:
-                value: OMOP:3011505
-              body_position:
-                value: SITTING_POSITION
-              method_type:
-                value: calculated
-              age_at_observation:
-                expr: '{phv00528706} * 365'
-              context:
-                class_derivations:
-                  Context:
-                    slot_derivations:
-                      activity:
-                        class_derivations:
-                          Activity:
-                            slot_derivations:
-                              activity_type:
-                                value: BRONCHODILATOR_MEDICATION_USE
-                      relative_timing:
-                        value: AFTER
-              value_quantity:
-                class_derivations:
-                - name: Quantity
-                  populated_from: pht013308
-                  slot_derivations:
-                    value_decimal:
-                      expr: '{phv00528854} * 100'
-                    unit:
-                      value: '%'
-          - name: MeasurementObservation
-            populated_from: pht013308
-            slot_derivations:
-              observation_type:
-                value: OMOP:3002094
-              body_position:
-                value: SITTING_POSITION
-              age_at_observation:
-                expr: '{phv00528706} * 365'
-              method_type:
-                value: calculated
-              value_quantity:
-                class_derivations:
-                - name: Quantity
-                  populated_from: pht013308
-                  slot_derivations:
-                    value_decimal:
-                      populated_from: phv00528867
-                    unit:
-                      value: L
-          - name: MeasurementObservation
-            populated_from: pht013308
-            slot_derivations:
-              observation_type:
-                value: OMOP:3022891
-              body_position:
-                value: SITTING_POSITION
-              age_at_observation:
-                expr: '{phv00528706} * 365'
-              method_type:
-                value: calculated
-              value_quantity:
-                class_derivations:
-                - name: Quantity
-                  populated_from: pht013308
-                  slot_derivations:
-                    value_decimal:
-                      populated_from: phv00528863
-                    unit:
-                      value: L
-          - name: MeasurementObservation
-            populated_from: pht013308
-            slot_derivations:
-              observation_type:
-                value: OMOP:3024594
-              body_position:
-                value: SITTING_POSITION
-              age_at_observation:
-                expr: '{phv00528706} * 365'
-              method_type:
-                value: calculated
-              value_quantity:
-                class_derivations:
-                - name: Quantity
-                  populated_from: pht013308
-                  slot_derivations:
-                    value_decimal:
-                      populated_from: phv00528864
-                    unit:
-                      value: '%'
-          - name: MeasurementObservation
-            populated_from: pht013308
-            slot_derivations:
-              observation_type:
-                value: OMOP:3005600
-              body_position:
-                value: SITTING_POSITION
-              method_type:
-                value: calculated
-              age_at_observation:
-                expr: '{phv00528706} * 365'
-              context:
-                class_derivations:
-                  Context:
-                    slot_derivations:
-                      activity:
-                        class_derivations:
-                          Activity:
-                            slot_derivations:
-                              activity_type:
-                                value: BRONCHODILATOR_MEDICATION_USE
-                      relative_timing:
-                        value: AFTER
-              value_quantity:
-                class_derivations:
-                - name: Quantity
-                  populated_from: pht013308
-                  slot_derivations:
-                    value_decimal:
-                      populated_from: phv00528825
-                    unit:
-                      value: '%'
-          - name: MeasurementObservation
-            populated_from: pht013308
-            slot_derivations:
-              observation_type:
-                value: OMOP:3011708
-              body_position:
-                value: SITTING_POSITION
-              method_type:
-                value: calculated
-              age_at_observation:
-                expr: '{phv00528706} * 365'
-              context:
-                class_derivations:
-                  Context:
-                    slot_derivations:
-                      activity:
-                        class_derivations:
-                          Activity:
-                            slot_derivations:
-                              activity_type:
-                                value: BRONCHODILATOR_MEDICATION_USE
-                      relative_timing:
-                        value: AFTER
-              value_quantity:
-                class_derivations:
-                - name: Quantity
-                  populated_from: pht013308
-                  slot_derivations:
-                    value_decimal:
-                      populated_from: phv00528821
-                    unit:
-                      value: '%'
-          - name: MeasurementObservation
-            populated_from: pht013308
-            slot_derivations:
-              observation_type:
-                value: OMOP:4196583
-              body_position:
-                value: SITTING_POSITION
-              method_type:
-                value: calculated
-              age_at_observation:
-                expr: '{phv00528706} * 365'
-              context:
-                class_derivations:
-                  Context:
-                    slot_derivations:
-                      activity:
-                        class_derivations:
-                          Activity:
-                            slot_derivations:
-                              activity_type:
-                                value: BRONCHODILATOR_MEDICATION_USE
-                      relative_timing:
-                        value: AFTER
-              value_quantity:
-                class_derivations:
-                - name: Quantity
-                  populated_from: pht013308
-                  slot_derivations:
-                    value_decimal:
-                      populated_from: phv00528822
-                    unit:
-                      value: '%'
+          - MeasurementObservation:
+              populated_from: pht013308
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4176265
+                body_position:
+                  value: SITTING_POSITION
+                method_type:
+                  value: spirometry
+                age_at_observation:
+                  expr: '{phv00528706} * 365'
+                context:
+                  class_derivations:
+                    Context:
+                      slot_derivations:
+                        activity:
+                          class_derivations:
+                            Activity:
+                              slot_derivations:
+                                activity_type:
+                                  value: BRONCHODILATOR_MEDICATION_USE
+                        relative_timing:
+                          value: AFTER
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht013308
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00528858
+                        unit:
+                          value: L
+          - MeasurementObservation:
+              populated_from: pht013308
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4241837
+                body_position:
+                  value: SITTING_POSITION
+                method_type:
+                  value: spirometry
+                age_at_observation:
+                  expr: '{phv00528706} * 365'
+                context:
+                  class_derivations:
+                    Context:
+                      slot_derivations:
+                        activity:
+                          class_derivations:
+                            Activity:
+                              slot_derivations:
+                                activity_type:
+                                  value: BRONCHODILATOR_MEDICATION_USE
+                        relative_timing:
+                          value: AFTER
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht013308
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00528856
+                        unit:
+                          value: L
+          - MeasurementObservation:
+              populated_from: pht013308
+              slot_derivations:
+                observation_type:
+                  value: OMOP:3011505
+                body_position:
+                  value: SITTING_POSITION
+                method_type:
+                  value: calculated
+                age_at_observation:
+                  expr: '{phv00528706} * 365'
+                context:
+                  class_derivations:
+                    Context:
+                      slot_derivations:
+                        activity:
+                          class_derivations:
+                            Activity:
+                              slot_derivations:
+                                activity_type:
+                                  value: BRONCHODILATOR_MEDICATION_USE
+                        relative_timing:
+                          value: AFTER
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht013308
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00528854} * 100'
+                        unit:
+                          value: '%'
+          - MeasurementObservation:
+              populated_from: pht013308
+              slot_derivations:
+                observation_type:
+                  value: OMOP:3002094
+                body_position:
+                  value: SITTING_POSITION
+                age_at_observation:
+                  expr: '{phv00528706} * 365'
+                method_type:
+                  value: calculated
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht013308
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00528867
+                        unit:
+                          value: L
+          - MeasurementObservation:
+              populated_from: pht013308
+              slot_derivations:
+                observation_type:
+                  value: OMOP:3022891
+                body_position:
+                  value: SITTING_POSITION
+                age_at_observation:
+                  expr: '{phv00528706} * 365'
+                method_type:
+                  value: calculated
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht013308
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00528863
+                        unit:
+                          value: L
+          - MeasurementObservation:
+              populated_from: pht013308
+              slot_derivations:
+                observation_type:
+                  value: OMOP:3024594
+                body_position:
+                  value: SITTING_POSITION
+                age_at_observation:
+                  expr: '{phv00528706} * 365'
+                method_type:
+                  value: calculated
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht013308
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00528864
+                        unit:
+                          value: '%'
+          - MeasurementObservation:
+              populated_from: pht013308
+              slot_derivations:
+                observation_type:
+                  value: OMOP:3005600
+                body_position:
+                  value: SITTING_POSITION
+                method_type:
+                  value: calculated
+                age_at_observation:
+                  expr: '{phv00528706} * 365'
+                context:
+                  class_derivations:
+                    Context:
+                      slot_derivations:
+                        activity:
+                          class_derivations:
+                            Activity:
+                              slot_derivations:
+                                activity_type:
+                                  value: BRONCHODILATOR_MEDICATION_USE
+                        relative_timing:
+                          value: AFTER
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht013308
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00528825
+                        unit:
+                          value: '%'
+          - MeasurementObservation:
+              populated_from: pht013308
+              slot_derivations:
+                observation_type:
+                  value: OMOP:3011708
+                body_position:
+                  value: SITTING_POSITION
+                method_type:
+                  value: calculated
+                age_at_observation:
+                  expr: '{phv00528706} * 365'
+                context:
+                  class_derivations:
+                    Context:
+                      slot_derivations:
+                        activity:
+                          class_derivations:
+                            Activity:
+                              slot_derivations:
+                                activity_type:
+                                  value: BRONCHODILATOR_MEDICATION_USE
+                        relative_timing:
+                          value: AFTER
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht013308
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00528821
+                        unit:
+                          value: '%'
+          - MeasurementObservation:
+              populated_from: pht013308
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4196583
+                body_position:
+                  value: SITTING_POSITION
+                method_type:
+                  value: calculated
+                age_at_observation:
+                  expr: '{phv00528706} * 365'
+                context:
+                  class_derivations:
+                    Context:
+                      slot_derivations:
+                        activity:
+                          class_derivations:
+                            Activity:
+                              slot_derivations:
+                                activity_type:
+                                  value: BRONCHODILATOR_MEDICATION_USE
+                        relative_timing:
+                          value: AFTER
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht013308
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00528822
+                        unit:
+                          value: '%'

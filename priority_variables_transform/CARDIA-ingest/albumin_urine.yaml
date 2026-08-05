@@ -14,15 +14,15 @@
           value: "urine assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001849
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00120678
-                expr: "None if str({phv00120678}) in ('M', 'L', 'H', '') else float({phv00120678}) * 10"
-              unit:
-                value: "mg/L"
-                range: string
+          - Quantity:
+              populated_from: pht001849
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00120678
+                  expr: "None if str({phv00120678}) in ('M', 'L', 'H', '') else float({phv00120678}) * 10"
+                unit:
+                  value: "mg/L"
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001803
@@ -39,12 +39,12 @@
           value: "urine assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001803
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00119618
-                expr: "None if str({phv00119618}) in ('M', 'L', 'H', '') else float({phv00119618}) * 10"
-              unit:
-                value: "mg/L"
-                range: string
+          - Quantity:
+              populated_from: pht001803
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00119618
+                  expr: "None if str({phv00119618}) in ('M', 'L', 'H', '') else float({phv00119618}) * 10"
+                unit:
+                  value: "mg/L"
+                  range: string

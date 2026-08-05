@@ -17,11 +17,11 @@
           range: string
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht012881
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00520385
-              unit:
-                value: pg/mL
-                range: string
+          - Quantity:
+              populated_from: pht012881
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00520385
+                unit:
+                  value: pg/mL
+                  range: string

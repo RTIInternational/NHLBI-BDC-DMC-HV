@@ -14,14 +14,14 @@
           range: string
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001517
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00111870} * 7'
-              unit:
-                value: '{#}/wk'
-                range: string
+          - Quantity:
+              populated_from: pht001517
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00111870} * 7'
+                unit:
+                  value: '{#}/wk'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002125
@@ -38,14 +38,14 @@
           range: string
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht002125
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00156402} * 7'
-              unit:
-                value: '{#}/wk'
-                range: string
+          - Quantity:
+              populated_from: pht002125
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00156402} * 7'
+                unit:
+                  value: '{#}/wk'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006218
@@ -62,11 +62,11 @@
           range: string
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht006218
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00283389} * 7'
-              unit:
-                value: '{#}/wk'
-                range: string
+          - Quantity:
+              populated_from: pht006218
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00283389} * 7'
+                unit:
+                  value: '{#}/wk'
+                  range: string
