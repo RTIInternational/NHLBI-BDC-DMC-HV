@@ -23,15 +23,20 @@ Matching rules
 An entry in known_issues suppresses a CheckResult when ALL of:
 
 1. ``entry["checks"]`` contains the result's ``check_id``.
-2. ``entry["variable_key"]`` appears as one of the ``+``-separated source
+2. The token set of ``entry["variable_key"]`` is a subset of the source
    variable name tokens in the result's ``variable`` field.  The variable
    field has the form::
 
        display_name [phv... / pht...]
 
-   Only the ``display_name`` part (before the first ``[``) is tokenised.
-   Variable names that are plain identifiers like ``_total`` or
-   ``entity_file_coverage`` are matched as-is.
+   Only the ``display_name`` part (before the first ``[``) is tokenised, on
+   ``+``.  ``variable_key`` may be either a single token (e.g. ``a11mstrk``,
+   ``_total``) or a ``+``-joined pool that mirrors how the report renders a
+   pooled variable (e.g. ``crp+crp_1+crp_7+crp_8``).  It matches when every
+   token it names is present in the result's variable tokens — so a single
+   token matches when it appears, and a pooled key matches the pooled variable
+   it describes.  (A pooled key is NOT matched by set membership of the whole
+   ``+``-joined string, which never appears as a single token.)
 
 Suppressed results keep their original ``check_id`` and ``variable`` but have
 their ``status`` changed to ``"SKIP"`` and their ``message`` prepended with a
@@ -108,6 +113,18 @@ def _variable_tokens(variable: str) -> set[str]:
     return {t.strip() for t in display.split("+") if t.strip()}
 
 
+def _key_tokens(variable_key: str) -> set[str]:
+    """Split a ``variable_key`` into its component tokens on ``+``.
+
+    A single-token key yields a one-element set; a ``+``-joined pooled key
+    yields the set of pooled source names.  Tokenising the key the same way as
+    the report's variable field lets a pooled key match the pooled variable it
+    describes (subset match), instead of never matching because the whole
+    ``+``-joined string is not itself a single token.
+    """
+    return {t.strip() for t in variable_key.split("+") if t.strip()}
+
+
 def _entry_matches(entry: dict, check_id: str, variable: str) -> bool:
     """Return True when *entry* matches the given check_id and variable."""
     entry_checks = entry.get("checks") or []
@@ -116,7 +133,15 @@ def _entry_matches(entry: dict, check_id: str, variable: str) -> bool:
     variable_key = str(entry.get("variable_key", "")).strip()
     if not variable_key:
         return False
-    return variable_key in _variable_tokens(variable)
+    key_tokens = _key_tokens(variable_key)
+    if not key_tokens:
+        return False
+    # Match when every token the entry names is present in the result's
+    # variable tokens.  For a single-token key this is exact membership (the
+    # prior behaviour); for a pooled key it requires the pooled variable to
+    # contain all the named source vars — precise, and not satisfied by an
+    # unrelated variable that happens to share one common token.
+    return key_tokens <= _variable_tokens(variable)
 
 
 # ---------------------------------------------------------------------------

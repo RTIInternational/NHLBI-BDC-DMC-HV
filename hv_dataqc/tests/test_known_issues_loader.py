@@ -86,6 +86,108 @@ class KnownIssuesConfigValidityTests(unittest.TestCase):
                     )
                     self.assertIn("variable_key", entry, f"{f.name}[{i}]: missing 'variable_key'")
 
+    def test_all_variable_keys_are_match_reachable(self) -> None:
+        """Every variable_key must tokenise to clean identifiers that can appear
+        in a report's variable field.
+
+        A key token containing ``[``, ``]`` or whitespace (e.g. a pasted
+        ``name [phv / pht]`` enriched label) can never match — ``_variable_tokens``
+        strips the bracket suffix and whitespace — so it would silently suppress
+        nothing. Catch that class of authoring error at PR time.
+        """
+        config_dir = known_issues._CONFIG_DIR
+        for f in sorted(config_dir.glob("*.yaml")):
+            data = yaml.safe_load(f.read_text(encoding="utf-8")) or {}
+            for i, entry in enumerate(data.get("known_issues") or []):
+                with self.subTest(config=f.name, entry=i):
+                    key = str(entry.get("variable_key", "")).strip()
+                    self.assertTrue(key, f"{f.name}[{i}]: empty variable_key")
+                    tokens = [t.strip() for t in key.split("+")]
+                    self.assertTrue(
+                        all(tokens),
+                        f"{f.name}[{i}]: empty token in variable_key '{key}'",
+                    )
+                    for tok in tokens:
+                        self.assertNotIn(
+                            "[", tok,
+                            f"{f.name}[{i}]: token '{tok}' contains '[' — unreachable "
+                            "(looks like a pasted enriched label)",
+                        )
+                        self.assertNotIn(
+                            "]", tok,
+                            f"{f.name}[{i}]: token '{tok}' contains ']' — unreachable",
+                        )
+                        self.assertFalse(
+                            any(c.isspace() for c in tok),
+                            f"{f.name}[{i}]: token '{tok}' contains whitespace — "
+                            "unreachable (report variable tokens never contain spaces)",
+                        )
+
+
+class EntryMatchingTests(unittest.TestCase):
+    """Matching semantics of _entry_matches / apply_known_issues.
+
+    Covers the single-token path (unchanged) and the pooled ``+``-joined key
+    path (previously never matched; now subset-matches the pooled variable).
+    """
+
+    def test_single_token_matches_when_present(self) -> None:
+        entry = {"checks": ["C2"], "variable_key": "a11mstrk"}
+        self.assertTrue(
+            known_issues._entry_matches(entry, "C2", "a11mstrk [phv00000001 / pht000001]")
+        )
+
+    def test_single_token_does_not_match_different_variable(self) -> None:
+        entry = {"checks": ["C2"], "variable_key": "a11mstrk"}
+        self.assertFalse(
+            known_issues._entry_matches(entry, "C2", "e12hgt [phv00000002 / pht000001]")
+        )
+
+    def test_pooled_key_matches_its_pooled_variable(self) -> None:
+        """The regression: a '+'-joined key now matches the pooled variable it
+        describes (was always False before the subset fix)."""
+        entry = {"checks": ["C2"], "variable_key": "crp+crp_1+crp_7+crp_8"}
+        report_var = "crp+crp_1+crp_7+crp_8 [phv00000003 / pht000001]"
+        self.assertTrue(known_issues._entry_matches(entry, "C2", report_var))
+
+    def test_pooled_key_subset_miss_does_not_match(self) -> None:
+        """If the pooled variable is missing one of the named source vars, the
+        subset relation fails — no over-suppression of a differently-composed
+        pool."""
+        entry = {"checks": ["C2"], "variable_key": "crp+crp_1+crp_7+crp_8"}
+        report_var = "crp+crp_1+crp_7 [phv00000003 / pht000001]"  # crp_8 absent
+        self.assertFalse(known_issues._entry_matches(entry, "C2", report_var))
+
+    def test_pooled_key_does_not_match_unrelated_single_var(self) -> None:
+        """A multi-token key cannot be a subset of a single-token variable that
+        merely shares one token."""
+        entry = {"checks": ["C2"], "variable_key": "crp+crp_1+crp_7+crp_8"}
+        self.assertFalse(
+            known_issues._entry_matches(entry, "C2", "crp [phv00000003 / pht000001]")
+        )
+
+    def test_check_id_scoping_still_enforced(self) -> None:
+        entry = {"checks": ["C2"], "variable_key": "crp+crp_1+crp_7+crp_8"}
+        report_var = "crp+crp_1+crp_7+crp_8 [phv00000003 / pht000001]"
+        self.assertFalse(known_issues._entry_matches(entry, "C7", report_var))
+
+    def test_apply_suppresses_pooled_fail_to_skip(self) -> None:
+        from hv_dataqc.compare._common import CheckResult
+
+        results = [
+            CheckResult("C2", "crp+crp_1+crp_7+crp_8 [phv00000003 / pht000001]",
+                        "FAIL", "N loss detected"),
+            CheckResult("C2", "unrelated [phv00000009 / pht000001]",
+                        "FAIL", "N loss detected"),
+        ]
+        entries = [{"checks": ["C2"], "variable_key": "crp+crp_1+crp_7+crp_8",
+                    "summary": "known pooled N difference", "related_issues": [651]}]
+        out, n = known_issues.apply_known_issues(results, entries)
+        self.assertEqual(n, 1)
+        by_var = {r.variable.split(" [")[0]: r for r in out}
+        self.assertEqual(by_var["crp+crp_1+crp_7+crp_8"].status, "SKIP")
+        self.assertEqual(by_var["unrelated"].status, "FAIL")  # untouched
+
 
 if __name__ == "__main__":
     unittest.main()
