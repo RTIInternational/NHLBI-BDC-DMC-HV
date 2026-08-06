@@ -3867,25 +3867,25 @@ class TestKnownIssuesSuppression(unittest.TestCase):
     """Tests for the known_issues suppression module."""
 
     def _make_result(self, check_id, variable, status, message="test message"):
-        from _common import CheckResult
+        from hv_dataqc.compare._common import CheckResult
         return CheckResult(check_id, variable, status, message)
 
     def test_variable_tokens_compound_with_phv_suffix(self):
-        from known_issues import _variable_tokens
+        from hv_dataqc.compare.known_issues import _variable_tokens
         tokens = _variable_tokens("a12cbron+a12cbstl+d08bron [phv00113376+phv00113377 / pht001575]")
         self.assertEqual(tokens, {"a12cbron", "a12cbstl", "d08bron"})
 
     def test_variable_tokens_plain_name(self):
-        from known_issues import _variable_tokens
+        from hv_dataqc.compare.known_issues import _variable_tokens
         self.assertEqual(_variable_tokens("_total"), {"_total"})
         self.assertEqual(_variable_tokens("entity_file_coverage"), {"entity_file_coverage"})
 
     def test_variable_tokens_concept_curie(self):
-        from known_issues import _variable_tokens
+        from hv_dataqc.compare.known_issues import _variable_tokens
         self.assertEqual(_variable_tokens("measurement_OBA:2060174"), {"measurement_OBA:2060174"})
 
     def test_entry_matches_basic(self):
-        from known_issues import _entry_matches
+        from hv_dataqc.compare.known_issues import _entry_matches
         entry = {"checks": ["C2"], "variable_key": "a12cbron"}
         self.assertTrue(_entry_matches(entry, "C2", "a12cbron+a12cbstl [phv / pht]"))
         # wrong check id
@@ -3894,14 +3894,14 @@ class TestKnownIssuesSuppression(unittest.TestCase):
         self.assertFalse(_entry_matches(entry, "C2", "a12cbstl+d08bron [phv / pht]"))
 
     def test_entry_matches_multiple_checks(self):
-        from known_issues import _entry_matches
+        from hv_dataqc.compare.known_issues import _entry_matches
         entry = {"checks": ["C2", "C3"], "variable_key": "a07liqr"}
         self.assertTrue(_entry_matches(entry, "C2", "a07liqr+a07beer [phv / pht]"))
         self.assertTrue(_entry_matches(entry, "C3", "a07liqr+a07beer [phv / pht]"))
         self.assertFalse(_entry_matches(entry, "C6", "a07liqr+a07beer [phv / pht]"))
 
     def test_apply_suppresses_fail_to_skip(self):
-        from known_issues import apply_known_issues
+        from hv_dataqc.compare.known_issues import apply_known_issues
         results = [
             self._make_result("C2", "a12cbron+a12cbstl [phv00113376 / pht001575]", "FAIL"),
             self._make_result("C3", "other_var [phv99 / pht99]", "FAIL"),
@@ -3916,7 +3916,7 @@ class TestKnownIssuesSuppression(unittest.TestCase):
         self.assertEqual(out[1].status, "FAIL")
 
     def test_apply_preserves_pass_warn_skip(self):
-        from known_issues import apply_known_issues
+        from hv_dataqc.compare.known_issues import apply_known_issues
         results = [
             self._make_result("C2", "a07liqr [phv / pht]", "PASS"),
             self._make_result("C2", "a07liqr [phv / pht]", "WARN"),
@@ -3931,7 +3931,7 @@ class TestKnownIssuesSuppression(unittest.TestCase):
         self.assertEqual(out[2].status, "SKIP")   # original SKIP unchanged (no re-suppression)
 
     def test_apply_empty_known_issues(self):
-        from known_issues import apply_known_issues
+        from hv_dataqc.compare.known_issues import apply_known_issues
         results = [self._make_result("C2", "a12cbron [phv / pht]", "FAIL")]
         out, n = apply_known_issues(results, [])
         self.assertEqual(n, 0)
@@ -3939,7 +3939,7 @@ class TestKnownIssuesSuppression(unittest.TestCase):
 
     def test_curie_variable_key_matching(self):
         """known_issue with variable_key containing colons (e.g. measurement_OBA:2060174)."""
-        from known_issues import apply_known_issues
+        from hv_dataqc.compare.known_issues import apply_known_issues
         results = [self._make_result("C2", "measurement_OBA:2060174", "FAIL", "not matched")]
         known = [{"checks": ["C2"], "variable_key": "measurement_OBA:2060174", "summary": "crosswalk gap"}]
         out, n = apply_known_issues(results, known)
