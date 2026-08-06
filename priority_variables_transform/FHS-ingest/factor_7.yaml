@@ -16,14 +16,14 @@
           range: string
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht000198
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00024570
-              unit:
-                value: '%{Normal}'
-                range: string
+          - Quantity:
+              populated_from: pht000198
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00024570
+                unit:
+                  value: '%{Normal}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004806
@@ -41,11 +41,11 @@
           value: 'platelet aggregation'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht004806
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00227096
-              unit:
-                value: '%{Normal}'
-                range: string
+          - Quantity:
+              populated_from: pht004806
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00227096
+                unit:
+                  value: '%{Normal}'
+                  range: string

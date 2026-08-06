@@ -15,14 +15,14 @@
           value: "questionnaire"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001460
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00100712
-              unit:
-                value: h
-                range: string
+          - Quantity:
+              populated_from: pht001460
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00100712
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001460
@@ -40,14 +40,14 @@
           value: "questionnaire"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001460
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00100713
-              unit:
-                value: h
-                range: string
+          - Quantity:
+              populated_from: pht001460
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00100713
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003699
@@ -63,14 +63,14 @@
           value: "questionnaire"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht003699
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00197566
-              unit:
-                value: h
-                range: string
+          - Quantity:
+              populated_from: pht003699
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00197566
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003699
@@ -86,14 +86,14 @@
           value: "questionnaire"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht003699
-            slot_derivations:
-              value_decimal:
-                expr: "case(({phv00197658} == 9999, None), (True, {phv00197658}))"
-              unit:
-                value: h
-                range: string
+          - Quantity:
+              populated_from: pht003699
+              slot_derivations:
+                value_decimal:
+                  expr: "case(({phv00197658} == 9999, None), (True, {phv00197658}))"
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003699
@@ -109,14 +109,14 @@
           value: "questionnaire"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht003699
-            slot_derivations:
-              value_decimal:
-                expr: "case(({phv00197659} == 9000, None), ({phv00197659} == 9999, None), (True, {phv00197659}))"
-              unit:
-                value: h
-                range: string
+          - Quantity:
+              populated_from: pht003699
+              slot_derivations:
+                value_decimal:
+                  expr: "case(({phv00197659} == 9000, None), ({phv00197659} == 9999, None), (True, {phv00197659}))"
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003699
@@ -132,14 +132,14 @@
           value: "questionnaire"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht003699
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00197707} / 60'
-              unit:
-                value: h
-                range: string
+          - Quantity:
+              populated_from: pht003699
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00197707} / 60'
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003700
@@ -155,14 +155,14 @@
           value: "questionnaire"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht003700
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00199793} / 60'
-              unit:
-                value: h
-                range: string
+          - Quantity:
+              populated_from: pht003700
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00199793} / 60'
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003700
@@ -178,11 +178,11 @@
           value: "questionnaire"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht003700
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00200010} / 60'
-              unit:
-                value: h
-                range: string
+          - Quantity:
+              populated_from: pht003700
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00200010} / 60'
+                unit:
+                  value: h
+                  range: string

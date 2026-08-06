@@ -20,30 +20,24 @@ from hv_dataqc.compare.expected_summary import _has_true_catchall, _true_arm_out
 
 
 def _iter_nested_class_derivs(slot_def):
-    """Yield (class_name, class_spec) for a slot's nested class derivations.
+    """Yield (class_name, class_spec) for a slot's nested class derivations,
+    handling list-based class_derivations in both `- name: X` and dict-keyed
+    `- X: {...}` form, plus legacy object_derivations.
 
-    Handles the two list-based ``class_derivations`` spellings plus legacy
-    ``object_derivations``:
-
-    * ``- name: Quantity``   (class name in a ``name`` field)
-    * ``- Quantity:``        (class name is the single mapping key)
-
-    Both are valid LinkML; production HV YAML uses the ``- Quantity:`` /
-    ``- MeasurementObservation:`` key form. The yielded spec always exposes
-    ``slot_derivations`` at its top level, matching what callers read.
-    """
+    Deliberately local: this module is outside hv-lint/ and importing from a
+    hyphenated script tree would invert the dependency. The canonical copy is
+    hv-lint/_derivations.py -- keep the two in sync."""
     slot_def = slot_def or {}
     for cd in slot_def.get("class_derivations") or []:
         if not isinstance(cd, dict):
             continue
         if "name" in cd:
-            # {name: Quantity, slot_derivations: {...}}
             yield cd.get("name"), cd
         elif len(cd) == 1:
-            # {Quantity: {slot_derivations: {...}}} -- class name as the key
-            (name, spec), = cd.items()
-            if isinstance(spec, dict):
-                yield name, spec
+            # dict-keyed form: `- ClassName: {...}`
+            cls_name, spec = next(iter(cd.items()))
+            # a null body (`- X:`) parses as {X: None}; callers expect a dict
+            yield cls_name, spec if isinstance(spec, dict) else {}
     for od in slot_def.get("object_derivations") or []:
         for name, spec in ((od or {}).get("class_derivations") or {}).items():
             yield name, spec

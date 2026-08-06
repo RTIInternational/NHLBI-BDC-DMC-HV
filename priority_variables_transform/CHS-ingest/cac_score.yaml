@@ -19,11 +19,11 @@
           value: "Computed Tomography"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001459
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00100691
-              unit:
-                value: '{score}'
-                range: string
+          - Quantity:
+              populated_from: pht001459
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00100691
+                unit:
+                  value: '{score}'
+                  range: string

@@ -12,13 +12,13 @@
           value: "urine assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht012503
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00506959
-              unit:
-                value: "mg/L"
+          - Quantity:
+              populated_from: pht012503
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00506959
+                unit:
+                  value: "mg/L"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006427
@@ -33,13 +33,13 @@
           value: "urine assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht006427
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00295249
-              unit:
-                value: "mg/L"
+          - Quantity:
+              populated_from: pht006427
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00295249
+                unit:
+                  value: "mg/L"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006427
@@ -54,11 +54,11 @@
           value: "urine assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht006427
-            slot_derivations:
-              value_decimal:
-                expr: "{phv00295248} * ({phv00295250} * 0.01)"
-              unit:
-                value: "mg/L"
-                range: string
+          - Quantity:
+              populated_from: pht006427
+              slot_derivations:
+                value_decimal:
+                  expr: "{phv00295248} * ({phv00295250} * 0.01)"
+                unit:
+                  value: "mg/L"
+                  range: string

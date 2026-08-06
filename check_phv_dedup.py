@@ -9,11 +9,23 @@ import yaml
 
 def iter_nested_class_derivs(slot_def):
     """Yield (class_name, class_spec) for a slot's nested class derivations,
-    handling both list-based class_derivations and legacy object_derivations."""
+    handling list-based class_derivations in both `- name: X` and dict-keyed
+    `- X: {...}` form, plus legacy object_derivations.
+
+    Deliberately local: this module is outside hv-lint/ and importing from a
+    hyphenated script tree would invert the dependency. The canonical copy is
+    hv-lint/_derivations.py -- keep the two in sync."""
     slot_def = slot_def or {}
     for cd in slot_def.get("class_derivations") or []:
-        if isinstance(cd, dict):
+        if not isinstance(cd, dict):
+            continue
+        if "name" in cd:
             yield cd.get("name"), cd
+        elif len(cd) == 1:
+            # dict-keyed form: `- ClassName: {...}`
+            cls_name, spec = next(iter(cd.items()))
+            # a null body (`- X:`) parses as {X: None}; callers expect a dict
+            yield cls_name, spec if isinstance(spec, dict) else {}
     for od in slot_def.get("object_derivations") or []:
         for name, spec in ((od or {}).get("class_derivations") or {}).items():
             yield name, spec
