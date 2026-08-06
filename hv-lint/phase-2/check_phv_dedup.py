@@ -82,6 +82,25 @@ def _get_cohort_from_path(file_path: Path) -> str:
 
 
 
+def _measurement_value_phvs(slots, block_index):
+    """Yield (phv, concept, block_index) for one MeasurementObservation's slots.
+
+    Shared by top-level MeasurementObservation derivations and those nested
+    inside a MeasurementObservationSet.
+    """
+    concept = (slots.get("observation_type") or {}).get("value")
+    for qty_name, qty in iter_nested_class_derivs(slots.get("value_quantity")):
+        if qty_name != "Quantity":
+            continue
+        qty_slots = qty.get("slot_derivations") or {}
+        for val_slot in ("value_decimal", "value_integer", "value_string"):
+            slot_def = qty_slots.get(val_slot) or {}
+            if "populated_from" in slot_def and "value_mappings" not in slot_def and "expr" not in slot_def:
+                phv = slot_def["populated_from"]
+                if phv and str(phv).startswith("phv"):
+                    yield phv, concept, block_index
+
+
 def extract_value_phvs(block: dict, block_index: int):
     """Yield (phv, concept, block_index) for value-bearing populated_from fields.
 
@@ -107,17 +126,19 @@ def extract_value_phvs(block: dict, block_index: int):
                     yield phv, concept, block_index
 
         elif class_name == "MeasurementObservation":
-            concept = (slots.get("observation_type") or {}).get("value")
-            for qty_name, qty in iter_nested_class_derivs(slots.get("value_quantity")):
-                if qty_name != "Quantity":
+            yield from _measurement_value_phvs(slots, block_index)
+
+        elif class_name == "MeasurementObservationSet":
+            # Measurements bundled in a Set hang off `observations` rather than
+            # sitting at the top level, but they are value-bearing in exactly
+            # the same way -- skipping them left blood_pressure and spirometry
+            # specs unchecked.
+            for obs_name, obs in iter_nested_class_derivs(slots.get("observations")):
+                if obs_name != "MeasurementObservation":
                     continue
-                qty_slots = qty.get("slot_derivations") or {}
-                for val_slot in ("value_decimal", "value_integer", "value_string"):
-                    slot_def = qty_slots.get(val_slot) or {}
-                    if "populated_from" in slot_def and "value_mappings" not in slot_def and "expr" not in slot_def:
-                        phv = slot_def["populated_from"]
-                        if phv and str(phv).startswith("phv"):
-                            yield phv, concept, block_index
+                yield from _measurement_value_phvs(
+                    obs.get("slot_derivations") or {}, block_index
+                )
 
 
 # ---------------------------------------------------------------------------
