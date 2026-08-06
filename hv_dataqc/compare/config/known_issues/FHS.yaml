@@ -293,9 +293,16 @@ known_issues:
       is a trivial separate issue (code 19 mapping missing from one block).
     confirmed_date: "2026-07-20"
 
-  # -- C2/C3: e630+event 69.8% N loss (pht000309 multi-event SOE filtering) -
+  # -- C2/C3: event / e630+event N loss (pht000309 multi-event SOE filtering) -
+  # variable_key broadened from the 4-token pool "e630+g3a232+e416+event" to the
+  # single token "event" (2026-08-06). The subset-match rule (known_issues.py)
+  # requires every key token to be present in the report's display tokens, so the
+  # old pooled key could never match the STANDALONE "event [.../pht000309]" row
+  # (display token set = {"event"}) even though the summary below documents it.
+  # "event" still matches the pooled Condition (its tokens include "event"), and
+  # it is the only C2/C3 FAIL/WARN display token named "event", so no over-match.
   - checks: [C2, C3]
-    variable_key: "e630+g3a232+e416+event"
+    variable_key: "event"
     yaml_file: angina.yaml
     status: false_positive
     root_cause: crosswalk_source_scope_mismatch
