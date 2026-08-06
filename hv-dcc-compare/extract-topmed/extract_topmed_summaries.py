@@ -326,6 +326,12 @@ def load_all_datasets(
 # AGGREGATE STATISTICS COMPUTATION
 # ─────────────────────────────────────────────────────────────────────────────
 
+# Small-cell suppression floor: categories with fewer than this many members are
+# never emitted individually; they are pooled into an "Other (n<K)" bucket so no
+# rare/singleton (individually disclosive) value leaves the enclave.
+SMALL_CELL_THRESHOLD = 5
+
+
 def categorical_stats(series: pd.Series, value_map: dict | None) -> dict:
     """Compute frequency table for a categorical variable."""
     # Normalize values through the value map
@@ -342,11 +348,28 @@ def categorical_stats(series: pd.Series, value_map: dict | None) -> dict:
 
     counts = normalized.value_counts(dropna=True).sort_index()
     distribution = {}
+    suppressed_n = 0
+    suppressed_k = 0
     for val, cnt in counts.items():
+        # Small-cell suppression: pool any category below SMALL_CELL_THRESHOLD
+        # into a single "Other (n<K)" bucket so no rare/singleton (individually
+        # disclosive) value is emitted as its own distribution key.
+        if int(cnt) < SMALL_CELL_THRESHOLD:
+            suppressed_n += int(cnt)
+            suppressed_k += 1
+            continue
         distribution[str(val)] = {
             "n": int(cnt),
             "pct": round(cnt / n_valid * 100, 1) if n_valid > 0 else 0.0,
             "pct_of_total": round(cnt / n_total * 100, 1) if n_total > 0 else 0.0,
+        }
+
+    if suppressed_n > 0:
+        distribution[f"Other (n<{SMALL_CELL_THRESHOLD})"] = {
+            "n": suppressed_n,
+            "pct": round(suppressed_n / n_valid * 100, 1) if n_valid > 0 else 0.0,
+            "pct_of_total": round(suppressed_n / n_total * 100, 1) if n_total > 0 else 0.0,
+            "k_categories": suppressed_k,
         }
 
     return {

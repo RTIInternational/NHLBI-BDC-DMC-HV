@@ -311,6 +311,13 @@ def clean_concept(series: pd.Series) -> pd.Series:
 # AGGREGATE STATISTICS
 # ─────────────────────────────────────────────────────────────────────────────
 
+# Small-cell suppression floor: categories with fewer than this many members are
+# never emitted individually; they are pooled into an "Other (n<K)" bucket so no
+# rare/singleton (individually disclosive) value leaves the enclave. Applied to
+# every categorical variable in both extractors.
+SMALL_CELL_THRESHOLD = 5
+
+
 def categorical_stats(
     series: pd.Series,
     value_map: dict | None = None,
@@ -330,13 +337,31 @@ def categorical_stats(
 
     counts = normalized.value_counts(dropna=True).sort_index()
     distribution = {}
+    suppressed_n = 0
+    suppressed_k = 0
     for val, cnt in counts.items():
+        # Small-cell suppression: pool any category below SMALL_CELL_THRESHOLD
+        # into a single "Other (n<K)" bucket so no rare/singleton (individually
+        # disclosive) value — especially an unmapped raw source string — is ever
+        # emitted as its own distribution key.
+        if int(cnt) < SMALL_CELL_THRESHOLD:
+            suppressed_n += int(cnt)
+            suppressed_k += 1
+            continue
         distribution[str(val)] = {
             "n": int(cnt),
             "pct": round(cnt / n_valid * 100, 1) if n_valid > 0 else 0.0,
             # pct_of_total: percentage of ALL rows (including missing), not just
             # respondents. Useful for population-based comparisons (M-4 fix).
             "pct_of_total": round(cnt / n_total * 100, 1) if n_total > 0 else 0.0,
+        }
+
+    if suppressed_n > 0:
+        distribution[f"Other (n<{SMALL_CELL_THRESHOLD})"] = {
+            "n": suppressed_n,
+            "pct": round(suppressed_n / n_valid * 100, 1) if n_valid > 0 else 0.0,
+            "pct_of_total": round(suppressed_n / n_total * 100, 1) if n_total > 0 else 0.0,
+            "k_categories": suppressed_k,
         }
 
     return {
@@ -1114,20 +1139,41 @@ def process_measurements(
                     stats["n_missing"] / n_participants * 100, 1
                 ) if n_participants > 0 else 0.0
             else:
-                # Try categorical columns
+                # Try categorical columns. value_string (free text) is deliberately
+                # excluded — its raw contents are individually disclosive and must
+                # never become distribution keys. If only free-text values exist,
+                # fall back to an aggregate presence-only count.
                 cat_series = pd.Series(dtype=object)
-                for cat_col in ("value_enum", "value_string", value_col):
+                for cat_col in ("value_enum", value_col):
                     if cat_col in baseline.columns:
                         vals = baseline[cat_col].dropna()
                         if len(vals) > 0:
                             cat_series = vals
                             break
-                stats = categorical_stats(cat_series)
-                stats["n_total"] = n_participants
-                stats["n_missing"] = n_participants - stats["n_valid"]
-                stats["pct_missing"] = round(
-                    stats["n_missing"] / n_participants * 100, 1
-                ) if n_participants > 0 else 0.0
+                if len(cat_series) > 0:
+                    stats = categorical_stats(cat_series)
+                    stats["n_total"] = n_participants
+                    stats["n_missing"] = n_participants - stats["n_valid"]
+                    stats["pct_missing"] = round(
+                        stats["n_missing"] / n_participants * 100, 1
+                    ) if n_participants > 0 else 0.0
+                else:
+                    # No safe (enum/numeric) value column — presence count only.
+                    n_present = len(baseline)
+                    stats = {
+                        "type": "categorical",
+                        "n_total": n_participants,
+                        "n_valid": n_present,
+                        "n_missing": n_participants - n_present,
+                        "pct_missing": round(
+                            (n_participants - n_present) / n_participants * 100, 1
+                        ) if n_participants > 0 else 0.0,
+                        "distribution": {"present": {
+                            "n": n_present,
+                            "pct": round(n_present / n_participants * 100, 1) if n_participants > 0 else 0.0,
+                            "pct_of_total": round(n_present / n_participants * 100, 1) if n_participants > 0 else 0.0,
+                        }},
+                    }
 
             stats["bdc_label"] = disc_code
             stats["topmed_variable"] = None
@@ -2008,8 +2054,11 @@ def process_observations(
 
             # Try to find the best value column
             value_col = None
-            for col_name in ("value_quantity__value_decimal", "value_enum",
-                             "value_string"):
+            # value_string (free text) is deliberately excluded from the value
+            # candidates — its raw contents are individually disclosive. When only
+            # value_string is populated, value_col stays None and the presence-only
+            # branch below emits an aggregate count instead of raw keys.
+            for col_name in ("value_quantity__value_decimal", "value_enum"):
                 if col_name in baseline.columns and baseline[col_name].notna().any():
                     value_col = col_name
                     break
@@ -2383,11 +2432,19 @@ def print_cohort_summary(result: dict) -> None:
             dist = stats.get("distribution", {})
             n_valid = stats["n_valid"]
             n_missing = stats["n_missing"]
-            cats_str = ", ".join(
-                f"{k}: {v['n']:,} ({v['pct']:.1f}%)"
-                for k, v in sorted(dist.items())
-            )
-            print(f"    {bdc_label:<35} n={n_valid:,}  miss={n_missing:,}  [{cats_str}]")
+            if var_name.startswith("discovered:"):
+                # Aggregate-only log guard: discovered variables can carry
+                # unmapped (raw) category keys, so print only a category count
+                # to the console/log — never the keys themselves.
+                n_cats = len(dist)
+                print(f"    {bdc_label:<35} n={n_valid:,}  miss={n_missing:,}  "
+                      f"[{n_cats} categor{'y' if n_cats == 1 else 'ies'}]")
+            else:
+                cats_str = ", ".join(
+                    f"{k}: {v['n']:,} ({v['pct']:.1f}%)"
+                    for k, v in sorted(dist.items())
+                )
+                print(f"    {bdc_label:<35} n={n_valid:,}  miss={n_missing:,}  [{cats_str}]")
         else:
             mean = stats.get("mean")
             sd = stats.get("sd")
