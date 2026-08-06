@@ -93,7 +93,10 @@ def _measurement_value_phvs(slots, block_index):
         if qty_name != "Quantity":
             continue
         qty_slots = qty.get("slot_derivations") or {}
-        for val_slot in ("value_decimal", "value_integer", "value_string"):
+        # value_concept carries the measured value for coded quantities; slots
+        # that also declare value_mappings or expr are skipped below, so only
+        # raw populated_from concepts are counted.
+        for val_slot in ("value_decimal", "value_integer", "value_string", "value_concept"):
             slot_def = qty_slots.get(val_slot) or {}
             if "populated_from" in slot_def and "value_mappings" not in slot_def and "expr" not in slot_def:
                 phv = slot_def["populated_from"]
