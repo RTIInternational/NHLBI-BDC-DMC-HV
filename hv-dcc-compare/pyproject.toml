@@ -1,0 +1,15 @@
+[project]
+name = "hv-dcc-compare"
+version = "0.1.0"
+description = "Cross-pipeline comparison: BDC DMC harmonized output vs. TOPMed DCC harmonized phenotypes, across the 9 shared NHLBI cohorts."
+requires-python = ">=3.10"
+dependencies = [
+    "pandas>=1.5.0",
+    "numpy>=1.23.0",
+]
+
+# This project is a collection of standalone scripts (run as files, not imported
+# as an installed package), so uv should manage the dependency environment
+# without trying to build/install the project itself.
+[tool.uv]
+package = false

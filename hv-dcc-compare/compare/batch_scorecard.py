@@ -83,8 +83,13 @@ def grade_continuous(t_stats: dict, b_stats: dict) -> tuple[str, dict]:
         return "?", {"reason": "missing mean"}
 
     delta = abs(b_mean - t_mean)
-    t_sd = t_stats.get("sd", 1) or 1
-    norm_delta = delta / t_sd if t_sd > 0 else 0
+    t_sd = t_stats.get("sd")
+    if t_sd is None or t_sd <= 0:
+        # Missing/zero SD cannot normalize the delta; do not assign a grade
+        # rather than defaulting SD to 1 (which mislabels real differences as A+).
+        return "?", {"reason": "missing or zero SD", "t_mean": t_mean,
+                     "b_mean": b_mean, "delta": delta}
+    norm_delta = delta / t_sd
 
     if norm_delta < 0.005 and miss_diff < 1:
         grade = "A+"

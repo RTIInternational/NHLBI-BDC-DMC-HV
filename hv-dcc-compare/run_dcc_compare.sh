@@ -35,7 +35,16 @@ set -euo pipefail
 # --- locate the toolkit (this script lives at hv-dcc-compare/) ---------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
-PYTHON="${PYTHON:-python}"
+
+# Prefer uv (manages an isolated env from pyproject.toml + uv.lock). Override
+# with e.g. PYTHON=python to use the ambient interpreter instead.
+if [[ -n "${PYTHON:-}" ]]; then
+    :
+elif command -v uv >/dev/null 2>&1; then
+    PYTHON="uv run python"
+else
+    PYTHON="python"
+fi
 
 # --- defaults ----------------------------------------------------------------
 BDC_DIR=""

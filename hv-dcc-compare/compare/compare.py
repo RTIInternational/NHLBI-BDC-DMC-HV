@@ -445,8 +445,8 @@ def run_comparison(topmed: dict, bdc: dict) -> dict:
             else:
                 t_mean = t_stat.get("mean")
                 b_mean = b_stat.get("mean")
-                t_sd = t_stat.get("sd") or 1
-                if t_mean is not None and b_mean is not None and t_sd > 0:
+                t_sd = t_stat.get("sd")
+                if t_mean is not None and b_mean is not None and t_sd is not None and t_sd > 0:
                     norm_delta = abs(b_mean - t_mean) / t_sd
                     val_tier = _assign_value_tier_continuous(norm_delta)
                     val_delta_str = f"{norm_delta:.4f} SD"
@@ -499,8 +499,8 @@ def run_comparison(topmed: dict, bdc: dict) -> dict:
             else:
                 t_mean = t_stat.get("mean")
                 b_mean = b_stat.get("mean")
-                t_sd = t_stat.get("sd") or 1
-                if t_mean is not None and b_mean is not None and t_sd > 0:
+                t_sd = t_stat.get("sd")
+                if t_mean is not None and b_mean is not None and t_sd is not None and t_sd > 0:
                     norm_delta = abs(b_mean - t_mean) / t_sd
                     val_tier = _assign_value_tier_continuous(norm_delta)
                     val_delta_str = f"{norm_delta:.4f} SD"

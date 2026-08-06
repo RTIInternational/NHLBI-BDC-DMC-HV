@@ -1503,10 +1503,13 @@ def run(topmed_path, bdc_path, outfile=None, all_vars=False):
             if ts.get('type') == 'continuous':
                 t_mean = ts.get('mean')
                 b_mean = bs.get('mean')
-                if t_mean is not None and b_mean is not None:
+                t_sd = ts.get('sd')
+                # Missing/zero SD cannot normalize the delta; fall through to the
+                # '?' branch rather than defaulting SD to 1 (which would mislabel a
+                # real mean difference as a top tier).
+                if t_mean is not None and b_mean is not None and t_sd is not None and t_sd > 0:
                     delta = abs(b_mean - t_mean)
-                    t_sd = ts.get('sd', 1) or 1
-                    norm_delta = delta / t_sd if t_sd > 0 else 0
+                    norm_delta = delta / t_sd
 
                     val_tier = _assign_value_tier_continuous(norm_delta)
 

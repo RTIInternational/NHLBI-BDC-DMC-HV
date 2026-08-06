@@ -325,7 +325,7 @@ def categorical_stats(
     """Compute frequency table for a categorical variable."""
     if value_map:
         normalized = series.map(
-            lambda x: value_map.get(str(x).strip(), f"UNMAPPED:{x}")
+            lambda x: value_map.get(str(x).strip(), "UNMAPPED")
             if pd.notna(x) else None
         )
     else:
@@ -1948,7 +1948,7 @@ def process_observations(
 
         if value_col:
             baseline["_smoking_label"] = clean_concept(baseline[value_col]).map(
-                lambda x: OMOP_SMOKING_MAP.get(x, f"UNMAPPED:{x}") if pd.notna(x) else None
+                lambda x: OMOP_SMOKING_MAP.get(x, "UNMAPPED") if pd.notna(x) else None
             )
 
             # Ever smoker: Current Smoker or Former Smoker → "Ever Smoked"
@@ -2399,7 +2399,7 @@ def run_dq_checks(
     for var_name, stats in variable_stats.items():
         if stats.get("type") == "categorical":
             dist = stats.get("distribution", {})
-            unmapped = [k for k in dist if k.startswith("UNMAPPED:")]
+            unmapped = [k for k in dist if k == "UNMAPPED" or k.startswith("UNMAPPED:")]
             if unmapped:
                 flags.append(
                     f"WARNING: {stats.get('bdc_label', var_name)} has unmapped values: "

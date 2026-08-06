@@ -48,11 +48,17 @@ ARIC · CARDIA · CHS · COPDGene · FHS · HCHS-SOL · JHS · MESA · WHI
 
 ## Setup
 
-Requires Python 3.10+.
+Requires Python 3.10+ and [uv](https://docs.astral.sh/uv/).
 
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
+
+This creates a `.venv/` with the exact dependencies pinned in `uv.lock`. The
+wrapper scripts below auto-detect `uv` and run through it automatically, so no
+manual activation is needed. To run a script by hand, prefix it with `uv run`
+(e.g. `uv run python compare/compare.py …`) or activate the env first
+(`source .venv/bin/activate`).
 
 ---
 
@@ -232,7 +238,7 @@ forward. Use `compare/match_quality_table.py` for per-variable grading.
 Before running on restricted data, run the synthetic smoke tests:
 
 ```bash
-python -m unittest discover -s tests
+uv run python -m unittest discover -s tests
 ```
 
 The tests verify CLI startup, config imports, aggregate-only TOPMed extraction,

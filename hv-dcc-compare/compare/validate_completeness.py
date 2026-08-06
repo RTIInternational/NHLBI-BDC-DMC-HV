@@ -243,31 +243,46 @@ def load_bdc_wide(dirs: list[str], verbose: bool = False) -> pd.DataFrame:
             # Import BDC_MEASUREMENT_MAP for code -> variable name mapping
             from config import BDC_MEASUREMENT_MAP
 
+            # Build one observation_type -> topmed_var lookup (including aliases)
+            # so the full MeasurementObservation frame is scanned once, not once
+            # per concept code (was O(#codes x #rows)).
+            obs_type_to_var: dict = {}
             for code, spec in BDC_MEASUREMENT_MAP.items():
-                topmed_var = spec["topmed_var"]
                 aliases = spec.get("aliases", [])
                 if isinstance(aliases, str):
                     aliases = [aliases]
-                observation_types = [code, *aliases]
-                code_rows = meas[meas["observation_type"].isin(observation_types)]
-                if code_rows.empty:
-                    continue
-                # Take first value per participant — try known column names
-                val_col = None
-                for candidate in ["value_quantity__value_decimal", "value_decimal",
-                                  "value_as_number", "value_enum", "value_string"]:
-                    if candidate in code_rows.columns:
-                        val_col = candidate
-                        break
-                if val_col is None:
-                    if verbose:
-                        print(f"    WARNING: no value column found for {code}, "
-                              f"columns: {list(code_rows.columns)}")
-                    continue
-                val_map = code_rows.drop_duplicates(
-                    subset=[id_col], keep="first"
-                ).set_index(id_col)[val_col].to_dict()
-                result[topmed_var] = result["SUBJECT_ID"].map(val_map)
+                for obs_type in (code, *aliases):
+                    obs_type_to_var[obs_type] = spec["topmed_var"]
+
+            val_col = None
+            for candidate in ["value_quantity__value_decimal", "value_decimal",
+                              "value_as_number", "value_enum", "value_string"]:
+                if candidate in meas.columns:
+                    val_col = candidate
+                    break
+            if val_col is None:
+                if verbose:
+                    print("    WARNING: no value column found in "
+                          f"MeasurementObservation, columns: {list(meas.columns)}")
+            else:
+                code_rows = meas[meas["observation_type"].isin(obs_type_to_var)][
+                    [id_col, "observation_type", val_col]
+                ].copy()
+                if not code_rows.empty:
+                    code_rows["topmed_var"] = code_rows["observation_type"].map(
+                        obs_type_to_var
+                    )
+                    # First value per (participant, variable).
+                    code_rows = code_rows.drop_duplicates(
+                        subset=[id_col, "topmed_var"], keep="first"
+                    )
+                    pivoted = code_rows.pivot(
+                        index=id_col, columns="topmed_var", values=val_col
+                    )
+                    for topmed_var in pivoted.columns:
+                        result[topmed_var] = result["SUBJECT_ID"].map(
+                            pivoted[topmed_var]
+                        )
 
         if verbose:
             print(f"  Loaded MeasurementObservation: {len(meas):,} rows")
