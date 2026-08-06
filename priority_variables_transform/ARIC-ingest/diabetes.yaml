@@ -3,7 +3,9 @@
       populated_from: pht004031
       slot_derivations:
         associated_participant:
-          populated_from: phv00203148
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00203148}) + ":ARIC")'
+        age_at_condition_start:
+          expr: "case(({phv00203040} == 'Y', {phv00203105} * 365))"
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203148}) + ":ARIC EXAM 3")'
         condition_concept:
@@ -16,6 +18,9 @@
             U: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -23,7 +28,7 @@
       populated_from: pht004047
       slot_derivations:
         associated_participant:
-          populated_from: phv00203808
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00203808}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203808}) + ":ARIC Death Event")'
         condition_concept:
@@ -36,6 +41,9 @@
             U: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "death investigation record"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -43,7 +51,7 @@
       populated_from: pht004053
       slot_derivations:
         associated_participant:
-          populated_from: phv00204295
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204295}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204295}) + ":ARIC Hospital Form")'
         condition_concept:
@@ -56,6 +64,9 @@
             U: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "hospital record abstraction"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -63,7 +74,7 @@
       populated_from: pht004054
       slot_derivations:
         associated_participant:
-          populated_from: phv00204350
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204350}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204350}) + ":ARIC Death Event")'
         condition_concept:
@@ -76,6 +87,9 @@
             U: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "informant interview"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -83,7 +97,7 @@
       populated_from: pht004063
       slot_derivations:
         associated_participant:
-          populated_from: phv00204812
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204812}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
         condition_concept:
@@ -95,6 +109,9 @@
             '1': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Diabetes - lower cut point 140 mg/dL"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -102,7 +119,7 @@
       populated_from: pht004063
       slot_derivations:
         associated_participant:
-          populated_from: phv00204812
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204812}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
         condition_concept:
@@ -114,6 +131,9 @@
             '1': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Diabetes - lower cut point 126 mg/dL"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -121,7 +141,7 @@
       populated_from: pht004064
       slot_derivations:
         associated_participant:
-          populated_from: phv00204919
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204919}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204919}) + ":ARIC EXAM 3")'
         condition_concept:
@@ -133,6 +153,9 @@
             '1': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Diabetes using lower cut point 140 mg/dL"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -140,7 +163,7 @@
       populated_from: pht004064
       slot_derivations:
         associated_participant:
-          populated_from: phv00204919
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204919}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204919}) + ":ARIC EXAM 3")'
         condition_concept:
@@ -152,6 +175,9 @@
             '1': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Diabetes using lower cut point 126 mg/dL"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -159,7 +185,7 @@
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from: phv00207055
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         condition_concept:
@@ -171,6 +197,9 @@
             'Y': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "hospital record abstraction"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -178,7 +207,7 @@
       populated_from: pht004103
       slot_derivations:
         associated_participant:
-          populated_from: phv00207155
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207155}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207155}) + ":ARIC EXAM 2")'
         condition_concept:
@@ -191,6 +220,9 @@
             U: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -198,7 +230,7 @@
       populated_from: pht004111
       slot_derivations:
         associated_participant:
-          populated_from: phv00207407
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207407}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207407}) + ":ARIC EXAM 1")'
         condition_concept:
@@ -211,6 +243,9 @@
             U: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -218,7 +253,7 @@
       populated_from: pht004145
       slot_derivations:
         associated_participant:
-          populated_from: phv00209045
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00209045}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00209045}) + ":ARIC EXAM 3")'
         condition_concept:
@@ -231,6 +266,9 @@
             U: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -238,7 +276,7 @@
       populated_from: pht004146
       slot_derivations:
         associated_participant:
-          populated_from: phv00209097
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00209097}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00209097}) + ":ARIC EXAM 4")'
         condition_concept:
@@ -251,6 +289,9 @@
             U: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -258,7 +299,7 @@
       populated_from: pht004149
       slot_derivations:
         associated_participant:
-          populated_from: phv00209159
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00209159}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00209159}) + ":ARIC EXAM 3")'
         condition_concept:
@@ -270,6 +311,9 @@
             'Y': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -277,7 +321,7 @@
       populated_from: pht004150
       slot_derivations:
         associated_participant:
-          populated_from: phv00209195
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00209195}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00209195}) + ":ARIC EXAM 4")'
         condition_concept:
@@ -290,6 +334,9 @@
             U: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -297,7 +344,7 @@
       populated_from: pht006477
       slot_derivations:
         associated_participant:
-          populated_from: phv00297894
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00297894}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00297894}) + ":ARIC EXAM 5")'
         condition_concept:
@@ -311,6 +358,9 @@
             D: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -318,7 +368,7 @@
       populated_from: pht009479
       slot_derivations:
         associated_participant:
-          populated_from: phv00419900
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00419900}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00419900}) + ":ARIC Medical Conditions Update Form")'
         condition_concept:
@@ -330,6 +380,9 @@
             'Y': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -337,9 +390,9 @@
       populated_from: pht012502
       slot_derivations:
         associated_participant:
-          populated_from: phv00506823
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00506823}) + ":ARIC")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00506823}) + ":ARIC Cohort")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00506823}) + ":ARIC EXAM 7")'
         condition_concept:
           value: MONDO:0005015
         condition_status:
@@ -349,6 +402,9 @@
             '1': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Diabetes dx derived from DQF5a and 5c"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -356,7 +412,7 @@
       populated_from: pht012504
       slot_derivations:
         associated_participant:
-          populated_from: phv00507300
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00507300}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
         condition_concept:
@@ -369,6 +425,9 @@
             T: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Diabetes - Lower Cut point 140 mg/dL"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -376,7 +435,7 @@
       populated_from: pht012504
       slot_derivations:
         associated_participant:
-          populated_from: phv00507300
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00507300}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
         condition_concept:
@@ -389,6 +448,9 @@
             T: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Diabetes - Lower Cut point 126 mg/dL"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -396,7 +458,7 @@
       populated_from: pht012504
       slot_derivations:
         associated_participant:
-          populated_from: phv00507300
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00507300}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
         condition_concept:
@@ -409,6 +471,9 @@
             T: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Diabetes - Lab and Meds Only, Cut point 126 mg/dL"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -416,7 +481,7 @@
       populated_from: pht012504
       slot_derivations:
         associated_participant:
-          populated_from: phv00507300
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00507300}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
         condition_concept:
@@ -428,6 +493,9 @@
             '1': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Diabetes (DM medications or DM reported on AFU)"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -435,7 +503,7 @@
       populated_from: pht012518
       slot_derivations:
         associated_participant:
-          populated_from: phv00507808
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00507808}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507808}) + ":ARIC EXAM 7")'
         condition_concept:
@@ -454,9 +522,9 @@
       populated_from: pht012811
       slot_derivations:
         associated_participant:
-          populated_from: phv00511637
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00511637}) + ":ARIC")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511637}) + ":ARIC Cohort")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511637}) + ":ARIC EXAM 6")'
         condition_concept:
           value: MONDO:0005015
         condition_status:
@@ -466,6 +534,9 @@
             '1': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Diabetes dx derived from DQF5a and 5c"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -473,7 +544,7 @@
       populated_from: pht012813
       slot_derivations:
         associated_participant:
-          populated_from: phv00511942
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00511942}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511942}) + ":ARIC EXAM 4")'
         condition_concept:
@@ -486,6 +557,9 @@
             T: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Diabetes Using Lower Cut point 140 Mg/dL"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -493,7 +567,7 @@
       populated_from: pht012813
       slot_derivations:
         associated_participant:
-          populated_from: phv00511942
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00511942}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511942}) + ":ARIC EXAM 4")'
         condition_concept:
@@ -506,6 +580,9 @@
             T: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Diabetes Using Lower Cut point 126 Mg/dL"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -513,7 +590,7 @@
       populated_from: pht012814
       slot_derivations:
         associated_participant:
-          populated_from: phv00512039
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512039}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
         condition_concept:
@@ -526,6 +603,9 @@
             T: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Diabetes - Lower Cutpoint 140 mg/dL"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -533,7 +613,7 @@
       populated_from: pht012814
       slot_derivations:
         associated_participant:
-          populated_from: phv00512039
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512039}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
         condition_concept:
@@ -546,6 +626,9 @@
             T: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Diabetes - Lower Cutpoint 126 mg/dL"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -553,7 +636,7 @@
       populated_from: pht012814
       slot_derivations:
         associated_participant:
-          populated_from: phv00512039
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512039}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
         condition_concept:
@@ -566,6 +649,9 @@
             T: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Diabetes - Lab and Meds Only, Cutpoint 126 mg/dL"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -573,7 +659,7 @@
       populated_from: pht012814
       slot_derivations:
         associated_participant:
-          populated_from: phv00512039
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512039}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
         condition_concept:
@@ -586,6 +672,9 @@
             T: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Diabetes (DM medications or DM reported on AFU)"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -593,7 +682,7 @@
       populated_from: pht012815
       slot_derivations:
         associated_participant:
-          populated_from: phv00512222
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512222}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
         condition_concept:
@@ -606,6 +695,9 @@
             T: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Diabetes - Lower Cutpoint 140 mg/dL"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -613,7 +705,7 @@
       populated_from: pht012815
       slot_derivations:
         associated_participant:
-          populated_from: phv00512222
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512222}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
         condition_concept:
@@ -626,6 +718,9 @@
             T: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Diabetes - Lower Cutpoint 126 mg/dL"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -633,7 +728,7 @@
       populated_from: pht012815
       slot_derivations:
         associated_participant:
-          populated_from: phv00512222
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512222}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
         condition_concept:
@@ -646,6 +741,9 @@
             T: UNKNOWN
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Diabetes - Lab and Meds Only, Cutpoint 126 mg/dL"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -653,7 +751,7 @@
       populated_from: pht012815
       slot_derivations:
         associated_participant:
-          populated_from: phv00512222
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512222}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
         condition_concept:
@@ -665,6 +763,9 @@
             '1': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Diabetes (DM medications or DM reported on AFU)"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -672,7 +773,7 @@
       populated_from: pht012839
       slot_derivations:
         associated_participant:
-          populated_from: phv00516796
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00516796}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00516796}) + ":ARIC EXAM 5")'
         condition_concept:
@@ -691,7 +792,7 @@
       populated_from: pht012840
       slot_derivations:
         associated_participant:
-          populated_from: phv00516885
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00516885}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00516885}) + ":ARIC EXAM 6")'
         condition_concept:

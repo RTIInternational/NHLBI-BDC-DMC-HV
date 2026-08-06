@@ -3,300 +3,331 @@
       populated_from: pht001781
       slot_derivations:
         associated_participant:
-          populated_from: phv00118837
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00118837}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00118837}) + ":CARDIA YEAR 10")'
         age_at_observation:
           expr: "{phv00118959} * 365"
         observation_type:
           value: OBA:VT0001253
+        method_type:
+          value: "anthropometry"
+        body_position:
+          value: STANDING_POSITION
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001781
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00118957
-                    unit_conversion:
-                      source_unit: "[in_us]"
-                      target_unit: "cm"
-                  unit:
-                    value: "cm"
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001781
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00118957
+                  expr: "None if str({phv00118957}) in ('M', '') else float({phv00118957}) * 2.54"
+                unit:
+                  value: "cm"
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001626
       slot_derivations:
         associated_participant:
-          populated_from: phv00114583
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00114583}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00114583}) + ":CARDIA YEAR 2")'
         age_at_observation:
           expr: "{phv00114610} * 365"
         observation_type:
           value: OBA:VT0001253
+        method_type:
+          value: "anthropometry"
+        body_position:
+          value: STANDING_POSITION
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001626
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00114609
-                    unit_conversion:
-                      source_unit: "[in_us]"
-                      target_unit: "cm"
-                  unit:
-                    value: "cm"
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001626
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00114609
+                  expr: "None if str({phv00114609}) in ('M', '') else float({phv00114609}) * 2.54"
+                unit:
+                  value: "cm"
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001667
       slot_derivations:
         associated_participant:
-          populated_from: phv00115618
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00115618}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00115618}) + ":CARDIA YEAR 5")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0001253
+        method_type:
+          value: "anthropometry"
+        body_position:
+          value: STANDING_POSITION
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001667
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00115704
-                    unit_conversion:
-                      source_unit: "[in_us]"
-                      target_unit: "cm"
-                  unit:
-                    value: "cm"
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001667
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00115704
+                  expr: "None if str({phv00115704}) in ('M', '') else float({phv00115704}) * 2.54"
+                unit:
+                  value: "cm"
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001795
       slot_derivations:
         associated_participant:
-          populated_from: phv00119471
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00119471}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119471}) + ":CARDIA YEAR 10")'
         age_at_observation:
           expr: "{phv00119507} * 365"
         observation_type:
           value: OBA:VT0001253
+        method_type:
+          value: "anthropometry"
+        body_position:
+          value: STANDING_POSITION
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001795
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00119506
-                    unit_conversion:
-                      source_unit: "[in_us]"
-                      target_unit: "cm"
-                  unit:
-                    value: "cm"
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001795
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00119506
+                  expr: "None if str({phv00119506}) in ('M', '') else float({phv00119506}) * 2.54"
+                unit:
+                  value: "cm"
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001857
       slot_derivations:
         associated_participant:
-          populated_from: phv00120993
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120993}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120993}) + ":CARDIA YEAR 15")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0001253
+        method_type:
+          value: "anthropometry"
+        body_position:
+          value: STANDING_POSITION
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001857
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00120994
-                  unit:
-                    value: "cm"
+          class_derivations:
+          - Quantity:
+              populated_from: pht001857
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00120994
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001671
       slot_derivations:
         associated_participant:
-          populated_from: phv00115849
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00115849}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00115849}) + ":CARDIA YEAR 5")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0001253
+        method_type:
+          value: "anthropometry"
+        body_position:
+          value: STANDING_POSITION
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001671
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00115856
-                  unit:
-                    value: "cm"
+          class_derivations:
+          - Quantity:
+              populated_from: pht001671
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00115856
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001632
       slot_derivations:
         associated_participant:
-          populated_from: phv00114828
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00114828}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00114828}) + ":CARDIA YEAR 2")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0001253
+        method_type:
+          value: "anthropometry"
+        body_position:
+          value: STANDING_POSITION
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001632
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00114829
-                  unit:
-                    value: "cm"
+          class_derivations:
+          - Quantity:
+              populated_from: pht001632
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00114829
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001706
       slot_derivations:
         associated_participant:
-          populated_from: phv00116476
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00116476}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116476}) + ":CARDIA YEAR 7")'
         age_at_observation:
           expr: "{phv00116478} * 365"
         observation_type:
           value: OBA:VT0001253
+        method_type:
+          value: "anthropometry"
+        body_position:
+          value: STANDING_POSITION
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001706
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00116480
-                  unit:
-                    value: "cm"
+          class_derivations:
+          - Quantity:
+              populated_from: pht001706
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00116480
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001720
       slot_derivations:
         associated_participant:
-          populated_from: phv00117221
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00117221}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00117221}) + ":CARDIA YEAR 7")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0001253
+        method_type:
+          value: "anthropometry"
+        body_position:
+          value: STANDING_POSITION
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001720
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00117230
-                  unit:
-                    value: "cm"
+          class_derivations:
+          - Quantity:
+              populated_from: pht001720
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00117230
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001755
       slot_derivations:
         associated_participant:
-          populated_from: phv00118039
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00118039}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00118039}) + ":CARDIA YEAR 10")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0001253
+        method_type:
+          value: "anthropometry"
+        body_position:
+          value: STANDING_POSITION
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001755
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00118136
-                  unit:
-                    value: "cm"
+          class_derivations:
+          - Quantity:
+              populated_from: pht001755
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00118136
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001785
       slot_derivations:
         associated_participant:
-          populated_from: phv00119092
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00119092}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119092}) + ":CARDIA YEAR 10")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0001253
+        method_type:
+          value: "anthropometry"
+        body_position:
+          value: STANDING_POSITION
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001785
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00119093
-                  unit:
-                    value: "cm"
+          class_derivations:
+          - Quantity:
+              populated_from: pht001785
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00119093
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001583
       slot_derivations:
         associated_participant:
-          populated_from: phv00113633
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00113633}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113633}) + ":CARDIA YEAR 0")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0001253
+        method_type:
+          value: "anthropometry"
+        body_position:
+          value: STANDING_POSITION
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001583
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00113634
-                  unit:
-                    value: "cm"
+          class_derivations:
+          - Quantity:
+              populated_from: pht001583
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00113634
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001756
       slot_derivations:
         associated_participant:
-          populated_from: phv00118153
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00118153}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00118153}) + ":CARDIA YEAR 10")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0001253
+        method_type:
+          value: "anthropometry"
+        body_position:
+          value: STANDING_POSITION
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001756
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00118250
-                  unit:
-                    value: "cm"
+          class_derivations:
+          - Quantity:
+              populated_from: pht001756
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00118250
+                unit:
+                  value: "cm"

@@ -10,18 +10,19 @@
             ({phv00568798} == 'P3B', uuid5('https://w3id.org/bdchm/Visit',
             str({phv00159568}) + ':COPDGene P3B')), (True, None))
         associated_participant:
-          populated_from: phv00159568
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00159568}) + ":COPDGene")'
         age_at_observation:
           expr: '{phv00568808} * 365'
         observation_type:
           value: OBA:VT0000217
+        method_type:
+          value: CBC
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002239
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00569133
-                  unit:
-                    value: 10*3/uL
+          class_derivations:
+          - Quantity:
+              populated_from: pht002239
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00569133
+                unit:
+                  value: 10*3/uL

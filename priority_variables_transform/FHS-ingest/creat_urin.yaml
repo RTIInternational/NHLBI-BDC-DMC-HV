@@ -3,7 +3,7 @@
       populated_from: pht000313
       slot_derivations:
         associated_participant:
-          populated_from: phv00036496
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00036496}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036496}) + ":FHS GENERATION 3 EXAM 1")'
         age_at_observation:
@@ -14,22 +14,21 @@
         method_type:
           value: colorimetric, modified Jaffee (rate blanked)
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000313
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00036494
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000313
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00036494
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006011
       slot_derivations:
         associated_participant:
-          populated_from: phv00275410
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00275410}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275410}) + ":FHS OMNI 1 EXAM 3")'
         age_at_observation:
@@ -37,23 +36,24 @@
         observation_type:
           value: OBA:VT0010540
           range: string
+        method_type:
+          value: 'colorimetric'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006011
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00275419
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht006011
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00275419
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000685
       slot_derivations:
         associated_participant:
-          populated_from: phv00069668
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00069668}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00069668}) + ":FHS OFFSPRING EXAM 7")'
         age_at_observation:
@@ -61,23 +61,24 @@
         observation_type:
           value: OBA:VT0010540
           range: string
+        method_type:
+          value: 'urine assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000685
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00070900} * 88.4'
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000685
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00070900} * 11.312'
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000742
       slot_derivations:
         associated_participant:
-          populated_from: phv00071888
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00071888}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00071888}) + ":FHS OFFSPRING EXAM 8")'
         age_at_observation:
@@ -85,134 +86,115 @@
         observation_type:
           value: OBA:VT0010540
           range: string
+        method_type:
+          value: 'Jaffe Reaction'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000742
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00071896
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000742
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00071896
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
       slot_derivations:
         associated_participant:
-          populated_from: phv00172159
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00172159}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172159}) + ":" + case(({phv00172160} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00172160} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00172160} == ''72'', ''FHS OMNI 2 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
-          expr: '{pht003099.phv00177932} * 365'  
+          expr: '{pht003099.phv00177932} * 365'
         observation_type:
           value: OBA:VT0010540
           range: string
+        method_type:
+          value: 'urine assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002889
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172162
-                  unit:
-                    value: mg/dL
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht004362
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00219228
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00219228}) + ":FHS OFFSPRING EXAM 6")'
-        age_at_observation:
-          expr: '{pht003099.phv00177940} * 365'
-        observation_type:
-          value: OBA:VT0010540
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004362
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00219357
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht002889
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00172162
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004363
       slot_derivations:
         associated_participant:
-          populated_from: phv00219544
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00219544}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00219544}) + ":" + case(({phv00219545} == ''1'', ''FHS OFFSPRING EXAM 7''), ({phv00219545} == ''7'', ''FHS OMNI 1 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
-          expr: case(({phv00219545} == 1, {pht003099.phv00177942} * 365), case({phv00219545} == 7, {pht003099.phv00177932} * 365))
+          expr: case(({phv00219545} == 1, {pht003099.phv00177942} * 365), ({phv00219545} == 7, {pht003099.phv00177932} * 365))
         observation_type:
           value: OBA:VT0010540
           range: string
+        method_type:
+          value: 'colorimetric'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004363
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00219548
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht004363
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00219548
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
       slot_derivations:
         associated_participant:
-          populated_from: phv00227023
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00227023}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00227023}) + ":" + case(({phv00227024} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00227024} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
-          expr: case(({phv00227024} == 1, {pht003099.phv00177946} * 365), case({phv00227024} == 7, {pht003099.phv00177936} * 365))            
+          expr: case(({phv00227024} == 1, {pht003099.phv00177946} * 365), ({phv00227024} == 7, {pht003099.phv00177936} * 365))
         observation_type:
           value: OBA:VT0010540
           range: string
+        method_type:
+          value: 'urine assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004802
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00227046
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht004802
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00227046
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004809
       slot_derivations:
         associated_participant:
-          populated_from: phv00227261
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00227261}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00227261}) + ":" + case(({phv00227262} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00227262} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
-          expr: case(({phv00227262} == 1, {pht003099.phv00177946} * 365), case({phv00227262} == 7, {pht003099.phv00177936} * 365))              
+          expr: case(({phv00227262} == 1, {pht003099.phv00177946} * 365), ({phv00227262} == 7, {pht003099.phv00177936} * 365))
         observation_type:
           value: OBA:VT0010540
           range: string
+        method_type:
+          value: 'photometric assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004809
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00227286
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht004809
+              slot_derivations:
+                value_decimal:
+                  expr: '({phv00227286} * 100) / {phv00227269}'
+                unit:
+                  value: mg/dL
+                  range: string

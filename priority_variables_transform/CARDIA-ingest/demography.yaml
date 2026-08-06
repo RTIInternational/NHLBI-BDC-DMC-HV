@@ -3,7 +3,7 @@
       populated_from: pht001559
       slot_derivations:
         associated_participant:
-          populated_from: phv00112417
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00112417}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00112417}) + ":CARDIA YEAR 0")'
         sex:
@@ -29,7 +29,7 @@
       populated_from: pht001645
       slot_derivations:
         associated_participant:
-          populated_from: phv00115110
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00115110}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00115110}) + ":CARDIA YEAR 0")'
         race:

@@ -1,0 +1,24 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003298
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190551}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190551}) + ":CARDIA YEAR 20")'
+        age_at_observation:
+          expr: "None if str({phv00190596}) == 'M' else float({phv00190596}) * 365"
+        observation_type:
+          value: OBA:2052701
+        method_type:
+          value: "blood assay"
+        value_quantity:
+          class_derivations:
+          - Quantity:
+              populated_from: pht003298
+              slot_derivations:
+                value_decimal:
+                  expr: "None if str({phv00190595}) == 'M' else float({phv00190595})"
+                unit:
+                  value: "ng/mL"
+                  range: string

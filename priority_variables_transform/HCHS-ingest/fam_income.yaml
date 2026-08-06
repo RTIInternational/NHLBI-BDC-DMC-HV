@@ -1,0 +1,35 @@
+- class_derivations:
+    SdohObservation:
+      populated_from: pht004715
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
+        observation_type:
+          value: OMOP:4076114
+          range: string
+        category:
+          value: FINANCIAL_INSECURITY
+          range: string
+        value_quantity:
+          class_derivations:
+          - Quantity:
+              populated_from: pht004715
+              slot_derivations:
+                value_concept:
+                  populated_from: phv00526188
+                  value_mappings:
+                    '1': "Less than $10,000"
+                    '2': "$10,001-$15,000"
+                    '3': "$15,001-$20,000"
+                    '4': "$20,001-$25,000"
+                    '5': "$25,001-$29,999"
+                    '6': "$30,000-$40,000"
+                    '7': "$40,001-$50,000"
+                    '8': "$50,001-$75,000"
+                    '9': "$75,001-$100,000"
+                    '10': "More than $100,000"
+                unit:
+                  value: USD
+                  range: string

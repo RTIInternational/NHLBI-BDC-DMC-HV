@@ -3,7 +3,9 @@
       populated_from: pht001570
       slot_derivations:
         associated_participant:
-          populated_from: phv00113019
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00113019}) + ":CARDIA")'
+        age_at_condition_start:
+          expr: case((phv00113052 == 2, {phv00113053} * 365))
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113019}) + ":CARDIA YEAR 0")'
         condition_concept:
@@ -17,6 +19,9 @@
             M: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -24,7 +29,7 @@
       populated_from: pht001721
       slot_derivations:
         associated_participant:
-          populated_from: phv00117250
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00117250}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00117250}) + ":CARDIA YEAR 7")'
         condition_concept:
@@ -37,6 +42,9 @@
             M: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -44,7 +52,7 @@
       populated_from: pht001869
       slot_derivations:
         associated_participant:
-          populated_from: phv00121257
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121257}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121257}) + ":CARDIA MEDICAL HISTORY")'
         condition_concept:
@@ -55,9 +63,13 @@
             '1': ABSENT
             '2': HISTORICAL
             '3': PRESENT
+            '8': UNKNOWN
             M: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -65,7 +77,7 @@
       populated_from: pht001870
       slot_derivations:
         associated_participant:
-          populated_from: phv00121454
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121454}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121454}) + ":CARDIA HOSPITALIZATIONS DIAGNOSIS")'
         condition_concept:
@@ -74,9 +86,12 @@
           populated_from: phv00121462
           value_mappings:
             '1': ABSENT
-            '2': HISTORICAL
+            '2': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -84,7 +99,7 @@
       populated_from: pht001871
       slot_derivations:
         associated_participant:
-          populated_from: phv00121473
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121473}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121473}) + ":CARDIA MEDICAL HISTORY")'
         condition_concept:
@@ -95,8 +110,12 @@
             '1': ABSENT
             '2': HISTORICAL
             '3': PRESENT
+            '8': UNKNOWN
             M: UNKNOWN
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF

@@ -3,7 +3,7 @@
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_observation:
@@ -11,16 +11,15 @@
         observation_type:
           expr: 'case(({phv00083303} >= 12, "OMOP:4041722"), (True, "OBA:VT0002644"))'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00082950
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00082950
+                unit:
+                  value: mg/dL
+                  range: string
         method_type:
           expr: 'case(({phv00083303} >= 12, "Fasted minimum 12 hours"))'
 - class_derivations:
@@ -28,7 +27,7 @@
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         age_at_observation:
@@ -36,16 +35,15 @@
         observation_type:
           expr: 'case(({phv00084980} >= 12, "OMOP:4041722"), (True, "OBA:VT0002644"))'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001116
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00084968
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00084968
+                unit:
+                  value: mg/dL
+                  range: string
         method_type:
           expr: 'case(({phv00084980} >= 12, "Fasted minimum 12 hours-CALCULATED FROM
             NMR LIPOPROFILE-3 SPECTRAL ANALYSIS"), (True, "CALCULATED FROM NMR
@@ -55,7 +53,7 @@
       populated_from: pht001118
       slot_derivations:
         associated_participant:
-          populated_from: phv00085772
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00085772}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         age_at_observation:
@@ -64,22 +62,21 @@
           value: OBA:VT0002644
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001118
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00085918
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001118
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00085918
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001119
       slot_derivations:
         associated_participant:
-          populated_from: phv00086258
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086258}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         age_at_observation:
@@ -88,22 +85,21 @@
           value: OBA:VT0002644
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001119
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00086400
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001119
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00086400
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001120
       slot_derivations:
         associated_participant:
-          populated_from: phv00086726
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086726}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         age_at_observation:
@@ -112,22 +108,21 @@
           value: OBA:VT0002644
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001120
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00086831
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001120
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00086831
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001121
       slot_derivations:
         associated_participant:
-          populated_from: phv00087070
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         age_at_observation:
@@ -135,16 +130,15 @@
         observation_type:
           expr: 'case(({phv00087524} >= 12, "OMOP:4041722"), (True, "OBA:VT0002644"))'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001121
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00087101
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001121
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00087101
+                unit:
+                  value: mg/dL
+                  range: string
         method_type:
           expr: 'case(({phv00087524} >= 12, "Fasted minimum 12 hours"))'
 - class_derivations:
@@ -152,7 +146,7 @@
       populated_from: pht003086
       slot_derivations:
         associated_participant:
-          populated_from: phv00174584
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         age_at_observation:
@@ -161,22 +155,21 @@
           value: OBA:VT0002644
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003086
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00175237
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003086
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00175237
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003091
       slot_derivations:
         associated_participant:
-          populated_from: phv00176007
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00176007}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         age_at_observation:
@@ -185,13 +178,12 @@
           value: OBA:VT0002644
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003091
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00176660
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003091
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00176660
+                unit:
+                  value: mg/dL
+                  range: string

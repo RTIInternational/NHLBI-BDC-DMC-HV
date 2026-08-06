@@ -1,33 +1,9 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht006013
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00275427
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275427}) + ":FHS OFFSPRING EXAM 5")'
-        age_at_observation:
-          expr: '{pht003099.phv00177938} * 365'
-        observation_type:
-          value: OBA:VT0010477
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006013
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00422475
-                  unit:
-                    value: '[IU]/L'
-                    range: string
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht001045
       slot_derivations:
         associated_participant:
-          populated_from: phv00081012
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00081012}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00081012}) + ":" + case(({phv00081047} == ''20'', ''FHS ORIGINAL EXAM 20''), ({phv00081047} == ''21'', ''FHS ORIGINAL EXAM 21''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
@@ -35,14 +11,15 @@
         observation_type:
           value: OBA:VT0010477
           range: string
+        method_type:
+          value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001045
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00081018
-                  unit:
-                    value: '[IU]/L'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001045
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00081018
+                unit:
+                  value: '[IU]/L'
+                  range: string

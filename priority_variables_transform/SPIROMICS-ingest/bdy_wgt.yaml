@@ -8,18 +8,21 @@
             Visit 2''), ({phv00528696} == ''VISIT_3'', ''SPIROMICS Visit 3''), ({phv00528696}
             == ''VISIT_4'', ''SPIROMICS Visit 4'')))'
         associated_participant:
-          populated_from: phv00528692
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00528692}) + ":SPIROMICS")'
         age_at_observation:
           expr: '{phv00528706} * 365'
         observation_type:
           value: OBA:VT0001259
+        body_position:
+          value: STANDING_POSITION
+        method_type:
+          value: anthropometry
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht013308
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00528954
-                  unit:
-                    value: kg
+          class_derivations:
+          - Quantity:
+              populated_from: pht013308
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00528954
+                unit:
+                  value: kg

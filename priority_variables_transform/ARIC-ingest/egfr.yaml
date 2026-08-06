@@ -3,456 +3,477 @@
       populated_from: pht012505
       slot_derivations:
         associated_participant:
-          populated_from: phv00507453
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00507453}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507453}) + ":ARIC Lab Form")'
         observation_type:
           value: OMOP:37208635
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012505
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00507454
-                  unit:
-                    value: "mL/min/{1.73_m2}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012505
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00507454
+                unit:
+                  value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012815
       slot_derivations:
         associated_participant:
-          populated_from: phv00512222
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512222}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
         age_at_observation:
           expr: "{phv00512229} * 365"
         observation_type:
           value: OMOP:37208635
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012815
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00512303
-                  unit:
-                    value: "mL/min/{1.73_m2}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012815
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00512303
+                unit:
+                  value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012853
       slot_derivations:
         associated_participant:
-          populated_from: phv00519789
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00519789}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519789}) + ":ARIC EXAM 2")'
         age_at_observation:
           expr: "{phv00519796} * 365"
         observation_type:
           value: OMOP:37208635
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012853
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00519853
-                  unit:
-                    value: "mL/min/{1.73_m2}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012853
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00519853
+                unit:
+                  value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012853
       slot_derivations:
         associated_participant:
-          populated_from: phv00519789
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00519789}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519789}) + ":ARIC EXAM 5")'
         age_at_observation:
           expr: "{phv00519799} * 365"
         observation_type:
           value: OMOP:37208635
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012853
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00519849
-                  unit:
-                    value: "mL/min/{1.73_m2}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012853
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00519849
+                unit:
+                  value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012814
       slot_derivations:
         associated_participant:
-          populated_from: phv00512039
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512039}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
         age_at_observation:
           expr: "{phv00512050} * 365"
         observation_type:
           value: OMOP:37208635
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012814
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00512179
-                  unit:
-                    value: "mL/min/{1.73_m2}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012814
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00512179
+                unit:
+                  value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012853
       slot_derivations:
         associated_participant:
-          populated_from: phv00519789
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00519789}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519789}) + ":ARIC EXAM 4")'
         age_at_observation:
           expr: "{phv00519798} * 365"
         observation_type:
           value: OMOP:37208635
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012853
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00519848
-                  unit:
-                    value: "mL/min/{1.73_m2}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012853
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00519848
+                unit:
+                  value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012504
       slot_derivations:
         associated_participant:
-          populated_from: phv00507300
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00507300}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
         age_at_observation:
           expr: "{phv00507307} * 365"
         observation_type:
           value: OMOP:37208635
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012504
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00507312
-                  unit:
-                    value: "mL/min/{1.73_m2}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012504
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00507312
+                unit:
+                  value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012853
       slot_derivations:
         associated_participant:
-          populated_from: phv00519789
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00519789}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519789}) + ":ARIC EXAM 4")'
         age_at_observation:
           expr: "{phv00519798} * 365"
         observation_type:
           value: OMOP:37208635
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012853
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00519854
-                  unit:
-                    value: "mL/min/{1.73_m2}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012853
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00519854
+                unit:
+                  value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012853
       slot_derivations:
         associated_participant:
-          populated_from: phv00519789
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00519789}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519789}) + ":ARIC EXAM 2")'
         age_at_observation:
           expr: "{phv00519796} * 365"
         observation_type:
           value: OMOP:37208635
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012853
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00519847
-                  unit:
-                    value: "mL/min/{1.73_m2}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012853
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00519847
+                unit:
+                  value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012853
       slot_derivations:
         associated_participant:
-          populated_from: phv00519789
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00519789}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519789}) + ":ARIC EXAM 2")'
         age_at_observation:
           expr: "{phv00519796} * 365"
         observation_type:
           value: OMOP:37208635
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012853
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00519850
-                  unit:
-                    value: "mL/min/{1.73_m2}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012853
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00519850
+                unit:
+                  value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012853
       slot_derivations:
         associated_participant:
-          populated_from: phv00519789
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00519789}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519789}) + ":ARIC EXAM 5")'
         age_at_observation:
           expr: "{phv00519799} * 365"
         observation_type:
           value: OMOP:37208635
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012853
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00519852
-                  unit:
-                    value: "mL/min/{1.73_m2}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012853
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00519852
+                unit:
+                  value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012504
       slot_derivations:
         associated_participant:
-          populated_from: phv00507300
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00507300}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
         age_at_observation:
           expr: "{phv00507307} * 365"
         observation_type:
           value: OMOP:37208635
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012504
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00507389
-                  unit:
-                    value: "mL/min/{1.73_m2}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012504
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00507389
+                unit:
+                  value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012814
       slot_derivations:
         associated_participant:
-          populated_from: phv00512039
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512039}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
         age_at_observation:
           expr: "{phv00512050} * 365"
         observation_type:
           value: OMOP:37208635
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012814
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00512177
-                  unit:
-                    value: "mL/min/{1.73_m2}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012814
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00512177
+                unit:
+                  value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012504
       slot_derivations:
         associated_participant:
-          populated_from: phv00507300
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00507300}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
         age_at_observation:
           expr: "{phv00507307} * 365"
         observation_type:
           value: OMOP:37208635
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012504
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00507388
-                  unit:
-                    value: "mL/min/{1.73_m2}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012504
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00507388
+                unit:
+                  value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012502
       slot_derivations:
         associated_participant:
-          populated_from: phv00506823
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00506823}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00506823}) + ":ARIC EXAM 7")'
         observation_type:
           value: OMOP:37208635
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012502
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00506868
-                  unit:
-                    value: "mL/min/{1.73_m2}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012502
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00506868
+                unit:
+                  value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012853
       slot_derivations:
         associated_participant:
-          populated_from: phv00519789
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00519789}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519789}) + ":ARIC EXAM 4")'
         age_at_observation:
           expr: "{phv00519798} * 365"
         observation_type:
           value: OMOP:37208635
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012853
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00519851
-                  unit:
-                    value: "mL/min/{1.73_m2}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012853
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00519851
+                unit:
+                  value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012815
       slot_derivations:
         associated_participant:
-          populated_from: phv00512222
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512222}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
         age_at_observation:
           expr: "{phv00512229} * 365"
         observation_type:
           value: OMOP:37208635
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012815
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00512298
-                  unit:
-                    value: "mL/min/{1.73_m2}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012815
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00512298
+                unit:
+                  value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012814
       slot_derivations:
         associated_participant:
-          populated_from: phv00512039
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512039}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
         age_at_observation:
           expr: "{phv00512050} * 365"
         observation_type:
           value: OMOP:37208635
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012814
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00512178
-                  unit:
-                    value: "mL/min/{1.73_m2}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012814
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00512178
+                unit:
+                  value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012815
       slot_derivations:
         associated_participant:
-          populated_from: phv00512222
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512222}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
         age_at_observation:
           expr: "{phv00512229} * 365"
         observation_type:
           value: OMOP:37208635
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012815
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00512302
-                  unit:
-                    value: "mL/min/{1.73_m2}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012815
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00512302
+                unit:
+                  value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012853
       slot_derivations:
         associated_participant:
-          populated_from: phv00519789
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00519789}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519789}) + ":ARIC EXAM 5")'
         age_at_observation:
           expr: "{phv00519799} * 365"
         observation_type:
           value: OMOP:37208635
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012853
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00519855
-                  unit:
-                    value: "mL/min/{1.73_m2}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012853
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00519855
+                unit:
+                  value: "mL/min/{1.73_m2}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012853
       slot_derivations:
         associated_participant:
-          populated_from: phv00519789
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00519789}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519789}) + ":ARIC EXAM 1")'
         age_at_observation:
           expr: "{phv00519795} * 365"
         observation_type:
           value: OMOP:37208635
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012853
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00519846
-                  unit:
-                    value: "mL/min/{1.73_m2}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012853
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00519846
+                unit:
+                  value: "mL/min/{1.73_m2}"

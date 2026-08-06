@@ -3,7 +3,7 @@
       populated_from: pht000009
       slot_derivations:
         associated_participant:
-          populated_from: phv00001035
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00001035}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001035}) + ":FHS ORIGINAL EXAM 1")'
         age_at_observation:
@@ -32,7 +32,7 @@
       populated_from: pht004374
       slot_derivations:
         associated_participant:
-          populated_from: phv00220821
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00220821}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00220821}) + ":FHS NEURO ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 1, OMNI 2")'
         observation_type:
@@ -64,7 +64,7 @@
       populated_from: pht004375
       slot_derivations:
         associated_participant:
-          populated_from: phv00220863
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00220863}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00220863}) + ":FHS ORIGINAL EXAM 14-15")'
         observation_type:

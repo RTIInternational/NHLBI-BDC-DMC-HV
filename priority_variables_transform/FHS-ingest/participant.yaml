@@ -1,0 +1,12 @@
+- class_derivations:
+    Participant:
+      populated_from: pht003099
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00177926}) + ":FHS")'
+        identity:
+          expr: 'str({phv00177926})'
+        member_of_research_study:
+          expr: 'case(({phv00177928} == 0, "Framingham Heart Study Original Cohort"), ({phv00177928} == 1, "Framingham Heart Study Offspring Cohort"), ({phv00177928} == 2, "Framingham Heart Study New Offspring Spouse Cohort"), ({phv00177928} == 3, "Framingham Heart Study Generation 3 Cohort"), ({phv00177928} == 7, "Framingham Heart Study Omni 1 Cohort"), ({phv00177928} == 72, "Framingham Heart Study Omni 2 Cohort"), (True, "Framingham Heart Study Unknown Cohort"))'
+        associated_person:
+          expr: 'uuid5("https://w3id.org/bdchm/Person", str({dbGaP_Subject_ID}))'

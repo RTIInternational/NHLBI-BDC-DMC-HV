@@ -1,0 +1,156 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001583
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00113633}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113633}) + ":CARDIA YEAR 0")'
+        observation_type:
+          value: OBA:2045455
+        method_type:
+          value: "anthropometry"
+        value_quantity:
+          class_derivations:
+          - Quantity:
+              populated_from: pht001583
+              slot_derivations:
+                value_decimal:
+                  expr: "None if str({phv00113661}) == 'M' else float({phv00113661})"
+                unit:
+                  value: "kg/m2"
+                  range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001671
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00115849}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00115849}) + ":CARDIA YEAR 5")'
+        observation_type:
+          value: OBA:2045455
+        method_type:
+          value: "anthropometry"
+        value_quantity:
+          class_derivations:
+          - Quantity:
+              populated_from: pht001671
+              slot_derivations:
+                value_decimal:
+                  expr: "None if str({phv00115869}) == 'M' else float({phv00115869})"
+                unit:
+                  value: "kg/m2"
+                  range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001720
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00117221}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00117221}) + ":CARDIA YEAR 7")'
+        observation_type:
+          value: OBA:2045455
+        method_type:
+          value: "anthropometry"
+        value_quantity:
+          class_derivations:
+          - Quantity:
+              populated_from: pht001720
+              slot_derivations:
+                value_decimal:
+                  expr: "None if str({phv00117249}) == 'M' else float({phv00117249})"
+                unit:
+                  value: "kg/m2"
+                  range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001785
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00119092}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119092}) + ":CARDIA YEAR 10")'
+        observation_type:
+          value: OBA:2045455
+        method_type:
+          value: "anthropometry"
+        value_quantity:
+          class_derivations:
+          - Quantity:
+              populated_from: pht001785
+              slot_derivations:
+                value_decimal:
+                  expr: "None if str({phv00119120}) == 'M' else float({phv00119120})"
+                unit:
+                  value: "kg/m2"
+                  range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001857
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120993}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120993}) + ":CARDIA YEAR 15")'
+        observation_type:
+          value: OBA:2045455
+        method_type:
+          value: "anthropometry"
+        value_quantity:
+          class_derivations:
+          - Quantity:
+              populated_from: pht001857
+              slot_derivations:
+                value_decimal:
+                  expr: "None if str({phv00121003}) == 'M' else float({phv00121003})"
+                unit:
+                  value: "kg/m2"
+                  range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003298
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190551}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190551}) + ":CARDIA YEAR 20")'
+        age_at_observation:
+          expr: "None if str({phv00190622}) == 'M' else float({phv00190622}) * 365"
+        observation_type:
+          value: OBA:2045455
+        method_type:
+          value: "anthropometry"
+        value_quantity:
+          class_derivations:
+          - Quantity:
+              populated_from: pht003298
+              slot_derivations:
+                value_decimal:
+                  expr: "None if str({phv00190563}) == 'M' else float({phv00190563})"
+                unit:
+                  value: "kg/m2"
+                  range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001632
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00114828}) + ":CARDIA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00114828}) + ":CARDIA YEAR 2")'
+        observation_type:
+          value: OBA:2045455
+        method_type:
+          value: "anthropometry"
+        value_quantity:
+          class_derivations:
+          - Quantity:
+              populated_from: pht001632
+              slot_derivations:
+                value_decimal:
+                  expr: "None if str({phv00114862}) == 'M' else float({phv00114862})"
+                unit:
+                  value: "kg/m2"
+                  range: string

@@ -3,7 +3,7 @@
       populated_from: pht001460
       slot_derivations:
         associated_participant:
-          populated_from: phv00100693
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00100693}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100693}) + ":CHS SHHS 1")'
         age_at_observation:
@@ -11,23 +11,24 @@
         observation_type:
           value: OBA:2040171
           range: string
+        method_type:
+          value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001460
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00100712
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001460
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00100712
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001460
       slot_derivations:
         associated_participant:
-          populated_from: phv00100693
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00100693}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100693}) + ":CHS SHHS 1")'
         age_at_observation:
@@ -35,146 +36,153 @@
         observation_type:
           value: OBA:2040171
           range: string
+        method_type:
+          value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001460
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00100713
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001460
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00100713
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003699
       slot_derivations:
         associated_participant:
-          populated_from: phv00197394
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00197394}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197394}) + ":CHS PSG 1")'
         observation_type:
           value: OBA:2040171
           range: string
+        method_type:
+          value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003699
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00197566
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003699
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00197566
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003699
       slot_derivations:
         associated_participant:
-          populated_from: phv00197394
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00197394}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197394}) + ":CHS PSG 1")'
         observation_type:
           value: OBA:2040171
           range: string
+        method_type:
+          value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003699
-                slot_derivations:
-                  value_decimal:
-                    expr: "case(({phv00197658} == 9999, None), (True, {phv00197658}))"
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003699
+              slot_derivations:
+                value_decimal:
+                  expr: "case(({phv00197658} == 9999, None), (True, {phv00197658}))"
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003699
       slot_derivations:
         associated_participant:
-          populated_from: phv00197394
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00197394}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197394}) + ":CHS PSG 1")'
         observation_type:
           value: OBA:2040171
           range: string
+        method_type:
+          value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003699
-                slot_derivations:
-                  value_decimal:
-                    expr: "case(({phv00197659} == 9000, None), ({phv00197659} == 9999, None), (True, {phv00197659}))"
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003699
+              slot_derivations:
+                value_decimal:
+                  expr: "case(({phv00197659} == 9000, None), ({phv00197659} == 9999, None), (True, {phv00197659}))"
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003699
       slot_derivations:
         associated_participant:
-          populated_from: phv00197394
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00197394}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197394}) + ":CHS PSG 1")'
         observation_type:
           value: OBA:2040171
           range: string
+        method_type:
+          value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003699
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00197707
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003699
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00197707} / 60'
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003700
       slot_derivations:
         associated_participant:
-          populated_from: phv00198805
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00198805}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OBA:2040171
           range: string
+        method_type:
+          value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003700
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00199793} / 60'
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003700
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00199793} / 60'
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003700
       slot_derivations:
         associated_participant:
-          populated_from: phv00198805
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00198805}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OBA:2040171
           range: string
+        method_type:
+          value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003700
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00200010} / 60'
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003700
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00200010} / 60'
+                unit:
+                  value: h
+                  range: string

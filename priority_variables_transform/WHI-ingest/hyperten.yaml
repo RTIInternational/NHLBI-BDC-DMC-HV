@@ -3,7 +3,7 @@
       populated_from: pht000999
       slot_derivations:
         associated_participant:
-          populated_from: phv00078506
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078506}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078506}) + ":WHI SCREENING")'
           range: string
@@ -18,6 +18,8 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -26,7 +28,9 @@
       populated_from: pht006223
       slot_derivations:
         associated_participant:
-          populated_from: phv00283451
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283451}) + ":WHI")'
+        age_at_condition_start:
+          expr: 'case(({phv00283528} == 1, ({phv00078437} * 365) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
           range: string
@@ -41,6 +45,8 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -49,7 +55,7 @@
       populated_from: pht000999
       slot_derivations:
         associated_participant:
-          populated_from: phv00078506
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00078506}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078506}) + ":WHI SCREENING")'
           range: string
@@ -65,6 +71,8 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -73,7 +81,9 @@
       populated_from: pht006223
       slot_derivations:
         associated_participant:
-          populated_from: phv00283451
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283451}) + ":WHI")'
+        age_at_condition_start:
+          expr: 'case(({phv00283526} == 1, ({phv00078437} * 365) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
           range: string
@@ -88,6 +98,8 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -96,7 +108,9 @@
       populated_from: pht006223
       slot_derivations:
         associated_participant:
-          populated_from: phv00283451
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283451}) + ":WHI")'
+        age_at_condition_start:
+          expr: 'case(({phv00283592} == 1, ({phv00078437} * 365) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
           range: string
@@ -115,6 +129,8 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "hospital record abstraction"
         condition_severity:
           populated_from: phv00283592
           value_mappings:

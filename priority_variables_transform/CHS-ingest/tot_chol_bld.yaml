@@ -3,7 +3,7 @@
       populated_from: pht001452
       slot_derivations:
         associated_participant:
-          populated_from: phv00100285
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00100285}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100285}) + ":CHS BASELINE BOTH")'
         age_at_observation:
@@ -12,16 +12,15 @@
           value: OBA:VT0000180
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001452
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00100491
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001452
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00100491
+                unit:
+                  value: mg/dL
+                  range: string
         method_type:
           value: adjusted
           range: string

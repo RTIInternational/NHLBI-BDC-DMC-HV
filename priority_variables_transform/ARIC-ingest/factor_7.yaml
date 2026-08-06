@@ -3,38 +3,40 @@
       populated_from: pht004098
       slot_derivations:
         associated_participant:
-          populated_from: phv00206655
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00206655}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00206655}) + ":ARIC EXAM 1")'
         observation_type:
           value: OBA:2041535
+        method_type:
+          value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004098
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00206651
-                  unit:
-                    value: "%{normal}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004098
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00206651
+                unit:
+                  value: "%{normal}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004099
       slot_derivations:
         associated_participant:
-          populated_from: phv00206665
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00206665}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00206665}) + ":ARIC EXAM 3")'
         observation_type:
           value: OBA:2041535
+        method_type:
+          value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004099
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00206657
-                  unit:
-                    value: "%{normal}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004099
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00206657
+                unit:
+                  value: "%{normal}"

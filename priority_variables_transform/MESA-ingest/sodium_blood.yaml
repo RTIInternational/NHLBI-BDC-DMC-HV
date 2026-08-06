@@ -3,20 +3,22 @@
       populated_from: pht003089
       slot_derivations:
         associated_participant:
-          populated_from: phv00175973
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00175973}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00175973}) + ":MESA ANCILLARY")'
         observation_type:
           value: OBA:VT0001776
           range: string
+        method_type:
+          value: "blood assay"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003089
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00175981
-                  unit:
-                    value: mmol/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003089
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00175981
+                unit:
+                  value: mmol/L
+                  range: string

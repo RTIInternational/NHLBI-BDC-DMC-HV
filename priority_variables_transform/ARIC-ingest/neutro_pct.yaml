@@ -3,38 +3,40 @@
       populated_from: pht004108
       slot_derivations:
         associated_participant:
-          populated_from: phv00207283
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207283}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207283}) + ":ARIC EXAM 2")'
         observation_type:
           value: OMOP:37208698
+        method_type:
+          value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004108
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00207274
-                  unit:
-                    value: "%{WBCs}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004108
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00207274
+                unit:
+                  value: "%{WBCs}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004107
       slot_derivations:
         associated_participant:
-          populated_from: phv00207267
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207267}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207267}) + ":ARIC EXAM 1")'
         observation_type:
           value: OMOP:37208698
+        method_type:
+          value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004107
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00207259
-                  unit:
-                    value: "%{WBCs}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004107
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00207259
+                unit:
+                  value: "%{WBCs}"

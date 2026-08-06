@@ -1,0 +1,188 @@
+{
+  "confirmed::emphysema.yaml::0": {
+    "change_request": "MONDO:0004849",
+    "slot": "condition_concept",
+    "yaml_files": [
+      "emphysema.yaml"
+    ],
+    "notes": "",
+    "applied": true
+  },
+  "confirmed::tak\\_adrenergics.yaml::2": {
+    "change_request": "ATC:R03AK",
+    "slot": "drug_concept",
+    "yaml_files": [
+      "tak_adrenergics.yaml"
+    ],
+    "notes": "",
+    "applied": true
+  },
+  "confirmed::tak\\_cort\\_steroid\\_resp.yaml::1": {
+    "change_request": "ATC:R03BA",
+    "slot": "drug_concept",
+    "yaml_files": [
+      "tak_cort_steroid_resp.yaml"
+    ],
+    "notes": "",
+    "applied": true
+  },
+  "COPDGene::confirmed::emphysema.yaml": {
+    "study": "COPDGene",
+    "change_request": "MONDO:0004849",
+    "slot": "condition_concept",
+    "yaml_files": [
+      "emphysema.yaml"
+    ],
+    "notes": "",
+    "applied": true,
+    "saved_date": "2026-06-11",
+    "applied_date": "2026-06-11",
+    "applied_by": "Curator"
+  },
+  "COPDGene::confirmed::tak_cort_steroid_resp.yaml": {
+    "study": "COPDGene",
+    "change_request": "ATC:R03BA",
+    "original_curie": "ATC:R03BA",
+    "slot": "drug_concept",
+    "yaml_files": [
+      "tak_cort_steroid_resp.yaml"
+    ],
+    "notes": "",
+    "applied": true,
+    "saved_date": "2026-06-11",
+    "applied_date": "2026-06-11",
+    "applied_by": "Steph"
+  },
+  "COPDGene::confirmed::alcohol.yaml": {
+    "study": "COPDGene",
+    "change_request": "OMOP:35609491",
+    "original_curie": "LOINC:68518-0",
+    "slot": "observation_type",
+    "yaml_files": [
+      "alcohol.yaml"
+    ],
+    "notes": "Anne and Steph reviewed, this is more in line with the question - Alcohol units consumed per week",
+    "applied": true,
+    "saved_date": "2026-06-16",
+    "applied_date": "2026-06-16",
+    "applied_by": "Curator"
+  },
+  "COPDGene::confirmed::tak_adrenergics.yaml": {
+    "study": "COPDGene",
+    "change_request": "ATC:R03AK",
+    "original_curie": "ATC:R03AK",
+    "slot": "drug_concept",
+    "yaml_files": [
+      "tak_adrenergics.yaml"
+    ],
+    "notes": "The description combination inhaled corticosteroid and beta-agonist matches the ATC definition",
+    "applied": true,
+    "saved_date": "2026-06-13",
+    "applied_date": "2026-06-13",
+    "applied_by": "Stephanie"
+  },
+  "COPDGene::confirmed::lymphocyte_ct.yaml": {
+    "study": "COPDGene",
+    "change_request": "OBA:VT0000717",
+    "original_curie": "OBA:VT0000217",
+    "slot": "observation_type",
+    "yaml_files": [
+      "lymphocyte_ct.yaml"
+    ],
+    "notes": "OBA:VT0000217 is 'leukocyte quantity' (total WBC count) — incorrect for lymphocytes. Corrected to OBA:VT0000717 ('lymphocyte quantity'). Root cause: bdchm schema enum LYMPHOCYTES_COUNT also had this wrong OBA code. Confirmed via OLS VT ontology. whtbld_ct.yaml correctly retains OBA:VT0000217 for total WBC. The agent suggestion of LOINC:6690-2 was a false positive — LOINC encodes assay procedures (method_type) not biological attributes (observation_type).",
+    "applied": true,
+    "saved_date": "2026-06-15",
+    "applied_date": "2026-06-15",
+    "applied_by": "Stephanie"
+  },
+  "COPDGene::confirmed::tak_antihypertensives.yaml": {
+    "study": "COPDGene",
+    "change_request": "ATC:C02",
+    "original_curie": "ATC:C02",
+    "slot": "drug_concept",
+    "yaml_files": [
+      "tak_antihypertensives.yaml"
+    ],
+    "notes": "",
+    "applied": true,
+    "saved_date": "2026-06-16",
+    "applied_date": "2026-06-16",
+    "applied_by": "Stephanie"
+  },
+  "COPDGene::confirmed::hist_cor_angio.yaml": {
+    "study": "COPDGene",
+    "change_request": "",
+    "original_curie": "",
+    "slot": "procedure_concept",
+    "yaml_files": [
+      "hist_cor_angio.yaml"
+    ],
+    "notes": "Anne and Steph reviewed this item and decided on this this term: https://athena.ohdsi.org/search-terms/terms/4184832",
+    "applied": false,
+    "saved_date": "2026-06-16"
+  },
+  "COPDGene::confirmed::hyperten.yaml": {
+    "study": "COPDGene",
+    "change_request": "",
+    "original_curie": "",
+    "slot": "condition_concept",
+    "yaml_files": [
+      "hyperten.yaml"
+    ],
+    "notes": "We reviewed this term and decided to leave it at HPO term: 0000822\n\nIf the question means \"Has the participant been diagnosed with high blood pressure (hypertension)?\" → use MONDO:0005044 (Hypertension). however HPO represents observable abnormalities or phenotypic features.\n\nHowever, use HP:0000822 = Hypertension \nif it describes the phenotypic abnormality of elevated blood pressure, regardless of whether there is a formal diagnosis.",
+    "applied": false,
+    "saved_date": "2026-06-16"
+  },
+  "COPDGene::confirmed::slp_ap.yaml": {
+    "study": "COPDGene",
+    "change_request": "",
+    "original_curie": "",
+    "slot": "condition_concept",
+    "yaml_files": [
+      "slp_ap.yaml"
+    ],
+    "notes": "leaving it as HPO term.",
+    "applied": false,
+    "saved_date": "2026-06-16"
+  },
+  "COPDGene::confirmed::stroke.yaml": {
+    "study": "COPDGene",
+    "change_request": "HP:0001297",
+    "original_curie": "HP:0001297",
+    "slot": "condition_concept",
+    "yaml_files": [
+      "stroke.yaml"
+    ],
+    "notes": "Anne and Steph review this term and leave it at HP:0001297 ",
+    "applied": true,
+    "saved_date": "2026-06-16",
+    "applied_date": "2026-06-16",
+    "applied_by": "Stephanie"
+  },
+  "COPDGene::confirmed::hrt_rt.yaml": {
+    "study": "COPDGene",
+    "slot": "observation_type",
+    "yaml_files": [
+      "hrt_rt.yaml"
+    ],
+    "no_change": true,
+    "no_change_reason": "Keeping as the OBA:1001087 - http://purl.obolibrary.org/obo/OBA_1001087",
+    "reviewed_date": "2026-06-16",
+    "reviewed_by": "Curator",
+    "change_request": "",
+    "applied": false
+  },
+  "COPDGene::confirmed::angina.yaml": {
+    "study": "COPDGene",
+    "slot": "condition_concept",
+    "yaml_files": [
+      "angina.yaml"
+    ],
+    "no_change": true,
+    "no_change_reason": "Angina (HP:0001681) represents a clinical condition/symptom reported for the participant.",
+    "reviewed_date": "2026-06-16",
+    "reviewed_by": "Curator",
+    "change_request": "",
+    "applied": false
+  }
+}

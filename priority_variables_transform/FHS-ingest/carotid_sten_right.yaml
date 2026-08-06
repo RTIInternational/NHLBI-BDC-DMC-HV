@@ -3,7 +3,7 @@
       populated_from: pht000083
       slot_derivations:
         associated_participant:
-          populated_from: phv00021738
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00021738}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00021738}) + ":FHS OFFSPRING EXAM 6")'
         age_at_observation:
@@ -11,21 +11,22 @@
         observation_type:
           value: OMOP:43021859
           range: string
+        method_type:
+          value: 'Carotid Ultrasound'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000083
-                slot_derivations:
-                  value_concept:
-                    populated_from: phv00021700
-                    value_mappings:
-                      '0': 0
-                      '1': 1-24
-                      '2': 25-49
-                      '3': 50-74
-                      '4': 75-99
-                      '5': 100
-                  unit:
-                    value: '%'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000083
+              slot_derivations:
+                value_concept:
+                  populated_from: phv00021700
+                  value_mappings:
+                    '0': 0
+                    '1': 1-24
+                    '2': 25-49
+                    '3': 50-74
+                    '4': 75-99
+                    '5': 100
+                unit:
+                  value: '%'
+                  range: string

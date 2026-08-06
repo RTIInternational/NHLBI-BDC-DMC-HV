@@ -1,0 +1,43 @@
+{
+  "submitted_date": "2026-06-18",
+  "study": "COPDGene",
+  "curator": "Stephanie",
+  "changes": {
+    "COPDGene::confirmed::tak_adrenergics.yaml": {
+      "study": "COPDGene",
+      "change_request": "OMOP:4186832",
+      "original_curie": "RESPIRATORY TRACT",
+      "slot": "route_concept",
+      "yaml_files": [
+        "tak_adrenergics.yaml"
+      ],
+      "notes": "Corrected plain-text 'RESPIRATORY TRACT' to valid BDCHM DrugRouteEnum value OMOP:4186832 (Endotracheopulmonary). OMOP:45956874 (Inhalation) is not in the DrugRouteEnum; ENDOTRACHEOPULMONARY is the correct schema-compliant route for inhaled respiratory medications.",
+      "applied": true,
+      "saved_date": "2026-06-18",
+      "applied_date": "2026-06-18",
+      "applied_by": "Stephanie",
+      "apply_results": [
+        "✓ YAML `tak_adrenergics.yaml` [route_concept] → `OMOP:4186832` (1 match)",
+        "— CSV: no route_concept rows exist for tak_adrenergics.yaml in COPDGene_curie.csv"
+      ]
+    },
+    "COPDGene::confirmed::tak_cort_steroid_resp.yaml": {
+      "study": "COPDGene",
+      "change_request": "OMOP:4186832",
+      "original_curie": "RESPIRATORY TRACT",
+      "slot": "route_concept",
+      "yaml_files": [
+        "tak_cort_steroid_resp.yaml"
+      ],
+      "notes": "Corrected plain-text 'RESPIRATORY TRACT' to valid BDCHM DrugRouteEnum value OMOP:4186832 (Endotracheopulmonary). OMOP:45956874 (Inhalation) is not in the DrugRouteEnum; ENDOTRACHEOPULMONARY is the correct schema-compliant route for inhaled respiratory medications.",
+      "applied": true,
+      "saved_date": "2026-06-18",
+      "applied_date": "2026-06-18",
+      "applied_by": "Stephanie",
+      "apply_results": [
+        "✓ YAML `tak_cort_steroid_resp.yaml` [route_concept] → `OMOP:4186832` (1 match)",
+        "— CSV: no route_concept rows exist for tak_cort_steroid_resp.yaml in COPDGene_curie.csv"
+      ]
+    }
+  }
+}

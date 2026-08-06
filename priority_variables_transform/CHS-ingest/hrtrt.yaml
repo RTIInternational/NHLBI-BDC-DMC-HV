@@ -3,7 +3,7 @@
       populated_from: pht001450
       slot_derivations:
         associated_participant:
-          populated_from: phv00098771
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00098771}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
         age_at_observation:
@@ -11,17 +11,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001450
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00099357} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001450
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00099357} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate
           range: string
@@ -30,7 +31,7 @@
       populated_from: pht001450
       slot_derivations:
         associated_participant:
-          populated_from: phv00098771
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00098771}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
         age_at_observation:
@@ -38,17 +39,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001450
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00099380} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001450
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00099380} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate supine
           range: string
@@ -57,7 +59,7 @@
       populated_from: pht001450
       slot_derivations:
         associated_participant:
-          populated_from: phv00098771
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00098771}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
         age_at_observation:
@@ -65,17 +67,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001450
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00099387} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001450
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00099387} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate standing
           range: string
@@ -84,7 +87,7 @@
       populated_from: pht001450
       slot_derivations:
         associated_participant:
-          populated_from: phv00098771
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00098771}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
         age_at_observation:
@@ -92,17 +95,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001450
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00099427} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001450
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00099427} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate before chair stands
           range: string
@@ -111,7 +115,7 @@
       populated_from: pht001450
       slot_derivations:
         associated_participant:
-          populated_from: phv00098771
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00098771}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
         age_at_observation:
@@ -119,17 +123,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001450
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00099429} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001450
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00099429} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate after chair stands
           range: string
@@ -138,23 +143,24 @@
       populated_from: pht001451
       slot_derivations:
         associated_participant:
-          populated_from: phv00099663
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00099663}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00099663}) + ":CHS BASELINE 2")'
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001451
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00099700
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001451
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00099700
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 60 second heart rate
           range: string
@@ -163,29 +169,30 @@
       populated_from: pht001451
       slot_derivations:
         associated_participant:
-          populated_from: phv00099663
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00099663}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00099663}) + ":CHS BASELINE 2")'
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001451
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00100054
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001451
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00100054
+                unit:
+                  value: '{beats}/min'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001452
       slot_derivations:
         associated_participant:
-          populated_from: phv00100285
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00100285}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100285}) + ":CHS BASELINE BOTH")'
         age_at_observation:
@@ -193,17 +200,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001452
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00100389} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001452
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00100389} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate
           range: string
@@ -212,7 +220,7 @@
       populated_from: pht001452
       slot_derivations:
         associated_participant:
-          populated_from: phv00100285
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00100285}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100285}) + ":CHS BASELINE BOTH")'
         age_at_observation:
@@ -220,17 +228,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001452
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00100396} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001452
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00100396} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate supine
           range: string
@@ -239,7 +248,7 @@
       populated_from: pht001452
       slot_derivations:
         associated_participant:
-          populated_from: phv00100285
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00100285}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100285}) + ":CHS BASELINE BOTH")'
         age_at_observation:
@@ -247,17 +256,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001452
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00100399} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001452
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00100399} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate standing
           range: string
@@ -266,7 +276,7 @@
       populated_from: pht001474
       slot_derivations:
         associated_participant:
-          populated_from: phv00101324
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00101324}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00101324}) + ":CHS YEAR 10")'
         age_at_observation:
@@ -274,17 +284,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001474
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00101728} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001474
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00101728} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate before chair stands
           range: string
@@ -293,7 +304,7 @@
       populated_from: pht001474
       slot_derivations:
         associated_participant:
-          populated_from: phv00101324
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00101324}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00101324}) + ":CHS YEAR 10")'
         age_at_observation:
@@ -301,17 +312,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001474
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00101730} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001474
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00101730} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate after chair stands
           range: string
@@ -320,7 +332,7 @@
       populated_from: pht001474
       slot_derivations:
         associated_participant:
-          populated_from: phv00101324
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00101324}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00101324}) + ":CHS YEAR 10")'
         age_at_observation:
@@ -328,17 +340,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001474
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00101754
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001474
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00101754
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 60 second heart rate
           range: string
@@ -347,7 +360,7 @@
       populated_from: pht001474
       slot_derivations:
         associated_participant:
-          populated_from: phv00101324
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00101324}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00101324}) + ":CHS YEAR 10")'
         age_at_observation:
@@ -355,17 +368,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001474
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00101773} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001474
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00101773} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate
           range: string
@@ -374,7 +388,7 @@
       populated_from: pht001474
       slot_derivations:
         associated_participant:
-          populated_from: phv00101324
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00101324}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00101324}) + ":CHS YEAR 10")'
         age_at_observation:
@@ -382,23 +396,24 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001474
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00101969
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001474
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00101969
+                unit:
+                  value: '{beats}/min'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001475
       slot_derivations:
         associated_participant:
-          populated_from: phv00102174
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00102174}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00102174}) + ":CHS YEAR 11")'
         age_at_observation:
@@ -406,17 +421,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001475
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00102470} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001475
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00102470} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate
           range: string
@@ -425,7 +441,7 @@
       populated_from: pht001475
       slot_derivations:
         associated_participant:
-          populated_from: phv00102174
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00102174}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00102174}) + ":CHS YEAR 11")'
         age_at_observation:
@@ -433,17 +449,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001475
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00102497
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001475
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00102497
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 60 second heart rate
           range: string
@@ -452,7 +469,7 @@
       populated_from: pht001475
       slot_derivations:
         associated_participant:
-          populated_from: phv00102174
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00102174}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00102174}) + ":CHS YEAR 11")'
         age_at_observation:
@@ -460,17 +477,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001475
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00102548} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001475
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00102548} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate before chair stands
           range: string
@@ -479,7 +497,7 @@
       populated_from: pht001475
       slot_derivations:
         associated_participant:
-          populated_from: phv00102174
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00102174}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00102174}) + ":CHS YEAR 11")'
         age_at_observation:
@@ -487,17 +505,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001475
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00102550} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001475
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00102550} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate after chair stands
           range: string
@@ -506,7 +525,7 @@
       populated_from: pht001475
       slot_derivations:
         associated_participant:
-          populated_from: phv00102174
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00102174}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00102174}) + ":CHS YEAR 11")'
         age_at_observation:
@@ -514,39 +533,41 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001475
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00102591
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001475
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00102591
+                unit:
+                  value: '{beats}/min'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001488
       slot_derivations:
         associated_participant:
-          populated_from: phv00103781
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00103781}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00103781}) + ":CHS YEAR 3")'
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001488
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00104009} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001488
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00104009} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate
           range: string
@@ -555,23 +576,24 @@
       populated_from: pht001488
       slot_derivations:
         associated_participant:
-          populated_from: phv00103781
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00103781}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00103781}) + ":CHS YEAR 3")'
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001488
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00104315
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001488
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00104315
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 60 second heart rate
           range: string
@@ -580,29 +602,30 @@
       populated_from: pht001488
       slot_derivations:
         associated_participant:
-          populated_from: phv00103781
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00103781}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00103781}) + ":CHS YEAR 3")'
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001488
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00104326
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001488
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00104326
+                unit:
+                  value: '{beats}/min'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001489
       slot_derivations:
         associated_participant:
-          populated_from: phv00104468
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00104468}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00104468}) + ":CHS YEAR 4")'
         age_at_observation:
@@ -610,17 +633,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001489
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00104686} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001489
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00104686} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate
           range: string
@@ -629,7 +653,7 @@
       populated_from: pht001489
       slot_derivations:
         associated_participant:
-          populated_from: phv00104468
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00104468}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00104468}) + ":CHS YEAR 4")'
         age_at_observation:
@@ -637,17 +661,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001489
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00104740} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001489
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00104740} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate before chair stands
           range: string
@@ -656,7 +681,7 @@
       populated_from: pht001489
       slot_derivations:
         associated_participant:
-          populated_from: phv00104468
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00104468}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00104468}) + ":CHS YEAR 4")'
         age_at_observation:
@@ -664,17 +689,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001489
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00104742} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001489
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00104742} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate after chair stands
           range: string
@@ -683,7 +709,7 @@
       populated_from: pht001489
       slot_derivations:
         associated_participant:
-          populated_from: phv00104468
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00104468}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00104468}) + ":CHS YEAR 4")'
         age_at_observation:
@@ -691,17 +717,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001489
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00104964
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001489
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00104964
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 60 second heart rate
           range: string
@@ -710,7 +737,7 @@
       populated_from: pht001489
       slot_derivations:
         associated_participant:
-          populated_from: phv00104468
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00104468}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00104468}) + ":CHS YEAR 4")'
         age_at_observation:
@@ -718,41 +745,43 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001489
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00104980
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001489
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00104980
+                unit:
+                  value: '{beats}/min'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001490
       slot_derivations:
         associated_participant:
-          populated_from: phv00105099
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00105099}) + ":CHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS BASELINE 2")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
         age_at_observation:
           expr: '{phv00105622} * 365'    
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001490
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00105423} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001490
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00105423} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate
           range: string
@@ -761,25 +790,26 @@
       populated_from: pht001490
       slot_derivations:
         associated_participant:
-          populated_from: phv00105099
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00105099}) + ":CHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS BASELINE 2")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
         age_at_observation:
           expr: '{phv00105622} * 365' 
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001490
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00105455} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001490
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00105455} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate supine
           range: string
@@ -788,25 +818,26 @@
       populated_from: pht001490
       slot_derivations:
         associated_participant:
-          populated_from: phv00105099
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00105099}) + ":CHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS BASELINE 2")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
         age_at_observation:
           expr: '{phv00105622} * 365'       
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001490
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00105462} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001490
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00105462} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate standing
           range: string
@@ -815,25 +846,26 @@
       populated_from: pht001490
       slot_derivations:
         associated_participant:
-          populated_from: phv00105099
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00105099}) + ":CHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS BASELINE 2")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
         age_at_observation:
           expr: '{phv00105622} * 365'       
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001490
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00105839} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001490
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00105839} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate before chair stands
           range: string
@@ -842,25 +874,26 @@
       populated_from: pht001490
       slot_derivations:
         associated_participant:
-          populated_from: phv00105099
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00105099}) + ":CHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS BASELINE 2")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
         age_at_observation:
           expr: '{phv00105622} * 365' 
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001490
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00105841} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001490
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00105841} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate after chair stands
           range: string
@@ -869,49 +902,51 @@
       populated_from: pht001490
       slot_derivations:
         associated_participant:
-          populated_from: phv00105099
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00105099}) + ":CHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS BASELINE 2")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
         age_at_observation:
           expr: '{phv00105622} * 365'    
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001490
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00106347
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001490
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00106347
+                unit:
+                  value: '{beats}/min'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001490
       slot_derivations:
         associated_participant:
-          populated_from: phv00105099
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00105099}) + ":CHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS BASELINE 2")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
         age_at_observation:
           expr: '{phv00105622} * 365'
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001490
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00106374
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001490
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00106374
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 60 second heart rate
           range: string
@@ -920,7 +955,7 @@
       populated_from: pht001491
       slot_derivations:
         associated_participant:
-          populated_from: phv00106520
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00106520}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00106520}) + ":CHS YEAR 5 OLD")'
         age_at_observation:
@@ -928,17 +963,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001491
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00106785} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001491
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00106785} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate
           range: string
@@ -947,7 +983,7 @@
       populated_from: pht001491
       slot_derivations:
         associated_participant:
-          populated_from: phv00106520
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00106520}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00106520}) + ":CHS YEAR 5 OLD")'
         age_at_observation:
@@ -955,17 +991,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001491
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00106817} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001491
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00106817} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate supine
           range: string
@@ -974,7 +1011,7 @@
       populated_from: pht001491
       slot_derivations:
         associated_participant:
-          populated_from: phv00106520
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00106520}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00106520}) + ":CHS YEAR 5 OLD")'
         age_at_observation:
@@ -982,17 +1019,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001491
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00106824} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001491
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00106824} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate standing
           range: string
@@ -1001,7 +1039,7 @@
       populated_from: pht001491
       slot_derivations:
         associated_participant:
-          populated_from: phv00106520
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00106520}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00106520}) + ":CHS YEAR 5 OLD")'
         age_at_observation:
@@ -1009,17 +1047,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001491
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00106963} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001491
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00106963} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate before chair stands
           range: string
@@ -1028,7 +1067,7 @@
       populated_from: pht001491
       slot_derivations:
         associated_participant:
-          populated_from: phv00106520
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00106520}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00106520}) + ":CHS YEAR 5 OLD")'
         age_at_observation:
@@ -1036,17 +1075,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001491
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00106965} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001491
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00106965} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate after chair stands
           range: string
@@ -1055,7 +1095,7 @@
       populated_from: pht001491
       slot_derivations:
         associated_participant:
-          populated_from: phv00106520
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00106520}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00106520}) + ":CHS YEAR 5 OLD")'
         age_at_observation:
@@ -1063,23 +1103,24 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001491
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00107286
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001491
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00107286
+                unit:
+                  value: '{beats}/min'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001491
       slot_derivations:
         associated_participant:
-          populated_from: phv00106520
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00106520}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00106520}) + ":CHS YEAR 5 OLD")'
         age_at_observation:
@@ -1087,17 +1128,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001491
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00107310
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001491
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00107310
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 60 second heart rate
           range: string
@@ -1106,7 +1148,7 @@
       populated_from: pht001492
       slot_derivations:
         associated_participant:
-          populated_from: phv00107443
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00107443}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00107443}) + ":CHS YEAR 6")'
         age_at_observation:
@@ -1114,17 +1156,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001492
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00107483} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001492
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00107483} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate after chair stands
           range: string
@@ -1133,7 +1176,7 @@
       populated_from: pht001492
       slot_derivations:
         associated_participant:
-          populated_from: phv00107443
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00107443}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00107443}) + ":CHS YEAR 6")'
         age_at_observation:
@@ -1141,17 +1184,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001492
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00107485} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001492
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00107485} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate before chair stands
           range: string
@@ -1160,7 +1204,7 @@
       populated_from: pht001492
       slot_derivations:
         associated_participant:
-          populated_from: phv00107443
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00107443}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00107443}) + ":CHS YEAR 6")'
         age_at_observation:
@@ -1168,17 +1212,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001492
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00107753} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001492
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00107753} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate
           range: string
@@ -1187,7 +1232,7 @@
       populated_from: pht001492
       slot_derivations:
         associated_participant:
-          populated_from: phv00107443
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00107443}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00107443}) + ":CHS YEAR 6")'
         age_at_observation:
@@ -1195,23 +1240,24 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001492
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00108162
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001492
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00108162
+                unit:
+                  value: '{beats}/min'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001492
       slot_derivations:
         associated_participant:
-          populated_from: phv00107443
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00107443}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00107443}) + ":CHS YEAR 6")'
         age_at_observation:
@@ -1219,17 +1265,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001492
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00108186
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001492
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00108186
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 60 second heart rate
           range: string
@@ -1238,7 +1285,7 @@
       populated_from: pht001493
       slot_derivations:
         associated_participant:
-          populated_from: phv00108303
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00108303}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00108303}) + ":CHS YEAR 7")'
         age_at_observation:
@@ -1246,17 +1293,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001493
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00108484} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001493
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00108484} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate
           range: string
@@ -1265,7 +1313,7 @@
       populated_from: pht001493
       slot_derivations:
         associated_participant:
-          populated_from: phv00108303
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00108303}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00108303}) + ":CHS YEAR 7")'
         age_at_observation:
@@ -1273,17 +1321,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001493
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00108516
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001493
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00108516
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 60 second heart rate
           range: string
@@ -1292,7 +1341,7 @@
       populated_from: pht001493
       slot_derivations:
         associated_participant:
-          populated_from: phv00108303
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00108303}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00108303}) + ":CHS YEAR 7")'
         age_at_observation:
@@ -1300,23 +1349,24 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001493
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00108784
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001493
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00108784
+                unit:
+                  value: '{beats}/min'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001493
       slot_derivations:
         associated_participant:
-          populated_from: phv00108303
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00108303}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00108303}) + ":CHS YEAR 7")'
         age_at_observation:
@@ -1324,17 +1374,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001493
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00108926
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001493
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00108926
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: average
           range: string
@@ -1343,7 +1394,7 @@
       populated_from: pht001494
       slot_derivations:
         associated_participant:
-          populated_from: phv00109056
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00109056}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109056}) + ":CHS YEAR 8")'
         age_at_observation:
@@ -1351,17 +1402,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001494
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00109248
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001494
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00109248
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 60 second heart rate
           range: string
@@ -1370,7 +1422,7 @@
       populated_from: pht001494
       slot_derivations:
         associated_participant:
-          populated_from: phv00109056
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00109056}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109056}) + ":CHS YEAR 8")'
         age_at_observation:
@@ -1378,17 +1430,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001494
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00109303} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001494
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00109303} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate before chair stands
           range: string
@@ -1397,7 +1450,7 @@
       populated_from: pht001494
       slot_derivations:
         associated_participant:
-          populated_from: phv00109056
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00109056}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109056}) + ":CHS YEAR 8")'
         age_at_observation:
@@ -1405,17 +1458,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001494
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00109305} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001494
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00109305} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate after chair stands
           range: string
@@ -1424,7 +1478,7 @@
       populated_from: pht001494
       slot_derivations:
         associated_participant:
-          populated_from: phv00109056
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00109056}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109056}) + ":CHS YEAR 8")'
         age_at_observation:
@@ -1432,23 +1486,24 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001494
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00109315
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001494
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00109315
+                unit:
+                  value: '{beats}/min'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001495
       slot_derivations:
         associated_participant:
-          populated_from: phv00109768
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00109768}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109768}) + ":CHS YEAR 9")'
         age_at_observation:
@@ -1456,23 +1511,24 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001495
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00109861
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001495
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00109861
+                unit:
+                  value: '{beats}/min'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001495
       slot_derivations:
         associated_participant:
-          populated_from: phv00109768
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00109768}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109768}) + ":CHS YEAR 9")'
         age_at_observation:
@@ -1480,17 +1536,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001495
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00110268} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001495
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00110268} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate
           range: string
@@ -1499,7 +1556,7 @@
       populated_from: pht001495
       slot_derivations:
         associated_participant:
-          populated_from: phv00109768
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00109768}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109768}) + ":CHS YEAR 9")'
         age_at_observation:
@@ -1507,17 +1564,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001495
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00110316} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001495
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00110316} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate before chair stands
           range: string
@@ -1526,7 +1584,7 @@
       populated_from: pht001495
       slot_derivations:
         associated_participant:
-          populated_from: phv00109768
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00109768}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109768}) + ":CHS YEAR 9")'
         age_at_observation:
@@ -1534,17 +1592,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001495
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00110318} * 2'
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001495
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00110318} * 2'
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 30 second heart rate after chair stands
           range: string
@@ -1553,7 +1612,7 @@
       populated_from: pht001495
       slot_derivations:
         associated_participant:
-          populated_from: phv00109768
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00109768}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109768}) + ":CHS YEAR 9")'
         age_at_observation:
@@ -1561,17 +1620,18 @@
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001495
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00110498
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001495
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00110498
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: 60 second heart rate
           range: string
@@ -1580,23 +1640,24 @@
       populated_from: pht003700
       slot_derivations:
         associated_participant:
-          populated_from: phv00198805
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00198805}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003700
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00199731
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003700
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00199731
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: average
           range: string
@@ -1605,23 +1666,24 @@
       populated_from: pht003700
       slot_derivations:
         associated_participant:
-          populated_from: phv00198805
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00198805}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003700
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00199734
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003700
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00199734
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: average
           range: string
@@ -1630,23 +1692,24 @@
       populated_from: pht003700
       slot_derivations:
         associated_participant:
-          populated_from: phv00198805
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00198805}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003700
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00199737
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003700
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00199737
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: average
           range: string
@@ -1655,23 +1718,24 @@
       populated_from: pht003700
       slot_derivations:
         associated_participant:
-          populated_from: phv00198805
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00198805}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003700
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00199740
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003700
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00199740
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: average
           range: string
@@ -1680,23 +1744,24 @@
       populated_from: pht003700
       slot_derivations:
         associated_participant:
-          populated_from: phv00198805
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00198805}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003700
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00199743
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003700
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00199743
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: average
           range: string
@@ -1705,23 +1770,24 @@
       populated_from: pht003700
       slot_derivations:
         associated_participant:
-          populated_from: phv00198805
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00198805}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003700
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00199746
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003700
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00199746
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: average
           range: string
@@ -1730,23 +1796,24 @@
       populated_from: pht003700
       slot_derivations:
         associated_participant:
-          populated_from: phv00198805
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00198805}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003700
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00199749
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003700
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00199749
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: average
           range: string
@@ -1755,23 +1822,24 @@
       populated_from: pht003700
       slot_derivations:
         associated_participant:
-          populated_from: phv00198805
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00198805}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003700
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00199752
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003700
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00199752
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: average
           range: string
@@ -1780,23 +1848,24 @@
       populated_from: pht003700
       slot_derivations:
         associated_participant:
-          populated_from: phv00198805
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00198805}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003700
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00199755
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003700
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00199755
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: average
           range: string
@@ -1805,23 +1874,24 @@
       populated_from: pht003700
       slot_derivations:
         associated_participant:
-          populated_from: phv00198805
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00198805}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003700
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00199758
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003700
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00199758
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: average
           range: string
@@ -1830,23 +1900,24 @@
       populated_from: pht003700
       slot_derivations:
         associated_participant:
-          populated_from: phv00198805
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00198805}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003700
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00199761
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003700
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00199761
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: average
           range: string
@@ -1855,23 +1926,24 @@
       populated_from: pht003700
       slot_derivations:
         associated_participant:
-          populated_from: phv00198805
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00198805}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003700
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00199764
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003700
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00199764
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: average
           range: string
@@ -1880,23 +1952,24 @@
       populated_from: pht003700
       slot_derivations:
         associated_participant:
-          populated_from: phv00198805
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00198805}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003700
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00199767
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003700
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00199767
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: average
           range: string
@@ -1905,23 +1978,24 @@
       populated_from: pht003700
       slot_derivations:
         associated_participant:
-          populated_from: phv00198805
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00198805}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003700
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00199770
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003700
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00199770
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: average
           range: string
@@ -1930,23 +2004,24 @@
       populated_from: pht003700
       slot_derivations:
         associated_participant:
-          populated_from: phv00198805
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00198805}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003700
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00199773
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003700
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00199773
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: average
           range: string
@@ -1955,23 +2030,24 @@
       populated_from: pht003700
       slot_derivations:
         associated_participant:
-          populated_from: phv00198805
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00198805}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
         observation_type:
           value: OBA:1001087
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003700
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00199776
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003700
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00199776
+                unit:
+                  value: '{beats}/min'
+                  range: string
         method_type:
           value: average
           range: string

@@ -3,7 +3,7 @@
       populated_from: pht001967
       slot_derivations:
         associated_participant:
-          populated_from: phv00128084
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00128084}) + ":JHS")'
         age_at_condition_start:
           expr: case(({phv00128087} == 'Yes', {phv00128088} * 365))
         associated_visit:
@@ -19,10 +19,73 @@
             'No': ABSENT
             'Dont know': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: CASE_REPORT_FORM
           range: string
         associated_evidence:
           value: "Personal and Family History Questionnaire"
         relationship_to_participant:
           value: ONESELF
           range: string
+- class_derivations:
+    Condition:
+      populated_from: pht008729
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401078}) + ":JHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
+        condition_concept:
+          value: HP:0000822
+        condition_status:
+          populated_from: phv00401121
+          value_mappings:
+            'No': ABSENT
+            'Yes': PRESENT
+        condition_provenance:
+          value: CASE_REPORT_FORM
+        associated_evidence:
+          value: "Analysis derived hypertension status"
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht008730
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401273}) + ":JHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401273}) + ":JHS Exam 2")'
+        condition_concept:
+          value: HP:0000822
+        condition_status:
+          populated_from: phv00401311
+          value_mappings:
+            'No': ABSENT
+            'Yes': PRESENT
+        condition_provenance:
+          value: CASE_REPORT_FORM
+        associated_evidence:
+          value: "Analysis derived hypertension status"
+        relationship_to_participant:
+          value: ONESELF
+- class_derivations:
+    Condition:
+      populated_from: pht008731
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401370}) + ":JHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
+        condition_concept:
+          value: HP:0000822
+        condition_status:
+          populated_from: phv00401412
+          value_mappings:
+            'No': ABSENT
+            'Yes': PRESENT
+        condition_provenance:
+          value: CASE_REPORT_FORM
+        associated_evidence:
+          value: "Analysis derived hypertension status"
+        relationship_to_participant:
+          value: ONESELF

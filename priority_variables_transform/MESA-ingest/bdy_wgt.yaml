@@ -3,7 +3,7 @@
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_observation:
@@ -15,25 +15,24 @@
           value: "Current measured"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00082685
-                    unit_conversion:
-                      source_unit: '[lb_av]'
-                      target_unit: "kg"
-                  unit: 
-                    value: kg
-                    range: string                     
+          class_derivations:
+          - Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00082685
+                  unit_conversion:
+                    source_unit: '[lb_av]'
+                    target_unit: "kg"
+                unit: 
+                  value: kg
+                  range: string                     
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_observation:
@@ -46,25 +45,24 @@
           value: "Recalled weight at age 20"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00083013
-                    unit_conversion:
-                      source_unit: '[lb_av]'
-                      target_unit: "kg"
-                  unit: 
-                    value: kg
-                    range: string                    
+          class_derivations:
+          - Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00083013
+                  unit_conversion:
+                    source_unit: '[lb_av]'
+                    target_unit: "kg"
+                unit: 
+                  value: kg
+                  range: string                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_observation:
@@ -77,25 +75,24 @@
           value: "Recalled weight at age 40"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00083014
-                    unit_conversion:
-                      source_unit: '[lb_av]'
-                      target_unit: "kg"
-                  unit: 
-                    value: kg
-                    range: string                                       
+          class_derivations:
+          - Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00083014
+                  unit_conversion:
+                    source_unit: '[lb_av]'
+                    target_unit: "kg"
+                unit: 
+                  value: kg
+                  range: string                                       
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         age_at_observation:
@@ -107,25 +104,24 @@
           value: "Current measured"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001116
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00084484
-                    unit_conversion:
-                      source_unit: '[lb_av]'
-                      target_unit: "kg"
-                  unit: 
-                    value: kg
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00084484
+                  unit_conversion:
+                    source_unit: '[lb_av]'
+                    target_unit: "kg"
+                unit: 
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         age_at_observation:
@@ -138,25 +134,24 @@
           value: "Recalled weight at age 20"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001116
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00085249
-                    unit_conversion:
-                      source_unit: '[lb_av]'
-                      target_unit: "kg"
-                  unit: 
-                    value: kg
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00085249
+                  unit_conversion:
+                    source_unit: '[lb_av]'
+                    target_unit: "kg"
+                unit: 
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         age_at_observation:
@@ -169,25 +164,24 @@
           value: "Recalled weight at age 40"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001116
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00085250
-                    unit_conversion:
-                      source_unit: '[lb_av]'
-                      target_unit: "kg"
-                  unit: 
-                    value: kg
-                    range: string                  
+          class_derivations:
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00085250
+                  unit_conversion:
+                    source_unit: '[lb_av]'
+                    target_unit: "kg"
+                unit: 
+                  value: kg
+                  range: string                  
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001121
       slot_derivations:
         associated_participant:
-          populated_from: phv00087070
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         age_at_observation:
@@ -199,25 +193,24 @@
           value: "Current measured"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001121
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00087079
-                    unit_conversion:
-                      source_unit: '[lb_av]'
-                      target_unit: "kg"
-                  unit: 
-                    value: kg
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001121
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00087079
+                  unit_conversion:
+                    source_unit: '[lb_av]'
+                    target_unit: "kg"
+                unit: 
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001121
       slot_derivations:
         associated_participant:
-          populated_from: phv00087070
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         age_at_observation:
@@ -230,25 +223,24 @@
           value: "Recalled weight at age 20"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001121
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00087166
-                    unit_conversion:
-                      source_unit: '[lb_av]'
-                      target_unit: "kg"                  
-                  unit:
-                    value: kg
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001121
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00087166
+                  unit_conversion:
+                    source_unit: '[lb_av]'
+                    target_unit: "kg"                  
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001121
       slot_derivations:
         associated_participant:
-          populated_from: phv00087070
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         age_at_observation:
@@ -261,25 +253,24 @@
           value: "Recalled weight at age 40"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001121
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00087167
-                    unit_conversion:
-                      source_unit: '[lb_av]'
-                      target_unit: "kg"                    
-                  unit:
-                    value: kg
-                    range: string                    
+          class_derivations:
+          - Quantity:
+              populated_from: pht001121
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00087167
+                  unit_conversion:
+                    source_unit: '[lb_av]'
+                    target_unit: "kg"                    
+                unit:
+                  value: kg
+                  range: string                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003086
       slot_derivations:
         associated_participant:
-          populated_from: phv00174584
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         age_at_observation:
@@ -291,22 +282,21 @@
           value: "Current measured"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003086
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00174637
-                  unit:
-                    value: kg
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003086
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00174637
+                unit:
+                  value: kg
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003091
       slot_derivations:
         associated_participant:
-          populated_from: phv00176007
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00176007}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         age_at_observation:
@@ -318,13 +308,12 @@
           value: "Current measured"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003091
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00176060
-                  unit:
-                    value: kg
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003091
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00176060
+                unit:
+                  value: kg
+                  range: string

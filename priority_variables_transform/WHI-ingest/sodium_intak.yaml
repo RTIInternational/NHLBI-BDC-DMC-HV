@@ -3,20 +3,21 @@
       populated_from: pht002125
       slot_derivations:
         associated_participant:
-          populated_from: phv00156379
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00156379}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00156379}) + ":WHI YEAR 3")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OMOP:606729
+        method_type:
+          value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002125
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00156452
-                  unit:
-                    value: "mg/d"
+          class_derivations:
+          - Quantity:
+              populated_from: pht002125
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00156452
+                unit:
+                  value: "mg/d"

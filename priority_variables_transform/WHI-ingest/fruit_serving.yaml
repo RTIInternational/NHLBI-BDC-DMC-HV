@@ -3,67 +3,70 @@
       populated_from: pht001517
       slot_derivations:
         associated_participant:
-          populated_from: phv00111654
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00111654}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00111654}) + ":WHI SCREENING")'
           range: string
         observation_type:
           value: OMOP:21493059
+        method_type:
+          value: "questionnaire"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001517
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00111870} * 7'
-                  unit:
-                    value: '{#}/wk'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001517
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00111870} * 7'
+                unit:
+                  value: '{#}/wk'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002125
       slot_derivations:
         associated_participant:
-          populated_from: phv00156379
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00156379}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00156379}) + ":WHI YEAR 3")'
           range: string
         observation_type:
           value: OMOP:21493059
+        method_type:
+          value: "questionnaire"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002125
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00156402} * 7'
-                  unit:
-                    value: '{#}/wk'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht002125
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00156402} * 7'
+                unit:
+                  value: '{#}/wk'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006218
       slot_derivations:
         associated_participant:
-          populated_from: phv00283348
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283348}) + ":WHI")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283348}) + ":WHI SCREENING")'
           range: string
         observation_type:
           value: OMOP:21493059
+        method_type:
+          value: "questionnaire"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006218
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00283389} * 7'
-                  unit:
-                    value: '{#}/wk'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht006218
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00283389} * 7'
+                unit:
+                  value: '{#}/wk'
+                  range: string

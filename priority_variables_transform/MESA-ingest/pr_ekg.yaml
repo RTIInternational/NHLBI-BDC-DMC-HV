@@ -1,0 +1,119 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001111
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
+        age_at_observation:
+          expr: '{phv00082639} * 365'
+        observation_type:
+          value: OMOP:4274406
+          range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "Electrocardiogram"
+          range: string
+        value_quantity:
+          class_derivations:
+          - Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00082714
+                unit:
+                  value: ms
+                  range: string
+
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
+        age_at_observation:
+          expr: '{phv00084442} * 365'
+        observation_type:
+          value: OMOP:4274406
+          range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "Electrocardiogram"
+          range: string
+        value_quantity:
+          class_derivations:
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00084566
+                unit:
+                  value: ms
+                  range: string
+
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003086
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
+        age_at_observation:
+          expr: '{phv00174588} * 365'
+        observation_type:
+          value: OMOP:4274406
+          range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "Electrocardiogram"
+          range: string
+        value_quantity:
+          class_derivations:
+          - Quantity:
+              populated_from: pht003086
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00174884
+                unit:
+                  value: ms
+                  range: string
+
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht003091
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00176007}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
+        age_at_observation:
+          expr: '{phv00176011} * 365'
+        observation_type:
+          value: OMOP:4274406
+          range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "Electrocardiogram"
+          range: string
+        value_quantity:
+          class_derivations:
+          - Quantity:
+              populated_from: pht003091
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00176307
+                unit:
+                  value: ms
+                  range: string

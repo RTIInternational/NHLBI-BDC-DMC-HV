@@ -3,7 +3,7 @@
       populated_from: pht000083
       slot_derivations:
         associated_participant:
-          populated_from: phv00021738
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00021738}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00021738}) + ":FHS OFFSPRING EXAM 6")'
         age_at_observation:
@@ -12,16 +12,15 @@
           value: OMOP:4138462
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000083
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00021728
-                  unit:
-                    value: mm
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000083
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00021728
+                unit:
+                  value: mm
+                  range: string
         method_type:
           value: MEAN OF MAX IMT FOR BOTH LEFT AND RIGHT COMMON CAROTID ARTERIES IN DIASTOLE
 - class_derivations:
@@ -29,7 +28,7 @@
       populated_from: pht000083
       slot_derivations:
         associated_participant:
-          populated_from: phv00021738
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00021738}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00021738}) + ":FHS OFFSPRING EXAM 6")'
         age_at_observation:
@@ -38,16 +37,15 @@
           value: OMOP:4138462
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000083
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00021729
-                  unit:
-                    value: mm
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000083
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00021729
+                unit:
+                  value: mm
+                  range: string
         method_type:
           value: MEAN OF MAX IMT FOR BOTH LEFT AND RIGHT COMMON CAROTID ARTERIES IN SYSTOLE
 - class_derivations:
@@ -55,7 +53,7 @@
       populated_from: pht000907
       slot_derivations:
         associated_participant:
-          populated_from: phv00076368
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00076368}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00076368}) + ":FHS OFFSPRING EXAM 6")'
         age_at_observation:
@@ -64,16 +62,15 @@
           value: OMOP:4138462
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000907
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00076366
-                  unit:
-                    value: mm
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000907
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00076366
+                unit:
+                  value: mm
+                  range: string
         method_type:
           value: Mean of the mean common carotid IMT far wall of both sides
 - class_derivations:
@@ -81,7 +78,7 @@
       populated_from: pht000907
       slot_derivations:
         associated_participant:
-          populated_from: phv00076368
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00076368}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00076368}) + ":FHS OFFSPRING EXAM 6")'
         age_at_observation:
@@ -90,15 +87,14 @@
           value: OMOP:4138462
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000907
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00076367
-                  unit:
-                    value: mm
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000907
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00076367
+                unit:
+                  value: mm
+                  range: string
         method_type:
           value: Mean of the mean internal carotid IMT far wall both sides

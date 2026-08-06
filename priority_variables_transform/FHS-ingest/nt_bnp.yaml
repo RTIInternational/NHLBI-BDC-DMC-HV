@@ -3,7 +3,7 @@
       populated_from: pht000823
       slot_derivations:
         associated_participant:
-          populated_from: phv00073729
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00073729}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00073729}) + ":FHS GENERATION 3 EXAM 1")'
         age_at_observation:
@@ -15,61 +15,34 @@
           value: immunoassay
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000823
-                slot_derivations:
-                  value_decimal:
-                    expr: case(({phv00073727} > 4, {phv00073727}), (True, "'LLOD'"))
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000823
+              slot_derivations:
+                value_decimal:
+                  expr: case(({phv00073727} > 4, {phv00073727}), (True, None))
+                unit:
+                  value: pg/mL
+                  range: string
         range_low:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000823
-                slot_derivations:
-                  value_decimal:
-                    value: '5'
-                    range: string
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000823
+              slot_derivations:
+                value_decimal:
+                  value: '5'
+                  range: string
+                unit:
+                  value: pg/mL
+                  range: string
         range_high:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000823
-                slot_derivations:
-                  value_decimal:
-                    value: '35000'
-                    range: string
-                  unit:
-                    value: pg/mL
-                    range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht006013
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00275427
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275427}) + ":FHS OFFSPRING EXAM 5")'
-        age_at_observation:
-          expr: '{pht003099.phv00177938} * 365'
-        observation_type:
-          value: OBA:2045303
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006013
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00423136
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000823
+              slot_derivations:
+                value_decimal:
+                  value: '35000'
+                  range: string
+                unit:
+                  value: pg/mL
+                  range: string

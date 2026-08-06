@@ -3,7 +3,7 @@
       populated_from: pht004027
       slot_derivations:
         associated_participant:
-          populated_from: phv00202851
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00202851}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00202851}) + ":ARIC EXAM 1")'
         condition_concept:
@@ -15,6 +15,9 @@
             '1': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Ankle-Brachial Index"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -22,7 +25,7 @@
       populated_from: pht004028
       slot_derivations:
         associated_participant:
-          populated_from: phv00202861
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00202861}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00202861}) + ":ARIC EXAM 3")'
         condition_concept:
@@ -34,6 +37,9 @@
             '1': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Ankle-Brachial Index"
+          range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -41,7 +47,7 @@
       populated_from: pht004029
       slot_derivations:
         associated_participant:
-          populated_from: phv00202873
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00202873}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00202873}) + ":ARIC EXAM 4")'
         condition_concept:
@@ -53,6 +59,9 @@
             '1': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
+        associated_evidence:
+          value: "Ankle-Brachial Index"
+          range: string
         relationship_to_participant:
           value: ONESELF
 # ---------- Restored PAD blocks (Anne PR #544 review) ----------
@@ -62,7 +71,7 @@
       populated_from: pht004027
       slot_derivations:
         associated_participant:
-          populated_from: phv00202851
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00202851}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00202851}) + ":ARIC EXAM 1")'
         condition_concept:
@@ -83,7 +92,7 @@
       populated_from: pht004028
       slot_derivations:
         associated_participant:
-          populated_from: phv00202861
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00202861}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00202861}) + ":ARIC EXAM 3")'
         condition_concept:
@@ -104,7 +113,7 @@
       populated_from: pht004029
       slot_derivations:
         associated_participant:
-          populated_from: phv00202873
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00202873}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00202873}) + ":ARIC EXAM 4")'
         condition_concept:
@@ -126,7 +135,7 @@
       populated_from: pht004028
       slot_derivations:
         associated_participant:
-          populated_from: phv00202861
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00202861}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00202861}) + ":ARIC EXAM 3")'
         condition_concept:
@@ -147,7 +156,7 @@
       populated_from: pht004029
       slot_derivations:
         associated_participant:
-          populated_from: phv00202873
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00202873}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00202873}) + ":ARIC EXAM 4")'
         condition_concept:
@@ -170,7 +179,7 @@
       populated_from: pht004063
       slot_derivations:
         associated_participant:
-          populated_from: phv00204812
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204812}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
         condition_concept:
@@ -191,7 +200,7 @@
       populated_from: pht004063
       slot_derivations:
         associated_participant:
-          populated_from: phv00204812
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204812}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204812}) + ":ARIC EXAM 1")'
         condition_concept:
@@ -212,7 +221,7 @@
       populated_from: pht004064
       slot_derivations:
         associated_participant:
-          populated_from: phv00204919
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204919}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204919}) + ":ARIC EXAM 3")'
         condition_concept:
@@ -233,7 +242,7 @@
       populated_from: pht004064
       slot_derivations:
         associated_participant:
-          populated_from: phv00204919
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204919}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204919}) + ":ARIC EXAM 3")'
         condition_concept:
@@ -254,7 +263,7 @@
       populated_from: pht004064
       slot_derivations:
         associated_participant:
-          populated_from: phv00204919
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204919}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204919}) + ":ARIC EXAM 3")'
         condition_concept:
@@ -276,7 +285,7 @@
       populated_from: pht012813
       slot_derivations:
         associated_participant:
-          populated_from: phv00511942
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00511942}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511942}) + ":ARIC EXAM 4")'
         condition_concept:
@@ -297,7 +306,7 @@
       populated_from: pht012813
       slot_derivations:
         associated_participant:
-          populated_from: phv00511942
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00511942}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511942}) + ":ARIC EXAM 4")'
         condition_concept:
@@ -318,7 +327,7 @@
       populated_from: pht012813
       slot_derivations:
         associated_participant:
-          populated_from: phv00511942
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00511942}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511942}) + ":ARIC EXAM 4")'
         condition_concept:
@@ -339,7 +348,7 @@
       populated_from: pht012813
       slot_derivations:
         associated_participant:
-          populated_from: phv00511942
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00511942}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00511942}) + ":ARIC EXAM 4")'
         condition_concept:

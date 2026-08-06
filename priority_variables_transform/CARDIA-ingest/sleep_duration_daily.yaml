@@ -3,42 +3,44 @@
       populated_from: pht001687
       slot_derivations:
         associated_participant:
-          populated_from: phv00116293
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00116293}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116293}) + ":CARDIA YEAR 5")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OBA:2040171
+        method_type:
+          value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001687
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00116294
-                  unit:
-                    value: "h"
+          class_derivations:
+          - Quantity:
+              populated_from: pht001687
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00116294
+                unit:
+                  value: "h"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001839
       slot_derivations:
         associated_participant:
-          populated_from: phv00120525
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120525}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120525}) + ":CARDIA YEAR 15")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OBA:2040171
+        method_type:
+          value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001839
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00120534
-                  unit:
-                    value: "h"
+          class_derivations:
+          - Quantity:
+              populated_from: pht001839
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00120534
+                unit:
+                  value: "h"

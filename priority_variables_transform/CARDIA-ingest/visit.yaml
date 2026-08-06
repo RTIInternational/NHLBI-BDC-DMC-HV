@@ -9,7 +9,7 @@
         visit_category:
           value: HEALTH_EXAMINATION
         associated_participant:
-          populated_from: phv00112417
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00112417}) + ":CARDIA")'
         age_at_visit_start:
           expr: '{phv00112421} * 365'
         age_at_visit_end:
@@ -25,7 +25,7 @@
         visit_category:
           value: HEALTH_EXAMINATION
         associated_participant:
-          populated_from: phv00114583
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00114583}) + ":CARDIA")'
         age_at_visit_start:
           expr: '{phv00114610} * 365'
         age_at_visit_end:
@@ -41,7 +41,7 @@
         visit_category:
           value: HEALTH_EXAMINATION
         associated_participant:
-          populated_from: phv00115618
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00115618}) + ":CARDIA")'
         age_at_visit_start:
           expr: '{phv00115705} * 365'
         age_at_visit_end:
@@ -57,7 +57,7 @@
         visit_category:
           value: HEALTH_EXAMINATION
         associated_participant:
-          populated_from: phv00116476
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00116476}) + ":CARDIA")'
         age_at_visit_start:
           expr: '{phv00116478} * 365'
         age_at_visit_end:
@@ -73,7 +73,7 @@
         visit_category:
           value: HEALTH_EXAMINATION
         associated_participant:
-          populated_from: phv00118837
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00118837}) + ":CARDIA")'
         age_at_visit_start:
           expr: '{phv00118959} * 365'
         age_at_visit_end:
@@ -89,11 +89,104 @@
         visit_category:
           value: HEALTH_EXAMINATION
         associated_participant:
-          populated_from: phv00120733
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120733}) + ":CARDIA")'
         age_at_visit_start:
           expr: '{phv00120748} * 365'
         age_at_visit_end:
           expr: '{phv00120748} * 365'
+# CARDIA YEAR 15 visits: multiple tables cover this exam year with different participant keys.
+# pht001857 (F2F20), pht001854 (F2EBCT), pht001855 (F2F03), pht001874 (Z33E06) all use
+# standard CARDIA Individual_ID — uuid5 produces matching Visit IDs across these tables.
+# pht003298 (HeartGO_CARDIA) uses HeartGO New_SUBJID (GENEVA subject ID) — these produce
+# separate Visit entities that do not cross-link with standard Individual_ID-keyed tables.
+# pht003298 (HeartGO_CARDIA) uses phv00190622 (ESP_age_at_serum_creatinine) as exam-age proxy;
+# all other YEAR 20 tables lack a direct exam-age variable and omit age_at_visit.
+- class_derivations:
+    Visit:
+      populated_from: pht001857
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120993}) + ":CARDIA YEAR 15")'
+        name:
+          value: CARDIA YEAR 15
+        visit_category:
+          value: HEALTH_EXAMINATION
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120993}) + ":CARDIA")'
+- class_derivations:
+    Visit:
+      populated_from: pht001854
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120763}) + ":CARDIA YEAR 15")'
+        name:
+          value: CARDIA YEAR 15
+        visit_category:
+          value: HEALTH_EXAMINATION
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120763}) + ":CARDIA")'
+- class_derivations:
+    Visit:
+      populated_from: pht001855
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120930}) + ":CARDIA YEAR 15")'
+        name:
+          value: CARDIA YEAR 15
+        visit_category:
+          value: HEALTH_EXAMINATION
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120930}) + ":CARDIA")'
+# DISABLED: pht001874 (Z33E06, CARDIA Year 15 CHD questionnaire) is absent from c2
+# consent group. linkml-map 0.5.3rc3 crashes on missing source tables (regression
+# from 0.4.0 behavior). Re-enable when upstream graceful-missing-table is fixed.
+# - class_derivations:
+#     Visit:
+#       populated_from: pht001874
+#       slot_derivations:
+#         id:
+#           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121724}) + ":CARDIA YEAR 15")'
+#         name:
+#           value: CARDIA YEAR 15
+#         visit_category:
+#           value: HEALTH_EXAMINATION
+#         associated_participant:
+#           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121724}) + ":CARDIA")'
+- class_derivations:
+    Visit:
+      populated_from: pht003298
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190551}) + ":CARDIA YEAR 20")'
+        name:
+          value: CARDIA YEAR 20
+        visit_category:
+          value: HEALTH_EXAMINATION
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190551}) + ":CARDIA")'
+        age_at_visit_start:
+          expr: "None if str({phv00190622}) == 'M' else float({phv00190622}) * 365"
+        age_at_visit_end:
+          expr: "None if str({phv00190622}) == 'M' else float({phv00190622}) * 365"
+# pht001999 (GENEVA_CARDIA_Subject_Phenotypes) uses GENEVA_ID (phv00129484) as participant key —
+# a different ID space from standard CARDIA Individual_ID. Visit UUIDs here match the
+# associated_participant/associated_visit keys in cig_smok.yaml's pht001999 block.
+- class_derivations:
+    Visit:
+      populated_from: pht001999
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00129484}) + ":CARDIA YEAR 20")'
+        name:
+          value: CARDIA YEAR 20
+        visit_category:
+          value: HEALTH_EXAMINATION
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00129484}) + ":CARDIA")'
+        age_at_visit_start:
+          expr: "None if str({phv00129493}) == 'M' else float({phv00129493}) * 365"
+        age_at_visit_end:
+          expr: "None if str({phv00129493}) == 'M' else float({phv00129493}) * 365"
 # CARDIA Medical History visit: pht001869 (Y1MORB06) and pht001871 (YM106) are
 # companion hospitalization-review tables representing the same conceptual visit.
 # Both use Individual_ID as participant key, so uuid5 produces the same Visit ID
@@ -111,7 +204,7 @@
         visit_category:
           value: UNKNOWN
         associated_participant:
-          populated_from: phv00121257
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121257}) + ":CARDIA")'
 - class_derivations:
     Visit:
       populated_from: pht001871
@@ -123,7 +216,7 @@
         visit_category:
           value: UNKNOWN
         associated_participant:
-          populated_from: phv00121473
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121473}) + ":CARDIA")'
 - class_derivations:
     Visit:
       populated_from: pht001870
@@ -135,4 +228,4 @@
         visit_category:
           value: UNKNOWN
         associated_participant:
-          populated_from: phv00121454
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121454}) + ":CARDIA")'

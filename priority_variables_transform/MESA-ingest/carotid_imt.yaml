@@ -3,7 +3,7 @@
       populated_from: pht003086
       slot_derivations:
         associated_participant:
-          populated_from: phv00174584
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         age_at_observation:
@@ -12,16 +12,15 @@
           value: OMOP:4138462
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003086
-                slot_derivations:
-                  value_decimal:
-                    expr: '({phv00175623} + {phv00175683}) / 2'
-                  unit:
-                    value: mm
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003086
+              slot_derivations:
+                value_decimal:
+                  expr: '({phv00175623} + {phv00175683}) / 2'
+                unit:
+                  value: mm
+                  range: string
         method_type:
           value: LT DISTAL CCA MAX CIMT (mm) AVG and RT DISTAL CCA MAX CIMT (mm) AVG
             averaged
@@ -31,7 +30,7 @@
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         age_at_observation:
@@ -40,16 +39,15 @@
           value: OMOP:4138462
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001116
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00084966
-                  unit:
-                    value: mm
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00084966
+                unit:
+                  value: mm
+                  range: string
         method_type:
           value: MEAN OF MEAN FAR WALL IMT FOR COMMON CAROTID ARTERY
           range: string

@@ -3,7 +3,7 @@
       populated_from: pht000393
       slot_derivations:
         associated_participant:
-          populated_from: phv00055163
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00055163}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00055163}) + ":FHS OFFSPRING EXAM 6")'
         age_at_observation:
@@ -11,94 +11,72 @@
         observation_type:
           value: OBA:2045303
           range: string
+        method_type:
+          value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000393
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00055159
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000393
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00055159
+                unit:
+                  value: pg/mL
+                  range: string
         range_low:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000393
-                slot_derivations:
-                  value_decimal:
-                    value: '4'
-                    range: string
-                  unit:
-                    value: pg/mL
-                    range: string                    
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht006013
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00275427
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275427}) + ":FHS OFFSPRING EXAM 5")'
-        age_at_observation:
-          expr: '{pht003099.phv00177938} * 365'
-        observation_type:
-          value: OBA:2045303
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006013
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00422396
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000393
+              slot_derivations:
+                value_decimal:
+                  value: '4'
+                  range: string
+                unit:
+                  value: pg/mL
+                  range: string                    
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007776
       slot_derivations:
         associated_participant:
-          populated_from: phv00369587
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00369587}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369587}) + ":" + case(({phv00369637} == ''0'', ''FHS ORIGINAL CHF''), ({phv00369637} == ''1'', ''FHS OFFSPRING CHF''), ({phv00369637} == ''2'', ''FHS NEW OFFSPRING SPOUSE CHF''), ({phv00369637} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00369637} == ''7'', ''FHS OMNI 1 CHF''), ({phv00369637} == ''72'', ''FHS OMNI 2 CHF''), (True, ''FHS UNKNOWN VISIT'')))'
         observation_type:
           value: OBA:2045303
           range: string
+        method_type:
+          value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht007776
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00369624
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht007776
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00369624
+                unit:
+                  value: pg/mL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007776
       slot_derivations:
         associated_participant:
-          populated_from: phv00369587
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00369587}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369587}) + ":FHS EVENT REVIEW ORIGINAL, OFFSPRING, GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 1, OMNI 2")'
         observation_type:
           value: OBA:2045303
           range: string
+        method_type:
+          value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht007776
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00369625
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht007776
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00369625
+                unit:
+                  value: pg/mL
+                  range: string

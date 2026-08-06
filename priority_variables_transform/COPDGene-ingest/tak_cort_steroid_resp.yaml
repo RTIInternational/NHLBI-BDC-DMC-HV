@@ -10,9 +10,9 @@
             str({phv00159568}) + ':COPDGene P3')), ({phv00568798} == 'P3B',
             uuid5('https://w3id.org/bdchm/Visit', str({phv00159568}) + ':COPDGene P3B')))
         associated_participant:
-          populated_from: phv00159568
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00159568}) + ":COPDGene")'
         drug_concept:
-          value: ATC:H02A
+          value: ATC:R03BA
         exposure_provenance:
           value: PATIENT SELF-REPORTED MEDICATION
         exposure_status:
@@ -21,4 +21,4 @@
             '0': ABSENT
             '1': PRESENT
         route_concept:
-          value: RESPIRATORY TRACT
+          value: OMOP:4186832

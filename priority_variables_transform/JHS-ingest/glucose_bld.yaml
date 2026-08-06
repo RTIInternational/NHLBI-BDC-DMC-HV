@@ -3,94 +3,98 @@
       populated_from: pht008742
       slot_derivations:
         associated_participant:
-          populated_from: phv00401725
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401725}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401725}) + ":JHS Exam 1")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0000188
+        method_type:
+          value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008742
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401733
-                    unit_conversion:
-                      source_unit: "mg/L"
-                      target_unit: "mg/dL"
-                  unit:
-                    value: "mg/dL"
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht008742
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00401733
+                  unit_conversion:
+                    source_unit: "mg/L"
+                    target_unit: "mg/dL"
+                unit:
+                  value: "mg/dL"
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008741
       slot_derivations:
         associated_participant:
-          populated_from: phv00401710
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401710}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401710}) + ":JHS Exam 2")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0000188
+        method_type:
+          value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008741
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401716
-                    unit_conversion:
-                      source_unit: "mg/L"
-                      target_unit: "mg/dL"
-                  unit:
-                    value: "mg/dL"
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht008741
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00401716
+                  unit_conversion:
+                    source_unit: "mg/L"
+                    target_unit: "mg/dL"
+                unit:
+                  value: "mg/dL"
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001959
       slot_derivations:
         associated_participant:
-          populated_from: phv00127609
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00127609}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00127609}) + ":JHS Exam 1")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0000188
+        method_type:
+          value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001959
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00127613
-                  unit:
-                    value: "mg/dL"
+          class_derivations:
+          - Quantity:
+              populated_from: pht001959
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00127613
+                unit:
+                  value: "mg/dL"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008748
       slot_derivations:
         associated_participant:
-          populated_from: phv00402732
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00402732}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00402732}) + ":JHS Exam 2")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OBA:VT0000188
+        method_type:
+          value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008748
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00402738
-                  unit:
-                    value: "mg/dL"
+          class_derivations:
+          - Quantity:
+              populated_from: pht008748
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00402738
+                unit:
+                  value: "mg/dL"

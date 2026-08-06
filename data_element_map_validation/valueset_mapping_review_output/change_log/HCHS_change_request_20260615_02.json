@@ -1,0 +1,25 @@
+{
+  "submitted_date": "2026-06-15",
+  "study": "HCHS",
+  "curator": "Curator",
+  "changes": {
+    "HCHS::confirmed::HCHS-ingest/chr_bronchitis.yaml": {
+      "study": "HCHS",
+      "change_request": "MONDO:0005607",
+      "original_curie": "OMOP:256451",
+      "slot": "condition_concept",
+      "yaml_files": [
+        "HCHS-ingest/chr_bronchitis.yaml"
+      ],
+      "notes": "Both HP:0004469 or OMOP:256451 can be used to map chronic bronchitis. http://purl.obolibrary.org/obo/HP_0004469 or https://athena.ohdsi.org/search-terms/terms/256451\nThe deciding factor is the BDCHM slot type.  \n  Use MONDO:0005607  -   Note on \"doctor stated\"\n  The variable description \"doctor stated\" signals physician-diagnosed chronic bronchitis — not a symptom report. M                                                                                                                                                                                                                                                                                                                                                                                   Evidence                                                                                                                                                                                                                                                                                                                                                                                                                                  │  Field  │ Value                                                                                            \n  │ Label          │ Chronic bronchitis                                                                                                                                                                       \n  │ CURIE          │ MONDO:0005607                                                                                                                                                                            \n  │ Definition     │ \"A type of chronic obstructive pulmonary disease characterized by chronic inflammation in the bronchial tree that results in edema, mucus production, obstruction, and reduced airflow…\" \n  │ SNOMED CT xref │ 63480004 ✓ — exact match to your SNOMED search                                                                                                                                           \n  │ ICD-9          │ 491, 491.8, 491.9                                                                                                                                                                        \n  │ MeSH           │ D029481                                                                                                                                                                                  \n  │ UMLS           │ C0008677                                                                                                                                                                                 \n  │ ICD-11         │ 290835130      ",
+      "applied": true,
+      "saved_date": "2026-06-15",
+      "applied_date": "2026-06-15",
+      "applied_by": "Curator",
+      "apply_results": [
+        "✓ YAML `HCHS-ingest/chr_bronchitis.yaml` [condition_concept] → `MONDO:0005607` (1 match)",
+        "✓ CSV: 1 row(s) → `MONDO:0005607` for `HCHS-ingest/chr_bronchitis.yaml` [condition_concept]"
+      ]
+    }
+  }
+}

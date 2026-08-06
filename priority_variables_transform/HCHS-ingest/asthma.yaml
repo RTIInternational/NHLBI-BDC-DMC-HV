@@ -3,7 +3,7 @@
       populated_from: pht004715
       slot_derivations:
         associated_participant:
-          populated_from: phv00226250
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         condition_concept:
@@ -18,6 +18,9 @@
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -26,7 +29,7 @@
       populated_from: pht004715
       slot_derivations:
         associated_participant:
-          populated_from: phv00226250
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         age_at_condition_start:
@@ -37,13 +40,16 @@
           value: MONDO:0004979
           range: string
         condition_status:
-          expr: case(({phv00226387} == 0, 'ABSENT'), ({phv00526887} == 1 and {phv00526889} == 1, 'PRESENT'), ({phv00526887} == 1 and {phv00526889} == 0, 'HISTORICAL'), (True, 'UNKNOWN'))
+          expr: case(({phv00226387} == 0, 'ABSENT'), ({phv00526878} > 0, 'HISTORICAL'), ({phv00226387} == 1, 'PRESENT'), (True, 'UNKNOWN'))
         condition_provenance:
           populated_from: phv00226388
           value_mappings:
             '0': PATIENT_SELF-REPORTED_CONDITION
             '1': CLINICAL_DIAGNOSIS
             '9': UNKNOWN
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -52,7 +58,7 @@
       populated_from: pht004715
       slot_derivations:
         associated_participant:
-          populated_from: phv00226250
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         age_at_condition_start:

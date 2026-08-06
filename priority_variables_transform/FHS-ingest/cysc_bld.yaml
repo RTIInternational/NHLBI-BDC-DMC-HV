@@ -3,7 +3,7 @@
       populated_from: pht000146
       slot_derivations:
         associated_participant:
-          populated_from: phv00023209
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00023209}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023209}) + ":FHS OFFSPRING EXAM 7")'
         age_at_observation:
@@ -15,61 +15,34 @@
           value: Particle Enhanced Immunonephelometry
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000146
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00023208
-                  unit:
-                    value: mg/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000146
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00023208
+                unit:
+                  value: mg/L
+                  range: string
         range_low:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000146
-                slot_derivations:
-                  value_decimal:
-                    value: '0.29'
-                    range: string
-                  unit:
-                    value: mg/L
-                    range: string 
+          class_derivations:
+          - Quantity:
+              populated_from: pht000146
+              slot_derivations:
+                value_decimal:
+                  value: '0.29'
+                  range: string
+                unit:
+                  value: mg/L
+                  range: string 
         range_high:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000146
-                slot_derivations:
-                  value_decimal:
-                    value: '7.22'
-                    range: string
-                  unit:
-                    value: mg/L
-                    range: string                          
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht006013
-      slot_derivations:
-        associated_participant:
-          populated_from: phv00275427
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275427}) + ":FHS OFFSPRING EXAM 5")'
-        age_at_observation:
-          expr: '{pht003099.phv00177938} * 365'
-        observation_type:
-          value: OBA:2052375
-          range: string
-        value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006013
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00421868
-                  unit:
-                    value: mg/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000146
+              slot_derivations:
+                value_decimal:
+                  value: '7.22'
+                  range: string
+                unit:
+                  value: mg/L
+                  range: string                          

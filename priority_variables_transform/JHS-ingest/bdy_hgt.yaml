@@ -3,7 +3,7 @@
       populated_from: pht008737
       slot_derivations:
         associated_participant:
-          populated_from: phv00401588
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401588}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401588}) + ":JHS Exam 2")'
         # age_at_observation:
@@ -13,22 +13,21 @@
         method_type:
           value: "Tanita"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008737
-                slot_derivations:
-                  value_decimal:
-                    expr: 'case(({phv00401596} <= 0, None),(True, {phv00401596} * 30.48 + {phv00401597} * 2.54))'
-                  unit:
-                    value: "cm"
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht008737
+              slot_derivations:
+                value_decimal:
+                  expr: 'case(({phv00401596} <= 0, None),(True, {phv00401596} * 30.48 + {phv00401597} * 2.54))'
+                unit:
+                  value: "cm"
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008737
       slot_derivations:
         associated_participant:
-          populated_from: phv00401588
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401588}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401588}) + ":JHS Exam 2")'
         # age_at_observation:
@@ -38,22 +37,21 @@
         method_type:
           value: "Balance Beam"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008737
-                slot_derivations:
-                  value_decimal:
-                    expr: 'case(({phv00401616} <= 0, None),(True, {phv00401616} * 30.48 + {phv00401618} * 2.54))'
-                  unit:
-                    value: "cm"
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht008737
+              slot_derivations:
+                value_decimal:
+                  expr: 'case(({phv00401616} <= 0, None),(True, {phv00401616} * 30.48 + {phv00401618} * 2.54))'
+                unit:
+                  value: "cm"
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008731
       slot_derivations:
         associated_participant:
-          populated_from: phv00401370
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401370}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
         age_at_observation:
@@ -63,21 +61,20 @@
         method_type:
           value: "Analysis derived"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008731
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401387
-                  unit:
-                    value: "cm"
+          class_derivations:
+          - Quantity:
+              populated_from: pht008731
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00401387
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008738
       slot_derivations:
         associated_participant:
-          populated_from: phv00401621
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401621}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401621}) + ":JHS Exam 3")'
         # age_at_observation:
@@ -87,21 +84,20 @@
         method_type:
           value: "Tanita"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008738
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401635
-                  unit:
-                    value: "cm"
+          class_derivations:
+          - Quantity:
+              populated_from: pht008738
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00401635
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008730
       slot_derivations:
         associated_participant:
-          populated_from: phv00401273
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401273}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401273}) + ":JHS Exam 2")'
         age_at_observation:
@@ -111,21 +107,20 @@
         method_type:
           value: "Analysis derived"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008730
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401286
-                  unit:
-                    value: "cm"
+          class_derivations:
+          - Quantity:
+              populated_from: pht008730
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00401286
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008729
       slot_derivations:
         associated_participant:
-          populated_from: phv00401078
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401078}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
         age_at_observation:
@@ -135,21 +130,20 @@
         method_type:
           value: "Analysis derived"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008729
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401094
-                  unit:
-                    value: "cm"
+          class_derivations:
+          - Quantity:
+              populated_from: pht008729
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00401094
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008738
       slot_derivations:
         associated_participant:
-          populated_from: phv00401621
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401621}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401621}) + ":JHS Exam 3")'
         # age_at_observation:
@@ -159,21 +153,20 @@
         method_type:
           value: "Balance Beam"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008738
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401631
-                  unit:
-                    value: "cm"
+          class_derivations:
+          - Quantity:
+              populated_from: pht008738
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00401631
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001940
       slot_derivations:
         associated_participant:
-          populated_from: phv00125856
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00125856}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00125856}) + ":JHS Exam 1")'
         # age_at_observation:
@@ -183,12 +176,11 @@
         method_type:
           value: "Anthropometry"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001940
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00125860
-                  unit:
-                    value: "cm"
+          class_derivations:
+          - Quantity:
+              populated_from: pht001940
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00125860
+                unit:
+                  value: "cm"

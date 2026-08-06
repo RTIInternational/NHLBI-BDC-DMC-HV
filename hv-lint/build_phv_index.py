@@ -1,10 +1,18 @@
 #!/usr/bin/env python3
 """Build compact PHV-to-PHT indexes from cached dbGaP variable lists.
 
-Reads the full HTML variable index files (variables.xml) from a dbGaP
-cache directory and produces compressed JSON files mapping base PHV
-accessions to base PHT accessions. These compact indexes are used by
-Phase 3 (validate_dbgap_crossref.py).
+Primary source: ``*.data_dict.xml`` files in the FTP cache
+(``pheno_variable_summaries/`` sub-directory). These cover every table
+including restricted-access and HeartGO tables that are absent from the
+CGI ``variables.xml`` bulk index.
+
+Fallback / supplement: ``variables.xml`` (legacy CGI bulk index). Any
+PHVs found there that are not already in the FTP-sourced mapping are
+added, so the output is always a strict superset of the old behaviour.
+
+Produces compressed JSON files mapping base PHV accessions to base PHT
+accessions. These compact indexes are used by Phase 3
+(validate_dbgap_crossref.py).
 
 Usage:
     python hv-lint/build_phv_index.py
@@ -13,7 +21,7 @@ Usage:
 
 Normally invoked via ``update_data.py`` which handles source fetching
 and index building together. Run standalone only when rebuilding
-indexes from already-fetched source XML.
+indexes from already-fetched source data.
 """
 
 from __future__ import annotations
@@ -22,6 +30,7 @@ import argparse
 import gzip
 import json
 import sys
+import xml.etree.ElementTree as ET
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -81,6 +90,40 @@ def parse_variable_html(path: Path) -> dict[str, str]:
     return mapping
 
 
+def parse_data_dict_xml(path: Path) -> dict[str, str]:
+    """Parse one FTP ``*.data_dict.xml`` and return {base_phv: base_pht}."""
+    try:
+        tree = ET.parse(path)
+    except ET.ParseError as exc:
+        print(f"  WARN: XML parse error in {path.name}: {exc}", file=sys.stderr)
+        return {}
+
+    root = tree.getroot()
+    table_id_raw = root.get("id", "")
+    base_pht = table_id_raw.split(".")[0] if table_id_raw else ""
+    if not base_pht.startswith("pht"):
+        return {}
+
+    mapping: dict[str, str] = {}
+    for var_elem in root.iter("variable"):
+        phv_raw = var_elem.get("id", "")
+        base_phv = phv_raw.split(".")[0]
+        if base_phv.startswith("phv"):
+            mapping[base_phv] = base_pht
+    return mapping
+
+
+def build_mapping_from_ftp(cohort_dir: Path) -> dict[str, str]:
+    """Build {base_phv: base_pht} from FTP data dicts in pheno_variable_summaries/."""
+    ftp_dir = cohort_dir / "pheno_variable_summaries"
+    if not ftp_dir.is_dir():
+        return {}
+    mapping: dict[str, str] = {}
+    for dd_file in sorted(ftp_dir.glob("*.data_dict.xml")):
+        mapping.update(parse_data_dict_xml(dd_file))
+    return mapping
+
+
 def main() -> int:
     # Auto-detect repo root -- works from control center (hv-lint/)
     # or HV repo (hv-lint/). The dbGaP cache is in the control center.
@@ -133,11 +176,26 @@ def main() -> int:
     for cohort_dir in sorted(source.iterdir()):
         if not cohort_dir.is_dir():
             continue
+
+        # Primary: FTP data dicts (complete coverage including restricted tables)
+        mapping = build_mapping_from_ftp(cohort_dir)
+        ftp_count = len(mapping)
+
+        # Supplement: variables.xml (CGI bulk index) fills any gaps
         vf = cohort_dir / "variables.xml"
-        if not vf.exists():
+        if vf.exists():
+            html_mapping = parse_variable_html(vf)
+            before = len(mapping)
+            for phv, pht in html_mapping.items():
+                if phv not in mapping:
+                    mapping[phv] = pht
+            html_added = len(mapping) - before
+        else:
+            html_added = 0
+
+        if not mapping:
             continue
 
-        mapping = parse_variable_html(vf)
         phts = len(set(mapping.values()))
         total_phvs += len(mapping)
 
@@ -148,8 +206,10 @@ def main() -> int:
             f.write(json_bytes)
 
         gz_size = gz_path.stat().st_size
+        supplement = f" (+{html_added} from variables.xml)" if html_added else ""
         print(
-            f"  {cohort_dir.name:12s}: {len(mapping):>7,} PHVs, "
+            f"  {cohort_dir.name:12s}: {len(mapping):>7,} PHVs "
+            f"({ftp_count:,} FTP{supplement}), "
             f"{phts:>4} PHTs -> {gz_size:>8,} bytes ({gz_path.name})"
         )
 

@@ -3,78 +3,79 @@
       populated_from: pht002105
       slot_derivations:
         associated_participant:
-          populated_from: phv00150369
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00150369}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00150369}) + ":MESA STRESS")'
         observation_type:
           value: OBA:2051979
           range: string
+        method_type:
+          value: "blood assay"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002105
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00160520
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht002105
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00160520
+                unit:
+                  value: pg/mL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002198
       slot_derivations:
         associated_participant:
-          populated_from: phv00159198
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00159198}) + ":MESA")'
         associated_visit:
-          populated_from: phv00160529
-          value_mappings:
-            '2': MESA CLASSIC EXAM 2
-            '3': MESA CLASSIC EXAM 3
+          expr: 'case(({phv00160529} == 2, uuid5("https://w3id.org/bdchm/Visit", str({phv00159198}) + ":MESA CLASSIC EXAM 2")), ({phv00160529} == 3, uuid5("https://w3id.org/bdchm/Visit", str({phv00159198}) + ":MESA CLASSIC EXAM 3")))'
         observation_type:
           value: OBA:2051979
           range: string
+        method_type:
+          value: "blood assay"
+          range: string
         range_low:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002198
-                slot_derivations:
-                  value_decimal:
-                    value: 0.16
-                    range: string
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht002198
+              slot_derivations:
+                value_decimal:
+                  value: 0.16
+                  range: string
+                unit:
+                  value: pg/mL
+                  range: string
         range_high:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002198
-                slot_derivations:
-                  value_decimal:
-                    value: 12.0
-                    range: string
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht002198
+              slot_derivations:
+                value_decimal:
+                  value: 12.0
+                  range: string
+                unit:
+                  value: pg/mL
+                  range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002198
-                slot_derivations:
-                  value_decimal:
-                    expr: 'case(({phv00160541} == -333, "LLOD"), ({phv00160541} == -555, "ULOD"), (True, {phv00160540}))'
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht002198
+              slot_derivations:
+                value_decimal:
+                  expr: 'case(({phv00160540} != None and {phv00160541} != -333 and {phv00160541} != -555, {phv00160540}), ({phv00160541} == -333, 0.16), ({phv00160541} == -555, 12.0))'
+                operator:
+                  expr: 'case(({phv00160541} == -333, "LESS_THAN"), ({phv00160541} == -555, "GREATER_THAN"))'
+                unit:
+                  value: pg/mL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004326
       slot_derivations:
         associated_participant:
-          populated_from: phv00219018
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00219018}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00219018}) + ":MESA STRESS")'
         age_at_observation:
@@ -82,14 +83,16 @@
         observation_type:
           value: OBA:2051979
           range: string
+        method_type:
+          value: "blood assay"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004326
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00219028
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht004326
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00219028
+                unit:
+                  value: pg/mL
+                  range: string

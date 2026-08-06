@@ -3,7 +3,7 @@
       populated_from: pht001452
       slot_derivations:
         associated_participant:
-          populated_from: phv00100285
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00100285}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100285}) + ":CHS BASELINE BOTH")'
         condition_concept:
@@ -20,12 +20,15 @@
         relationship_to_participant:
           value: ONESELF
           range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
 - class_derivations:
     Condition:
       populated_from: pht003699
       slot_derivations:
         associated_participant:
-          populated_from: phv00197394
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00197394}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197394}) + ":CHS PSG 1")'
         condition_concept:
@@ -42,4 +45,7 @@
           range: string
         relationship_to_participant:
           value: ONESELF
+          range: string
+        associated_evidence:
+          value: "self-report questionnaire"
           range: string

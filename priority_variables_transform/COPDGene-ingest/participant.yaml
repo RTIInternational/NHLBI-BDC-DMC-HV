@@ -1,8 +1,12 @@
 - class_derivations:
     Participant:
-      populated_from: pht002239
+      populated_from: pht016246
       slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00569495}) + ":COPDGene")'
         identity:
-          populated_from: dbGaP_Subject_ID
+          populated_from: phv00569495
         member_of_research_study:
-          value: COPDGene
+          value: 'Genetic Epidemiology of COPD (COPDGene)'
+        associated_person:
+          expr: 'uuid5("https://w3id.org/bdchm/Person", str({dbGaP_Subject_ID}))'

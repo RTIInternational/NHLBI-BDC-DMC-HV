@@ -3,7 +3,7 @@
       populated_from: pht001450
       slot_derivations:
         associated_participant:
-          populated_from: phv00098771
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00098771}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
         age_at_observation:
@@ -11,23 +11,28 @@
         observation_type:
           value: OBA:1000032
           range: string
+        body_position:
+          value: "STANDING_POSITION"
+        body_site:
+          value: "Hip"
+        method_type:
+          value: "anthropometry"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001450
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00099350
-                  unit:
-                    value: cm
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001450
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00099350
+                unit:
+                  value: cm
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001452
       slot_derivations:
         associated_participant:
-          populated_from: phv00100285
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00100285}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100285}) + ":CHS BASELINE BOTH")'
         age_at_observation:
@@ -35,47 +40,57 @@
         observation_type:
           value: OBA:1000032
           range: string
+        body_position:
+          value: "STANDING_POSITION"
+        body_site:
+          value: "Hip"
+        method_type:
+          value: "anthropometry"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001452
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00100384
-                  unit:
-                    value: cm
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001452
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00100384
+                unit:
+                  value: cm
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001490
       slot_derivations:
         associated_participant:
-          populated_from: phv00105099
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00105099}) + ":CHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS BASELINE 2")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
         age_at_observation:
           expr: '{phv00105622} * 365' 
         observation_type:
           value: OBA:1000032
           range: string
+        body_position:
+          value: "STANDING_POSITION"
+        body_site:
+          value: "Hip"
+        method_type:
+          value: "anthropometry"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001490
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00105415
-                  unit:
-                    value: cm
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001490
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00105415
+                unit:
+                  value: cm
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001491
       slot_derivations:
         associated_participant:
-          populated_from: phv00106520
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00106520}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00106520}) + ":CHS YEAR 5 OLD")'
         age_at_observation:
@@ -83,14 +98,19 @@
         observation_type:
           value: OBA:1000032
           range: string
+        body_position:
+          value: "STANDING_POSITION"
+        body_site:
+          value: "Hip"
+        method_type:
+          value: "anthropometry"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001491
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00106777
-                  unit:
-                    value: cm
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001491
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00106777
+                unit:
+                  value: cm
+                  range: string

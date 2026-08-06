@@ -3,7 +3,7 @@
       populated_from: pht001120
       slot_derivations:
         associated_participant:
-          populated_from: phv00086726
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086726}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         age_at_observation:
@@ -11,14 +11,16 @@
         observation_type:
           value: OBA:2040171
           range: string
+        method_type:
+          value: "questionnaire"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001120
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00087048
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001120
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00087048
+                unit:
+                  value: h
+                  range: string

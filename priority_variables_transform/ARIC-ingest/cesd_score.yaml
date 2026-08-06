@@ -3,84 +3,88 @@
       populated_from: pht012504
       slot_derivations:
         associated_participant:
-          populated_from: phv00507300
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00507300}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
         age_at_observation:
           expr: "{phv00507307} * 365"
         observation_type:
           value: OMOP:36303297
+        method_type:
+          value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012504
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00507380
-                  unit:
-                    value: "{score}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012504
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00507380
+                unit:
+                  value: "{score}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012815
       slot_derivations:
         associated_participant:
-          populated_from: phv00512222
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512222}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
         age_at_observation:
           expr: "{phv00512229} * 365"
         observation_type:
           value: OMOP:36303297
+        method_type:
+          value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012815
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00512381
-                  unit:
-                    value: "{score}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012815
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00512381
+                unit:
+                  value: "{score}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012855
       slot_derivations:
         associated_participant:
-          populated_from: phv00519876
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00519876}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519876}) + ":ARIC EXAM 5")'
         observation_type:
           value: OMOP:36303297
+        method_type:
+          value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012855
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00519890
-                  unit:
-                    value: "{score}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012855
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00519890
+                unit:
+                  value: "{score}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012814
       slot_derivations:
         associated_participant:
-          populated_from: phv00512039
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512039}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
         age_at_observation:
           expr: "{phv00512050} * 365"
         observation_type:
           value: OMOP:36303297
+        method_type:
+          value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012814
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00512128
-                  unit:
-                    value: "{score}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012814
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00512128
+                unit:
+                  value: "{score}"

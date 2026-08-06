@@ -3,59 +3,62 @@
       populated_from: pht012503
       slot_derivations:
         associated_participant:
-          populated_from: phv00506928
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00506928}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00506928}) + ":ARIC CHEM 2")'
         observation_type:
           value: OBA:VT0002871
+        method_type:
+          value: "urine assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012503
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00506959
-                  unit:
-                    value: "mg/L"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012503
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00506959
+                unit:
+                  value: "mg/L"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006427
       slot_derivations:
         associated_participant:
-          populated_from: phv00295244
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00295244}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00295244}) + ":ARIC EXAM 5")'
         observation_type:
           value: OBA:VT0002871
+        method_type:
+          value: "urine assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006427
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00295249
-                  unit:
-                    value: "mg/L"
+          class_derivations:
+          - Quantity:
+              populated_from: pht006427
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00295249
+                unit:
+                  value: "mg/L"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006427
       slot_derivations:
         associated_participant:
-          populated_from: phv00295244
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00295244}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00295244}) + ":ARIC EXAM 5")'
         observation_type:
           value: OBA:VT0002871
+        method_type:
+          value: "urine assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006427
-                slot_derivations:
-                  value_decimal:
-                    expr: "{phv00295248} * ({phv00295250} * 0.01)"
-                  unit:
-                    value: "mg/L"
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht006427
+              slot_derivations:
+                value_decimal:
+                  expr: "{phv00295248} * ({phv00295250} * 0.01)"
+                unit:
+                  value: "mg/L"
+                  range: string

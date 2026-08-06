@@ -3,20 +3,21 @@
       populated_from: pht001959
       slot_derivations:
         associated_participant:
-          populated_from: phv00127609
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00127609}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00127609}) + ":JHS Exam 1")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OMOP:37208690
+        method_type:
+          value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001959
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00127622
-                  unit:
-                    value: "%{WBCs}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht001959
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00127622
+                unit:
+                  value: "%{WBCs}"

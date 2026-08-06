@@ -3,7 +3,7 @@
       populated_from: pht004715
       slot_derivations:
         associated_participant:
-          populated_from: phv00226250
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         age_at_observation:
@@ -12,25 +12,24 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: atrial
+          value: "Electrocardiogram, atrial rate"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004715
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00226274
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht004715
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00226274
+                unit:
+                  value: '{beats}/min'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004715
       slot_derivations:
         associated_participant:
-          populated_from: phv00226250
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00226250}) + ":HCHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         age_at_observation:
@@ -39,16 +38,15 @@
           value: OBA:1001087
           range: string
         method_type:
-          value: ventricular
+          value: "Electrocardiogram, ventricular rate"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004715
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00258056
-                  unit:
-                    value: '{beats}/min'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht004715
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00258056
+                unit:
+                  value: '{beats}/min'
+                  range: string

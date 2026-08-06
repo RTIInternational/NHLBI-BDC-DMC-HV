@@ -2,80 +2,84 @@
     MeasurementObservation:
       populated_from: pht001565
       slot_derivations:
-        associated_participant: 
-          populated_from: phv00112709 
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00112709}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00112709}) + ":CARDIA YEAR 0")'
         observation_type: 
           value: OMOP:21493059
+        method_type:
+          value: "Food Frequency Questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001565
-                slot_derivations:
-                  value_decimal:
-                    expr: ({phv00112712} + {phv00112713} + {phv00112714} + {phv00112715} + {phv00112716}) * 7
-                  unit: 
-                    value: '{#}/wk'
+          class_derivations:
+          - Quantity:
+              populated_from: pht001565
+              slot_derivations:
+                value_decimal:
+                  expr: ({phv00112712} + {phv00112713} + {phv00112714} + {phv00112715} + {phv00112716}) * 7
+                unit: 
+                  value: '{#}/wk'
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001712
       slot_derivations:
-        associated_participant: 
-          populated_from: phv00116761
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00116761}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116761}) + ":CARDIA YEAR 7")'
         observation_type: 
           value: OMOP:21493059
+        method_type:
+          value: "Food Frequency Questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001712
-                slot_derivations:
-                  value_decimal:
-                    expr: ({phv00116764} + {phv00116765} + {phv00116766} + {phv00116767} + {phv00116768}) * 7
-                  unit: 
-                    value: '{#}/wk' 
+          class_derivations:
+          - Quantity:
+              populated_from: pht001712
+              slot_derivations:
+                value_decimal:
+                  expr: ({phv00116764} + {phv00116765} + {phv00116766} + {phv00116767} + {phv00116768}) * 7
+                unit: 
+                  value: '{#}/wk' 
 
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001713
       slot_derivations:
-        associated_participant: 
-          populated_from: phv00116928
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00116928}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00116928}) + ":CARDIA YEAR 7")'
         observation_type: 
           value: OMOP:21493059
+        method_type:
+          value: "Food Frequency Questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001713
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00116930
-                  unit: 
-                    value: "{#}/wk"
+          class_derivations:
+          - Quantity:
+              populated_from: pht001713
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00116930
+                unit: 
+                  value: "{#}/wk"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001566
       slot_derivations:
-        associated_participant: 
-          populated_from: phv00112876
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00112876}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00112876}) + ":CARDIA YEAR 0")'
         observation_type: 
           value: OMOP:21493059
+        method_type:
+          value: "Food Frequency Questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001566
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00112878
-                  unit: 
-                    value: "{#}/wk"
+          class_derivations:
+          - Quantity:
+              populated_from: pht001566
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00112878
+                unit: 
+                  value: "{#}/wk"

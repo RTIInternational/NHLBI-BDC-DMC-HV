@@ -6,6 +6,31 @@ from pathlib import Path
 
 import yaml
 
+
+def iter_nested_class_derivs(slot_def):
+    """Yield (class_name, class_spec) for a slot's nested class derivations,
+    handling list-based class_derivations in both `- name: X` and dict-keyed
+    `- X: {...}` form, plus legacy object_derivations.
+
+    Deliberately local: this module is outside hv-lint/ and importing from a
+    hyphenated script tree would invert the dependency. The canonical copy is
+    hv-lint/_derivations.py -- keep the two in sync."""
+    slot_def = slot_def or {}
+    for cd in slot_def.get("class_derivations") or []:
+        if not isinstance(cd, dict):
+            continue
+        if "name" in cd:
+            yield cd.get("name"), cd
+        elif len(cd) == 1:
+            # dict-keyed form: `- ClassName: {...}`
+            cls_name, spec = next(iter(cd.items()))
+            # a null body (`- X:`) parses as {X: None}; callers expect a dict
+            yield cls_name, spec if isinstance(spec, dict) else {}
+    for od in slot_def.get("object_derivations") or []:
+        for name, spec in ((od or {}).get("class_derivations") or {}).items():
+            yield name, spec
+
+
 # Known duplicates tracked in #455. Remove entries as they are fixed.
 KNOWN_ISSUES = {
     "phv00001581",  # FHS tot_chol_bld.yaml — missing observation_type in block 60
@@ -42,8 +67,10 @@ def extract_value_phvs(block, block_index):
 
         elif class_name == "MeasurementObservation":
             concept = (slots.get("observation_type") or {}).get("value")
-            for obj_deriv in (slots.get("value_quantity") or {}).get("object_derivations") or []:
-                qty_slots = ((obj_deriv or {}).get("class_derivations") or {}).get("Quantity", {}).get("slot_derivations") or {}
+            for qty_name, qty in iter_nested_class_derivs(slots.get("value_quantity")):
+                if qty_name != "Quantity":
+                    continue
+                qty_slots = qty.get("slot_derivations") or {}
                 for val_slot in ("value_decimal", "value_integer", "value_string"):
                     slot_def = qty_slots.get(val_slot) or {}
                     if "populated_from" in slot_def and "value_mappings" not in slot_def and "expr" not in slot_def:

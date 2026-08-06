@@ -3,7 +3,7 @@
       populated_from: pht000395
       slot_derivations:
         associated_participant:
-          populated_from: phv00056635
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00056635}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":" + case(({phv00056607} == ''1'', ''FHS OFFSPRING SHHS EXAM 1''), ({phv00056607} == ''7'', ''FHS OMNI 1 SHHS EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
@@ -12,22 +12,21 @@
           value: OMOP:37396400
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000395
-                slot_derivations:
-                  value_concept:
-                    populated_from: phv00056501
-                  unit:
-                    value: /h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000395
+              slot_derivations:
+                value_concept:
+                  populated_from: phv00056501
+                unit:
+                  value: /h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000395
       slot_derivations:
         associated_participant:
-          populated_from: phv00056635
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00056635}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":" + case(({phv00056607} == ''1'', ''FHS OFFSPRING SHHS EXAM 1''), ({phv00056607} == ''7'', ''FHS OMNI 1 SHHS EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
@@ -36,22 +35,21 @@
           value: OMOP:37396400
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000395
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00055553
-                  unit:
-                    value: /h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000395
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00055553
+                unit:
+                  value: /h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000397
       slot_derivations:
         associated_participant:
-          populated_from: phv00057982
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00057982}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00057982}) + ":" + case(({phv00057968} == ''1'', ''FHS OFFSPRING SHHS EXAM 2''), ({phv00057968} == ''7'', ''FHS OMNI 1 SHHS EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
@@ -60,13 +58,12 @@
           value: OMOP:37396400
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000397
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00057941
-                  unit:
-                    value: /h
-                    range: string               
+          class_derivations:
+          - Quantity:
+              populated_from: pht000397
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00057941
+                unit:
+                  value: /h
+                  range: string               

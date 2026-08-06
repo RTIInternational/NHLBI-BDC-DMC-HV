@@ -3,202 +3,212 @@
       populated_from: pht004053
       slot_derivations:
         associated_participant:
-          populated_from: phv00204295
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204295}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204295}) + ":ARIC Hospital Form")'
         observation_type:
           value: OBA:2045303
+        method_type:
+          value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004053
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00204193
-                  unit:
-                    value: "pg/mL"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004053
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00204193
+                unit:
+                  value: "pg/mL"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004053
       slot_derivations:
         associated_participant:
-          populated_from: phv00204295
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204295}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204295}) + ":ARIC Hospital Form")'
         observation_type:
           value: OBA:2045303
+        method_type:
+          value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004053
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00204192
-                  unit:
-                    value: "pg/mL"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004053
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00204192
+                unit:
+                  value: "pg/mL"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from: phv00207055
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         observation_type:
           value: OBA:2045303
+        method_type:
+          value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004102
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00206950
-                  unit:
-                    value: "pg/mL"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004102
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00206950
+                unit:
+                  value: "pg/mL"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006444
       slot_derivations:
         associated_participant:
-          populated_from: phv00296690
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00296690}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00296690}) + ":ARIC EXAM 5")'
         observation_type:
           value: OBA:2045303
+        method_type:
+          value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006444
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00296698
-                  unit:
-                    value: "pg/mL"
+          class_derivations:
+          - Quantity:
+              populated_from: pht006444
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00296698
+                unit:
+                  value: "pg/mL"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012853
       slot_derivations:
         associated_participant:
-          populated_from: phv00519789
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00519789}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519789}) + ":ARIC EXAM 4")'
         age_at_observation:
           expr: "{phv00519798} * 365"
         observation_type:
           value: OBA:2045303
+        method_type:
+          value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012853
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00519839
-                  unit:
-                    value: "pg/mL"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012853
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00519839
+                unit:
+                  value: "pg/mL"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from: phv00207055
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         observation_type:
           value: OBA:2045303
+        method_type:
+          value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004102
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00206951
-                  unit:
-                    value: "pg/mL"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004102
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00206951
+                unit:
+                  value: "pg/mL"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004053
       slot_derivations:
         associated_participant:
-          populated_from: phv00204295
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204295}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204295}) + ":ARIC Hospital Form")'
         observation_type:
           value: OBA:2045303
+        method_type:
+          value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004053
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00204190
-                  unit:
-                    value: "pg/mL"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004053
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00204190
+                unit:
+                  value: "pg/mL"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004102
       slot_derivations:
         associated_participant:
-          populated_from: phv00207055
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00207055}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         observation_type:
           value: OBA:2045303
+        method_type:
+          value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004102
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00206949
-                  unit:
-                    value: "pg/mL"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004102
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00206949
+                unit:
+                  value: "pg/mL"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004053
       slot_derivations:
         associated_participant:
-          populated_from: phv00204295
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204295}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204295}) + ":ARIC Hospital Form")'
         observation_type:
           value: OBA:2045303
+        method_type:
+          value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004053
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00204194
-                  unit:
-                    value: "pg/mL"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004053
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00204194
+                unit:
+                  value: "pg/mL"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012853
       slot_derivations:
         associated_participant:
-          populated_from: phv00519789
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00519789}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00519789}) + ":ARIC EXAM 5")'
         age_at_observation:
           expr: "{phv00519799} * 365"
         observation_type:
           value: OBA:2045303
+        method_type:
+          value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012853
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00519840
-                  unit:
-                    value: "pg/mL"
+          class_derivations:
+          - Quantity:
+              populated_from: pht012853
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00519840
+                unit:
+                  value: "pg/mL"

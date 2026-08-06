@@ -3,7 +3,7 @@
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_observation:
@@ -11,23 +11,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00082657
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00082657
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_observation:
@@ -35,23 +40,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00082660
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00082660
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_observation:
@@ -59,23 +69,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00082664
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00082664
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_observation:
@@ -83,23 +98,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00082856
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00082856
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_observation:
@@ -107,23 +127,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00082857
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00082857
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_observation:
@@ -131,23 +156,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00082860
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00082860
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_observation:
@@ -155,23 +185,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00082861
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00082861
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_observation:
@@ -179,23 +214,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00082862
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00082862
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_observation:
@@ -203,23 +243,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00082863
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00082863
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_observation:
@@ -227,23 +272,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00082866
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00082866
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_observation:
@@ -251,23 +301,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00082867
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00082867
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_observation:
@@ -275,23 +330,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00082888
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00082888
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_observation:
@@ -299,23 +359,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00082889
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00082889
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_observation:
@@ -323,23 +388,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00082890
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00082890
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_observation:
@@ -347,23 +417,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00082891
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00082891
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         age_at_observation:
@@ -371,23 +446,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001116
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00084517
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00084517
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         age_at_observation:
@@ -395,23 +475,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001116
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00084519
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00084519
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         age_at_observation:
@@ -419,23 +504,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001116
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00084521
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00084521
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         age_at_observation:
@@ -443,23 +533,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001116
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00084526
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00084526
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         age_at_observation:
@@ -467,23 +562,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001116
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00084528
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00084528
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         age_at_observation:
@@ -491,23 +591,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001116
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00084530
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00084530
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         age_at_observation:
@@ -515,23 +620,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001116
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00084532
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00084532
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         age_at_observation:
@@ -539,23 +649,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001116
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00084534
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00084534
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         age_at_observation:
@@ -563,23 +678,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001116
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00084536
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00084536
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         age_at_observation:
@@ -587,23 +707,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001116
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00084538
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00084538
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         age_at_observation:
@@ -611,23 +736,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001116
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00084540
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00084540
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001118
       slot_derivations:
         associated_participant:
-          populated_from: phv00085772
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00085772}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         age_at_observation:
@@ -635,23 +765,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001118
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00085810
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001118
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00085810
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001118
       slot_derivations:
         associated_participant:
-          populated_from: phv00085772
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00085772}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         age_at_observation:
@@ -659,23 +794,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001118
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00085812
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001118
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00085812
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001118
       slot_derivations:
         associated_participant:
-          populated_from: phv00085772
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00085772}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         age_at_observation:
@@ -683,23 +823,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001118
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00085813
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001118
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00085813
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001118
       slot_derivations:
         associated_participant:
-          populated_from: phv00085772
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00085772}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         age_at_observation:
@@ -707,23 +852,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001118
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00085819
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001118
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00085819
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001118
       slot_derivations:
         associated_participant:
-          populated_from: phv00085772
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00085772}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         age_at_observation:
@@ -731,23 +881,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001118
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00085820
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001118
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00085820
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001118
       slot_derivations:
         associated_participant:
-          populated_from: phv00085772
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00085772}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         age_at_observation:
@@ -755,23 +910,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001118
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00085825
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001118
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00085825
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001118
       slot_derivations:
         associated_participant:
-          populated_from: phv00085772
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00085772}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         age_at_observation:
@@ -779,23 +939,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001118
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00085826
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001118
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00085826
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001119
       slot_derivations:
         associated_participant:
-          populated_from: phv00086258
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086258}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         age_at_observation:
@@ -803,23 +968,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001119
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00086310
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001119
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00086310
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001119
       slot_derivations:
         associated_participant:
-          populated_from: phv00086258
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086258}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         age_at_observation:
@@ -827,23 +997,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001119
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00086312
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001119
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00086312
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001119
       slot_derivations:
         associated_participant:
-          populated_from: phv00086258
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086258}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         age_at_observation:
@@ -851,23 +1026,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001119
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00086313
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001119
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00086313
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001119
       slot_derivations:
         associated_participant:
-          populated_from: phv00086258
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086258}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         age_at_observation:
@@ -875,23 +1055,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001119
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00086318
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001119
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00086318
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001119
       slot_derivations:
         associated_participant:
-          populated_from: phv00086258
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086258}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         age_at_observation:
@@ -899,23 +1084,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001119
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00086319
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001119
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00086319
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001119
       slot_derivations:
         associated_participant:
-          populated_from: phv00086258
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086258}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         age_at_observation:
@@ -923,23 +1113,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001119
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00086324
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001119
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00086324
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001119
       slot_derivations:
         associated_participant:
-          populated_from: phv00086258
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086258}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         age_at_observation:
@@ -947,23 +1142,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001119
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00086325
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001119
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00086325
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001120
       slot_derivations:
         associated_participant:
-          populated_from: phv00086726
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086726}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         age_at_observation:
@@ -971,23 +1171,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001120
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00086773
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001120
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00086773
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001120
       slot_derivations:
         associated_participant:
-          populated_from: phv00086726
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086726}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         age_at_observation:
@@ -995,23 +1200,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001120
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00086774
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001120
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00086774
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001120
       slot_derivations:
         associated_participant:
-          populated_from: phv00086726
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086726}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         age_at_observation:
@@ -1019,23 +1229,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001120
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00086777
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001120
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00086777
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001120
       slot_derivations:
         associated_participant:
-          populated_from: phv00086726
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086726}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         age_at_observation:
@@ -1043,23 +1258,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001120
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00086778
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001120
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00086778
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001120
       slot_derivations:
         associated_participant:
-          populated_from: phv00086726
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086726}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         age_at_observation:
@@ -1067,23 +1287,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001120
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00086779
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001120
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00086779
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001120
       slot_derivations:
         associated_participant:
-          populated_from: phv00086726
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086726}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         age_at_observation:
@@ -1091,23 +1316,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001120
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00086780
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001120
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00086780
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001120
       slot_derivations:
         associated_participant:
-          populated_from: phv00086726
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086726}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         age_at_observation:
@@ -1115,23 +1345,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001120
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00086783
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001120
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00086783
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001120
       slot_derivations:
         associated_participant:
-          populated_from: phv00086726
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086726}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         age_at_observation:
@@ -1139,23 +1374,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001120
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00086784
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001120
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00086784
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001121
       slot_derivations:
         associated_participant:
-          populated_from: phv00087070
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         age_at_observation:
@@ -1163,23 +1403,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001121
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00087105
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001121
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00087105
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001121
       slot_derivations:
         associated_participant:
-          populated_from: phv00087070
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         age_at_observation:
@@ -1187,23 +1432,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001121
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00087531
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001121
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00087531
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001121
       slot_derivations:
         associated_participant:
-          populated_from: phv00087070
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         age_at_observation:
@@ -1211,23 +1461,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001121
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00087536
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001121
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00087536
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001121
       slot_derivations:
         associated_participant:
-          populated_from: phv00087070
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         age_at_observation:
@@ -1235,23 +1490,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001121
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00087537
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001121
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00087537
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001121
       slot_derivations:
         associated_participant:
-          populated_from: phv00087070
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         age_at_observation:
@@ -1259,23 +1519,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001121
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00087544
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001121
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00087544
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001121
       slot_derivations:
         associated_participant:
-          populated_from: phv00087070
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         age_at_observation:
@@ -1283,67 +1548,109 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001121
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00087545
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001121
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00087545
+                unit:
+                  value: '{score}'
+                  range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht001204
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00090014}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00090014}) + ":MESA AORTIC CT EXAM 3")'
+        observation_type:
+          value: OMOP:42872742
+          range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
+        value_quantity:
+          class_derivations:
+          - Quantity:
+              populated_from: pht001204
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00090029
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001205
       slot_derivations:
         associated_participant:
-          populated_from: phv00090067
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00090067}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00090067}) + ":MESA AORTIC CT EXAM 4")'
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001205
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00090113
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001205
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00090113
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001205
       slot_derivations:
         associated_participant:
-          populated_from: phv00090067
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00090067}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00090067}) + ":MESA AORTIC CT EXAM 4")'
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001205
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00090116
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001205
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00090116
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003086
       slot_derivations:
         associated_participant:
-          populated_from: phv00174584
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         age_at_observation:
@@ -1351,23 +1658,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003086
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00174752
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003086
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00174752
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003086
       slot_derivations:
         associated_participant:
-          populated_from: phv00174584
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         age_at_observation:
@@ -1375,23 +1687,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003086
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00174753
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003086
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00174753
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003086
       slot_derivations:
         associated_participant:
-          populated_from: phv00174584
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         age_at_observation:
@@ -1399,23 +1716,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003086
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00174766
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003086
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00174766
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003086
       slot_derivations:
         associated_participant:
-          populated_from: phv00174584
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         age_at_observation:
@@ -1423,23 +1745,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003086
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00174767
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003086
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00174767
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003086
       slot_derivations:
         associated_participant:
-          populated_from: phv00174584
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         age_at_observation:
@@ -1447,23 +1774,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003086
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00174768
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003086
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00174768
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003086
       slot_derivations:
         associated_participant:
-          populated_from: phv00174584
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         age_at_observation:
@@ -1471,23 +1803,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003086
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00174769
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003086
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00174769
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003091
       slot_derivations:
         associated_participant:
-          populated_from: phv00176007
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00176007}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         age_at_observation:
@@ -1495,23 +1832,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003091
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00176175
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003091
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00176175
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003091
       slot_derivations:
         associated_participant:
-          populated_from: phv00176007
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00176007}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         age_at_observation:
@@ -1519,23 +1861,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003091
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00176176
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003091
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00176176
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003091
       slot_derivations:
         associated_participant:
-          populated_from: phv00176007
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00176007}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         age_at_observation:
@@ -1543,23 +1890,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003091
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00176189
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003091
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00176189
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003091
       slot_derivations:
         associated_participant:
-          populated_from: phv00176007
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00176007}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         age_at_observation:
@@ -1567,23 +1919,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003091
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00176190
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003091
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00176190
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003091
       slot_derivations:
         associated_participant:
-          populated_from: phv00176007
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00176007}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         age_at_observation:
@@ -1591,23 +1948,28 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003091
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00176191
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003091
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00176191
+                unit:
+                  value: '{score}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003091
       slot_derivations:
         associated_participant:
-          populated_from: phv00176007
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00176007}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         age_at_observation:
@@ -1615,14 +1977,19 @@
         observation_type:
           value: OMOP:42872742
           range: string
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+          range: string
+        method_type:
+          value: "cardiac CT"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003091
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00176192
-                  unit:
-                    value: '{score}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003091
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00176192
+                unit:
+                  value: '{score}'
+                  range: string

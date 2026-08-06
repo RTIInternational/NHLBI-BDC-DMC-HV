@@ -3,47 +3,48 @@
       populated_from: pht001120
       slot_derivations:
         associated_participant:
-          populated_from: phv00086726
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086726}) + ":MESA")'
         associated_visit:
-          populated_from: phv00191192
-          value_mappings:
-            '3': MESA CLASSIC EXAM 3
-            '4': MESA CLASSIC EXAM 4
+          expr: 'case(({phv00191192} == 3, uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 3")), ({phv00191192} == 4, uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")))'
         age_at_observation:
           expr: case(({phv00191192} == 4, {phv00086727} * 365), ({phv00191192} == 3, {phv00086259} * 365))
         observation_type:
           value: OBA:VT0002668
           range: string
+        method_type:
+          value: "blood assay"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001120
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00191191
-                  unit:
-                    value: mmol/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001120
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00191191
+                unit:
+                  value: mmol/L
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003089
       slot_derivations:
         associated_participant:
-          populated_from: phv00175973
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00175973}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00175973}) + ":MESA ANCILLARY")'
         observation_type:
           value: OBA:VT0002668
           range: string
+        method_type:
+          value: "blood assay"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003089
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00175982
-                  unit:
-                    value: mmol/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003089
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00175982
+                unit:
+                  value: mmol/L
+                  range: string

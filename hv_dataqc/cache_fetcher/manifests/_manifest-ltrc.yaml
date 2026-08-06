@@ -1,0 +1,149 @@
+# LTRC Variable Mapping Manifest
+# Lung Tissue Research Consortium (LTRC)
+# Single source of truth for LTRC harmonization versioning
+
+# =============================================================================
+# CURRENT VERSION (Active Work)
+# =============================================================================
+current_version:
+  study_id: "phs001662"
+  study_name: "Lung Tissue Research Consortium (LTRC)"
+  data_version: "v4.p2"
+  last_updated: "2026-04-07"
+
+  # dbGaP Documentation Links
+  dbgap_references:
+    study_homepage:
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs001662.v4.p2"
+      description: "Main study page with metadata, documentation, and access info"
+
+    variable_dictionary:
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/GetListOfAllObjects.cgi?study_id=phs001662.v4.p2&object_type=variable"
+      description: "Complete listing of all variables with definitions and metadata"
+      cached_file: "data/dbgap-cache/ltrc/variables.xml"
+
+    study_documents:
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/GetListOfAllObjects.cgi?study_id=phs001662.v4.p2&object_type=document"
+      description: "Study protocols, data collection procedures, codebooks"
+      cached_file: "data/dbgap-cache/ltrc/documents.xml"
+
+    pheno_variable_summaries:
+      ftp_url: "https://ftp.ncbi.nlm.nih.gov/dbgap/studies/phs001662/phs001662.v4.p2/pheno_variable_summaries/"
+      description: "Per-dataset data dictionaries (XML) with variable IDs, descriptions, types, units, coded values"
+      cached_dir: "data/dbgap-cache/ltrc/pheno_variable_summaries/"
+      file_count: 27
+
+    gap_exchange:
+      ftp_url: "https://ftp.ncbi.nlm.nih.gov/dbgap/studies/phs001662/phs001662.v4.p2/GapExchange_phs001662.v4.p2.xml"
+      description: "Study-level GapExchange XML with dataset inventory and study structure"
+      cached_file: "data/dbgap-cache/ltrc/GapExchange_phs001662.v4.p2.xml"
+
+  # Current harmonization work
+  harmonization:
+    bdchm_schema: "v0.1.0"
+    transform_version: "LTRC-2026.04.1"
+    repository_location: "https://github.com/RTIInternational/NHLBI-BDC-DMC-HV/tree/main/priority_variables_transform/LTRC-ingest"
+
+  # Status tracking
+  status:
+    mapping_progress: "planned"
+    lead: "TBD"
+    started: "2026-04-07"
+
+# =============================================================================
+# VERSION HISTORY (Previous Versions)
+# =============================================================================
+version_history:
+  # Previous LTRC versions will be added here as data updates occur
+
+# =============================================================================
+# STUDY-SPECIFIC NOTES
+# =============================================================================
+study_characteristics:
+  focus: "Lung tissue biobank and clinical phenotyping for pulmonary disease research"
+  design: "Cross-sectional biospecimen collection from patients undergoing clinically indicated lung surgery"
+  population: "Patients undergoing lung surgery at participating clinical centers"
+  
+  # Key phenotypic tables (R040 = main data release)
+  key_tables:
+    - pht: "pht010052"
+      name: "LTRC_Subject"
+      description: "Subject-level identifiers"
+    - pht: "pht010053"
+      name: "LTRC_Sample"
+      description: "Sample-level identifiers"
+    - pht: "pht010054"
+      name: "TOPMed_LTRC_WGS_Sample_Attributes"
+      description: "TOPMed WGS sample attributes"
+    - pht: "pht010055"
+      name: "LTRC_R040_subject_airwayfindings"
+      description: "Airway findings from CT scan and pathology"
+    - pht: "pht010056"
+      name: "LTRC_R040_subject_ctscanreport"
+      description: "CT scan report data"
+    - pht: "pht010057"
+      name: "LTRC_R040_subject_demographics"
+      description: "Demographics (age, sex, race, ethnicity, BMI, height, weight)"
+    - pht: "pht010058"
+      name: "LTRC_R040_subject_diagnoses"
+      description: "Clinical diagnoses"
+    - pht: "pht010059"
+      name: "LTRC_R040_subject_labs"
+      description: "Laboratory test results"
+    - pht: "pht010060"
+      name: "LTRC_R040_subject_medical_history"
+      description: "Medical history"
+    - pht: "pht010061"
+      name: "LTRC_R040_subject_medications"
+      description: "Medication use"
+    - pht: "pht010062"
+      name: "LTRC_R040_subject_parenchymalfindings"
+      description: "Parenchymal findings from CT/pathology"
+    - pht: "pht010063"
+      name: "LTRC_R040_subject_smoking_history"
+      description: "Smoking history"
+    - pht: "pht010064"
+      name: "LTRC_R040_subject_spirometry"
+      description: "Spirometry measurements (FEV1, FVC, etc.)"
+    - pht: "pht010065"
+      name: "LTRC_R040_subject_cardio_pulm_exer_test"
+      description: "Cardiopulmonary exercise testing"
+    - pht: "pht010066"
+      name: "LTRC_R040_subject_central_pathology"
+      description: "Central pathology review results"
+    - pht: "pht010067"
+      name: "LTRC_R040_subject_environ_quest"
+      description: "Environmental exposure questionnaire"
+    - pht: "pht010068"
+      name: "LTRC_R040_subject_family_hx_quest"
+      description: "Family history questionnaire"
+    - pht: "pht010069"
+      name: "LTRC_R040_subject_local_pathology"
+      description: "Local pathology results"
+    - pht: "pht010070"
+      name: "LTRC_R040_subject_occu_expo_quest"
+      description: "Occupational exposure questionnaire"
+    - pht: "pht010071"
+      name: "LTRC_R040_subject_sf12_surv"
+      description: "SF-12 quality of life survey"
+    - pht: "pht010072"
+      name: "LTRC_R040_subject_six_min_walk"
+      description: "Six-minute walk test"
+    - pht: "pht010073"
+      name: "LTRC_R040_subject_st_george_quest"
+      description: "St. George's Respiratory Questionnaire (SGRQ)"
+    - pht: "pht010074"
+      name: "LTRC_R040_subject_symptom_quest"
+      description: "Symptom questionnaire"
+    - pht: "pht015886"
+      name: "TOPMed_LTRC_Metabolomics_Sample_Attributes"
+      description: "TOPMed metabolomics sample attributes"
+    - pht: "pht015887"
+      name: "TOPMed_LTRC_Methylation_Sample_Attributes"
+      description: "TOPMed methylation sample attributes"
+    - pht: "pht015888"
+      name: "TOPMed_LTRC_Proteomics_Sample_Attributes"
+      description: "TOPMed proteomics sample attributes"
+    - pht: "pht015889"
+      name: "TOPMed_LTRC_RNASeq_Sample_Attributes"
+      description: "TOPMed RNA-seq sample attributes"

@@ -3,7 +3,7 @@
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         age_at_observation:
@@ -11,91 +11,95 @@
         observation_type:
           value: OBA:2052890
           range: string
+        method_type:
+          value: "blood assay"
+          range: string
         range_low:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001116
-                slot_derivations:
-                  value_decimal:
-                    value: '0.09'
-                    range: string
-                  unit:
-                    value: pg/mL
-                    range: string          
+          class_derivations:
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  value: '0.09'
+                  range: string
+                unit:
+                  value: pg/mL
+                  range: string          
         range_high:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001116
-                slot_derivations:
-                  value_decimal:
-                    value: '13'
-                    range: string
-                  unit:
-                    value: pg/mL
-                    range: string                     
+          class_derivations:
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  value: '13'
+                  range: string
+                unit:
+                  value: pg/mL
+                  range: string                     
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00085009
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00085009
+                unit:
+                  value: pg/mL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002105
       slot_derivations:
         associated_participant:
-          populated_from: phv00150369
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00150369}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00150369}) + ":MESA STRESS")'
         observation_type:
           value: OBA:2052890
           range: string
+        method_type:
+          value: "blood assay"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00160518
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht002105
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00160518
+                unit:
+                  value: pg/mL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002198
       slot_derivations:
         associated_participant:
-          populated_from: phv00159198
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00159198}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00159198}) + ":MESA ABD BODY COMPOSITION")'
         observation_type:
           value: OBA:2052890
           range: string
+        method_type:
+          value: "blood assay"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00160530
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht002198
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00160530
+                unit:
+                  value: pg/mL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004326
       slot_derivations:
         associated_participant:
-          populated_from: phv00219018
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00219018}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00219018}) + ":MESA STRESS")'
         age_at_observation:
@@ -103,14 +107,16 @@
         observation_type:
           value: OBA:2052890
           range: string
+        method_type:
+          value: "blood assay"
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00219027
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht004326
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00219027
+                unit:
+                  value: pg/mL
+                  range: string

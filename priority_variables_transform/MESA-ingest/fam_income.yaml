@@ -1,9 +1,9 @@
 - class_derivations:
-    Observation:
+    SdohObservation:
       populated_from: pht001111
       slot_derivations:
         associated_participant:
-          populated_from: phv00082638
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_observation:
@@ -11,37 +11,39 @@
         observation_type:
           value: OMOP:4076114
           range: string
+        category:
+          value: FINANCIAL_INSECURITY
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001111
-                slot_derivations:
-                  value_concept:
-                    populated_from: phv00083226
-                    value_mappings:
-                      '1': < $5,000
-                      '2': $5,000 - $7,999
-                      '3': $8,000 - $11,999
-                      '4': $12,000 - $15,999
-                      '5': $16,000 - $19,999
-                      '6': $20,000 - $24,999
-                      '7': $25,000 - $29,999
-                      '8': $30,000 - $34,999
-                      '9': $35,000 - $39,999
-                      '10': $40,000 - $49,999
-                      '11': $50,000 - $74,999
-                      '12': $75,000 - $99,999
-                      '13': '> $100,000'
-                  unit:
-                    value: USD
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001111
+              slot_derivations:
+                value_concept:
+                  populated_from: phv00083226
+                  value_mappings:
+                    '1': < $5,000
+                    '2': $5,000 - $7,999
+                    '3': $8,000 - $11,999
+                    '4': $12,000 - $15,999
+                    '5': $16,000 - $19,999
+                    '6': $20,000 - $24,999
+                    '7': $25,000 - $29,999
+                    '8': $30,000 - $34,999
+                    '9': $35,000 - $39,999
+                    '10': $40,000 - $49,999
+                    '11': $50,000 - $74,999
+                    '12': $75,000 - $99,999
+                    '13': '> $100,000'
+                unit:
+                  value: USD
+                  range: string
 - class_derivations:
-    Observation:
+    SdohObservation:
       populated_from: pht001116
       slot_derivations:
         associated_participant:
-          populated_from: phv00084441
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
         age_at_observation:
@@ -49,73 +51,77 @@
         observation_type:
           value: OMOP:4076114
           range: string
+        category:
+          value: FINANCIAL_INSECURITY
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001116
-                slot_derivations:
-                  value_concept:
-                    populated_from: phv00085558
-                    value_mappings:
-                      '1': < $5,000
-                      '2': $5,000 - $7,999
-                      '3': $8,000 - $11,999
-                      '4': $12,000 - $15,999
-                      '5': $16,000 - $19,999
-                      '6': $20,000 - $24,999
-                      '7': $25,000 - $29,999
-                      '8': $30,000 - $34,999
-                      '9': $35,000 - $39,999
-                      '10': $40,000 - $49,999
-                      '11': $50,000 - $74,999
-                      '12': $75,000 - $99,999
-                      '13': '> $100,000'
-                  unit:
-                    value: USD
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_concept:
+                  populated_from: phv00085558
+                  value_mappings:
+                    '1': < $5,000
+                    '2': $5,000 - $7,999
+                    '3': $8,000 - $11,999
+                    '4': $12,000 - $15,999
+                    '5': $16,000 - $19,999
+                    '6': $20,000 - $24,999
+                    '7': $25,000 - $29,999
+                    '8': $30,000 - $34,999
+                    '9': $35,000 - $39,999
+                    '10': $40,000 - $49,999
+                    '11': $50,000 - $74,999
+                    '12': $75,000 - $99,999
+                    '13': '> $100,000'
+                unit:
+                  value: USD
+                  range: string
 - class_derivations:
-    Observation:
+    SdohObservation:
       populated_from: pht001118
       slot_derivations:
         associated_participant:
-          populated_from: phv00085772
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00085772}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         observation_type:
           value: OMOP:4076114
           range: string
+        category:
+          value: FINANCIAL_INSECURITY
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001118
-                slot_derivations:
-                  value_concept:
-                    populated_from: phv00086087
-                    value_mappings:
-                      '1': < $5,000
-                      '2': $5,000 - $7,999
-                      '3': $8,000 - $11,999
-                      '4': $12,000 - $15,999
-                      '5': $16,000 - $19,999
-                      '6': $20,000 - $24,999
-                      '7': $25,000 - $29,999
-                      '8': $30,000 - $34,999
-                      '9': $35,000 - $39,999
-                      '10': $40,000 - $49,999
-                      '11': $50,000 - $74,999
-                      '12': $75,000 - $99,999
-                      '13': '> $100,000'
-                  unit:
-                    value: USD
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001118
+              slot_derivations:
+                value_concept:
+                  populated_from: phv00086087
+                  value_mappings:
+                    '1': < $5,000
+                    '2': $5,000 - $7,999
+                    '3': $8,000 - $11,999
+                    '4': $12,000 - $15,999
+                    '5': $16,000 - $19,999
+                    '6': $20,000 - $24,999
+                    '7': $25,000 - $29,999
+                    '8': $30,000 - $34,999
+                    '9': $35,000 - $39,999
+                    '10': $40,000 - $49,999
+                    '11': $50,000 - $74,999
+                    '12': $75,000 - $99,999
+                    '13': '> $100,000'
+                unit:
+                  value: USD
+                  range: string
 - class_derivations:
-    Observation:
+    SdohObservation:
       populated_from: pht001121
       slot_derivations:
         associated_participant:
-          populated_from: phv00087070
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087070}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087070}) + ":MESA FAMILY")'
         age_at_observation:
@@ -123,73 +129,77 @@
         observation_type:
           value: OMOP:4076114
           range: string
+        category:
+          value: FINANCIAL_INSECURITY
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001121
-                slot_derivations:
-                  value_concept:
-                    populated_from: phv00087238
-                    value_mappings:
-                      '1': < $5,000
-                      '2': $5,000 - $7,999
-                      '3': $8,000 - $11,999
-                      '4': $12,000 - $15,999
-                      '5': $16,000 - $19,999
-                      '6': $20,000 - $24,999
-                      '7': $25,000 - $29,999
-                      '8': $30,000 - $34,999
-                      '9': $35,000 - $39,999
-                      '10': $40,000 - $49,999
-                      '11': $50,000 - $74,999
-                      '12': $75,000 - $99,999
-                      '13': '> $100,000'
-                  unit:
-                    value: USD
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001121
+              slot_derivations:
+                value_concept:
+                  populated_from: phv00087238
+                  value_mappings:
+                    '1': < $5,000
+                    '2': $5,000 - $7,999
+                    '3': $8,000 - $11,999
+                    '4': $12,000 - $15,999
+                    '5': $16,000 - $19,999
+                    '6': $20,000 - $24,999
+                    '7': $25,000 - $29,999
+                    '8': $30,000 - $34,999
+                    '9': $35,000 - $39,999
+                    '10': $40,000 - $49,999
+                    '11': $50,000 - $74,999
+                    '12': $75,000 - $99,999
+                    '13': '> $100,000'
+                unit:
+                  value: USD
+                  range: string
 - class_derivations:
-    Observation:
+    SdohObservation:
       populated_from: pht002105
       slot_derivations:
         associated_participant:
-          populated_from: phv00150369
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00150369}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00150369}) + ":MESA STRESS")'
         observation_type:
           value: OMOP:4076114
           range: string
+        category:
+          value: FINANCIAL_INSECURITY
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002105
-                slot_derivations:
-                  value_concept:
-                    populated_from: phv00160523
-                    value_mappings:
-                      '1': < $5,000
-                      '2': $5,000 - $7,999
-                      '3': $8,000 - $11,999
-                      '4': $12,000 - $15,999
-                      '5': $16,000 - $19,999
-                      '6': $20,000 - $24,999
-                      '7': $25,000 - $29,999
-                      '8': $30,000 - $34,999
-                      '9': $35,000 - $39,999
-                      '10': $40,000 - $49,999
-                      '11': $50,000 - $74,999
-                      '12': $75,000 - $99,999
-                      '13': '> $100,000'
-                  unit:
-                    value: USD
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht002105
+              slot_derivations:
+                value_concept:
+                  populated_from: phv00160523
+                  value_mappings:
+                    '1': < $5,000
+                    '2': $5,000 - $7,999
+                    '3': $8,000 - $11,999
+                    '4': $12,000 - $15,999
+                    '5': $16,000 - $19,999
+                    '6': $20,000 - $24,999
+                    '7': $25,000 - $29,999
+                    '8': $30,000 - $34,999
+                    '9': $35,000 - $39,999
+                    '10': $40,000 - $49,999
+                    '11': $50,000 - $74,999
+                    '12': $75,000 - $99,999
+                    '13': '> $100,000'
+                unit:
+                  value: USD
+                  range: string
 - class_derivations:
-    Observation:
+    SdohObservation:
       populated_from: pht003086
       slot_derivations:
         associated_participant:
-          populated_from: phv00174584
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         age_at_observation:
@@ -197,39 +207,41 @@
         observation_type:
           value: OMOP:4076114
           range: string
+        category:
+          value: FINANCIAL_INSECURITY
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003086
-                slot_derivations:
-                  value_concept:
-                    populated_from: phv00175446
-                    value_mappings:
-                      '1': < $5,000
-                      '2': $5,000 - $7,999
-                      '3': $8,000 - $11,999
-                      '4': $12,000 - $15,999
-                      '5': $16,000 - $19,999
-                      '6': $20,000 - $24,999
-                      '7': $25,000 - $29,999
-                      '8': $30,000 - $34,999
-                      '9': $35,000 - $39,999
-                      '10': $40,000 - $49,999
-                      '11': $50,000 - $74,999
-                      '12': $75,000 - $99,999
-                      '13': $100,000 - $124,999
-                      '14': $125,000 - $149,999
-                      '15': '> $150,000'
-                  unit:
-                    value: USD
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003086
+              slot_derivations:
+                value_concept:
+                  populated_from: phv00175446
+                  value_mappings:
+                    '1': < $5,000
+                    '2': $5,000 - $7,999
+                    '3': $8,000 - $11,999
+                    '4': $12,000 - $15,999
+                    '5': $16,000 - $19,999
+                    '6': $20,000 - $24,999
+                    '7': $25,000 - $29,999
+                    '8': $30,000 - $34,999
+                    '9': $35,000 - $39,999
+                    '10': $40,000 - $49,999
+                    '11': $50,000 - $74,999
+                    '12': $75,000 - $99,999
+                    '13': $100,000 - $124,999
+                    '14': $125,000 - $149,999
+                    '15': '> $150,000'
+                unit:
+                  value: USD
+                  range: string
 - class_derivations:
-    Observation:
+    SdohObservation:
       populated_from: pht003091
       slot_derivations:
         associated_participant:
-          populated_from: phv00176007
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00176007}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         age_at_observation:
@@ -237,39 +249,41 @@
         observation_type:
           value: OMOP:4076114
           range: string
+        category:
+          value: FINANCIAL_INSECURITY
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003091
-                slot_derivations:
-                  value_concept:
-                    populated_from: phv00176880
-                    value_mappings:
-                      '1': < $5,000
-                      '2': $5,000 - $7,999
-                      '3': $8,000 - $11,999
-                      '4': $12,000 - $15,999
-                      '5': $16,000 - $19,999
-                      '6': $20,000 - $24,999
-                      '7': $25,000 - $29,999
-                      '8': $30,000 - $34,999
-                      '9': $35,000 - $39,999
-                      '10': $40,000 - $49,999
-                      '11': $50,000 - $74,999
-                      '12': $75,000 - $99,999
-                      '13': $100,000 - $124,999
-                      '14': $125,000 - $149,999
-                      '15': '> $150,000'
-                  unit:
-                    value: USD
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003091
+              slot_derivations:
+                value_concept:
+                  populated_from: phv00176880
+                  value_mappings:
+                    '1': < $5,000
+                    '2': $5,000 - $7,999
+                    '3': $8,000 - $11,999
+                    '4': $12,000 - $15,999
+                    '5': $16,000 - $19,999
+                    '6': $20,000 - $24,999
+                    '7': $25,000 - $29,999
+                    '8': $30,000 - $34,999
+                    '9': $35,000 - $39,999
+                    '10': $40,000 - $49,999
+                    '11': $50,000 - $74,999
+                    '12': $75,000 - $99,999
+                    '13': $100,000 - $124,999
+                    '14': $125,000 - $149,999
+                    '15': '> $150,000'
+                unit:
+                  value: USD
+                  range: string
 - class_derivations:
-    Observation:
+    SdohObservation:
       populated_from: pht001119
       slot_derivations:
         associated_participant:
-          populated_from: phv00086258
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086258}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         age_at_observation:
@@ -277,28 +291,30 @@
         observation_type:
           value: OMOP:4076114
           range: string
+        category:
+          value: FINANCIAL_INSECURITY
+          range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001119
-                slot_derivations:
-                  value_concept:
-                    populated_from: phv00086569
-                    value_mappings:
-                      '1': < $5,000
-                      '2': $5,000 - $7,999
-                      '3': $8,000 - $11,999
-                      '4': $12,000 - $15,999
-                      '5': $16,000 - $19,999
-                      '6': $20,000 - $24,999
-                      '7': $25,000 - $29,999
-                      '8': $30,000 - $34,999
-                      '9': $35,000 - $39,999
-                      '10': $40,000 - $49,999
-                      '11': $50,000 - $74,999
-                      '12': $75,000 - $99,999
-                      '13': '> $100,000'
-                  unit:
-                    value: USD
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001119
+              slot_derivations:
+                value_concept:
+                  populated_from: phv00086569
+                  value_mappings:
+                    '1': < $5,000
+                    '2': $5,000 - $7,999
+                    '3': $8,000 - $11,999
+                    '4': $12,000 - $15,999
+                    '5': $16,000 - $19,999
+                    '6': $20,000 - $24,999
+                    '7': $25,000 - $29,999
+                    '8': $30,000 - $34,999
+                    '9': $35,000 - $39,999
+                    '10': $40,000 - $49,999
+                    '11': $50,000 - $74,999
+                    '12': $75,000 - $99,999
+                    '13': '> $100,000'
+                unit:
+                  value: USD
+                  range: string

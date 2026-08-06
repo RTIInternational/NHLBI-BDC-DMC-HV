@@ -1,0 +1,208 @@
+cohort: MESA
+known_issues:
+
+  # ── dm031c C1/C2/C3 FAIL ───────────────────────────────────────────────────
+  - checks: [C1, C2, C3]
+    variable_key: "dm031c"
+    yaml_file: diabetes.yaml
+    status: false_positive
+    root_cause: multi_concept_attribution
+    summary: >
+      dm031c maps a single source variable to multiple concepts
+      (MONDO:0005015 for codes 0/2/3; HP:0025691 for code 1). The C2 tool
+      tracks dm031c against HP:0025691 only, so codes 0/2/3 records appear
+      as N-loss (-82.8%). All source rows ARE harmonized correctly.
+    detail: >
+      dm031c (Diabetes Mellitus by 2003 ADA Fasting Criteria Algorithm)
+      encodes 4 categories: 0=NORMAL, 1=IFG (prediabetes), 2=UNTREATED
+      DIABETES, 3=TREATED DIABETES. diabetes.yaml creates one Condition
+      record per row, routing codes 0/2/3 to MONDO:0005015 (diabetes) and
+      code 1 to HP:0025691 (prediabetes/IFG).
+      C2 counts all dm031c source records (n~29,398) but only validates the
+      HP:0025691 harmonized pool (n~5,042 = code-1 rows). The 24,356 codes
+      0/2/3 rows are NOT lost -- they are harmonized as MONDO:0005015
+      Conditions (contributing to the diabet1 pool), but C2 counts them as
+      missing from dm031c. This is a structural limitation of C2's
+      per-concept attribution model for multi-concept source variables.
+    related_issues: [661]
+    confirmed_date: "2026-06-28"
+
+  # ── diabet1 C1/C2/C3 FAIL (multi_concept_attribution spillover) ───────────
+  - checks: [C1, C2, C3]
+    variable_key: "diabet1"
+    yaml_file: diabetes.yaml
+    status: false_positive
+    root_cause: multi_concept_attribution
+    summary: >
+      The C1 source crosswalk attributes all dm031c (phv00082652) rows to the
+      MONDO:0005015 (diabetes) pool. However, diabetes.yaml routes code-1 rows
+      (~5,042) to HP:0025691 (prediabetes/IFG) and only codes 0/2/3 to
+      MONDO:0005015. Those ~5,042 code-1 rows appear as N-loss (~10.7%) from
+      the diabet1 source pool, and C2/C3 flag the corresponding N loss and
+      missing-rate increase. All rows ARE harmonized; this is the same
+      structural multi-concept attribution limitation documented in the dm031c
+      entry above.
+    related_issues: [661]
+    confirmed_date: "2026-07-06"
+
+  # ── condition_MISSING_CONCEPT C2 FAIL ────────────────────────────────────
+  - checks: [C2]
+    variable_key: "condition_MISSING_CONCEPT"
+    yaml_file: diabetes.yaml
+    status: false_positive
+    root_cause: null_source_value_no_concept_match
+    summary: >
+      diabetes.yaml null-value rows produce Condition records with no
+      matched concept (condition_MISSING_CONCEPT). C2 flags these as
+      unmatched harmonized records. This is correct pipeline behavior:
+      null source rows produce a sentinel concept to avoid silent data loss.
+    confirmed_date: "2026-06-28"
+
+  # ── waistcm C4/C6 FAIL ───────────────────────────────────────────────────
+  - checks: [C4, C6]
+    variable_key: "waistcm1+waistcm2+waistcm3+waistcm4+waistcmf+waistcm5"
+    yaml_file: waist_circ.yaml
+    status: false_positive
+    root_cause: crosswalk_phv_collision
+    summary: >
+      phv00082687 (waistcm1) appears in both waist_circ.yaml (as
+      populated_from, producing OBA:1001085 circumference records ~98 cm)
+      and waist_hip.yaml (as numerator of waist÷hip ratio, producing
+      OMOP:4087501 records ~0.93). The C4/C6 crosswalk overwrites the
+      waist_circ PHV attribution with the waist_hip block, so the
+      harmonized pool for the waistcm source group resolves to ratio
+      records (mean ~0.93) rather than circumference records (mean ~99 cm).
+      Both YAML files are semantically correct; this is a crosswalk tool
+      limitation for PHVs shared across multiple YAML files.
+    confirmed_date: "2026-06-28"
+
+  # ── alcohol_servings C4/C6 FAIL ──────────────────────────────────────────
+  - checks: [C4, C6]
+    variable_key: "alcwk1c+rwinewk2+rwinewk3+rwinewk4+alcwkcf+rwinewk5"
+    yaml_file: alcohol_servings.yaml
+    status: false_positive
+    root_cause: null_exclusion_population_mismatch
+    summary: >
+      Source C4 mean (2.90 drinks/wk) is computed over all participants
+      including non-drinkers (null → 0). Harmonized records are only
+      produced for rows where the alcohol expression is non-null, so the
+      harmonized pool contains drinkers only (mean ~5.6 drinks/wk).
+      The harmonized values are correct; the apparent doubling is a
+      methodological artifact of C4 comparing different sub-populations.
+    confirmed_date: "2026-06-28"
+
+  # ── mcv5 C4/C6 SD FAIL ───────────────────────────────────────────────────
+  - checks: [C4, C6]
+    variable_key: "mcv5"
+    yaml_file: mcv.yaml
+    status: false_positive
+    root_cause: sentinel_value_clipping
+    summary: >
+      mcv.yaml clips values outside [50, 130] fL to None. Source SD of
+      32.70 fL indicates sentinel/flag values (e.g. -333, 999) in the raw
+      data that inflate the source distribution. After clipping, harmonized
+      SD of 5.93 fL is clinically realistic for MCV. Mean difference is
+      only 1.4%. The SD mismatch correctly reflects removal of non-physiologic
+      outliers; it is not a data loss issue.
+    confirmed_date: "2026-06-28"
+
+  # ── ldccamxavg5+ccafwm1 C6 SD borderline ─────────────────────────────────
+  - checks: [C6]
+    variable_key: "ldccamxavg5+ccafwm1"
+    yaml_file: carotid_imt.yaml
+    status: false_positive
+    root_cause: minor_rounding_or_population_difference
+    summary: >
+      SD mismatch is 0.2146 vs 0.2121 (d=0.0118, <1.2%). C4 passes.
+      The difference is within acceptable rounding/precision bounds and
+      does not indicate a meaningful data quality issue.
+    confirmed_date: "2026-06-28"
+
+  # ── ecglvh1c C2/C3/C7 FAIL (sparse PHV multi-block + label namespace) ─────
+  - checks: [C2, C3, C7]
+    variable_key: "ecglvh1c"
+    yaml_file: lvh_ekg.yaml
+    status: false_positive
+    root_cause: categorical_label_namespace_mismatch
+    summary: >
+      C2/C3: lvh_ekg.yaml uses 8 blocks across 4 source tables. Several PHVs
+      are sparse within their table (major51/phv00174569: n=74 in pht001116
+      n=6,429; lvhcv5/phv00218150: n=0 in pht003086 n=198;
+      lvhcv5/phv00176547: n=4,359 in pht003091 n=6,429). Null source values
+      generate null-status Condition records, producing 36.8% apparent N loss
+      (C2) and a 24.8pp missing-rate increase (C3). All measured LVH events
+      are harmonized correctly. This reflects the study design: not all
+      participants had an ECG/LVH measurement at every exam.
+      C7: source variables include flag-style PHVs (major51, phv00174569;
+      major55, phv00175080) whose category labels are text strings
+      ('LEFT VENTRICULAR HYPERTROPHY', '') and continuous PHVs (ecglvh1c,
+      ecglvh5c, lvhcv5) whose only listed category is 'NO' or 'NOLVH'.
+      Harmonized condition_status uses ABSENT/PRESENT. C7 cannot reconcile
+      these namespaces; this is a structural limitation, not a data error.
+    confirmed_date: "2026-07-06"
+
+  # ── dm032c–dm035c C2/C3 FAIL (multi_concept_attribution, Exams 2–5) ───────
+  - checks: [C2, C3]
+    variable_key: "dm032c"
+    yaml_file: diabetes.yaml
+    status: false_positive
+    root_cause: multi_concept_attribution
+    summary: >
+      Same structure as dm031c: diabetes.yaml routes dm032c/dm033c/dm034c/
+      dm03fc/dm035c code-1 rows (IFG/prediabetes) to HP:0025691 and codes
+      0/2/3 to MONDO:0005015. C2 tracks the exam 2-5 source pool against
+      HP:0025691 only, so the majority of rows (codes 0/2/3 → MONDO) appear
+      as N-loss. C3 flags the corresponding missing-rate increase. All source
+      rows are harmonized correctly.
+    related_issues: [661]
+    confirmed_date: "2026-07-06"
+
+  # ── hipcm C4/C6 FAIL (crosswalk PHV collision) ──────────────────────────
+  - checks: [C4, C6]
+    variable_key: "hipcm1+hipcm2+hipcm3+hipcm4+hipcmf+hipcm5"
+    yaml_file: waist_hip.yaml
+    status: false_positive
+    root_cause: crosswalk_phv_collision
+    summary: >
+      Hip circumference PHVs (phv00082688, phv00084489, etc.) appear in both
+      waist_circ.yaml (OBA:1001085, as raw circumference ~105 cm) and
+      waist_hip.yaml (OMOP:4087501, as denominator of waist÷hip ratio ~0.93).
+      The C4/C6 crosswalk resolves the hipcm source group to the waist-hip
+      ratio pool (mean ~0.93) instead of the circumference pool (mean ~105 cm),
+      producing a spurious 99% mean mismatch. The OBA:1001085 hip circumference
+      PASSES C4 correctly (mean preserved ~105 cm). Same root cause as the
+      waistcm entry above — PHVs shared across two YAML files with different
+      harmonized concepts.
+    confirmed_date: "2026-07-16"
+
+  # ── fgfruit5c C4/C6 FAIL (crosswalk source scope mismatch) ──────────────
+  - checks: [C4, C6]
+    variable_key: "fgfruit5c"
+    yaml_file: fruit_serving.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      fruit_serving.yaml computes weekly fruit servings as the sum of two
+      sub-component PHVs (phv00218767 + phv00218768) * 7. The crosswalk
+      maps this PHV pair to the source summary variable fgfruit5c (a
+      pre-computed composite, units: servings/day, mean ~1.96). The
+      harmonized mean (~17.2 servings/week) is correct; the C4/C6 mismatch
+      reflects the different aggregation scope (sum of raw components * 7
+      vs. the pre-built daily summary). The harmonized data is semantically
+      correct; this is a crosswalk tool limitation.
+    confirmed_date: "2026-07-06"
+
+  # ── fgvgreenleafy5c C4/C6 FAIL (crosswalk source scope mismatch) ─────────
+  - checks: [C4, C6]
+    variable_key: "fgvgreenleafy5c"
+    yaml_file: vege_serving.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      vege_serving.yaml computes weekly green leafy vegetable servings as
+      the sum of 7 sub-component PHVs (phv00218787 through phv00218793) * 7.
+      The crosswalk maps to fgvgreenleafy5c (pre-computed daily summary,
+      mean ~0.24). The harmonized mean (~18.5 servings/week) is correct;
+      the mismatch is the same sum-of-components vs. daily-summary scope
+      difference as fgfruit5c. The harmonized data is semantically correct.
+    confirmed_date: "2026-07-06"

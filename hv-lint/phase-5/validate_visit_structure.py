@@ -41,8 +41,12 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
+from _derivations import iter_nested_class_derivs  # noqa: E402
 
 import yaml
+
+
+
 
 # -- Severity -----------------------------------------------------------------
 
@@ -503,41 +507,34 @@ def _scan_nested_visit_refs(
     for slot_name, slot_def in class_def.get("slot_derivations", {}).items():
         if not isinstance(slot_def, dict):
             continue
-        obj_derivs = slot_def.get("object_derivations", [])
-        if not isinstance(obj_derivs, list):
-            continue
-        for obj in obj_derivs:
-            if not isinstance(obj, dict):
+        for nested_name, nested_def in iter_nested_class_derivs(slot_def):
+            if not isinstance(nested_def, dict):
                 continue
-            nested_classes = obj.get("class_derivations", {})
-            for nested_name, nested_def in nested_classes.items():
-                if not isinstance(nested_def, dict):
-                    continue
-                nested_slots = nested_def.get("slot_derivations", {})
-                visit_slot = nested_slots.get("associated_visit", {})
-                if not isinstance(visit_slot, dict):
-                    continue
-                if "value" in visit_slot or "expr" in visit_slot:
-                    visit_id = None
-                    visit_labels_set: set[str] = set()
-                    is_dynamic = False
-                    if "value" in visit_slot:
-                        visit_id = str(visit_slot["value"])
-                        visit_labels_set = {visit_id}
-                    elif "expr" in visit_slot:
-                        labels, is_dyn = extract_visit_labels_from_expr(
-                            str(visit_slot["expr"])
-                        )
-                        visit_labels_set = labels
-                        is_dynamic = is_dyn
-                    refs.append(VisitReference(
-                        file=file,
-                        block_index=block_idx,
-                        class_name=f"{parent_class}.{slot_name}.{nested_name}",
-                        visit_id=visit_id,
-                        visit_labels=visit_labels_set,
-                        is_dynamic=is_dynamic,
-                    ))
+            nested_slots = nested_def.get("slot_derivations", {})
+            visit_slot = nested_slots.get("associated_visit", {})
+            if not isinstance(visit_slot, dict):
+                continue
+            if "value" in visit_slot or "expr" in visit_slot:
+                visit_id = None
+                visit_labels_set: set[str] = set()
+                is_dynamic = False
+                if "value" in visit_slot:
+                    visit_id = str(visit_slot["value"])
+                    visit_labels_set = {visit_id}
+                elif "expr" in visit_slot:
+                    labels, is_dyn = extract_visit_labels_from_expr(
+                        str(visit_slot["expr"])
+                    )
+                    visit_labels_set = labels
+                    is_dynamic = is_dyn
+                refs.append(VisitReference(
+                    file=file,
+                    block_index=block_idx,
+                    class_name=f"{parent_class}.{slot_name}.{nested_name}",
+                    visit_id=visit_id,
+                    visit_labels=visit_labels_set,
+                    is_dynamic=is_dynamic,
+                ))
 
 
 # -- Checks -------------------------------------------------------------------

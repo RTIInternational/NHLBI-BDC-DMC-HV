@@ -3,42 +3,44 @@
       populated_from: pht008741
       slot_derivations:
         associated_participant:
-          populated_from: phv00401710
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401710}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401710}) + ":JHS Exam 2")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154347
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008741
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401721
-                  unit:
-                    value: "mg/g"
+          class_derivations:
+          - Quantity:
+              populated_from: pht008741
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00401721
+                unit:
+                  value: "mg/g"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht008742
       slot_derivations:
         associated_participant:
-          populated_from: phv00401725
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401725}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401725}) + ":JHS Exam 1")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4154347
+        method_type:
+          value: "calculated"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008742
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00401740
-                  unit:
-                    value: "mg/g"
+          class_derivations:
+          - Quantity:
+              populated_from: pht008742
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00401740
+                unit:
+                  value: "mg/g"

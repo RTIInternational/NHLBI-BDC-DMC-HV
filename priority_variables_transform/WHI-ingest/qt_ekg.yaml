@@ -3,20 +3,23 @@
       populated_from: pht002118
       slot_derivations:
         associated_participant:
-          populated_from: phv00154925
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00154925}) + ":WHI")'
         associated_visit:
           expr: "case(({phv00154926} == 1, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI SCREENING')), ({phv00154926} == 2 and {phv00154927} == 1, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI SEMI-ANNUAL VISIT YEAR 1')), ({phv00154926} == 3 and {phv00154927} == 1, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 1')), ({phv00154926} == 3 and {phv00154927} == 2, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 2')), ({phv00154926} == 3 and {phv00154927} == 3, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 3')), ({phv00154926} == 3 and {phv00154927} == 4, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 4')), ({phv00154926} == 3 and {phv00154927} == 5, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 5')), ({phv00154926} == 3 and {phv00154927} == 6, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 6')), ({phv00154926} == 3 and {phv00154927} == 7, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 7')), ({phv00154926} == 3 and {phv00154927} == 8, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 8')), ({phv00154926} == 3 and {phv00154927} == 9, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 9')), ({phv00154926} == 3 and {phv00154927} == 10, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 10')), ({phv00154926} == 3 and {phv00154927} == 11, uuid5('https://w3id.org/bdchm/Visit', str({phv00154925}) + ':WHI YEAR 11')), (True, None))"
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
           value: OMOP:4273023
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+        method_type:
+          value: "Electrocardiogram"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002118
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00155366
-                  unit:
-                    value: "ms"
+          class_derivations:
+          - Quantity:
+              populated_from: pht002118
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00155366
+                unit:
+                  value: "ms"

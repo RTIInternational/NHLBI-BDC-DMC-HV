@@ -3,7 +3,7 @@
       populated_from: pht001495
       slot_derivations:
         associated_participant:
-          populated_from: phv00109768
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00109768}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109768}) + ":CHS YEAR 9")'
         age_at_observation:
@@ -12,25 +12,24 @@
           value: OBA:2045443
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001495
-                slot_derivations:
-                  value_concept:
-                    populated_from: phv00110401
-                    value_mappings:
-                      '0': '<90'
-                      '1': '>90'
-                  unit:
-                    value: '%'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001495
+              slot_derivations:
+                value_concept:
+                  populated_from: phv00110401
+                  value_mappings:
+                    '0': '<90'
+                    '1': '>90'
+                unit:
+                  value: '%'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001495
       slot_derivations:
         associated_participant:
-          populated_from: phv00109768
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00109768}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109768}) + ":CHS YEAR 9")'
         age_at_observation:
@@ -39,16 +38,15 @@
           value: OBA:2045443
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001495
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00110402
-                  unit:
-                    value: '%'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001495
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00110402
+                unit:
+                  value: '%'
+                  range: string
         method_type:
           value: baseline
           range: string
@@ -57,7 +55,7 @@
       populated_from: pht001495
       slot_derivations:
         associated_participant:
-          populated_from: phv00109768
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00109768}) + ":CHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109768}) + ":CHS YEAR 9")'
         age_at_observation:
@@ -66,16 +64,15 @@
           value: OBA:2045443
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001495
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00110418
-                  unit:
-                    value: '%'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001495
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00110418
+                unit:
+                  value: '%'
+                  range: string
         method_type:
           value: exercise
           range: string

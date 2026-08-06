@@ -3,62 +3,98 @@
       populated_from: pht010064
       slot_derivations:
         associated_participant:
-          populated_from: phv00429460
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00429460}) + ":LTRC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00429460}) + ":LTRC Baseline")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht010064
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4241837
-                  method_type:
-                    value: post-bronchodilator spirometry
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht010064
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00429464
-                            unit:
-                              value: L
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht010064
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4176265
-                  method_type:
-                    value: post-bronchodilator spirometry
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht010064
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00429465
-                            unit:
-                              value: L
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht010064
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3011505
-                  method_type:
-                    value: post-bronchodilator spirometry
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht010064
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00429466
-                            unit:
-                              value: '%'
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht010064
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4241837
+                body_position:
+                  value: SITTING_POSITION
+                method_type:
+                  value: spirometry
+                context:
+                  class_derivations:
+                    Context:
+                      slot_derivations:
+                        activity:
+                          class_derivations:
+                            Activity:
+                              slot_derivations:
+                                activity_type:
+                                  value: BRONCHODILATOR_MEDICATION_USE
+                        relative_timing:
+                          value: AFTER
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht010064
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00429464
+                        unit:
+                          value: L
+          - MeasurementObservation:
+              populated_from: pht010064
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4176265
+                body_position:
+                  value: SITTING_POSITION
+                method_type:
+                  value: spirometry
+                context:
+                  class_derivations:
+                    Context:
+                      slot_derivations:
+                        activity:
+                          class_derivations:
+                            Activity:
+                              slot_derivations:
+                                activity_type:
+                                  value: BRONCHODILATOR_MEDICATION_USE
+                        relative_timing:
+                          value: AFTER
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht010064
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00429465
+                        unit:
+                          value: L
+          - MeasurementObservation:
+              populated_from: pht010064
+              slot_derivations:
+                observation_type:
+                  value: OMOP:3011505
+                body_position:
+                  value: SITTING_POSITION
+                method_type:
+                  value: calculated
+                context:
+                  class_derivations:
+                    Context:
+                      slot_derivations:
+                        activity:
+                          class_derivations:
+                            Activity:
+                              slot_derivations:
+                                activity_type:
+                                  value: BRONCHODILATOR_MEDICATION_USE
+                        relative_timing:
+                          value: AFTER
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht010064
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00429466
+                        unit:
+                          value: '%'

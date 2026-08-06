@@ -3,18 +3,23 @@
       populated_from: pht004061
       slot_derivations:
         associated_participant:
-          populated_from: phv00204606
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00204606}) + ":ARIC")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204606}) + ":ARIC Hospital Form")'
         observation_type:
           value: OMOP:43021859
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+        body_site:
+          value: "Right carotid artery"
+        method_type:
+          value: "carotid ultrasound"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004061
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00204552
-                  unit:
-                    value: "%"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004061
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00204552
+                unit:
+                  value: "%"

@@ -1,0 +1,89 @@
+# CARDIA Variable Mapping Manifest
+# Single source of truth for CARDIA harmonization versioning
+# This file evolves with each CARDIA data version update
+
+# =============================================================================
+# CURRENT VERSION (Active Work)
+# =============================================================================
+current_version:
+  study_id: "phs000285"
+  study_name: "Coronary Artery Risk Development in Young Adults (CARDIA)"
+  data_version: "v3.p2"
+  last_updated: "2026-02-20"
+  
+  # dbGaP Documentation Links (AI tooling can reference these directly)
+  dbgap_references:
+    study_homepage: 
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000285.v3.p2"
+      description: "Main study page with metadata, documentation, and access info"
+      
+    variable_dictionary:
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/GetListOfAllObjects.cgi?study_id=phs000285.v3.p2&object_type=variable"
+      description: "Complete listing of all variables with definitions and metadata"
+      cached_file: "data/dbgap-cache/cardia/variables.xml"
+      
+    study_documents:
+      url: "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/GetListOfAllObjects.cgi?study_id=phs000285.v3.p2&object_type=document"
+      description: "Study protocols, data collection procedures, codebooks"
+      cached_file: "data/dbgap-cache/cardia/documents.xml"
+
+    pheno_variable_summaries:
+      ftp_url: "https://ftp.ncbi.nlm.nih.gov/dbgap/studies/phs000285/phs000285.v3.p2/pheno_variable_summaries/"
+      description: "Per-dataset data dictionaries (XML) with variable IDs, descriptions, types, units, coded values"
+      cached_dir: "data/dbgap-cache/cardia/pheno_variable_summaries/"
+      file_count: 328
+
+    gap_exchange:
+      ftp_url: "https://ftp.ncbi.nlm.nih.gov/dbgap/studies/phs000285/phs000285.v3.p2/GapExchange_phs000285.v3.p2.xml"
+      description: "Study-level GapExchange XML with dataset inventory and study structure"
+      cached_file: "data/dbgap-cache/cardia/GapExchange_phs000285.v3.p2.xml"
+  
+  # Current harmonization work
+  harmonization:
+    bdchm_schema: "v0.1.0"
+    transform_version: "CARDIA-2026.02.1"
+    repository_location: "https://github.com/RTIInternational/NHLBI-BDC-DMC-HV/tree/main/priority_variables_transform/CARDIA-ingest"    
+    
+  # Status tracking
+  status:
+    mapping_progress: "planned"
+    lead: "TBD"
+    started: "TBD"
+
+# =============================================================================
+# VERSION HISTORY (Previous Versions)
+# =============================================================================
+version_history:
+  # Previous CARDIA versions will be added here as data updates occur
+  # Pattern: move current_version to history when new version arrives
+  
+# =============================================================================
+# STUDY-SPECIFIC NOTES
+# =============================================================================
+study_characteristics:
+  focus: "Young adult cardiovascular risk development (18-30 years at baseline)"
+  design: "Longitudinal cohort with long-term follow-up"
+  population: "Multi-ethnic, community-based young adult cohort"
+  key_strengths: 
+    - "Early adult baseline cardiovascular measures"
+    - "Long-term cardiovascular risk trajectory data"
+    - "Young adult to mid-life cardiovascular development"
+    
+harmonization_considerations:
+  - "Age-specific measurement protocols different from older cohorts"
+  - "Early-stage risk factors vs. established cardiovascular disease"
+  - "Longitudinal design requires careful visit structure mapping"
+  - "Unique young adult perspective complements older cohort studies"
+
+# Missing Data Convention (confirmed 2026-02-26)
+# See: memory/CARDIA-Missing-Data-Assessment.md
+missing_value_conventions:
+    - code: "M"
+      meaning: "Missing / Not Ascertained"
+      scope: "Study-wide, predominantly in self-report and medical history questionnaire variables"
+      numeric_code_assigned: false
+      prevalence: "57 of 134 variables in A4F09GEN; also confirmed in A4F01, A4F02 datasets"
+      absent_from: "Laboratory-measured variables (e.g., A4CHEM)"
+      handling: "Convert M → null before value mapping or type casting"
+      distinction_from_nulls: "dbGaP nulls = skip-logic (structurally absent); M = operationally missing (question reached but not answered)"
+      documentation_gap: "dbGaP refers to external CARDIA codebook at cardia.dopm.uab.edu not submitted to dbGaP"

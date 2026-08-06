@@ -3,7 +3,7 @@
       populated_from: pht001963
       slot_derivations:
         associated_participant:
-          populated_from: phv00127670
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00127670}) + ":JHS")'
         age_at_condition_start:
           expr: case(({phv00127708} == 'Yes', {phv00127710} * 365))
         associated_visit:
@@ -17,7 +17,7 @@
             'Yes': HISTORICAL
             Dont know: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
         associated_evidence:
           value: "Medical History"
         relationship_to_participant:
@@ -27,7 +27,7 @@
       populated_from: pht001967
       slot_derivations:
         associated_participant:
-          populated_from: phv00128084
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00128084}) + ":JHS")'
         age_at_condition_start:
           expr: case(({phv00128091} == 'Yes', {phv00128092} * 365))
         associated_visit:
@@ -51,7 +51,7 @@
       populated_from: pht008729
       slot_derivations:
         associated_participant:
-          populated_from: phv00401078
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401078}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
         condition_concept:
@@ -62,7 +62,7 @@
             'No': ABSENT
             'Yes': HISTORICAL
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
         associated_evidence:
           value: "Analysis derived"
         relationship_to_participant:
@@ -72,7 +72,7 @@
       populated_from: pht008730
       slot_derivations:
         associated_participant:
-          populated_from: phv00401273
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401273}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401273}) + ":JHS Exam 2")'
         condition_concept:
@@ -83,7 +83,7 @@
             'No': ABSENT
             'Yes': HISTORICAL
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
         associated_evidence:
           value: "Analysis derived"
         relationship_to_participant:
@@ -93,7 +93,7 @@
       populated_from: pht008731
       slot_derivations:
         associated_participant:
-          populated_from: phv00401370
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401370}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
         condition_concept:
@@ -104,7 +104,7 @@
             'No': ABSENT
             'Yes': HISTORICAL
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
         associated_evidence:
           value: "Analysis derived"
         relationship_to_participant:
@@ -114,9 +114,11 @@
       populated_from: pht008753
       slot_derivations:
         associated_participant:
-          populated_from: phv00402777
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00402777}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00402777}) + ":JHS Exam 2")'
+        age_at_condition_start:
+          expr: case(({phv00402799} == '1', {phv00402800} * 365))
         condition_concept:
           value: MONDO:0005068
         condition_status:
@@ -137,9 +139,11 @@
       populated_from: pht008764
       slot_derivations:
         associated_participant:
-          populated_from: phv00403058
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00403058}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403058}) + ":JHS Exam 2")'
+        age_at_condition_start:
+          expr: case(({phv00403095} == 'Yes', {phv00403097} * 365))
         condition_concept:
           value: MONDO:0005068
         condition_status:

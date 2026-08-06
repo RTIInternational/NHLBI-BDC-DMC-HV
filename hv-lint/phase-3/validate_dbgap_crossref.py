@@ -33,8 +33,12 @@ from pathlib import Path
 # Path resolution -- works in both control center and HV repo
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
+from _derivations import iter_nested_class_derivs  # noqa: E402
 
 import yaml
+
+
+
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -55,8 +59,18 @@ COHORT_TO_CACHE_KEY: dict[str, str] = {
     "LTRC": "ltrc",
 }
 
-# Files to skip entirely (reset -- start fresh for Phase 3 restructuring)
+# Files to skip entirely. Each entry suppresses cross-reference checks for one
+# file while a tracked data issue is resolved -- remove the entry once fixed.
 KNOWN_ISSUES: dict[str, str] = {}
+# FHS person.yaml death/vital-status block references accessions that do not
+# exist in phs000007.v35: cause-of-death PHVs (phv00030512-516) do not match
+# pht000094 (real vars are UCOD=phv00021941, COD1-9), and vital-status/age-at-
+# death are mapped to pht002075, which is actually a neuropathology table.
+# Needs curation-team rework to the correct FHS survival/cause-of-death tables.
+KNOWN_ISSUES["priority_variables_transform/FHS-ingest/person.yaml"] = (
+    "FHS death/cause-of-death mappings reference accessions absent from "
+    "phs000007.v35 -- see #594"
+)
 
 SEVERITY_RANK = {"CRITICAL": 5, "ERROR": 4, "HIGH": 3, "WARNING": 2, "INFO": 1}
 
@@ -230,30 +244,23 @@ def extract_slot_refs(
                     for m in PHV_STRICT_RE.finditer(k):
                         _add_ref(m.group(), f"expression_to_value_mappings in {slot_name} on {class_name}")
 
-        # Recurse into object_derivations
-        od_list = slot_def.get("object_derivations") or []
-        if not isinstance(od_list, list):
-            od_list = []
-        for od in od_list:
-            if isinstance(od, dict) and "class_derivations" in od:
-                nested_cd = od["class_derivations"]
-                if not isinstance(nested_cd, dict):
-                    continue
-                for nested_cls, nested_def in nested_cd.items():
-                    if isinstance(nested_def, dict):
-                        nested_slots = nested_def.get("slot_derivations")
-                        nested_slots = nested_slots if isinstance(nested_slots, dict) else {}
-                        nested_phvs, nested_joins = extract_slot_refs(nested_slots, nested_cls)
-                        for ref in nested_phvs:
-                            if ref not in phv_refs_seen:
-                                phv_refs_seen.add(ref)
-                                phv_refs.append(ref)
-                        join_phts.update(nested_joins)
+        # Recurse into nested class derivations (list-based or legacy
+        # object_derivations)
+        for nested_cls, nested_def in iter_nested_class_derivs(slot_def):
+            if isinstance(nested_def, dict):
+                nested_slots = nested_def.get("slot_derivations")
+                nested_slots = nested_slots if isinstance(nested_slots, dict) else {}
+                nested_phvs, nested_joins = extract_slot_refs(nested_slots, nested_cls)
+                for ref in nested_phvs:
+                    if ref not in phv_refs_seen:
+                        phv_refs_seen.add(ref)
+                        phv_refs.append(ref)
+                join_phts.update(nested_joins)
 
-                        # Nested class populated_from PHT
-                        npht = nested_def.get("populated_from")
-                        if isinstance(npht, str) and PHT_STRICT_RE.fullmatch(npht):
-                            join_phts.add(npht)
+                # Nested class populated_from PHT
+                npht = nested_def.get("populated_from")
+                if isinstance(npht, str) and PHT_STRICT_RE.fullmatch(npht):
+                    join_phts.add(npht)
 
     return phv_refs, join_phts
 
@@ -286,9 +293,30 @@ def _collect_accession_strings(block: dict) -> list[tuple[str, str]]:
             for m in PHV_LOOSE_RE.finditer(pf):
                 results.append((m.group(), f"populated_from on {class_name}"))
 
-        # Joins populated_from (PHT)
+        # Joins -- linkml-map defines `joins` as Dict[str, AliasedClass]
+        # where the key is the alias of the joined class (the PHT in this
+        # repo's convention). Also accept the alternate list form where
+        # the PHT is carried in each item's `populated_from`.
         raw_joins = class_def.get("joins")
-        if isinstance(raw_joins, list):
+        if isinstance(raw_joins, dict):
+            for k, v in raw_joins.items():
+                if isinstance(k, str):
+                    for m in PHT_LOOSE_RE.finditer(k):
+                        results.append((m.group(), f"joins on {class_name}"))
+                if isinstance(v, dict):
+                    jpf = v.get("populated_from")
+                    if isinstance(jpf, str):
+                        for m in PHT_LOOSE_RE.finditer(jpf):
+                            results.append((m.group(), f"joins on {class_name}"))
+                    # Join keys carry PHV accessions (source_key / lookup_key).
+                    for key_field in ("source_key", "lookup_key"):
+                        kv = v.get(key_field)
+                        if isinstance(kv, str):
+                            for m in PHV_LOOSE_RE.finditer(kv):
+                                results.append(
+                                    (m.group(), f"joins {key_field} on {class_name}")
+                                )
+        elif isinstance(raw_joins, list):
             for j in raw_joins:
                 if isinstance(j, dict):
                     jpf = j.get("populated_from")
@@ -331,23 +359,17 @@ def _collect_slot_accessions(
                         for m in PHV_LOOSE_RE.finditer(k):
                             results.append((m.group(), f"{key_name} in {slot_name} on {class_name}"))
 
-        # Recurse into object_derivations
-        od_list = slot_def.get("object_derivations") or []
-        if not isinstance(od_list, list):
-            od_list = []
-        for od in od_list:
-            if isinstance(od, dict) and "class_derivations" in od:
-                nested_cd = od["class_derivations"]
-                if isinstance(nested_cd, dict):
-                    for nested_cls, nested_def in nested_cd.items():
-                        if isinstance(nested_def, dict):
-                            npf = nested_def.get("populated_from")
-                            if isinstance(npf, str):
-                                for m in PHT_LOOSE_RE.finditer(npf):
-                                    results.append((m.group(), f"nested populated_from on {nested_cls}"))
-                            nested_slots = nested_def.get("slot_derivations")
-                            if isinstance(nested_slots, dict):
-                                results.extend(_collect_slot_accessions(nested_slots, nested_cls))
+        # Recurse into nested class derivations (list-based or legacy
+        # object_derivations)
+        for nested_cls, nested_def in iter_nested_class_derivs(slot_def):
+            if isinstance(nested_def, dict):
+                npf = nested_def.get("populated_from")
+                if isinstance(npf, str):
+                    for m in PHT_LOOSE_RE.finditer(npf):
+                        results.append((m.group(), f"nested populated_from on {nested_cls}"))
+                nested_slots = nested_def.get("slot_derivations")
+                if isinstance(nested_slots, dict):
+                    results.extend(_collect_slot_accessions(nested_slots, nested_cls))
     return results
 
 
@@ -403,12 +425,11 @@ def check_block(
         raw_pht = class_def.get("populated_from", "")
         class_pht = raw_pht if isinstance(raw_pht, str) and PHT_STRICT_RE.fullmatch(raw_pht) else ""
         raw_joins = class_def.get("joins")
-        has_joins = isinstance(raw_joins, list)
-        if raw_joins is not None and not has_joins:
+        if raw_joins is not None and not isinstance(raw_joins, (dict, list)):
             findings.append(Finding(
                 rel_path, block_idx, "3.0", "ERROR",
                 f"{class_name} joins is "
-                f"{type(raw_joins).__name__}, expected list"
+                f"{type(raw_joins).__name__}, expected dict or list"
             ))
         slot_derivs = class_def.get("slot_derivations")
         if not isinstance(slot_derivs, dict):
@@ -420,10 +441,29 @@ def check_block(
                 ))
             slot_derivs = {}
 
-        # Collect join PHTs for cross-table detection
+        # Collect join PHTs for cross-table detection. linkml-map's
+        # canonical form is Dict[str, AliasedClass] keyed by the joined
+        # class alias (the PHT in this repo). The list form carries the
+        # PHT in each item's populated_from.
         join_phts: set[str] = set()
-        if has_joins:
-            for j in class_def["joins"]:
+        join_phvs: list[tuple[str, str]] = []
+        if isinstance(raw_joins, dict):
+            for k, v in raw_joins.items():
+                if isinstance(k, str) and PHT_STRICT_RE.fullmatch(k):
+                    join_phts.add(k)
+                if isinstance(v, dict):
+                    jpht = v.get("populated_from", "")
+                    if isinstance(jpht, str) and PHT_STRICT_RE.fullmatch(jpht):
+                        join_phts.add(jpht)
+                    for key_field in ("source_key", "lookup_key"):
+                        kv = v.get(key_field)
+                        if isinstance(kv, str):
+                            for m in PHV_STRICT_RE.finditer(kv):
+                                join_phvs.append(
+                                    (m.group(), f"{key_field} in joins on {class_name}")
+                                )
+        elif isinstance(raw_joins, list):
+            for j in raw_joins:
                 if isinstance(j, dict):
                     jpht = j.get("populated_from", "")
                     if isinstance(jpht, str) and PHT_STRICT_RE.fullmatch(jpht):
@@ -436,6 +476,14 @@ def check_block(
                 f"PHT '{class_pht}' on {class_name} not found in "
                 f"dbGaP variable index"
             ))
+
+        # -- Check 3.3: PHV existence for join keys (source_key / lookup_key) --
+        for phv, context in join_phvs:
+            if phv not in dbgap.phv_to_pht:
+                findings.append(Finding(
+                    rel_path, block_idx, "3.3", "ERROR",
+                    f"PHV '{phv}' ({context}) not found in dbGaP index"
+                ))
 
         # Extract PHV references from slot derivations
         phv_refs, nested_join_phts = extract_slot_refs(slot_derivs, class_name)
