@@ -242,7 +242,20 @@ def check_c7_categorical_distribution(
     # or Python reprs such as "['OMOP:8527']" / "('OMOP:8527',)".
     normalized_out: dict[str, Any] = {}
     for ok, stats in harmonized_dist.items():
-        normalized_out[normalize_category_key(ok)] = stats
+        norm_ok = normalize_category_key(ok)
+        if norm_ok in normalized_out:
+            # Two representations of the same category (e.g. "OMOP:8527" and
+            # "['OMOP:8527']") collapse together — sum their n and pct rather
+            # than letting the last writer win, which would silently discard
+            # the earlier bucket's mass and could mask a real distribution
+            # discrepancy as a match. Mirrors the source-side handling above.
+            existing = normalized_out[norm_ok]
+            existing["n"] = int(existing.get("n", 0) or 0) + int(stats.get("n", 0) or 0)
+            existing["pct"] = round(
+                float(existing.get("pct", 0) or 0) + float(stats.get("pct", 0) or 0), 2
+            )
+        else:
+            normalized_out[norm_ok] = dict(stats)
     harmonized_dist = normalized_out
 
     src_keys = set(src_dist)

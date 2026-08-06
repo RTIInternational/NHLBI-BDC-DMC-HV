@@ -61,6 +61,12 @@ def check_c0_entity_file_coverage(harmonized: dict) -> list[CheckResult]:
                 empty.append((cg_label, st.get("error", "")))
             elif status == "missing":
                 missing.append(cg_label)
+            else:
+                # Unrecognized or absent status literal — we cannot confirm the
+                # file loaded, so record it as a problem group rather than
+                # letting it drop silently (which would let a broken run read
+                # as PASS).
+                empty.append((cg_label, f"unrecognized status {status!r}"))
 
         problem_groups = empty + [(lbl, "") for lbl in missing]
         if not problem_groups:
@@ -110,7 +116,7 @@ def check_c0_entity_file_coverage(harmonized: dict) -> list[CheckResult]:
 
         results.append(CheckResult("C0", f"{entity}_file_coverage", "FAIL", msg, detail))
 
-    if not results and cg_status:
+    if not results and all_entities:
         # All entities loaded in all consent groups — emit a single PASS summary.
         n_groups = len(cg_status)
         all_entities_list = sorted(all_entities)
@@ -119,6 +125,16 @@ def check_c0_entity_file_coverage(harmonized: dict) -> list[CheckResult]:
             f"All {len(all_entities_list)} entity type(s) loaded successfully in all "
             f"{n_groups} consent group(s).",
             {"entities": all_entities_list, "consent_groups": sorted(cg_status.keys())},
+        ))
+    elif not results and not all_entities:
+        # consent_group_file_status is present but records no entities in any
+        # group — a total-absence signature we cannot interpret as success.
+        # SKIP (not PASS) so an empty coverage map never reads as "all loaded".
+        results.append(CheckResult(
+            "C0", "entity_file_coverage", "SKIP",
+            f"consent_group_file_status present for {len(cg_status)} consent group(s) "
+            "but lists no entity files — coverage cannot be verified.",
+            {"consent_groups": sorted(cg_status.keys())},
         ))
 
     return results

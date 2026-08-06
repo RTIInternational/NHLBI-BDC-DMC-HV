@@ -82,6 +82,35 @@ class TestC13UuidFormat(unittest.TestCase):
         self.assertIn("Condition", r.message)
         self.assertIn("MeasurementObservation", r.message)
 
+    def test_skip_when_no_rows_to_validate(self) -> None:
+        """uuid_validation present but every entity has 0 rows -> SKIP, not a
+        false 'all valid' PASS on zero validated values."""
+        harmonized = {
+            "uuid_validation": {
+                "Condition": _uuid_stats("Condition", n_total=0),
+                "MeasurementObservation": _uuid_stats("MeasurementObservation", n_total=0),
+            }
+        }
+        results = check_c13_uuid_format(harmonized)
+        self.assertEqual(len(results), 1)
+        r = results[0]
+        self.assertEqual(r.check_id, "C13")
+        self.assertEqual(r.status, "SKIP")
+        self.assertIn("0 total rows", r.message)
+
+    def test_pass_when_some_rows_present_even_if_one_entity_empty(self) -> None:
+        """A zero-row entity alongside a populated, clean entity still PASSes —
+        the guard only blocks the all-empty case."""
+        harmonized = {
+            "uuid_validation": {
+                "Condition": _uuid_stats("Condition", n_total=0),
+                "MeasurementObservation": _uuid_stats("MeasurementObservation", n_total=300),
+            }
+        }
+        results = check_c13_uuid_format(harmonized)
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].status, "PASS")
+
     def test_fail_on_invalid_participant_uuid(self) -> None:
         harmonized = {
             "uuid_validation": {

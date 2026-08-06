@@ -226,6 +226,37 @@ class TestC15Pass(unittest.TestCase):
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0].status, "PASS")
 
+    def test_pass_claims_yaml_spec_only_when_spec_was_derived(self) -> None:
+        """When yaml_dir yields expected columns, the PASS claims YAML-spec
+        conformance."""
+        with tempfile.TemporaryDirectory() as tmp:
+            d = Path(tmp)
+            _write_yaml(d, "Condition", ["condition_concept", "associated_participant"])
+            cols = ["id", "condition_concept", "associated_participant"]
+            harmonized = _cg_status(groups={"c1": {"Condition": cols}})
+            results = check_c15_column_coverage(harmonized, yaml_dir=d)
+        passes = [r for r in results if r.status == "PASS"]
+        self.assertEqual(len(passes), 1)
+        self.assertIn("match YAML spec", passes[0].message)
+
+    def test_pass_omits_yaml_claim_when_no_spec_derived(self) -> None:
+        """yaml_dir provided but nothing derivable (empty/unparseable YAML): the
+        PASS must NOT claim 'match YAML spec', and an INFO surfaces that
+        sub-check 2 did not run."""
+        with tempfile.TemporaryDirectory() as tmp:
+            d = Path(tmp)  # empty dir -> build_expected_columns_from_yaml() == {}
+            cols = ["id", "condition_concept", "associated_participant"]
+            harmonized = _cg_status(groups={"c1": {"Condition": cols}})
+            results = check_c15_column_coverage(harmonized, yaml_dir=d)
+        passes = [r for r in results if r.status == "PASS"]
+        self.assertEqual(len(passes), 1)
+        self.assertNotIn("match YAML spec", passes[0].message)
+        infos = [
+            r for r in results
+            if r.status == "INFO" and r.variable == "_yaml_spec_columns"
+        ]
+        self.assertEqual(len(infos), 1)
+
     def test_pass_extra_tsv_columns_not_in_yaml_are_fine(self) -> None:
         """TSV may have more columns than YAML spec -- that is fine."""
         with tempfile.TemporaryDirectory() as tmp:

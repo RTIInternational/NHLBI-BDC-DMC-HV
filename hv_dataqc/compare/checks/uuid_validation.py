@@ -87,13 +87,27 @@ def check_c13_uuid_format(harmonized: dict) -> list[CheckResult]:
 
     if all_ok:
         entities = sorted(uuid_data.keys())
-        results.append(CheckResult(
-            "C13",
-            "_uuid_format",
-            "PASS",
-            f"All associated_participant and associated_visit values are valid UUIDs "
-            f"across {len(entities)} entity class(es): {', '.join(entities)}",
-            {"entities_checked": entities},
-        ))
+        total_rows = sum(int(uuid_data[e].get("n_total_rows", 0)) for e in entities)
+        if total_rows == 0:
+            # uuid_validation is present but every entity has 0 rows — nothing
+            # was actually validated, so "all valid" would be a false PASS.
+            results.append(CheckResult(
+                "C13",
+                "_uuid_format",
+                "SKIP",
+                "No harmonized rows were available to validate UUIDs "
+                f"(0 total rows across {len(entities)} entity class(es): "
+                f"{', '.join(entities)})",
+                {"entities_checked": entities},
+            ))
+        else:
+            results.append(CheckResult(
+                "C13",
+                "_uuid_format",
+                "PASS",
+                f"All associated_participant and associated_visit values are valid UUIDs "
+                f"across {len(entities)} entity class(es): {', '.join(entities)}",
+                {"entities_checked": entities},
+            ))
 
     return results

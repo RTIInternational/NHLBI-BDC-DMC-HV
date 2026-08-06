@@ -235,17 +235,31 @@ def check_c15_column_coverage(
                         },
                     ))
 
+    # Surface when sub-check 2 could not run despite a yaml_dir being provided,
+    # so a PASS is not silently missing the YAML-spec validation (e.g. the YAML
+    # failed to parse, or defined no columns for the loaded entities).
+    if yaml_dir is not None and not yaml_expected:
+        results.append(CheckResult(
+            "C15", "_yaml_spec_columns", "INFO",
+            f"YAML spec column validation did not run: no entity column definitions "
+            f"were derived from {yaml_dir.name} (empty or unparseable YAML). "
+            "Column presence was checked for cross-consent-group consistency only.",
+        ))
+
     if all_ok:
         checked = sorted(entity_columns.keys())
-        yaml_note = (
-            f", YAML spec from {yaml_dir.name}" if yaml_dir is not None else ""
-        )
+        # Only claim YAML-spec conformance when sub-check 2 actually had a spec
+        # to check against; otherwise the PASS must not imply it was validated.
+        if yaml_expected:
+            yaml_clause = f" and match YAML spec from {yaml_dir.name}"
+        else:
+            yaml_clause = ""
         results.append(CheckResult(
             "C15", "_column_coverage", "PASS",
             (
                 f"All {len(checked)} loaded entities have consistent column "
-                f"schemas across consent groups and match YAML spec"
-                f"{yaml_note} "
+                f"schemas across consent groups"
+                f"{yaml_clause} "
                 f"({', '.join(checked)})"
             ),
         ))

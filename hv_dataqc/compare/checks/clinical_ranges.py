@@ -13,6 +13,41 @@ import re
 from hv_dataqc.compare._common import CheckResult
 
 
+def _violation_direction(issue: str) -> str | None:
+    """Extract the direction word ('below'/'above') from a violation string."""
+    if "below" in issue:
+        return "below"
+    if "above" in issue:
+        return "above"
+    return None
+
+
+def _violation_severity(issue: str) -> int:
+    """Rank a violation by tier: red_flag (2) is more severe than plausible (1)."""
+    if "red_flag" in issue:
+        return 2
+    if "plausible" in issue:
+        return 1
+    return 0
+
+
+def _source_covers(issue: str, other_issues: list[str]) -> bool:
+    """Return True when some issue in ``other_issues`` breaches the SAME bound in
+    the SAME direction, or a MORE severe bound in that direction.
+
+    A milder source breach (e.g. ``below plausible``) does NOT cover a more
+    extreme harmonized breach (e.g. ``below red_flag``): in that case the
+    pipeline introduced the extreme value, so the violation must stay
+    actionable rather than being demoted as "pre-existing in source".
+    """
+    direction = _violation_direction(issue)
+    severity = _violation_severity(issue)
+    return any(
+        _violation_direction(o) == direction and _violation_severity(o) >= severity
+        for o in other_issues
+    )
+
+
 def _range_violations(val_min, val_max, matched: dict) -> list[str]:
     """Return list of range violation strings for a given min/max against a matched range def."""
     issues: list[str] = []
@@ -122,26 +157,25 @@ def check_c9_clinical_range(
         # Build annotated messages
         annotated: list[str] = []
         for issue in out_issues:
-            # Determine if the same bound appears in src_issues
-            in_src = any(
-                ("below" in issue and "below" in s) or ("above" in issue and "above" in s)
-                for s in src_issues
-            )
+            # A harmonized violation is only "pre-existing in source" when the
+            # source breaches the same bound in the same direction, or a more
+            # severe one — matching on direction alone would let a mild source
+            # breach mask a harmonization-introduced red_flag violation.
+            in_src = _source_covers(issue, src_issues)
             tag = "[out+src]" if in_src else "[out only]"
             annotated.append(f"{issue} {tag}")
         # Also report src-only violations so reviewer knows raw data pre-condition
         for s_issue in src_issues:
-            in_out = any(
-                ("below" in s_issue and "below" in o) or ("above" in s_issue and "above" in o)
-                for o in out_issues
-            )
-            if not in_out:
+            if not _source_covers(s_issue, out_issues):
                 annotated.append(f"{s_issue} [src only]")
         issues = annotated
     else:
         issues = out_issues
 
-    red_issues = [i for i in issues if "red_flag" in i]
+    # Only harmonized-output red_flag violations force a FAIL. A red_flag breach
+    # that exists solely in the source ([src only]) means the pipeline did NOT
+    # emit an extreme value — it is context, not an actionable output defect.
+    red_issues = [i for i in issues if "red_flag" in i and "[src only]" not in i]
     has_red = bool(red_issues)
     # Demote FAIL -> WARN when every red_flag violation is also present in the
     # source data ([out+src]): the raw data already contained the extreme value

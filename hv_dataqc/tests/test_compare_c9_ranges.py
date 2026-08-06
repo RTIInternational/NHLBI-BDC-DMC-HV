@@ -130,6 +130,41 @@ class CompareC9RangeTests(unittest.TestCase):
         self.assertIn("[out+src]", result.message)  # min violation shared
         self.assertIn("[out only]", result.message)  # max violation new
 
+    def test_milder_source_violation_does_not_hide_harmonized_red_flag(self) -> None:
+        """A red_flag output breach must stay FAIL when source only breached the
+        milder plausible bound in the same direction — the pipeline introduced
+        the extreme value, so it is NOT 'pre-existing in source'."""
+        # red_flag_lo=15, plausible_lo=30. Harmonized min=10 is below red_flag;
+        # source min=25 is only below plausible (above red_flag). Same direction,
+        # different tier -> must not be demoted.
+        result = check_c9_clinical_range(
+            {"type": "continuous", "min": 10.0, "max": 100.0},
+            "heart_rate",
+            {"heart_rate": self._range(common_phv_names=["heart_rate"])},
+            src_var={"type": "continuous", "min": 25.0, "max": 100.0},
+        )
+
+        self.assertEqual(result.status, "FAIL")
+        self.assertIn("red_flag", result.message)
+        self.assertIn("[out only]", result.message)
+
+    def test_more_extreme_source_keeps_milder_harmonized_as_info(self) -> None:
+        """The reverse: source breached red_flag but harmonized only breaches the
+        milder plausible bound — harmonized emitted no extreme value, so the
+        source red_flag is [src only] context and the result is INFO, not FAIL."""
+        # Harmonized min=25 (below plausible 30 only); source min=10 (below
+        # red_flag 15). Source is more extreme and covers the milder output breach.
+        result = check_c9_clinical_range(
+            {"type": "continuous", "min": 25.0, "max": 100.0},
+            "heart_rate",
+            {"heart_rate": self._range(common_phv_names=["heart_rate"])},
+            src_var={"type": "continuous", "min": 10.0, "max": 100.0},
+        )
+
+        self.assertEqual(result.status, "INFO")
+        self.assertIn("[out+src]", result.message)
+        self.assertIn("[src only]", result.message)
+
     def test_duplicate_concept_code_validation_can_be_allowed(self) -> None:
         ranges = {
             "range_a": {

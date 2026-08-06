@@ -637,6 +637,41 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
 
         self.assertEqual(result.status, "PASS")
 
+    def test_c7_sums_harmonized_keys_that_collapse_to_same_category(self) -> None:
+        """Two representations of one harmonized category ("OMOP:8527" and
+        "['OMOP:8527']") must have their mass summed, mirroring the source
+        side. Overwriting (last-writer-wins) would drop a bucket and mismatch
+        a distribution that actually matches."""
+        src = {
+            "type": "categorical",
+            "distribution": {"OMOP:8527": {"n": 100, "pct": 100.0}},
+        }
+        out = {
+            "type": "categorical",
+            "distribution": {
+                "OMOP:8527": {"n": 70, "pct": 70.0},
+                "['OMOP:8527']": {"n": 30, "pct": 30.0},
+            },
+        }
+
+        result = check_c7_categorical_distribution(src, out, "race")
+
+        # With summing: 70+30=100 matches source 100 -> PASS.
+        # Without the fix, only one bucket (30 or 70) survives -> mismatch.
+        self.assertEqual(result.status, "PASS")
+
+    def test_c3_skips_when_no_denominator_and_pct_missing_absent(self) -> None:
+        """When totals are absent/zero (n_valid fallback cannot run) and a side
+        has no pct_missing, C3 must SKIP rather than default both rates to 0 and
+        report a false 'Missing rate: 0%' PASS on data never compared."""
+        src = {"n_valid": 500}  # no n_total, no pct_missing
+        out = {}  # harmonized side has neither total nor pct_missing
+
+        result = check_c3_missing_accounting(src, out, "sparse var")
+
+        self.assertEqual(result.status, "SKIP")
+        self.assertIn("Insufficient data", result.message)
+
     def test_static_case_expr_does_not_become_c7_category(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             tmp_path = Path(tmp)
