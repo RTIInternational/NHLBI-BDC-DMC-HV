@@ -2008,6 +2008,36 @@ class CrosswalkConceptExtractionTests(unittest.TestCase):
         self.assertEqual(cw[0]["harmonized_key"], "measurement_OMOP:4152194|auscultatory")
         self.assertEqual(cw[0]["method_type"], "auscultatory")
 
+    def test_nested_quantity_class_name_key_form_extracts_value_phv(self) -> None:
+        """value_quantity using the '- Quantity:' (class-name-as-key) list form must
+        yield a crosswalk entry. Production HV YAML (ARIC/COPDGene) uses this
+        spelling; the parser previously handled only '- name: Quantity', so these
+        measurement blocks produced NO crosswalk entry and every such concept was
+        falsely reported 'not matched in source'. Requires a populated phv_names
+        (entries with an unknown source name are skipped)."""
+        cd = {
+            "MeasurementObservation": {
+                "populated_from": "pht000001",
+                "slot_derivations": {
+                    "associated_participant": {"populated_from": "phv000001"},
+                    "observation_type": {"value": "OBA:2045455"},
+                    "value_quantity": {
+                        "class_derivations": [
+                            {"Quantity": {"populated_from": "pht000001", "slot_derivations": {
+                                "value_decimal": {"populated_from": "phv000003"},
+                                "unit": {"value": "kg/m2"}}}}
+                        ]
+                    },
+                },
+            }
+        }
+        phv_names = {"phv000001": "ID", "phv000003": "BMI"}
+        cw: list[dict] = []
+        _extract_crosswalk_from_class_derivations(cd, "bmi.yaml", phv_names, cw)
+        self.assertEqual(len(cw), 1)
+        self.assertEqual(cw[0]["harmonized_key"], "measurement_OBA:2045455")
+        self.assertEqual(cw[0]["phv_id"], "phv000003")
+
     def test_scalar_factor_extracted_from_null_guard_ternary_expr(self) -> None:
         """Regression: expr with two occurrences of the same PHV (null-guard ternary)
         must still yield a conversion_factor.

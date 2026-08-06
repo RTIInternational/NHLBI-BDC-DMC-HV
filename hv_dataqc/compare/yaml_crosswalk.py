@@ -20,12 +20,30 @@ from hv_dataqc.compare.expected_summary import _has_true_catchall, _true_arm_out
 
 
 def _iter_nested_class_derivs(slot_def):
-    """Yield (class_name, class_spec) for a slot's nested class derivations,
-    handling both list-based class_derivations and legacy object_derivations."""
+    """Yield (class_name, class_spec) for a slot's nested class derivations.
+
+    Handles the two list-based ``class_derivations`` spellings plus legacy
+    ``object_derivations``:
+
+    * ``- name: Quantity``   (class name in a ``name`` field)
+    * ``- Quantity:``        (class name is the single mapping key)
+
+    Both are valid LinkML; production HV YAML uses the ``- Quantity:`` /
+    ``- MeasurementObservation:`` key form. The yielded spec always exposes
+    ``slot_derivations`` at its top level, matching what callers read.
+    """
     slot_def = slot_def or {}
     for cd in slot_def.get("class_derivations") or []:
-        if isinstance(cd, dict):
+        if not isinstance(cd, dict):
+            continue
+        if "name" in cd:
+            # {name: Quantity, slot_derivations: {...}}
             yield cd.get("name"), cd
+        elif len(cd) == 1:
+            # {Quantity: {slot_derivations: {...}}} -- class name as the key
+            (name, spec), = cd.items()
+            if isinstance(spec, dict):
+                yield name, spec
     for od in slot_def.get("object_derivations") or []:
         for name, spec in ((od or {}).get("class_derivations") or {}).items():
             yield name, spec
