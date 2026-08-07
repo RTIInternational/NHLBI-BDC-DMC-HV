@@ -551,3 +551,54 @@ known_issues:
       (2.7%) is below typical clinical significance. C4 PASSES confirming no
       unit error. Re-investigate if all FHS consent groups are run together.
     confirmed_date: "2026-07-20"
+
+  # -- C4/C6: urine creatinine mean/SD (compare tool cannot replay 2-PHV ratio) --
+  # The 1000x inflation bug (pht004809 block: (Cr24*100)/Vol24) was FIXED on
+  # branch fix/hv-fhs-20260806 -> Cr24/(Vol24*10). Residual mismatch is a tool
+  # limitation, NOT a data defect (harmonized ~118 mg/dL is correct).
+  - checks: [C4, C6]
+    variable_key: "urcreat+mmcreat+ur_creat+creatinine+cr24"
+    yaml_file: creat_urin.yaml
+    status: false_positive
+    root_cause: tooling_bug
+    summary: >
+      Urine creatinine pool. The pht004809 block derives spot-equivalent
+      concentration as a TWO-PHV ratio: Cr24[mg/d] / (Vol24[L/d] * 10), where
+      phv00227286 (Cr24) is 24-h creatinine EXCRETION (mg/day, logical 367-3080)
+      and phv00227269 (Vol24) is 24-h urine volume (L/day). hv_dataqc can only
+      apply a single scalar conversion factor to the pre-aggregated per-PHV
+      source summaries (expected_summary._apply_conversion_factor_to_summary);
+      multi-PHV row-level exprs hit the "static_yaml_expr ... aggregate
+      comparison not attempted" path (crosswalk.py). So the source side pools the
+      raw mg/day excretion values un-converted alongside the spot mg/dL blocks,
+      inflating source mean (191.82) and SD (319). The harmonized output correctly
+      converts excretion/volume to concentration (mean ~118 mg/dL, SD ~72), which
+      is physiologically correct for spot urine creatinine. The 1000x-inflation
+      defect that originally produced harmonized mean 5074 was fixed on branch
+      fix/hv-fhs-20260806 (creat_urin.yaml). Not correctable by a YAML change --
+      it requires row-level source evaluation the compare tool does not perform.
+    confirmed_date: "2026-08-07"
+
+  # -- C7: family income categories (case() value_concept not applied by comparator) --
+  # The PY125 12-level mapping + C2/C3 N-loss were FIXED on fix/hv-fhs-20260806.
+  # C7 still fails only because the comparator compares raw numeric source codes
+  # to harmonized bracket STRINGS; harmonized distribution is correct/complete.
+  - checks: [C7]
+    variable_key: "g3b0636+g3a497+py125"
+    yaml_file: fam_income.yaml
+    status: false_positive
+    root_cause: tooling_bug
+    summary: >
+      Family income (OMOP:4076114). The C7 comparator applies YAML value_mappings
+      but does NOT evaluate case()-based value_concept expressions, so it compares
+      the RAW numeric source codes (1-12) against the harmonized value_concept
+      BRACKET STRINGS ("< $5,000", "$5,000 - $9,000", ...) and reports every
+      numeric code as "missing in harmonized." Every FHS income block -- and every
+      other cohort's income file -- renders brackets via case() value_concept, so
+      this code-vs-string mismatch is structural to the tool. The harmonized
+      distribution is correct and complete: the PY125 (pht000100) 12-level scheme
+      and the resulting C2/C3 N-loss were fixed on branch fix/hv-fhs-20260806
+      (fam_income.yaml), and the harmonized side now emits all income brackets
+      with the expected counts. Not correctable by a YAML change -- it requires
+      the C7 comparator to apply case() value_concept transforms to source codes.
+    confirmed_date: "2026-08-07"
