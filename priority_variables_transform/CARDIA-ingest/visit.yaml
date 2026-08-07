@@ -14,6 +14,9 @@
           expr: '{phv00112421} * 365'
         age_at_visit_end:
           expr: '{phv00112421} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht001626
@@ -30,6 +33,9 @@
           expr: '{phv00114610} * 365'
         age_at_visit_end:
           expr: '{phv00114610} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht001667
@@ -46,6 +52,9 @@
           expr: '{phv00115705} * 365'
         age_at_visit_end:
           expr: '{phv00115705} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht001706
@@ -62,6 +71,9 @@
           expr: '{phv00116478} * 365'
         age_at_visit_end:
           expr: '{phv00116478} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht001781
@@ -78,6 +90,9 @@
           expr: '{phv00118959} * 365'
         age_at_visit_end:
           expr: '{phv00118959} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht001851
@@ -94,6 +109,9 @@
           expr: '{phv00120748} * 365'
         age_at_visit_end:
           expr: '{phv00120748} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 # CARDIA YEAR 15 visits: multiple tables cover this exam year with different participant keys.
 # pht001857 (F2F20), pht001854 (F2EBCT), pht001855 (F2F03), pht001874 (Z33E06) all use
 # standard CARDIA Individual_ID — uuid5 produces matching Visit IDs across these tables.
@@ -113,6 +131,9 @@
           value: HEALTH_EXAMINATION
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120993}) + ":CARDIA")'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht001854
@@ -125,6 +146,9 @@
           value: HEALTH_EXAMINATION
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120763}) + ":CARDIA")'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht001855
@@ -137,6 +161,9 @@
           value: HEALTH_EXAMINATION
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120930}) + ":CARDIA")'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 # DISABLED: pht001874 (Z33E06, CARDIA Year 15 CHD questionnaire) is absent from c2
 # consent group. linkml-map 0.5.3rc3 crashes on missing source tables (regression
 # from 0.4.0 behavior). Re-enable when upstream graceful-missing-table is fixed.
@@ -168,6 +195,9 @@
           expr: "None if str({phv00190622}) == 'M' else float({phv00190622}) * 365"
         age_at_visit_end:
           expr: "None if str({phv00190622}) == 'M' else float({phv00190622}) * 365"
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 # pht001999 (GENEVA_CARDIA_Subject_Phenotypes) uses GENEVA_ID (phv00129484) as participant key —
 # a different ID space from standard CARDIA Individual_ID. Visit UUIDs here match the
 # associated_participant/associated_visit keys in cig_smok.yaml's pht001999 block.
@@ -187,6 +217,9 @@
           expr: "None if str({phv00129493}) == 'M' else float({phv00129493}) * 365"
         age_at_visit_end:
           expr: "None if str({phv00129493}) == 'M' else float({phv00129493}) * 365"
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 # CARDIA Medical History visit: pht001869 (Y1MORB06) and pht001871 (YM106) are
 # companion hospitalization-review tables representing the same conceptual visit.
 # Both use Individual_ID as participant key, so uuid5 produces the same Visit ID
@@ -205,6 +238,9 @@
           value: UNKNOWN
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121257}) + ":CARDIA")'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht001871
@@ -217,6 +253,9 @@
           value: UNKNOWN
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121473}) + ":CARDIA")'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht001870
@@ -229,3 +268,6 @@
           value: UNKNOWN
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121454}) + ":CARDIA")'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string

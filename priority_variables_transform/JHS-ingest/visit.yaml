@@ -14,6 +14,9 @@
           expr: '{phv00401085} * 365'
         age_at_visit_end:
           expr: '{phv00401085} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht008782
@@ -26,6 +29,9 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00403792}) + ":JHS")'
         visit_category:
           value: HEALTH_EXAMINATION
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht008730
@@ -42,6 +48,9 @@
           expr: '{phv00401282} * 365'
         age_at_visit_end:
           expr: '{phv00401282} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht008731
@@ -58,6 +67,9 @@
           expr: '{phv00401379} * 365'
         age_at_visit_end:
           expr: '{phv00401379} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht008725
@@ -70,6 +82,9 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00400849}) + ":JHS")'
         visit_category:
           value: TELEHEALTH
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht008791
@@ -82,6 +97,9 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00404188}) + ":JHS")'
         visit_category:
           value: LABORATORY_VISIT
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht001969
@@ -94,6 +112,9 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00128197}) + ":JHS")'
         visit_category:
           value: HEALTH_EXAMINATION
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht008728
@@ -106,6 +127,9 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401067}) + ":JHS")'
         visit_category:
           value: UNKNOWN
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht001960
@@ -118,6 +142,9 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00127641}) + ":JHS")'
         visit_category:
           value: LABORATORY_VISIT
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht008755
@@ -130,6 +157,9 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00402839}) + ":JHS")'
         visit_category:
           value: UNKNOWN
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht008756
@@ -142,3 +172,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00402848}) + ":JHS")'
         visit_category:
           value: UNKNOWN
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
