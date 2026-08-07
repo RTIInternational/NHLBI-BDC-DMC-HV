@@ -1072,7 +1072,7 @@
               populated_from: pht005142
               slot_derivations:
                 value_decimal:
-                  expr: '{phv00255158} * 2.54'
+                  expr: 'case(({phv00255158} == 88.88, None), (True, {phv00255158} * 2.54))'
                 unit:
                   value: cm
                   range: string
@@ -1126,7 +1126,7 @@
               populated_from: pht006007
               slot_derivations:
                 value_decimal:
-                  expr: '{phv00274883} * 2.54'
+                  expr: 'case(({phv00274883} == 88.88, None), (True, {phv00274883} * 2.54))'
                 unit:
                   value: cm
                   range: string
@@ -1151,7 +1151,7 @@
               populated_from: pht006008
               slot_derivations:
                 value_decimal:
-                  expr: '{phv00275241} * 2.54'
+                  expr: 'case(({phv00275241} == 88.88, None), (True, {phv00275241} * 2.54))'
                 unit:
                   value: cm
                   range: string
