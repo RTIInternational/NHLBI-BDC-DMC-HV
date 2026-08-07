@@ -158,8 +158,6 @@
               ({phv00036470} == 72, "FHS OMNI 2 EXAM 1"),
               (True, "FHS UNKNOWN VISIT")
             ))
-        age_at_observation:
-          expr: '{pht003099.phv00177930} * 365'
         age_at_condition_start:
           expr: "case(({phv00036469} == 30 and int({phv00036471}) <= 0, ({pht003099.phv00177930} * 365) + int({phv00036471})))"
         condition_concept:
