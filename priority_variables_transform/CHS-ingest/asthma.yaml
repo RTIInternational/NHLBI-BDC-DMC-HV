@@ -16,7 +16,7 @@
         condition_status:
           expr: case(({phv00099087} == 0, ABSENT), ({phv00099088} == 0, HISTORICAL), (True, PRESENT))
         condition_provenance:
-          expr: case(({phv00099466} == 1, "CLINICAL_DIAGNOSIS"), (True, "PATIENT_SELF-REPORTED_CONDITION"))
+          expr: case(({phv00099466} == 1, "CLINICAL_DIAGNOSIS"), (True, "PATIENT_SELF_REPORT"))
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -66,7 +66,7 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -92,7 +92,7 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -429,7 +429,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -455,7 +455,7 @@
             '1': PRESENT
         condition_provenance:
           expr: case(({phv00105885} == 1, "CLINICAL_DIAGNOSIS"), ({phv00106407} ==
-            1, "CLINICAL_DIAGNOSIS"), (True, "PATIENT_SELF-REPORTED_CONDITION"))
+            1, "CLINICAL_DIAGNOSIS"), (True, "PATIENT_SELF_REPORT"))
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -480,7 +480,7 @@
         condition_status:
           expr: case(({phv00106022} == 0, ABSENT), ({phv00106023} == 0, HISTORICAL), (True, PRESENT))
         condition_provenance:
-          expr: case(({phv00106024} == 1, "CLINICAL_DIAGNOSIS"), (True, "PATIENT_SELF-REPORTED_CONDITION"))
+          expr: case(({phv00106024} == 1, "CLINICAL_DIAGNOSIS"), (True, "PATIENT_SELF_REPORT"))
         relationship_to_participant:
           value: ONESELF
           range: string          
@@ -506,7 +506,7 @@
         condition_provenance:
           expr: case(({phv00107851} == 1, "CLINICAL_DIAGNOSIS"), ({phv00108215} ==
             1, "CLINICAL_DIAGNOSIS"), ({phv00108216} == 1, "CLINICAL_DIAGNOSIS"),
-            (True, "PATIENT_SELF-REPORTED_CONDITION"))
+            (True, "PATIENT_SELF_REPORT"))
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -531,7 +531,7 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -557,7 +557,7 @@
             '1': PRESENT
             '8': UNKNOWN
         condition_provenance:
-          expr: case(({phv00197463} == 1, "CLINICAL_DIAGNOSIS"), (True, "PATIENT_SELF-REPORTED_CONDITION"))
+          expr: case(({phv00197463} == 1, "CLINICAL_DIAGNOSIS"), (True, "PATIENT_SELF_REPORT"))
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -577,9 +577,9 @@
           range: string
         condition_status:
           expr: case(({phv00198892} == 0, "ABSENT"),({phv00198892} == 1,case(({phv00198893}
-            == 0, "HISTORICAL"),(True, "PRESENT"))),(True, "UNKKNOWN"))
+            == 0, "HISTORICAL"),(True, "PRESENT"))),(True, "UNKNOWN"))
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF

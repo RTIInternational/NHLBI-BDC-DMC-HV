@@ -67,7 +67,7 @@
             'Yes': PRESENT
             'No': ABSENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         associated_evidence:
           value: "Analysis derived"
@@ -87,7 +87,7 @@
         condition_status:
           expr: "case(({phv00401131} == 0, 'ABSENT'), ({phv00401131} == 1, 'PRESENT'), ({phv00401131} == 2, 'PRESENT'))"
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         associated_evidence:
           value: "Analysis derived"
@@ -111,7 +111,7 @@
             'Yes': PRESENT
             'No': ABSENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         associated_evidence:
           value: "Analysis derived"
@@ -131,7 +131,7 @@
         condition_status:
           expr: "case(({phv00401319} == 0, 'ABSENT'), ({phv00401319} == 1, 'PRESENT'), ({phv00401319} == 2, 'PRESENT'))"
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         associated_evidence:
           value: "Analysis derived"
@@ -155,7 +155,7 @@
             'Yes': PRESENT
             'No': ABSENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         associated_evidence:
           value: "Analysis derived"
@@ -175,7 +175,7 @@
         condition_status:
           expr: "case(({phv00401422} == 0, 'ABSENT'), ({phv00401422} == 1, 'PRESENT'), ({phv00401422} == 2, 'PRESENT'))"
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         associated_evidence:
           value: "Analysis derived"
@@ -202,7 +202,7 @@
             '2': ABSENT
             '7': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         associated_evidence:
           value: "Health History Questionnaire"
@@ -227,7 +227,7 @@
             '2': ABSENT
             '7': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         associated_evidence:
           value: "Self-Report Questionnaire"
@@ -252,7 +252,7 @@
             '2': ABSENT
             '7': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         associated_evidence:
           value: "Self-Report Questionnaire"

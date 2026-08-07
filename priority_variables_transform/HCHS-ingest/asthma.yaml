@@ -16,7 +16,7 @@
             '1': PRESENT
             '9': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         associated_evidence:
           value: "self-report questionnaire"
@@ -44,7 +44,7 @@
         condition_provenance:
           populated_from: phv00226388
           value_mappings:
-            '0': PATIENT_SELF-REPORTED_CONDITION
+            '0': PATIENT_SELF_REPORT
             '1': CLINICAL_DIAGNOSIS
             '9': UNKNOWN
         associated_evidence:
@@ -71,7 +71,7 @@
         condition_status:
           expr: 'case(({phv00526179} == 0, ''ABSENT''), ({phv00526180} == 0, ''HISTORICAL''), (True, ''PRESENT''))'
         condition_provenance:
-          expr: case(({phv00526179} == 1 and {phv00526181} == 1, 'CLINICAL_DIAGNOSIS'), (True, 'PATIENT_SELF-REPORTED_CONDITION'))
+          expr: case(({phv00526179} == 1 and {phv00526181} == 1, 'CLINICAL_DIAGNOSIS'), (True, 'PATIENT_SELF_REPORT'))
         relationship_to_participant:
           value: ONESELF
           range: string
