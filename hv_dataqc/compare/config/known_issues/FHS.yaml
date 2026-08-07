@@ -602,3 +602,31 @@ known_issues:
       with the expected counts. Not correctable by a YAML change -- it requires
       the C7 comparator to apply case() value_concept transforms to source codes.
     confirmed_date: "2026-08-07"
+
+  # -- C4/C6: height mean/SD (source crosswalk is an unnormalized mixed-unit pool) --
+  # All real YAML defects fixed on fix/hv-fhs-20260806 (Exam17 inches-x100 -> /100;
+  # Exam28/30/31/32 88.88 "Field visit" sentinel guards). Harmonized height is now
+  # physiologically correct; residual mismatch is a contaminated SOURCE reference.
+  - checks: [C4, C6]
+    variable_key: "mf217+mf67+mf290+fc7+fd13+fe68+ff64+fg63"
+    yaml_file: bdy_hgt.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      Height pool (bdy_hgt.yaml, ~70 exam blocks, OBA:VT0001253, output cm). The
+      harmonized output is physiologically correct: mean 165.39 cm, SD 9.89 cm,
+      range 114.3 -> <220 cm (textbook adult height). The residual C4/C6 mismatch
+      is driven entirely by the compare tool's SOURCE reference, which is an
+      UNNORMALIZED mixed-unit pool: source mean 154.68, SD 33.32 cm -- an SD that
+      is physically impossible for real height (true SD ~7-10 cm), indicating the
+      source pools raw inches (~65) alongside cm (~168) without unit conversion.
+      The source summary is byte-identical (154.678102) across runs regardless of
+      YAML edits, confirming it is a fixed crosswalk reference, not re-derived from
+      the transform. All genuine YAML defects were fixed on branch
+      fix/hv-fhs-20260806: Exam 17 (pht000019/phv00003245) was inches-x100 and
+      needed /100 before x2.54 (removed the harmonized max=19431 artifact); and the
+      88.88 "Field visit" sentinel was guarded in Exam 28/30/31/32 -- the C9
+      max=225.7552 is now [src only], confirming it is gone from the harmonized
+      output and present only in the source reference. No further YAML change can
+      close this gap; it is a source-reference normalization artifact.
+    confirmed_date: "2026-08-07"
