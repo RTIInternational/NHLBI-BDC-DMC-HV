@@ -16,7 +16,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
@@ -501,7 +501,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
@@ -677,7 +677,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
@@ -753,7 +753,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
@@ -804,7 +804,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
@@ -829,7 +829,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
@@ -933,7 +933,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
@@ -985,7 +985,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
@@ -1136,7 +1136,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
@@ -1287,7 +1287,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
@@ -1339,7 +1339,7 @@
             '2': PRESENT
             '4': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
@@ -1390,7 +1390,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
@@ -1442,7 +1442,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
@@ -1518,7 +1518,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
@@ -1544,7 +1544,7 @@
           populated_from: phv00021294
           value_mappings:
             '0': PATIENT_SELF_REPORT
-            '1': CLINICAL_DIAGNOSIS
+            '1': PATIENT_SELF_REPORT_DR_CONFIRMED
         associated_evidence:
           value: Respiratory Disease Questionnaire
           range: string
@@ -1595,7 +1595,7 @@
           populated_from: phv00055304
           value_mappings:
             '0': PATIENT_SELF_REPORT
-            '1': CLINICAL_DIAGNOSIS
+            '1': PATIENT_SELF_REPORT_DR_CONFIRMED
             '8': PATIENT_SELF_REPORT
         associated_evidence:
           value: Medical History
@@ -1618,7 +1618,7 @@
           expr: case(({phv00056803} == 0, 'ABSENT'), ({phv00056804} == 0, 'HISTORICAL'),
             (True, 'PRESENT'))
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
         associated_evidence:
           value: Medical History
@@ -1644,7 +1644,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
@@ -1670,7 +1670,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
@@ -1700,7 +1700,7 @@
           populated_from: phv00072490
           value_mappings:
             '0': PATIENT_SELF_REPORT
-            '1': CLINICAL_DIAGNOSIS
+            '1': PATIENT_SELF_REPORT_DR_CONFIRMED
         associated_evidence:
           value: Respiratory Disease Questionnaire
           range: string
@@ -1725,7 +1725,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
@@ -1802,7 +1802,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
@@ -1851,7 +1851,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
@@ -1902,7 +1902,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
@@ -1953,7 +1953,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
@@ -2004,7 +2004,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
@@ -2030,7 +2030,7 @@
           populated_from: phv00274121
           value_mappings:
             '0': PATIENT_SELF_REPORT
-            '1': CLINICAL_DIAGNOSIS
+            '1': PATIENT_SELF_REPORT_DR_CONFIRMED
         associated_evidence:
           value: Respiratory Disease Questionnaire
           range: string
@@ -2054,7 +2054,7 @@
             '0': ABSENT
             '1': ABSENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression

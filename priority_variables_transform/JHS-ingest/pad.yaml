@@ -25,7 +25,7 @@
         condition_status:
           expr: 'case(({phv00401122} < 0.9, "PRESENT"), ({phv00401122} >= 0.9, "ABSENT"), (True, "UNKNOWN"))'
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: "Analysis derived"

@@ -35,7 +35,7 @@
         condition_status:
           expr: case(({phv00298000} == 0, 'ABSENT'), ({phv00298002} == 0, 'HISTORICAL'), (True, 'PRESENT'))
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
         associated_evidence:
           value: "self-report questionnaire"
           range: string
