@@ -12,6 +12,11 @@
           expr: case(({phv00283683} == 1, "ATC:C03DA"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00283683
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht006223
@@ -26,3 +31,8 @@
           expr: case(({phv00283684} == 1, "ATC:C03DA"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00283684
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT

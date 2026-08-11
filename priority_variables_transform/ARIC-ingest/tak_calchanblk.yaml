@@ -10,6 +10,12 @@
           expr: case(({phv00203800} == "Y", "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00203800
+          value_mappings:
+            N: ABSENT
+            U: UNKNOWN
+            Y: PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht004053
@@ -22,6 +28,11 @@
           expr: case(({phv00203967} == "Y", "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00203967
+          value_mappings:
+            N: ABSENT
+            Y: PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht004102
@@ -34,6 +45,11 @@
           expr: case(({phv00206979} == "Y", "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00206979
+          value_mappings:
+            N: ABSENT
+            Y: PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht004102
@@ -46,3 +62,8 @@
           expr: case(({phv00206980} == "Y", "ATC:C08"))
         exposure_provenance:
           value: PRESCRIPTION_WRITTEN
+        exposure_status:
+          populated_from: phv00206980
+          value_mappings:
+            N: ABSENT
+            Y: PRESENT

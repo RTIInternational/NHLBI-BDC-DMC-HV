@@ -10,6 +10,11 @@
           expr: case(({phv00206628} == 1, "ATC:A10"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00206628
+          value_mappings:
+            N: ABSENT
+            Y: PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht004097
@@ -22,3 +27,8 @@
           expr: case(({phv00206636} == 1, "ATC:A10"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00206636
+          value_mappings:
+            N: ABSENT
+            Y: PRESENT

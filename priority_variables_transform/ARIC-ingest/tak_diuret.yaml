@@ -10,6 +10,11 @@
           expr: case(({phv00206983} == "Y", "ATC:C03"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00206983
+          value_mappings:
+            N: ABSENT
+            Y: PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht004102
@@ -22,6 +27,11 @@
           expr: case(({phv00206984} == 1, "ATC:C03"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00206984
+          value_mappings:
+            N: ABSENT
+            Y: PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht004102
@@ -34,6 +44,11 @@
           expr: case(({phv00206996} == "Y", "ATC:C03"))
         exposure_provenance:
           value: PRESCRIPTION_WRITTEN
+        exposure_status:
+          populated_from: phv00206996
+          value_mappings:
+            N: ABSENT
+            Y: PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht012504
@@ -46,6 +61,12 @@
           expr: case(({phv00507372} == 1, "VANDF:CV702"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00507372
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            T: UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht012504
@@ -58,6 +79,12 @@
           expr: case(({phv00507373} == 1, "VANDF:CV702"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00507373
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            T: UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht012814
@@ -70,6 +97,12 @@
           expr: case(({phv00512216} == 1, "VANDF:CV702"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00512216
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            T: UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht012814
@@ -82,6 +115,12 @@
           expr: case(({phv00512217} == 1, "VANDF:CV702"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00512217
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            T: UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht012815
@@ -94,6 +133,12 @@
           expr: case(({phv00512281} == 1, "VANDF:CV702"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00512281
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            T: UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht012815
@@ -106,3 +151,9 @@
           expr: case(({phv00512282} == 1, "VANDF:CV702"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00512282
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            T: UNKNOWN
