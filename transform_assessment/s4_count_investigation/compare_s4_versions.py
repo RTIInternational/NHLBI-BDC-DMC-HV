@@ -12,7 +12,7 @@ Sheet parsing, and the normalizations it depends on, live in ``s4_sheets``.
 
 Usage:
     ./.venv/bin/python transform_assessment/s4_count_investigation/compare_s4_versions.py
-    ... --dir path/to/xslx --row "Alcohol Consumption"
+    ... --dir path/to/xlsx --row "Alcohol Consumption"
     ... --labels          # row-alignment check only
 """
 from __future__ import annotations
@@ -26,7 +26,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from s4_sheets import fmt, load_xlsx  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
-DEFAULT_DIR = HERE / "xslx"
+DEFAULT_DIR = HERE / "xlsx"
 DATE_RE = re.compile(r"(\d{4}-\d{2}-\d{2})")
 
 

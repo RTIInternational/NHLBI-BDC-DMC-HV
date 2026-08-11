@@ -31,7 +31,7 @@ from s4_sheets import load_csv, load_xlsx  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 DEFAULT_CSV = HERE / "published_source_20251211.csv"
-DEFAULT_XLSX = HERE / "xslx" / "s4-gsheet-2025-12-23-just-added-totals.xlsx"
+DEFAULT_XLSX = HERE / "xlsx" / "s4-gsheet-2025-12-23-just-added-totals.xlsx"
 
 
 def main() -> None:

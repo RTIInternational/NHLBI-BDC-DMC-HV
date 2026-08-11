@@ -45,14 +45,19 @@ work — see [`s4_count_investigation/HANDOFF.md`](s4_count_investigation/HANDOF
 
 Where it stands: the published numbers are no longer mysterious. They are
 exactly the CSV committed on 2025-12-11 (`1e6a34db`), output of the superseded
-pipeline, pasted into the Google Sheet and never regenerated — all 1332 compared
-cells match. Earlier theories that the numbers had drifted over time or been
-pasted out of alignment with their labels were tested and rejected. What remains
-is a straight comparison of two pipelines, and the leading hypothesis is that
-the old one *overcounted*: it filtered phvs against `valid-phvs/{cohort}.tsv`
-where a list existed and left them unfiltered where none did, and ARIC, CARDIA,
-and JHS had no lists. If that holds, the published table is wrong and the
-generator is right — a finding for the team rather than a bug to fix.
+pipeline, pasted into the Google Sheet and frozen since — all 1332 compared
+cells match. Across 13 dated exports, every earlier change is attributed to
+either a code commit (the two large ones: adding COPDGene/FHS in August, adding
+an "out of scope" filter in December) or an edit to the curator-maintained
+Google Sheets the old pipeline read. Earlier theories that the numbers had
+drifted mysteriously or been pasted out of alignment with their labels were
+tested and rejected.
+
+What remains is a straight comparison of two pipelines, and the leading
+hypothesis is that the old one *overcounted*: it filtered phvs against
+`valid-phvs/{cohort}.tsv` where a list existed and left them unfiltered where
+none did, and ARIC, CARDIA, and JHS had no lists. If that holds, the published
+table is wrong and the generator is right.
 
 ## What's here
 
@@ -73,8 +78,8 @@ generator is right — a finding for the team rather than a bug to fix.
   was pasted from. **This, not the spreadsheet, is what to diagnose against.**
 - `verify_published_source.py` — proves that CSV reproduces the published sheet
   exactly (0/1332 cells differ).
-- `xslx/` — four dated exports of the Google Sheet, the only record of its
-  history.
+- `xlsx/` — 13 dated exports of the Google Sheet, covering every version that
+  changed. The only record of its history.
 - `compare_s4_versions.py` — compares published versions to each other and
   checks row alignment.
 - `s4_sheets.py` — shared sheet/CSV readers for both scripts. Normalizes blank

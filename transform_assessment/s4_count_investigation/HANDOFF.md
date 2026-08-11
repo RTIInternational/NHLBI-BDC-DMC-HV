@@ -15,17 +15,19 @@ The spec-sourced S4 generator produces numbers that don't match the published
 Table S4. **The published numbers are now fully accounted for**: they are
 exactly the CSV committed in `1e6a34db` ("uploading generated csv from
 2025-12-11") — output of the superseded pipeline, pasted into the Google Sheet
-and never regenerated since. All 1332 compared cells match, same 148 labels,
-same order. So the comparison to make is *current generator vs. that CSV*: two
-pipelines, no spreadsheet handling in between, no corruption to explain away.
-The earlier worries — that counts had drifted, or been pasted out of alignment
-with their labels — were tested and are false.
+and frozen since. All 1332 compared cells match, same 148 labels, same order.
+Every earlier change in the sheet is attributed too, to a specific code commit
+or a specific input-sheet edit (see the timeline below). So the comparison to
+make is *current generator vs. that CSV*: two pipelines, no spreadsheet handling
+in between, no corruption to explain away. The earlier worries — that counts had
+drifted mysteriously, or been pasted out of alignment with their labels — were
+tested and are false.
 
 > **Read this before the sections below.** An earlier version of this handoff
 > reported that the published sheet "changed twice", that 582 cells moved
-> between 2026-03-23 and 2026-06-25, and that row alignment had to be
-> established before anything else. All three were wrong — artifacts of the
-> comparison script, not of the data. See "Corrected on 2026-08-11".
+> between 2026-03-23 and 2026-06-25, that row alignment had to be established
+> before anything else, and that the published numbers came from code never
+> committed. All four were wrong. See "Corrected on 2026-08-11".
 
 ## The published numbers are solved
 
@@ -47,14 +49,53 @@ a question about two pipelines disagreeing, which is tractable: the old
 pipeline's code is in `old_pipeline/`, its inputs are its `valid-phvs/` lists,
 and both are readable. Chasing spreadsheet history is done.
 
-A near miss worth knowing, so nobody re-derives it: the *code* commit
-`c72e781c` (2025-12-09) is not the source. Its committed CSV has 161 rows and
-differs from the sheet in 125 of 1152 cells — 80 reading higher than the sheet,
-32 lower, 12 blank-vs-populated. The 2025-12-11 CSV was generated from a later
-state than any committed code change, so the run that produced the published
-numbers used code that may never have been committed in that exact form.
-Rerunning `old_pipeline/` today will not necessarily reproduce the CSV —
-**compare against the CSV, not against a rerun.**
+## Every change in the sheet is now attributed
+
+With 13 exports and only 7 code revisions of the old pipeline, each numeric
+event lines up with either a code commit or an input-sheet change. Three
+committed CSVs match a contemporaneous sheet export exactly:
+
+| CSV commit | date | matches sheet | residual |
+|---|---|---|---|
+| `903f6d41` | 2025-08-28 | 2025-08-28 | **0 / 1449** |
+| `1e6a34db` | 2025-12-11 | 2025-12-11, 12-23, 2026-03-23 | **0 / 1332** |
+| `31bd764a` | 2026-06-09 | 2026-06-25 | 3 hand-typed `-` |
+
+And the full timeline:
+
+| transition | cells | cause |
+|---|---|---|
+| 2025-08-05 → 08-27 | 0 | — |
+| **08-27 → 08-28** | **884** | code `903f6d41` "Got it working with the two other sheets" — COPDGene/FHS added |
+| 08-28 → 11-03 | 0 | — |
+| 11-03 → 11-26 | 1 | input sheet (`Cause of death` CARDIA 36→38) |
+| **11-26 → 12-09** | **127** | code `c72e781c` "Filter out 'out of scope' rows" (2025-12-09) |
+| 12-09 → 12-11 | 3 | input sheet (Hematocrit ×2, `Cause of death`) |
+| 12-11 → 2026-03-23 | 0 | frozen |
+| 03-23 → 05-26 | 1 | hand edit (FHS `Cause of death` cleared) |
+| 05-26 → 06-18 | 3 | hand edits (`-` typed over three zero counts) |
+| 06-18 → 06-29 | 0 | frozen |
+
+**The two big events are code changes, and both are explained.** The August jump
+is the commit that first pulled in the COPDGene and FHS sheets. The December
+drop is the commit that added an "out of scope" filter on `Transform Comment` to
+the BDCHM and FHS source sheets — a deliberate *reduction*, which is why counts
+fell. `git diff 903f6d41 c72e781c -- transform_assessment/preharmonized_qaqc_report.py`
+shows it in 26 lines.
+
+**The limit on code-only explanation.** The old pipeline reads three live Google
+Sheets (`Export_BDCHM_noFHS-noCOPDGene_phv_mappings`, `FHS_VariableProperties`,
+and a COPDGene sheet) — curator-maintained, mutating independently of git. So
+some changes have no code cause and never will. The clean proof: `1e6a34db`
+(12-11) and `31bd764a` (2026-06-09) have **no code commit between them**, yet
+their CSVs differ in one cell (`Cause of death`/FHS 8/65700 → empty). Same code,
+six months apart, different answer — the FHS input sheet changed. Expect this
+whenever a diff doesn't line up with a commit.
+
+The one loose end: `ce27257c` (2025-08-27, "Fixed N values") matches neither the
+08-27 nor the 08-05 sheet (716/1206 both). Its CSV is presumably already the
+post-fix output while the sheet still held pre-fix numbers — the paste lagged the
+commit. Not worth chasing unless August numbers become relevant.
 
 ## What is measured
 
@@ -62,9 +103,10 @@ This section is the supporting evidence for the section above. It is kept
 because the individual findings still constrain what can be true, but nothing
 here is an open question any more.
 
-Four dated exports of the Google Sheet are in `xslx/`. More can be made: the
-saved Google Sheet versions they were exported from live in Siggie's Drive at
-*My Drive / old_s4_files_for_debuggin*, symlinked as `xslx/old_gsheet_versions`
+Thirteen dated exports of the Google Sheet are in `xlsx/`, covering every
+version that changed from 2025-08-05 on. More can be made: the saved Google
+Sheet versions they were exported from live in Siggie's Drive at
+*My Drive / old_s4_files_for_debuggin*, symlinked as `xlsx/old_gsheet_versions`
 (**resolves on their machine only** — dangling anywhere else, including Seven
 Bridges). Exporting another version is a manual step only they can do; ask.
 
@@ -74,87 +116,40 @@ Run:
 ./.venv/bin/python transform_assessment/s4_count_investigation/compare_s4_versions.py
 ```
 
-That reproduces everything in this section.
+That reproduces the timeline above and everything in this section.
 
-**Cell drift between consecutive versions** (summary rows excluded, blanks
-normalized — see "Corrected on 2026-08-11" for why both matter):
+Three things worth keeping.
 
-| transition | labels | cells differing |
-|---|---|---|
-| 2025-08-05 → 2025-12-23 | 151 → 148 | **823 / 1179** |
-| 2025-12-23 → 2026-03-23 | 148 → 148 | **0 / 1332** |
-| 2026-03-23 → 2026-06-25 | 148 → 148 | **4 / 1332** |
-
-**Row alignment:**
-
-```
-2025-08-05: 151 rows, 151 distinct
-2025-12-23: 148 rows, 148 distinct
-2026-03-23: 148 rows, 148 distinct
-2026-06-25: 149 rows, 148 distinct  DUPLICATED: ['8-epi-PGF2a in urine']
-2025-08-05 -> 2025-12-23: 68 shared labels in a different relative order
-2025-12-23 -> 2026-03-23: shared labels in the same order
-2026-03-23 -> 2026-06-25: shared labels in the same order
-```
-
-The one real reordering is 2025-08 → 2025-12, and it is explained: 20 labels
-were renamed (`von Willebrand factor` → `Von Willebrand factor`), which moves
-them under the sheet's alphabetical sort.
-
-Four things follow.
-
-**1. The published sheet has been frozen since December 2025.** The two
-transitions after 2025-12-23 total *four* changed cells out of 2664, and all
-four are cosmetic (below). The 2025-12-23 → 2026-03-23 window spans commit
-`1623e1f1` (2026-03-17), which disabled 7 of the 10 measurement blocks in
-`CARDIA-ingest/alcohol_servings.yaml` — and changed nothing. CARDIA alcohol
-reads 67/278328 in every version from 2025-12-23 onward. **The published S4 has
-not been regenerated from the transform specs since December 2025**, so no
+**1. The published sheet has been frozen since 2025-12-11.** Every version from
+then through 2026-06-29 is the same numbers, apart from four hand edits. The
+2025-12-23 → 2026-03-23 window spans commit `1623e1f1` (2026-03-17), which
+disabled 7 of the 10 measurement blocks in `CARDIA-ingest/alcohol_servings.yaml`
+— and changed nothing. CARDIA alcohol reads 67/278328 throughout. **The
+published S4 has never been generated from the transform specs at all**, so no
 theory explaining the generated-vs-published gap via a spec defect can be right.
 
 **2. The duplicated row is cosmetic — it shifted nothing.** `8-epi-PGF2a in
-urine` does appear twice in the 2026-06-25 export (excel rows 5 and 6), which
-confirms Siggie's half-memory. But both copies carry identical counts
-(CARDIA 1/2720, MESA 1/376), every label below it keeps its own correct counts,
-and a positional test found no offset that explains anything. It is a repeated
-whole row, not a paste slip. **This closes the question the previous handoff
-made task 1.** Per-row comparisons against the published sheet are safe.
+urine` appears twice from the 2026-06-18 export onward (excel rows 5 and 6),
+which confirms Siggie's half-memory. Both copies carry identical counts
+(CARDIA 1/2720, MESA 1/376), every label below keeps its own correct counts, and
+a positional test found no offset that explains anything. It is a repeated whole
+row, not a paste slip. Per-row comparisons against the published sheet are safe.
 
-**3. The only four real post-December changes are cosmetic:**
-
-```
-History of coronary artery bypass graft  CARDIA    2/0 -> 2/-
-Mean platelet volume                     CARDIA    2/0 -> 2/-
-Red cell distribution width              JHS       1/0 -> 1/-
-Cause of death                           FHS   8/65700 -> (blank)
-```
-
-Three are a zero count rendered as `-`. The fourth is `Cause of death` being
-emptied for FHS — worth a glance given that `CARDIA-ingest/cause_of_death.yaml`
-was later deleted from `main`, but it is one cell.
-
-**4. The December rewrite was a wholesale regeneration, not a shift.** 823 of
-1179 cells changed, 20 labels were renamed (`Alcohol`→`Alcohol Consumption`,
-`von Willebrand factor`→`Von Willebrand factor`, …), and counts inflated across
-the board:
+**3. The four post-December changes are hand edits, not pipeline output:**
 
 ```
-Cigarette smoking  ARIC   5 → 30      CARDIA 10 → 20     JHS 7 → 3
-Troponin all types ARIC   9 → 60      CARDIA  2 → 4
+2026-05-26  Cause of death                   FHS   8/65700 -> (blank)
+2026-06-18  History of coronary artery byp.  CARDIA    2/0 -> 2/-
+2026-06-18  Mean platelet volume             CARDIA    2/0 -> 2/-
+2026-06-18  Red cell distribution width      JHS       1/0 -> 1/-
 ```
 
-Cohorts CHS, COPDGene, FHS, WHI appear for the first time there. The 2025-08-05
-numbers are the same order of magnitude as what the current generator produces;
-the December ones are ~6× larger. **Tested and rejected:** that this was a
-misaligned paste. Comparing Dec position *i* against Aug position *i+offset* for
-every offset in −5..+5 gives a best match of 8.4% with no peak; a constant shift
-would show one offset near 100%. (Test written in a scratch dir and not kept —
-it is a dozen lines and the conclusion has since been superseded by the exact
-CSV match, which explains the December numbers outright.)
+Three are a zero count typed over as `-`. The fourth clears FHS cause-of-death;
+the 2026-06-09 CSV has that cell empty too, so the sheet was being reconciled by
+hand against a newer run rather than repasted.
 
 **So the ~112 low / ~30 high cells are the December pipeline's numbers vs. the
-current generator's, with no intervening corruption to explain them.** That is a
-cleaner problem than the previous handoff described.
+current generator's, with no intervening corruption to explain them.**
 
 ## What to do
 
@@ -212,6 +207,18 @@ Worth noting how the real answer was found, since it was not by more careful
 diffing: the question "which pipeline run produced these numbers?" was
 answerable directly from git, because the old pipeline committed its output CSV.
 Two `git show` commands settled what four spreadsheet exports could not.
+
+A fourth correction, made the same day: this handoff briefly claimed "compare
+against the CSV, not against a rerun", on the grounds that the published numbers
+came from code that was never committed. That was an overstatement built on a
+misreading. `c72e781c` changed *only* the `.py` and carried no CSV of its own, so
+the CSV sitting in the tree at that commit was the leftover from `903f6d41`
+(2025-08-28) — August output, three months stale. Comparing it to a December
+sheet was never meaningful. Once the 08-28 and 12-11 exports arrived, both
+matched their contemporaneous CSVs exactly, and the code history turned out to
+explain the two large events outright. **Rerunning the old pipeline is a
+reasonable thing to do**; the real obstacle is that its inputs are live Google
+Sheets that have since moved, not that the code is missing.
 
 ## The superseded pipeline is evidence
 
