@@ -1,8 +1,8 @@
-# S4 count investigation — handoff (2026-08-04)
+# S4 count investigation — handoff (2026-08-11)
 
 **Written to be read cold.** Assume the reader remembers nothing about this,
 including Siggie, who is away for a week and whose memory for this kind of
-detail is short by his own account. Nothing here depends on having been in the
+detail is short by their own account. Nothing here depends on having been in the
 session that produced it.
 
 Every figure below is reproducible with a command given inline. Where something
@@ -12,21 +12,61 @@ to trusting the numbers.
 ## The problem in one paragraph
 
 The spec-sourced S4 generator produces numbers that don't match the published
-Table S4. The obvious move — treat the published sheet as ground truth and find
-the generator's bug — **is not available**, because the published sheet is
-itself unreliable: its numbers changed twice in ways that correspond to no
-change in the transform specs, and one export contains a duplicated row. Counts
-were pasted positionally into cell B5 before xlsx generation existed, so nothing
-joined a count to its label. **Establish row alignment before diagnosing any
-individual cell.**
+Table S4. **The published numbers are now fully accounted for**: they are
+exactly the CSV committed in `1e6a34db` ("uploading generated csv from
+2025-12-11") — output of the superseded pipeline, pasted into the Google Sheet
+and never regenerated since. All 1332 compared cells match, same 148 labels,
+same order. So the comparison to make is *current generator vs. that CSV*: two
+pipelines, no spreadsheet handling in between, no corruption to explain away.
+The earlier worries — that counts had drifted, or been pasted out of alignment
+with their labels — were tested and are false.
+
+> **Read this before the sections below.** An earlier version of this handoff
+> reported that the published sheet "changed twice", that 582 cells moved
+> between 2026-03-23 and 2026-06-25, and that row alignment had to be
+> established before anything else. All three were wrong — artifacts of the
+> comparison script, not of the data. See "Corrected on 2026-08-11".
+
+## The published numbers are solved
+
+```bash
+./.venv/bin/python transform_assessment/s4_count_investigation/verify_published_source.py
+```
+
+```
+cells differing: 0/1332
+EXACT MATCH: the published sheet is this CSV.
+```
+
+`published_source_20251211.csv` sits beside that script — a copy of
+`git show 1e6a34db:transform_assessment/preharmonized_qaqc_report.csv`, checked
+in so the comparison runs without going through git.
+
+**This is the artifact to diagnose against.** Every open count question becomes
+a question about two pipelines disagreeing, which is tractable: the old
+pipeline's code is in `old_pipeline/`, its inputs are its `valid-phvs/` lists,
+and both are readable. Chasing spreadsheet history is done.
+
+A near miss worth knowing, so nobody re-derives it: the *code* commit
+`c72e781c` (2025-12-09) is not the source. Its committed CSV has 161 rows and
+differs from the sheet in 125 of 1152 cells — 80 reading higher than the sheet,
+32 lower, 12 blank-vs-populated. The 2025-12-11 CSV was generated from a later
+state than any committed code change, so the run that produced the published
+numbers used code that may never have been committed in that exact form.
+Rerunning `old_pipeline/` today will not necessarily reproduce the CSV —
+**compare against the CSV, not against a rerun.**
 
 ## What is measured
+
+This section is the supporting evidence for the section above. It is kept
+because the individual findings still constrain what can be true, but nothing
+here is an open question any more.
 
 Four dated exports of the Google Sheet are in `xslx/`. More can be made: the
 saved Google Sheet versions they were exported from live in Siggie's Drive at
 *My Drive / old_s4_files_for_debuggin*, symlinked as `xslx/old_gsheet_versions`
-(**resolves on his machine only** — dangling anywhere else, including Seven
-Bridges). Exporting another version is a manual step only he can do; ask.
+(**resolves on their machine only** — dangling anywhere else, including Seven
+Bridges). Exporting another version is a manual step only they can do; ask.
 
 Run:
 
@@ -36,49 +76,67 @@ Run:
 
 That reproduces everything in this section.
 
-**Cell drift between consecutive versions:**
+**Cell drift between consecutive versions** (summary rows excluded, blanks
+normalized — see "Corrected on 2026-08-11" for why both matter):
 
 | transition | labels | cells differing |
 |---|---|---|
-| 2025-08-05 → 2025-12-23 | 151 → 150 | **1149 / 1179** |
-| 2025-12-23 → 2026-03-23 | 150 → 150 | **0 / 1350** |
-| 2026-03-23 → 2026-06-25 | 150 → 148 | 582 / 1332 |
+| 2025-08-05 → 2025-12-23 | 151 → 148 | **823 / 1179** |
+| 2025-12-23 → 2026-03-23 | 148 → 148 | **0 / 1332** |
+| 2026-03-23 → 2026-06-25 | 148 → 148 | **4 / 1332** |
 
 **Row alignment:**
 
 ```
 2025-08-05: 151 rows, 151 distinct
-2025-12-23: 150 rows, 150 distinct
-2026-03-23: 150 rows, 150 distinct
+2025-12-23: 148 rows, 148 distinct
+2026-03-23: 148 rows, 148 distinct
 2026-06-25: 149 rows, 148 distinct  DUPLICATED: ['8-epi-PGF2a in urine']
-2025-08-05 -> 2025-12-23:  68 shared labels in a different relative order
+2025-08-05 -> 2025-12-23: 68 shared labels in a different relative order
 2025-12-23 -> 2026-03-23: shared labels in the same order
-2026-03-23 -> 2026-06-25: 147 shared labels in a different relative order
+2026-03-23 -> 2026-06-25: shared labels in the same order
 ```
 
-Three things follow.
+The one real reordering is 2025-08 → 2025-12, and it is explained: 20 labels
+were renamed (`von Willebrand factor` → `Von Willebrand factor`), which moves
+them under the sheet's alphabetical sort.
 
-**1. The published sheet does not respond to spec changes.** The
-2025-12-23 → 2026-03-23 window contains *zero* changes across 1350 cells, and it
-spans commit `1623e1f1` (2026-03-17), which disabled 7 of the 10 measurement
-blocks in `CARDIA-ingest/alcohol_servings.yaml`. CARDIA alcohol reads
-67/278328 in every version from 2025-12-23 onward while the spec sat unchanged.
-So the published S4 was not regenerated from the transform specs in that window,
-and no theory that explains the gap via a spec defect can be right.
+Four things follow.
 
-**2. The duplicated row is real.** `8-epi-PGF2a in urine` appears twice in the
-2026-06-25 export — this was a half-remembered suspicion of Siggie's and it
-checks out. *Not established:* whether the duplication shifted counts below it
-or is a harmlessly repeated row. `Alcohol Consumption` reads identically across
-all three later versions, so at least that row did not shift. **Determining the
-consequence is task 1 below.**
+**1. The published sheet has been frozen since December 2025.** The two
+transitions after 2025-12-23 total *four* changed cells out of 2664, and all
+four are cosmetic (below). The 2025-12-23 → 2026-03-23 window spans commit
+`1623e1f1` (2026-03-17), which disabled 7 of the 10 measurement blocks in
+`CARDIA-ingest/alcohol_servings.yaml` — and changed nothing. CARDIA alcohol
+reads 67/278328 in every version from 2025-12-23 onward. **The published S4 has
+not been regenerated from the transform specs since December 2025**, so no
+theory explaining the generated-vs-published gap via a spec defect can be right.
 
-**3. Row order moved.** 147 shared labels sit in a different relative order
-between 2026-03-23 and 2026-06-25. Any per-row comparison against the
-2026-06-25 sheet is suspect until this is understood.
+**2. The duplicated row is cosmetic — it shifted nothing.** `8-epi-PGF2a in
+urine` does appear twice in the 2026-06-25 export (excel rows 5 and 6), which
+confirms Siggie's half-memory. But both copies carry identical counts
+(CARDIA 1/2720, MESA 1/376), every label below it keeps its own correct counts,
+and a positional test found no offset that explains anything. It is a repeated
+whole row, not a paste slip. **This closes the question the previous handoff
+made task 1.** Per-row comparisons against the published sheet are safe.
 
-**The event most worth explaining is 2025-08-05 → 2025-12-23**, which rewrote
-essentially every cell and inflated counts across the board:
+**3. The only four real post-December changes are cosmetic:**
+
+```
+History of coronary artery bypass graft  CARDIA    2/0 -> 2/-
+Mean platelet volume                     CARDIA    2/0 -> 2/-
+Red cell distribution width              JHS       1/0 -> 1/-
+Cause of death                           FHS   8/65700 -> (blank)
+```
+
+Three are a zero count rendered as `-`. The fourth is `Cause of death` being
+emptied for FHS — worth a glance given that `CARDIA-ingest/cause_of_death.yaml`
+was later deleted from `main`, but it is one cell.
+
+**4. The December rewrite was a wholesale regeneration, not a shift.** 823 of
+1179 cells changed, 20 labels were renamed (`Alcohol`→`Alcohol Consumption`,
+`von Willebrand factor`→`Von Willebrand factor`, …), and counts inflated across
+the board:
 
 ```
 Cigarette smoking  ARIC   5 → 30      CARDIA 10 → 20     JHS 7 → 3
@@ -87,31 +145,73 @@ Troponin all types ARIC   9 → 60      CARDIA  2 → 4
 
 Cohorts CHS, COPDGene, FHS, WHI appear for the first time there. The 2025-08-05
 numbers are the same order of magnitude as what the current generator produces;
-the December ones are ~6× larger. **That window, not the specs, is the likely
-source of the ~112 cells where the generator reads lower than the published
-sheet.** (Inference, not measurement — it is the obvious hypothesis, untested.)
+the December ones are ~6× larger. **Tested and rejected:** that this was a
+misaligned paste. Comparing Dec position *i* against Aug position *i+offset* for
+every offset in −5..+5 gives a best match of 8.4% with no peak; a constant shift
+would show one offset near 100%. (Test written in a scratch dir and not kept —
+it is a dozen lines and the conclusion has since been superseded by the exact
+CSV match, which explains the December numbers outright.)
+
+**So the ~112 low / ~30 high cells are the December pipeline's numbers vs. the
+current generator's, with no intervening corruption to explain them.** That is a
+cleaner problem than the previous handoff described.
 
 ## What to do
 
-1. **Determine whether the duplicated row shifted anything.** Check whether
-   label→count pairing in the 2026-06-25 export is consistent with 2026-03-23
-   below the duplicate. If counts shifted, every per-row comparison done to date
-   is meaningless and needs redoing; if not, the duplicate is cosmetic and the
-   count differences are real. Everything else waits on this.
-2. **Get the two missing exports.** Siggie offered 2026-07-28 and 2026-08-03;
-   they are not in `xslx/` yet. They bracket the most recent changes and are
-   likely the most diagnostic. **Ask him for them** — he can export from Google
-   Sheets, and this is not something to work around.
-3. **Relate count changes to script changes.** Siggie's framing: *"I doubt we'll
-   be able to solve the problem without relating count changes to script
-   changes."* For each sheet transition, find what changed in the generator
-   between those dates. Start with the 2025-08-05 → 2025-12-23 inflation. The
-   superseded pipeline is preserved in `old_pipeline/` for exactly this.
-4. **Only then** diagnose the ~112 low / ~30 high cells individually.
+1. **Diagnose the current generator against `published_source_20251211.csv`.**
+   Run S4 on Seven Bridges, then compare generated output to that CSV per cell.
+   `compare_s4_to_published.py` in the parent directory does generated-vs-sheet;
+   point it at the CSV instead, or extend `verify_published_source.py`, which
+   already parses both shapes. The ~112 low / ~30 high cells are the target.
+2. **Test the filtering asymmetry first** — it is the leading hypothesis and it
+   is cheap. The old pipeline filtered phvs against `valid-phvs/{cohort}-ingest.tsv`
+   where a list existed and left them *unfiltered* where none did. ARIC, CARDIA,
+   and JHS had no lists. If the generator reads low mainly for those three
+   cohorts, that asymmetry is the explanation and the published numbers are
+   overcounts rather than the generator undercounting. Group the diff by cohort
+   before looking at individual rows.
+3. **Decide what "correct" means, then say so out loud.** If the old pipeline
+   was overcounting unfiltered cohorts, the published Table S4 is wrong and the
+   generator is right — which is a finding for the team, not a bug to fix. This
+   is the question to bring back to the group.
 
-**Do not start from per-row leads** (`Troponin all types` ARIC, `AHI
-Apnea-Hypopnea Index` CHS) that earlier handoffs flagged. They predate the row
-alignment finding and may be artifacts of it.
+**Two things not to spend time on.** The 2026-07-28 / 2026-08-03 exports Siggie
+offered: nothing has changed in the sheet since December, so they will be
+identical to 2026-06-25 — skip unless a cheap confirmation is wanted. And the
+per-row leads earlier handoffs flagged (`Troponin all types` ARIC, `AHI
+Apnea-Hypopnea Index` CHS): they predate all of this and should be re-derived
+from the CSV comparison rather than carried forward.
+
+## Corrected on 2026-08-11
+
+The previous handoff's headline figures were wrong. All three errors were in the
+comparison script, and all are now fixed in `compare_s4_versions.py`:
+
+- **Blank encoding.** A visually-empty cell is stored as `''` in the 2026-03-23
+  export and as `None` in 2026-06-25. Comparing raw values counted every such
+  cell as a change, reporting **582 changed cells where there are 4**. The
+  earlier "1149" for the December transition was inflated the same way (true
+  value: 823). `norm()` now maps blanks to `None` and all numbers to `float`.
+- **Summary rows counted as variables.** The 2026-06-25 export dropped the
+  trailing `TOTALS` and `TOTAL VARIABLES` rows. Counting them as data rows made
+  "150 → 148 labels" look like two lost variables; no variables were lost.
+  `SUMMARY_ROWS` now excludes them.
+- **Duplicate read as reordering.** The row-alignment check compared shared
+  labels by raw position, so the one duplicated row made every label below it
+  look displaced — reported as "147 shared labels in a different relative
+  order". Deduplicating before comparing shows the order is unchanged.
+
+Two claims in the previous handoff die with these fixes: that the published
+numbers "changed twice" (they changed once), and that row order/duplication
+might have corrupted the pairing of counts to labels (it did not). The general
+lesson the handoff already stated applies to its own numbers: **verify with
+content, not plausible proxies** — a diff count is a proxy, and this one was
+measuring a storage detail.
+
+Worth noting how the real answer was found, since it was not by more careful
+diffing: the question "which pipeline run produced these numbers?" was
+answerable directly from git, because the old pipeline committed its output CSV.
+Two `git show` commands settled what four spreadsheet exports could not.
 
 ## The superseded pipeline is evidence
 
@@ -120,18 +220,33 @@ alignment finding and may be artifacts of it.
 and its notes (`CLAUDE.OLD.md`). Both the script and `valid-phvs/` are symlinked
 from `transform_assessment/` so they still run.
 
+**Don't mistake `old_pipeline/preharmonized_qaqc_report.csv` for the published
+source.** It is a *later* run of the same pipeline: it differs from the sheet in
+exactly one cell (`Cause of death` / FHS, blank where the sheet has 8/65700).
+That single cell is also the only substantive change in the 2026-06-25 export,
+which suggests someone re-ran the old pipeline and patched that one value into
+the sheet. Use `published_source_20251211.csv` as the reference; verify with
+
+```bash
+./.venv/bin/python transform_assessment/s4_count_investigation/verify_published_source.py \
+    --csv transform_assessment/s4_count_investigation/old_pipeline/preharmonized_qaqc_report.csv
+```
+
 Two things in there bear directly on the investigation:
 
 - **The paste workflow:** copy all rows from the generated CSV *except the
   header*, paste starting at **line 5** of the template. Positional alignment by
-  hand, no key joining count to label. This is the mechanism that makes
-  misalignment plausible.
+  hand, no key joining count to label. This made misalignment plausible a
+  priori — but it was tested and did not happen (see finding 2 and 4 above).
+  Still worth knowing, since it is how any future paste can go wrong.
 - **The filtering logic:** phvs were filtered against
   `valid-phvs/{cohort}-ingest.tsv` where a list existed, and *unfiltered* where
   none did. ARIC, CARDIA, and JHS had no lists — all their phvs were counted.
-  COPDGene and FHS had lists but no data rows. That asymmetry is a candidate
-  explanation for the December inflation, since COPDGene/FHS/CHS/WHI first appear
-  in that transition. (Hypothesis, untested.)
+  COPDGene and FHS had lists but no data rows. This is now the leading
+  explanation for the generator reading low, and it is **directly testable**:
+  group the generator-vs-CSV diff by cohort and see whether the gap concentrates
+  in ARIC/CARDIA/JHS. If it does, the published numbers are overcounts. That is
+  task 2 above. (Hypothesis, untested.)
 
 ## Related open threads
 

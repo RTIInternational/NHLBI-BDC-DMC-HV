@@ -40,16 +40,19 @@ them — see [`SPEC_SOURCED_S4_DESIGN.md`](SPEC_SOURCED_S4_DESIGN.md).
 
 ## The count investigation (active)
 
-**The generated S4 does not reproduce the published S4, and the published sheet
-is not trustworthy either.** This is the main open work — see
-[`s4_count_investigation/HANDOFF.md`](s4_count_investigation/HANDOFF.md).
+**The generated S4 does not reproduce the published S4.** This is the main open
+work — see [`s4_count_investigation/HANDOFF.md`](s4_count_investigation/HANDOFF.md).
 
-Short version: comparing four dated exports of the Google Sheet shows the
-published numbers changed twice in ways that do not correspond to any change in
-the transform specs, and the 2026-06-25 export contains a duplicated row. Counts
-were pasted positionally into cell B5 before xlsx generation existed, so nothing
-joined a count to its label. Row alignment has to be established before any
-per-row diagnosis is meaningful.
+Where it stands: the published numbers are no longer mysterious. They are
+exactly the CSV committed on 2025-12-11 (`1e6a34db`), output of the superseded
+pipeline, pasted into the Google Sheet and never regenerated — all 1332 compared
+cells match. Earlier theories that the numbers had drifted over time or been
+pasted out of alignment with their labels were tested and rejected. What remains
+is a straight comparison of two pipelines, and the leading hypothesis is that
+the old one *overcounted*: it filtered phvs against `valid-phvs/{cohort}.tsv`
+where a list existed and left them unfiltered where none did, and ARIC, CARDIA,
+and JHS had no lists. If that holds, the published table is wrong and the
+generator is right — a finding for the team rather than a bug to fix.
 
 ## What's here
 
@@ -66,10 +69,17 @@ per-row diagnosis is meaningful.
 **Investigation** — `s4_count_investigation/`
 
 - `HANDOFF.md` — state of the investigation; start here.
+- `published_source_20251211.csv` — the pipeline output the published Table S4
+  was pasted from. **This, not the spreadsheet, is what to diagnose against.**
+- `verify_published_source.py` — proves that CSV reproduces the published sheet
+  exactly (0/1332 cells differ).
 - `xslx/` — four dated exports of the Google Sheet, the only record of its
   history.
 - `compare_s4_versions.py` — compares published versions to each other and
   checks row alignment.
+- `s4_sheets.py` — shared sheet/CSV readers for both scripts. Normalizes blank
+  encodings and drops summary rows; skipping either fabricates hundreds of
+  changes that aren't in the data.
 - `old_pipeline/` — the superseded pipeline that produced the published numbers
   (`preharmonized_qaqc_report.py`, `valid-phvs/`, and its notes). Symlinked from
   this directory so it still runs. It is evidence, not dead code: its filtering
