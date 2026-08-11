@@ -10,6 +10,11 @@
           expr: case(({phv00078536} == 1, "OMOP:4184832"))
         procedure_provenance:
           value: PATIENT_SELF_REPORT
+        procedure_status:
+          populated_from: phv00078536
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     Procedure:
       populated_from: pht003407
@@ -24,3 +29,8 @@
           expr: case(({phv00193199} == 1, "OMOP:4006788"))
         procedure_provenance:
           value: PATIENT_SELF_REPORT
+        procedure_status:
+          populated_from: phv00193199
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT

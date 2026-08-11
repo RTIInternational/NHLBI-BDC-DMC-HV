@@ -12,6 +12,11 @@
         procedure_provenance:
           value: PATIENT_SELF_REPORT
           range: string
+        procedure_status:
+          populated_from: phv00121381
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT
 - class_derivations:
     Procedure:
       populated_from: pht001871
@@ -26,3 +31,8 @@
         procedure_provenance:
           value: PATIENT_SELF_REPORT
           range: string
+        procedure_status:
+          populated_from: phv00121601
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT
