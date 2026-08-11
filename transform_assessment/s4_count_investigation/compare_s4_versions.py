@@ -8,9 +8,7 @@ to the count investigation.  ``compare_s4_to_published.py`` compares one
 generated run against one published sheet; this compares published versions to
 each other.
 
-The sheets share a layout: labels in col 1, cohort headers in row 3, phv/n
-subheaders in row 4, data from row 5, cohort column pairs from col 2.  The
-2025-08-05 export has no TOTALS column; later ones carry TOTALS at cols 20/21.
+Sheet parsing, and the normalizations it depends on, live in ``s4_sheets``.
 
 Usage:
     ./.venv/bin/python transform_assessment/s4_count_investigation/compare_s4_versions.py
@@ -21,13 +19,14 @@ from __future__ import annotations
 
 import argparse
 import re
+import sys
 from pathlib import Path
 
-import openpyxl
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from s4_sheets import fmt, load_xlsx  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 DEFAULT_DIR = HERE / "xslx"
-SHEET = "Table S4"
 DATE_RE = re.compile(r"(\d{4}-\d{2}-\d{2})")
 
 
@@ -38,39 +37,13 @@ def version_key(path: Path) -> str:
 
 
 def load(path: Path) -> tuple[list[str], dict[str, dict[str, tuple]]]:
-    """Return (labels in sheet order, {label: {cohort: (phv, n)}}).
+    """Labels in sheet order plus {label: {cohort: (phv, n)}}.
 
-    Labels are returned as a list as well as a dict so callers can check row
-    *order* and duplication, not just membership -- a duplicated or shifted row
-    is a live hypothesis for why published counts disagree with generated ones.
+    Labels come back as a list as well as a dict so callers can check row *order*
+    and duplication, not just membership.
     """
-    ws = openpyxl.load_workbook(path, data_only=True)[SHEET]
-    cohorts = {
-        ws.cell(row=3, column=c).value: c
-        for c in range(2, ws.max_column + 1)
-        if ws.cell(row=3, column=c).value
-    }
-    labels: list[str] = []
-    rows: dict[str, dict[str, tuple]] = {}
-    for r in range(5, ws.max_row + 1):
-        raw = ws.cell(row=r, column=1).value
-        if raw is None or not str(raw).strip():
-            continue
-        label = str(raw).strip()
-        labels.append(label)
-        rows.setdefault(
-            label,
-            {
-                co: (ws.cell(row=r, column=c0).value, ws.cell(row=r, column=c0 + 1).value)
-                for co, c0 in cohorts.items()
-            },
-        )
+    labels, rows, _ = load_xlsx(path)
     return labels, rows
-
-
-def fmt(cell: tuple) -> str:
-    phv, n = cell
-    return "-" if phv in (None, "") else f"{phv}/{n}"
 
 
 def main() -> None:
@@ -78,6 +51,8 @@ def main() -> None:
     ap.add_argument("--dir", type=Path, default=DEFAULT_DIR, help="directory of .xlsx exports")
     ap.add_argument("--row", action="append", default=[], help="trace one label across versions (repeatable)")
     ap.add_argument("--labels", action="store_true", help="row-alignment check only")
+    ap.add_argument("--max-detail", type=int, default=25,
+                    help="list individual changed cells when a transition has at most this many")
     args = ap.parse_args()
 
     paths = sorted(args.dir.glob("*.xlsx"), key=version_key)
@@ -99,9 +74,14 @@ def main() -> None:
         print(f"  {v}: {len(labels)} rows, {len(set(labels))} distinct" + (f"  DUPLICATED: {sorted(dupes)}" if dupes else ""))
     for a, b in zip(versions, versions[1:]):
         la, lb = data[a][0], data[b][0]
-        shared = [x for x in la if x in set(lb)]
-        misordered = [x for i, x in enumerate(shared) if [y for y in lb if y in set(la)][i] != x]
-        note = f"{len(misordered)} shared labels in a different relative order" if misordered else "shared labels in the same order"
+        # Compare the shared labels as *sequences*, after dropping duplicates.
+        # A repeated row shifts every later position by one without reordering
+        # anything, and comparing raw positions reports that as a reordering --
+        # which is how the 2026-06-25 duplicate was first misread.
+        sa = list(dict.fromkeys(x for x in la if x in set(lb)))
+        sb = list(dict.fromkeys(x for x in lb if x in set(la)))
+        note = "shared labels in the same order" if sa == sb else (
+            f"{sum(x != y for x, y in zip(sa, sb))} shared labels in a different relative order")
         print(f"  {a} -> {b}: {note}")
     print()
 
@@ -122,6 +102,14 @@ def main() -> None:
             f"  {a} -> {b}: labels {len(A)}->{len(B)} (common {len(common)}), "
             f"cells differing {len(diffs)}/{len(common) * len(cohorts)}"
         )
+        # When a transition is small, the individual cells are the finding --
+        # print them rather than making the reader write another script.
+        if diffs and len(diffs) <= args.max_detail:
+            for lab, co in diffs:
+                print(f"      {lab[:38]:<40} {co:<9} {fmt(A[lab][co]):>14} -> {fmt(B[lab][co])}")
+        for tag, extra in ((a, set(A) - set(B)), (b, set(B) - set(A))):
+            if extra:
+                print(f"      labels only in {tag}: {sorted(extra)}")
     print()
 
     for target in args.row:
