@@ -204,8 +204,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401078}) + ":JHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
-        age_at_observation:
-          expr: "{phv00401085} * 365"
         observations:
           class_derivations:
           - MeasurementObservation:
@@ -213,6 +211,8 @@
               slot_derivations:
                 associated_participant:
                   expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401078}) + ":JHS")'
+                age_at_observation:
+                  expr: "{phv00401085} * 365"
                 observation_type:
                   value: "OMOP:4176265"
                 method_type:
@@ -231,6 +231,8 @@
               slot_derivations:
                 associated_participant:
                   expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401078}) + ":JHS")'
+                age_at_observation:
+                  expr: "{phv00401085} * 365"
                 observation_type:
                   value: "OMOP:4241837"
                 method_type:
