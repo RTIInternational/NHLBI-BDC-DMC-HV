@@ -9,8 +9,9 @@ in [`README.md`](README.md), not here.
 > back on it, and at least one of its claims has already drifted from the code
 > (see the Parsing bullet). That matters more than it looks: the design decision
 > recorded there — key variable identity on `observation_type` — is very likely
-> what made 282 non-measurement spec files invisible to the generator and cost a
-> session to diagnose. See "How the `observation_type` assumption spread" below.
+> what made the ~300 non-measurement spec files invisible to the generator and
+> cost a session to diagnose. See "How the `observation_type` assumption spread"
+> below.
 >
 > Don't treat that section as settled just because it is written down
 > confidently. The rest of the doc is lower-stakes.
@@ -50,8 +51,8 @@ Emitting one row per `observation_type` is a correct statement about
 **measurement** files, where one file really can define several concepts. It
 says nothing about how to *find* variables in general. But `observation_type`
 became the identity join everywhere, and Condition / DrugExposure / Procedure /
-Demography specs have no `observation_type` — so 282 files became structurally
-invisible and 50 S4 rows silently rendered empty.
+Demography specs have no `observation_type` — so ~300 files became structurally
+invisible and 51 S4 rows silently rendered empty.
 
 The tell is that every justification recorded for the concept-code join is a
 measurement justification: the dual-coding bullet below argues it entirely in
@@ -126,13 +127,32 @@ map to separate rows in the S4 template, so S4 emits **one row per
 ## Non-measurement classes (designed, not yet built)
 
 The generator currently extracts phvs only from measurement value slots
-(`_VALUE_SLOTS` in `spec_phv_report.py`), so **282 spec files are structurally
-invisible** — Condition (173), DrugExposure (95), Procedure (14), and
-Demography/Person (23) carry their identity in slots that are never read. The
-effect is 50 empty rows in S4: every `Taking <drug>` row, the disease/status
-rows, and the demographics rows. `TableS1.tsv` retains all 48 non-measurement
-rows with a `var_name` matching spec filename stems, so label resolution is
-already solved; the parser just never asks.
+(`_VALUE_SLOTS` in `spec_phv_report.py`), so **the non-measurement spec files
+are structurally invisible** — they carry their identity in slots that are never
+read. Counts as of 2026-08-12, over 836 spec files:
+
+| class | files |
+|---|---|
+| MeasurementObservation (parsed) | 472 |
+| Condition | 171 |
+| DrugExposure | 94 |
+| Observation / SdohObservation | 28 |
+| Procedure | 14 |
+| Person | 11 |
+| Demography | 11 |
+| Visit / ResearchStudy / Participant (not S4 variables) | 33 |
+
+The effect is **51 empty rows** of 149 template data rows: every `Taking <drug>`
+row, the disease/status rows (Angina, Asthma, Diabetes, COPD status, …), and the
+demographics rows (Ethnicity, Death, Cause of death). Reproduce with the run in
+`s4_count_investigation/new_pipeline_runs/`. `TableS1.tsv` retains the
+non-measurement rows with a `var_name` matching spec filename stems, so label
+resolution is already solved; the parser just never asks.
+
+> Earlier versions of this section said "282 spec files" and "50 empty rows".
+> Neither figure was reproducible — the per-class breakdown printed alongside
+> "282" actually summed to 305. Treat the table above as the measured numbers
+> and re-measure rather than trusting any single total.
 
 **What counts as a "relevant raw variable" per class** (settled with the repo owner,2026-08-04, by reading one representative spec per class):
 

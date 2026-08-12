@@ -110,7 +110,7 @@ is still live work; the other two are recorded for reference.
 
 1. **`pub only` dominates — ~351 cells across all cohorts.** These are rows the
    published table populates and the generator leaves blank. That is the
-   282-invisible-specs / 50-empty-rows problem already described under "Related
+   invisible-non-measurement-specs problem already described under "Related
    open threads", and it is the single largest term in the gap. Fixing it is
    designed but not built. **Still the place to start** — and note this one is
    unaffected by the filter decision: those rows are blank because a whole class
@@ -148,9 +148,10 @@ published table is no longer a goal, so the tasks that served it are gone.
    document should be re-derived from a current run before it is trusted.
    `./hv_dataqc/sb_scripts/run_s4_report.sh`, no args.
 2. **Fix the `pub only` / empty-rows problem** — §"Related open threads". This
-   is the real work. 282 spec files are invisible to the generator, producing 50
-   empty S4 rows, because variable identity is keyed on `observation_type` and
-   Condition / DrugExposure / Procedure / Demography specs don't have one. The
+   is the real work. ~300 spec files are invisible to the generator, producing
+   51 empty S4 rows of 149, because variable identity is keyed on
+   `observation_type` and Condition / DrugExposure / Procedure / Demography
+   specs don't have one. The
    extraction rules are designed in
    [`../SPEC_SOURCED_S4_DESIGN.md`](../SPEC_SOURCED_S4_DESIGN.md)
    §"Non-measurement classes" — designed, not built. **This is where to start.**
@@ -215,10 +216,11 @@ Two things in there bear directly on the investigation:
 
 ## Related open threads
 
-- **282 spec files are invisible to the generator**, producing 50 empty S4 rows
-  (all `Taking <drug>`, the disease/status rows, demographics). Cause: variable
-  identity is keyed on `observation_type`, which Condition / DrugExposure /
-  Procedure / Demography specs don't have. The extraction rules to fix this are
+- **~300 spec files are invisible to the generator**, producing 51 empty S4 rows
+  of 149 (all `Taking <drug>`, the disease/status rows, demographics). Cause:
+  variable identity is keyed on `observation_type`, which Condition /
+  DrugExposure / Procedure / Demography specs don't have. Measured 2026-08-12;
+  per-class counts are in the design doc. The extraction rules to fix this are
   settled and written up in [`../SPEC_SOURCED_S4_DESIGN.md`](../SPEC_SOURCED_S4_DESIGN.md)
   §"Non-measurement classes" — designed, not built. Independent of the count
   investigation; can proceed in parallel.
