@@ -203,10 +203,10 @@ variables:
   - White blood cell count
 
 # Printed above the trailing block of spec variables that match no template
-# row (IL-18, the combined pr_qrs_qt variable, etc.). They are appended after
-# a blank separator row so they are clearly distinct from the template rows.
+# row (IL-18, the combined pr_qrs_qt variable, etc.). There is no blank
+# separator row before it — see the unmatched_note bullet at the top.
 unmatched_note: >-
   Variables below have data in the transform specs but no matching row in the
   Table S4 template (e.g. Interleukin 18, or a combined PR/QRS/QT spec variable
   the template splits into three rows). Listed here for review; reconcile by
-  adding a template row, adding an alias above, or confirming out-of-scope.
+  adding a template row or confirming the variable is out of scope.

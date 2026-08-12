@@ -84,9 +84,10 @@ uv run python -m transform_assessment.spec_phv_report \
 > goal. An *increase* needs no explanation; a *decrease* is worth a look.
 > Background: [`../transform_assessment/README.md`](../transform_assessment/README.md).
 >
-> The old sheet-based `preharmonized_qaqc_report.py` (a symlink into
-> `transform_assessment/s4_count_investigation/old_pipeline/`) is **evidence,
-> not a cross-check**. Don't run it — it reads live Google Sheets that have
+> The old sheet-based `preharmonized_qaqc_report.py` and the whole count
+> investigation were removed on 2026-08-12; recover from tag
+> `pre-s4-doc-cleanup-20260812` if you ever need to audit the published table.
+> Don't try to re-run that pipeline — it reads live Google Sheets that have
 > since moved.
 
 ## S5 — harmonized summary table (SB enclave)

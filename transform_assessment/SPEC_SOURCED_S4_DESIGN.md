@@ -144,8 +144,8 @@ read. Counts as of 2026-08-12, over 836 spec files:
 
 The effect is **51 empty rows** of 149 template data rows: every `Taking <drug>`
 row, the disease/status rows (Angina, Asthma, Diabetes, COPD status, …), and the
-demographics rows (Ethnicity, Death, Cause of death). Reproduce with the run in
-`s4_count_investigation/new_pipeline_runs/`. `TableS1.tsv` retains the
+demographics rows (Ethnicity, Death, Cause of death). Reproduce by counting
+all-blank rows in any current S4 run. `TableS1.tsv` retains the
 non-measurement rows with a `var_name` matching spec filename stems, so label
 resolution is already solved; the parser just never asks.
 
@@ -231,6 +231,64 @@ Two consequences beyond this file:
   own right, and today it is silently invisible to both the validator and the
   generator. A validator check for value-less `Quantity` blocks would fire
   exactly once right now, which is the right size for a new check.
+
+## Known defects — found 2026-08-12, not fixed
+
+Audited after two silent failures turned up (the `observation_type` narrowing,
+and a `cohort_keys` omission that blanked the whole HCHS/SOL column). Each of
+these is **verified against the code and the data**, and each fails *silently* —
+a blank cell or a wrong number, never an error. None are fixed; they are
+recorded so the next person doesn't rediscover them.
+
+**1. N can be silently undercounted — the highest-risk one, because it publishes
+a wrong number rather than a blank.** `_col_n_valid`
+(`spec_phv_report.py:259-264`) returns `None` for three distinct failures: PHT
+missing from the extract, column missing from the PHT, and `n_valid` present but
+null. `build_cohort_rows` (lines 350-357) then counts that phv toward
+`phv_count` while contributing 0 to `total_n`. The result is a row claiming e.g.
+6 phvs with an N covering only 4 — plausible-looking and wrong, with nothing
+counting or reporting the misses. A stale dbGaP cache triggers the same path via
+the `phv_name_map` miss at line 257.
+
+**2. Table S5 drops rows on letter-case drift.** `table_s5/` matches
+`TABLE_S5_LABELS` against Table S1 exactly and case-**sensitively** — there is
+no `lower()` anywhere in the package — while the S4 side normalizes case
+(`spec_phv_report.py:498`). Two tables, one label source, opposite policies.
+Currently affected: `Bilirubin total` (S1: `Bilirubin Total`) and `interleukin 6
+in blood` (S1: `Interleukin 6 in blood`). **This is a regression** — both were
+`matched` in the June run; see
+`hv_dataqc/sb_output/20260630T172556Z/s5_coverage_20260630_172655.tsv` lines 13
+and 60. `93ac3910` emptied `S5_LABEL_ALIASES` on the claim that all 19 aliases
+were dead under S1; for these two the alias needed *updating*, not deleting.
+`format_paste_tsv` emits a blank line, so the paste still aligns and the failure
+is invisible in the delivered artifact. (`Fasting lipids` also misses but has no
+S1 row at all — pre-existing, not a regression.)
+
+**3. Demography labels are lowercase where everything else capitalizes.**
+`harmonized_extract.yaml` maps `sex: sex` / `race: race` / `ethnicity:
+ethnicity`, and `extract_harmonized_summaries.py:331-337` uses the value
+directly as `bdc_label` — the only such assignment that bypasses the S1 lookup.
+S1 and `s4_layout.yaml` both say `Sex` / `Race` / `Ethnicity`, so any join on
+`bdc_label` misses.
+
+**Why none of this was caught, and the one guard that would have.** Every real
+config file except `TableS1.tsv` has zero test coverage: all 17 tests in
+`test_spec_phv_report.py` build layout dicts inline, so `load_layout(None)` and
+`DEFAULT_LAYOUT_PATH` are never exercised. `test_table_s5.py:330` asserts in a
+*comment* that S1 matches every S5 label directly — contradicted by the data
+above, and never tested.
+
+The superseded pipeline had the check that would have caught all of these: a
+bidirectional config-vs-data cohort reconciliation, plus union rather than
+truncate semantics so an unconfigured cohort showed up as an extra column
+instead of vanishing. The rewrite dropped both. A test asserting, over the
+**real shipped configs**, that (a) every layout cohort resolves to an existing
+ingest dir, (b) every ingest dir is reachable from some layout cohort, (c) every
+`TABLE_S5_LABELS` entry resolves to a real S1 `Variable Label`, and (d) every
+`demography_columns` label is a real S1 label, would have caught defects 2 and 3,
+the LTRC/SPIROMICS drop, and the original HCHS/SOL bug. See
+[`history/S4_COUNT_INVESTIGATION_REMOVED.md`](history/S4_COUNT_INVESTIGATION_REMOVED.md)
+for where the old check lived.
 
 ## Open on this design
 

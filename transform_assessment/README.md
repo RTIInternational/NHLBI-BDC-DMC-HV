@@ -93,23 +93,10 @@ commented out; will they return for ingest? The project lead's read is that the 
 live phvs are beer/wine/liquor components and the disabled expressions summed
 them — see [`SPEC_SOURCED_S4_DESIGN.md`](SPEC_SOURCED_S4_DESIGN.md).
 
-## The count investigation
+## The published Table S4 is not a target
 
-**The generated S4 does not reproduce the published S4**, and as of 2026-08-12
-that is largely *expected* rather than a defect to chase — see
-[`s4_count_investigation/HANDOFF.md`](s4_count_investigation/HANDOFF.md).
-
-Where it stands: the published numbers are no longer mysterious. They are
-exactly the CSV committed on 2025-12-11 (`1e6a34db`), output of the superseded
-pipeline, pasted into the Google Sheet and frozen since — all 1332 compared
-cells match. Across 13 dated exports, every earlier change is attributed to
-either a code commit (the two large ones: adding COPDGene/FHS in August, adding
-an "out of scope" filter in December) or an edit to the curator-maintained
-Google Sheets the old pipeline read. Earlier theories that the numbers had
-drifted mysteriously or been pasted out of alignment with their labels were
-tested and rejected.
-
-### Both of the old pipeline's filters are retired (decided 2026-08-12)
+**The generated S4 does not reproduce the published S4, and it is not supposed
+to.** As of 2026-08-12 the published table is a frozen historical artifact.
 
 The old pipeline narrowed its phv set two ways. **Neither is carried forward,
 and neither should be**, per the project lead in Slack: *"those lists of valid
@@ -125,19 +112,9 @@ The current generator has no equivalent of either, and no path by which a
 per-phv scope decision reaches it. Any phv in a live spec's value slot is
 counted. That is now the intended behavior, not a gap to close.
 
-**Therefore: expect the new numbers to come out higher than published**, and
-treat that as correct unless something *else* explains a decrease. This retires
-the "old pipeline overcounted via the valid-phvs asymmetry" hypothesis from the
-other direction — it was already dead on the evidence (the gap did not
-concentrate in the three unfiltered cohorts), and it is now moot regardless,
-since the comparison it served is no longer the standard the generator is held
-to.
-
-**The published Table S4 is a historical artifact.** It is the frozen output of
-a pipeline whose inputs no longer exist in maintainable form. Reproducing it is
-not a goal. It stays useful only as a sanity check — a variable whose count
-moves by orders of magnitude, or drops when it should rise, is still worth a
-look.
+**Therefore: expect the new numbers to come out higher than published.** The
+retired filters only ever removed phvs, so an increase needs no explanation. A
+*decrease* is worth investigating.
 
 One caveat: a scope channel survives that *is* honored, silently. Curators
 sometimes comment out a block in a spec YAML instead of annotating a sheet, and
@@ -145,57 +122,28 @@ sometimes comment out a block in a spec YAML instead of annotating a sheet, and
 saying so. `CARDIA-ingest/alcohol_servings.yaml` is the known case. Grep the
 spec for commented-out blocks before treating a low count as a bug.
 
+The cell-by-cell investigation that once chased this gap has been removed, along
+with the comparison scripts and 13 dated exports of the published sheet. See
+[`history/S4_COUNT_INVESTIGATION_REMOVED.md`](history/S4_COUNT_INVESTIGATION_REMOVED.md)
+for what it concluded and how to restore it (tag `pre-s4-doc-cleanup-20260812`).
+
 ## What's here
 
-**Current pipeline**
+Four things, and that is the whole directory.
 
 - `spec_phv_report.py` — the spec-sourced S4/S5 generator. Design and rationale
   in [`SPEC_SOURCED_S4_DESIGN.md`](SPEC_SOURCED_S4_DESIGN.md).
 - `config/s4_layout.yaml` — canonical cohort columns and template row order.
-- `compare_s4_to_published.py` — compares one generated run against one
-  published sheet.
 - `spec_code_fixes_20260803.tsv` — the six concept-code corrections, in the form
   handed to the spec owner.
-
-**Investigation** — `s4_count_investigation/`
-
-- `HANDOFF.md` — current state and the task list; **start here.**
-- `published_source_20251211.csv` — the pipeline output the published Table S4
-  was pasted from. Reference copy of the frozen published numbers.
-- `verify_published_source.py` — proves that CSV reproduces the published sheet
-  exactly (0/1332 cells differ).
-- `xlsx/` — 13 dated exports of the Google Sheet, covering every version that
-  changed. The only record of its history. **Published-sheet exports only** —
-  the comparison scripts glob this directory and parse dates from filenames.
-- `new_pipeline_runs/` — output of the spec-sourced generator, for comparison
-  against the published numbers. `s4-new-pipeline-2026-08-03.xlsx` is the
-  latest and uses the published template layout.
-- `change_ledger.py` / `s4_change_ledger.csv` — every cell that ever changed in
-  the published table, tagged with its cause (code commit, input-sheet change,
-  or hand edit).
-- `compare_s4_versions.py` — compares published versions to each other and
-  checks row alignment.
-- `s4_sheets.py` — shared sheet/CSV readers for both scripts. Normalizes blank
-  encodings and drops summary rows; skipping either fabricates hundreds of
-  changes that aren't in the data.
-- `old_pipeline/` — the superseded pipeline that produced the published numbers
-  (`preharmonized_qaqc_report.py`, `valid-phvs/`, and its notes). Symlinked from
-  this directory so it still runs. It is evidence, not a fallback: both of its
-  filters are retired (see above), and its inputs were live Google Sheets that
-  have since moved, so a rerun would not reproduce the published numbers anyway.
-  Keep it for reading, not for running.
-
-**History** — `history/`, completed work kept for its reasoning. None of it is
-required reading; consult it when something current looks arbitrary.
-
-- `S1_LABEL_SOURCE_MIGRATION.md` — the `harmonized_vars.tsv` → Table S1
-  migration.
-- `SPEC_CODE_CORRECTIONS_20260803.md` — per-code rationale for the six
-  concept-code fixes, and what was deliberately *not* changed.
-- `S4_PUBLISHED_NUMBERS_FORENSICS.md` — how the published S4 numbers were traced
-  to a specific 2025-12-11 CSV, and every cell change attributed to a cause.
-  Closed out; the question it answers is settled and the goal it served is
-  retired.
+- `history/` — completed work kept for its reasoning. None of it is required
+  reading; consult it when something current looks arbitrary.
+  - `S1_LABEL_SOURCE_MIGRATION.md` — the `harmonized_vars.tsv` → Table S1
+    migration.
+  - `SPEC_CODE_CORRECTIONS_20260803.md` — per-code rationale for the six
+    concept-code fixes, and what was deliberately *not* changed.
+  - `S4_COUNT_INVESTIGATION_REMOVED.md` — what the deleted count investigation
+    concluded, and how to restore it if the published table ever needs auditing.
 
 ## Running S4
 
@@ -207,3 +155,22 @@ caches locally):
 ```
 
 Output lands in `/sbgenomics/workspace/S4-output-files/`.
+
+## S4 and S5 cover different cohorts — say so on delivery
+
+**S4 has 9 cohort columns. S5 covers 11.** LTRC and SPIROMICS have transform
+specs (19 and 23 files) and appear in S5's `KNOWN_COHORTS`, but they have no S4
+column, so their variables contribute nothing to S4 and are dropped without a
+message. The curator was asked whether they should be added and did not say
+they should, so the current behavior stands.
+
+**When S5 is delivered, tell the curator which cohorts it includes, and that the
+set is not the same as S4's.** The difference is invisible in either artifact —
+S4 simply has no column, and nothing in the output says a cohort was skipped.
+Two tables in one supplement covering different cohort sets is exactly the kind
+of thing that gets noticed after publication.
+
+There is one loose end worth knowing: because the two lists are maintained
+independently (`config/s4_layout.yaml` vs `run_s5_report.sh:95`), nothing checks
+them against each other or against the ingest dirs on disk. A cohort added to
+the specs appears in neither table until someone edits both by hand.
