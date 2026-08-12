@@ -151,14 +151,24 @@ published table is no longer a goal, so the tasks that served it are gone.
    is the real work. ~300 spec files are invisible to the generator, producing
    51 empty S4 rows of 149, because variable identity is keyed on
    `observation_type` and Condition / DrugExposure / Procedure / Demography
-   specs don't have one. The
-   extraction rules are designed in
+   specs don't have one. The extraction rules are designed in
    [`../SPEC_SOURCED_S4_DESIGN.md`](../SPEC_SOURCED_S4_DESIGN.md)
    §"Non-measurement classes" — designed, not built. **This is where to start.**
 3. **Make the generator report matched-but-empty template rows.** A row that is
    silently blank because its class was never parsed is exactly the failure that
-   took a full session to notice. Cheap, and it prevents a repeat.
-4. **Sanity-check the new run against the published table** — *not* to make them
+   took a full session to notice. Cheap, and it prevents a repeat. While you are
+   there, add the config-reconciliation test described under "Related open
+   threads" — it is the guard that catches this whole family of bugs.
+4. **Fix the silently-undercounted N.** `_col_n_valid`
+   (`spec_phv_report.py:259-264`) returns `None` for three different failures —
+   PHT missing from the extract, column missing from the PHT, `n_valid` null —
+   and `build_cohort_rows:350-357` then counts that PHV toward `phv_count` while
+   contributing 0 to `total_n`. The result is a row claiming e.g. 6 phvs with an
+   N covering only 4: a plausible-looking wrong number, with nothing counting or
+   reporting the misses. **This is the highest-risk defect found** — every other
+   one blanks a cell, this one corrupts a published value. A stale dbGaP cache
+   triggers it too, via the `phv_name_map` miss at line 257.
+5. **Sanity-check the new run against the published table** — *not* to make them
    match, but to catch real bugs. The signal to look for is a count that
    **decreases** (unexplained by the known spec deletions below) or moves by
    orders of magnitude. Increases are expected and need no investigation.
@@ -224,12 +234,58 @@ Two things in there bear directly on the investigation:
   settled and written up in [`../SPEC_SOURCED_S4_DESIGN.md`](../SPEC_SOURCED_S4_DESIGN.md)
   §"Non-measurement classes" — designed, not built. Independent of the count
   investigation; can proceed in parallel.
-- **What else did the S1 migration break silently?** The `observation_type`
-  narrowing came from it. So did a `cohort_keys` omission that blanked the entire
-  HCHS/SOL column (code correct, unit test correct, config file silently missing
-  an entry, no test covering the real config). The granular history is on the
-  abandoned branch `feature/S5-report-20260603`; `93ac3910` on this branch is a
-  squash and shows nothing. Worth an audit for other config-vs-code gaps.
+- **What else did the S1 migration break silently? — audited 2026-08-12, and the
+  answer is "more".** The `observation_type` narrowing came from it, as did the
+  `cohort_keys` omission that blanked HCHS/SOL. Three further defects of the same
+  shape are verified below. All fail *silently* — a blank cell, never an error —
+  which is the pattern to keep hunting. The granular history is on the abandoned
+  branch `feature/S5-report-20260603`; `93ac3910` here is a squash and shows
+  nothing.
+
+  1. **LTRC and SPIROMICS specs are silently discarded — 42 files.**
+     `s4_layout.yaml` lists 9 cohorts; the specs tree has 11 ingest dirs. LTRC
+     (19 specs) and SPIROMICS (23) resolve to no column, so their variables
+     contribute nothing. Worse, `spec_phv_report.py:587-590` *deletes*
+     all-blank rows from the unmatched appendix, so a variable found only in
+     those two cohorts vanishes without even a note. This is the HCHS/SOL bug
+     inverted: there, a display name had no key; here, keys have no display
+     name. **Caveat: this may be intentional** — whether LTRC/SPIROMICS belong
+     in S4 is an open curator question (see `../README.md`). The defect is that
+     nothing distinguishes a deliberate omission from a typo.
+  2. **Three Table S5 rows render blank on letter-case drift alone.**
+     `TABLE_S5_LABELS` is matched against S1 exactly and case-**sensitively**
+     (no `lower()` anywhere in `table_s5/`), while the S4 side normalizes case
+     (`spec_phv_report.py:498`). `Bilirubin total` vs S1's `Bilirubin Total`,
+     and `interleukin 6 in blood` vs `Interleukin 6 in blood`, now miss.
+     **This is a regression**: both were `matched` in the June run — see
+     `hv_dataqc/sb_output/20260630T172556Z/s5_coverage_20260630_172655.tsv`
+     lines 13 and 60. `93ac3910` emptied `S5_LABEL_ALIASES` on the claim that
+     "all 19 label aliases were dead under Table S1"; for these two the alias
+     should have been *updated*, not deleted. `format_paste_tsv` emits a blank
+     line, so the paste still aligns and the failure is invisible in the
+     artifact. (`Fasting lipids` also misses but has no S1 row at all —
+     pre-existing, not a regression.)
+  3. **Demography labels are lowercase where everything else capitalizes.**
+     `harmonized_extract.yaml` maps `sex: sex` / `race: race` /
+     `ethnicity: ethnicity`, and `extract_harmonized_summaries.py:331-337` uses
+     the value directly as `bdc_label` — the one assignment that bypasses the S1
+     lookup. S1 and `s4_layout.yaml` both say `Sex` / `Race` / `Ethnicity`, so
+     any join on `bdc_label` misses.
+
+  **The old pipeline had the check that would have caught all of these.**
+  `old_pipeline/preharmonized_qaqc_report.py:316-319` printed a bidirectional
+  set difference — cohorts in data vs cohorts configured, both directions. It
+  also *unioned* config and data cohorts (line 285) rather than letting config
+  truncate, so an unconfigured cohort showed up as an extra column instead of
+  vanishing. The rewrite dropped both. Restoring that reconciliation as a test
+  over the **real shipped configs** is the single highest-value guard: it would
+  have caught findings 1-3 and the original HCHS/SOL bug.
+
+  **Why the tests missed all of it:** every real config file except
+  `TableS1.tsv` has zero test coverage. All 17 tests in `test_spec_phv_report.py`
+  build layout dicts inline; `load_layout(None)` / `DEFAULT_LAYOUT_PATH` is never
+  exercised. `test_table_s5.py:330` asserts in a *comment* that "S1 matches every
+  S5 label directly" — contradicted by the data above, and never tested.
 - **Should the generator report matched-but-empty template rows?** A row that is
   silently blank because its class was never parsed is exactly the failure that
   took a full session to notice — the run log said only "1 spec variable had no
