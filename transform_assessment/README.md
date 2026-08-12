@@ -127,6 +127,34 @@ with the comparison scripts and 13 dated exports of the published sheet. See
 [`history/S4_COUNT_INVESTIGATION_REMOVED.md`](history/S4_COUNT_INVESTIGATION_REMOVED.md)
 for what it concluded and how to restore it (tag `pre-s4-doc-cleanup-20260812`).
 
+## What to do next
+
+In priority order. Everything premised on matching the published table is gone.
+
+1. **Rerun S4 on Seven Bridges from current `main`.** Every number quoted in
+   these docs predates the 2026-08-04 HCHS/SOL fix (`24396404`) and should be
+   re-derived before it is trusted. `./hv_dataqc/sb_scripts/run_s4_report.sh`,
+   no args.
+2. **Build the non-measurement extraction — this is the real work.** ~300 spec
+   files are invisible to the generator, producing 51 empty rows of 149, because
+   variable identity is keyed on `observation_type` and Condition /
+   DrugExposure / Procedure / Demography specs don't have one. The extraction
+   rules are settled in
+   [`SPEC_SOURCED_S4_DESIGN.md`](SPEC_SOURCED_S4_DESIGN.md)
+   §"Non-measurement classes" — designed, not built. **Start here.**
+3. **Make the generator report matched-but-empty template rows**, and add the
+   config-reconciliation test described in
+   [`SPEC_SOURCED_S4_DESIGN.md`](SPEC_SOURCED_S4_DESIGN.md) §"Known defects". A
+   row that is silently blank because its class was never parsed took a full
+   session to notice once. With the published table no longer serving as a
+   check, nothing else would catch it.
+4. **Fix the silently-undercounted N** — §"Known defects" defect 1. It publishes
+   a plausible-looking wrong number rather than a blank, which makes it the
+   highest-risk item on this list.
+
+The three defects in §"Known defects" are recorded but unfixed; 2 and 3 there
+affect S5 output today.
+
 ## What's here
 
 Four things, and that is the whole directory.
