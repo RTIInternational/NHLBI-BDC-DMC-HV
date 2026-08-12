@@ -1,12 +1,17 @@
 #!/usr/bin/env python
 """Compare a generated Table S4 against the published supplementary sheet.
 
-The published S4 is a *reference*, not an oracle — it was produced by an older
-pipeline (harmonized_vars.tsv + var_report XML), so exact agreement is not the
-goal and counting rules must never be tuned to hit its numbers. What this is
-for: telling apart "changed because a spec or Table S1 changed" from "changed
-because the generator has a bug." A cell that is blank here but populated there,
-or low by an order of magnitude, is the second kind until proven otherwise.
+The published S4 is a *historical artifact*, not an oracle. It was produced by a
+superseded pipeline that read curator spreadsheets and filtered phvs against
+hand-made allow lists; both of those filters were retired on 2026-08-12 as
+unmaintainable, so **exact agreement is not the goal** and counting rules must
+never be tuned to hit its numbers. See ``README.md``.
+
+Expect the generated table to read *higher* — the retired filters only ever
+removed phvs. An increase needs no explanation. What this is for: spotting the
+changes that go the other way. A cell that is blank here but populated there, or
+that *drops* by an order of magnitude, is a generator bug until proven
+otherwise.
 
 Usage:
     ./.venv/bin/python transform_assessment/compare_s4_to_published.py \\
