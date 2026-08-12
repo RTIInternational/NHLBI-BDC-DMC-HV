@@ -38,10 +38,11 @@ commented out; will they return for ingest? Anne Thessen's read is that the 3
 live phvs are beer/wine/liquor components and the disabled expressions summed
 them — see [`SPEC_SOURCED_S4_DESIGN.md`](SPEC_SOURCED_S4_DESIGN.md).
 
-## The count investigation (active)
+## The count investigation
 
-**The generated S4 does not reproduce the published S4.** This is the main open
-work — see [`s4_count_investigation/HANDOFF.md`](s4_count_investigation/HANDOFF.md).
+**The generated S4 does not reproduce the published S4**, and as of 2026-08-12
+that is largely *expected* rather than a defect to chase — see
+[`s4_count_investigation/HANDOFF.md`](s4_count_investigation/HANDOFF.md).
 
 Where it stands: the published numbers are no longer mysterious. They are
 exactly the CSV committed on 2025-12-11 (`1e6a34db`), output of the superseded
@@ -53,11 +54,41 @@ Google Sheets the old pipeline read. Earlier theories that the numbers had
 drifted mysteriously or been pasted out of alignment with their labels were
 tested and rejected.
 
-What remains is a straight comparison of two pipelines, and the leading
-hypothesis is that the old one *overcounted*: it filtered phvs against
-`valid-phvs/{cohort}.tsv` where a list existed and left them unfiltered where
-none did, and ARIC, CARDIA, and JHS had no lists. If that holds, the published
-table is wrong and the generator is right.
+### Both of the old pipeline's filters are retired (decided 2026-08-12)
+
+The old pipeline narrowed its phv set two ways. **Neither is carried forward,
+and neither should be**, per the project lead in Slack: *"those lists of valid
+phv were made a year ago and probably are no longer valid. You also shouldn't go
+by what is in the spreadsheets anymore. We can't keep those up to date."*
+
+| filter | what it was | status |
+|---|---|---|
+| `valid-phvs/{cohort}.tsv` | per-cohort allow lists, one bare phv per line, hand-supplied ~2025 | **retired — stale** |
+| `Transform Comment == "out of scope"` | curator annotation in two live Google Sheets | **retired — unmaintainable** |
+
+The current generator has no equivalent of either, and no path by which a
+per-phv scope decision reaches it. Any phv in a live spec's value slot is
+counted. That is now the intended behavior, not a gap to close.
+
+**Therefore: expect the new numbers to come out higher than published**, and
+treat that as correct unless something *else* explains a decrease. This retires
+the "old pipeline overcounted via the valid-phvs asymmetry" hypothesis from the
+other direction — it was already dead on the evidence (the gap did not
+concentrate in the three unfiltered cohorts), and it is now moot regardless,
+since the comparison it served is no longer the standard the generator is held
+to.
+
+**The published Table S4 is a historical artifact.** It is the frozen output of
+a pipeline whose inputs no longer exist in maintainable form. Reproducing it is
+not a goal. It stays useful only as a sanity check — a variable whose count
+moves by orders of magnitude, or drops when it should rise, is still worth a
+look.
+
+One caveat: a scope channel survives that *is* honored, silently. Curators
+sometimes comment out a block in a spec YAML instead of annotating a sheet, and
+`yaml.safe_load` never sees it — so the generator drops those phvs without
+saying so. `CARDIA-ingest/alcohol_servings.yaml` is the known case. Grep the
+spec for commented-out blocks before treating a low count as a bug.
 
 ## What's here
 
@@ -94,9 +125,10 @@ table is wrong and the generator is right.
   changes that aren't in the data.
 - `old_pipeline/` — the superseded pipeline that produced the published numbers
   (`preharmonized_qaqc_report.py`, `valid-phvs/`, and its notes). Symlinked from
-  this directory so it still runs. It is evidence, not dead code: its filtering
-  rules and its paste-at-line-5 workflow are what the investigation is trying to
-  reconstruct.
+  this directory so it still runs. It is evidence, not a fallback: both of its
+  filters are retired (see above), and its inputs were live Google Sheets that
+  have since moved, so a rerun would not reproduce the published numbers anyway.
+  Keep it for reading, not for running.
 
 **History** — `history/`, completed work kept for its reasoning
 

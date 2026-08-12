@@ -1,15 +1,57 @@
-# S4 count investigation — handoff (2026-08-11)
-
-**Written to be read cold.** Assume the reader remembers nothing about this,
-including Siggie, who is away for a week and whose memory for this kind of
-detail is short by their own account. Nothing here depends on having been in the
-session that produced it.
+# S4 count investigation — handoff (updated 2026-08-12)
 
 Every figure below is reproducible with a command given inline. Where something
 is inference rather than measurement, it says so. Prefer re-running the commands
 to trusting the numbers.
 
-## The problem in one paragraph
+## Read this first: the goal changed on 2026-08-12
+
+**Reproducing the published Table S4 is no longer the objective.** Most of this
+document was written while it was, so read the rest through this lens.
+
+The old pipeline narrowed its phv set two ways, and the project lead has retired
+both (Slack, 2026-08-12): *"those lists of valid phv were made a year ago and
+probably are no longer valid. You also shouldn't go by what is in the
+spreadsheets anymore. We can't keep those up to date."*
+
+| filter | what it was | status |
+|---|---|---|
+| `valid-phvs/{cohort}.tsv` | per-cohort allow lists, one bare phv per line, hand-supplied ~2025 | **retired — stale** |
+| `Transform Comment == "out of scope"` | curator annotation in two live Google Sheets | **retired — unmaintainable** |
+
+The current generator implements neither, and has no path by which a per-phv
+scope decision reaches it (verified: it reads specs + dbGaP extracts + Table S1,
+and never calls `load_gsheet_as_df`). Any phv in a live spec's value slot is
+counted. **That is the intended behavior now.**
+
+**Consequence: the new numbers are expected to be higher than published.** An
+increase needs no explanation. A *decrease* does.
+
+What this retires outright:
+
+- The valid-phvs asymmetry hypothesis. It was already dead on evidence (the gap
+  did not concentrate in ARIC/CARDIA/JHS), and is now moot as well.
+- The "old pipeline overcounted, so the published table is wrong" framing. There
+  is no longer a right/wrong to settle — the two pipelines answer different
+  questions, and only one of them has maintainable inputs.
+- Any task premised on matching the published cells. Sections below that assume
+  otherwise are marked.
+
+What survives as genuinely useful work: the **`pub only` / empty-rows problem**
+(§"Related open threads"), which is a real generator defect independent of any
+filter, and the **per-row extremes**, as a sanity check rather than a target.
+
+**One scope channel does survive, and it is invisible.** Curators sometimes
+express a scope decision by commenting out a block in a spec YAML rather than by
+annotating a sheet — e.g. the seven disabled `value_decimal` expressions in
+`CARDIA-ingest/alcohol_servings.yaml`, or `ARIC-ingest/bdy_hgt.yaml:51`
+("COMMENTED OUT: ABI table"). `yaml.safe_load` never sees these, so the
+generator honors them silently, as absence. This is why `Alcohol Consumption`
+CARDIA reads 3 against the published 67 — and 3 is the correct answer. **When a
+count comes in lower than expected, grep the spec for commented-out blocks
+before assuming a bug.**
+
+## The problem in one paragraph (as it stood before 2026-08-12)
 
 The spec-sourced S4 generator produces numbers that don't match the published
 Table S4. **The published numbers are now fully accounted for**: they are
@@ -120,11 +162,12 @@ version that changed from 2025-08-05 on. **`xlsx/` holds published-sheet
 exports only** — generated runs live in `new_pipeline_runs/`, because the
 comparison scripts glob `xlsx/*.xlsx` and parse a date from each filename, so a
 generated file dropped in there silently corrupts the version history. More can
-be made: the saved Google
-Sheet versions they were exported from live in Siggie's Drive at
-*My Drive / old_s4_files_for_debuggin*, symlinked as `xlsx/old_gsheet_versions`
-(**resolves on their machine only** — dangling anywhere else, including Seven
-Bridges). Exporting another version is a manual step only they can do; ask.
+be made: the saved Google Sheet versions they were exported from live in the
+repo owner's Drive at *My Drive / old_s4_files_for_debuggin*, symlinked as
+`xlsx/old_gsheet_versions` (**resolves on that one machine only** — dangling
+anywhere else, including Seven Bridges). Exporting another version is a manual
+step only they can do; ask. Since the published table is no longer the target
+(see the top of this document), you are unlikely to need one.
 
 Run:
 
@@ -146,7 +189,8 @@ theory explaining the generated-vs-published gap via a spec defect can be right.
 
 **2. The duplicated row is cosmetic — it shifted nothing.** `8-epi-PGF2a in
 urine` appears twice from the 2026-06-18 export onward (excel rows 5 and 6),
-which confirms Siggie's half-memory. Both copies carry identical counts
+which confirms a half-remembered report of a duplicate. Both copies carry
+identical counts
 (CARDIA 1/2720, MESA 1/376), every label below keeps its own correct counts, and
 a positional test found no offset that explains anything. It is a repeated whole
 row, not a paste slip. Per-row comparisons against the published sheet are safe.
@@ -212,26 +256,33 @@ concentrate in ARIC/CARDIA/JHS, the three cohorts the old pipeline counted
 unfiltered. It does not: FHS is by far the worst (69 differing, only 19
 matching) and is a *filtered* cohort. Do not spend more time on it.
 
-Three things the data does point at, in priority order:
+Three things the data points at. **Re-prioritized 2026-08-12** — only the first
+is still live work; the other two are recorded for reference.
 
 1. **`pub only` dominates — ~351 cells across all cohorts.** These are rows the
    published table populates and the generator leaves blank. That is the
    282-invisible-specs / 50-empty-rows problem already described under "Related
    open threads", and it is the single largest term in the gap. Fixing it is
-   designed but not built. **Start here.**
-2. **17 exact-half cases**, spread across unrelated variables and cohorts:
-   `Height` ARIC 162632→81297, `Hematocrit` ARIC 119990→59995, `Activity
-   LP-PLA2` CHS 10758→5379, `Diastolic blood pressure` WHI 2473953→1247711. A
-   clean 2× factor across variables that share nothing suggests a structural
-   double-count in the **old** pipeline — counting each phv once per visit, or
-   summing two stats rows — rather than 17 separate bugs. Worth one focused look
-   at `old_pipeline/preharmonized_qaqc_report.py`'s counting loop; if it holds,
-   the published numbers are inflated 2× for those rows.
-3. **Per-row extremes worth explaining individually:** `AHI Apnea-Hypopnea
-   Index` CHS pub=4 gen=**196**, `BMI` FHS pub=2 gen=**41** (generator wildly
-   higher), against `Alcohol Consumption` CARDIA pub=67 gen=3 (the known
-   commented-out-expressions case, where 3 is correct) and `Troponin all types`
-   ARIC pub=60 gen=9.
+   designed but not built. **Still the place to start** — and note this one is
+   unaffected by the filter decision: those rows are blank because a whole class
+   of specs is never parsed, not because anything filtered them out. It is a
+   generator defect either way.
+2. **17 exact-half cases** — *reference only, no longer worth chasing.* Spread
+   across unrelated variables and cohorts: `Height` ARIC 162632→81297,
+   `Hematocrit` ARIC 119990→59995, `Activity LP-PLA2` CHS 10758→5379,
+   `Diastolic blood pressure` WHI 2473953→1247711. A clean 2× factor across
+   variables that share nothing suggests a structural double-count in the **old**
+   pipeline — counting each phv once per visit, or summing two stats rows. That
+   would mean the published numbers are inflated 2× for those rows, which is now
+   a fact about a retired pipeline and changes nothing about the generator.
+3. **Per-row extremes** — *now sanity checks, not defects.* `AHI Apnea-Hypopnea
+   Index` CHS pub=4 gen=**196** and `BMI` FHS pub=2 gen=**41** are the generator
+   reading higher, which is exactly what removing the filters predicts; they need
+   no explanation unless the magnitude looks implausible on inspection. The two
+   worth a look are the ones going the *wrong* way: `Alcohol Consumption` CARDIA
+   pub=67 gen=3 (already explained — commented-out expressions, 3 is correct) and
+   **`Troponin all types` ARIC pub=60 gen=9**, which is unexplained and is a
+   decrease. That last one is the only per-row item that still merits time.
 
 **Caveat on HCHS/SOL:** the 8/3 run predates `24396404` (2026-08-04, "restore the
 HCHS/SOL cohort_keys mapping"). Its 0-differing/62-pub-only column is that bug
@@ -240,16 +291,41 @@ other eight cohorts are unaffected.
 
 ## What to do
 
-1. **Rerun S4 on Seven Bridges from current `main`** and redo the comparison
-   above. The 8/3 run predates the HCHS/SOL fix, and possibly other fixes.
-   Everything below should be re-derived from a current run.
-2. **Attack the `pub only` cells** — the empty-row problem in "Related open
-   threads". Largest term, already designed.
-3. **Test the 2× hypothesis** against the old pipeline's counting loop.
-4. **Then** the per-row extremes.
+Revised 2026-08-12 after the filter decision. The ordering changed: matching the
+published table is no longer a goal, so the tasks that served it are gone.
 
-**Do not** carry forward the older per-row leads as framed in earlier handoffs;
-re-derive them from a current run.
+1. **Rerun S4 on Seven Bridges from current `main`.** The 8/3 run predates the
+   HCHS/SOL fix (`24396404`) and possibly others, so every number in this
+   document should be re-derived from a current run before it is trusted.
+   `./hv_dataqc/sb_scripts/run_s4_report.sh`, no args.
+2. **Fix the `pub only` / empty-rows problem** — §"Related open threads". This
+   is the real work. 282 spec files are invisible to the generator, producing 50
+   empty S4 rows, because variable identity is keyed on `observation_type` and
+   Condition / DrugExposure / Procedure / Demography specs don't have one. The
+   extraction rules are designed in
+   [`../SPEC_SOURCED_S4_DESIGN.md`](../SPEC_SOURCED_S4_DESIGN.md)
+   §"Non-measurement classes" — designed, not built. **Start here.**
+3. **Make the generator report matched-but-empty template rows.** A row that is
+   silently blank because its class was never parsed is exactly the failure that
+   took a full session to notice. Cheap, and it prevents a repeat.
+4. **Sanity-check the new run against the published table** — *not* to make them
+   match, but to catch real bugs. The signal to look for is a count that
+   **decreases** (unexplained by the known spec deletions below) or moves by
+   orders of magnitude. Increases are expected and need no investigation.
+   `verify_published_source.py --xlsx <run>` still does the comparison; just
+   read its output with the new expectation.
+
+**Dropped from the old task list** (do not pick these up):
+
+- ~~Test the 2× / double-count hypothesis against the old pipeline's counting
+  loop.~~ It concerned whether the *published* numbers were inflated. Nothing
+  depends on that answer any more. The 17 exact-half cases are recorded below
+  for the record only.
+- ~~Group the generator-vs-CSV diff by cohort to test the valid-phvs
+  asymmetry.~~ Done, and it came back negative; the filter is retired regardless.
+
+**Do not** carry forward per-row leads as framed in earlier handoffs; re-derive
+from a current run.
 
 ## Corrected on 2026-08-11
 
@@ -320,14 +396,16 @@ Two things in there bear directly on the investigation:
   hand, no key joining count to label. This made misalignment plausible a
   priori — but it was tested and did not happen (see finding 2 and 4 above).
   Still worth knowing, since it is how any future paste can go wrong.
-- **The filtering logic:** phvs were filtered against
-  `valid-phvs/{cohort}-ingest.tsv` where a list existed, and *unfiltered* where
-  none did. ARIC, CARDIA, and JHS had no lists — all their phvs were counted.
-  COPDGene and FHS had lists but no data rows. This is now the leading
-  explanation for the generator reading low, and it is **directly testable**:
-  group the generator-vs-CSV diff by cohort and see whether the gap concentrates
-  in ARIC/CARDIA/JHS. If it does, the published numbers are overcounts. That is
-  task 2 above. (Hypothesis, untested.)
+- **The filtering logic (retired 2026-08-12 — see the top of this document):**
+  phvs were filtered against `valid-phvs/{cohort}-ingest.tsv` where a list
+  existed, and *unfiltered* where none did. Six lists exist — CHS, COPDGene,
+  FHS, HCHS/SOL, MESA, WHI — so ARIC, CARDIA, and JHS had all their phvs
+  counted. (`CLAUDE.OLD.md` says the missing lists are ARIC/CARDIA/**MESA**;
+  that prose is stale — a MESA list arrived later and JHS never got one. Trust
+  the directory, not the note.) These lists are ~a year old and are no longer
+  considered valid, so the current generator does not use them and should not.
+  The asymmetry was tested as an explanation for the count gap and came back
+  negative: FHS, a *filtered* cohort, has by far the largest gap.
 
 ## Related open threads
 
@@ -347,7 +425,10 @@ Two things in there bear directly on the investigation:
 - **Should the generator report matched-but-empty template rows?** A row that is
   silently blank because its class was never parsed is exactly the failure that
   took a full session to notice — the run log said only "1 spec variable had no
-  template row" and looked healthy.
+  template row" and looked healthy. **Answered: yes** — this is task 3 in "What
+  to do". It matters more now that the published table is no longer a check on
+  the output: with nothing to diff against, a silently blank row has no second
+  chance to be caught.
 
 ## Spec changes that will move counts, unrelated to any bug
 
@@ -371,9 +452,11 @@ generator. Both arrived in the `origin/main` merge on this branch (`62e7a7e6`):
   `run_s4_report.sh:89` and `run_extracts.sh:103` map it explicitly. This
   inconsistency already caused one blanked column. Worth normalizing.
 - Use `./.venv/bin/python` directly; `uv` cannot write its cache in the sandbox.
-- `git fetch` / `git push` fail in the sandbox (no SSH auth); process
-  substitution (`diff <(...)`) is blocked — use `git patch-id` or temp files.
-  **Siggie can run anything the sandbox blocks: ask rather than working around.**
+- *(Applies to sandboxed AI-agent sessions only; ignore if you are working in a
+  normal shell.)* `git fetch` / `git push` fail in the sandbox (no SSH auth);
+  process substitution (`diff <(...)`) is blocked — use `git patch-id` or temp
+  files. **The repo owner can run anything the sandbox blocks: ask rather than
+  working around it.**
 - `validate_ingest_yamls.py` over all 842 files exceeds the 120s Bash timeout;
   run it in the background or import `validate_block` for the files you touched.
 - BDCHM schema: `NHLBI-BDC-DMC-HM/src/bdchm/schema/bdchm.yaml` (root symlink
@@ -404,5 +487,5 @@ one tracking comment): `OMOP:4282779`→`OMOP:35811013`,
 `OBA:VT0000217`→`OBA:VT0000717`, `OMOP:8842`→`OMOP:4021291`,
 `OBA:2050108`→`OMOP:4138462`. Rationale per code in
 [`../history/SPEC_CODE_CORRECTIONS_20260803.md`](../history/SPEC_CODE_CORRECTIONS_20260803.md).
-Stephanie is expected to land these in `main` independently; if she does, drop
-them here rather than landing both.
+The spec owner is expected to land these in `main` independently; if they do,
+drop them from this branch rather than landing both.
