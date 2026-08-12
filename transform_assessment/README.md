@@ -79,7 +79,14 @@ table is wrong and the generator is right.
 - `verify_published_source.py` — proves that CSV reproduces the published sheet
   exactly (0/1332 cells differ).
 - `xlsx/` — 13 dated exports of the Google Sheet, covering every version that
-  changed. The only record of its history.
+  changed. The only record of its history. **Published-sheet exports only** —
+  the comparison scripts glob this directory and parse dates from filenames.
+- `new_pipeline_runs/` — output of the spec-sourced generator, for comparison
+  against the published numbers. `s4-new-pipeline-2026-08-03.xlsx` is the
+  latest and uses the published template layout.
+- `change_ledger.py` / `s4_change_ledger.csv` — every cell that ever changed in
+  the published table, tagged with its cause (code commit, input-sheet change,
+  or hand edit).
 - `compare_s4_versions.py` — compares published versions to each other and
   checks row alignment.
 - `s4_sheets.py` — shared sheet/CSV readers for both scripts. Normalizes blank

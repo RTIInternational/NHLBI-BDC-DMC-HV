@@ -84,13 +84,25 @@ fell. `git diff 903f6d41 c72e781c -- transform_assessment/preharmonized_qaqc_rep
 shows it in 26 lines.
 
 **The limit on code-only explanation.** The old pipeline reads three live Google
-Sheets (`Export_BDCHM_noFHS-noCOPDGene_phv_mappings`, `FHS_VariableProperties`,
-and a COPDGene sheet) — curator-maintained, mutating independently of git. So
-some changes have no code cause and never will. The clean proof: `1e6a34db`
-(12-11) and `31bd764a` (2026-06-09) have **no code commit between them**, yet
-their CSVs differ in one cell (`Cause of death`/FHS 8/65700 → empty). Same code,
-six months apart, different answer — the FHS input sheet changed. Expect this
-whenever a diff doesn't line up with a commit.
+Sheets, curator-maintained and mutating independently of git — spreadsheet /
+worksheet as passed to `load_gsheet_as_df`:
+
+| spreadsheet | worksheet | has `Transform Comment`? |
+|---|---|---|
+| `Export_BDCHM_noFHS-noCOPDGene_phv_mappings` | `Export_BDCHM_noFHS-noCOPDGene_p` | yes |
+| `FHS_VariableProperties` | `right_join_full` | yes |
+| `COPDGene_FullMatchWithManuals_Join_Dedup_XML_BDC Mapped Variables V1` | `COPDGene_FullMatchWithManuals_J` | no filter applied |
+
+The `Transform Comment` column is a **curator annotation**, and the "out of
+scope" filter (`c72e781c`, 2025-12-09) honors it rather than imposing a rule of
+its own. So the 127-cell December drop reflects curator scope decisions, not a
+counting change — worth knowing before anyone treats it as a bug.
+
+Because those inputs move, some changes have no code cause and never will. The
+clean proof: `1e6a34db` (12-11) and `31bd764a` (2026-06-09) have **no code
+commit between them**, yet their CSVs differ in one cell (`Cause of death`/FHS
+8/65700 → empty). Same code, six months apart, different answer — the FHS input
+sheet changed. Expect this whenever a diff doesn't line up with a commit.
 
 The one loose end: `ce27257c` (2025-08-27, "Fixed N values") matches neither the
 08-27 nor the 08-05 sheet (716/1206 both). Its CSV is presumably already the
@@ -104,7 +116,11 @@ because the individual findings still constrain what can be true, but nothing
 here is an open question any more.
 
 Thirteen dated exports of the Google Sheet are in `xlsx/`, covering every
-version that changed from 2025-08-05 on. More can be made: the saved Google
+version that changed from 2025-08-05 on. **`xlsx/` holds published-sheet
+exports only** — generated runs live in `new_pipeline_runs/`, because the
+comparison scripts glob `xlsx/*.xlsx` and parse a date from each filename, so a
+generated file dropped in there silently corrupts the version history. More can
+be made: the saved Google
 Sheet versions they were exported from live in Siggie's Drive at
 *My Drive / old_s4_files_for_debuggin*, symlinked as `xlsx/old_gsheet_versions`
 (**resolves on their machine only** — dangling anywhere else, including Seven
@@ -148,34 +164,92 @@ Three are a zero count typed over as `-`. The fourth clears FHS cause-of-death;
 the 2026-06-09 CSV has that cell empty too, so the sheet was being reconciled by
 hand against a newer run rather than repasted.
 
+**Will these hand edits need re-making after the next paste? Only the three
+dashes, and only if the convention is wanted.** They are purely presentational —
+`2/0` displayed as `2/-` — and a paste of generated output will overwrite them
+with `0` again. The FHS `Cause of death` clearing does *not* need redoing: the
+generator has no value there either, so a paste reproduces the blank on its own.
+
+The better fix is to stop re-making them by hand: decide whether a zero count
+should render as `-` and put that in the generator's xlsx writer, so the
+convention survives every future paste. Seven cells is not worth a manual
+checklist that will be forgotten. If the decision is "leave zeros as 0", then
+nothing needs redoing at all.
+
 **So the ~112 low / ~30 high cells are the December pipeline's numbers vs. the
 current generator's, with no intervening corruption to explain them.**
 
+## Generated vs. published: first real comparison (2026-08-11)
+
+A generated run finally exists to compare: `new_pipeline_runs/`, holding a
+2026-06-29 run (old CSV-ish layout) and **`s4-new-pipeline-2026-08-03.xlsx`**,
+which uses the published template layout and is the one to use. Both were found
+in Downloads, not produced this session.
+
+```bash
+./.venv/bin/python transform_assessment/s4_count_investigation/verify_published_source.py \
+    --xlsx transform_assessment/s4_count_investigation/new_pipeline_runs/s4-new-pipeline-2026-08-03.xlsx
+```
+
+649 of 1332 cells differ. Broken down by cohort, with "pub only" meaning the
+published table has a value and the generator leaves the cell empty:
+
+```
+cohort      same  both differ  gen only  pub only   old pipeline
+ARIC          55           50         2        41   NO valid-phvs list
+CARDIA        79           23        10        36   NO valid-phvs list
+CHS           66           37         5        40   filtered
+COPDGene     103           12        16        17   filtered
+FHS           19           69         4        56   filtered
+HCHS/SOL      86            0         0        62   filtered  (see caveat)
+JHS           89           22         5        32   NO valid-phvs list
+MESA          81           23         8        36   filtered
+WHI          105           10         2        31   filtered
+```
+
+**The valid-phvs asymmetry hypothesis is dead.** It predicted the gap would
+concentrate in ARIC/CARDIA/JHS, the three cohorts the old pipeline counted
+unfiltered. It does not: FHS is by far the worst (69 differing, only 19
+matching) and is a *filtered* cohort. Do not spend more time on it.
+
+Three things the data does point at, in priority order:
+
+1. **`pub only` dominates — ~351 cells across all cohorts.** These are rows the
+   published table populates and the generator leaves blank. That is the
+   282-invisible-specs / 50-empty-rows problem already described under "Related
+   open threads", and it is the single largest term in the gap. Fixing it is
+   designed but not built. **Start here.**
+2. **17 exact-half cases**, spread across unrelated variables and cohorts:
+   `Height` ARIC 162632→81297, `Hematocrit` ARIC 119990→59995, `Activity
+   LP-PLA2` CHS 10758→5379, `Diastolic blood pressure` WHI 2473953→1247711. A
+   clean 2× factor across variables that share nothing suggests a structural
+   double-count in the **old** pipeline — counting each phv once per visit, or
+   summing two stats rows — rather than 17 separate bugs. Worth one focused look
+   at `old_pipeline/preharmonized_qaqc_report.py`'s counting loop; if it holds,
+   the published numbers are inflated 2× for those rows.
+3. **Per-row extremes worth explaining individually:** `AHI Apnea-Hypopnea
+   Index` CHS pub=4 gen=**196**, `BMI` FHS pub=2 gen=**41** (generator wildly
+   higher), against `Alcohol Consumption` CARDIA pub=67 gen=3 (the known
+   commented-out-expressions case, where 3 is correct) and `Troponin all types`
+   ARIC pub=60 gen=9.
+
+**Caveat on HCHS/SOL:** the 8/3 run predates `24396404` (2026-08-04, "restore the
+HCHS/SOL cohort_keys mapping"). Its 0-differing/62-pub-only column is that bug
+blanking the cohort, not a clean match. Rerun before trusting HCHS/SOL. The
+other eight cohorts are unaffected.
+
 ## What to do
 
-1. **Diagnose the current generator against `published_source_20251211.csv`.**
-   Run S4 on Seven Bridges, then compare generated output to that CSV per cell.
-   `compare_s4_to_published.py` in the parent directory does generated-vs-sheet;
-   point it at the CSV instead, or extend `verify_published_source.py`, which
-   already parses both shapes. The ~112 low / ~30 high cells are the target.
-2. **Test the filtering asymmetry first** — it is the leading hypothesis and it
-   is cheap. The old pipeline filtered phvs against `valid-phvs/{cohort}-ingest.tsv`
-   where a list existed and left them *unfiltered* where none did. ARIC, CARDIA,
-   and JHS had no lists. If the generator reads low mainly for those three
-   cohorts, that asymmetry is the explanation and the published numbers are
-   overcounts rather than the generator undercounting. Group the diff by cohort
-   before looking at individual rows.
-3. **Decide what "correct" means, then say so out loud.** If the old pipeline
-   was overcounting unfiltered cohorts, the published Table S4 is wrong and the
-   generator is right — which is a finding for the team, not a bug to fix. This
-   is the question to bring back to the group.
+1. **Rerun S4 on Seven Bridges from current `main`** and redo the comparison
+   above. The 8/3 run predates the HCHS/SOL fix, and possibly other fixes.
+   Everything below should be re-derived from a current run.
+2. **Attack the `pub only` cells** — the empty-row problem in "Related open
+   threads". Largest term, already designed.
+3. **Test the 2× hypothesis** against the old pipeline's counting loop.
+4. **Then** the per-row extremes.
 
-**Two things not to spend time on.** The 2026-07-28 / 2026-08-03 exports Siggie
-offered: nothing has changed in the sheet since December, so they will be
-identical to 2026-06-25 — skip unless a cheap confirmation is wanted. And the
-per-row leads earlier handoffs flagged (`Troponin all types` ARIC, `AHI
-Apnea-Hypopnea Index` CHS): they predate all of this and should be re-derived
-from the CSV comparison rather than carried forward.
+**Do not** carry forward the older per-row leads as framed in earlier handoffs;
+re-derive them from a current run.
 
 ## Corrected on 2026-08-11
 
