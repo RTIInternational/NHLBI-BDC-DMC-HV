@@ -18,6 +18,30 @@ import yaml
 from hv_dataqc.compare.helpers import _canonical_phv_id
 
 
+def _iter_nested_class_derivs(slot_def):
+    """Yield (class_name, class_spec) for a slot's nested class derivations,
+    handling list-based class_derivations in both `- name: X` and dict-keyed
+    `- X: {...}` form, plus legacy object_derivations.
+
+    Deliberately local: this module is outside hv-lint/ and importing from a
+    hyphenated script tree would invert the dependency. The canonical copy is
+    hv-lint/_derivations.py -- keep the two in sync."""
+    slot_def = slot_def or {}
+    for cd in slot_def.get("class_derivations") or []:
+        if not isinstance(cd, dict):
+            continue
+        if "name" in cd:
+            yield cd.get("name"), cd
+        elif len(cd) == 1:
+            # dict-keyed form: `- ClassName: {...}`
+            cls_name, spec = next(iter(cd.items()))
+            # a null body (`- X:`) parses as {X: None}; callers expect a dict
+            yield cls_name, spec if isinstance(spec, dict) else {}
+    for od in slot_def.get("object_derivations") or []:
+        for name, spec in ((od or {}).get("class_derivations") or {}).items():
+            yield name, spec
+
+
 # ---------------------------------------------------------------------------
 # YAML crosswalk construction helpers
 # ---------------------------------------------------------------------------
@@ -397,17 +421,15 @@ def _extract_crosswalk_from_class_derivations(
         if entity_class == "MeasurementObservationSet":
             obs_slot = slots.get("observations", {})
             if isinstance(obs_slot, dict):
-                for od in obs_slot.get("object_derivations", []):
-                    if isinstance(od, dict):
-                        inner_cd = od.get("class_derivations")
-                        if inner_cd and isinstance(inner_cd, dict):
-                            _extract_crosswalk_from_class_derivations(
-                                inner_cd,
-                                yaml_filename,
-                                phv_names,
-                                crosswalk,
-                                inside_mos=True,
-                            )
+                for inner_name, inner_spec in _iter_nested_class_derivs(obs_slot):
+                    if inner_name and isinstance(inner_spec, dict):
+                        _extract_crosswalk_from_class_derivations(
+                            {inner_name: inner_spec},
+                            yaml_filename,
+                            phv_names,
+                            crosswalk,
+                            inside_mos=True,
+                        )
             continue
 
         # --- Standard path: gather PHVs and concept code ---
@@ -460,65 +482,58 @@ def _extract_crosswalk_from_class_derivations(
                         }
                     )
 
-            # PHVs nested inside object_derivations (e.g. Quantity)
-            obj_d = slot_body.get("object_derivations")
-            if isinstance(obj_d, list):
-                for od in obj_d:
-                    if not isinstance(od, dict):
+            # PHVs nested inside class derivations (e.g. Quantity), both
+            # list-based class_derivations and legacy object_derivations
+            for inner_class, inner_body in _iter_nested_class_derivs(slot_body):
+                if not isinstance(inner_body, dict):
+                    continue
+                for inner_slot, inner_slot_body in (
+                    inner_body.get("slot_derivations", {}).items()
+                ):
+                    if not isinstance(inner_slot_body, dict):
                         continue
-                    inner_cd = od.get("class_derivations")
-                    if not inner_cd or not isinstance(inner_cd, dict):
-                        continue
-                    for inner_class, inner_body in inner_cd.items():
-                        if not isinstance(inner_body, dict):
-                            continue
-                        for inner_slot, inner_slot_body in (
-                            inner_body.get("slot_derivations", {}).items()
-                        ):
-                            if not isinstance(inner_slot_body, dict):
-                                continue
-                            inner_pf = str(inner_slot_body.get("populated_from", ""))
-                            is_inner_value_slot = _is_value_slot_name(inner_slot, "")
-                            if inner_pf.startswith("phv"):
-                                inner_cf_from_block = _unit_conversion_factor(
-                                    inner_slot_body.get("unit_conversion")
-                                )
-                                primary_phvs.append(
-                                    {
-                                        "phv": inner_pf,
-                                        "slot": f"{slot_name}.{inner_slot}",
-                                        "is_value_slot": is_inner_value_slot,
-                                        "role": _phv_role_for_slot(
-                                            inner_slot, "", None, is_inner_value_slot
-                                        ),
-                                        "value_map": _extract_value_mappings(inner_slot_body),
-                                        "conversion_factor": inner_cf_from_block,
-                                    }
-                                )
-                            inner_expr = inner_slot_body.get("expr", "")
-                            if isinstance(inner_expr, str):
-                                is_inner_value_expr = _is_value_slot_name(inner_slot, "")
-                                if is_inner_value_expr:
-                                    value_exprs.append(inner_expr)
-                                inner_cf = (
-                                    _extract_conversion_factor(inner_expr)
-                                    if inner_slot in ("value_decimal", "value_integer")
-                                    else None
-                                )
-                                for phv in re.findall(r"(phv\d+)", inner_expr):
-                                    primary_phvs.append(
-                                        {
-                                            "phv": phv,
-                                            "slot": f"{slot_name}.{inner_slot}",
-                                            "is_value_slot": is_inner_value_expr,
-                                            "role": _phv_role_for_slot(
-                                                inner_slot, "", None, is_inner_value_expr
-                                            ),
-                                            "value_map": None,
-                                            "conversion_factor": inner_cf,
-                                            "expr": inner_expr,
-                                        }
-                                    )
+                    inner_pf = str(inner_slot_body.get("populated_from", ""))
+                    is_inner_value_slot = _is_value_slot_name(inner_slot, "")
+                    if inner_pf.startswith("phv"):
+                        inner_cf_from_block = _unit_conversion_factor(
+                            inner_slot_body.get("unit_conversion")
+                        )
+                        primary_phvs.append(
+                            {
+                                "phv": inner_pf,
+                                "slot": f"{slot_name}.{inner_slot}",
+                                "is_value_slot": is_inner_value_slot,
+                                "role": _phv_role_for_slot(
+                                    inner_slot, "", None, is_inner_value_slot
+                                ),
+                                "value_map": _extract_value_mappings(inner_slot_body),
+                                "conversion_factor": inner_cf_from_block,
+                            }
+                        )
+                    inner_expr = inner_slot_body.get("expr", "")
+                    if isinstance(inner_expr, str):
+                        is_inner_value_expr = _is_value_slot_name(inner_slot, "")
+                        if is_inner_value_expr:
+                            value_exprs.append(inner_expr)
+                        inner_cf = (
+                            _extract_conversion_factor(inner_expr)
+                            if inner_slot in ("value_decimal", "value_integer")
+                            else None
+                        )
+                        for phv in re.findall(r"(phv\d+)", inner_expr):
+                            primary_phvs.append(
+                                {
+                                    "phv": phv,
+                                    "slot": f"{slot_name}.{inner_slot}",
+                                    "is_value_slot": is_inner_value_expr,
+                                    "role": _phv_role_for_slot(
+                                        inner_slot, "", None, is_inner_value_expr
+                                    ),
+                                    "value_map": None,
+                                    "conversion_factor": inner_cf,
+                                    "expr": inner_expr,
+                                }
+                            )
 
         if not primary_phvs or not concept_codes:
             continue
