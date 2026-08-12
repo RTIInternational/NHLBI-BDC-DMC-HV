@@ -83,17 +83,14 @@ steps.
 cd NHLBI-BDC-DMC-HV
 git fetch origin
 
-# 3. Check out the branch you want. The active QC-refactor work lives on
-#    a `refactor/phase-*` branch stacked on `feature/hv-dataqc-20260423`
-#    (the umbrella). To list the most recently updated remotes:
+# 3. Check out the branch you want — `main` unless you were told otherwise.
+#    The QC refactor that used to live on `refactor/phase-*` branches is
+#    done (Phases A and B landed); those branches are gone. To see what is
+#    currently active:
 #       git for-each-ref --sort=-committerdate \
 #           --format='%(refname:short)  %(committerdate:short)  %(subject)' \
 #           refs/remotes/origin/ | head -10
-#    Then `git checkout <name>` using the short name (git creates a local
-#    tracking branch automatically). Pick the latest `refactor/phase-*`
-#    branch if you want the in-flight QC refactor; pick the umbrella if
-#    you want everything that's merged so far. Example:
-git checkout refactor/phase-b-json-cleanup   # most recent QC-refactor branch
+git checkout main
 git pull --ff-only
 
 # 4. Install deps (once per session — uv isn't preinstalled on SB).

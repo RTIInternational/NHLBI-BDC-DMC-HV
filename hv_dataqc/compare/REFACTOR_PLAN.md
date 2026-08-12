@@ -1,17 +1,24 @@
-# HV-DataQC Compare Refactor Plan — Draft for Review
+# HV-DataQC Compare Refactor Plan — partly done, partly live backlog
 
-> **Status:** Draft proposal for Chris's review. This file is **temporarily
-> committed** for ease of inline comments; we'll remove it from the repo once
-> the discussion converges (or move it into `docs/` if we want to keep it).
+> **Status (2026-08-12): Phases A and B are COMPLETE and shipped.** Phase A
+> split the monolith; Phase B cleaned up the JSON. The resulting architecture is
+> documented in [`../README.md`](../README.md) — read that, not the Phase A/B
+> sections here, to understand the current code.
 >
-> Source of truth during the discussion: this file. Changes here are
-> non-binding — nothing has been implemented yet.
+> **Phases C-prereq, C, D and later are NOT done** and remain the live backlog.
+> The `refactor/phase-*` branches this work was done on no longer exist.
+>
+> An earlier header on this file said "nothing has been implemented yet." That
+> was true when written and has been wrong for months — it was never updated as
+> phases landed. Trust the per-phase Status lines below, not any global claim.
 
 ## Context
 
-`compare_source_harmonized.py` is currently ~4,090 lines and does five jobs:
-crosswalk building, mode detection, check execution (C1–C12), JSON output, and
-Markdown rendering. The goals of this refactor:
+**Historical — this describes the code before Phase A.**
+`compare_source_harmonized.py` was ~4,090 lines and did five jobs: crosswalk
+building, mode detection, check execution (C1–C12), JSON output, and Markdown
+rendering. That file no longer exists; it is now the `compare/` package. The
+goals of the refactor were:
 
 1. Break the file into navigable modules.
 2. Make check logic, thresholds, descriptions, and rendering behavior
@@ -53,8 +60,7 @@ code aren't reasoning about two parallel views of the source data.
 the original 4,090-line `compare_source_harmonized.py` is now ~700 lines
 of orchestration in `compare.py`.
 
-`compare_source_harmonized.py` is ~4,090 lines. Proposed layout (subject to
-refinement as the split proceeds):
+The layout that was proposed, and shipped:
 
 ```
 hv_dataqc/compare/

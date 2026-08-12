@@ -23,16 +23,17 @@ publication/QC outputs.)
 
    ```bash
    git fetch origin
-   git checkout feature/S5-report-20260603      # or your working branch
+   git checkout <your working branch>
    git merge origin/main                        # latest specs + code
-   git merge origin/thessen-s5-fixes            # pending S5 spec fixes
+   git merge origin/thessen-s5-fixes            # pending S5 spec fixes (still unmerged to main)
    # resolve conflicts if any, then commit the merge
    ```
 
-   > As of this writing the working branch is **behind** main (2 commits)
-   > and does **not** contain `thessen-s5-fixes` (33 commits). Both must be
-   > merged and committed before re-running, or the reports reflect stale
-   > specs.
+   > Merge both before re-running, or the reports reflect stale specs.
+   > `thessen-s5-fixes` is mostly spirometry/method_type fixes and is still
+   > unmerged to `main` as of 2026-08-12. Don't start from
+   > `feature/S5-report-20260603` — it is a stale, unmerged feature branch
+   > kept only for its granular history.
 
 2. **SB session setup** (only for steps that run in the enclave — S5, QAQC
    extract):
@@ -47,14 +48,16 @@ Spec-sourced: phv list/count from the transform specs, source `N` measured
 by `extract_source` from the raw TSVs. No spreadsheets. One command, all
 cohorts.
 
-`run_s4_report.sh` **reuses** each cohort's existing `latest_source` extract
-(under `QC-output-files/<COHORT>/`). Pass `--extract` to (re-)run the source
-extract first — slow, reads raw source TSVs.
+`run_s4_report.sh` takes no arguments and is idempotent: it fetches dbGaP
+caches, extracts any cohort that lacks an extract, reuses the ones that have
+one, and builds the table. Extraction is the **default** — you only need a flag
+to opt out of it or to force it.
 
 ```bash
-hv_dataqc/sb_scripts/run_s4_report.sh --list-cohorts          # cohorts with spec dirs
-hv_dataqc/sb_scripts/run_s4_report.sh --extract               # full run: extract + build
-hv_dataqc/sb_scripts/run_s4_report.sh                         # reuse existing extracts
+hv_dataqc/sb_scripts/run_s4_report.sh                 # the normal run
+hv_dataqc/sb_scripts/run_s4_report.sh --list-cohorts  # cohorts with spec dirs
+hv_dataqc/sb_scripts/run_s4_report.sh --no-extract    # build from existing extracts only
+hv_dataqc/sb_scripts/run_s4_report.sh --force         # re-extract every cohort (slow)
 # subset: --cohorts FHS,MESA
 ```
 
@@ -73,9 +76,18 @@ uv run python -m transform_assessment.spec_phv_report \
     --debug-variable ast_sgot
 ```
 
-> The old sheet-based `preharmonized_qaqc_report.py` is retained for now as
-> a cross-check; it will be removed once the spec-sourced report is
-> validated against it. See `transform_assessment/SPEC_SOURCED_S4_DESIGN.md`.
+> **The new counts will be higher than the published Table S4. That is
+> correct, not a bug.** The old pipeline filtered phvs two ways — hand-made
+> `valid-phvs/` allow lists and an "out of scope" column in the curator
+> spreadsheets — and both were retired on 2026-08-12 as unmaintainable. The
+> published table is a frozen historical artifact; reproducing it is not a
+> goal. An *increase* needs no explanation; a *decrease* is worth a look.
+> Background: [`../transform_assessment/README.md`](../transform_assessment/README.md).
+>
+> The old sheet-based `preharmonized_qaqc_report.py` (a symlink into
+> `transform_assessment/s4_count_investigation/old_pipeline/`) is **evidence,
+> not a cross-check**. Don't run it — it reads live Google Sheets that have
+> since moved.
 
 ## S5 — harmonized summary table (SB enclave)
 

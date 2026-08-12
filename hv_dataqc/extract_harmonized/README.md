@@ -4,8 +4,8 @@ Extracts aggregate statistics from dm-bip harmonized output TSV files (entity
 files produced by the pipeline) and exports an aggregate-only JSON artifact.
 Run this **inside the data enclave** after each pipeline execution.
 
-> Design note: how the Table S5 report was ported into `hv_dataqc/` —
-> [`../docs/S5_INTEGRATION_PLAN.md`](../docs/S5_INTEGRATION_PLAN.md).
+> Design note: why the pooled cross-cohort median is an approximation —
+> [`../docs/S5_INTEGRATION_HISTORY.md`](../docs/S5_INTEGRATION_HISTORY.md).
 
 ---
 

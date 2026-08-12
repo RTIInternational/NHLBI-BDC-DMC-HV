@@ -12,8 +12,7 @@ in [`README.md`](README.md), not here.
 > what made 282 non-measurement spec files invisible to the generator and cost a
 > session to diagnose. See "How the `observation_type` assumption spread" below.
 >
-> **Siggie: this section needs your review when there's time for it.** Not
-> urgent, but don't treat it as settled just because it's written down
+> Don't treat that section as settled just because it is written down
 > confidently. The rest of the doc is lower-stakes.
 
 ## Why specs, not sheets
@@ -114,12 +113,12 @@ map to separate rows in the S4 template, so S4 emits **one row per
   others (HDL, LDL, triglycerides) must not split. Concepts are grouped by
   *resolved label*, so same-label concepts merge into one row. In every
   dual-coded case in the current specs it is the OBA code that resolves (the
-  OMOP half is unmapped in `harmonized_vars.tsv`), giving prefer-OBA /
+  OMOP half is unmapped in the label source), giving prefer-OBA /
   fall-back-OMOP behavior for free.
 - **Spirometry metadata codes ignored.** The spirometry specs carry 6 OMOP
   codes (`3002094, 3005600, 3011708, 3022891, 3024594, 4196583`) that are
   metadata for the 3 real spirometry variables (FEV1, FVC, FEV1/FVC), not
-  separate measurements — per Anne Thessen, 2026-07-07. They are listed in
+  separate measurements — per the project lead, 2026-07-07. They are listed in
   `s4_layout.yaml`'s `ignore_observation_types` and dropped in
   `build_cohort_rows`, so they neither form a stray "spirometry" row nor
   inflate the 3 real rows' phv counts.
@@ -135,8 +134,7 @@ rows, and the demographics rows. `TableS1.tsv` retains all 48 non-measurement
 rows with a `var_name` matching spec filename stems, so label resolution is
 already solved; the parser just never asks.
 
-**What counts as a "relevant raw variable" per class** (settled with Siggie,
-2026-08-04, by reading one representative spec per class):
+**What counts as a "relevant raw variable" per class** (settled with the repo owner,2026-08-04, by reading one representative spec per class):
 
 | class | phv source | representative spec |
 |---|---|---|
@@ -194,11 +192,11 @@ value phvs; the other 7 carry summing expressions that were commented out within
 a day of being written (`07e2e819` → `2a93479f` → `1623e1f1`, 2026-03-16/17).
 This looked like a large undercount against the published S4's 67.
 
-Per Anne Thessen (2026-08-04): the 3 live phvs are almost certainly **beer,
+Per the project lead (2026-08-04): the 3 live phvs are almost certainly **beer,
 wine, and liquor servings per week**, and the disabled expressions summed them
 into total alcohol per week. So the components are the real raw variables and
 **3 is the honest count** — the sum would have been a 4th derived value, not 27
-additional raw variables. Anne could not find these in dbGaP to confirm, so this
+additional raw variables. They could not find these in dbGaP to confirm, so this
 is domain inference, not a lookup.
 
 Two consequences beyond this file:
@@ -216,20 +214,24 @@ Two consequences beyond this file:
 
 ## Open on this design
 
-Team-facing questions have moved to [`README.md`](README.md). Two remain
+Team-facing questions have moved to [`README.md`](README.md). One remains
 specific to this design:
 
-1. Confirm spec-sourced S4 is the agreed direction (vs. patching sheets). Never
-   explicitly confirmed, though the work has proceeded on that assumption since
-   ~2026-06.
-2. For S5: which spec snapshot were the enclave harmonized TSVs built from?
-   Re-harmonizing from `main` + `thessen-s5-fixes` should clear the aptamer
-   contamination; the residual extreme values flagged in QC are in the source
-   data and stay.
+- For S5: which spec snapshot were the enclave harmonized TSVs built from?
+  Re-harmonizing from `main` + `thessen-s5-fixes` should clear the aptamer
+  contamination; the residual extreme values flagged in QC are in the source
+  data and stay.
+
+Resolved 2026-08-12: **spec-sourced S4 is confirmed as the direction.** This had
+proceeded on assumption since ~2026-06 without explicit sign-off. The project
+lead then retired both spreadsheet-derived filters outright — *"you also
+shouldn't go by what is in the spreadsheets anymore, we can't keep those up to
+date"* — which settles it: sheets are not a fallback, and patching them is not
+an option on the table.
 
 Resolved, kept because the reasoning still governs code:
 
-- **Spirometry coverage gap** — RESOLVED (Anne Thessen, 2026-07-07): the 6 codes
+- **Spirometry coverage gap** — RESOLVED (project lead, 2026-07-07): the 6 codes
   are metadata for the 3 spirometry variables, not measurements. Now ignored via
   `s4_layout.yaml` `ignore_observation_types` (see Multi-concept split above).
 - **`harmonized_vars.tsv` freshness** — OBSOLETE. The file was a manual export of

@@ -9,14 +9,69 @@ curator spreadsheets. Table S1 is the concept-code → publication-label source.
 Live decisions blocking or shaping this work. Nothing here is settleable without
 the person named.
 
-**For the curator — [`S1_QUESTIONS_20260803.md`](S1_QUESTIONS_20260803.md).**
-Drafted, reviewed, **still unsent** (as of 2026-08-04; none of its questions have
-been resolved since). Three questions: whether LTRC/SPIROMICS should be S4
-columns, seven `var_name` spellings that drift from S1, and thirteen spec
-variables with no S1 row. It was written to be sent "after the next S4 run" so it
-could cite real numbers — but given the state of those numbers (see the count
-investigation below), that gate may never cleanly arrive. Consider sending it
-independently.
+### For the curator — Table S1 gaps (drafted 2026-08-03, still unsent)
+
+Of 127 distinct concept codes across the specs, 121 resolve cleanly. These
+questions cover the rest. They were held for "after the next S4 run" so they
+could cite real numbers; that gate never cleanly arrived, and none of them
+actually depend on it. **Send independently.**
+
+**1. Should LTRC and SPIROMICS be S4 columns?** They have transform specs but no
+columns in the template. Five LTRC-only variables are omitted from the sheet
+entirely as a result — `alpha1_antitrypsin` (emits `OBA:2050075`, a correct and
+permissible code with no S1 row), `asthma_md`, `bronchitis`, `bronchitis_md`,
+`pulmonary_fibrosis`. If those cohorts should be included, the layout needs two
+more columns and these five need S1 rows. If not, this is closed.
+
+**2. Seven `var_name` spellings drift from S1.** Each is one variable spelled two
+ways; no cohort uses both, and the S1 spelling covers the majority — but the
+cohorts on the left don't join the S1-labeled row.
+
+| Spec `var_name` | Cohorts | S1 `var_name` | S1 label |
+|---|---|---|---|
+| `hist_mi` | CHS | `hist_my_inf` | History of myocardial infarction |
+| `hist_heart_failure` | CHS | `hist_hrtfail` | History of heart failure |
+| `hist_hrt_failure` | COPDGene | `hist_hrtfail` | History of heart failure |
+| `hist_heart_disease` | CHS | `hist_hrtdis` | History of heart disease |
+| `hist_coronary_bypass` | CHS | `hist_cor_bypg` | History of coronary artery bypass graft |
+| `history_cvd` | CHS | `hist_cvd` | History of cardiovascular disease |
+| `taking_non_statin_medication` | CHS, MESA | `tak_nstat_med` | Taking non statin medication |
+
+**Recommend** renaming the specs to match S1 rather than adding alternate names
+to S1 — S1 is the published artifact and shouldn't carry duplicates. Worth
+settling now, since the spec files are being revised separately. Each pair still
+needs a sanity check that it really is the same concept: no cohort using both
+spellings rules out their being distinct variables, but the semantic match is a
+judgment call.
+
+**3. Thirteen spec variables have no S1 row** — missing rows, or deliberately out
+of scope?
+
+*Conditions:* `chd` (CARDIA, JHS, MESA, SPIROMICS), `chf` (CARDIA, MESA,
+SPIROMICS), `chr_bronchitis` (CARDIA, HCHS, MESA, SPIROMICS, WHI), `emphysema`
+(CARDIA, COPDGene, LTRC, MESA, SPIROMICS), `stroke_isch_atk` (CARDIA, COPDGene),
+`hist_cor_art_dis` (COPDGene), `blood_clots` (COPDGene). Note
+`stroke_isch_atk` and `hist_cor_art_dis` are *not* duplicates of S1's `stroke`
+and `hist_cor_angio` — cohorts that have them use both, against different source
+variables, so they are genuinely separate concepts.
+
+*Medication classes:* `tak_adrenergics`, `tak_antihypertensives`,
+`tak_cort_steroid_oral`, `tak_cort_steroid_resp` (COPDGene, plus MESA on the
+oral steroid). S1 has `tak_steroid` but not the oral/respiratory split.
+
+*`med_use`* (FHS) — 82 source variables, looks like a general medication-use
+rollup rather than a single harmonized variable; likely out of scope.
+
+*`Interleukin 18 in blood`* (FHS) — added to S1 in the last review round and
+resolves correctly, but has no S4 template row. Add the row, or confirm it is out
+of scope for S4.
+
+**Not for the curator — ours to fix.** Six structural entries (`participant`,
+`person`, `visit`, `research_study`, `researchstudy`, `demography`) derive
+non-Observation BDCHM classes and were never harmonized variables; they need a
+filter on our side. `research_study` vs `researchstudy` is our own naming
+inconsistency. Education level and the FHS fasting-lipid codes came up in the
+same round but are value-level modeling questions for S6, not S4.
 
 **For the schema owner — specs and BDCHM enums disagree.** Raised in
 [`history/SPEC_CODE_CORRECTIONS_20260803.md`](history/SPEC_CODE_CORRECTIONS_20260803.md)
@@ -34,7 +89,7 @@ independently.
 
 **For CARDIA spec owners — asked 2026-08-04 in Slack, awaiting answer.** Seven
 `value_decimal` expressions in `CARDIA-ingest/alcohol_servings.yaml` are
-commented out; will they return for ingest? Anne Thessen's read is that the 3
+commented out; will they return for ingest? The project lead's read is that the 3
 live phvs are beer/wine/liquor components and the disabled expressions summed
 them — see [`SPEC_SOURCED_S4_DESIGN.md`](SPEC_SOURCED_S4_DESIGN.md).
 
@@ -104,9 +159,9 @@ spec for commented-out blocks before treating a low count as a bug.
 
 **Investigation** — `s4_count_investigation/`
 
-- `HANDOFF.md` — state of the investigation; start here.
+- `HANDOFF.md` — current state and the task list; **start here.**
 - `published_source_20251211.csv` — the pipeline output the published Table S4
-  was pasted from. **This, not the spreadsheet, is what to diagnose against.**
+  was pasted from. Reference copy of the frozen published numbers.
 - `verify_published_source.py` — proves that CSV reproduces the published sheet
   exactly (0/1332 cells differ).
 - `xlsx/` — 13 dated exports of the Google Sheet, covering every version that
@@ -130,12 +185,17 @@ spec for commented-out blocks before treating a low count as a bug.
   have since moved, so a rerun would not reproduce the published numbers anyway.
   Keep it for reading, not for running.
 
-**History** — `history/`, completed work kept for its reasoning
+**History** — `history/`, completed work kept for its reasoning. None of it is
+required reading; consult it when something current looks arbitrary.
 
 - `S1_LABEL_SOURCE_MIGRATION.md` — the `harmonized_vars.tsv` → Table S1
   migration.
 - `SPEC_CODE_CORRECTIONS_20260803.md` — per-code rationale for the six
   concept-code fixes, and what was deliberately *not* changed.
+- `S4_PUBLISHED_NUMBERS_FORENSICS.md` — how the published S4 numbers were traced
+  to a specific 2025-12-11 CSV, and every cell change attributed to a cause.
+  Closed out; the question it answers is settled and the goal it served is
+  retired.
 
 ## Running S4
 
