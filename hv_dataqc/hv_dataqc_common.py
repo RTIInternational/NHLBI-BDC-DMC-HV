@@ -72,6 +72,18 @@ def write_json_atomic(
             tmp_path.unlink()
 
 
+# --- Table S4/S5 additions (2026-08) ----------------------------------------
+# Everything from here to the end of write_xlsx() was added for the
+# supplementary tables and is currently used ONLY by them:
+# transform_assessment/spec_phv_report.py (S4) and
+# extract_harmonized/table_s5/report.py (S5).  Nothing in the QC pipeline calls
+# it.  Kept here rather than in transform_assessment/ because both consumers
+# need it and this is the shared module they already import.
+#
+# Flagging the boundary because this module has other authors.  If it grows,
+# moving these into their own xlsx helper is queued -- see
+# transform_assessment/README.md "Also queued, lower priority".
+
 # Number-format strings (Excel) shared by the S4/S5 xlsx writers.
 XLSX_FMT_COUNT = "#,##0"        # integer counts with thousands separators
 XLSX_FMT_DECIMAL = "#,##0.00"  # 2-decimal stats with thousands separators

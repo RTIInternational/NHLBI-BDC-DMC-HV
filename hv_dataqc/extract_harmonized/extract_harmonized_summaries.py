@@ -58,6 +58,18 @@ from hv_dataqc.hv_dataqc_common import (
     continuous_stats,
     write_json_atomic,
 )
+# --- Table S4/S5 additions (2026-08) ----------------------------------------
+# The label_map import, the `label_map` parameter on the extract function, the
+# `bdc_label` field it populates, and the _participant_col / _valid_value_mask
+# helpers below were added for the supplementary tables (see
+# transform_assessment/README.md).  They are load-bearing for Table S5, which
+# groups per-observation_type summaries into per-variable rows and cannot do
+# that without `bdc_label`.
+#
+# Flagging the boundary because this module has other authors: everything else
+# here is shared QC infrastructure.  _valid_value_mask is not S4/S5-specific
+# though -- it fixes a real counting bug in this extractor (see its docstring).
+# Moving the S4/S5 pieces into their own module is queued, not done.
 from hv_dataqc.extract_harmonized.label_map import (
     DEFAULT_PATH as DEFAULT_LABEL_MAP_PATH,
     load_label_map,

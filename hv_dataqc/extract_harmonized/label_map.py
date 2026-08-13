@@ -1,5 +1,18 @@
 """Build the observation_type -> variable-label lookup from Table S1.
 
+**Who uses this:** the supplementary-table generators only — Table S4
+(``transform_assessment/spec_phv_report.py``) and Table S5
+(``extract_harmonized/table_s5/``), plus the ``bdc_label`` field this module
+populates in ``extract_harmonized_summaries.py``.  Nothing else in the QC
+pipeline reads it.  Added 2026-08 alongside the spec-sourced S4/S5 work; see
+``transform_assessment/README.md``.
+
+**Note on ``config/TableS1.tsv``:** it is a manual export committed once, and
+no script in this repo refreshes it from the source sheet.  Curator edits to
+that sheet do not reach S4 or S5 until someone re-exports by hand.  Queued —
+see the README above.
+
+
 Table S1 (``config/TableS1.tsv``) is the authoritative label source. It
 superseded ``harmonized_vars.tsv``, which has been removed.
 
