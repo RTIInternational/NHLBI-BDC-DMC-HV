@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Spec-sourced Table S4: per-variable/cohort PHV counts and source N.
 
-Replaces the spreadsheet-driven ``preharmonized_qaqc_report.py``. The
+Replaces a spreadsheet-driven pipeline (``preharmonized_qaqc_report.py``,
+removed 2026-08-12 — see ``history/S4_COUNT_INVESTIGATION_REMOVED.md``).  The
 authoritative PHV->harmonized-variable mapping is the LinkML transform
 specs in ``priority_variables_transform/<cohort>-ingest/<variable>.yaml``,
 which have not drifted the way the Google Sheets have (e.g. SomaScan
