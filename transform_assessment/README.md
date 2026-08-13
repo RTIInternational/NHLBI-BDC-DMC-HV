@@ -87,6 +87,14 @@ same round but are value-level modeling questions for S6, not S4.
 - 36 of 127 distinct `observation_type` codes in the live specs are not
   permissible enum values. Most predate this work; worth a reconciliation pass.
 
+**For ARIC spec owners — which column holds the lymphocyte count?**
+`ARIC-ingest/lympho_ct.yaml` and `ARIC-ingest/whtbld_ct.yaml` populate their
+values from the same dbGaP column, so one of them reads the wrong source
+variable. One question to answer, and a small edit afterwards — the whole thing,
+including what a programmer does once it is decided, is in
+[`OPEN_ARIC_LYMPHO_CT_PHV.md`](OPEN_ARIC_LYMPHO_CT_PHV.md). Suppressed in
+`check_phv_dedup.py`'s `KNOWN_ISSUES` meanwhile, so CI is green.
+
 **For CARDIA spec owners — asked 2026-08-04 in Slack, awaiting answer.** Seven
 `value_decimal` expressions in `CARDIA-ingest/alcohol_servings.yaml` are
 commented out; will they return for ingest? The project lead's read is that the 3
@@ -157,15 +165,23 @@ affect S5 output today.
 
 ### Also queued, lower priority
 
-- **`TableS1.tsv` is a frozen snapshot with no refresh step.** It was committed
-  once (`93ac3910`, 2026-08-03) as a manual export and nothing re-pulls it from
-  the source sheet — not `run_s4_report.sh`, not `run_s5_report.sh`, not any
-  script in the repo. Both S4 and S5 resolve every publication label through it,
-  so once the curator edits the sheet, both tables silently use stale labels and
-  a newly-added variable cannot resolve at all. **Add a refresh step** (or, at
-  minimum, print the file's date at run time so a stale snapshot is visible in
-  the log). This is the same class of problem as the drifted spreadsheets the
-  spec-sourcing work was meant to escape.
+- **Two config files are frozen snapshots with no refresh step**, and both go
+  stale silently:
+  - **`hv_dataqc/extract_harmonized/config/TableS1.tsv`** — committed once
+    (`93ac3910`, 2026-08-03) as a manual export. Both S4 and S5 resolve every
+    publication label through it, so once the curator edits the source sheet,
+    both tables use stale labels and a newly-added variable cannot resolve at
+    all.
+  - **`config/s4_layout.yaml`** — the cohort columns and the 148 template row
+    labels, transcribed from the S4 template. **If S4's columns or rows change,
+    this file must be updated before running S4 again**, or the generated output
+    will not line up with the template on paste.
+
+  Nothing re-pulls either one — not `run_s4_report.sh`, not `run_s5_report.sh`,
+  not any script here. **Add a refresh step** for both, or at minimum print each
+  file's date at run time so a stale snapshot shows up in the log. This is the
+  same class of problem as the drifted spreadsheets the spec-sourcing work was
+  meant to escape.
 - **Consider moving our S4/S5 code out of the shared `extract_harmonized/`
   namespace.** `table_s5/` is already a subpackage, which is the right shape.
   But `label_map.py` sits loose beside `extract_harmonized_summaries.py`, and
