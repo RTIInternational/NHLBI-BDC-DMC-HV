@@ -73,6 +73,17 @@ filter on our side. `research_study` vs `researchstudy` is our own naming
 inconsistency. Education level and the FHS fasting-lipid codes came up in the
 same round but are value-level modeling questions for S6, not S4.
 
+**For the curator — three concept-code questions.** The six spec code
+corrections were approved, but the *reasoning* behind each was never circulated
+and lives only in
+[`history/SPEC_CODE_CORRECTIONS_20260803.md`](history/SPEC_CODE_CORRECTIONS_20260803.md).
+Two of the six were not curator-directed — they came from machine-checking every
+live code against Table S1 — and those are the ones worth a second opinion. The
+doc opens with what to read and what to skip; the three questions are at the
+bottom. Short version: does the `vege_serving` servings-intake reading hold, was
+`cig_smok`'s old code ever intentional, and should FHS's fasting lipids be
+distinct S4 rows or rolled into HDL/Triglycerides?
+
 **For the schema owner — specs and BDCHM enums disagree.** Raised in
 [`history/SPEC_CODE_CORRECTIONS_20260803.md`](history/SPEC_CODE_CORRECTIONS_20260803.md)
 §"Open items"; unresolved:

@@ -1,30 +1,49 @@
 # Transform spec concept-code corrections (2026-08-03)
 
-**Completed work, kept for its reasoning.** Six `observation_type` concept codes
-in `priority_variables_transform/*/*.yaml` are corrected here — the header
-originally said four, before two more were found by resolving every live code
-against S1. Nothing else in the specs changes: every edit is a one-line
-`observation_type: value:` replacement, 20 files. A TSV of the same swaps
-(`../spec_code_fixes_20260803.tsv`) went to the spec owner in place of this
-document; **the per-code rationale below and the "What was NOT changed" section
-exist only here.**
+## Curators: yes, this is worth reading, and here is the short version
 
-The "Open items" section at the bottom records four decisions that are still
-unresolved — they are surfaced in [`../README.md`](../README.md) so they don't
-get lost in a document about completed work.
+The **code changes** were reviewed and approved. What was never circulated is
+**why each one was made** — that reasoning exists only here. Two of the six were
+not curator-directed at all: they were found by machine-checking every live code
+against Table S1, and they are the two most worth a second opinion.
+
+**Read §2 (`vege_serving`) and the fasting-lipid bullet under "What was NOT
+changed."** Those are the two places where a reasonable person could disagree
+with what was done, and the three questions at the bottom are the only things
+anyone needs from you. Everything else is either a plain typo fix or a code that
+was self-evidently wrong (a *unit* and a *drug* sitting in concept slots).
+
+You can skip: "Verification" (mechanical checks) and "Open items" B–D (schema
+questions for the BDCHM owner, not concept-meaning questions). Open item A is
+worth a glance — it says the code you directed for `cig_smok` is not currently a
+permissible value in the BDCHM schema, so something has to give.
+
+## What this is
+
+**Completed work, kept for its reasoning.** Six `observation_type` concept codes
+in `priority_variables_transform/*/*.yaml` are corrected here. Nothing else in
+the specs changes: every edit is a one-line `observation_type: value:`
+replacement across 20 files. A TSV of the same swaps
+(`../spec_code_fixes_20260803.tsv`) went to the spec owner in place of this
+document.
+
+The unresolved decisions in "Open items" are also surfaced in
+[`../README.md`](../README.md) so they don't get lost in a document about
+completed work.
 
 These originate from a curator review of **Table S1** (the harmonized-variable
 label table in the "Data Harmonization Supplementary Data" workbook). Table S1
 is becoming the authoritative concept-code -> publication-label source for
 Tables S4/S5, replacing an older drifted TSV export; see
 [`S1_LABEL_SOURCE_MIGRATION.md`](S1_LABEL_SOURCE_MIGRATION.md). Reconciling the
-specs against S1 surfaced these four disagreements.
+specs against S1 surfaced the first four disagreements; the last two came from
+the machine sweep that followed.
 
 ## Summary
 
 | Variable | Old code | New code | Cohorts | Occurrences | Basis |
 |---|---|---|---|---|---|
-| `cig_smok` | `OMOP:4282779` | `OMOP:35811013` | 10 | 101 | Curator: "We need to use 35811013. The trans specs are incorrect." |
+| `cig_smok` | `OMOP:4282779` | `OMOP:35811013` | 10 | 98 | Curator: "We need to use 35811013. The trans specs are incorrect." |
 | `vege_serving` | `OMOP:4042886` | `OMOP:37311566` | 6 | 40 | Wrong semantic class; see §2 |
 | `cd40` | `OMOP:4209737` | `OBA:2052305` | MESA | 1 | Curator: "Use the OBA CURIE for CD40. The trans spec is wrong." |
 | `lympho_ct` | `OBA:VT0000217` | `OBA:VT0000717` | ARIC | 1 | Mis-code: `VT0000217` is White blood cell count |
@@ -42,9 +61,13 @@ detailed below.
 
 ## 1. `cig_smok`: `OMOP:4282779` -> `OMOP:35811013`
 
-101 occurrences across ARIC, CARDIA, CHS, COPDGene, FHS, HCHS, JHS, LTRC, MESA,
+98 occurrences across ARIC, CARDIA, CHS, COPDGene, FHS, HCHS, JHS, LTRC, MESA,
 WHI. **SPIROMICS already used `OMOP:35811013`** and needed no change — the other
 ten now match it.
+
+(This count was 101 when the work was done. A later CARDIA PR restructured
+`CARDIA-ingest/cig_smok.yaml` and deleted two of its four blocks, so three fewer
+occurrences remain. The correction applied to all of them either way.)
 
 These spec files each emit 4-5 distinct OMOP codes. Only `OMOP:4282779` is the
 `observation_type`; the others (`OMOP:45883537`, `OMOP:40766945`,
@@ -171,15 +194,23 @@ BDCHM enum value `CAROTID_IMT`.
 
 ## Verification
 
+*Mechanical checks — nothing here needs curator attention.*
+
 - All 20 affected spec files validate against the linkml-map schema
   (`validate_ingest_yamls.py`'s `validate_block`). 20/20 pass.
 - All edited YAML parses.
-- No residual occurrences of any of the four old codes remain outside the
-  legitimate `whtbld_ct` / `labs_cbc` usage noted above.
+- No residual occurrences of any of the six old codes remain in the live specs,
+  outside the legitimate `whtbld_ct` / `labs_cbc` usage noted above. Three of
+  them still appear under `priority_variables_transform/_archive/`, which is
+  retired specs and is not read by any pipeline.
 - The 5 pre-existing validator errors in `spirometry*.yaml` are unrelated and
   untouched by this work; the validator exits 0.
 
 ## Open items (decisions needed, no code changed)
+
+*Audience: **A** affects a curator-directed code and is worth a glance. **B–D**
+are for the BDCHM schema owner — they are about which values the schema permits,
+not about what a concept means.*
 
 **A. `cig_smok` conflicts with the BDCHM schema.** The curator directed
 `OMOP:35811013`, but `MeasurementObservationTypeEnum` binds
@@ -233,22 +264,26 @@ spirometry-metadata codes are among them and are deliberately `status=ignore`).
 Worth a separate reconciliation pass between the specs, Table S1, and the
 schema enums; it is out of scope here.
 
-## Review
+## The three questions
+
+**These are the only things needed from a curator.** Everything above is either
+settled or addressed to someone else.
+
+1. **`vege_serving` -> `OMOP:37311566`** (§2): does the servings-intake reading
+   hold for the six FFQ-based cohorts, or was the substance concept
+   `OMOP:4042886` a deliberate choice? This is the one where six specs agreed
+   with each other and were changed anyway, so it deserves the most scrutiny.
+2. **`cig_smok` -> `OMOP:35811013`** (§1): any cohort where `OMOP:4282779` was
+   intentional rather than copied? Note open item A — the code you directed is
+   not currently a permissible value in the BDCHM schema, so either the schema
+   moves or this decision is revisited.
+3. **FHS fasting lipids** ("What was NOT changed"): keep the fasting- and
+   specimen-specific codes as distinct Table S4 rows, or roll them up into
+   HDL / Triglycerides? Nothing was changed pending this answer.
 
 The full diff is the ground truth and is small — every line a single-token code
 swap:
 
 ```
-git diff main -- priority_variables_transform/
+git diff origin/main -- priority_variables_transform/
 ```
-
-Questions to confirm:
-
-1. `vege_serving` -> `OMOP:37311566`: does the servings-intake reading hold for
-   the six FFQ-based cohorts, or is there a reason those were deliberately
-   coded to the substance concept?
-2. `cig_smok` -> `OMOP:35811013`: any cohort where `OMOP:4282779` was
-   intentional rather than copied? See open item A — this code is not currently
-   in the BDCHM enum.
-3. FHS fasting lipids: keep the fasting/specimen-specific codes as distinct S4
-   rows, or roll them up into HDL / Triglycerides?
