@@ -15,11 +15,11 @@
           value: "Food Frequency Questionnaire"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001490
-            slot_derivations:
-              value_decimal:
-                expr: '{phv00105771} * 7'
-              unit:
-                value: '{#}/wk'
-                range: string
+          - Quantity:
+              populated_from: pht001490
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00105771} * 7'
+                unit:
+                  value: '{#}/wk'
+                  range: string

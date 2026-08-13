@@ -15,14 +15,14 @@
           value: 'ELISA'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht000688
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00070362
-              unit:
-                value: pmol/L
-                range: string
+          - Quantity:
+              populated_from: pht000688
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00070362
+                unit:
+                  value: pmol/L
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003901
@@ -40,17 +40,17 @@
           value: 'immunoassay'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht003901
-            slot_derivations:
-              value_decimal:
-                expr: 'case(
-                      ({phv00201991} > 1.39, {phv00201991}),
-                      (True, None)
-                     )'
-              unit:
-                value: pmol/L
-                range: string
+          - Quantity:
+              populated_from: pht003901
+              slot_derivations:
+                value_decimal:
+                  expr: 'case(
+                        ({phv00201991} > 1.39, {phv00201991}),
+                        (True, None)
+                       )'
+                unit:
+                  value: pmol/L
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003902
@@ -68,17 +68,17 @@
           value: 'immunoassay'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht003902
-            slot_derivations:
-              value_decimal:
-                expr: 'case(
-                      ({phv00201995} > 1.39, {phv00201995}),
-                      (True, None)
-                     )'
-              unit:
-                value: pmol/L
-                range: string
+          - Quantity:
+              populated_from: pht003902
+              slot_derivations:
+                value_decimal:
+                  expr: 'case(
+                        ({phv00201995} > 1.39, {phv00201995}),
+                        (True, None)
+                       )'
+                unit:
+                  value: pmol/L
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004804
@@ -96,14 +96,14 @@
           value: 'immunoassay'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht004804
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00227080
-              unit:
-                value: pmol/L
-                range: string
+          - Quantity:
+              populated_from: pht004804
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00227080
+                unit:
+                  value: pmol/L
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004805
@@ -121,14 +121,14 @@
           value: 'immunoassay'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht004805
-            slot_derivations:
-              value_decimal:
-                expr: 'case(
-                      ({phv00227085} > 1.39, {phv00227085}),
-                      (True, None)
-                     )'
-              unit:
-                value: pmol/L
-                range: string
+          - Quantity:
+              populated_from: pht004805
+              slot_derivations:
+                value_decimal:
+                  expr: 'case(
+                        ({phv00227085} > 1.39, {phv00227085}),
+                        (True, None)
+                       )'
+                unit:
+                  value: pmol/L
+                  range: string

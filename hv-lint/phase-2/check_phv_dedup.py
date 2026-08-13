@@ -30,6 +30,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
+from _derivations import iter_nested_class_derivs  # noqa: E402
 
 TRANSFORM_DIR = find_transform_dir()
 
@@ -79,16 +80,6 @@ def _get_cohort_from_path(file_path: Path) -> str:
     return "UNKNOWN"
 
 
-def iter_nested_class_derivs(slot_def):
-    """Yield (class_name, class_spec) for a slot's nested class derivations,
-    handling both list-based class_derivations and legacy object_derivations."""
-    slot_def = slot_def or {}
-    for cd in slot_def.get("class_derivations") or []:
-        if isinstance(cd, dict):
-            yield cd.get("name"), cd
-    for od in slot_def.get("object_derivations") or []:
-        for name, spec in ((od or {}).get("class_derivations") or {}).items():
-            yield name, spec
 
 
 def extract_value_phvs(block: dict, block_index: int):

@@ -16,14 +16,14 @@
           value: "Right arm"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001684
-            slot_derivations:
-              value_decimal:
-                expr: "None if str({phv00116215}) == 'M' else float({phv00116215})"
-              unit:
-                value: "mm[Hg]"
-                range: string
+          - Quantity:
+              populated_from: pht001684
+              slot_derivations:
+                value_decimal:
+                  expr: "None if str({phv00116215}) == 'M' else float({phv00116215})"
+                unit:
+                  value: "mm[Hg]"
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001633
@@ -42,11 +42,11 @@
           value: "Right arm"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001633
-            slot_derivations:
-              value_decimal:
-                expr: "None if str({phv00114868}) == 'M' else float({phv00114868})"
-              unit:
-                value: "mm[Hg]"
-                range: string
+          - Quantity:
+              populated_from: pht001633
+              slot_derivations:
+                value_decimal:
+                  expr: "None if str({phv00114868}) == 'M' else float({phv00114868})"
+                unit:
+                  value: "mm[Hg]"
+                  range: string

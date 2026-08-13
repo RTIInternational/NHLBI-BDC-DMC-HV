@@ -14,10 +14,10 @@
           value: "questionnaire"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht008729
-            slot_derivations:
-              value_integer:
-                populated_from: phv00401225
-              unit:
-                value: "{score}"
+          - Quantity:
+              populated_from: pht008729
+              slot_derivations:
+                value_integer:
+                  populated_from: phv00401225
+                unit:
+                  value: "{score}"

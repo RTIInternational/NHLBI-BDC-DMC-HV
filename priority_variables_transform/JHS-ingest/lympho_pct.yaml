@@ -14,10 +14,10 @@
           value: "blood assay"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001959
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00127622
-              unit:
-                value: "%{WBCs}"
+          - Quantity:
+              populated_from: pht001959
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00127622
+                unit:
+                  value: "%{WBCs}"

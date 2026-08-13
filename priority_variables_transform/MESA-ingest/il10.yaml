@@ -14,36 +14,36 @@
           range: string
         range_high:
           class_derivations:
-          - name: Quantity
-            populated_from: pht002099
-            slot_derivations:
-              value_decimal:
-                value: '10000'
-                range: string
-              unit:
-                value: pg/mL
-                range: string
+          - Quantity:
+              populated_from: pht002099
+              slot_derivations:
+                value_decimal:
+                  value: '10000'
+                  range: string
+                unit:
+                  value: pg/mL
+                  range: string
         range_low:
           class_derivations:
-          - name: Quantity
-            populated_from: pht002099
-            slot_derivations:
-              value_decimal:
-                value: '0.13'
-                range: string
-              unit:
-                value: pg/mL
-                range: string                      
+          - Quantity:
+              populated_from: pht002099
+              slot_derivations:
+                value_decimal:
+                  value: '0.13'
+                  range: string
+                unit:
+                  value: pg/mL
+                  range: string                      
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht002099
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00142667
-              unit:
-                value: pg/mL
-                range: string
+          - Quantity:
+              populated_from: pht002099
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00142667
+                unit:
+                  value: pg/mL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002105
@@ -60,11 +60,11 @@
           range: string
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht002105
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00160519
-              unit:
-                value: pg/mL
-                range: string
+          - Quantity:
+              populated_from: pht002105
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00160519
+                unit:
+                  value: pg/mL
+                  range: string

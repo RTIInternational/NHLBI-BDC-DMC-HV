@@ -16,14 +16,14 @@
           value: "anthropometry"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht012835
-            slot_derivations:
-              value_decimal:
-                expr: "{phv00516590} * 2.54"
-              unit:
-                value: "cm"
-                range: string
+          - Quantity:
+              populated_from: pht012835
+              slot_derivations:
+                value_decimal:
+                  expr: "{phv00516590} * 2.54"
+                unit:
+                  value: "cm"
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004102
@@ -40,14 +40,14 @@
           value: "anthropometry"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht004102
-            slot_derivations:
-              value_decimal:
-                expr: 'case(({phv00206817} == "I", {phv00206855} * 2.54), ({phv00206817} == "C", {phv00206855}))'
-              unit:
-                value: "cm"
-                range: string
+          - Quantity:
+              populated_from: pht004102
+              slot_derivations:
+                value_decimal:
+                  expr: 'case(({phv00206817} == "I", {phv00206855} * 2.54), ({phv00206817} == "C", {phv00206855}))'
+                unit:
+                  value: "cm"
+                  range: string
 # COMMENTED OUT: ABI (Ankle Brachial Index) table — no unit metadata in dbGaP data dict.
 # Variable ABI5 (phv00294562) has empty unit field. Each exam already has proper cm height
 # from anthropometry/PFT forms. DCC used only pht004032 (ANTA01, confirmed cm) for ARIC height.
@@ -117,13 +117,13 @@
           value: "anthropometry"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht004032
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00203151
-              unit:
-                value: "cm"
+          - Quantity:
+              populated_from: pht004032
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00203151
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006467
@@ -142,13 +142,13 @@
           value: "anthropometry"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht006467
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00297562
-              unit:
-                value: "cm"
+          - Quantity:
+              populated_from: pht006467
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00297562
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006468
@@ -167,13 +167,13 @@
           value: "anthropometry"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht006468
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00511023
-              unit:
-                value: "cm"
+          - Quantity:
+              populated_from: pht006468
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00511023
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004035
@@ -190,13 +190,13 @@
           value: "anthropometry"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht004035
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00203193
-              unit:
-                value: "cm"
+          - Quantity:
+              populated_from: pht004035
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00203193
+                unit:
+                  value: "cm"
 # COMMENTED OUT: ECG Raw Epicare table — no unit metadata in dbGaP data dict.
 # Variable ECGRA278 (phv00514211) has empty unit field. Exam 2 already has proper height
 # from pht012835 (PFTB03, inches→cm via *2.54). DCC did not use ECG tables for height.
@@ -239,13 +239,13 @@
           value: "anthropometry"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht004034
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00203175
-              unit:
-                value: "cm"
+          - Quantity:
+              populated_from: pht004034
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00203175
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006469
@@ -262,13 +262,13 @@
           value: "anthropometry"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht006469
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00297646
-              unit:
-                value: "cm"
+          - Quantity:
+              populated_from: pht006469
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00297646
+                unit:
+                  value: "cm"
 # COMMENTED OUT: ECG Raw Epicare table — no unit metadata in dbGaP data dict.
 # Variable ECGRA278 (phv00515037) has empty unit field. Exam 3 already has proper cm height
 # from pht004034 (ANTC1, confirmed cm). DCC did not use ECG tables for height.
@@ -311,13 +311,13 @@
           value: "anthropometry"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht006419
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00294838
-              unit:
-                value: "cm"
+          - Quantity:
+              populated_from: pht006419
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00294838
+                unit:
+                  value: "cm"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012855
@@ -334,13 +334,13 @@
           value: "anthropometry"
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht012855
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00520006
-              unit:
-                value: "cm"
+          - Quantity:
+              populated_from: pht012855
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00520006
+                unit:
+                  value: "cm"
 # COMMENTED OUT: Jackson-only cohort table — no unit metadata in dbGaP data dict.
 # Variable ECHA2 (phv00510684) has empty unit field. Exam 3 already has proper cm height
 # from pht004034 (ANTC1, confirmed cm). DCC did not use ECHA tables for height.

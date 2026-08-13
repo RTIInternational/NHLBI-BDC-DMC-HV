@@ -13,14 +13,14 @@
           range: string
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht000031
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00008098
-              unit:
-                value: '[IU]/L'
-                range: string
+          - Quantity:
+              populated_from: pht000031
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00008098
+                unit:
+                  value: '[IU]/L'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
@@ -38,28 +38,28 @@
           value: 'blood assay'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht002889
-            slot_derivations:
-              value_decimal:
-                expr: 'case(({phv00172166} > 5.0, {phv00172166}), 
-                        ({phv00172202} == 1, None), 
-                        (True, {phv00172166})
-                      )'
-              unit:
-                value: '[IU]/L'
-                range: string
+          - Quantity:
+              populated_from: pht002889
+              slot_derivations:
+                value_decimal:
+                  expr: 'case(({phv00172166} > 5.0, {phv00172166}), 
+                          ({phv00172202} == 1, None), 
+                          (True, {phv00172166})
+                        )'
+                unit:
+                  value: '[IU]/L'
+                  range: string
         range_low:
           class_derivations:
-          - name: Quantity
-            populated_from: pht002889
-            slot_derivations:
-              value_decimal:
-                value: '5.0'
-                range: string
-              unit:
-                value: '[IU]/L'
-                range: string
+          - Quantity:
+              populated_from: pht002889
+              slot_derivations:
+                value_decimal:
+                  value: '5.0'
+                  range: string
+                unit:
+                  value: '[IU]/L'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
@@ -77,29 +77,29 @@
           value: 'blood assay'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht004802
-            slot_derivations:
-              value_decimal:
-                expr: 'case(
-                        ({phv00227050} > 5.0, {phv00227050}),
-                        ({phv00227066} == 1, None), 
-                        (True, {phv00227050})
-                      )'
-              unit:
-                value: '[IU]/L'
-                range: string
+          - Quantity:
+              populated_from: pht004802
+              slot_derivations:
+                value_decimal:
+                  expr: 'case(
+                          ({phv00227050} > 5.0, {phv00227050}),
+                          ({phv00227066} == 1, None), 
+                          (True, {phv00227050})
+                        )'
+                unit:
+                  value: '[IU]/L'
+                  range: string
         range_low:
           class_derivations:
-          - name: Quantity
-            populated_from: pht004802
-            slot_derivations:
-              value_decimal:
-                value: '5.0'
-                range: string
-              unit:
-                value: '[IU]/L'
-                range: string
+          - Quantity:
+              populated_from: pht004802
+              slot_derivations:
+                value_decimal:
+                  value: '5.0'
+                  range: string
+                unit:
+                  value: '[IU]/L'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001045
@@ -117,11 +117,11 @@
           value: 'blood assay'
         value_quantity:
           class_derivations:
-          - name: Quantity
-            populated_from: pht001045
-            slot_derivations:
-              value_decimal:
-                populated_from: phv00081020
-              unit:
-                value: '[IU]/L'
-                range: string
+          - Quantity:
+              populated_from: pht001045
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00081020
+                unit:
+                  value: '[IU]/L'
+                  range: string
