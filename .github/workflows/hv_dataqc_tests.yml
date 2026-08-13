@@ -37,7 +37,8 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install pandas pyyaml
+        # openpyxl: the S4/S5 report generators write xlsx (hv_dataqc_common.write_xlsx).
+        run: pip install pandas pyyaml openpyxl
 
       - name: Run hv_dataqc unit tests
         # Self-contained code tests only (tempfile fixtures, no network/corpus).

@@ -468,7 +468,7 @@ class XlsxTableTests(unittest.TestCase):
         self.assertEqual(cells[n_idx], 15584)
         self.assertEqual(cells[mean_idx], 359.58)
         # A label with no pooled data is a blank row, not dropped.
-        missing_label = next(l for l in TABLE_S5_LABELS if l != label)
+        missing_label = next(lbl for lbl in TABLE_S5_LABELS if lbl != label)
         self.assertEqual(by_label[missing_label][n_idx], "")
 
     def test_write_s5_xlsx_header_and_formats(self) -> None:

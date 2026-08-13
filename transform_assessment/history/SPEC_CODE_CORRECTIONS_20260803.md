@@ -119,6 +119,19 @@ rather than a deliberate choice:
 
 **The `whtbld_ct` specs are correct and were deliberately left untouched.**
 
+**Follow-up (2026-08-13): this fix exposed a separate ARIC spec bug.** With
+`lympho_ct` no longer sharing the WBC concept code, `check_phv_dedup.py` began
+reporting `phv00294954` mapped to two concepts — because ARIC's `lympho_ct.yaml`
+and `whtbld_ct.yaml` both draw `value_decimal` from the *same*
+`pht006422`/`phv00294954` column. One of them is reading the wrong source
+variable; a lymphocyte count and a white-blood-cell count cannot be the same
+column. The duplicate was invisible while both files carried `OBA:VT0000217`,
+so the check had nothing to compare.
+
+The concept-code correction is still right and should not be reverted to silence
+this. Added to `check_phv_dedup.py`'s `KNOWN_ISSUES` with that note; resolving it
+needs an ARIC spec owner to say which column actually holds lymphocytes.
+
 ## 5. `troponin`: `OMOP:8842` -> `OMOP:4021291` (FHS only)
 
 2 occurrences. **`OMOP:8842` is not a clinical concept at all** — Athena gives

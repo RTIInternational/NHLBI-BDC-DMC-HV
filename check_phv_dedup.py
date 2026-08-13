@@ -42,6 +42,14 @@ KNOWN_ISSUES = {
     "phv00112688",  # CARDIA hemo / mchc
     "phv00210286",  # ARIC bp_diastolic / bp_systolic
     "phv00210289",  # ARIC bp_diastolic / bp_systolic
+    # ARIC lympho_ct / whtbld_ct. Surfaced (not caused) by correcting the
+    # lympho_ct typo OBA:VT0000217 -> OBA:VT0000717 in 2026-08. Both specs pull
+    # value_decimal from the SAME pht006422/phv00294954 column, so one of them
+    # reads the wrong source variable -- the dedup check could not see it while
+    # both carried the WBC concept code. Needs an ARIC spec owner to say which
+    # column holds lymphocytes; do not "fix" by reverting the concept code.
+    # See transform_assessment/history/SPEC_CODE_CORRECTIONS_20260803.md §4.
+    "phv00294954",
 }
 
 
