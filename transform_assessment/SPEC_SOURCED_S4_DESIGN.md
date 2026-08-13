@@ -250,6 +250,28 @@ null. `build_cohort_rows` (lines 350-357) then counts that phv toward
 counting or reporting the misses. A stale dbGaP cache triggers the same path via
 the `phv_name_map` miss at line 257.
 
+**0. Four label/var_name sources exist, and two of them disagree.** Worth knowing
+before touching any of the label handling, because it explains defect 2 below.
+
+| source | rows | role |
+|---|---|---|
+| `hv_dataqc/extract_harmonized/config/TableS1.tsv` | 149 | **authoritative** — concept code → publication label, for S4 and S5 |
+| `transform_assessment/config/s4_layout.yaml` `variables:` | 148 | S4 template row order, transcribed by hand |
+| `table_s5/spec.py` `TABLE_S5_LABELS` | 102 | S5 template row order, hardcoded |
+| `stata_gen_yaml/Python/Documentation/bdchv_defs.csv` | 150 | **older export of a different sheet** ("BDCHM Variable Mapping" / "BDCHM Harmonized Variables V1"); feeds the Stata YAML-generation pipeline |
+
+The first three share the same 149 `var_name`s as S1. The fourth does too — but
+**16 of its labels differ from S1's**, almost all by capitalization
+(`bilirubin_tot` → S1 `Bilirubin Total` vs stata `Bilirubin total`; `il6` → S1
+`Interleukin 6 in blood` vs stata `interleukin 6 in blood`), plus a few real
+renames (`alcohol_servings` → `Alcohol Consumption` vs `Alcohol servings`,
+`copd` → `COPD status` vs `COPD`).
+
+**`TABLE_S5_LABELS` was evidently derived from the stata-side spelling, not from
+S1** — the two labels S5 currently fails to match are exactly two of those 16.
+So defect 2 is not a random typo; it is one label list built against one sheet
+and matched against another.
+
 **2. Table S5 drops rows on letter-case drift.** `table_s5/` matches
 `TABLE_S5_LABELS` against Table S1 exactly and case-**sensitively** — there is
 no `lower()` anywhere in the package — while the S4 side normalizes case
