@@ -106,11 +106,27 @@ including what a programmer does once it is decided, is in
 [`OPEN_ARIC_LYMPHO_CT_PHV.md`](OPEN_ARIC_LYMPHO_CT_PHV.md). Suppressed in
 `check_phv_dedup.py`'s `KNOWN_ISSUES` meanwhile, so CI is green.
 
-**For CARDIA spec owners — asked 2026-08-04 in Slack, awaiting answer.** Seven
-`value_decimal` expressions in `CARDIA-ingest/alcohol_servings.yaml` are
-commented out; will they return for ingest? The project lead's read is that the 3
-live phvs are beer/wine/liquor components and the disabled expressions summed
-them — see [`SPEC_SOURCED_S4_DESIGN.md`](SPEC_SOURCED_S4_DESIGN.md).
+**For CARDIA spec owners — will the commented-out alcohol expressions come
+back?** Asked 2026-08-04 in Slack and never answered; recorded here because
+Slack questions get lost.
+
+`CARDIA-ingest/alcohol_servings.yaml` has 10 measurement blocks but only **3
+live value phvs**. The other 7 carry summing expressions that were commented out
+within a day of being written (`07e2e819` → `2a93479f` → `1623e1f1`,
+2026-03-16/17). The working read: the 3 live phvs are beer, wine, and liquor
+servings per week, and the disabled expressions summed them into total alcohol
+per week — so the components are the real raw variables and **3 is the honest
+count**, not an undercount against the published S4's 67. This is domain
+inference; the phvs could not be found in dbGaP to confirm.
+
+Two things follow, which is why it is worth answering:
+
+- If those expressions return for ingest, CARDIA's alcohol count changes and the
+  generator will need to read live `expr` sums, which it currently does not.
+- Leaving `slot_derivations:` empty except for comments is a schema error that
+  is today invisible to both the validator and the generator. A validator check
+  for value-less `Quantity` blocks would fire exactly once right now — see
+  [`SPEC_SOURCED_S4_DESIGN.md`](SPEC_SOURCED_S4_DESIGN.md) §"Combined phvs".
 
 ## The published Table S4 is not a target
 
