@@ -155,6 +155,29 @@ In priority order. Everything premised on matching the published table is gone.
 The three defects in §"Known defects" are recorded but unfixed; 2 and 3 there
 affect S5 output today.
 
+### Also queued, lower priority
+
+- **`TableS1.tsv` is a frozen snapshot with no refresh step.** It was committed
+  once (`93ac3910`, 2026-08-03) as a manual export and nothing re-pulls it from
+  the source sheet — not `run_s4_report.sh`, not `run_s5_report.sh`, not any
+  script in the repo. Both S4 and S5 resolve every publication label through it,
+  so once the curator edits the sheet, both tables silently use stale labels and
+  a newly-added variable cannot resolve at all. **Add a refresh step** (or, at
+  minimum, print the file's date at run time so a stale snapshot is visible in
+  the log). This is the same class of problem as the drifted spreadsheets the
+  spec-sourcing work was meant to escape.
+- **Consider moving our S4/S5 code out of the shared `extract_harmonized/`
+  namespace.** `table_s5/` is already a subpackage, which is the right shape.
+  But `label_map.py` sits loose beside `extract_harmonized_summaries.py`, and
+  our branch also added ~142 lines *inside* that shared file (a `label_map`
+  parameter, `bdc_label` population, `_participant_col`, and the
+  `_valid_value_mask` fix for the participants-over-`n_valid` bug). That file
+  and `hv_dataqc_common.py` are shared QC infrastructure with other authors, so
+  our additions are easy to mistake for theirs and vice versa. Worth deciding
+  where the boundary is before more accretes. Note this is organization only —
+  the `extract_harmonized_summaries.py` changes are load-bearing for S5's
+  `bdc_label` and should not simply be moved out.
+
 ## What's here
 
 Four things, and that is the whole directory.
