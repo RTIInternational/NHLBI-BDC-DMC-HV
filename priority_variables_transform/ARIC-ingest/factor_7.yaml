@@ -16,7 +16,9 @@
               populated_from: pht004098
               slot_derivations:
                 value_decimal:
-                  expr: 'None if {phv00206651} is None or str({phv00206651}) in ("A", "O", "M", "R", "N", "U", "T", "L", "H", "", ".", "NA", "nan", "NaN") else float({phv00206651})'
+                  # ARIC sentinel codes (A, O, M, R, N, U, T, L, H) and any other non-numeric value become null;
+                  # "nan"/"NaN" parse as numbers so they are excluded too.
+                  expr: 'float({phv00206651}) if is_numeric({phv00206651}) and str({phv00206651}) not in ("nan", "NaN") else None'
                 unit:
                   value: "%{normal}"
 - class_derivations:
@@ -37,6 +39,8 @@
               populated_from: pht004099
               slot_derivations:
                 value_decimal:
-                  expr: 'None if {phv00206657} is None or str({phv00206657}) in ("A", "O", "M", "R", "N", "U", "T", "L", "H", "", ".", "NA", "nan", "NaN") else float({phv00206657})'
+                  # ARIC sentinel codes (A, O, M, R, N, U, T, L, H) and any other non-numeric value become null;
+                  # "nan"/"NaN" parse as numbers so they are excluded too.
+                  expr: 'float({phv00206657}) if is_numeric({phv00206657}) and str({phv00206657}) not in ("nan", "NaN") else None'
                 unit:
                   value: "%{normal}"
