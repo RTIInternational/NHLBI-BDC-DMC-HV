@@ -293,9 +293,16 @@ known_issues:
       is a trivial separate issue (code 19 mapping missing from one block).
     confirmed_date: "2026-07-20"
 
-  # -- C2/C3: e630+event 69.8% N loss (pht000309 multi-event SOE filtering) -
+  # -- C2/C3: event / e630+event N loss (pht000309 multi-event SOE filtering) -
+  # variable_key broadened from the 4-token pool "e630+g3a232+e416+event" to the
+  # single token "event" (2026-08-06). The subset-match rule (known_issues.py)
+  # requires every key token to be present in the report's display tokens, so the
+  # old pooled key could never match the STANDALONE "event [.../pht000309]" row
+  # (display token set = {"event"}) even though the summary below documents it.
+  # "event" still matches the pooled Condition (its tokens include "event"), and
+  # it is the only C2/C3 FAIL/WARN display token named "event", so no over-match.
   - checks: [C2, C3]
-    variable_key: "e630+g3a232+e416+event"
+    variable_key: "event"
     yaml_file: angina.yaml
     status: false_positive
     root_cause: crosswalk_source_scope_mismatch
@@ -544,3 +551,82 @@ known_issues:
       (2.7%) is below typical clinical significance. C4 PASSES confirming no
       unit error. Re-investigate if all FHS consent groups are run together.
     confirmed_date: "2026-07-20"
+
+  # -- C4/C6: urine creatinine mean/SD (compare tool cannot replay 2-PHV ratio) --
+  # The 1000x inflation bug (pht004809 block: (Cr24*100)/Vol24) was FIXED on
+  # branch fix/hv-fhs-20260806 -> Cr24/(Vol24*10). Residual mismatch is a tool
+  # limitation, NOT a data defect (harmonized ~118 mg/dL is correct).
+  - checks: [C4, C6]
+    variable_key: "urcreat+mmcreat+ur_creat+creatinine+cr24"
+    yaml_file: creat_urin.yaml
+    status: false_positive
+    root_cause: tooling_bug
+    summary: >
+      Urine creatinine pool. The pht004809 block derives spot-equivalent
+      concentration as a TWO-PHV ratio: Cr24[mg/d] / (Vol24[L/d] * 10), where
+      phv00227286 (Cr24) is 24-h creatinine EXCRETION (mg/day, logical 367-3080)
+      and phv00227269 (Vol24) is 24-h urine volume (L/day). hv_dataqc can only
+      apply a single scalar conversion factor to the pre-aggregated per-PHV
+      source summaries (expected_summary._apply_conversion_factor_to_summary);
+      multi-PHV row-level exprs hit the "static_yaml_expr ... aggregate
+      comparison not attempted" path (crosswalk.py). So the source side pools the
+      raw mg/day excretion values un-converted alongside the spot mg/dL blocks,
+      inflating source mean (191.82) and SD (319). The harmonized output correctly
+      converts excretion/volume to concentration (mean ~118 mg/dL, SD ~72), which
+      is physiologically correct for spot urine creatinine. The 1000x-inflation
+      defect that originally produced harmonized mean 5074 was fixed on branch
+      fix/hv-fhs-20260806 (creat_urin.yaml). Not correctable by a YAML change --
+      it requires row-level source evaluation the compare tool does not perform.
+    confirmed_date: "2026-08-07"
+
+  # -- C7: family income categories (case() value_concept not applied by comparator) --
+  # The PY125 12-level mapping + C2/C3 N-loss were FIXED on fix/hv-fhs-20260806.
+  # C7 still fails only because the comparator compares raw numeric source codes
+  # to harmonized bracket STRINGS; harmonized distribution is correct/complete.
+  - checks: [C7]
+    variable_key: "g3b0636+g3a497+py125"
+    yaml_file: fam_income.yaml
+    status: false_positive
+    root_cause: tooling_bug
+    summary: >
+      Family income (OMOP:4076114). The C7 comparator applies YAML value_mappings
+      but does NOT evaluate case()-based value_concept expressions, so it compares
+      the RAW numeric source codes (1-12) against the harmonized value_concept
+      BRACKET STRINGS ("< $5,000", "$5,000 - $9,000", ...) and reports every
+      numeric code as "missing in harmonized." Every FHS income block -- and every
+      other cohort's income file -- renders brackets via case() value_concept, so
+      this code-vs-string mismatch is structural to the tool. The harmonized
+      distribution is correct and complete: the PY125 (pht000100) 12-level scheme
+      and the resulting C2/C3 N-loss were fixed on branch fix/hv-fhs-20260806
+      (fam_income.yaml), and the harmonized side now emits all income brackets
+      with the expected counts. Not correctable by a YAML change -- it requires
+      the C7 comparator to apply case() value_concept transforms to source codes.
+    confirmed_date: "2026-08-07"
+
+  # -- C4/C6: height mean/SD (source crosswalk is an unnormalized mixed-unit pool) --
+  # All real YAML defects fixed on fix/hv-fhs-20260806 (Exam17 inches-x100 -> /100;
+  # Exam28/30/31/32 88.88 "Field visit" sentinel guards). Harmonized height is now
+  # physiologically correct; residual mismatch is a contaminated SOURCE reference.
+  - checks: [C4, C6]
+    variable_key: "mf217+mf67+mf290+fc7+fd13+fe68+ff64+fg63"
+    yaml_file: bdy_hgt.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      Height pool (bdy_hgt.yaml, ~70 exam blocks, OBA:VT0001253, output cm). The
+      harmonized output is physiologically correct: mean 165.39 cm, SD 9.89 cm,
+      range 114.3 -> <220 cm (textbook adult height). The residual C4/C6 mismatch
+      is driven entirely by the compare tool's SOURCE reference, which is an
+      UNNORMALIZED mixed-unit pool: source mean 154.68, SD 33.32 cm -- an SD that
+      is physically impossible for real height (true SD ~7-10 cm), indicating the
+      source pools raw inches (~65) alongside cm (~168) without unit conversion.
+      The source summary is byte-identical (154.678102) across runs regardless of
+      YAML edits, confirming it is a fixed crosswalk reference, not re-derived from
+      the transform. All genuine YAML defects were fixed on branch
+      fix/hv-fhs-20260806: Exam 17 (pht000019/phv00003245) was inches-x100 and
+      needed /100 before x2.54 (removed the harmonized max=19431 artifact); and the
+      88.88 "Field visit" sentinel was guarded in Exam 28/30/31/32 -- the C9
+      max=225.7552 is now [src only], confirming it is gone from the harmonized
+      output and present only in the source reference. No further YAML change can
+      close this gap; it is a source-reference normalization artifact.
+    confirmed_date: "2026-08-07"

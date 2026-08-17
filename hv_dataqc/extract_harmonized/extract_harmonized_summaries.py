@@ -196,8 +196,25 @@ def discover_mapped_data_dirs(harmonized_root: Path, cohort: str) -> list[Path]:
 # Data loading
 # ---------------------------------------------------------------------------
 
-def load_entity(mapped_data_dirs: list[Path], entity: str) -> pd.DataFrame | None:
-    """Load and concatenate a specific entity TSV from all mapped-data dirs."""
+def load_entity(
+    mapped_data_dirs: list[Path],
+    entity: str,
+    cg_status: dict[str, dict] | None = None,
+) -> pd.DataFrame | None:
+    """Load and concatenate a specific entity TSV from all mapped-data dirs.
+
+    Args:
+        mapped_data_dirs: List of mapped-data/ directories to search.
+        entity: Entity name key from ENTITY_FILES (e.g. "Visit").
+        cg_status: Optional dict populated in-place with per-consent-group file
+            status for this entity.  Keys are consent-group labels (the
+            ``DMC_…`` directory name two levels above each mapped-data dir).
+            Values are status dicts with one of three shapes::
+
+                {"status": "loaded", "rows": N}
+                {"status": "empty",  "error": "<exception text>"}
+                {"status": "missing"}
+    """
     filename = ENTITY_FILES.get(entity)
     if not filename:
         return None
@@ -206,16 +223,27 @@ def load_entity(mapped_data_dirs: list[Path], entity: str) -> pd.DataFrame | Non
     found_files: list[tuple[str, int]] = []
 
     for d in mapped_data_dirs:
+        label = d.parent.parent.name
         tsv = d / filename
-        if tsv.exists():
-            try:
-                df = pd.read_csv(tsv, sep="\t", low_memory=False)
-                df.columns = df.columns.astype(str).str.strip()
-                frames.append(df)
-                label = d.parent.parent.name
-                found_files.append((label, len(df)))
-            except Exception as exc:
-                print(f"      WARNING: Could not read {tsv}: {exc}")
+        if not tsv.exists():
+            if cg_status is not None:
+                cg_status[label] = {"status": "missing"}
+            continue
+        try:
+            df = pd.read_csv(tsv, sep="\t", low_memory=False)
+            df.columns = df.columns.astype(str).str.strip()
+            frames.append(df)
+            found_files.append((label, len(df)))
+            if cg_status is not None:
+                cg_status[label] = {
+                    "status": "loaded",
+                    "rows": len(df),
+                    "columns": sorted(df.columns.tolist()),
+                }
+        except Exception as exc:
+            print(f"      WARNING: Could not read {tsv}: {exc}")
+            if cg_status is not None:
+                cg_status[label] = {"status": "empty", "error": str(exc)}
 
     if not frames:
         return None
@@ -282,6 +310,94 @@ def participant_count_from_entity(df: pd.DataFrame, preferred_cols: tuple[str, .
         if col in df.columns:
             return int(df[col].nunique(dropna=True))
     return 0
+
+
+# ---------------------------------------------------------------------------
+# Structural integrity stats (UUID validity and duplicate rows)
+# Populated by the extractor and consumed by C13/C14 compare checks.
+# ---------------------------------------------------------------------------
+
+_UUID_RE = re.compile(
+    r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
+    re.IGNORECASE,
+)
+
+
+def compute_uuid_validity_stats(df: pd.DataFrame, entity: str) -> dict:
+    """Check associated_participant and associated_visit columns for UUID format.
+
+    Returns aggregate counts only -- no participant-level values are retained
+    beyond the first 3 sample malformed strings (which are derived IDs, not
+    source PHV values).
+    """
+    result: dict = {"entity": entity, "n_total_rows": len(df)}
+    for col, bad_key, sample_key in [
+        ("associated_participant", "n_invalid_participant_uuid", "sample_invalid_participant"),
+        ("associated_visit",       "n_invalid_visit_uuid",       "sample_invalid_visit"),
+    ]:
+        if col not in df.columns:
+            result[bad_key] = 0
+            result[sample_key] = []
+            continue
+        non_null = df[col].dropna().astype(str)
+        invalid_mask = ~non_null.str.match(_UUID_RE)
+        invalid_series = non_null[invalid_mask]
+        result[bad_key] = int(invalid_series.shape[0])
+        result[sample_key] = invalid_series.unique()[:3].tolist()
+    return result
+
+
+def compute_duplicate_stats(df: pd.DataFrame, entity: str) -> dict:
+    """Count exact duplicate rows across all non-id columns.
+
+    A row is a duplicate if every non-id column value is identical to another
+    row in the same DataFrame. Returns only aggregate counts.
+    """
+    cols = [c for c in df.columns if c.lower() != "id"]
+    n_total = len(df)
+    if not cols or n_total == 0:
+        return {
+            "entity": entity,
+            "n_total_rows": n_total,
+            "n_duplicate_rows": 0,
+            "n_duplicate_groups": 0,
+            "pct_duplicated": 0.0,
+            "top_duplicate_concepts": [],
+            "visit_breakdown": {},
+        }
+    sub = df[cols]
+    dup_mask = sub.duplicated(keep=False)
+    n_dup_rows = int(dup_mask.sum())
+    n_dup_groups = int(sub[dup_mask].drop_duplicates().shape[0]) if n_dup_rows > 0 else 0
+    pct = round(100.0 * n_dup_rows / n_total, 2)
+
+    # Concept and visit breakdown -- helps map duplicates to specific YAML blocks.
+    # Only computed when there are duplicates (avoids unnecessary work on clean entities).
+    top_duplicate_concepts: list[dict] = []
+    visit_breakdown: dict[str, int] = {}
+    if n_dup_rows > 0:
+        concept_col = next(
+            (c for c in ["condition_concept", "observation_concept"] if c in df.columns),
+            None,
+        )
+        if concept_col:
+            top = df.loc[dup_mask, concept_col].value_counts().head(10)
+            top_duplicate_concepts = [
+                {"concept": str(k), "n_dup_rows": int(v)} for k, v in top.items()
+            ]
+        if "associated_visit" in df.columns:
+            visit_counts = df.loc[dup_mask, "associated_visit"].value_counts().head(10)
+            visit_breakdown = {str(k): int(v) for k, v in visit_counts.items()}
+
+    return {
+        "entity": entity,
+        "n_total_rows": n_total,
+        "n_duplicate_rows": n_dup_rows,
+        "n_duplicate_groups": n_dup_groups,
+        "pct_duplicated": pct,
+        "top_duplicate_concepts": top_duplicate_concepts,
+        "visit_breakdown": visit_breakdown,
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -965,12 +1081,29 @@ def _run_extract(
     rows_per_visit: dict[str, int] = {}
     participant_count_candidates: dict[str, int] = {}
     extraction_warnings: dict[str, Any] = {}
+    # Per-consent-group file status: {cg_label: {entity_name: {status, rows?, error?}}}
+    consent_group_file_status: dict[str, dict[str, dict]] = {}
+    # C13/C14 structural integrity stats accumulated per entity
+    uuid_validation: dict[str, dict] = {}
+    duplicate_stats: dict[str, dict] = {}
+
+    def _load(entity_name: str) -> pd.DataFrame | None:
+        """Load an entity, record per-consent-group file status, and collect
+        structural integrity stats (UUID validity + duplicate rows) for C13/C14."""
+        _cg: dict[str, dict] = {}
+        df = load_entity(mapped_dirs, entity_name, cg_status=_cg)
+        for lbl, st in _cg.items():
+            consent_group_file_status.setdefault(lbl, {})[entity_name] = st
+        if df is not None:
+            uuid_validation[entity_name] = compute_uuid_validity_stats(df, entity_name)
+            duplicate_stats[entity_name] = compute_duplicate_stats(df, entity_name)
+        return df
 
     # ------------------------------------------------------------------
     # 1. Visit — MUST be loaded first to build UUID→label map
     # ------------------------------------------------------------------
     print("  [Visit] Loading (required first for UUID resolution)...")
-    visit_df = load_entity(mapped_dirs, "Visit")
+    visit_df = _load("Visit")
     visit_id_to_label: dict[str, str] = {}
 
     if visit_df is not None:
@@ -997,7 +1130,7 @@ def _run_extract(
     # 2. Demography
     # ------------------------------------------------------------------
     print("  [Demography] Loading...")
-    dem_df = load_entity(mapped_dirs, "Demography")
+    dem_df = _load("Demography")
     n_participants = 0
     if dem_df is not None:
         datasets_loaded.append("Demography")
@@ -1018,7 +1151,7 @@ def _run_extract(
     # 3. MeasurementObservation (standalone: bdy_hgt, bdy_wgt, bmi, hrt_rt)
     # ------------------------------------------------------------------
     print("  [MeasurementObservation] Loading...")
-    meas_df = load_entity(mapped_dirs, "MeasurementObservation")
+    meas_df = _load("MeasurementObservation")
     if meas_df is not None:
         datasets_loaded.append("MeasurementObservation")
         entity_counts["MeasurementObservation"] = len(meas_df)
@@ -1043,7 +1176,7 @@ def _run_extract(
     # 4. MeasurementObservationSet (blood_pressure, spirometry_*)
     # ------------------------------------------------------------------
     print("  [MeasurementObservationSet] Loading...")
-    meas_set_df = load_entity(mapped_dirs, "MeasurementObservationSet")
+    meas_set_df = _load("MeasurementObservationSet")
     if meas_set_df is not None:
         datasets_loaded.append("MeasurementObservationSet")
         entity_counts["MeasurementObservationSet"] = len(meas_set_df)
@@ -1067,7 +1200,7 @@ def _run_extract(
     # 5. Condition
     # ------------------------------------------------------------------
     print("  [Condition] Loading...")
-    cond_df = load_entity(mapped_dirs, "Condition")
+    cond_df = _load("Condition")
     if cond_df is not None:
         datasets_loaded.append("Condition")
         entity_counts["Condition"] = len(cond_df)
@@ -1087,7 +1220,7 @@ def _run_extract(
     # 6. Observation (smoking, etc.)
     # ------------------------------------------------------------------
     print("  [Observation] Loading...")
-    obs_df = load_entity(mapped_dirs, "Observation")
+    obs_df = _load("Observation")
     if obs_df is not None:
         datasets_loaded.append("Observation")
         entity_counts["Observation"] = len(obs_df)
@@ -1105,7 +1238,7 @@ def _run_extract(
     # 7. Participant / Person (for entity count tracking only)
     # ------------------------------------------------------------------
     for entity in ["Participant", "Person"]:
-        ent_df = load_entity(mapped_dirs, entity)
+        ent_df = _load(entity)
         if ent_df is not None:
             datasets_loaded.append(entity)
             entity_counts[entity] = len(ent_df)
@@ -1144,6 +1277,9 @@ def _run_extract(
         "datasets_loaded": datasets_loaded,
         "entity_counts": entity_counts,
         "rows_per_visit": rows_per_visit,
+        "consent_group_file_status": consent_group_file_status,
+        "uuid_validation": uuid_validation,
+        "duplicate_stats": duplicate_stats,
         "variables": variables,
     }
 

@@ -209,6 +209,7 @@ def _compute_joint_distributions(
     col_lower_map = {c.lower(): c for c in df.columns}
 
     joint_dists: dict[str, dict] = {}
+    skipped_unsafe = 0
     for phv_a, phv_b in phv_pairs:
         # phv_a < phv_b (canonical sorted order from scan_yaml_for_phv_pairs)
         # Resolve column name: prefer phv_name_map, fall back to PHV ID itself
@@ -219,6 +220,17 @@ def _compute_joint_distributions(
 
         if actual_a is None or actual_b is None or actual_a == actual_b:
             # Not in this table — skip silently (cross-table pair or unmapped PHV)
+            continue
+
+        # Extra check to prevent quasi-identifier use. Extremely low risk of
+        # reidentification, but excluding them is a simple and conservative
+        # safeguard (see function docstring).
+        if is_join_unsafe_column(name_a, actual_a, name_b, actual_b):
+            skipped_unsafe += 1
+            log.debug(
+                "  Crosstab skipped (disclosure guard): %s × %s (%s × %s)",
+                phv_a, phv_b, actual_a, actual_b,
+            )
             continue
 
         try:
@@ -238,6 +250,13 @@ def _compute_joint_distributions(
         except Exception as exc:  # noqa: BLE001
             log.debug("  Crosstab failed for %s × %s: %s", phv_a, phv_b, exc)
 
+    if skipped_unsafe:
+        log.info(
+            "  Disclosure guard: excluded %d identifier/quasi-identifier pair(s) "
+            "from joint distributions",
+            skipped_unsafe,
+        )
+
     return joint_dists
 
 
@@ -253,6 +272,10 @@ _SKIP_EXACT: frozenset[str] = frozenset(
         "topmed_subject_id",
         "sample_id",
         "sample.id",
+        "shareid",
+        "share_id",
+        "individual_id",
+        "indiv_id",
         "consent",
         "consent_short_name",
         "_source_file",
@@ -269,10 +292,56 @@ def is_system_column(col: str) -> bool:
         return True
     if canon.startswith("_"):
         return True
-    # Patterns that flag ID / provenance columns
-    if re.search(r"subject.?id|sample.?id|topmed_flag", canon):
+    # Patterns that flag ID / provenance columns. share.?id / individual.?id
+    if re.search(r"subject.?id|sample.?id|share.?id|individual.?id|indiv.?id|topmed_flag", canon):
         return True
     return False
+
+
+# Column-name patterns for date / age quasi-identifiers. When such a column is
+# one axis of a bivariate crosstab, individual cells can narrow to a single
+# participant (a value paired with an exact date or age), so these columns are
+# excluded from exported joint distributions. Extremely low risk of
+# reidentification, but excluding them is a simple and conservative safeguard.
+_QI_DATE_RE = re.compile(r"date|_dt$|\bdt$|visitdt|\bdob\b|birth", re.IGNORECASE)
+_QI_AGE_RE = re.compile(r"(^|_)age($|_|\d)|\bage\b", re.IGNORECASE)
+
+
+def is_quasi_identifier_column(col: str) -> bool:
+    """Return True for date/age columns that are unsafe to crosstab.
+
+    A date or age value paired with any second variable can isolate individual
+    participants; such columns are excluded from joint-distribution crosstabs.
+    """
+    canon = (col or "").strip().lower()
+    if not canon:
+        return False
+    return bool(_QI_DATE_RE.search(canon) or _QI_AGE_RE.search(canon))
+
+
+def is_join_unsafe_column(*names: str) -> bool:
+    """Return True if any provided name is an identifier or quasi-identifier.
+    """
+    for name in names:
+        if not name:
+            continue
+        if is_system_column(name) or is_quasi_identifier_column(name):
+            return True
+    return False
+
+
+def apply_quasi_identifier_suppression(summary: dict[str, Any], col: str) -> dict[str, Any]:
+    """Drop the value-level distribution for quasi-identifier columns.
+
+    The aggregate counts (n_total/n_valid/n_missing/n_distinct) are kept, 
+    but the per-value distribution is emptied. Continuous summaries (min/max/
+    mean only) are left unchanged. Returns a shallow copy when it modifies.
+    """
+    if summary.get("type") == "categorical" and summary.get("distribution") and is_quasi_identifier_column(col):
+        summary = dict(summary)
+        summary["distribution"] = {}
+        summary["distribution_suppressed"] = "quasi_identifier"
+    return summary
 
 
 # ---------------------------------------------------------------------------
@@ -456,26 +525,22 @@ def load_source_data(
         gc.collect()
 
         if pht_is_multi.get(pht_id):
-            # MULTI files list the same subjects in multiple consent groups.
-            # Deduplicate to get exactly one row per participant.
-            subj_col = participant_col
-            if subj_col is None or subj_col not in combined.columns:
-                for candidate in ("dbgap_subject_id", "topmed_subject_id", "subject_id"):
-                    if candidate in combined.columns:
-                        subj_col = candidate
-                        break
-            if subj_col and subj_col in combined.columns:
-                combined = combined.drop_duplicates(subset=[subj_col], keep="first")
+            # MULTI files list the same subjects in multiple consent groups, so
+            # the same data row can appear once per consent group. Deduplicate on
+            # the DATA columns only (excluding injected provenance columns such as
+            # _consent_group) to drop those cross-consent-group copies while
+            # PRESERVING legitimately distinct rows -- e.g. long-format tables with
+            # multiple visits/measurements per subject. Deduplicating on the
+            # subject-ID column alone silently truncated repeated-measures tables.
+            data_cols = [c for c in combined.columns if not str(c).startswith("_")]
+            if data_cols:
+                combined = combined.drop_duplicates(subset=data_cols, keep="first")
                 log.info(
-                    "  MULTI dedup %s: %d -> %d rows (on column '%s')",
-                    pht_id, row_count_before, len(combined), subj_col,
+                    "  MULTI dedup %s: %d -> %d rows (on %d data column(s))",
+                    pht_id, row_count_before, len(combined), len(data_cols),
                 )
             else:
-                log.warning(
-                    "  MULTI file %s: no participant-ID column found for dedup "
-                    "(pass --participant-col to specify one)",
-                    pht_id,
-                )
+                log.warning("  MULTI file %s: no data columns found for dedup", pht_id)
 
         log.info("  PHT %s: %d rows from %d file(s)", pht_id, len(combined), len(pht_file_lists[pht_id]))
         yielded += 1
@@ -899,6 +964,9 @@ def main(argv: list[str] | None = None) -> None:
                 )
                 if forced_type:
                     summary["_type_source"] = "dbGaP_data_dictionary"
+                # Suppress value enumeration for date/age quasi-identifier
+                # columns (kept for aggregate stats, not per-value distribution).
+                summary = apply_quasi_identifier_suppression(summary, col)
                 summary["_col_original"] = col
                 summary["_pht"] = pht_label
                 if col in phv_name_map:

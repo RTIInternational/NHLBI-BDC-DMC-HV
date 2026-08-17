@@ -216,18 +216,60 @@ def check_c7_categorical_distribution(
             if len(stats["source_categories"]) == 1:
                 stats.pop("source_categories", None)
         src_dist = translated
+    else:
+        # No value_map: still normalize source keys so dtype/formatting
+        # differences (e.g. "1.0" vs "1") do not cause false category
+        # mismatches. Mirrors the harmonized-key normalization below and the
+        # value_map source normalization above. New source artifacts are
+        # already normalized by categorical_stats; this also protects older
+        # artifacts. Existing pct values are preserved (not recomputed, so the
+        # sentinel-aware denominator downstream is unchanged); only keys that
+        # genuinely collapse together have their n and pct summed.
+        normalized_src: dict[str, Any] = {}
+        for cat, stats in src_dist.items():
+            norm_cat = normalize_category_key(cat)
+            if norm_cat in normalized_src:
+                existing = normalized_src[norm_cat]
+                existing["n"] = int(existing.get("n", 0) or 0) + int(stats.get("n", 0) or 0)
+                existing["pct"] = round(
+                    float(existing.get("pct", 0) or 0) + float(stats.get("pct", 0) or 0), 2
+                )
+            else:
+                normalized_src[norm_cat] = dict(stats)
+        src_dist = normalized_src
 
     # Normalize harmonized keys — pipeline may serialize values as JSON arrays
     # or Python reprs such as "['OMOP:8527']" / "('OMOP:8527',)".
     normalized_out: dict[str, Any] = {}
     for ok, stats in harmonized_dist.items():
-        normalized_out[normalize_category_key(ok)] = stats
+        norm_ok = normalize_category_key(ok)
+        if norm_ok in normalized_out:
+            # Two representations of the same category (e.g. "OMOP:8527" and
+            # "['OMOP:8527']") collapse together — sum their n and pct rather
+            # than letting the last writer win, which would silently discard
+            # the earlier bucket's mass and could mask a real distribution
+            # discrepancy as a match. Mirrors the source-side handling above.
+            existing = normalized_out[norm_ok]
+            existing["n"] = int(existing.get("n", 0) or 0) + int(stats.get("n", 0) or 0)
+            existing["pct"] = round(
+                float(existing.get("pct", 0) or 0) + float(stats.get("pct", 0) or 0), 2
+            )
+        else:
+            normalized_out[norm_ok] = dict(stats)
     harmonized_dist = normalized_out
 
     src_keys = set(src_dist)
     harmonized_keys = set(harmonized_dist)
     missing = sorted(src_keys - harmonized_keys)
     extra = sorted(harmonized_keys - src_keys)
+
+    # "None" in the expected distribution means source codes were explicitly
+    # mapped to null (the drop sentinel) in the YAML value_mappings — those
+    # rows produce no harmonised record by design.  Keep them visible in the
+    # distribution table so reviewers can audit the drop, but do not treat
+    # them as a missing category for FAIL/WARN purposes.
+    none_drop_n = src_dist.get("None", {}).get("n", 0) if "None" in missing else 0
+    missing_real = [m for m in missing if m != "None"]
 
     mismatches: list[dict] = []
     for cat in sorted(src_keys & harmonized_keys):
@@ -258,27 +300,40 @@ def check_c7_categorical_distribution(
         full_table.append(row)
 
     detail: dict = {"distribution_table": full_table}
-    if missing:
+    if missing_real:
+        detail["missing_categories"] = missing_real
+    elif missing:  # only "None" entries — preserve for table display
         detail["missing_categories"] = missing
+    if none_drop_n:
+        detail["none_drop_n"] = none_drop_n
     if extra:
         detail["extra_categories"] = extra
     if mismatches:
         detail["mismatches"] = mismatches
 
-    if not missing and not extra and not mismatches:
+    if not missing_real and not extra and not mismatches:
+        if none_drop_n:
+            return CheckResult("C7", var_name, "INFO",
+                               f"Distribution matches; {none_drop_n} source rows "
+                               f"explicitly excluded via None value_mapping (not in harmonized)",
+                               detail)
         return CheckResult("C7", var_name, "PASS",
                            f"Distribution matches ({len(src_dist)} categories)", detail)
-    if not mismatches and not missing:
-        return CheckResult("C7", var_name, "INFO",
-                           f"Extra harmonized categories: {extra}", detail)
-    if missing:
+    if not mismatches and not missing_real:
+        msgs = []
+        if none_drop_n:
+            msgs.append(f"{none_drop_n} rows excluded via None mapping")
+        if extra:
+            msgs.append(f"Extra harmonized categories: {extra}")
+        return CheckResult("C7", var_name, "INFO", "; ".join(msgs), detail)
+    if missing_real:
         if confidence == "partial":
             detail["comparison_confidence"] = confidence
             detail["comparison_limitations"] = limitations
             return CheckResult("C7", var_name, "WARN",
-                               f"Partial expected distribution missing categories in harmonized: {missing}", detail)
+                               f"Partial expected distribution missing categories in harmonized: {missing_real}", detail)
         return CheckResult("C7", var_name, "FAIL",
-                           f"Missing categories in harmonized: {missing}", detail)
+                           f"Missing categories in harmonized: {missing_real}", detail)
     if confidence == "partial":
         detail["comparison_confidence"] = confidence
         detail["comparison_limitations"] = limitations

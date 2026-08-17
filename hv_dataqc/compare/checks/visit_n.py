@@ -12,6 +12,11 @@ from pathlib import Path
 import yaml
 
 from hv_dataqc.compare._common import CheckResult, fmt_n as _n
+from hv_dataqc.compare.expected_summary import (
+    _case_branches,
+    _PHV_EQ_RE,
+    _strip_expr_literal,
+)
 
 
 def _synthesize_source_visit_counts(
@@ -96,10 +101,62 @@ def _synthesize_source_visit_counts(
     return synthesized, uncovered, unsupported
 
 
+def _build_visit_label_crosswalk(yaml_dir: Path) -> dict[str, str]:
+    """Build a {raw_visit_label: canonical_label} crosswalk from visit.yaml name: expr:.
+
+    Column-based cohorts (e.g. SPIROMICS, COPDGene) store a visit discriminator
+    column in their source TSV.  The source extractor reads the raw coded values
+    (e.g. ``'VISIT_1'``, ``'P1'``, ``0``) directly into ``rows_per_visit``,
+    while the harmonized output uses the canonical labels produced by the
+    ``case()`` expression in ``visit.yaml`` (e.g. ``'SPIROMICS Visit 1'``,
+    ``'COPDGene P1'``, ``'FHS ORIGINAL'``).
+
+    This function parses every ``name: expr: case(...)`` expression in
+    ``visit.yaml`` and returns a mapping of raw value → canonical label so
+    C8 can re-key source visit counts before comparing.
+
+    Handles both string comparisons (``{phv} == 'VISIT_1'``) and integer
+    comparisons (``{phv} == 0``).  Integer raw values are stored as their
+    string representations to match JSON/dict key conventions.
+    """
+    visit_yaml = yaml_dir / "visit.yaml"
+    if not visit_yaml.exists():
+        return {}
+    try:
+        docs = list(yaml.safe_load_all(visit_yaml.read_text(encoding="utf-8")))
+    except yaml.YAMLError:
+        return {}
+
+    crosswalk: dict[str, str] = {}
+    for doc in docs:
+        if not isinstance(doc, list):
+            continue
+        for block in doc:
+            if not isinstance(block, dict):
+                continue
+            cd = block.get("class_derivations", {})
+            visit_def = cd.get("Visit")
+            if not visit_def:
+                continue
+            slot_defs = visit_def.get("slot_derivations", {}) or {}
+            name_slot = slot_defs.get("name", {}) or {}
+            expr = name_slot.get("expr", "")
+            if not expr or "case" not in expr:
+                continue
+            for condition, canonical in _case_branches(expr):
+                m = _PHV_EQ_RE.search(condition)
+                if m:
+                    raw_val = _strip_expr_literal(m.group("value"))
+                    if raw_val not in crosswalk:
+                        crosswalk[raw_val] = canonical
+    return crosswalk
+
+
 def check_c8_visit_distribution(
     source: dict, harmonized: dict,
     warn_lo_ratio: float = 0.95, warn_hi_ratio: float = 1.05,
     yaml_dir: Path | None = None,
+    consent_group_file_status: dict | None = None,
 ) -> list[CheckResult]:
     """C8: Visit-stratified row count comparison.
 
@@ -111,7 +168,41 @@ def check_c8_visit_distribution(
 
     When source and harmonized use incompatible visit label namespaces (zero
     overlap), falls back to total-count comparison.
+
+    Args:
+        source: Source summary dict.
+        harmonized: Harmonized summary dict.
+        warn_lo_ratio: Lower bound of acceptable harmonized/source ratio (warn).
+        warn_hi_ratio: Upper bound of acceptable harmonized/source ratio (warn).
+        yaml_dir: HV YAML transform directory; enables table-based synthesis.
+        consent_group_file_status: Per-consent-group entity file status from
+            the harmonized JSON (``consent_group_file_status`` field).  When
+            provided, empty Visit.tsv groups are noted in FAIL result details.
     """
+    # Build a short Visit-specific note from consent_group_file_status if present.
+    visit_cg_note: str | None = None
+    visit_cg_detail: dict | None = None
+    if consent_group_file_status and isinstance(consent_group_file_status, dict):
+        loaded_groups: list[tuple[str, int]] = []
+        failed_groups: list[str] = []
+        for cg_label, entity_map in consent_group_file_status.items():
+            st = entity_map.get("Visit", {})
+            if st.get("status") == "loaded":
+                loaded_groups.append((cg_label, int(st.get("rows", 0))))
+            elif st.get("status") in ("empty", "missing"):
+                failed_groups.append(cg_label)
+        if failed_groups and loaded_groups:
+            loaded_str = "; ".join(f"{lbl} ({_n(rows)} rows)" for lbl, rows in sorted(loaded_groups))
+            visit_cg_note = (
+                f"Visit.tsv empty/missing for {len(failed_groups)} consent group(s) "
+                f"({', '.join(sorted(failed_groups))}); loaded in: {loaded_str}. "
+                f"See C0 for details."
+            )
+            visit_cg_detail = {
+                "visit_tsv_loaded_groups": {lbl: rows for lbl, rows in loaded_groups},
+                "visit_tsv_failed_groups": sorted(failed_groups),
+                "c0_reference": "See C0 Entity File Coverage check for root cause.",
+            }
     results: list[CheckResult] = []
     src_visits = source.get("rows_per_visit", {})
     harmonized_visits = harmonized.get("rows_per_visit", {})
@@ -142,6 +233,25 @@ def check_c8_visit_distribution(
 
     src_keys = set(src_visits) - {"_MISSING"}
     harmonized_keys = set(harmonized_visits) - {"_MISSING"}
+
+    # For column-based cohorts (SPIROMICS, COPDGene, …): when source rows_per_visit
+    # was populated directly from the TSV visit column, the raw coded values
+    # (e.g. 'VISIT_1', 'P1', 0) will not match the canonical labels in harmonized
+    # (e.g. 'SPIROMICS Visit 1', 'COPDGene P1', 'FHS ORIGINAL').  Attempt to
+    # resolve this by translating source keys via the case() expression in
+    # visit.yaml before falling back to total-count comparison.
+    if src_keys and harmonized_keys and not (src_keys & harmonized_keys) and yaml_dir and not synthesized:
+        crosswalk = _build_visit_label_crosswalk(yaml_dir)
+        if crosswalk:
+            rekeyed: dict[str, int] = {}
+            for lbl, n in src_visits.items():
+                canonical = crosswalk.get(lbl, lbl)
+                rekeyed[canonical] = rekeyed.get(canonical, 0) + int(n)
+            rekeyed_keys = set(rekeyed) - {"_MISSING"}
+            if rekeyed_keys & harmonized_keys:
+                src_visits = rekeyed
+                src_keys = rekeyed_keys
+                src_label = "source (visit labels translated via visit.yaml case() crosswalk)"
 
     # Namespace mismatch fallback
     if src_keys and harmonized_keys and not (src_keys & harmonized_keys):
@@ -184,14 +294,17 @@ def check_c8_visit_distribution(
         detail: dict = {}
         if synthesis_note:
             detail["synthesis_note"] = synthesis_note
+        if visit_cg_detail:
+            detail.update(visit_cg_detail)
         if harmonized_n == src_n:
             results.append(CheckResult("C8", f"visit_{visit}", "PASS",
                                        f"Visit {visit}: N={_n(src_n)} ({src_label})",
                                        detail or None))
         elif harmonized_n == 0:
-            results.append(CheckResult("C8", f"visit_{visit}", "FAIL",
-                                       f"Visit {visit}: missing in harmonized (source N={_n(src_n)}, {src_label})",
-                                       detail or None))
+            msg = f"Visit {visit}: missing in harmonized (source N={_n(src_n)}, {src_label})"
+            if visit_cg_note:
+                msg += f" — {visit_cg_note}"
+            results.append(CheckResult("C8", f"visit_{visit}", "FAIL", msg, detail or None))
         else:
             ratio = harmonized_n / src_n if src_n > 0 else 0
             status = "WARN" if warn_lo_ratio <= ratio <= warn_hi_ratio else "FAIL"

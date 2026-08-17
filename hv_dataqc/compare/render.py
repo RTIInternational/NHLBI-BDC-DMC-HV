@@ -14,6 +14,7 @@ from __future__ import annotations
 import re
 from collections import defaultdict
 from datetime import datetime, timezone
+from pathlib import Path
 
 from hv_dataqc.compare._common import CheckResult, md_escape
 
@@ -32,12 +33,24 @@ def generate_markdown_report(
     yaml_dir: str | None = None,
 ) -> str:
     """Generate a human-readable Markdown report."""
-    # Extract dbGaP study ID (e.g. phs000280.v8.p2) from source directory names
+    # Extract dbGaP study ID (e.g. phs000280.v8.p2) from source directory names.
+    # Two directory naming conventions exist on SB:
+    #   BDC TOPMed:   nih-nhlbi-topmed-parent-hchs-sol-phs000810-v2-r1-c1
+    #   PilotParent:  parent-CHS_DS-CVD-MDS_-phs000287-v7-p1-c3
+    # The TOPMed form uses -r<N>-c<N>; the PilotParent form uses -p<N>-c<N>.
+    # Extract the participant-set number from the directory when available rather
+    # than hardcoding it.
     study_id_full = ""
     for sd in source_meta.get("source_dirs", []):
+        # BDC TOPMed form: phs000810-v2-r1-c1
         m = re.search(r'(phs\d+)[-_]v(\d+)[-_]r\d+[-_]c\d+', sd)
         if m:
             study_id_full = f"{m.group(1)}.v{m.group(2)}.p2"
+            break
+        # PilotParent form: phs000287-v7-p1-c3
+        m = re.search(r'(phs\d+)[-_]v(\d+)[-_]p(\d+)[-_]c\d+', sd)
+        if m:
+            study_id_full = f"{m.group(1)}.v{m.group(2)}.p{m.group(3)}"
             break
     dbgap_datasets_url = (
         f"https://dbgap.ncbi.nlm.nih.gov/beta/study/{study_id_full}/#phenotype-datasets"
@@ -57,9 +70,17 @@ def generate_markdown_report(
     ]
     if source_meta.get("input_file"):
         lines.append(f"**Source file:** `{source_meta['input_file']}`")
+    for sd in source_meta.get("source_dirs", []):
+        lines.append(f"**Source dir:** `{Path(sd).name}`")
     lines.append(f"**Harmonized:** {harmonized_meta.get('source', '?')}")
     if harmonized_meta.get("input_file"):
         lines.append(f"**Harmonized file:** `{harmonized_meta['input_file']}`")
+    for md in harmonized_meta.get("mapped_data_dirs", []):
+        # Show the top-level consent-group folder (grandparent of mapped-data),
+        # e.g. DMC_parent-CHS_HMB-MDS_-phs000287-v7-p1-c1_CHS_Processed_...
+        _p = Path(md)
+        _label = _p.parents[1].name if len(_p.parts) >= 3 else _p.name
+        lines.append(f"**Harmonized dir:** `{_label}`")
     if yaml_dir:
         lines.append(f"**YAML dir:** `{yaml_dir}`")
     if study_id_full:
@@ -136,6 +157,7 @@ def generate_markdown_report(
 
     check_names = {
         "CROSSWALK": "Crosswalk Resolution Failures",
+        "C0": "Entity File Coverage",
         "C1": "N Preservation", "C2": "N Loss Detection",
         "C3": "Missing Value Accounting", "C4": "Mean Preservation",
         "C5": "Mean After Conversion", "C6": "SD Preservation",
@@ -143,7 +165,78 @@ def generate_markdown_report(
         "C9": "Clinical Range", "C10": "Cross-Variable Consistency",
         "C11": "Variable Type Consistency",
         "C12": "Value Mapping Coverage",
+        "C13": "UUID Format Validation",
+        "C14": "Duplicate Row Detection",
+        "C15": "Entity Column Schema Consistency",
+        "C16": "id/identity Slot Pattern",
     }
+
+    def _render_c2_detail(r: CheckResult) -> list[str]:
+        """Render per-PHT source breakdown and harmonized n_total note for C2 FAIL/WARN."""
+        if r.status not in ("FAIL", "WARN"):
+            return []
+        sub: list[str] = []
+        breakdown = r.detail.get("per_pht_src_breakdown") or []
+        h_n_total = r.detail.get("harmonized_n_total")
+        null_rows = r.detail.get("harmonized_null_status_rows", 0)
+        if not breakdown and h_n_total is None:
+            return sub
+        if breakdown:
+            has_phv = any(row.get("phv") for row in breakdown)
+            has_pht = any(row.get("pht") for row in breakdown)
+            sub.append("")
+            if has_phv and has_pht:
+                sub.append("  | PHV | PHT | Block src n\\_valid |")
+                sub.append("  |-----|-----|-------------------:|")
+                for row in breakdown:
+                    sub.append(
+                        f"  | {row.get('phv', '')} | {row.get('pht', '')} | {row['source_n_valid']:,} |"
+                    )
+            elif has_phv:
+                sub.append("  | PHV | Block src n\\_valid |")
+                sub.append("  |-----|-------------------:|")
+                for row in breakdown:
+                    sub.append(f"  | {row.get('phv', '')} | {row['source_n_valid']:,} |")
+            else:
+                sub.append("  | PHT | Block src n\\_valid |")
+                sub.append("  |-----|-------------------:|")
+                for row in breakdown:
+                    sub.append(f"  | {row.get('pht', '')} | {row['source_n_valid']:,} |")
+        if h_n_total is not None:
+            harmonized_n = r.detail.get("harmonized_n", 0)
+            sub.append(
+                f"  _harmonized: n\\_total={h_n_total:,}, n\\_valid={harmonized_n:,}"
+                f" ({null_rows:,} null-status rows — check value\\_mappings key types)_"
+            )
+        return sub
+
+    def _render_c14_detail(r: CheckResult) -> list[str]:
+        """Render C14 concept and visit breakdown tables to help locate the YAML source."""
+        if r.status != "WARN":
+            return []
+        sub: list[str] = []
+        top_concepts: list[dict] = r.detail.get("top_duplicate_concepts", [])
+        visit_breakdown: dict[str, int] = r.detail.get("visit_breakdown", {})
+        if top_concepts:
+            sub.append("")
+            sub.append(
+                "  **Top concepts with duplicate rows** "
+                "(search YAML files for `condition_concept`/`observation_concept`):"
+            )
+            sub.append("")
+            sub.append("  | Concept | Dup rows |")
+            sub.append("  |---------|--------:|")
+            for item in top_concepts:
+                sub.append(f"  | `{md_escape(item['concept'])}` | {item['n_dup_rows']:,} |")
+        if visit_breakdown:
+            sub.append("")
+            sub.append("  **Duplicate rows by visit:**")
+            sub.append("")
+            sub.append("  | Visit | Dup rows |")
+            sub.append("  |-------|--------:|")
+            for visit, n in sorted(visit_breakdown.items(), key=lambda x: -x[1]):
+                sub.append(f"  | {md_escape(str(visit))} | {n:,} |")
+        return sub
 
     def _render_c7_detail(r: CheckResult) -> list[str]:
         """Render C7 distribution table and mismatch detail as indented markdown."""
@@ -188,6 +281,15 @@ def generate_markdown_report(
         return sub
 
     _check_descriptions = {
+        "C0": (
+            "Pre-flight check: verifies that every entity TSV (Visit, Demography, "
+            "MeasurementObservation, etc.) produced rows in every consent group. "
+            "FAIL means an entity file was empty or missing for some groups while "
+            "other groups loaded it successfully — this signals a pipeline failure "
+            "(e.g. OOM, crashed run) rather than a data-quality issue. "
+            "Requires ``consent_group_file_status`` in the harmonized JSON "
+            "(hv-dataqc issue #690); skipped gracefully on older JSON artifacts."
+        ),
         "CROSSWALK": (
             "Source-column lookups that the YAML/cache could not resolve to a "
             "single PHT. When a column name appears in multiple source tables "
@@ -264,6 +366,38 @@ def generate_markdown_report(
             "unmapped code can be expected transform behavior while still being a "
             "YAML completeness issue."
         ),
+        "C13": (
+            "Checks that every ``associated_participant`` and ``associated_visit`` value "
+            "in the harmonized output is a valid UUID string. Malformed values indicate "
+            "a broken ID expression in the YAML — e.g. a null source PHV propagating "
+            "through ``uuid5()`` to produce a non-UUID string that silently passes all "
+            "per-variable checks. Requires ``uuid_validation`` in the harmonized JSON "
+            "(hv-dataqc issue #703); skipped gracefully on older JSON artifacts."
+        ),
+        "C14": (
+            "Checks that the harmonized output contains no exact duplicate rows within "
+            "each entity class (all non-id columns identical). Duplicates indicate YAML "
+            "design issues such as multi-block transforms without a discriminating "
+            "condition, or a populated_from table scope that is wider than intended. "
+            "Requires ``duplicate_stats`` in the harmonized JSON "
+            "(hv-dataqc issue #704); skipped gracefully on older JSON artifacts."
+        ),
+        "C15": (
+            "Checks that each entity TSV has consistent column schemas across all consent "
+            "groups, and that required columns (e.g. ``condition_concept`` in Condition.tsv) "
+            "are present. A cross-consent-group column mismatch indicates a structural "
+            "pipeline inconsistency -- one run may have dropped or added columns. A missing "
+            "required column silently degrades all C1/C2/C7 statistics for that entity "
+            "without producing any other error signal. "
+            "Requires ``columns`` data in ``consent_group_file_status`` "
+            "(re-run extract_harmonized_summaries.py to populate)."
+        ),
+        "C16": (
+            "Checks that Person and Participant YAML blocks have an explicit ``id`` slot "
+            "derivation using ``uuid5()``, and that ``identity`` holds the raw source string "
+            "rather than a UUID. Misuse of ``identity`` for uuid5() silently produces "
+            "incompatible IDs in the harmonized output."
+        ),
     }
 
     def _render_unmatched_source(r: CheckResult) -> list[str]:
@@ -281,7 +415,7 @@ def generate_markdown_report(
         sub.append("</details>")
         return sub
 
-    for check_id in ["CROSSWALK", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12"]:
+    for check_id in ["CROSSWALK", "C0", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12", "C13", "C14", "C15", "C16"]:
         check_results = [r for r in results if r.check_id == check_id]
         if not check_results:
             continue
@@ -312,8 +446,12 @@ def generate_markdown_report(
             for r in group_results:
                 icon = STATUS_ICONS.get(r.status, r.status)
                 lines.append(f"- {icon} **{md_escape(r.variable)}**: {md_escape(r.message)}")
+                if check_id == "C2":
+                    lines.extend(_render_c2_detail(r))
                 if check_id == "C7":
                     lines.extend(_render_c7_detail(r))
+                if check_id == "C14":
+                    lines.extend(_render_c14_detail(r))
                 if r.detail.get("direction") == "source_unmatched_summary":
                     lines.extend(_render_unmatched_source(r))
             if collapse:
