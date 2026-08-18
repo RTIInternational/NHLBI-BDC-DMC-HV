@@ -14,13 +14,12 @@
         method_type:
           value: 'flow cytometry'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002425
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00163434
-                  unit:
-                    value: /uL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht002425
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00163434
+                unit:
+                  value: /uL
+                  range: string

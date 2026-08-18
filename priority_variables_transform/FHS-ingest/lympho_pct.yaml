@@ -14,13 +14,12 @@
         method_type:
           value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000031
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00008117
-                  unit:
-                    value: '%'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000031
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00008117
+                unit:
+                  value: '%'
+                  range: string

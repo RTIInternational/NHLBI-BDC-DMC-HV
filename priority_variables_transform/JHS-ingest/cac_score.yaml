@@ -13,12 +13,11 @@
         method_type:
           value: "CT scan"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001948
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00126002
-                  unit:
-                    value: "{score}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht001948
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00126002
+                unit:
+                  value: "{score}"

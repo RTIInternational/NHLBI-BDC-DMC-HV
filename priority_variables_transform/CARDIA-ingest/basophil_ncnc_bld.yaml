@@ -13,13 +13,12 @@
         method_type:
           value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003298
-                slot_derivations:
-                  value_decimal:
-                    expr: "None if str({phv00190611}) == 'M' else float({phv00190611})"
-                  unit:
-                    value: "10*3/uL"
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003298
+              slot_derivations:
+                value_decimal:
+                  expr: "None if str({phv00190611}) == 'M' else float({phv00190611})"
+                unit:
+                  value: "10*3/uL"
+                  range: string

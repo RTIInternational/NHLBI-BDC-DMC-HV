@@ -1,0 +1,90 @@
+# Known false positives and expected anomalies for HCHS-SOL comparison reports.
+#
+# Last reviewed: 2026-06-25
+# Report reviewed: hchs_comparison_report_20260625T161701Z.md
+
+known_issues:
+
+  # ── afib: C2 FAIL + C3 FAIL ─────────────────────────────────────────────
+  - checks: [C2, C3]
+    variable_key: "ecga271+mhea7"
+    yaml_file: afib.yaml
+    status: false_positive
+    root_cause: tooling_bug
+    summary: >
+      build_expected_summary partial path (#669) excludes the ECG block
+      (phv00226270) from the expected summary, producing a false C2 N-gain
+      and an inflated (~50%) expected missing rate in C3.
+    detail: >
+      afib.yaml has two blocks: ECG (phv00226270, case() with True-catchall
+      'ABSENT' arm) and self-report (phv00526613, value_mappings). The ECG
+      block is labeled 'unsupported' because the string distribution lookup
+      for 'Atrial fibrillation' fails against the source summary. The partial
+      expected uses only mhea7 (n=11,812), yielding C2 FAIL 11,812->23,643
+      and C3 FAIL expected-missing ~50.08% vs harmonized 0.08%. Both blocks
+      are semantically correct and working as designed.
+    related_issues: [669]
+    confirmed_date: "2026-06-25"
+
+  # ── diabetes2 MONDO:0005015 group: C2 WARN + C3 FAIL ────────────────────
+  - checks: [C2, C3]
+    variable_key: "diabetes2+diabetes2_indicator+mhea16+diabetes_lab+diabetes_self"
+    yaml_file: diabetes.yaml
+    status: false_positive
+    root_cause: expected_multi_record
+    summary: >
+      Intentional multi-provenance design — Block 3 (DIABETES_LAB,
+      phv00258040) creates separate MONDO:0005015 Condition records with
+      laboratory evidence; excluded from partial expected by #669 Variant B.
+    detail: >
+      diabetes.yaml Block 3 has concept_phv=phv00226261 != phv_id=phv00258040,
+      causing build_expected_summary to return None for it (Variant B of the
+      #669 partial path bug). The 7,179 extra harmonized records are Block 3's
+      MONDO:0005015 contribution (phv00226261 codes 1+3). Marginal verification:
+      7,184 x (1 - 5/11831) = 7,181; harmonized extra = 7,179. Difference of 2
+      matches phv00258040's 5 null rows. C3 FAIL (9.86%->0.05%) arises because
+      Block 3's exclusion inflates expected n_missing in the partial result.
+    related_issues: [669]
+    confirmed_date: "2026-06-25"
+
+  # ── diabetes2 HP:0040270 group: C2 WARN ─────────────────────────────────
+  - checks: [C2]
+    variable_key: "diabetes2+diabetes_lab"
+    yaml_file: diabetes.yaml
+    status: false_positive
+    root_cause: expected_multi_record
+    summary: >
+      Intentional 2x records — Blocks 0 and 3 both emit HP:0040270 records
+      for phv00226261=2 participants with different provenance (algorithmic
+      criteria vs laboratory test); excluded from expected by #669 Variant B.
+    detail: >
+      Block 0: DIABETES2=2 -> HP:0040270, PRESENT, 'algorithmic criteria'
+      (4,647 records). Block 3: same concept routing via phv00226261=2, status
+      from phv00258040, 'laboratory test' (same 4,647 participants, different
+      evidence). Marginal verification: 4,647 x (1 - 5/11831) = 4,645;
+      harmonized extra = 4,647. Near-exact 2x due to phv00258040 having only
+      5 nulls total. Both records are semantically distinct and intentional.
+    related_issues: [669]
+    confirmed_date: "2026-06-25"
+
+  # ── ecga277: C3 FAIL (persists after pacem_stat.yaml value-mapping fix) ─
+  - checks: [C3]
+    variable_key: "ecga277"
+    yaml_file: pacem_stat.yaml
+    status: expected_behavior
+    root_cause: sparse_variable
+    summary: >
+      Sparse presence-only variable — ECGA277 (Pacemaker) has only 17 valid
+      records out of 11,831; source ~100% missing rate is structural, not a
+      transform error. Verify data integrity via C2 instead.
+    detail: >
+      phv00226273 flags ECG-detected pacemaker presence. Only 17 of 11,831
+      participants have a non-null value ('Pacemaker'). Source missing rate =
+      99.86% (~100%). The pipeline emits only PRESENT records; participants
+      without a pacemaker produce no harmonized row (0 records, 0% missing).
+      This C3 differential is structurally unavoidable for any sparse
+      presence-only variable and does not indicate data loss. After the
+      pacem_stat.yaml value-mapping fix (adding 'Pacemaker': PRESENT), C2
+      will pass (17->17) while C3 will remain a structural FAIL.
+    related_issues: []
+    confirmed_date: "2026-06-25"

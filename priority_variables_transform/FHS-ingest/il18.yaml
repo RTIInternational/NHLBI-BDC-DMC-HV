@@ -16,13 +16,12 @@
           value: OMOP:3043144
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012881
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00520385
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht012881
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00520385
+                unit:
+                  value: pg/mL
+                  range: string

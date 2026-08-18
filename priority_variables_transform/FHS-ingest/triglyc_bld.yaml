@@ -8,23 +8,22 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423778}) + ":" + case(({phv00423780} == ''10'', ''FHS ORIGINAL EXAM 10''), ({phv00423780} == ''11'', ''FHS ORIGINAL EXAM 11''), ({phv00423780} == ''12'', ''FHS ORIGINAL EXAM 12''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
-          expr: case(({phv00423780} == 10, {pht003099.phv00177948} * 365), case({phv00423780} == 11, {pht003099.phv00177950} * 365), case({phv00423780} == 12, {pht003099.phv00177952} * 365))
+          expr: case(({phv00423780} == 10, {pht003099.phv00177948} * 365), ({phv00423780} == 11, {pht003099.phv00177950} * 365), ({phv00423780} == 12, {pht003099.phv00177952} * 365))
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00423778}) + ":FHS")'
         method_type:
           value: fasting minimum 12 hrs
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht009755
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00423783} * 0.295'
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht009755
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00423783} * 0.295'
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000009
@@ -42,16 +41,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000009
-                slot_derivations:
-                  value_decimal:
-                    expr: 'case(({phv00000931} < 9000, {phv00000931}), (True, None))'
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000009
+              slot_derivations:
+                value_decimal:
+                  expr: 'case(({phv00000931} < 9000, {phv00000931}), (True, None))'
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000010
@@ -69,16 +67,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000010
-                slot_derivations:
-                  value_decimal:
-                    expr: 'case(({phv00001054} < 9000, {phv00001054}), (True, None))'
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000010
+              slot_derivations:
+                value_decimal:
+                  expr: 'case(({phv00001054} < 9000, {phv00001054}), (True, None))'
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000011
@@ -96,16 +93,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000011
-                slot_derivations:
-                  value_decimal:
-                    expr: 'case(({phv00001209} < 9000, {phv00001209}), (True, None))'
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000011
+              slot_derivations:
+                value_decimal:
+                  expr: 'case(({phv00001209} < 9000, {phv00001209}), (True, None))'
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000034
@@ -123,16 +119,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000034
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00009576
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000034
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00009576
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000035
@@ -150,16 +145,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000035
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00010136
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000035
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00010136
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000036
@@ -177,16 +171,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000036
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00010144
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000036
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00010144
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000074
@@ -204,16 +197,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000074
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00021393
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000074
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00021393
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000742
@@ -231,16 +223,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000742
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00071892
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000742
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00071892
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
@@ -258,16 +249,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002889
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172172
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht002889
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00172172
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht005143
@@ -285,16 +275,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht005143
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00255342
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht005143
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00255342
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004801
@@ -312,16 +301,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004801
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00227015
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht004801
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00227015
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006010
@@ -339,16 +327,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006010
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00275403
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht006010
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00275403
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006011
@@ -366,16 +353,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006011
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00275415
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht006011
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00275415
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
@@ -386,23 +372,22 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00227023}) + ":" + case(({phv00227024} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00227024} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
-          expr: case(({phv00227024} == 1, {pht003099.phv00177946} * 365), case({phv00227024} == 7, {pht003099.phv00177936} * 365))
+          expr: case(({phv00227024} == 1, {pht003099.phv00177946} * 365), ({phv00227024} == 7, {pht003099.phv00177936} * 365))
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00227023}) + ":FHS")'
         method_type:
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004802
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00227056
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht004802
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00227056
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001045
@@ -413,23 +398,22 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00081012}) + ":" + case(({phv00081047} == ''20'', ''FHS ORIGINAL EXAM 20''), ({phv00081047} == ''21'', ''FHS ORIGINAL EXAM 21''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
-          expr: case(({phv00081047} == 20, {pht003099.phv00177968} * 365), case({phv00081047} == 21, {pht003099.phv00177970} * 365))          
+          expr: case(({phv00081047} == 20, {pht003099.phv00177968} * 365), ({phv00081047} == 21, {pht003099.phv00177970} * 365))          
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00081012}) + ":FHS")'
         method_type:
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001045
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00081038
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001045
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00081038
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000395
@@ -447,16 +431,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000395
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00055264
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000395
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00055264
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006026
@@ -474,16 +457,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006026
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00277049
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht006026
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00277049
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006026
@@ -501,16 +483,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006026
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00277050
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht006026
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00277050
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -528,16 +509,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht009761
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00423933
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00423933
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -555,16 +535,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht009761
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00423934
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00423934
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -582,16 +561,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht009761
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00423935
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00423935
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht009761
@@ -609,16 +587,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht009761
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00423936
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht009761
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00423936
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -636,16 +613,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht007777
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00370082
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00370082
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -663,16 +639,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht007777
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00370083
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00370083
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -690,16 +665,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht007777
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00370084
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00370084
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -717,16 +691,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht007777
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00370085
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00370085
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -744,16 +717,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht007777
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00370086
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00370086
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -771,16 +743,15 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht007777
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00370087
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00370087
+                unit:
+                  value: mg/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht007777
@@ -798,13 +769,12 @@
           value: fasting minimum 12 hrs
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht007777
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00370088
-                  unit:
-                    value: mg/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht007777
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00370088
+                unit:
+                  value: mg/dL
+                  range: string

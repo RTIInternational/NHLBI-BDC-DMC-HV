@@ -13,10 +13,9 @@
         method_type:
           value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht008729
-                slot_derivations:
-                  value_decimal:
-                    expr: "{phv00401250} * 7"
+          class_derivations:
+          - Quantity:
+              populated_from: pht008729
+              slot_derivations:
+                value_decimal:
+                  expr: "{phv00401250} * 7"
