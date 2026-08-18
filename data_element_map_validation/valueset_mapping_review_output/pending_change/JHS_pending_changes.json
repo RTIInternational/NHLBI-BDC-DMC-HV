@@ -93,5 +93,23 @@
       "YAML updated (3 block(s)): \"HP:0001513\" -> OMOP:433736",
       "CSV updated (6 row(s))"
     ]
+  },
+  "JHS::confirmed::fam_stroke.yaml::condition_concept": {
+    "study": "JHS",
+    "change_request": "MONDO:0005098",
+    "original_curie": "OMOP:381316",
+    "slot": "condition_concept",
+    "yaml_files": [
+      "fam_stroke.yaml"
+    ],
+    "notes": "Curator correction (2026-08-18): retracted OMOP:381316 in favor of MONDO:0005098 ('Stroke disorder') — normalizer-confirmed synonym of HP:0001297, and keeps condition_concept within the MONDO/HP vocab rule instead of using an OMOP concept ID.",
+    "applied": true,
+    "saved_date": "2026-08-18",
+    "applied_date": "2026-08-18",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML: 8 block(s) updated",
+      "CSV: 8 row(s) updated"
+    ]
   }
 }

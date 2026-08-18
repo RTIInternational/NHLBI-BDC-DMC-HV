@@ -119,5 +119,41 @@
       "YAML updated (8 block(s)): MONDO:0004848 -> MONDO:0004849",
       "CSV updated (11 row(s))"
     ]
+  },
+  "CARDIA::confirmed::tak_statin.yaml": {
+    "study": "CARDIA",
+    "change_request": "ATC:C10AD (niacin), ATC:C10AB (gemfibrozil), ATC:C07AB (metoprolol)",
+    "original_curie": "RxCUI:7393/RxCUI:316343 (niacin), RxCUI:4719 (gemfibrozil), RxCUI:6918 (metoprolol)",
+    "slot": "drug_concept",
+    "yaml_files": [
+      "tak_statin.yaml"
+    ],
+    "notes": "Free-text medication names mismapped as RxCUI within a statin-flag file; corrected to proper ATC classes: metoprolol=beta-blocker(ATC:C07AB), niacin=nicotinic acid deriv.(ATC:C10AD), gemfibrozil=fibrate(ATC:C10AB). Other RxCUI entries (mevacor, zocor, cholestid, pravachol, lopid, etc.) left untouched — curator-reviewed cross-study consistency pass, 2026-08-18.",
+    "applied": true,
+    "saved_date": "2026-08-18",
+    "applied_date": "2026-08-18",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML: niacin -> ATC:C10AD (2 entries), gemfibrozil -> ATC:C10AB, metoprolol -> ATC:C07AB",
+      "CSV: 4 row(s) updated"
+    ]
+  },
+  "CARDIA::confirmed::fam_stroke.yaml::condition_concept": {
+    "study": "CARDIA",
+    "change_request": "MONDO:0005098",
+    "original_curie": "OMOP:381316",
+    "slot": "condition_concept",
+    "yaml_files": [
+      "fam_stroke.yaml"
+    ],
+    "notes": "Curator correction (2026-08-18): retracted OMOP:381316 in favor of MONDO:0005098 ('Stroke disorder') — normalizer-confirmed synonym of HP:0001297, and keeps condition_concept within the MONDO/HP vocab rule instead of using an OMOP concept ID.",
+    "applied": true,
+    "saved_date": "2026-08-18",
+    "applied_date": "2026-08-18",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML: 9 block(s) updated",
+      "CSV: 9 row(s) updated"
+    ]
   }
 }

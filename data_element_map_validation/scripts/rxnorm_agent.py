@@ -11,6 +11,7 @@ Usage examples:
 """
 
 import json
+import re
 import sys
 
 import click
@@ -18,6 +19,44 @@ import requests
 
 ATLAS_BASE_URL = "https://atlas-demo.ohdsi.org/WebAPI"
 DEFAULT_CONCEPT_CLASS = "Ingredient"
+
+# ---------------------------------------------------------------------------
+# Curated drug-name -> full CURIE overrides.
+#
+# Free-text medication-name fields (e.g. "name of chol lowering medication")
+# sometimes get case()-matched against specific drug names and assigned an
+# RxCUI by hand during curation. When the correct classification is really
+# an ATC therapeutic class (not an RxNorm ingredient concept), the live
+# Atlas WebAPI lookup can't produce that — it only returns OMOP concept IDs,
+# which generate_curie_mapreview.py wraps as "OMOP:<id>". These overrides
+# return the full CURIE directly, bypassing that wrapping, so future
+# pipeline re-runs land on the correct classification instead of drifting
+# back to a bare RxCUI/OMOP concept.
+#
+# Match is case-insensitive, whole-word (so "niacin 500mg tablets" still
+# matches "niacin"). Add entries here as new mismapped free-text drugs turn up.
+# ---------------------------------------------------------------------------
+DRUG_CURIE_OVERRIDES: dict[str, str] = {
+    "metoprolol":   "ATC:C07AB",  # beta blocker
+    "niacin":       "ATC:C10AD",  # nicotinic acid derivative
+    "gemfibrozil":  "ATC:C10AB",  # fibrate
+}
+
+_OVERRIDE_PATTERNS = {
+    name: re.compile(r"(?<!\w)" + re.escape(name) + r"(?!\w)", re.IGNORECASE)
+    for name in DRUG_CURIE_OVERRIDES
+}
+
+
+def get_drug_curie_override(drug_name: str) -> str | None:
+    """Return a curated full CURIE for *drug_name* if it matches a known
+    override, else None. Checked before the live API call in
+    generate_curie_mapreview.py's drug_concept branch.
+    """
+    for name, pattern in _OVERRIDE_PATTERNS.items():
+        if pattern.search(drug_name):
+            return DRUG_CURIE_OVERRIDES[name]
+    return None
 
 
 def search_omop_concepts(

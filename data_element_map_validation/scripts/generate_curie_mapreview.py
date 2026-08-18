@@ -195,13 +195,13 @@ def _import_agents():
     from mondo_agent import get_mondo_id, _extract_clinical_term
     from hpo_agent import get_hpo_id
     from omop_agent import get_omop_concept_id
-    from rxnorm_agent import get_omop_concept_id as get_rxnorm_id
+    from rxnorm_agent import get_omop_concept_id as get_rxnorm_id, get_drug_curie_override
     from measurementObs_agent import get_loinc_id
     from meds_route_agent import get_omop_route_id
     from oba_agent import get_oba_id, get_oba_id_with_score
     from measurementObs_agent import get_loinc_id_with_score
     from curie_normalizer import confidence_label as get_normalizer_confidence
-    return get_mondo_id, get_hpo_id, get_omop_concept_id, get_rxnorm_id, get_loinc_id, _extract_clinical_term, get_omop_route_id, get_oba_id, get_normalizer_confidence, get_oba_id_with_score, get_loinc_id_with_score
+    return get_mondo_id, get_hpo_id, get_omop_concept_id, get_rxnorm_id, get_loinc_id, _extract_clinical_term, get_omop_route_id, get_oba_id, get_normalizer_confidence, get_oba_id_with_score, get_loinc_id_with_score, get_drug_curie_override
 
 
 # ---------------------------------------------------------------------------
@@ -312,6 +312,7 @@ def _agent_suggestion(
     csv_curie: str = "",
     get_oba_id_with_score=None,
     get_loinc_id_with_score=None,
+    get_drug_curie_override=None,
 ) -> tuple[str, str, str, str, str, str, str]:
     """Return (omop_maps_to, mondo_maps_to, hpo_maps_to, oba_maps_to,
     maps_to_entity_type, confidence, loinc_confidence).
@@ -412,8 +413,12 @@ def _agent_suggestion(
             maps_to_entity_type = "Procedure"
 
         elif slot == "drug_concept":
-            concept_id = get_rxnorm_id(query)
-            omop_maps_to = f"OMOP:{concept_id}" if concept_id else ""
+            override = get_drug_curie_override(query) if get_drug_curie_override else None
+            if override:
+                omop_maps_to = override
+            else:
+                concept_id = get_rxnorm_id(query)
+                omop_maps_to = f"OMOP:{concept_id}" if concept_id else ""
             maps_to_entity_type = "DrugExposure"
 
         elif slot == "route_concept":
@@ -483,11 +488,11 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
         sys.exit(1)
 
     if no_agents:
-        get_mondo_id = get_hpo_id = get_omop_concept_id = get_rxnorm_id = get_loinc_id = extract_clinical_term = get_omop_route_id = get_oba_id = get_normalizer_confidence = get_oba_id_with_score = get_loinc_id_with_score = None
+        get_mondo_id = get_hpo_id = get_omop_concept_id = get_rxnorm_id = get_loinc_id = extract_clinical_term = get_omop_route_id = get_oba_id = get_normalizer_confidence = get_oba_id_with_score = get_loinc_id_with_score = get_drug_curie_override = None
         print("Running in --no-agents mode: YAML spot-check only.", file=sys.stderr)
     else:
         print("Loading agents ...", file=sys.stderr)
-        get_mondo_id, get_hpo_id, get_omop_concept_id, get_rxnorm_id, get_loinc_id, extract_clinical_term, get_omop_route_id, get_oba_id, get_normalizer_confidence, get_oba_id_with_score, get_loinc_id_with_score = _import_agents()  # noqa: E501
+        get_mondo_id, get_hpo_id, get_omop_concept_id, get_rxnorm_id, get_loinc_id, extract_clinical_term, get_omop_route_id, get_oba_id, get_normalizer_confidence, get_oba_id_with_score, get_loinc_id_with_score, get_drug_curie_override = _import_agents()  # noqa: E501
         print("Agents loaded.", file=sys.stderr)
 
     start_time = datetime.now()
@@ -534,7 +539,7 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
                 sl, et, vn, vd,
                 get_mondo_id, get_hpo_id, get_omop_concept_id,
                 get_rxnorm_id, get_loinc_id, extract_clinical_term, get_omop_route_id, get_oba_id,
-                get_normalizer_confidence, cc, get_oba_id_with_score, get_loinc_id_with_score,
+                get_normalizer_confidence, cc, get_oba_id_with_score, get_loinc_id_with_score, get_drug_curie_override,
             )
             with cache_lock:
                 suggestion_cache[(vn, sl, et)] = result
@@ -596,7 +601,7 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
                         slot, entity_type, var_name, var_desc,
                         get_mondo_id, get_hpo_id, get_omop_concept_id,
                         get_rxnorm_id, get_loinc_id, extract_clinical_term, get_omop_route_id, get_oba_id,
-                        get_normalizer_confidence, csv_curie, get_oba_id_with_score, get_loinc_id_with_score,
+                        get_normalizer_confidence, csv_curie, get_oba_id_with_score, get_loinc_id_with_score, get_drug_curie_override,
                     )
                     suggestion_cache[cache_key] = (omop_val, mondo_val, hpo_val, oba_val, entity_val, confidence_val, loinc_confidence_val)
 

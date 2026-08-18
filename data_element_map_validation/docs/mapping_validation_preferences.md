@@ -81,6 +81,20 @@ The **☑ Reviewed — no change** state is the correct action for confirmed voc
 
 ---
 
+## Curated Drug-Name Overrides
+
+Free-text medication-name fields (e.g. "name of chol lowering medication") sometimes get `case()`-matched against specific drug names during curation. The live RxNorm/Atlas lookup (`scripts/rxnorm_agent.py`) only ever returns OMOP concept IDs (wrapped as `OMOP:<id>` by `generate_curie_mapreview.py`) — it cannot produce an ATC therapeutic-class CURIE. When the correct classification for a given drug name really is an ATC class, add it to `DRUG_CURIE_OVERRIDES` in `scripts/rxnorm_agent.py` instead of leaving it to the live lookup. The override is checked first in the `drug_concept` branch of `_agent_suggestion()` and returns the full CURIE directly, bypassing the `OMOP:` wrapping — so a pipeline re-run lands on the correct value instead of drifting back to a bare RxCUI/OMOP concept.
+
+Matching is case-insensitive and whole-word, so "niacin 500mg tablets" still matches the "niacin" entry.
+
+| Drug name | CURIE | Why |
+|:---|:---|:---|
+| `metoprolol` | `ATC:C07AB` | Beta blocker — found mismapped to an RxCUI inside CARDIA's `tak_statin.yaml` free-text medication list |
+| `niacin` | `ATC:C10AD` | Nicotinic acid derivative — same file, same issue |
+| `gemfibrozil` | `ATC:C10AB` | Fibrate — same file, same issue |
+
+To add a new entry: append to `DRUG_CURIE_OVERRIDES` in `scripts/rxnorm_agent.py` and re-run Step 1 for the affected study.
+
 ## Confirmed Corrections
 
 Curation fixes applied and recorded as of the dates below.
@@ -88,6 +102,7 @@ Curation fixes applied and recorded as of the dates below.
 | Date | Study | File | Slot | Old CURIE | New CURIE | Reason |
 |:---|:---|:---|:---|:---|:---|:---|
 | 2026-06-15 | COPDGene | `lymphocyte_ct.yaml` | `observation_type` | OBA:VT0000217 | OBA:VT0000717 | OBA:VT0000217 is "leukocyte quantity" (total WBC count) — wrong for lymphocytes. OBA:VT0000717 is "lymphocyte quantity". The bdchm schema `LYMPHOCYTES_COUNT` enum entry also had this wrong code. |
+| 2026-08-18 | CARDIA | `tak_statin.yaml` | `drug_concept` | RxCUI:6918 (metoprolol), RxCUI:7393/RxCUI:316343 (niacin), RxCUI:4719 (gemfibrozil) | ATC:C07AB, ATC:C10AD, ATC:C10AB | Free-text medication names inside a statin-flag file were individually RxCUI-coded, including non-statin drugs. Corrected to proper ATC classes; codified as a durable override (see above) so future re-runs don't drift back. |
 
 ---
 
