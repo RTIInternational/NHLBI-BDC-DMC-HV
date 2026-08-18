@@ -19,7 +19,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
         condition_concept:
-          value: "MONDO:0005386"
+          value: OMOP:40489833
           range: string
         condition_status:
           expr: 'case(({phv00401122} < 0.9, "PRESENT"), (True, "ABSENT"))'

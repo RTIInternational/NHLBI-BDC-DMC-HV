@@ -62,7 +62,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00115507}) + ":CARDIA YEAR 5")'
         drug_concept:
-          expr: 'case((str({phv00115510}).lower().strip() == "mevacor", "RxCUI:6472"), (str({phv00115510}).lower().strip() == "niacin", "RxCUI:7393"), (str({phv00115510}).lower().strip() == "fred meyers fish oil", "RxCUI:2053495"), (str({phv00115510}).lower().strip() == "qestian", "RxCUI:202582"), (str({phv00115510}).lower().strip() == "lopid", "RxCUI:202999"), (str({phv00115510}).lower().strip() == "mevacoh", "RxCUI:6472"), (str({phv00115510}).lower().strip() == "lorelco", "RxCUI:8699"))'
+          expr: 'case((str({phv00115510}).lower().strip() == "mevacor", "RxCUI:6472"), (str({phv00115510}).lower().strip() == "niacin", "ATC:C10AD"), (str({phv00115510}).lower().strip() == "fred meyers fish oil", "RxCUI:2053495"), (str({phv00115510}).lower().strip() == "qestian", "RxCUI:202582"), (str({phv00115510}).lower().strip() == "lopid", "RxCUI:202999"), (str({phv00115510}).lower().strip() == "mevacoh", "RxCUI:6472"), (str({phv00115510}).lower().strip() == "lorelco", "RxCUI:8699"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -92,7 +92,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00118664}) + ":CARDIA YEAR 10")'
         drug_concept:
-          expr: 'case((str({phv00118672}).lower().strip() == "mevacor", "RxCUI:6472"), (str({phv00118672}).lower().strip() == "zocor", "RxCUI:196503"), (str({phv00118672}).lower().strip() in ("gemfibrozil", "gemfibrozil / lopid"), "RxCUI:4719"), (str({phv00118672}).lower().strip() == "cholestid", "RxCUI:151533"), (str({phv00118672}).lower().strip() == "niacin 500mg tablets", "RxCUI:316343"), (str({phv00118672}).lower().strip() == "pravachol", "RxCUI:203333"), (str({phv00118672}).lower().strip() == "metoprolol", "RxCUI:6918"))'
+          expr: 'case((str({phv00118672}).lower().strip() == "mevacor", "RxCUI:6472"), (str({phv00118672}).lower().strip() == "zocor", "RxCUI:196503"), (str({phv00118672}).lower().strip() in ("gemfibrozil", "gemfibrozil / lopid"), "ATC:C10AB"), (str({phv00118672}).lower().strip() == "cholestid", "RxCUI:151533"), (str({phv00118672}).lower().strip() == "niacin 500mg tablets", "ATC:C10AD"), (str({phv00118672}).lower().strip() == "pravachol", "RxCUI:203333"), (str({phv00118672}).lower().strip() == "metoprolol", "ATC:C07AB"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
