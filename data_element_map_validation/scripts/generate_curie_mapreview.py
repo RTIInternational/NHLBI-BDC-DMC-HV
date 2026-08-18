@@ -14,6 +14,12 @@ New columns added:
   hpo_maps_to        - agent suggestion: HP:xxx for phenotype conditions (fallback when MONDO finds nothing)
   uberon_maps_to     - agent suggestion: UBERON:xxx for anatomical sites / drug routes
   maps_to_entity_type - derived entity category
+  suggestion_confidence - curator-facing confidence tag for the suggested change:
+                       condition_concept  → Translator Node Normalizer clique check
+                                            (curie_normalizer.py) — confirmed synonym
+                                            vs distinct concept vs (MONDO/HP only)
+                       observation_type   → OBA agent text-similarity tier
+                                            (oba_agent.get_oba_id_with_score)
 
 Agent routing by Slot + Entity Type:
   condition_concept  (Condition)               → MONDO → HPO → OMOP (priority cascade)
@@ -192,8 +198,10 @@ def _import_agents():
     from rxnorm_agent import get_omop_concept_id as get_rxnorm_id
     from measurementObs_agent import get_loinc_id
     from meds_route_agent import get_omop_route_id
-    from oba_agent import get_oba_id
-    return get_mondo_id, get_hpo_id, get_omop_concept_id, get_rxnorm_id, get_loinc_id, _extract_clinical_term, get_omop_route_id, get_oba_id
+    from oba_agent import get_oba_id, get_oba_id_with_score
+    from measurementObs_agent import get_loinc_id_with_score
+    from curie_normalizer import confidence_label as get_normalizer_confidence
+    return get_mondo_id, get_hpo_id, get_omop_concept_id, get_rxnorm_id, get_loinc_id, _extract_clinical_term, get_omop_route_id, get_oba_id, get_normalizer_confidence, get_oba_id_with_score, get_loinc_id_with_score
 
 
 # ---------------------------------------------------------------------------
@@ -272,6 +280,21 @@ def _extract_demo_term(text: str, slot: str) -> str:
 # Suggestion logic
 # ---------------------------------------------------------------------------
 
+def _similarity_confidence_tier(score: float, term_label: str) -> str:
+    """Bucket a text-similarity score into a curator-facing confidence tag.
+
+    term_label names the vocabulary the score is measuring against (e.g.
+    "OBA term", "LOINC term") so the tag is unambiguous when a row has more
+    than one candidate (e.g. observation_type has both an OBA and a LOINC
+    suggestion, each scored independently).
+    """
+    if score >= 0.85:
+        return f"high (strong text match to {term_label})"
+    if score >= 0.6:
+        return f"medium (partial text match to {term_label} — verify against description)"
+    return f"needs review (weak text match to {term_label})"
+
+
 def _agent_suggestion(
     slot: str,
     entity_type: str,
@@ -285,8 +308,13 @@ def _agent_suggestion(
     extract_clinical_term,
     get_omop_route_id,
     get_oba_id,
-) -> tuple[str, str, str, str, str]:
-    """Return (omop_maps_to, mondo_maps_to, hpo_maps_to, maps_to_entity_type).
+    get_normalizer_confidence=None,
+    csv_curie: str = "",
+    get_oba_id_with_score=None,
+    get_loinc_id_with_score=None,
+) -> tuple[str, str, str, str, str, str, str]:
+    """Return (omop_maps_to, mondo_maps_to, hpo_maps_to, oba_maps_to,
+    maps_to_entity_type, confidence, loinc_confidence).
 
     Routing:
       condition_concept  → MONDO → HPO → OMOP (priority cascade)
@@ -294,16 +322,41 @@ def _agent_suggestion(
       procedure_concept  → omop_agent
       drug_concept       → rxnorm_agent
       route_concept      → omop_agent (OMOP route concepts)
+
+    Two separate confidence fields, since observation_type can carry two
+    independent candidates (oba_maps_to and omop_maps_to/LOINC) in the same
+    row — a single shared field would silently only describe one of them:
+
+      confidence (condition_concept) → compares the agent's candidate CURIE
+        against the existing csv_curie via the Translator Node Normalizer
+        (curie_normalizer.py) to flag a confirmed synonym (high confidence)
+        vs a distinct concept (needs review). Normalizer coverage is MONDO/HP
+        only.
+      confidence (observation_type)  → the OBA agent's text-similarity score
+        (oba_agent.py, get_oba_id_with_score) between the variable description
+        and the OBA term's label/synonyms, bucketed into a confidence tier.
+      loinc_confidence (observation_type only) → the LOINC agent's own
+        text-similarity score (measurementObs_agent.py, get_loinc_id_with_score)
+        for the omop_maps_to candidate. Note LOINC is always a vocabulary/slot
+        mismatch for observation_type (see _SLOT_VOCAB_RULES in
+        generate_semantic_review.py) — this score is match-quality context for
+        when the curator relocates the code to method_type, not an accept/reject
+        signal on its own.
+
+    Both are text-match confidences, not ontological equivalence checks — the
+    Translator normalizer does not cover OBA/OMOP/LOINC.
     """
     query = var_desc.strip() or var_name.strip()
     if not query:
-        return "", "", "", ""
+        return "", "", "", "", "", "", ""
 
     omop_maps_to = ""
     mondo_maps_to = ""
     hpo_maps_to = ""
     oba_maps_to = ""
     maps_to_entity_type = ""
+    confidence = ""
+    loinc_confidence = ""
 
     try:
         if slot == "condition_concept":
@@ -313,11 +366,13 @@ def _agent_suggestion(
             if mondo_curie:
                 mondo_maps_to = mondo_curie
                 maps_to_entity_type = "Condition"
+                candidate = mondo_curie
             else:
                 hp_curie = get_hpo_id(clean_query)
                 if hp_curie:
                     hpo_maps_to = hp_curie
                     maps_to_entity_type = "Condition (HPO)"
+                    candidate = hp_curie
                 else:
                     omop_curie = get_omop_concept_id(clean_query)
                     if omop_curie:
@@ -325,14 +380,30 @@ def _agent_suggestion(
                         maps_to_entity_type = "Condition (OMOP fallback)"
                     else:
                         maps_to_entity_type = "Condition"
+                    candidate = ""
+
+            if get_normalizer_confidence and candidate and csv_curie and candidate != csv_curie:
+                confidence = get_normalizer_confidence(csv_curie, candidate)
 
         elif slot in ("observation_type", "observations") and entity_type in (
             "MeasurementObservation", "MeasurementObservationSet", "Observation"
         ):
-            curie = get_loinc_id(query)
-            omop_maps_to = curie or ""
+            if get_loinc_id_with_score:
+                loinc_id, loinc_score = get_loinc_id_with_score(query)
+                omop_maps_to = loinc_id or ""
+                if omop_maps_to:
+                    loinc_confidence = _similarity_confidence_tier(loinc_score, "LOINC term")
+            else:
+                curie = get_loinc_id(query)
+                omop_maps_to = curie or ""
             if slot == "observation_type":
-                oba_maps_to = get_oba_id(query) or ""
+                if get_oba_id_with_score:
+                    oba_id, oba_score = get_oba_id_with_score(query)
+                    oba_maps_to = oba_id or ""
+                    if oba_maps_to and oba_maps_to != csv_curie:
+                        confidence = _similarity_confidence_tier(oba_score, "OBA term")
+                else:
+                    oba_maps_to = get_oba_id(query) or ""
             maps_to_entity_type = "Measurement"
 
         elif slot == "procedure_concept":
@@ -374,7 +445,7 @@ def _agent_suggestion(
     except Exception as exc:
         print(f"  [agent error] slot={slot} query={query!r}: {exc}", file=sys.stderr)
 
-    return omop_maps_to, mondo_maps_to, hpo_maps_to, oba_maps_to, maps_to_entity_type
+    return omop_maps_to, mondo_maps_to, hpo_maps_to, oba_maps_to, maps_to_entity_type, confidence, loinc_confidence
 
 
 # ---------------------------------------------------------------------------
@@ -412,11 +483,11 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
         sys.exit(1)
 
     if no_agents:
-        get_mondo_id = get_hpo_id = get_omop_concept_id = get_rxnorm_id = get_loinc_id = extract_clinical_term = get_omop_route_id = get_oba_id = None
+        get_mondo_id = get_hpo_id = get_omop_concept_id = get_rxnorm_id = get_loinc_id = extract_clinical_term = get_omop_route_id = get_oba_id = get_normalizer_confidence = get_oba_id_with_score = get_loinc_id_with_score = None
         print("Running in --no-agents mode: YAML spot-check only.", file=sys.stderr)
     else:
         print("Loading agents ...", file=sys.stderr)
-        get_mondo_id, get_hpo_id, get_omop_concept_id, get_rxnorm_id, get_loinc_id, extract_clinical_term, get_omop_route_id, get_oba_id = _import_agents()  # noqa: E501
+        get_mondo_id, get_hpo_id, get_omop_concept_id, get_rxnorm_id, get_loinc_id, extract_clinical_term, get_omop_route_id, get_oba_id, get_normalizer_confidence, get_oba_id_with_score, get_loinc_id_with_score = _import_agents()  # noqa: E501
         print("Agents loaded.", file=sys.stderr)
 
     start_time = datetime.now()
@@ -429,21 +500,22 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
         orig_fields = reader.fieldnames or []
     total = len(all_rows)
 
-    # Cache: (var_name, slot, entity_type) → (omop, mondo, hpo, oba, entity)
+    # Cache: (var_name, slot, entity_type) → (omop, mondo, hpo, oba, entity, confidence, loinc_confidence)
     suggestion_cache: dict[tuple, tuple] = {}
 
     if not no_agents:
-        # Collect unique (var_name, slot, entity_type) keys with first-seen var_desc
-        unique_keys: dict[tuple, str] = {}
+        # Collect unique (var_name, slot, entity_type) keys with first-seen var_desc/csv_curie
+        unique_keys: dict[tuple, tuple[str, str]] = {}
         for r in all_rows:
             vn  = r.get("Variable Name", "").strip()
             sl  = r.get("Slot", "").strip()
             et  = r.get("Entity Type", "").strip()
             vd  = r.get("Variable Description", "").strip()
+            cc  = r.get("CURIE", "").strip()
             if vn and vn not in ADMIN_VARS and sl:
                 key = (vn, sl, et)
                 if key not in unique_keys:
-                    unique_keys[key] = vd
+                    unique_keys[key] = (vd, cc)
 
         n_unique = len(unique_keys)
         actual_workers = min(workers, n_unique) if n_unique else 1
@@ -457,11 +529,12 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
         counter = [0]
 
         def _populate_one(item: tuple) -> None:
-            (vn, sl, et), vd = item
+            (vn, sl, et), (vd, cc) = item
             result = _agent_suggestion(
                 sl, et, vn, vd,
                 get_mondo_id, get_hpo_id, get_omop_concept_id,
                 get_rxnorm_id, get_loinc_id, extract_clinical_term, get_omop_route_id, get_oba_id,
+                get_normalizer_confidence, cc, get_oba_id_with_score, get_loinc_id_with_score,
             )
             with cache_lock:
                 suggestion_cache[(vn, sl, et)] = result
@@ -487,6 +560,8 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
         "hpo_maps_to",
         "oba_maps_to",
         "maps_to_entity_type",
+        "suggestion_confidence",
+        "loinc_confidence",
     ]
     with open(OUTPUT_CSV, "w", newline="", encoding="utf-8-sig") as fout:
         writer = csv.DictWriter(fout, fieldnames=new_fields)
@@ -511,18 +586,19 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
 
             # Agent suggestions — always hits cache after pre-population
             if is_admin or no_agents:
-                omop_val = mondo_val = hpo_val = oba_val = entity_val = ""
+                omop_val = mondo_val = hpo_val = oba_val = entity_val = confidence_val = loinc_confidence_val = ""
             else:
                 cache_key = (var_name, slot, entity_type)
                 if cache_key in suggestion_cache:
-                    omop_val, mondo_val, hpo_val, oba_val, entity_val = suggestion_cache[cache_key]
+                    omop_val, mondo_val, hpo_val, oba_val, entity_val, confidence_val, loinc_confidence_val = suggestion_cache[cache_key]
                 else:
-                    omop_val, mondo_val, hpo_val, oba_val, entity_val = _agent_suggestion(
+                    omop_val, mondo_val, hpo_val, oba_val, entity_val, confidence_val, loinc_confidence_val = _agent_suggestion(
                         slot, entity_type, var_name, var_desc,
                         get_mondo_id, get_hpo_id, get_omop_concept_id,
                         get_rxnorm_id, get_loinc_id, extract_clinical_term, get_omop_route_id, get_oba_id,
+                        get_normalizer_confidence, csv_curie, get_oba_id_with_score, get_loinc_id_with_score,
                     )
-                    suggestion_cache[cache_key] = (omop_val, mondo_val, hpo_val, oba_val, entity_val)
+                    suggestion_cache[cache_key] = (omop_val, mondo_val, hpo_val, oba_val, entity_val, confidence_val, loinc_confidence_val)
 
             out_row = dict(row)
             out_row["yaml_curie"] = yaml_curie_val
@@ -532,6 +608,8 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
             out_row["hpo_maps_to"] = hpo_val
             out_row["oba_maps_to"] = oba_val
             out_row["maps_to_entity_type"] = entity_val
+            out_row["loinc_confidence"] = loinc_confidence_val
+            out_row["suggestion_confidence"] = confidence_val
             writer.writerow(out_row)
 
     elapsed = datetime.now() - start_time

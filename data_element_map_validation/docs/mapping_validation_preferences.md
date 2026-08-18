@@ -100,6 +100,22 @@ These patterns systematically produce incorrect High-priority findings and are s
 
 To add a new false-positive rule, append an entry to `_SLOT_VOCAB_RULES` in `scripts/generate_semantic_review.py` and re-run the semantic review for affected studies.
 
+---
+
+## Suggestion Confidence
+
+As of 2026-08-18, `generate_curie_mapreview.py` writes confidence columns alongside each agent suggestion, surfaced in the review report / curator app as part of the `semantic validator review` text (e.g. "✅ **Normalizer confidence**: high (normalizer-confirmed synonym).").
+
+`observation_type` rows can carry **two independent candidates in the same row** — `oba_maps_to` and `omop_maps_to` (a LOINC code, despite the column name) — so there are two separate confidence columns, not one shared value. Conflating them would silently describe only one candidate while implying it covered both.
+
+| Column | Populated for | Confidence source | Meaning |
+|:---|:---|:---|:---|
+| `suggestion_confidence` | `condition_concept` | NCATS Translator SRI Node Normalizer (`scripts/curie_normalizer.py`), `GET https://nodenormalization-sri.renci.org/get_normalized_nodes` | Checks whether the existing CSV CURIE and the agent's candidate CURIE resolve to the **same identifier clique**. `high` = confirmed synonym (e.g. `HP:0001297` "Stroke" and `MONDO:0005098` "Stroke disorder" are the same clique — safe to accept). `needs review` = the normalizer resolves them to **distinct concepts** — the candidate may be narrower/broader/different than the source variable describes (e.g. `MONDO:0005386` "peripheral **arterial** disease" → `MONDO:0005294` "peripheral **vascular** disease" is a scope change, not a synonym swap). Only covers MONDO/HP identifiers — it does not know about OBA or OMOP concept IDs. |
+| `suggestion_confidence` | `observation_type` (`oba_maps_to` candidate) | OBA agent text-similarity score (`scripts/oba_agent.py`, `get_oba_id_with_score`) | Composite string-similarity between the variable description and the OBA term's label/synonyms. `high` (≥0.85) = strong text match. `medium` (0.6–0.85) = partial match. `needs review` (<0.6) = weak match — the candidate term's label may not actually describe what the source variable measures. Caught a real example: for "chloride level in blood," the OBA agent's top hit was `OBA:2100172` ("chloride channel protein ClC-Kb amount in blood" — a channel protein, not the electrolyte) — correctly tagged `needs review`. |
+| `loinc_confidence` | `observation_type` (`omop_maps_to`/LOINC candidate) | LOINC agent's own text-similarity score (`scripts/measurementObs_agent.py`, `get_loinc_id_with_score`) | Same tiering, scored against the LOINC long/short name and component. This is match-quality context for the LOINC code itself — since LOINC is *always* a vocabulary/slot mismatch for `observation_type` (see rule table above), this score isn't an accept/reject signal on its own; it's useful when the curator is deciding whether to relocate the code to `method_type`. |
+
+**Important:** none of these sources validate OBA-vs-OMOP or OMOP-vs-LOINC vocabulary choice — that's still the `_SLOT_VOCAB_RULES` mismatch check above. When a suggestion is tagged `needs review`, pull the source dbGaP variable description (`phv...` definition) and compare it against the candidate CURIE's OLS4/Athena label directly before accepting — the same manual check used to catch the `pad.yaml` (arterial vs. vascular) and `obesity.yaml` (morbid vs. general) cases in FHS.
+
 #### Vocabulary selection: OBA vs LOINC
 
 Rule: vocabulary is chosen by (target model × slot semantics), not by ontology preference.

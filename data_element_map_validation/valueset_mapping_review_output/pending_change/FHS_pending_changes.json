@@ -28,29 +28,39 @@
   },
   "FHS::confirmed::albumin_bld.yaml": {
     "study": "FHS",
-    "change_request": "",
-    "original_curie": "",
+    "change_request": "OBA:2050068",
+    "original_curie": "OMOP:2212186",
     "slot": "observation_type",
     "yaml_files": [
       "albumin_bld.yaml"
     ],
-    "notes": "OMOP:2212186 via LOINC is more accurate. But we can dual map to OBA http://purl.obolibrary.org/obo/OBA_2050068",
-    "applied": false,
-    "saved_date": "2026-08-10"
+    "notes": "Cross-study consistency bulk update (curator-reviewed comparison list, 2026-08-18)",
+    "applied": true,
+    "saved_date": "2026-08-18",
+    "applied_date": "2026-08-18",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML updated (6 block(s)): OMOP:2212186 -> OBA:2050068",
+      "CSV updated (14 row(s))"
+    ]
   },
   "FHS::confirmed::albumin_urine.yaml": {
     "study": "FHS",
-    "change_request": "OMOP:3029937",
-    "original_curie": "OBA:VT0002871",
+    "change_request": "OBA:VT0002871",
+    "original_curie": "OMOP:3029937",
     "slot": "observation_type",
     "yaml_files": [
       "albumin_urine.yaml"
     ],
-    "notes": "https://athena.ohdsi.org/search-terms/terms/3029937 or can be dual mapped to \nhttp://purl.obolibrary.org/obo/OBA_VT0002871. The amount of a albumin type when measured in urine",
+    "notes": "Cross-study consistency bulk update (curator-reviewed comparison list, 2026-08-18)",
     "applied": true,
-    "saved_date": "2026-08-10",
-    "applied_date": "2026-08-17",
-    "applied_by": "Curator"
+    "saved_date": "2026-08-18",
+    "applied_date": "2026-08-18",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML updated (10 block(s)): OMOP:3029937 -> OBA:VT0002871",
+      "CSV updated (21 row(s))"
+    ]
   },
   "FHS::confirmed::asthma.yaml": {
     "study": "FHS",
@@ -140,31 +150,39 @@
   },
   "FHS::confirmed::fast_gluc_bld.yaml": {
     "study": "FHS",
-    "change_request": "OBA:2090000",
-    "original_curie": "OMOP:4156660",
+    "change_request": "OMOP:4156660",
+    "original_curie": "OBA:2090000",
     "slot": "observation_type",
     "yaml_files": [
       "fast_gluc_bld.yaml"
     ],
-    "notes": "level of glucose in blood during fasting\nhttp://purl.obolibrary.org/obo/OBA_2090000",
+    "notes": "Cross-study consistency bulk update (curator-reviewed comparison list, 2026-08-18)",
     "applied": true,
-    "saved_date": "2026-08-10",
-    "applied_date": "2026-08-17",
-    "applied_by": "Curator"
+    "saved_date": "2026-08-18",
+    "applied_date": "2026-08-18",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML updated (12 block(s)): OBA:2090000 -> OMOP:4156660",
+      "CSV updated (16 row(s))"
+    ]
   },
   "FHS::confirmed::fibrin.yaml": {
     "study": "FHS",
-    "change_request": "OMOP:3016407",
-    "original_curie": "OBA:0000061",
+    "change_request": "OBA:0000061",
+    "original_curie": "OMOP:3016407",
     "slot": "observation_type",
     "yaml_files": [
       "fibrin.yaml"
     ],
-    "notes": "https://athena.ohdsi.org/search-terms/terms/3016407\nBLOOD ANALYSIS: FIBRINOGEN (MG/100 ML)\nLOINC:3255-7 — \"Fibrinogen [Mass/volume] in Platelet poor plasma by Coagulation assay\" (the classic Clauss-method fibrinogen test, most commonly used in cohort studies).\nvs\ncirculating fibrinogen levels\nhttp://purl.obolibrary.org/obo/OBA_0000061\nOBA:0000061",
+    "notes": "Cross-study consistency bulk update (curator-reviewed comparison list, 2026-08-18)",
     "applied": true,
-    "saved_date": "2026-08-11",
-    "applied_date": "2026-08-17",
-    "applied_by": "Curator"
+    "saved_date": "2026-08-18",
+    "applied_date": "2026-08-18",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML updated (8 block(s)): OMOP:3016407 -> OBA:0000061",
+      "CSV updated (15 row(s))"
+    ]
   },
   "FHS::confirmed::glucose_bld.yaml": {
     "study": "FHS",
@@ -326,17 +344,21 @@
   },
   "FHS::confirmed::lympho_pct.yaml": {
     "study": "FHS",
-    "change_request": "OBA:0003352",
-    "original_curie": "OMOP:37208690",
+    "change_request": "OMOP:37208690",
+    "original_curie": "OBA:0003352",
     "slot": "observation_type",
     "yaml_files": [
       "lympho_pct.yaml"
     ],
-    "notes": "`observation_type`: ✓ OMOP:37208690 matches YAML. Measurement/procedure agent → `LOINC:26474-7, LOINC:30525-0` (\"LYMPHOCYTES (METPATH lab profile)\"). OBA agent → OBA:0003352 (\"LYMPHOCYTES (METPATH lab profile)\"). ⚠ **Vocab/slot mismatch**: LOINC encodes assay procedures (the *how*) and belongs in `method_type`. OBA/OMOP encode biological attributes (the *what*) — the correct vocabulary for `observation_type`. This agent suggestion is a vocabulary/slot mismatch, not a quality improvement. → Agent suggests LOINC:26474-7; Recommended action cites OBA:0003352 — manual curator review advised. → Current YAML OMOP:37208690 differs from Recommended OBA:0003352.",
+    "notes": "Cross-study consistency bulk update (curator-reviewed comparison list, 2026-08-18)",
     "applied": true,
-    "saved_date": "2026-08-14",
-    "applied_date": "2026-08-17",
-    "applied_by": "Curator"
+    "saved_date": "2026-08-18",
+    "applied_date": "2026-08-18",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML updated (1 block(s)): OBA:0003352 -> OMOP:37208690",
+      "CSV updated (2 row(s))"
+    ]
   },
   "FHS::confirmed::med_use.yaml": {
     "study": "FHS",
@@ -391,14 +413,20 @@
   "FHS::confirmed::tak_statin.yaml": {
     "study": "FHS",
     "change_request": "ATC:C10AA",
-    "original_curie": "ATC:C10A",
+    "original_curie": "NDFRT:N0000175589",
     "slot": "drug_concept",
     "yaml_files": [
       "tak_statin.yaml"
     ],
-    "notes": "C10AA =HMG CoA reductase inhibitors— the specific subclass covering lovastatin, pravastatin, fluvastatin, atorvastatin, rosuvastatin, and pitavastatin — i.e., statins exactly as named in the variable",
-    "applied": false,
-    "saved_date": "2026-08-14"
+    "notes": "Curator decision: use ATC:C10AA instead of NDFRT term (2026-08-18)",
+    "applied": true,
+    "saved_date": "2026-08-18",
+    "applied_date": "2026-08-18",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "10 block(s) set to ATC:C10AA",
+      "CSV updated (9 row(s))"
+    ]
   },
   "FHS::confirmed::tak_orlhypoag.yaml": {
     "study": "FHS",
@@ -428,17 +456,21 @@
   },
   "FHS::confirmed::obesity.yaml": {
     "study": "FHS",
-    "change_request": "MONDO:0011122",
-    "original_curie": "MONDO:0005139",
+    "change_request": "OMOP:433736",
+    "original_curie": "MONDO:0011122",
     "slot": "condition_concept",
     "yaml_files": [
       "obesity.yaml"
     ],
-    "notes": "http://purl.obolibrary.org/obo/MONDO_0011122\nand OMOP:433736\nhttps://athena.ohdsi.org/search-terms/terms/433736\n",
+    "notes": "Cross-study consistency bulk update (curator-reviewed comparison list, 2026-08-18)",
     "applied": true,
-    "saved_date": "2026-08-17",
-    "applied_date": "2026-08-17",
-    "applied_by": "Curator"
+    "saved_date": "2026-08-18",
+    "applied_date": "2026-08-18",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML updated (13 block(s)): MONDO:0011122 -> OMOP:433736",
+      "CSV updated (38 row(s))"
+    ]
   },
   "FHS::confirmed::tak_cenactag.yaml": {
     "study": "FHS",

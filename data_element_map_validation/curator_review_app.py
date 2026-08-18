@@ -773,7 +773,7 @@ def render_row(row: dict, study: str, pending: dict, idx: int) -> None:
     row_id = _row_key(study, file_field)
     saved  = pending.get(row_id, {})
 
-    badge      = {"P1": "🔴", "P2": "🟡", "P3": "🟢"}.get(priority, "⚪")
+    badge      = "🎯" if priority.startswith("🎯") else {"P1": "🔴", "P2": "🟡", "P3": "🟢"}.get(priority, "⚪")
     done_badge = (
         " ✅" if saved.get("applied")
         else " ☑" if saved.get("no_change")

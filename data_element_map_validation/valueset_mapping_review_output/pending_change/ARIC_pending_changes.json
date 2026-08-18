@@ -15,17 +15,21 @@
   },
   "ARIC::confirmed::potassium.yaml": {
     "study": "ARIC",
-    "change_request": "OMOP:4245152",
-    "original_curie": "OBA:VT0002668",
+    "change_request": "OBA:VT0002668",
+    "original_curie": "OMOP:4245152",
     "slot": "observation_type",
     "yaml_files": [
       "potassium.yaml"
     ],
-    "notes": "OBA:VT0003018|\nhttps://athena.ohdsi.org/search-terms/terms/4245152-Potassium (mmol/L)\nblood potassium amount-http://purl.obolibrary.org/obo/OBA_VT0002668|",
+    "notes": "Cross-study consistency bulk update (curator-reviewed comparison list, 2026-08-18)",
     "applied": true,
     "saved_date": "2026-08-18",
     "applied_date": "2026-08-18",
-    "applied_by": "stephanie"
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML updated (4 block(s)): OMOP:4245152 -> OBA:VT0002668",
+      "CSV updated (4 row(s))"
+    ]
   },
   "ARIC::confirmed::chloride_bld.yaml": {
     "study": "ARIC",
@@ -67,17 +71,21 @@
   },
   "ARIC::confirmed::bmi.yaml": {
     "study": "ARIC",
-    "change_request": "OMOP:3038553",
-    "original_curie": "OBA:2045455",
+    "change_request": "OBA:2045455",
+    "original_curie": "OMOP:3038553",
     "slot": "observation_type",
     "yaml_files": [
       "bmi.yaml"
     ],
-    "notes": "LOINC:39156-5 | Body mass index (BMI) [Ratio]\nOMOP:Body mass index (BMI) [Ratio]| https://athena.ohdsi.org/search-terms/terms/3038553",
+    "notes": "Cross-study consistency bulk update (curator-reviewed comparison list, 2026-08-18)",
     "applied": true,
-    "saved_date": "2026-08-17",
-    "applied_date": "2026-08-17",
-    "applied_by": "stephanie"
+    "saved_date": "2026-08-18",
+    "applied_date": "2026-08-18",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML updated (3 block(s)): OMOP:3038553 -> OBA:2045455",
+      "CSV updated (3 row(s))"
+    ]
   },
   "ARIC::confirmed::blood_pressure.yaml": {
     "study": "ARIC",
@@ -90,5 +98,41 @@
     "notes": "OMOP:3003205|https://athena.ohdsi.org/search-terms/terms/3003205\nBrachial artery Systolic blood pressure\nLOINC:8508-4 | Brachial artery Systolic blood pressure",
     "applied": false,
     "saved_date": "2026-08-17"
+  },
+  "ARIC::confirmed::lympho_ct.yaml": {
+    "study": "ARIC",
+    "change_request": "OBA:VT0000717",
+    "original_curie": "OBA:VT0000217",
+    "slot": "observation_type",
+    "yaml_files": [
+      "lympho_ct.yaml"
+    ],
+    "notes": "Cross-study consistency bulk update (curator-reviewed comparison list, 2026-08-18)",
+    "applied": true,
+    "saved_date": "2026-08-18",
+    "applied_date": "2026-08-18",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML updated (1 block(s)): OBA:VT0000217 -> OBA:VT0000717",
+      "CSV updated (1 row(s))"
+    ]
+  },
+  "ARIC::confirmed::obesity.yaml": {
+    "study": "ARIC",
+    "change_request": "OMOP:433736",
+    "original_curie": "MONDO:0005139",
+    "slot": "condition_concept",
+    "yaml_files": [
+      "obesity.yaml"
+    ],
+    "notes": "Cross-study consistency bulk update (curator-reviewed comparison list, 2026-08-18)",
+    "applied": true,
+    "saved_date": "2026-08-18",
+    "applied_date": "2026-08-18",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML updated (1 block(s)): MONDO:0005139 -> OMOP:433736",
+      "CSV updated (1 row(s))"
+    ]
   }
 }

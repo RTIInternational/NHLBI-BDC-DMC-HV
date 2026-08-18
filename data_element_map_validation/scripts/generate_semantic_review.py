@@ -189,6 +189,44 @@ def _vocab_slot_mismatch_note(agent_curie: str, csv_curies: set, slot: str) -> s
     return ""
 
 
+def _valid_candidate_for_slot(slot: str, agent_curie: str, oba: list[str]) -> str:
+    """Return an agent-suggested CURIE that is actually valid for slot's vocab rule.
+
+    agent_curie is picked elsewhere as `next(iter(mondo or hpo or omop))` — for
+    condition_concept that's a real MONDO/HP/OMOP candidate, but for
+    observation_type the `omop` set actually holds a LOINC code (see
+    _agent_suggestion in generate_curie_mapreview.py), which is itself an
+    invalid vocabulary for this slot. Recommending it as "the fix" would repeat
+    the same violation being flagged. Prefer the OBA candidate in that case.
+    """
+    rule = _SLOT_VOCAB_RULES.get(slot)
+    if not rule:
+        return agent_curie
+    if _curie_prefix(agent_curie) in rule["valid"]:
+        return agent_curie
+    for c in oba:
+        if _curie_prefix(c) in rule["valid"]:
+            return c
+    return ""
+
+
+def _existing_curie_vocab_violation(csv_curies: set, slot: str) -> str:
+    """Return a note if an EXISTING CSV CURIE itself violates the slot's vocab
+    rule — i.e. the current mapping is definitely wrong (schema-typing
+    violation), not just a lower-confidence candidate. Rule-based, not a
+    similarity score: e.g. a LOINC code sitting in observation_type, or an
+    OMOP concept ID sitting in condition_concept.
+    """
+    rule = _SLOT_VOCAB_RULES.get(slot)
+    if not rule:
+        return ""
+    bad = {c for c in csv_curies if _curie_prefix(c) in rule["invalid"]}
+    if not bad:
+        return ""
+    bad_str = ", ".join(f"`{c}`" for c in sorted(bad))
+    return f"Existing CURIE {bad_str} uses a vocabulary invalid for `{slot}`. {rule['note']}"
+
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -245,6 +283,8 @@ def _file_summary(yaml_file: str, mapreview: dict[str, list[dict]]) -> dict:
         mondo      = r.get("mondo_maps_to", "")
         hpo        = r.get("hpo_maps_to", "")
         oba        = r.get("oba_maps_to", "")
+        confidence = r.get("suggestion_confidence", "")
+        loinc_confidence = r.get("loinc_confidence", "")
         var_name   = r["Variable Name"]
         var_desc   = r.get("Variable Description", "")
 
@@ -267,6 +307,8 @@ def _file_summary(yaml_file: str, mapreview: dict[str, list[dict]]) -> dict:
             "mondo": set(),
             "hpo":   set(),
             "oba":   set(),
+            "confidence": "",
+            "loinc_confidence": "",
             "vars":  [],
         })
         s["csv_curies"].add(csv_curie)
@@ -278,6 +320,10 @@ def _file_summary(yaml_file: str, mapreview: dict[str, list[dict]]) -> dict:
             s["hpo"].add(hpo)
         if oba:
             s["oba"].add(oba)
+        if confidence:
+            s["confidence"] = confidence
+        if loinc_confidence:
+            s["loinc_confidence"] = loinc_confidence
         var_key = (var_name, var_desc)
         if var_key not in [(v[0], v[1]) for v in s["vars"]]:
             s["vars"].append(var_key)
@@ -377,6 +423,8 @@ def _agent_text(sdata: dict, slot: str) -> str:
     mondo = sorted(sdata.get("mondo", set()))
     hpo   = sorted(sdata.get("hpo",   set()))
     oba   = sorted(sdata.get("oba",   set()))
+    confidence = sdata.get("confidence", "")
+    loinc_confidence = sdata.get("loinc_confidence", "")
     vars_ = sdata.get("vars", [])
     var_desc = vars_[0][1] if vars_ else ""
     desc_frag = f' ("{var_desc}")' if var_desc else ""
@@ -388,6 +436,9 @@ def _agent_text(sdata: dict, slot: str) -> str:
         parts.append(f"HPO agent → `{', '.join(hpo)}`{desc_frag}.")
     if omop:
         parts.append(f"Measurement/procedure agent → `{', '.join(omop)}`{desc_frag}.")
+        if loinc_confidence:
+            icon = "✅" if loinc_confidence.startswith("high") else "⚠"
+            parts.append(f"{icon} **LOINC match confidence**: {loinc_confidence}.")
     if oba:
         parts.append(f"OBA agent → `{', '.join(oba)}`{desc_frag}.")
 
@@ -397,6 +448,13 @@ def _agent_text(sdata: dict, slot: str) -> str:
         mismatch = _vocab_slot_mismatch_note(best_agent, sdata.get("csv_curies", set()), slot)
         if mismatch:
             parts.append(f"⚠ **Vocab/slot mismatch**: {mismatch}")
+
+    # Confidence tag: Translator normalizer clique check (condition_concept) or
+    # OBA text-similarity tier (observation_type) — see curie_normalizer.py / oba_agent.py
+    if confidence:
+        icon = "✅" if confidence.startswith("high") else "⚠"
+        label = "Normalizer confidence" if slot == "condition_concept" else "OBA suggestion confidence"
+        parts.append(f"{icon} **{label}**: {confidence}.")
 
     return " ".join(parts)
 
@@ -958,13 +1016,30 @@ def _iter_substantive(mapreview_path: Path):
 # Main
 # ---------------------------------------------------------------------------
 
+_PRIORITY_CORRECTION = "\U0001F3AF Priority Correction"
+
+
 def _auto_generate_rows(
     mapreview: dict[str, list[dict]]
 ) -> tuple[list[dict], list[dict], dict[str, int]]:
     """Build confirmed_rows from mapreview data when no source reviewer MD exists.
 
-    Two finding types (both go into Reviewer Confirmed Findings):
-      High     — Agent suggests a better CURIE than what is in the curie CSV.
+    Finding types (all go into Reviewer Confirmed Findings):
+      🎯 Priority Correction — surfaced above High/Medium when there's strong,
+        specific evidence the *current* CURIE needs to change, not just a
+        candidate worth a look. Two independent triggers (either is enough):
+          (a) the existing CSV CURIE itself violates its slot's vocab rule
+              (_existing_curie_vocab_violation — rule-based, unambiguous, e.g.
+              a LOINC code sitting in observation_type), or
+          (b) the agent's candidate is a normalizer-confirmed synonym / strong
+              OBA text match for a different CURIE than what's in the CSV
+              (sdata["confidence"] starts with "high").
+        This is still a *review* category, not an auto-apply — the curator
+        still approves via the existing Apply flow. It exists so a curator
+        with limited review time can filter to the findings most likely to
+        be real corrections instead of reading every row in priority order.
+      High     — Agent suggests a better CURIE than what is in the curie CSV
+                 (lower-confidence case: no strong evidence signal above).
       Medium   — YAML mismatch: CSV CURIE differs from what is in the YAML file.
 
     Returns (confirmed, anne_rows, suppressed_counts) where suppressed_counts is
@@ -987,22 +1062,51 @@ def _auto_generate_rows(
             hpo         = sorted(sdata.get("hpo",   set()))
             omop        = sorted(sdata.get("omop",  set()))
             oba         = sorted(sdata.get("oba",   set()))
+            confidence  = sdata.get("confidence", "")
             agent_curie = next(iter(mondo or hpo or omop), "")
             vars_       = sdata.get("vars", [])
             var_desc    = vars_[0][1] if vars_ else ""
             desc_frag   = f' ("{var_desc[:80]}")' if var_desc else ""
+
+            # Trigger (a): the EXISTING CURIE itself violates its slot's vocab rule —
+            # rule-based and unambiguous, independent of any agent suggestion.
+            existing_violation = _existing_curie_vocab_violation(set(csv_curies), slot)
+            if existing_violation:
+                valid_candidate = _valid_candidate_for_slot(slot, agent_curie, oba)
+                confirmed.append({
+                    "priority":            _PRIORITY_CORRECTION,
+                    "file":               yaml_file,
+                    "final issue":        (
+                        f"Current mapping for `{slot}`{desc_frag} is definitely wrong: {existing_violation}"
+                    ),
+                    "evidence to confirm": (
+                        f"Variable description: {var_desc[:120] if var_desc else '(none)'}. "
+                        + (f"Agent suggests `{valid_candidate}` instead." if valid_candidate else "No valid-vocabulary agent suggestion available — needs manual lookup.")
+                    ),
+                    "recommended action":  (
+                        f"Correct `{slot}` to a valid vocabulary"
+                        + (f" — agent recommends `{valid_candidate}`." if valid_candidate else ".")
+                    ),
+                    "confidence":  "High",
+                    "reviewer":    "Auto-generated",
+                    "source alignment": "",
+                })
 
             if agent_curie and csv_curies and agent_curie not in csv_curies:
                 vocab_note = _vocab_slot_mismatch_note(agent_curie, set(csv_curies), slot)
                 if not vocab_note:
                     csv_str   = ", ".join(f"`{c}`" for c in csv_curies)
                     source    = ("MONDO" if mondo else "HPO" if hpo else "OMOP/LOINC")
+                    # Trigger (b): strong, specific evidence backs this exact candidate —
+                    # not just "an agent found something different."
+                    is_priority = confidence.startswith("high")
                     confirmed.append({
-                        "priority":            "High",
+                        "priority":            _PRIORITY_CORRECTION if is_priority else "High",
                         "file":               yaml_file,
                         "final issue":        (
                             f"Agent suggests better CURIE for `{slot}`{desc_frag}: "
                             f"{source} recommends `{agent_curie}` but CSV has {csv_str}"
+                            + (f" — {confidence}." if is_priority else "")
                         ),
                         "evidence to confirm": (
                             f"Variable description: {var_desc[:120] if var_desc else '(none)'}. "
