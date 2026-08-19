@@ -15,12 +15,16 @@
         accession_authority:
           value: dbGaP
         version:
-          value: v1
+          value: '1'
         url:
           value: https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs001119.v1.p1
         date_started:
-          value: '2009'
+          class_derivations:
+          - TimePoint:        
+              datetime: '2009-01-01T00:00:00'        
         date_ended:
-          value: '2022'
+          class_derivations:
+          - TimePoint:        
+              datetime: '2022-12-31T23:59:59'
         research_project_type:
           value: STUDY
