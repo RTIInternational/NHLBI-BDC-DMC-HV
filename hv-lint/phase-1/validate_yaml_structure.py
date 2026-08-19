@@ -38,8 +38,11 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
+from _derivations import iter_nested_class_derivs  # noqa: E402
 
 TRANSFORM_DIR = find_transform_dir()
+
+
 
 COHORTS = [
     "ARIC", "CARDIA", "CHS", "COPDGene",
@@ -226,15 +229,14 @@ def walk_expressions(block: dict, block_idx: int, rel_path: str) -> list[Finding
                         expr, f"{prefix}{class_name}", slot_name,
                         block_idx, rel_path
                     ))
-                # Recurse into object_derivations
-                obj_derivs = slot_def.get("object_derivations")
-                if isinstance(obj_derivs, list):
-                    for od in obj_derivs:
-                        if isinstance(od, dict) and "class_derivations" in od:
-                            _recurse(
-                                od["class_derivations"],
-                                f"{prefix}{class_name}.{slot_name}."
-                            )
+                # Recurse into nested class derivations (list-based or legacy
+                # object_derivations)
+                for nested_name, nested_spec in iter_nested_class_derivs(slot_def):
+                    if isinstance(nested_spec, dict):
+                        _recurse(
+                            {nested_name: nested_spec},
+                            f"{prefix}{class_name}.{slot_name}."
+                        )
 
     _recurse(class_derivs)
     return findings
@@ -328,20 +330,19 @@ def get_block_identity(block: dict) -> list[tuple]:
             mt_sig = (_s(mt.get("value", ""))
                       or _s(mt.get("expr", ""))
                       or _s(mt.get("populated_from", "")))
-            vq = _d(slots.get("value_quantity"))
-            for od in (vq.get("object_derivations") or []):
-                if isinstance(od, dict):
-                    qty = _d(_d(od.get("class_derivations")).get("Quantity"))
-                    qty_slots = _d(qty.get("slot_derivations"))
-                    # Bug fix: also check value_concept, not just
-                    # value_decimal/value_integer -- blocks mapping
-                    # different PHVs via value_concept are NOT duplicates
-                    vd = _d(qty_slots.get("value_decimal")
-                            or qty_slots.get("value_integer")
-                            or qty_slots.get("value_concept"))
-                    distinguishing_phv = (_s(vd.get("populated_from", ""))
-                                          or _s(vd.get("expr", "")))
-                    break
+            for qty_name, qty in iter_nested_class_derivs(slots.get("value_quantity")):
+                if qty_name != "Quantity":
+                    continue
+                qty_slots = _d(_d(qty).get("slot_derivations"))
+                # Bug fix: also check value_concept, not just
+                # value_decimal/value_integer -- blocks mapping
+                # different PHVs via value_concept are NOT duplicates
+                vd = _d(qty_slots.get("value_decimal")
+                        or qty_slots.get("value_integer")
+                        or qty_slots.get("value_concept"))
+                distinguishing_phv = (_s(vd.get("populated_from", ""))
+                                      or _s(vd.get("expr", "")))
+                break
             # Fallback: value_enum (direct slot, not nested in Quantity)
             if not distinguishing_phv:
                 ve = _d(slots.get("value_enum"))
@@ -362,21 +363,20 @@ def get_block_identity(block: dict) -> list[tuple]:
             # Distinguish Person blocks by nested cause_of_death concept
             # (e.g., ARIC cause_of_death.yaml has ~11 blocks per table,
             # each mapping a different ICD-10 code + order)
-            cod = _d(slots.get("cause_of_death"))
-            # Bug fix: collect ALL object_derivations, not just the
-            # first -- Person blocks may have multiple cause_of_death
-            # derivations with distinct cause concepts
+            # Bug fix: collect ALL derivations, not just the first -- Person
+            # blocks may have multiple cause_of_death derivations with distinct
+            # cause concepts
             cod_parts = []
-            for od in (cod.get("object_derivations") or []):
-                if isinstance(od, dict):
-                    cod_cls = _d(_d(od.get("class_derivations")).get("CauseOfDeath"))
-                    cod_slots = _d(cod_cls.get("slot_derivations"))
-                    cause = _d(cod_slots.get("cause") or cod_slots.get("cause_of_death_concept"))
-                    part = (_s(cause.get("value", ""))
-                            or _s(cause.get("expr", ""))
-                            or _s(cause.get("populated_from", "")))
-                    if part:
-                        cod_parts.append(part)
+            for cod_name, cod_cls in iter_nested_class_derivs(slots.get("cause_of_death")):
+                if cod_name != "CauseOfDeath":
+                    continue
+                cod_slots = _d(_d(cod_cls).get("slot_derivations"))
+                cause = _d(cod_slots.get("cause") or cod_slots.get("cause_of_death_concept"))
+                part = (_s(cause.get("value", ""))
+                        or _s(cause.get("expr", ""))
+                        or _s(cause.get("populated_from", "")))
+                if part:
+                    cod_parts.append(part)
             distinguishing_phv = "|".join(cod_parts)
         elif cls_name == "Visit":
             # Bug fix: check id.value, id.expr, AND name -- FHS Visit

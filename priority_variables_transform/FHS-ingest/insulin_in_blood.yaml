@@ -14,16 +14,15 @@
         method_type:
           value: 'ELISA'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000688
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00070362
-                  unit:
-                    value: pmol/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000688
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00070362
+                unit:
+                  value: pmol/L
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003901
@@ -33,26 +32,25 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00201989}) + ":" + case(({phv00201990} == ''1'', ''FHS OFFSPRING EXAM 8''), ({phv00201990} == ''7'', ''FHS OMNI 1 EXAM 3''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
-          expr: case(({phv00201990} == 1, {pht003099.phv00177944} * 365), case({phv00201990} == 7, {pht003099.phv00177934} * 365))
+          expr: case(({phv00201990} == 1, {pht003099.phv00177944} * 365), ({phv00201990} == 7, {pht003099.phv00177934} * 365))
         observation_type:
           value: OBA:2060174
           range: string
         method_type:
           value: 'immunoassay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003901
-                slot_derivations:
-                  value_decimal:
-                    expr: 'case(
-                          ({phv00201991} > 1.39, {phv00201991}),
-                          (True, None)
-                         )'
-                  unit:
-                    value: pmol/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003901
+              slot_derivations:
+                value_decimal:
+                  expr: 'case(
+                        ({phv00201991} > 1.39, {phv00201991}),
+                        (True, None)
+                       )'
+                unit:
+                  value: pmol/L
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003902
@@ -69,19 +67,18 @@
         method_type:
           value: 'immunoassay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003902
-                slot_derivations:
-                  value_decimal:
-                    expr: 'case(
-                          ({phv00201995} > 1.39, {phv00201995}),
-                          (True, None)
-                         )'
-                  unit:
-                    value: pmol/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003902
+              slot_derivations:
+                value_decimal:
+                  expr: 'case(
+                        ({phv00201995} > 1.39, {phv00201995}),
+                        (True, None)
+                       )'
+                unit:
+                  value: pmol/L
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004804
@@ -98,16 +95,15 @@
         method_type:
           value: 'immunoassay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004804
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00227080
-                  unit:
-                    value: pmol/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht004804
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00227080
+                unit:
+                  value: pmol/L
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004805
@@ -117,23 +113,22 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00227082}) + ":" + case(({phv00227083} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00227083} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
-          expr: case(({phv00227083} == 1, {pht003099.phv00177946} * 365), case({phv00227083} == 7, {pht003099.phv00177936} * 365))
+          expr: case(({phv00227083} == 1, {pht003099.phv00177946} * 365), ({phv00227083} == 7, {pht003099.phv00177936} * 365))
         observation_type:
           value: OBA:2060174
           range: string
         method_type:
           value: 'immunoassay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004805
-                slot_derivations:
-                  value_decimal:
-                    expr: 'case(
-                          ({phv00227085} > 1.39, {phv00227085}),
-                          (True, None)
-                         )'
-                  unit:
-                    value: pmol/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht004805
+              slot_derivations:
+                value_decimal:
+                  expr: 'case(
+                        ({phv00227085} > 1.39, {phv00227085}),
+                        (True, None)
+                       )'
+                unit:
+                  value: pmol/L
+                  range: string

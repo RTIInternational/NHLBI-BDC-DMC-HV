@@ -12,13 +12,12 @@
         method_type:
           value: 'Computed Tomography-Thoracic'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht005161
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00257671
-                  unit:
-                    value: mm3
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht005161
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00257671
+                unit:
+                  value: mm3
+                  range: string

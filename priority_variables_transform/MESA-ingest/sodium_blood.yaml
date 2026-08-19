@@ -13,13 +13,12 @@
           value: "blood assay"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003089
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00175981
-                  unit:
-                    value: mmol/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003089
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00175981
+                unit:
+                  value: mmol/L
+                  range: string

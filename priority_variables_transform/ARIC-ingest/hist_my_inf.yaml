@@ -1307,9 +1307,14 @@
           range: string
         condition_status:
           populated_from: phv00294812
+          # phv00294812 (AFUCOMP7_V1) is string-typed and uses N/Y codes
+          # (var_report: N=2,179, Y=434). The previous '1'/'2' keys never
+          # matched -> condition_status was silently null on every pht006416
+          # hist-MI record. Aligned with sibling pht006416 blocks at L645-650
+          # and L672-677 in this file which correctly use 'N'/'Y'.
           value_mappings:
-            '1': ABSENT
-            '2': HISTORICAL
+            'N': ABSENT
+            'Y': HISTORICAL
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
