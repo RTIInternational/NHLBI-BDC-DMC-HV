@@ -101,14 +101,14 @@
     "yaml_files": [
       "spirometry.yaml"
     ],
-    "notes": "OMOP:3011505 is more correct if FEV1/FVC ratio \nBreathing; End tidal volume; Exp; FEV; FEV1; FEV1%; FEV1/FVC\nLOINC:19926-5| FEV1/FVC\n -- Data-integrity fix (2026-08-19): the 2026-08-17 app Submit (commit f5c7bc65) blanket-overwrote all 42 CSV rows tagged (spirometry.yaml, observations) to OMOP:3011505, corrupting 35 rows that held 4 other distinct concepts (OMOP:3022891, 3024594, 4176265, 4241837). Restored those 35 rows to their original values from git history (f5c7bc65^). The 7 rows that genuinely held OMOP:3002094 were set to OMOP:3011505, matching the single corresponding YAML block (populated_from pht004715, line 114) which was updated the same way.",
+    "notes": "OMOP:3011505 is more correct if FEV1/FVC ratio \nBreathing; End tidal volume; Exp; FEV; FEV1; FEV1%; FEV1/FVC\nLOINC:19926-5| FEV1/FVC\n -- Data-integrity fix (2026-08-19): the 2026-08-17 app Submit (commit f5c7bc65) blanket-overwrote all 42 CSV rows tagged (spirometry.yaml, observations) to OMOP:3011505, corrupting 35 rows that held 4 other distinct concepts (OMOP:3022891, 3024594, 4176265, 4241837). Restored those 35 rows to their original values from git history (f5c7bc65^). The 7 rows that genuinely held OMOP:3002094 were set to OMOP:3011505, matching the single corresponding YAML block (populated_from pht004715, line 114) which was updated the same way. -- Follow-up correction (2026-08-19, same day): 1 of those 7 rows belonged to the 'AGE' variable (phv00226251), which only ever appears in the YAML as age_at_observation, never as observation_type — its OMOP:3002094 pairing was a pre-existing CSV cross-product artifact unrelated to the FVC finding, per curator instruction not to change it from what it was. Reverted all 6 rows for that phv (not just the one matching original_curie) back to their true original per-row values. Real target-fix count is now 6, not 7.",
     "applied": true,
     "saved_date": "2026-08-17",
     "applied_date": "2026-08-19",
     "applied_by": "stephanie",
     "apply_results": [
       "YAML: 1 block updated: OMOP:3002094 -> OMOP:3011505",
-      "CSV: 7 row(s) updated to OMOP:3011505; 35 previously-corrupted row(s) restored to original distinct values (see notes)"
+      "CSV: 6 row(s) updated to OMOP:3011505; 36 previously-corrupted/artifact row(s) restored to original distinct values (see notes)"
     ]
   }
 }

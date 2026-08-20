@@ -71,3 +71,20 @@ For each affected `(Study, YAML File)`:
 
 For every row, **Original CURIE** should equal **Corrected CURIE** unless Row Status is `TARGET FIX`,
 in which case **Corrected CURIE** should equal the study's intended new value from the table above.
+
+## Follow-up correction — same day, 2026-08-19
+
+The first fix pass applied the target fix to **every** row whose original value matched
+`original_curie`, without checking whether the variable itself was a real measurement. In ARIC and
+HCHS `spirometry.yaml`, 5 "Age" variables (`PFTB04`, `PULB20`, `PULP20`, `V5AGE51` in ARIC;
+`AGE` in HCHS) happened to also hold `OMOP:3002094` in their pre-corruption state — purely because
+they were swept into the same cross-product row-generation artifact as the real FVC/FEV1 variables
+(these variables only ever appear in the YAML as `age_at_observation`, never as `observation_type`
+— they have no real relationship to the FVC concept at all). The first pass wrongly moved them to
+the new target CURIE along with the genuine FVC rows.
+
+Corrected: those 5 variables' rows (24 CSV rows in ARIC, 6 in HCHS — every row sharing their `phv`,
+not just the one that matched `original_curie`) were restored to their true original per-row values.
+No YAML change was needed or made for them, since they never had an `observation_type` field to
+begin with. **Target-fix count revised from 66 to 61** (28→24 in ARIC spirometry, 7→6 in HCHS
+spirometry); the audit CSV and `_apply_csv_update_fix.md` reflect the corrected numbers.
