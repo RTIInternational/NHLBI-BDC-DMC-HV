@@ -101,8 +101,14 @@
     "yaml_files": [
       "spirometry.yaml"
     ],
-    "notes": "OMOP:3011505 is more correct if FEV1/FVC ratio \nBreathing; End tidal volume; Exp; FEV; FEV1; FEV1%; FEV1/FVC\nLOINC:19926-5| FEV1/FVC\n",
-    "applied": false,
-    "saved_date": "2026-08-17"
+    "notes": "OMOP:3011505 is more correct if FEV1/FVC ratio \nBreathing; End tidal volume; Exp; FEV; FEV1; FEV1%; FEV1/FVC\nLOINC:19926-5| FEV1/FVC\n -- Data-integrity fix (2026-08-19): the 2026-08-17 app Submit (commit f5c7bc65) blanket-overwrote all 42 CSV rows tagged (spirometry.yaml, observations) to OMOP:3011505, corrupting 35 rows that held 4 other distinct concepts (OMOP:3022891, 3024594, 4176265, 4241837). Restored those 35 rows to their original values from git history (f5c7bc65^). The 7 rows that genuinely held OMOP:3002094 were set to OMOP:3011505, matching the single corresponding YAML block (populated_from pht004715, line 114) which was updated the same way.",
+    "applied": true,
+    "saved_date": "2026-08-17",
+    "applied_date": "2026-08-19",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML: 1 block updated: OMOP:3002094 -> OMOP:3011505",
+      "CSV: 7 row(s) updated to OMOP:3011505; 35 previously-corrupted row(s) restored to original distinct values (see notes)"
+    ]
   }
 }

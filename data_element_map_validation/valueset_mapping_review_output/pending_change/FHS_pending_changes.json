@@ -70,9 +70,15 @@
     "yaml_files": [
       "asthma.yaml"
     ],
-    "notes": "Should use asthma condition curie - http://purl.obolibrary.org/obo/MONDO_0004979 - bronchial disease that is characterized by chronic inflammation and narrowing of the airways along with the Historical status, i.e. condition_concept = MONDO:0004979 with condition_status=HISTORICAL",
-    "applied": false,
-    "saved_date": "2026-08-10"
+    "notes": "Should use asthma condition curie - http://purl.obolibrary.org/obo/MONDO_0004979 - bronchial disease that is characterized by chronic inflammation and narrowing of the airways along with the Historical status, i.e. condition_concept = MONDO:0004979 with condition_status=HISTORICAL -- Data-integrity fix (2026-08-19): the 2026-08-17 app Submit (commit f5c7bc65) had a CSV-apply bug that blanket-overwrote all 93 CSV rows tagged (asthma.yaml, condition_concept) to MONDO:0004979, regardless of original value, corrupting 20 rows that held 7 other distinct concepts (HP:0012393, HP:0030828, MONDO:0004784, MONDO:0005492, MONDO:0024355, MONDO:0850282, plus 2 rows of the true target HP:0003193). Restored 18 rows to their original values from git history (f5c7bc65^); the 2 genuine HP:0003193 rows plus the corresponding 2 YAML blocks (phv00001035 at FHS ORIGINAL EXAM 2 and EXAM 5) were set to MONDO:0004979, matching this finding.",
+    "applied": true,
+    "saved_date": "2026-08-10",
+    "applied_date": "2026-08-19",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML: 2 block(s) updated: HP:0003193 -> MONDO:0004979",
+      "CSV: 2 row(s) updated to MONDO:0004979; 18 previously-corrupted row(s) restored to original distinct values (see notes)"
+    ]
   },
   "FHS::confirmed::bdy_hgt.yaml": {
     "study": "FHS",
@@ -436,9 +442,15 @@
     "yaml_files": [
       "tak_orlhypoag.yaml"
     ],
-    "notes": "OMOP:1594973=chlorpropamide\nhttps://athena.ohdsi.org/search-terms/terms/1594973\nORAL HYPOGLYCEMICS: CHLORPROPAMIDE",
-    "applied": false,
-    "saved_date": "2026-08-15"
+    "notes": "OMOP:1594973=chlorpropamide\nhttps://athena.ohdsi.org/search-terms/terms/1594973\nORAL HYPOGLYCEMICS: CHLORPROPAMIDE -- Data-integrity fix (2026-08-19): the 2026-08-17 app Submit (commit f5c7bc65) blanket-overwrote all 24 CSV rows tagged (tak_orlhypoag.yaml, drug_concept) to OMOP:1594973, corrupting 20 rows that held 7 other distinct RxCUI drug codes (RxCUI:25789, 4815, 4821, 6809, 72610, 73044, 84108). Restored those 20 rows to their original values from git history (f5c7bc65^). YAML's drug_concept uses expr: case() with the RxCUI as a literal string (not a plain value: field, which is why the app's automated apply had failed here) — updated the 4 expr lines that literally embedded \"RxCUI:2404\" to \"OMOP:1594973\", matching this finding; left the other RxCUI values in this file's expr lines untouched.",
+    "applied": true,
+    "saved_date": "2026-08-15",
+    "applied_date": "2026-08-19",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML: 4 expr line(s) updated: \"RxCUI:2404\" -> \"OMOP:1594973\"",
+      "CSV: 4 row(s) updated to OMOP:1594973; 20 previously-corrupted row(s) restored to original distinct values (see notes)"
+    ]
   },
   "FHS::confirmed::angina.yaml": {
     "study": "FHS",
@@ -474,15 +486,21 @@
   },
   "FHS::confirmed::tak_cenactag.yaml": {
     "study": "FHS",
-    "change_request": "OMOP: 1398937",
+    "change_request": "OMOP:1398937",
     "original_curie": "RxCUI:2599",
     "slot": "drug_concept",
     "yaml_files": [
       "tak_cenactag.yaml"
     ],
-    "notes": "https://athena.ohdsi.org/search-terms/terms/1398937\nHas form (RxNorm) - ingredient of \nclonidine hydrochloride",
-    "applied": false,
-    "saved_date": "2026-08-17"
+    "notes": "https://athena.ohdsi.org/search-terms/terms/1398937\nHas form (RxNorm) - ingredient of \nclonidine hydrochloride -- Data-integrity fix (2026-08-19): the 2026-08-17 app Submit (commit f5c7bc65) blanket-overwrote all 21 CSV rows tagged (tak_cenactag.yaml, drug_concept) to the malformed value \"OMOP: 1398937\" (stray space), corrupting 15 rows that held the distinct concept RxCUI:6876. Restored those 15 rows to RxCUI:6876 from git history (f5c7bc65^). YAML's drug_concept uses expr: case() with the RxCUI as a literal string, so the app's automated apply had failed here — updated the 6 expr lines that literally embedded \"RxCUI:2599\" to \"OMOP:1398937\" (clean, no stray space), matching this finding; left the RxCUI:6876 expr lines untouched.",
+    "applied": true,
+    "saved_date": "2026-08-17",
+    "applied_date": "2026-08-19",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML: 6 expr line(s) updated: \"RxCUI:2599\" -> \"OMOP:1398937\"",
+      "CSV: 6 row(s) updated to OMOP:1398937; 15 previously-corrupted row(s) restored to RxCUI:6876 (see notes)"
+    ]
   },
   "FHS::confirmed::tak_aldorecepblk.yaml": {
     "study": "FHS",
@@ -504,11 +522,15 @@
     "yaml_files": [
       "stroke.yaml"
     ],
-    "notes": "condition should override phenotype for condition_concept",
+    "notes": "condition should override phenotype for condition_concept -- Data-integrity fix (2026-08-19): the YAML side of this finding applied correctly on 2026-08-17 (all 17 condition_concept blocks were already uniformly HP:0001297 and were legitimately updated to MONDO:0005098). However, the same 2026-08-17 Submit's CSV write (commit f5c7bc65) blanket-overwrote all 29 CSV rows tagged (stroke.yaml, condition_concept) to MONDO:0005098, silently destroying 10 rows that carried richer enum-level stroke-subtype documentation (MONDO:0005099, 0005264, 0006809, 0011057, 0013792 — answer-value-specific mappings for the \"Stroke type\"/\"Stroke/TIA type\" variables, phv00276966 and phv00276972, which the flat YAML transform doesn't currently use but which were intentionally recorded in the source CSV). Restored those 10 rows to their original subtype values from git history (f5c7bc65^); the 19 rows that genuinely held HP:0001297 remain MONDO:0005098, matching the correct (and already-correct) YAML.",
     "applied": true,
     "saved_date": "2026-08-17",
-    "applied_date": "2026-08-17",
-    "applied_by": "Curator"
+    "applied_date": "2026-08-19",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML: already correctly updated 2026-08-17 (17 block(s): HP:0001297 -> MONDO:0005098) - no change needed",
+      "CSV: 19 row(s) confirmed MONDO:0005098; 10 previously-corrupted subtype-enum row(s) restored to original distinct values (see notes)"
+    ]
   },
   "FHS::confirmed::sodium_blood.yaml": {
     "study": "FHS",

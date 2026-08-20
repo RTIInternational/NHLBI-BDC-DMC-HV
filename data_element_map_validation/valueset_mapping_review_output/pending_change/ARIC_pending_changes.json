@@ -47,27 +47,39 @@
   },
   "ARIC::confirmed::hist_hrtfail.yaml": {
     "study": "ARIC",
-    "change_request": "MONDO:0005252",
-    "original_curie": "MONDO:0005009",
+    "change_request": "MONDO:0005009",
+    "original_curie": "MONDO:0005252",
     "slot": "condition_concept",
     "yaml_files": [
       "hist_hrtfail.yaml"
     ],
-    "notes": "",
-    "applied": false,
-    "saved_date": "2026-08-17"
+    "notes": "Curator override (2026-08-19): rejected agent-suggested MONDO:0005252 (general heart failure) for phv00207050 (HFAA28L). Variable description reads 'Congestive heart failure/ Pulmonary vascular congestion' — MONDO:0005009 (congestive heart failure) is the correct concept and was already the live YAML value. CSV source corrected from MONDO:0005252 to MONDO:0005009 to match. All other condition_concept blocks in hist_hrtfail.yaml remain MONDO:0005252 (general heart failure) — this is the only CHF-specific variable in the file.",
+    "applied": true,
+    "saved_date": "2026-08-17",
+    "applied_date": "2026-08-19",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML: already MONDO:0005009 at phv00207050 block (curator-verified, no change needed)",
+      "CSV: 1 row(s) updated (phv00207050) MONDO:0005252 -> MONDO:0005009"
+    ]
   },
   "ARIC::confirmed::spirometry.yaml": {
     "study": "ARIC",
-    "change_request": "OMOP: 3003197",
+    "change_request": "OMOP:3003197",
     "original_curie": "OMOP:3002094",
     "slot": "observations",
     "yaml_files": [
       "spirometry.yaml"
     ],
-    "notes": "https://athena.ohdsi.org/search-terms/terms/3003197",
-    "applied": false,
-    "saved_date": "2026-08-17"
+    "notes": "https://athena.ohdsi.org/search-terms/terms/3003197 -- Curator note (2026-08-19): the 2026-08-17 app Submit had a CSV scoping bug that blanket-overwrote all 195 CSV rows tagged (spirometry.yaml, observations) to this single value, corrupting 166 rows that actually held 8 other distinct FVC/FEV1/ratio/predicted concepts (OMOP:3005600, 3011505, 3011708, 3022891, 3024594, 4176265, 4196583, 4241837). Those 166 rows were restored to their original values from git history (commit f5c7bc65^). Only the 28 rows that were genuinely OMOP:3002094 (FVC, liters) were changed to OMOP:3003197, matching the 4 corresponding YAML blocks (pht004147, pht004148, pht006467, pht006468).",
+    "applied": true,
+    "saved_date": "2026-08-17",
+    "applied_date": "2026-08-19",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML: 4 block(s) updated: OMOP:3002094 -> OMOP:3003197",
+      "CSV: 28 row(s) updated to OMOP:3003197; 166 previously-corrupted row(s) restored to original distinct values (see notes)"
+    ]
   },
   "ARIC::confirmed::bmi.yaml": {
     "study": "ARIC",
