@@ -639,16 +639,31 @@ def _apply_yaml(study: str, yaml_file: str, slot: str, new_curie: str) -> tuple[
     return True, f"✓ YAML `{yaml_file}` [{slot}] → `{new_curie}` ({n} block(s) updated)"
 
 
-def _apply_csv(study: str, yaml_file: str, slot: str, new_curie: str) -> tuple[bool, str]:
+def _apply_csv(study: str, yaml_file: str, slot: str, new_curie: str, original_curie: str = "") -> tuple[bool, str]:
     fieldnames, rows = load_curie_csv(study)
-    updated, changed = [], 0
+    updated, changed, skipped_other_curie = [], 0, 0
     for row in rows:
         if row.get("YAML File") == Path(yaml_file).name and row.get("Slot") == slot:
+            # A (yaml_file, slot) pair can span multiple rows carrying distinct
+            # pre-existing CURIEs (e.g. FVC vs FEV1 vs FEV1/FVC all filed under the
+            # same "observations" slot). Only touch rows whose current CURIE matches
+            # what the curator actually reviewed — otherwise a blanket match here
+            # would silently overwrite unrelated concepts sharing the same slot.
+            if original_curie and row.get("CURIE") != original_curie:
+                skipped_other_curie += 1
+                updated.append(row)
+                continue
             row = dict(row)
             row["CURIE"] = new_curie
             changed += 1
         updated.append(row)
     if changed == 0:
+        if skipped_other_curie:
+            return False, (
+                f"⚠ No CSV rows match `{yaml_file}` / `{slot}` with CURIE `{original_curie}` — "
+                f"{skipped_other_curie} row(s) for this file/slot exist but hold a different CURIE "
+                "and were left untouched. Re-check the finding before applying."
+            )
         return False, f"⚠ No CSV rows match `{yaml_file}` / `{slot}`"
     csv_path = STUDIES[study]["curie_csv"]
     try:
@@ -674,8 +689,9 @@ def submit_all(study: str, pending: dict, curator: str) -> tuple[list[str], int,
         new_curie = val.get("change_request", "").strip()
         if not new_curie or val.get("applied"):
             continue
-        slot    = val.get("slot", "")
-        yf_list = val.get("yaml_files", [])
+        slot           = val.get("slot", "")
+        original_curie = val.get("original_curie", "")
+        yf_list        = val.get("yaml_files", [])
         row_res: list[tuple[bool, str]] = []
         if slot in _SUBMIT_BLOCKED_SLOTS:
             msg = (
@@ -687,7 +703,7 @@ def submit_all(study: str, pending: dict, curator: str) -> tuple[list[str], int,
             continue
         for yf in yf_list:
             row_res.append(_apply_yaml(study, yf, slot, new_curie))
-            row_res.append(_apply_csv(study, yf, slot, new_curie))
+            row_res.append(_apply_csv(study, yf, slot, new_curie, original_curie))
         msgs = [msg for _, msg in row_res]
         results.extend(msgs)
         ok_count += sum(1 for ok, _ in row_res if ok)
