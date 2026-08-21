@@ -651,8 +651,12 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
     start_time = datetime.now()
     print(f"Started: {start_time.strftime('%Y-%m-%d %H:%M:%S')}", file=sys.stderr)
 
-    # Read all input rows into memory first
-    with open(INPUT_CSV, newline="", encoding="utf-8") as fin:
+    # Read all input rows into memory first. utf-8-sig strips a leading BOM if
+    # present — {study}_curie.csv is written with utf-8-sig elsewhere in the
+    # pipeline, so a plain "utf-8" read here left the BOM embedded as literal
+    # text in the first fieldname ("﻿Cohort"), which then compounded with
+    # every downstream utf-8-sig write into a doubled BOM in generated outputs.
+    with open(INPUT_CSV, newline="", encoding="utf-8-sig") as fin:
         reader = csv.DictReader(fin)
         all_rows = list(reader)
         orig_fields = reader.fieldnames or []

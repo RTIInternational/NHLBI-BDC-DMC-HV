@@ -254,7 +254,7 @@ def load_mapreview(path: Path) -> dict[str, list[dict]]:
     """Return {yaml_file: [row_dicts, ...]} for non-admin substantive variables."""
     ADMIN = {"SUBJECT_ID", "phase_study", "age_visit"}
     result: dict[str, list[dict]] = {}
-    with open(path, newline="", encoding="utf-8") as f:
+    with open(path, newline="", encoding="utf-8-sig") as f:
         for row in csv.DictReader(f):
             if row["Variable Name"] in ADMIN or not row["Variable Name"]:
                 continue
@@ -747,7 +747,7 @@ def _build_summary_stats(mapreview_path: Path) -> dict:
     seen_cache_keys: set[tuple] = set()
     unique_curies: set[str] = set()
 
-    with open(mapreview_path, newline="", encoding="utf-8") as f:
+    with open(mapreview_path, newline="", encoding="utf-8-sig") as f:
         for row in csv.DictReader(f):
             total_rows += 1
             vn = row["Variable Name"]
@@ -1053,7 +1053,7 @@ def write_summary(
 
 def _iter_substantive(mapreview_path: Path):
     """Yield non-admin rows from the mapreview CSV."""
-    with open(mapreview_path, newline="", encoding="utf-8") as f:
+    with open(mapreview_path, newline="", encoding="utf-8-sig") as f:
         for row in csv.DictReader(f):
             if row["Variable Name"] not in _ADMIN_VARS and row["Variable Name"]:
                 yield row
