@@ -265,8 +265,6 @@ def get_omop_concept_id_from_loinc(loinc_code: str, base_url: str = ATLAS_BASE_U
         (d for d in docs if d.get("VOCABULARY_ID") == "LOINC" and d.get("CONCEPT_CODE") == code),
         None,
     )
-    if not match and docs:
-        match = docs[0]
     return f"OMOP:{match['CONCEPT_ID']}" if match else None
 
 
