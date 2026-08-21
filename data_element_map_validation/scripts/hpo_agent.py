@@ -130,17 +130,30 @@ def get_hpo_id(description: str, **kwargs) -> str | None:
         >>> get_hpo_id("hypertension")
         'HP:0000822'
     """
+    hp_id, _score = get_hpo_id_with_score(description, **kwargs)
+    return hp_id
+
+
+def get_hpo_id_with_score(description: str, **kwargs) -> tuple[str | None, float]:
+    """Like get_hpo_id, but also returns the top match's similarity score.
+
+    The score is the same composite label/synonym similarity used to rank
+    candidates in search_hpo_terms — a text-match confidence, not a
+    guarantee of ontological correctness. Callers can bucket it into
+    curator-facing confidence tiers or compare it against another vocabulary's
+    score to pick a priority_curie (see generate_curie_mapreview.py).
+    """
     results = search_hpo_terms(description, **kwargs)
     if results:
-        return results[0]["hp_id"]
+        return results[0]["hp_id"], _similarity(description, results[0])
 
     cleaned = _extract_clinical_term(description)
     if cleaned.lower() != description.lower():
         results2 = search_hpo_terms(cleaned, **kwargs)
         if results2:
-            return results2[0]["hp_id"]
+            return results2[0]["hp_id"], _similarity(cleaned, results2[0])
 
-    return None
+    return None, 0.0
 
 
 @click.command()

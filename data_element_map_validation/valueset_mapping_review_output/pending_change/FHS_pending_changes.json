@@ -64,21 +64,16 @@
   },
   "FHS::confirmed::asthma.yaml": {
     "study": "FHS",
+    "phv": "",
     "change_request": "MONDO:0004979",
-    "original_curie": "HP:0003193",
+    "original_curie": "HP:0030828",
     "slot": "condition_concept",
     "yaml_files": [
       "asthma.yaml"
     ],
     "notes": "Should use asthma condition curie - http://purl.obolibrary.org/obo/MONDO_0004979 - bronchial disease that is characterized by chronic inflammation and narrowing of the airways along with the Historical status, i.e. condition_concept = MONDO:0004979 with condition_status=HISTORICAL -- Data-integrity fix (2026-08-19): the 2026-08-17 app Submit (commit f5c7bc65) had a CSV-apply bug that blanket-overwrote all 93 CSV rows tagged (asthma.yaml, condition_concept) to MONDO:0004979, regardless of original value, corrupting 20 rows that held 7 other distinct concepts (HP:0012393, HP:0030828, MONDO:0004784, MONDO:0005492, MONDO:0024355, MONDO:0850282, plus 2 rows of the true target HP:0003193). Restored 18 rows to their original values from git history (f5c7bc65^); the 2 genuine HP:0003193 rows plus the corresponding 2 YAML blocks (phv00001035 at FHS ORIGINAL EXAM 2 and EXAM 5) were set to MONDO:0004979, matching this finding.",
-    "applied": true,
-    "saved_date": "2026-08-10",
-    "applied_date": "2026-08-19",
-    "applied_by": "stephanie",
-    "apply_results": [
-      "YAML: 2 block(s) updated: HP:0003193 -> MONDO:0004979",
-      "CSV: 2 row(s) updated to MONDO:0004979; 18 previously-corrupted row(s) restored to original distinct values (see notes)"
-    ]
+    "applied": false,
+    "saved_date": "2026-08-21"
   },
   "FHS::confirmed::bdy_hgt.yaml": {
     "study": "FHS",
@@ -276,15 +271,16 @@
   },
   "FHS::confirmed::hypertension.yaml": {
     "study": "FHS",
+    "phv": "",
     "change_request": "",
     "original_curie": "",
     "slot": "condition_concept",
     "yaml_files": [
       "hypertension.yaml"
     ],
-    "notes": "OMOP: 4050816|Family history of hypertension|https://athena.ohdsi.org/search-terms/terms/4050816\nHP:0000822|\nmust have condition_status| HISTORICAL\nHP:0000822|Hypertension|http://purl.obolibrary.org/obo/HP_0000822",
+    "notes": "this is history of hypertension - so status  of history must be included. \nOMOP: 4050816|Family history of hypertension|https://athena.ohdsi.org/search-terms/terms/4050816\nHP:0000822|\nmust have condition_status| HISTORICAL\nHP:0000822|Hypertension|http://purl.obolibrary.org/obo/HP_0000822",
     "applied": false,
-    "saved_date": "2026-08-11"
+    "saved_date": "2026-08-21"
   },
   "FHS::confirmed::lvh_ekg.yaml": {
     "study": "FHS",
@@ -454,16 +450,17 @@
   },
   "FHS::confirmed::angina.yaml": {
     "study": "FHS",
+    "phv": "",
     "change_request": "HP:0001681",
-    "original_curie": "MONDO:0006805",
+    "original_curie": "HP:0001681",
     "slot": "condition_concept",
     "yaml_files": [
       "angina.yaml"
     ],
     "notes": "MONDO:0006805\nHP:0001681\nusing normalizer to choose-> HP:0001681 (Angina pectoris) ",
     "applied": true,
-    "saved_date": "2026-08-18",
-    "applied_date": "2026-08-18",
+    "saved_date": "2026-08-21",
+    "applied_date": "2026-08-21",
     "applied_by": "stephanie"
   },
   "FHS::confirmed::obesity.yaml": {
@@ -559,5 +556,18 @@
     "saved_date": "2026-08-18",
     "applied_date": "2026-08-18",
     "applied_by": "stephanie"
+  },
+  "FHS::confirmed::blood_pressure.yaml": {
+    "study": "FHS",
+    "phv": "",
+    "change_request": "OMOP:4152194",
+    "original_curie": "OMOP:4152194",
+    "slot": "observations",
+    "yaml_files": [
+      "blood_pressure.yaml"
+    ],
+    "notes": "",
+    "applied": false,
+    "saved_date": "2026-08-21"
   }
 }
