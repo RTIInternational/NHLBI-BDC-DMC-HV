@@ -16,7 +16,9 @@
               populated_from: pht004099
               slot_derivations:
                 value_decimal:
-                  populated_from: phv00206658
+                  # ARIC sentinel codes (A, O, M, R, N, U, T, L, H) and any other non-numeric value become null;
+                  # "nan"/"NaN" parse as numbers so they are excluded too.
+                  expr: 'float({phv00206658}) if is_numeric({phv00206658}) and str({phv00206658}) not in ("nan", "NaN") else None'
                 unit:
                   value: "mg/dL"
 - class_derivations:
@@ -37,6 +39,8 @@
               populated_from: pht004098
               slot_derivations:
                 value_decimal:
-                  populated_from: phv00206650
+                  # ARIC sentinel codes (A, O, M, R, N, U, T, L, H) and any other non-numeric value become null;
+                  # "nan"/"NaN" parse as numbers so they are excluded too.
+                  expr: 'float({phv00206650}) if is_numeric({phv00206650}) and str({phv00206650}) not in ("nan", "NaN") else None'
                 unit:
                   value: "mg/dL"
