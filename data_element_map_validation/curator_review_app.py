@@ -2361,7 +2361,7 @@ def main() -> None:
     st.sidebar.metric("Reviewer findings", len(confirmed_rows))
     st.sidebar.metric("Pending 💾",         n_pending)
     st.sidebar.metric("Applied ✅",          n_applied)
-    st.sidebar.metric("Reviewed ☑",         n_no_change)
+    st.sidebar.metric("Reviewed — no change needed ☑", n_no_change)
 
     _all_priorities = sorted({row.get("Priority", "") for row in confirmed_rows if row.get("Priority", "")})
     if not _all_priorities:
