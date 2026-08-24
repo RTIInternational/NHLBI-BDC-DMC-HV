@@ -405,6 +405,35 @@ def get_terminology_matches(study: str, yaml_file: str, slot: str, phv: str) -> 
     return []
 
 
+def get_loinc_omop_resolution_caveat(study: str, yaml_file: str, slot: str, phv: str) -> str:
+    """Return an honest caveat when a LOINC candidate exists but its OMOP
+    resolution is blank because the lookup itself failed (Atlas API
+    timeout/error) — never returns anything for a confirmed "no exact match".
+
+    Without this, a blank OMOP candidate caused by a technical failure is
+    visually indistinguishable from one where the agent genuinely checked and
+    found nothing — a curator (or the priority_curie scoring logic) can't tell
+    "unresolved" from "confirmed absent" otherwise. See
+    generate_curie_mapreview.py's loinc_omop_resolution_status column and
+    omop_agent.get_omop_concept_id_from_loinc_with_status()."""
+    if not phv:
+        return ""
+    _, rows = load_mapreview_csv(study)
+    fname = Path(yaml_file).name
+    for r in rows:
+        if r.get("YAML File") != fname or r.get("Slot") != slot or r.get("PHV", "").strip() != phv:
+            continue
+        if r.get("loinc_omop_resolution_status", "") == "api_error":
+            loinc_code = r.get("loinc_maps_to", "")
+            return (
+                f"⚠ LOINC→OMOP lookup for `{loinc_code}` failed (API timeout/error) — "
+                "this is NOT a confirmed absence of a match, just an unresolved lookup. "
+                "Re-run Step 1 for this study to retry."
+            )
+        return ""
+    return ""
+
+
 def get_curie_csv_rows_for_file(study: str, yaml_file: str, slot: str) -> list[dict]:
     """Return all curie CSV rows matching yaml_file (basename) + slot."""
     _, rows = load_curie_csv(study)
@@ -1265,6 +1294,7 @@ def render_row(row: dict, study: str, pending: dict, idx: int, force_expanded: b
             with d_right:
                 det_terms = get_terminology_matches(study, yaml_files[0], auto_slot, phv) if auto_slot and yaml_files else []
                 det_conf_notes = _extract_confidence_notes(validator)
+                det_resolution_caveat = get_loinc_omop_resolution_caveat(study, yaml_files[0], auto_slot, phv) if auto_slot and yaml_files else ""
                 st.markdown("**Agent suggestion:**")
                 if det_terms:
                     for _label, _curie, _weak in det_terms:
@@ -1275,7 +1305,9 @@ def render_row(row: dict, study: str, pending: dict, idx: int, force_expanded: b
                     # reads as a clean recommendation instead of one to be skeptical of.
                     for note in det_conf_notes:
                         st.caption(note)
-                else:
+                if det_resolution_caveat:
+                    st.caption(det_resolution_caveat)
+                if not det_terms:
                     if not auto_slot:
                         st.caption("_Slot not detected — cannot determine expected agent._")
                     else:
@@ -1396,6 +1428,9 @@ def render_row(row: dict, study: str, pending: dict, idx: int, force_expanded: b
                         _curie_link_md(_curie, label=f"{_label} ⚠ weak match" if _weak else _label)
                     for note in _extract_confidence_notes(validator):
                         st.caption(note)
+                cr_resolution_caveat = get_loinc_omop_resolution_caveat(study, yaml_files[0], auto_slot, phv) if auto_slot and yaml_files else ""
+                if cr_resolution_caveat:
+                    st.caption(cr_resolution_caveat)
 
                 if auto_slot and yaml_files:
                     _prio_cr, _prio_cr_ambiguous = get_priority_curie_context(study, yaml_files[0], auto_slot, phv)

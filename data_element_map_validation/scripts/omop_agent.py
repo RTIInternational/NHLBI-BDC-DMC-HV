@@ -230,16 +230,41 @@ def get_omop_concept_id_with_score(description: str, **kwargs) -> tuple[str | No
 def get_omop_concept_id_from_loinc(loinc_code: str, base_url: str = ATLAS_BASE_URL) -> str | None:
     """Resolve a LOINC source code to its OMOP standard concept_id, as 'OMOP:<id>'.
 
-    Every LOINC term is itself an OMOP concept — this looks it up by exact source
-    code match (VOCABULARY_ID == "LOINC", CONCEPT_CODE == code) rather than by
-    text similarity, since the code is already known. Used to complete the
-    LOINC -> OMOP concept_id step for observation_type / MeasurementObservation
-    rows in generate_curie_mapreview.py, which previously stopped at the LOINC
-    code and never resolved it to a concept_id.
+    Thin wrapper over get_omop_concept_id_from_loinc_with_status() for callers
+    that only need the concept_id. Collapses "no exact match" and "API error"
+    into the same None — callers that need to tell those apart (e.g. to avoid
+    presenting an unresolved lookup as a confirmed non-match) should call
+    get_omop_concept_id_from_loinc_with_status() directly instead.
 
     Example:
         >>> get_omop_concept_id_from_loinc("LOINC:718-7")
         'OMOP:3000963'
+    """
+    concept_id, _status = get_omop_concept_id_from_loinc_with_status(loinc_code, base_url=base_url)
+    return concept_id
+
+
+def get_omop_concept_id_from_loinc_with_status(
+    loinc_code: str, base_url: str = ATLAS_BASE_URL,
+) -> tuple[str | None, str]:
+    """Like get_omop_concept_id_from_loinc, but also reports *why* it's None.
+
+    Returns (concept_id_or_none, status) where status is one of:
+      "resolved"       — exact LOINC source-code match found, concept_id is set
+      "no_exact_match" — Atlas responded, but no exact (VOCABULARY_ID=="LOINC",
+                          CONCEPT_CODE==code) record was in the results — a
+                          confirmed negative, not a failure.
+      "api_error"       — every retry failed (timeout/connection error) — the
+                          lookup was never actually completed. This must not be
+                          treated the same as "no_exact_match": a blank
+                          omop_maps_to caused by a timeout is not evidence the
+                          concept doesn't exist, and presenting it that way to
+                          a curator (or silently dropping the candidate from
+                          priority_curie contention) misrepresents an unknown
+                          as a confirmed answer.
+
+    Every LOINC term is itself an OMOP concept — this looks it up by exact source
+    code match rather than by text similarity, since the code is already known.
     """
     code = loinc_code.split(":", 1)[1] if ":" in loinc_code else loinc_code
     url = f"{base_url}/vocabulary/search/{quote(code)}"
@@ -259,13 +284,15 @@ def get_omop_concept_id_from_loinc(loinc_code: str, base_url: str = ATLAS_BASE_U
         except requests.RequestException:
             continue
     if docs is None:
-        return None
+        return None, "api_error"
 
     match = next(
         (d for d in docs if d.get("VOCABULARY_ID") == "LOINC" and d.get("CONCEPT_CODE") == code),
         None,
     )
-    return f"OMOP:{match['CONCEPT_ID']}" if match else None
+    if match:
+        return f"OMOP:{match['CONCEPT_ID']}", "resolved"
+    return None, "no_exact_match"
 
 
 # ---------------------------------------------------------------------------

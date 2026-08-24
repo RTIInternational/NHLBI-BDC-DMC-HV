@@ -143,6 +143,63 @@ def _load_dbgap_map() -> dict[str, dict]:
             if row.get("PHV", "").strip()
         }
 
+
+# ---------------------------------------------------------------------------
+# LOINC -> OMOP concept_id resolution — local vocabulary table, not a live API
+# call. bdc_study_input/loinc2omop_curie.csv is a full export of OMOP's
+# concept_relationship table filtered to relationship_id == "Maps to" and
+# source_vocabulary_id == "LOINC" (277,764 rows as of 2026-08-24). Replaces
+# the earlier atlas-demo.ohdsi.org-based get_omop_concept_id_from_loinc(),
+# which reliably timed out under concurrent load (observed ~93% failure rate
+# at 8 workers) and left large numbers of rows with an unresolved OMOP
+# candidate — silently dropping an otherwise-eligible candidate out of
+# priority_curie contention purely due to network flakiness, not because it
+# didn't exist. A local dict lookup has no failure mode of that kind: every
+# code is either in the table (resolved) or genuinely absent (no_exact_match)
+# — "api_error" is no longer a possible outcome for this step.
+# ---------------------------------------------------------------------------
+_LOINC_OMOP_CSV = BASE_DIR / "bdc_study_input" / "loinc2omop_curie.csv"
+
+
+def _load_loinc_omop_map() -> dict[str, str]:
+    """Return {LOINC source_concept_code: target_concept_id} from _LOINC_OMOP_CSV.
+
+    Uses the file's own precomputed target_concept_id column directly — no
+    need to re-derive anything, since the export already resolved the "Maps
+    to" relationship. Returns {} (not an error) if the file is absent, so a
+    checkout without it degrades to "no_exact_match" for every LOINC code
+    rather than crashing.
+    """
+    if not _LOINC_OMOP_CSV.exists():
+        print(
+            f"No local LOINC->OMOP vocabulary at {_LOINC_OMOP_CSV.name} — "
+            "observation_type/observations rows with a LOINC candidate will "
+            "show no OMOP resolution. See scripts/README or the notes on "
+            "generating this file via a Databricks OMOP vocabulary export.",
+            file=sys.stderr,
+        )
+        return {}
+    with open(_LOINC_OMOP_CSV, encoding="utf-8-sig", errors="replace", newline="") as f:
+        return {
+            row["source_concept_code"]: row["target_concept_id"]
+            for row in csv.DictReader(f)
+            if row.get("source_concept_code")
+        }
+
+
+def _resolve_loinc_to_omop(loinc_curie: str, loinc_omop_map: dict[str, str]) -> tuple[str | None, str]:
+    """Resolve 'LOINC:<code>' to ('OMOP:<id>', 'resolved') via the local
+    vocabulary table, or (None, 'no_exact_match') if the code isn't in it.
+
+    Local-table equivalent of the old get_omop_concept_id_from_loinc_with_status()
+    API call — same (concept_id, status) contract, minus the "api_error" status,
+    since a dict lookup can't time out."""
+    code = loinc_curie.split(":", 1)[1] if ":" in loinc_curie else loinc_curie
+    target = loinc_omop_map.get(code)
+    if target:
+        return f"OMOP:{target}", "resolved"
+    return None, "no_exact_match"
+
 # ---------------------------------------------------------------------------
 # Admin variables that appear on every YAML file — skip agent calls for these
 # ---------------------------------------------------------------------------
@@ -234,14 +291,14 @@ def _import_agents():
     sys.path.insert(0, str(BASE_DIR))
     from mondo_agent import get_mondo_id, get_mondo_id_with_score, _extract_clinical_term
     from hpo_agent import get_hpo_id, get_hpo_id_with_score
-    from omop_agent import get_omop_concept_id, get_omop_concept_id_with_score, get_omop_concept_id_from_loinc
+    from omop_agent import get_omop_concept_id, get_omop_concept_id_with_score
     from rxnorm_agent import get_omop_concept_id as get_rxnorm_id, get_drug_curie_override
     from measurementObs_agent import get_loinc_id
     from meds_route_agent import get_omop_route_id
     from oba_agent import get_oba_id, get_oba_id_with_score
     from measurementObs_agent import get_loinc_id_with_score
     from curie_normalizer import confidence_label as get_normalizer_confidence
-    return get_mondo_id, get_hpo_id, get_omop_concept_id, get_rxnorm_id, get_loinc_id, _extract_clinical_term, get_omop_route_id, get_oba_id, get_normalizer_confidence, get_oba_id_with_score, get_loinc_id_with_score, get_drug_curie_override, get_omop_concept_id_from_loinc, get_mondo_id_with_score, get_hpo_id_with_score, get_omop_concept_id_with_score
+    return get_mondo_id, get_hpo_id, get_omop_concept_id, get_rxnorm_id, get_loinc_id, _extract_clinical_term, get_omop_route_id, get_oba_id, get_normalizer_confidence, get_oba_id_with_score, get_loinc_id_with_score, get_drug_curie_override, get_mondo_id_with_score, get_hpo_id_with_score, get_omop_concept_id_with_score
 
 
 # ---------------------------------------------------------------------------
@@ -637,16 +694,20 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
         sys.exit(1)
 
     if no_agents:
-        get_mondo_id = get_hpo_id = get_omop_concept_id = get_rxnorm_id = get_loinc_id = extract_clinical_term = get_omop_route_id = get_oba_id = get_normalizer_confidence = get_oba_id_with_score = get_loinc_id_with_score = get_drug_curie_override = get_omop_concept_id_from_loinc = get_mondo_id_with_score = get_hpo_id_with_score = get_omop_concept_id_with_score = None
+        get_mondo_id = get_hpo_id = get_omop_concept_id = get_rxnorm_id = get_loinc_id = extract_clinical_term = get_omop_route_id = get_oba_id = get_normalizer_confidence = get_oba_id_with_score = get_loinc_id_with_score = get_drug_curie_override = get_mondo_id_with_score = get_hpo_id_with_score = get_omop_concept_id_with_score = None
         print("Running in --no-agents mode: YAML spot-check only.", file=sys.stderr)
     else:
         print("Loading agents ...", file=sys.stderr)
-        get_mondo_id, get_hpo_id, get_omop_concept_id, get_rxnorm_id, get_loinc_id, extract_clinical_term, get_omop_route_id, get_oba_id, get_normalizer_confidence, get_oba_id_with_score, get_loinc_id_with_score, get_drug_curie_override, get_omop_concept_id_from_loinc, get_mondo_id_with_score, get_hpo_id_with_score, get_omop_concept_id_with_score = _import_agents()  # noqa: E501
+        get_mondo_id, get_hpo_id, get_omop_concept_id, get_rxnorm_id, get_loinc_id, extract_clinical_term, get_omop_route_id, get_oba_id, get_normalizer_confidence, get_oba_id_with_score, get_loinc_id_with_score, get_drug_curie_override, get_mondo_id_with_score, get_hpo_id_with_score, get_omop_concept_id_with_score = _import_agents()  # noqa: E501
         print("Agents loaded.", file=sys.stderr)
 
     dbgap_map = _load_dbgap_map()
     if dbgap_map:
         print(f"Loaded {len(dbgap_map)} dbGaP-verified variables for source checking.", file=sys.stderr)
+
+    loinc_omop_map = _load_loinc_omop_map()
+    if loinc_omop_map:
+        print(f"Loaded {len(loinc_omop_map)} LOINC->OMOP mappings from local vocabulary table.", file=sys.stderr)
 
     start_time = datetime.now()
     print(f"Started: {start_time.strftime('%Y-%m-%d %H:%M:%S')}", file=sys.stderr)
@@ -738,11 +799,16 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
             # candidate is preserved separately as loinc_val for the loinc_maps_to column.
             loinc_val = ""
             loinc_omop_concept_id = ""
+            # "resolved" | "no_exact_match" | "" (no LOINC candidate to resolve
+            # at all). Resolved via the local vocabulary table (see
+            # _resolve_loinc_to_omop) — no network call, so "api_error" is not
+            # a possible outcome here anymore.
+            loinc_omop_resolution_status = ""
             if omop_val.startswith("LOINC:"):
                 loinc_val = omop_val
-                if get_omop_concept_id_from_loinc:
-                    loinc_omop_concept_id = get_omop_concept_id_from_loinc(omop_val) or ""
-                omop_val = loinc_omop_concept_id  # "" if resolution failed — never leave a LOINC code here
+                loinc_omop_concept_id, loinc_omop_resolution_status = _resolve_loinc_to_omop(omop_val, loinc_omop_map)
+                loinc_omop_concept_id = loinc_omop_concept_id or ""
+                omop_val = loinc_omop_concept_id  # "" if no exact match — never leave a LOINC code here
             # A "needs review" LOINC match is not blanked here — it just stays
             # out of the priority_curie race (see _pick_priority_curie); the
             # curator still sees it, labeled as a weak match, via
@@ -752,6 +818,7 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
                 omop_val, mondo_val, hpo_val, oba_val, entity_val, confidence_val, loinc_confidence_val,
                 loinc_val, loinc_omop_concept_id, source_verified, source_name_verified, source_desc_verified,
                 source_pht_verified, oba_score_val, loinc_score_val, mondo_score_val, hpo_score_val, omop_score_val,
+                loinc_omop_resolution_status,
             )
             with cache_lock:
                 suggestion_cache[(vn, sl, et, phv)] = result
@@ -788,6 +855,7 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
         "suggestion_confidence",
         "loinc_confidence",
         "loinc_omop_concept_id",
+        "loinc_omop_resolution_status",
         "source_verified",
         "source_variable_name_verified",
         "source_variable_description_verified",
@@ -829,6 +897,7 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
                 source_desc_verified = ""
                 source_pht_verified = ""
                 oba_score_val = loinc_score_val = mondo_score_val = hpo_score_val = omop_score_val = ""
+                loinc_omop_resolution_status = ""
             else:
                 cache_key = (var_name, slot, entity_type, phv)
                 if cache_key not in suggestion_cache:
@@ -845,22 +914,24 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
                     )
                     loinc_val = ""
                     loinc_omop_concept_id = ""
+                    loinc_omop_resolution_status = ""
                     if omop_val.startswith("LOINC:"):
                         loinc_val = omop_val
-                        if get_omop_concept_id_from_loinc:
-                            loinc_omop_concept_id = get_omop_concept_id_from_loinc(omop_val) or ""
+                        loinc_omop_concept_id, loinc_omop_resolution_status = _resolve_loinc_to_omop(omop_val, loinc_omop_map)
+                        loinc_omop_concept_id = loinc_omop_concept_id or ""
                         omop_val = loinc_omop_concept_id
                     source_verified, source_name_verified, source_desc_verified, source_pht_verified = False, "", "", ""
                     suggestion_cache[cache_key] = (
                         omop_val, mondo_val, hpo_val, oba_val, entity_val, confidence_val, loinc_confidence_val,
                         loinc_val, loinc_omop_concept_id, source_verified, source_name_verified, source_desc_verified,
                         source_pht_verified, oba_score_val, loinc_score_val, mondo_score_val, hpo_score_val, omop_score_val,
+                        loinc_omop_resolution_status,
                     )
                 else:
                     (omop_val, mondo_val, hpo_val, oba_val, entity_val, confidence_val, loinc_confidence_val,
                      loinc_val, loinc_omop_concept_id, source_verified, source_name_verified, source_desc_verified,
                      source_pht_verified, oba_score_val, loinc_score_val, mondo_score_val, hpo_score_val,
-                     omop_score_val) = suggestion_cache[cache_key]
+                     omop_score_val, loinc_omop_resolution_status) = suggestion_cache[cache_key]
 
             out_row = dict(row)
             out_row["yaml_curie"] = yaml_curie_val
@@ -891,6 +962,7 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
             out_row["loinc_confidence"] = loinc_confidence_val
             out_row["suggestion_confidence"] = confidence_val
             out_row["loinc_omop_concept_id"] = loinc_omop_concept_id
+            out_row["loinc_omop_resolution_status"] = loinc_omop_resolution_status
             out_row["source_verified"] = source_verified
             out_row["source_variable_name_verified"] = source_name_verified
             out_row["source_variable_description_verified"] = source_desc_verified
