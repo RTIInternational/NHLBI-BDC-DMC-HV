@@ -146,9 +146,13 @@ def _load_dbgap_map() -> dict[str, dict]:
 
 # ---------------------------------------------------------------------------
 # LOINC -> OMOP concept_id resolution — local vocabulary table, not a live API
-# call. bdc_study_input/loinc2omop_curie.csv is a full export of OMOP's
+# call. bdc_study_input/loinc2omop_curie.tsv is a full export of OMOP's
 # concept_relationship table filtered to relationship_id == "Maps to" and
-# source_vocabulary_id == "LOINC" (277,764 rows as of 2026-08-24). Replaces
+# source_vocabulary_id == "LOINC" (277,764 rows as of 2026-08-24). Tab-delimited
+# rather than comma-delimited — several source_concept_name/target_concept_name
+# values contain a literal " | " (LOINC's own hierarchy naming convention) or
+# embedded commas, and tab does not appear anywhere in the file, so it can be
+# split safely without relying on quote-aware parsing downstream. Replaces
 # the earlier atlas-demo.ohdsi.org-based get_omop_concept_id_from_loinc(),
 # which reliably timed out under concurrent load (observed ~93% failure rate
 # at 8 workers) and left large numbers of rows with an unresolved OMOP
@@ -158,7 +162,7 @@ def _load_dbgap_map() -> dict[str, dict]:
 # code is either in the table (resolved) or genuinely absent (no_exact_match)
 # — "api_error" is no longer a possible outcome for this step.
 # ---------------------------------------------------------------------------
-_LOINC_OMOP_CSV = BASE_DIR / "bdc_study_input" / "loinc2omop_curie.csv"
+_LOINC_OMOP_CSV = BASE_DIR / "bdc_study_input" / "loinc2omop_curie.tsv"
 
 
 def _load_loinc_omop_map() -> dict[str, str]:
@@ -182,7 +186,7 @@ def _load_loinc_omop_map() -> dict[str, str]:
     with open(_LOINC_OMOP_CSV, encoding="utf-8-sig", errors="replace", newline="") as f:
         return {
             row["source_concept_code"]: row["target_concept_id"]
-            for row in csv.DictReader(f)
+            for row in csv.DictReader(f, delimiter="\t")
             if row.get("source_concept_code")
         }
 
