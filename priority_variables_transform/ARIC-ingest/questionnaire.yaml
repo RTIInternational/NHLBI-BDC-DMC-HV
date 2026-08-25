@@ -127,7 +127,7 @@
         id: 
           expr: 'uuid5("https://w3id.org/bdchm/Questionnaire" + str({phv00551659}) + "CESD12M" + ":ARIC EXAM 5")'
         associated_visit:
-          value: ARIC EXAM 5
+          value: "ARIC EXAM 5"
         age_at_response:
           expr: '{pht004063.phv00204712} * 365 + {phv00551676}'
         items:
@@ -141,17 +141,17 @@
                   expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESD12MQ1")'
                 response_value:
                   class_derivations:
-                  -  QuestionnaireResponseValue:
-                       populated_from: pht015212
-                       slot_derivations:
-                         id: 
-                           expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ1")'
-                         value:
-                           populated_from: phv00551663
-                           value_mappings:
-                             "0": "Hardly ever or never (< 1 day in the past week)"
-                             "1": "Some of the time (1-2 days in the past week)"
-                             "2": "Much or most of the time (3-7 days in the past week)"
+                  - QuestionnaireResponseValue:
+                      populated_from: pht015212
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ1")'
+                        value:
+                          populated_from: phv00551663
+                          value_mappings:
+                            "0": "Hardly ever or never (< 1 day in the past week)"
+                            "1": "Some of the time (1-2 days in the past week)"
+                            "2": "Much or most of the time (3-7 days in the past week)"
           - QuestionnaireResponseItem:
               populated_from: pht015212
               slot_derivations:
@@ -162,16 +162,16 @@
                 response_value:
                   class_derivations:
                   - QuestionnaireResponseValue:
-                         populated_from: pht015212
-                         slot_derivations:
-                           id: 
-                             expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ2")'
-                           value:
-                             populated_from: phv00551664
-                             value_mappings:
-                               "0": "Hardly ever or never (< 1 day in the past week)"
-                               "1": "Some of the time (1-2 days in the past week)"
-                               "2": "Much or most of the time (3-7 days in the past week)"
+                      populated_from: pht015212
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ2")'
+                        value:
+                          populated_from: phv00551664
+                          value_mappings:
+                            "0": "Hardly ever or never (< 1 day in the past week)"
+                            "1": "Some of the time (1-2 days in the past week)"
+                            "2": "Much or most of the time (3-7 days in the past week)"
           - QuestionnaireResponseItem:
               populated_from: pht015212
               slot_derivations:
@@ -182,16 +182,16 @@
                 response_value:
                   class_derivations:
                   - QuestionnaireResponseValue:
-                          populated_from: pht015212
-                          slot_derivations:
-                            id: 
-                              expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ3")'
-                            value:
-                              populated_from: phv00551665
-                              value_mappings:
-                                "0": "Hardly ever or never (< 1 day in the past week)"
-                                "1": "Some of the time (1-2 days in the past week)"
-                                "2": "Much or most of the time (3-7 days in the past week)"
+                      populated_from: pht015212
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ3")'
+                        value:
+                          populated_from: phv00551665
+                          value_mappings:
+                            "0": "Hardly ever or never (< 1 day in the past week)"
+                            "1": "Some of the time (1-2 days in the past week)"
+                            "2": "Much or most of the time (3-7 days in the past week)"
           - QuestionnaireResponseItem:
               populated_from: pht015212
               slot_derivations:
@@ -200,18 +200,18 @@
                 has_questionnaire_item: 
                   expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESD12MQ4")'
                 response_value:
-                  - class_derivations:
-                      QuestionnaireResponseValue:
-                        populated_from: pht015212
-                        slot_derivations:
-                          id: 
-                            expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ4")'
-                          value:
-                            populated_from: phv00551666
-                            value_mappings:
-                              "0": "Hardly ever or never (< 1 day in the past week)"
-                              "1": "Some of the time (1-2 days in the past week)"
-                              "2": "Much or most of the time (3-7 days in the past week)"
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht015212
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ4")'
+                        value:
+                          populated_from: phv00551666
+                          value_mappings:
+                            "0": "Hardly ever or never (< 1 day in the past week)"
+                            "1": "Some of the time (1-2 days in the past week)"
+                            "2": "Much or most of the time (3-7 days in the past week)"
           - QuestionnaireResponseItem:
               populated_from: pht015212
               slot_derivations:
@@ -220,18 +220,18 @@
                 has_questionnaire_item: 
                   expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESD12MQ5")'
                 response_value:
-                  - class_derivations:
-                      QuestionnaireResponseValue:
-                        populated_from: pht015212
-                        slot_derivations:
-                          id: 
-                            expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ5")'
-                          value:
-                            populated_from: phv00551667
-                            value_mappings:
-                              "0": "Hardly ever or never (< 1 day in the past week)"
-                              "1": "Some of the time (1-2 days in the past week)"
-                              "2": "Much or most of the time (3-7 days in the past week)"
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht015212
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ5")'
+                        value:
+                          populated_from: phv00551667
+                          value_mappings:
+                            "0": "Hardly ever or never (< 1 day in the past week)"
+                            "1": "Some of the time (1-2 days in the past week)"
+                            "2": "Much or most of the time (3-7 days in the past week)"
           - QuestionnaireResponseItem:
               populated_from: pht015212
               slot_derivations:
@@ -240,18 +240,18 @@
                 has_questionnaire_item: 
                   expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESD12MQ6")'
                 response_value:
-                  - class_derivations:
-                      QuestionnaireResponseValue:
-                        populated_from: pht015212
-                        slot_derivations:
-                          id: 
-                            expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ6")'
-                          value:
-                            populated_from: phv00551668
-                            value_mappings:
-                              "0": "Hardly ever or never (< 1 day in the past week)"
-                              "1": "Some of the time (1-2 days in the past week)"
-                              "2": "Much or most of the time (3-7 days in the past week)"
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht015212
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ6")'
+                        value:
+                          populated_from: phv00551668
+                          value_mappings:
+                            "0": "Hardly ever or never (< 1 day in the past week)"
+                            "1": "Some of the time (1-2 days in the past week)"
+                            "2": "Much or most of the time (3-7 days in the past week)"
           - QuestionnaireResponseItem:
               populated_from: pht015212
               slot_derivations:
@@ -260,18 +260,18 @@
                 has_questionnaire_item: 
                   expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESD12MQ7")'
                 response_value:
-                  - class_derivations:
-                      QuestionnaireResponseValue:
-                        populated_from: pht015212
-                        slot_derivations:
-                          id: 
-                            expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ7")'
-                          value:
-                            populated_from: phv00551669
-                            value_mappings:
-                              "0": "Hardly ever or never (< 1 day in the past week)"
-                              "1": "Some of the time (1-2 days in the past week)"
-                              "2": "Much or most of the time (3-7 days in the past week)"
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht015212
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ7")'
+                        value:
+                          populated_from: phv00551669
+                          value_mappings:
+                            "0": "Hardly ever or never (< 1 day in the past week)"
+                            "1": "Some of the time (1-2 days in the past week)"
+                            "2": "Much or most of the time (3-7 days in the past week)"
           - QuestionnaireResponseItem:
               populated_from: pht015212
               slot_derivations:
@@ -280,18 +280,18 @@
                 has_questionnaire_item: 
                   expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESD12MQ8")'
                 response_value:
-                  - class_derivations:
-                      QuestionnaireResponseValue:
-                        populated_from: pht015212
-                        slot_derivations:
-                          id: 
-                            expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ8")'
-                          value:
-                            populated_from: phv00551670
-                            value_mappings:
-                              "0": "Hardly ever or never (< 1 day in the past week)"
-                              "1": "Some of the time (1-2 days in the past week)"
-                              "2": "Much or most of the time (3-7 days in the past week)"
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht015212
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ8")'
+                        value:
+                          populated_from: phv00551670
+                          value_mappings:
+                            "0": "Hardly ever or never (< 1 day in the past week)"
+                            "1": "Some of the time (1-2 days in the past week)"
+                            "2": "Much or most of the time (3-7 days in the past week)"
           - QuestionnaireResponseItem:
               populated_from: pht015212
               slot_derivations:
@@ -300,18 +300,18 @@
                 has_questionnaire_item: 
                   expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESD12MQ9")'
                 response_value:
-                  - class_derivations:
-                      QuestionnaireResponseValue:
-                        populated_from: pht015212
-                        slot_derivations:
-                          id: 
-                            expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ9")'
-                          value:
-                            populated_from: phv00551671
-                            value_mappings:
-                              "0": "Hardly ever or never (< 1 day in the past week)"
-                              "1": "Some of the time (1-2 days in the past week)"
-                              "2": "Much or most of the time (3-7 days in the past week)"
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht015212
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ9")'
+                        value:
+                          populated_from: phv00551671
+                          value_mappings:
+                            "0": "Hardly ever or never (< 1 day in the past week)"
+                            "1": "Some of the time (1-2 days in the past week)"
+                            "2": "Much or most of the time (3-7 days in the past week)"
           - QuestionnaireResponseItem:
               populated_from: pht015212
               slot_derivations:
@@ -320,18 +320,18 @@
                 has_questionnaire_item: 
                   expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESD12MQ10")'
                 response_value:
-                  - class_derivations:
-                      QuestionnaireResponseValue:
-                        populated_from: pht015212
-                        slot_derivations:
-                          id: 
-                            expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ10")'
-                          value:
-                            populated_from: phv00551672
-                            value_mappings:
-                              "0": "Hardly ever or never (< 1 day in the past week)"
-                              "1": "Some of the time (1-2 days in the past week)"
-                              "2": "Much or most of the time (3-7 days in the past week)"
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht015212
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ10")'
+                        value:
+                          populated_from: phv00551672
+                          value_mappings:
+                            "0": "Hardly ever or never (< 1 day in the past week)"
+                            "1": "Some of the time (1-2 days in the past week)"
+                            "2": "Much or most of the time (3-7 days in the past week)"
           - QuestionnaireResponseItem:
               populated_from: pht015212
               slot_derivations:
@@ -340,18 +340,18 @@
                 has_questionnaire_item: 
                   expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESD12MQ11")'
                 response_value:
-                  - class_derivations:
-                      QuestionnaireResponseValue:
-                        populated_from: pht015212
-                        slot_derivations:
-                          id: 
-                            expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ11")'
-                          value:
-                            populated_from: phv00551673
-                            value_mappings:
-                              "0": "Hardly ever or never (< 1 day in the past week)"
-                              "1": "Some of the time (1-2 days in the past week)"
-                              "2": "Much or most of the time (3-7 days in the past week)"
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht015212
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ11")'
+                        value:
+                          populated_from: phv00551673
+                          value_mappings:
+                            "0": "Hardly ever or never (< 1 day in the past week)"
+                            "1": "Some of the time (1-2 days in the past week)"
+                            "2": "Much or most of the time (3-7 days in the past week)"
           - QuestionnaireResponseItem:
               populated_from: pht015212
               slot_derivations:
@@ -360,15 +360,15 @@
                 has_questionnaire_item: 
                   expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireItem" + "CESD12MQ12")'
                 response_value:
-                  - class_derivations:
-                      QuestionnaireResponseValue:
-                        populated_from: pht015212
-                        slot_derivations:
-                          id: 
-                            expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ12")'
-                          value:
-                            populated_from: phv00551674
-                            value_mappings:
-                              "0": "Hardly ever or never (< 1 day in the past week)"
-                              "1": "Some of the time (1-2 days in the past week)"
-                              "2": "Much or most of the time (3-7 days in the past week)"                                   
+                  class_derivations:
+                  - QuestionnaireResponseValue:
+                      populated_from: pht015212
+                      slot_derivations:
+                        id: 
+                          expr: 'uuid5("https://w3id.org/bdchm/QuestionnaireResponseValue" + "CESD12MQ12")'
+                        value:
+                          populated_from: phv00551674
+                          value_mappings:
+                            "0": "Hardly ever or never (< 1 day in the past week)"
+                            "1": "Some of the time (1-2 days in the past week)"
+                            "2": "Much or most of the time (3-7 days in the past week)"
