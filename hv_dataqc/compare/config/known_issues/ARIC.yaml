@@ -97,8 +97,7 @@ known_issues:
       not measured) faithfully preserved.
     evidence:
       - YAML: priority_variables_transform/ARIC-ingest/blood_pressure.yaml:1137-1290
-      - Harmonized JSON: measurement_OMOP:4152194 n_total=208,560 n_valid=136,842
-        (plain MO across all method_types combined)
+      - "Harmonized JSON: measurement_OMOP:4152194 n_total=208,560 n_valid=136,842 (plain MO across all method_types combined)"
       - Extract code: hv_dataqc/extract_harmonized/extract_harmonized_summaries.py:307-408
     confirmed_date: "2026-07-23"
 
@@ -194,8 +193,7 @@ known_issues:
       same file).
     evidence:
       - Data_dict:  phs000280.v9.pht006416.v6.afucomposite31ps1.data_dict.xml (type=string)
-      - Var_report: phs000280.v9.pht006416.v6.p3.afucomposite31ps1.var_report.xml
-        shows enum count=100,342 "N" + count=265 "Y"
+      - Var_report: "phs000280.v9.pht006416.v6.p3.afucomposite31ps1.var_report.xml shows enum count=100,342 'N' + count=265 'Y'"
       - YAML: priority_variables_transform/ARIC-ingest/ven_thromb.yaml:112-130
     confirmed_date: "2026-07-23"
 
@@ -225,8 +223,7 @@ known_issues:
       PR. Also confirms this is not a value_mappings key TYPE (int vs
       str) issue -- it is a plain wrong-codes issue.
     evidence:
-      - Var_report: phs000280.v9.pht006416.v6.p3.afucomposite31ps1.var_report.xml
-        (phv00294812 -> N=2,179, Y=434)
+      - Var_report: "phs000280.v9.pht006416.v6.p3.afucomposite31ps1.var_report.xml (phv00294812 -> N=2,179, Y=434)"
       - YAML: priority_variables_transform/ARIC-ingest/hist_my_inf.yaml:1296-1318
     confirmed_date: "2026-07-23"
 
@@ -261,11 +258,9 @@ known_issues:
       records with n_valid=0 will become real numeric measurements.
     evidence:
       - Data_dict:  phs000280.v9.pht004098.v4.HEMA.data_dict.xml (type=string)
-      - Var_report: phs000280.v9.pht004098.v4.p3.HEMA.var_report.xml
-        (phv00206649 calculated_type=integer, n=14,793, min=18, max=540)
-      - Harmonized JSON: measurement_OBA:2041536 n_total=14,887 n_valid=0
-      - Git blame: 2a93479f (2026-03-16) commented out to work around
-        older linkml-map ingest errors -- restored with linkml-map 0.4.0
+      - "Var_report: phs000280.v9.pht004098.v4.p3.HEMA.var_report.xml (phv00206649 calculated_type=integer, n=14,793, min=18, max=540)"
+      - "Harmonized JSON: measurement_OBA:2041536 n_total=14,887 n_valid=0"
+      - "Git blame: 2a93479f (2026-03-16) commented out to work around older linkml-map ingest errors -- restored with linkml-map 0.4.0"
     confirmed_date: "2026-07-23"
 
   # =========================================================================
