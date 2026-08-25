@@ -302,14 +302,21 @@ def extract_yaml_curies(yaml_file: Path, phv: str | None = None) -> dict[str, li
             result.setdefault(parent_slot, []).extend(curies)
 
     # Strategy 3: CURIEs embedded in expr strings, e.g. case(({phv} == 1, "ATC:C10A"))
+    # The expr value may or may not be quoted in the YAML — both
+    # `expr: 'case(...)'` and `expr: case(...)` are valid and both appear
+    # across the fleet (173 files use the unquoted form as of 2026-08-25) —
+    # so the surrounding quote, if any, is stripped in code rather than
+    # required by the regex, which previously matched only the quoted form.
     _EXPR_LINE_RE = re.compile(
-        r"^(\s+)(\w+):\s*\n\1  expr:\s+['\"](.+)['\"]", re.MULTILINE
+        r"^(\s+)(\w+):\s*\n\1  expr:\s+([^\n\r]+)$", re.MULTILINE
     )
     for m in _EXPR_LINE_RE.finditer(text):
         slot = m.group(2).strip()
         if slot in result:
             continue  # already covered by strategy 1/2
-        expr_val = m.group(3)
+        expr_val = m.group(3).strip()
+        if len(expr_val) >= 2 and expr_val[0] == expr_val[-1] and expr_val[0] in ("'", '"'):
+            expr_val = expr_val[1:-1]
         curies = _CURIE_RE.findall(expr_val)
         if curies:
             result.setdefault(slot, []).extend(curies)
