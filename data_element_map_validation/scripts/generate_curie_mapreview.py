@@ -265,8 +265,13 @@ def extract_yaml_curies(yaml_file: Path, phv: str | None = None) -> dict[str, li
         starts = [m.start() for m in _BLOCK_START_RE.finditer(text)]
         if starts:
             bounds = list(zip(starts, starts[1:] + [len(text)]))
-            phv_token = "{" + phv + "}"
-            matching = [text[s:e] for s, e in bounds if phv_token in text[s:e]]
+            # Match the bare PHV token, not just the braced `{phv}` template
+            # form — a block can reference its PHV either way (e.g.
+            # `expr: case(({phv00206993} == 1, ...))` vs. a plain
+            # `condition_status: populated_from: phv00203796`), and requiring
+            # braces silently failed to scope anything for the latter,
+            # falling back to the whole file (2026-08-25 fix for this fix).
+            matching = [text[s:e] for s, e in bounds if phv in text[s:e]]
             if matching:
                 text = "\n".join(matching)
 
