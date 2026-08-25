@@ -212,7 +212,12 @@ ADMIN_VARS = frozenset({"SUBJECT_ID", "phase_study", "age_visit"})
 # ---------------------------------------------------------------------------
 # CURIE pattern
 # ---------------------------------------------------------------------------
-_CURIE_RE = re.compile(r"\b([A-Z][A-Z0-9_]*:[A-Z0-9.]+)\b")
+# Prefix allows mixed case (RxCUI, MeSH) — only the code after the colon is
+# required to be uppercase/digits/dots, so this doesn't start matching
+# ordinary prose like "Note: something". Prior to 2026-08-25 the prefix was
+# uppercase-only, which meant RxCUI:/MeSH:-valued slots were silently
+# invisible to every extraction strategy below (see summary_of_fix doc).
+_CURIE_RE = re.compile(r"\b([A-Za-z][A-Za-z0-9_]*:[A-Z0-9.]+)\b")
 
 # ---------------------------------------------------------------------------
 # YAML CURIE extraction (no pyyaml required — regex on known structure)
@@ -227,18 +232,43 @@ _SLOT_HEADER_RE = re.compile(r"^(\s{4,})(\w+):\s*$", re.MULTILINE)
 _MAPPING_LINE_RE = re.compile(r"^\s+'[^']*':\s+([A-Z][A-Z0-9_]*:[A-Z0-9.]+)", re.MULTILINE)
 
 
-def extract_yaml_curies(yaml_file: Path) -> dict[str, list[str]]:
+_BLOCK_START_RE = re.compile(r"^- class_derivations:", re.MULTILINE)
+
+
+def extract_yaml_curies(yaml_file: Path, phv: str | None = None) -> dict[str, list[str]]:
     """Return {slot_name: [curie, ...]} from a YAML file.
 
     Handles:
       Strategy 1: slot_name:\n    value: CURIE
       Strategy 2: slot_name:\n    value_mappings:\n      'x': CURIE
       Strategy 3: slot_name:\n    expr: 'case((..., "CURIE"))' — CURIEs embedded in expressions
+
+    If `phv` is given, extraction is restricted to only the top-level
+    `- class_derivations:` block(s) whose own text references that exact PHV
+    (e.g. the literal substring "{phv00002962}"). Without this, a file with
+    many blocks that each define the same slot name (e.g. every DrugExposure
+    block in a tak_*.yaml file defines its own `drug_concept`) pools all of
+    them under one slot-name key, so a row gets compared against some other
+    block's CURIE instead of its own — confirmed to cause false "YAML
+    mismatch" findings for tak_cenactag.yaml and tak_orlhypoag.yaml
+    (2026-08-25). If no block contains the PHV (e.g. the file doesn't use
+    this exact block structure, or the PHV wasn't found), falls back to
+    scanning the whole file — same behavior as before this fix, rather than
+    silently returning nothing and hiding a real problem.
     """
     try:
         text = yaml_file.read_text(encoding="utf-8")
     except FileNotFoundError:
         return {}
+
+    if phv:
+        starts = [m.start() for m in _BLOCK_START_RE.finditer(text)]
+        if starts:
+            bounds = list(zip(starts, starts[1:] + [len(text)]))
+            phv_token = "{" + phv + "}"
+            matching = [text[s:e] for s, e in bounds if phv_token in text[s:e]]
+            if matching:
+                text = "\n".join(matching)
 
     result: dict[str, list[str]] = {}
 
@@ -667,12 +697,12 @@ def _agent_suggestion(
 # YAML spot-check helpers
 # ---------------------------------------------------------------------------
 
-def _yaml_check(yaml_file_name: str, slot: str, csv_curie: str) -> tuple[str, str]:
+def _yaml_check(yaml_file_name: str, slot: str, csv_curie: str, phv: str = "") -> tuple[str, str]:
     """Return (yaml_curie_display, match_symbol) for this slot in the YAML file."""
     if not yaml_file_name:
         return "", ""
     yaml_path = YAML_DIR / yaml_file_name
-    slot_curies_map = extract_yaml_curies(yaml_path)
+    slot_curies_map = extract_yaml_curies(yaml_path, phv=phv or None)
     if not slot_curies_map:
         return "(file not found)", ""
     curies = slot_curies_map.get(slot, [])
@@ -889,7 +919,7 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
                 yaml_curie_val = ""
                 yaml_match_val = ""
             else:
-                yaml_curie_val, yaml_match_val = _yaml_check(yaml_file, slot, csv_curie)
+                yaml_curie_val, yaml_match_val = _yaml_check(yaml_file, slot, csv_curie, phv=phv)
 
             # Agent suggestions — always hits cache after pre-population
             if is_admin or no_agents:
