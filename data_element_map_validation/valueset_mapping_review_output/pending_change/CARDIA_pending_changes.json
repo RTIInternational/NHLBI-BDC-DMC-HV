@@ -122,21 +122,18 @@
   },
   "CARDIA::confirmed::tak_statin.yaml": {
     "study": "CARDIA",
-    "change_request": "ATC:C10AD (niacin), ATC:C10AB (gemfibrozil), ATC:C07AB (metoprolol)",
-    "original_curie": "RxCUI:7393/RxCUI:316343 (niacin), RxCUI:4719 (gemfibrozil), RxCUI:6918 (metoprolol)",
+    "phv": "",
+    "change_request": "ATC:C10AA",
+    "original_curie": "ATC:C07AB",
     "slot": "drug_concept",
     "yaml_files": [
       "tak_statin.yaml"
     ],
-    "notes": "Free-text medication names mismapped as RxCUI within a statin-flag file; corrected to proper ATC classes: metoprolol=beta-blocker(ATC:C07AB), niacin=nicotinic acid deriv.(ATC:C10AD), gemfibrozil=fibrate(ATC:C10AB). Other RxCUI entries (mevacor, zocor, cholestid, pravachol, lopid, etc.) left untouched — curator-reviewed cross-study consistency pass, 2026-08-18.",
+    "notes": "Free-text medication names mismapped as RxCUI within a statin-flag file; corrected to proper ATC classes: metoprolol=beta-blocker(ATC:C07AB), niacin=nicotinic acid deriv.(ATC:C10AD), gemfibrozil=fibrate(ATC:C10AB). Other RxCUI entries (mevacor, zocor, cholestid, pravachol, lopid, etc.) left untouched — curator-reviewed cross-study consistency pass, 2026-08-18.\nC10AA = \"HMG CoA reductase inhibitors,\" the specific statin subclass (atorvastatin, simvastatin, rosuvastatin, pravastatin, lovastatin, etc.) — this is distinct from and more precise than the broader C10A (\"lipid modifying agents, plain\"), which would also incorrectly sweep in non-statin drugs like niacin (C10AD) and gemfibrozil (C10AB) from your last question. Since a \"taking statin\" variable is asking specifically about statins, C10AA is the correct, tightest-fit code — not C10A",
     "applied": true,
-    "saved_date": "2026-08-18",
-    "applied_date": "2026-08-18",
-    "applied_by": "stephanie",
-    "apply_results": [
-      "YAML: niacin -> ATC:C10AD (2 entries), gemfibrozil -> ATC:C10AB, metoprolol -> ATC:C07AB",
-      "CSV: 4 row(s) updated"
-    ]
+    "saved_date": "2026-08-24",
+    "applied_date": "2026-08-24",
+    "applied_by": "Curator"
   },
   "CARDIA::confirmed::fam_stroke.yaml::condition_concept": {
     "study": "CARDIA",
