@@ -18,9 +18,12 @@
           value: '7'
         url:
           value: https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000179.v7.p2
-        date_started:
+        year_range:
           class_derivations:
-          - TimePoint:        
-              datetime: '2007-01-01T00:00:00'
+          - TimePeriod:        
+              period_start: 
+                class_derivations:
+                - TimePoint:
+                    date_time: '2007-01-01T00:00:00'
         research_project_type:
           value: STUDY
