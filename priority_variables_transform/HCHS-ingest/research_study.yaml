@@ -18,9 +18,12 @@
           value: dbGaP
         version:
           value: '2'
-        date_started:
+        year_range:
           class_derivations:
-          - TimePoint:        
-              datetime: '2006-01-01T00:00:00'        
+          - TimePeriod:        
+              period_start: 
+                class_derivations:
+                - TimePoint:
+                    date_time: '2006-01-01T00:00:00'        
         research_project_type:
           value: STUDY
