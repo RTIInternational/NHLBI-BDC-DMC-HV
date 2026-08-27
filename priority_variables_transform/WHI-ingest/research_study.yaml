@@ -20,10 +20,13 @@
           value: https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000200.v12.p3
         year_range:
           class_derivations:
-          - TimePeriod:        
-              period_start: 
-                class_derivations:
-                - TimePoint:
-                    date_time: '1993-01-01T00:00:00'
+          - TimePeriod:
+              slot_derivations:
+                period_start:
+                  class_derivations:
+                  - TimePoint:
+                      slot_derivations:
+                        date_time:
+                          value: '1993-01-01T00:00:00'
         research_project_type:
           value: STUDY

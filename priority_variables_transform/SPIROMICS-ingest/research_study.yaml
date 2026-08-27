@@ -20,14 +20,19 @@
           value: https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs001119.v1.p1
         year_range:
           class_derivations:
-          - TimePeriod:        
-              period_start: 
-                class_derivations:
-                - TimePoint:
-                    date_time: '2009-01-01T00:00:00'
-              period_end:
-                class_derivations:
-                - TimePoint:
-                    datetime: '2022-12-31T23:59:59'
+          - TimePeriod:
+              slot_derivations:
+                period_start:
+                  class_derivations:
+                  - TimePoint:
+                      slot_derivations:
+                        date_time:
+                          value: '2009-01-01T00:00:00'
+                period_end:
+                  class_derivations:
+                  - TimePoint:
+                      slot_derivations:
+                        date_time:
+                          value: '2022-12-31T23:59:59'
         research_project_type:
           value: STUDY
