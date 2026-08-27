@@ -25,15 +25,54 @@ Usage examples:
 """
 
 import json
+import os
 import re
 import sys
 from difflib import SequenceMatcher
+from pathlib import Path
 from urllib.parse import quote
 
 import click
 import requests
 
 OLS4_SEARCH_URL = "https://www.ebi.ac.uk/ols4/api/search"
+
+# ---------------------------------------------------------------------------
+# Local response cache (2026-08-27) — OLS4 is a live, occasionally flaky
+# endpoint, and this fleet re-asks the same handful of clinical terms
+# ("hypertension", "diabetes", "asthma", ...) across many cohorts. Cache raw
+# API responses locally, keyed by the exact query actually sent, so a repeat
+# query never touches the network again. Kept out of git (see .gitignore) —
+# same treatment as the loinc2omop.* files: local-only, not redistributed.
+# ---------------------------------------------------------------------------
+_CACHE_PATH = Path(__file__).parent.parent / "bdc_study_input" / "terminology-cache" / "mondo-index.json"
+_cache: dict[str, list[dict]] | None = None
+
+
+def _cache_key(query: str, rows: int) -> str:
+    return f"{rows}|{query.strip().lower()}"
+
+
+def _load_cache() -> dict[str, list[dict]]:
+    global _cache
+    if _cache is None:
+        if _CACHE_PATH.exists():
+            try:
+                _cache = json.loads(_CACHE_PATH.read_text(encoding="utf-8"))
+            except (json.JSONDecodeError, OSError):
+                _cache = {}
+        else:
+            _cache = {}
+    return _cache
+
+
+def _save_cache_entry(key: str, docs: list[dict]) -> None:
+    cache = _load_cache()
+    cache[key] = docs
+    _CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    tmp_path = _CACHE_PATH.with_suffix(".tmp.json")
+    tmp_path.write_text(json.dumps(cache, indent=2, ensure_ascii=False), encoding="utf-8")
+    os.replace(tmp_path, _CACHE_PATH)
 
 # Survey-language phrases that precede or follow a clinical term.
 # Pattern: "<ClinicalTerm>: <SurveyPhrase>" or "<SurveyPhrase> <ClinicalTerm>"
@@ -104,11 +143,24 @@ def _similarity(query: str, concept: dict) -> float:
 
 
 def _fetch_docs(query: str, *, rows: int) -> list[dict]:
-    """Call OLS4 and return raw docs for MONDO concepts only."""
+    """Call OLS4 and return raw docs for MONDO concepts only.
+
+    Checks the local response cache first (see _CACHE_PATH) — a repeat query
+    never touches the network. Only successful responses are cached; a
+    network/HTTP error is never written, so a transient failure doesn't
+    poison future lookups.
+    """
+    key = _cache_key(query, rows)
+    cache = _load_cache()
+    if key in cache:
+        return cache[key]
+
     url = f"{OLS4_SEARCH_URL}?ontology=mondo&q={quote(query)}&rows={rows}"
     resp = requests.get(url, timeout=30)
     resp.raise_for_status()
-    return resp.json().get("response", {}).get("docs", [])
+    docs = resp.json().get("response", {}).get("docs", [])
+    _save_cache_entry(key, docs)
+    return docs
 
 
 def _docs_to_concepts(docs: list[dict]) -> list[dict]:
@@ -177,18 +229,30 @@ def get_mondo_id(description: str, **kwargs) -> str | None:
         >>> get_mondo_id("Emphysema: Have you ever had emphysema")
         'MONDO:0004849'
     """
+    mondo_id, _score = get_mondo_id_with_score(description, **kwargs)
+    return mondo_id
+
+
+def get_mondo_id_with_score(description: str, **kwargs) -> tuple[str | None, float]:
+    """Like get_mondo_id, but also returns the top match's similarity score.
+
+    The score is the same composite label/synonym similarity used to rank
+    candidates in search_mondo_terms — a text-match confidence, not a
+    guarantee of ontological correctness. Callers can bucket it into
+    curator-facing confidence tiers or compare it against another vocabulary's
+    score to pick a priority_curie (see generate_curie_mapreview.py).
+    """
     results = search_mondo_terms(description, **kwargs)
     if results:
-        return results[0]["mondo_id"]
+        return results[0]["mondo_id"], _similarity(description, results[0])
 
-    # Pass 2: strip survey language and retry
     cleaned = _extract_clinical_term(description)
     if cleaned.lower() != description.lower():
         results2 = search_mondo_terms(cleaned, **kwargs)
         if results2:
-            return results2[0]["mondo_id"]
+            return results2[0]["mondo_id"], _similarity(cleaned, results2[0])
 
-    return None
+    return None, 0.0
 
 
 # ---------------------------------------------------------------------------

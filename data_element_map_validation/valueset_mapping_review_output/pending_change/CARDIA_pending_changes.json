@@ -25,5 +25,132 @@
     ],
     "notes": "",
     "applied": true
+  },
+  "CARDIA::confirmed::vege_serving.yaml": {
+    "study": "CARDIA",
+    "change_request": "OMOP:37311566",
+    "original_curie": "OMOP:4042886",
+    "slot": "observation_type",
+    "yaml_files": [
+      "vege_serving.yaml"
+    ],
+    "notes": "",
+    "applied": true,
+    "saved_date": "2026-08-17",
+    "applied_date": "2026-08-17",
+    "applied_by": "stephanie"
+  },
+  "CARDIA::confirmed::tak_insulin.yaml": {
+    "study": "CARDIA",
+    "change_request": "ATC:A10A",
+    "original_curie": "MeSH:D007328",
+    "slot": "drug_concept",
+    "yaml_files": [
+      "tak_insulin.yaml"
+    ],
+    "notes": "",
+    "applied": false,
+    "saved_date": "2026-08-17"
+  },
+  "CARDIA::confirmed::creat_bld.yaml": {
+    "study": "CARDIA",
+    "change_request": "OBA:2050096",
+    "original_curie": "OMOP:3020564",
+    "slot": "observation_type",
+    "yaml_files": [
+      "creat_bld.yaml"
+    ],
+    "notes": "Cross-study consistency bulk update (curator-reviewed comparison list, 2026-08-18)",
+    "applied": true,
+    "saved_date": "2026-08-18",
+    "applied_date": "2026-08-18",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML updated (2 block(s)): OMOP:3020564 -> OBA:2050096",
+      "CSV updated (2 row(s))"
+    ]
+  },
+  "CARDIA::confirmed::hyperten.yaml": {
+    "study": "CARDIA",
+    "change_request": "MONDO:0005044",
+    "original_curie": "HP:0000822",
+    "slot": "condition_concept",
+    "yaml_files": [
+      "hyperten.yaml"
+    ],
+    "notes": "http://purl.obolibrary.org/obo/HP_0000822\nhttp://purl.obolibrary.org/obo/MONDO_0005044",
+    "applied": true,
+    "saved_date": "2026-08-17",
+    "applied_date": "2026-08-17",
+    "applied_by": "stephanie"
+  },
+  "CARDIA::confirmed::hist_hrtfail.yaml": {
+    "study": "CARDIA",
+    "change_request": "MONDO:0005252",
+    "original_curie": "MONDO:0005009",
+    "slot": "condition_concept",
+    "yaml_files": [
+      "hist_hrtfail.yaml"
+    ],
+    "notes": "Cross-study consistency bulk update (curator-reviewed comparison list, 2026-08-18)",
+    "applied": true,
+    "saved_date": "2026-08-18",
+    "applied_date": "2026-08-18",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML updated (3 block(s)): MONDO:0005009 -> MONDO:0005252",
+      "CSV updated (2 row(s))"
+    ]
+  },
+  "CARDIA::confirmed::emphysema.yaml": {
+    "study": "CARDIA",
+    "change_request": "MONDO:0004849",
+    "original_curie": "MONDO:0004848",
+    "slot": "condition_concept",
+    "yaml_files": [
+      "emphysema.yaml"
+    ],
+    "notes": "Cross-study consistency bulk update (curator-reviewed comparison list, 2026-08-18)",
+    "applied": true,
+    "saved_date": "2026-08-18",
+    "applied_date": "2026-08-18",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML updated (8 block(s)): MONDO:0004848 -> MONDO:0004849",
+      "CSV updated (11 row(s))"
+    ]
+  },
+  "CARDIA::confirmed::tak_statin.yaml": {
+    "study": "CARDIA",
+    "phv": "",
+    "change_request": "ATC:C10AA",
+    "original_curie": "ATC:C07AB",
+    "slot": "drug_concept",
+    "yaml_files": [
+      "tak_statin.yaml"
+    ],
+    "notes": "Free-text medication names mismapped as RxCUI within a statin-flag file; corrected to proper ATC classes: metoprolol=beta-blocker(ATC:C07AB), niacin=nicotinic acid deriv.(ATC:C10AD), gemfibrozil=fibrate(ATC:C10AB). Other RxCUI entries (mevacor, zocor, cholestid, pravachol, lopid, etc.) left untouched — curator-reviewed cross-study consistency pass, 2026-08-18.\nC10AA = \"HMG CoA reductase inhibitors,\" the specific statin subclass (atorvastatin, simvastatin, rosuvastatin, pravastatin, lovastatin, etc.) — this is distinct from and more precise than the broader C10A (\"lipid modifying agents, plain\"), which would also incorrectly sweep in non-statin drugs like niacin (C10AD) and gemfibrozil (C10AB) from your last question. Since a \"taking statin\" variable is asking specifically about statins, C10AA is the correct, tightest-fit code — not C10A",
+    "applied": true,
+    "saved_date": "2026-08-24",
+    "applied_date": "2026-08-24",
+    "applied_by": "Curator"
+  },
+  "CARDIA::confirmed::fam_stroke.yaml::condition_concept": {
+    "study": "CARDIA",
+    "change_request": "MONDO:0005098",
+    "original_curie": "OMOP:381316",
+    "slot": "condition_concept",
+    "yaml_files": [
+      "fam_stroke.yaml"
+    ],
+    "notes": "Curator correction (2026-08-18): retracted OMOP:381316 in favor of MONDO:0005098 ('Stroke disorder') — normalizer-confirmed synonym of HP:0001297, and keeps condition_concept within the MONDO/HP vocab rule instead of using an OMOP concept ID.",
+    "applied": true,
+    "saved_date": "2026-08-18",
+    "applied_date": "2026-08-18",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML: 9 block(s) updated",
+      "CSV: 9 row(s) updated"
+    ]
   }
 }

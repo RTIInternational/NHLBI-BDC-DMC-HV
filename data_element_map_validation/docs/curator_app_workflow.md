@@ -46,7 +46,10 @@
 - `omop_maps_to`
 - `mondo_maps_to`
 - `hpo_maps_to`
+- `oba_maps_to`
 - `maps_to_entity_type`
+- `suggestion_confidence` — how much to trust the agent's candidate CURIE (Translator Normalizer clique-check for `condition_concept`; OBA text-similarity tier for `observation_type`)
+- `loinc_confidence` — text-similarity tier for the LOINC candidate on `observation_type` rows (separate from `suggestion_confidence` since a row can carry both an OBA and a LOINC candidate)
 
 ---
 
@@ -149,6 +152,7 @@ Step 1 can be run with `--no-agents` for a fast YAML-check-only pass when you on
 | CSV CURIE matches YAML | No finding generated — nothing to review |
 | CSV CURIE ≠ YAML CURIE | Finding generated → curator decides which is correct |
 | Agent suggests a better CURIE | Shown in Details; curator can accept or override |
+| Finding badged **🎯 Priority Correction** | Strong evidence backs this one — either the existing CURIE is a rule-based vocab violation, or the candidate is a normalizer-confirmed synonym / strong text match. Review these first; still requires manual Apply, nothing is auto-written. |
 | Variable needs no change | “Mark as reviewed — no change” → `no_change: true` in pending |
 | YAML has structural bug (wrong relationship, missing block) | Outside the app → fix YAML directly, commit, re-run pipeline |
 
