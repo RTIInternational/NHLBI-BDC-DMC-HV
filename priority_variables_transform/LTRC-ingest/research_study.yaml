@@ -15,6 +15,26 @@
         accession_authority:
           value: dbGaP
         version:
-          value: v4
+          value: '4'
         url:
           value: https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs001662.v4.p2
+        year_range:
+          class_derivations:
+          - TimePeriod:
+              slot_derivations:
+                period_start:
+                  class_derivations:
+                  - TimePoint:
+                      slot_derivations:
+                        date_time:
+                          value: '2005-01-01T00:00:00'
+                period_end:
+                  class_derivations:
+                  - TimePoint:
+                      slot_derivations:
+                        date_time:
+                          value: '2019-12-31T23:59:59'
+        program:
+          value: TOPMed
+        research_project_type:
+          value: CONSORTIUM
