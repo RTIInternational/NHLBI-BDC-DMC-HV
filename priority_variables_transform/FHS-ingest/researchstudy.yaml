@@ -18,10 +18,13 @@
           value: '35'
         url:
           value: https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000007.v35.p16
-        date_started:
+        year_range:
           class_derivations:
-          - TimePoint:        
-              datetime: '1948-01-01T00:00:00'
+          - TimePeriod:        
+              period_start: 
+                class_derivations:
+                - TimePoint:
+                    date_time: '1948-01-01T00:00:00'
         research_project_type:
           value: STUDY
 - class_derivations:
@@ -34,15 +37,17 @@
           value: 'FHS Original'
         part_of:
           value: 'Framingham Heart Study'
-        date_started:
+        year_range:
           class_derivations:
-          - TimePoint:        
-              datetime: '1948-01-01T00:00:00'        
-          value: '1948'
-        date_ended:
-          class_derivations:
-          - TimePoint:        
-              datetime: '2014-12-31T23:59:59'
+          - TimePeriod:        
+              period_start: 
+                class_derivations:
+                - TimePoint:
+                    date_time: '1948-01-01T00:00:00'
+              period_end:
+                class_derivations:
+                - TimePoint:      
+                    datetime: '2014-12-31T23:59:59'
         research_project_type:
           value: STUDY          
 - class_derivations:
@@ -55,10 +60,13 @@
           value: 'FHS Offspring'
         part_of:
           value: 'Framingham Heart Study'
-        date_started:
+        year_range:
           class_derivations:
-          - TimePoint:        
-              datetime: '1971-01-01T00:00:00'
+          - TimePeriod:        
+              period_start: 
+                class_derivations:
+                - TimePoint:
+                    date_time: '1971-01-01T00:00:00'
         research_project_type:
           value: STUDY          
 - class_derivations:
@@ -71,10 +79,13 @@
           value: 'FHS New Offspring Spouse'
         part_of:
           value: 'Framingham Heart Study'
-        date_started:
+        year_range:
           class_derivations:
-          - TimePoint:        
-              datetime: '2003-01-01T00:00:00'
+          - TimePeriod:        
+              period_start: 
+                class_derivations:
+                - TimePoint:
+                    date_time: '2003-01-01T00:00:00'
         research_project_type:
           value: STUDY          
 - class_derivations:
@@ -87,10 +98,13 @@
           value: 'FHS Generation 3'
         part_of:
           value: 'Framingham Heart Study'
-        date_started:
+        year_range:
           class_derivations:
-          - TimePoint:        
-              datetime: '2002-01-01T00:00:00'
+          - TimePeriod:        
+              period_start: 
+                class_derivations:
+                - TimePoint:
+                    date_time: '2002-01-01T00:00:00'
         research_project_type:
           value: STUDY          
 - class_derivations:
@@ -103,10 +117,13 @@
           value: 'FHS Omni 1'
         part_of:
           value: 'Framingham Heart Study'
-        date_started:
+        year_range:
           class_derivations:
-          - TimePoint:        
-              datetime: '1994-01-01T00:00:00'
+          - TimePeriod:        
+              period_start: 
+                class_derivations:
+                - TimePoint:
+                    date_time: '1994-01-01T00:00:00'
         research_project_type:
           value: STUDY          
 - class_derivations:
@@ -119,9 +136,12 @@
           value: 'FHS Omni 2'
         part_of:
           value: 'Framingham Heart Study'
-        date_started:
+        year_range:
           class_derivations:
-          - TimePoint:        
-              datetime: '2003-01-01T00:00:00'
+          - TimePeriod:        
+              period_start: 
+                class_derivations:
+                - TimePoint:
+                    date_time: '2003-01-01T00:00:00'
         research_project_type:
           value: STUDY          
