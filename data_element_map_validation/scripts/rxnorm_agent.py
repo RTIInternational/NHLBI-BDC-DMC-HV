@@ -37,10 +37,18 @@ DEFAULT_CONCEPT_CLASS = "Ingredient"
 # matches "niacin"). Add entries here as new mismapped free-text drugs turn up.
 # ---------------------------------------------------------------------------
 DRUG_CURIE_OVERRIDES: dict[str, str] = {
-    "metoprolol":   "ATC:C07AB",  # beta blocker
-    "niacin":       "ATC:C10AD",  # nicotinic acid derivative
-    "gemfibrozil":  "ATC:C10AB",  # fibrate
+    "gemfibrozil":          "ATC:C10AB",         # fibrate
+    "metoprolol":           "RxCUI:6918",        # beta blocker, ingredient-level
+    "niacin 500mg tablets": "RxCUI:198024",      # niacin 500 MG Oral Tablet (immediate-release,
+                                                  # matches the source text exactly — live search
+                                                  # ranking for this exact concept was found to be
+                                                  # unreliable across phrasings, so it's pinned
+                                                  # here rather than left to search ranking)
 }
+# All three values confirmed 2026-08-26 against the CARDIA tak_statin.yaml
+# review comment's own resolved-name table. Plain "niacin" (no dose) is
+# deliberately NOT overridden — it stays on the live Ingredient-only search
+# path, which already resolves it correctly on its own.
 
 _OVERRIDE_PATTERNS = {
     name: re.compile(r"(?<!\w)" + re.escape(name) + r"(?!\w)", re.IGNORECASE)

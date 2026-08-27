@@ -29,12 +29,12 @@ path, not the buggy blanket submit. WHI was not implicated (no commit in this wi
 
 | Study | File | Slot | Rows | Distinct original concepts | Collapsed to | Status |
 |---|---|---|---|---|---|---|
-| ARIC | spirometry.yaml | observations | 195 | 9 | `OMOP: 3003197` (malformed) | Fixed 2026-08-19 |
+| ARIC | spirometry.yaml | observations | 195 | 9 | `OMOP: 3003197` (malformed) | CSV fixed 2026-08-19; **YAML actually fixed 2026-08-24** (`2aae3e27`) — commit `aa116b0e` on 2026-08-19 introduced the malformed value into the YAML, it was not yet corrected there until 08-24 |
 | FHS | asthma.yaml | condition_concept | 93 | 8 | `MONDO:0004979` | Fixed 2026-08-19 |
 | FHS | stroke.yaml | condition_concept | 29 | 6 | `MONDO:0005098` | Fixed 2026-08-19 |
-| FHS | tak_cenactag.yaml | drug_concept | 21 | 2 | `OMOP: 1398937` (malformed) | Fixed 2026-08-19 |
-| FHS | tak_orlhypoag.yaml | drug_concept | 24 | 8 | `OMOP:1594973` | Fixed 2026-08-19 |
-| HCHS | spirometry.yaml | observations | 42 | 5 | `OMOP:3011505` | Fixed 2026-08-19 |
+| FHS | tak_cenactag.yaml | drug_concept | 21 | 2 | `OMOP: 1398937` (malformed) | CSV fixed 2026-08-19; **YAML actually fixed 2026-08-25** (`b5385b57`) — commit `aa116b0e` on 2026-08-19 introduced the malformed value into the YAML, it was not yet corrected there until 08-25 |
+| FHS | tak_orlhypoag.yaml | drug_concept | 24 | 8 | `OMOP:1594973` | CSV fixed 2026-08-19; **YAML actually fixed 2026-08-25** (`b5385b57`) — commit `aa116b0e` on 2026-08-19 introduced the malformed value into the YAML, it was not yet corrected there until 08-25 |
+| HCHS | spirometry.yaml | observations | 42 | 5 | `OMOP:3011505` | CSV fixed 2026-08-19; **YAML actually fixed 2026-08-24** (`2aae3e27`) — commit `aa116b0e` on 2026-08-19 introduced the malformed value into the YAML, it was not yet corrected there until 08-24 |
 
 Note on **FHS stroke.yaml**: this one is different in kind from the others. The live YAML transform
 was already uniform (17 blocks, all `HP:0001297`) and was legitimately, successfully updated to

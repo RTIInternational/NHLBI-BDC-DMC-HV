@@ -219,6 +219,11 @@ ADMIN_VARS = frozenset({"SUBJECT_ID", "phase_study", "age_visit"})
 # invisible to every extraction strategy below (see summary_of_fix doc).
 _CURIE_RE = re.compile(r"\b([A-Za-z][A-Za-z0-9_]*:[A-Z0-9.]+)\b")
 
+# A Free Text Value cell can collapse multiple source strings that share one
+# CURIE (e.g. "mevacor; mevacoh") — split on ';' or ',' and query only the
+# first, since the raw joined string is not a valid override/live-search query.
+_FREE_TEXT_SPLIT_RE = re.compile(r"[;,]")
+
 # ---------------------------------------------------------------------------
 # YAML CURIE extraction (no pyyaml required — regex on known structure)
 # ---------------------------------------------------------------------------
@@ -507,6 +512,7 @@ def _agent_suggestion(
     get_mondo_id_with_score=None,
     get_hpo_id_with_score=None,
     get_omop_concept_id_with_score=None,
+    free_text_value: str = "",
 ) -> tuple[str, str, str, str, str, str, str, float, float, float, float, float]:
     """Return (omop_maps_to, mondo_maps_to, hpo_maps_to, oba_maps_to,
     maps_to_entity_type, confidence, loinc_confidence, oba_score, loinc_score,
@@ -661,11 +667,23 @@ def _agent_suggestion(
             maps_to_entity_type = "Procedure"
 
         elif slot == "drug_concept":
-            override = get_drug_curie_override(query) if get_drug_curie_override else None
+            # CARDIA pilot (2026-08-26): when a verified free-text drug name is
+            # available (see the Free Text Value column added to CARDIA_curie.csv),
+            # use it — not the generic field description — as the override/live-
+            # lookup query. This is the actual fix for DRUG_CURIE_OVERRIDES never
+            # having been able to match a specific drug name inside a multi-value
+            # case() field. A cell can collapse multiple source strings sharing one
+            # CURIE (e.g. "mevacor; mevacoh") — split and use just the first.
+            primary_free_text = (
+                _FREE_TEXT_SPLIT_RE.split(free_text_value.strip(), 1)[0].strip()
+                if free_text_value.strip() else ""
+            )
+            drug_query = primary_free_text or query
+            override = get_drug_curie_override(drug_query) if get_drug_curie_override else None
             if override:
                 omop_maps_to = override
             else:
-                concept_id = get_rxnorm_id(query)
+                concept_id = get_rxnorm_id(drug_query)
                 omop_maps_to = f"OMOP:{concept_id}" if concept_id else ""
             maps_to_entity_type = "DrugExposure"
 
@@ -787,8 +805,12 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
     if not no_agents:
         # Collect unique (var_name, slot, entity_type, phv) keys with first-seen var_desc/csv_curie.
         # For measurement targets with a dbGaP match, the query description is swapped for the
-        # verified one *before* it ever reaches the agents.
-        unique_keys: dict[tuple, tuple[str, str, bool, str, str, str]] = {}
+        # verified one *before* it ever reaches the agents. For drug_concept rows carrying a
+        # verified "Free Text Value" column (CARDIA pilot, see mapping_validation_preferences.md
+        # "Curated Drug-Name Overrides"), the key is additionally split per distinct free-text
+        # value — otherwise every free-text candidate sharing one PHV (e.g. tak_statin.yaml's
+        # multi-drug case() blocks) would collapse onto a single cached suggestion.
+        unique_keys: dict[tuple, tuple[str, str, bool, str, str, str, str]] = {}
         for r in all_rows:
             vn  = r.get("Variable Name", "").strip()
             sl  = r.get("Slot", "").strip()
@@ -813,9 +835,10 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
                     source_pht_verified = dbgap_row["pht"]
                     query_desc = source_desc_verified or vd
 
-            key = (vn, sl, et, phv)
+            free_text = r.get("Free Text Value", "").strip() if sl == "drug_concept" else ""
+            key = (vn, sl, et, phv, free_text) if free_text else (vn, sl, et, phv)
             if key not in unique_keys:
-                unique_keys[key] = (query_desc, cc, source_verified, source_name_verified, source_desc_verified, source_pht_verified)
+                unique_keys[key] = (query_desc, cc, source_verified, source_name_verified, source_desc_verified, source_pht_verified, free_text)
 
         n_unique = len(unique_keys)
         actual_workers = min(workers, n_unique) if n_unique else 1
@@ -829,7 +852,8 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
         counter = [0]
 
         def _populate_one(item: tuple) -> None:
-            (vn, sl, et, phv), (vd, cc, source_verified, source_name_verified, source_desc_verified, source_pht_verified) = item
+            key, (vd, cc, source_verified, source_name_verified, source_desc_verified, source_pht_verified, free_text) = item
+            vn, sl, et, phv = key[0], key[1], key[2], key[3]
             (omop_val, mondo_val, hpo_val, oba_val, entity_val, confidence_val, loinc_confidence_val,
              oba_score_val, loinc_score_val, mondo_score_val, hpo_score_val, omop_score_val) = _agent_suggestion(
                 sl, et, vn, vd,
@@ -837,6 +861,7 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
                 get_rxnorm_id, get_loinc_id, extract_clinical_term, get_omop_route_id, get_oba_id,
                 get_normalizer_confidence, cc, get_oba_id_with_score, get_loinc_id_with_score, get_drug_curie_override,
                 get_mondo_id_with_score, get_hpo_id_with_score, get_omop_concept_id_with_score,
+                free_text,
             )
 
             # For observation_type/observations rows, _agent_suggestion returns a LOINC
@@ -867,7 +892,7 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
                 loinc_omop_resolution_status,
             )
             with cache_lock:
-                suggestion_cache[(vn, sl, et, phv)] = result
+                suggestion_cache[key] = result
                 counter[0] += 1
                 pct = counter[0] / n_unique
                 print(
@@ -945,7 +970,8 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
                 oba_score_val = loinc_score_val = mondo_score_val = hpo_score_val = omop_score_val = ""
                 loinc_omop_resolution_status = ""
             else:
-                cache_key = (var_name, slot, entity_type, phv)
+                free_text = row.get("Free Text Value", "").strip() if slot == "drug_concept" else ""
+                cache_key = (var_name, slot, entity_type, phv, free_text) if free_text else (var_name, slot, entity_type, phv)
                 if cache_key not in suggestion_cache:
                     # Row wasn't covered by pre-population (shouldn't normally happen);
                     # compute on the spot with no dbGaP override, consistent with the
@@ -957,6 +983,7 @@ def main(no_agents: bool = False, workers: int = 10) -> None:
                         get_rxnorm_id, get_loinc_id, extract_clinical_term, get_omop_route_id, get_oba_id,
                         get_normalizer_confidence, csv_curie, get_oba_id_with_score, get_loinc_id_with_score, get_drug_curie_override,
                         get_mondo_id_with_score, get_hpo_id_with_score, get_omop_concept_id_with_score,
+                        free_text,
                     )
                     loinc_val = ""
                     loinc_omop_concept_id = ""

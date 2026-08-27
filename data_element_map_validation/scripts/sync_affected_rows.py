@@ -103,7 +103,8 @@ def main(study: str, manifest_path: Path) -> None:
         cc = row.get("CURIE", "").strip()
         phv = row.get("PHV", "").strip()
         yaml_file = row.get("YAML File", "").strip()
-        key = (vn, sl, et, phv)
+        free_text = row.get("Free Text Value", "").strip() if sl == "drug_concept" else ""
+        key = (vn, sl, et, phv, free_text) if free_text else (vn, sl, et, phv)
         if key in fresh:
             continue
 
@@ -125,6 +126,7 @@ def main(study: str, manifest_path: Path) -> None:
             get_rxnorm_id, get_loinc_id, extract_clinical_term, get_omop_route_id, get_oba_id,
             get_normalizer_confidence, cc, get_oba_id_with_score, get_loinc_id_with_score, get_drug_curie_override,
             get_mondo_id_with_score, get_hpo_id_with_score, get_omop_concept_id_with_score,
+            free_text,
         )
 
         loinc_val = ""
@@ -182,12 +184,15 @@ def main(study: str, manifest_path: Path) -> None:
 
     n_updated = 0
     for row in all_rows:
-        key = (
+        sl = row.get("Slot", "").strip()
+        free_text = row.get("Free Text Value", "").strip() if sl == "drug_concept" else ""
+        base_key = (
             row.get("Variable Name", "").strip(),
-            row.get("Slot", "").strip(),
+            sl,
             row.get("Entity Type", "").strip(),
             row.get("PHV", "").strip(),
         )
+        key = base_key + (free_text,) if free_text else base_key
         if key in fresh:
             row.update(fresh[key])
             n_updated += 1

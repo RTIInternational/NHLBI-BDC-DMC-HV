@@ -572,7 +572,7 @@ def _render_curies_with_vars(study: str, yaml_file: str, slot: str, curies: list
 
 
 def _check_yaml_slot(
-    study: str, yaml_file: str, slot: str
+    study: str, yaml_file: str, slot: str, phv: str = ""
 ) -> tuple[bool, bool, list[str], dict[str, list[str]], list[str]]:
     """Read YAML directly and scan all entity types and slots.
 
@@ -582,6 +582,18 @@ def _check_yaml_slot(
     Handles: list-of-blocks YAML, direct value, value_mappings,
              nested object_derivations (e.g. value_quantity → unit).
     Excludes slots that carry PHV/expr references rather than ontology CURIEs.
+
+    When phv is given, scans only the top-level block(s) whose own text
+    references that exact PHV (as a bare `populated_from: phvXXXXXXXX` or a
+    braced `{phvXXXXXXXX}` template token), instead of pooling every block in
+    the file. Without this, a file where multiple blocks share the same slot
+    name (any tak_*.yaml drug file, or a MeasurementObservationSet with
+    several sibling readings) would silently mix another row's unrelated
+    CURIE into what's shown for this one — the same pooling bug documented
+    in generate_curie_mapreview.py's extract_yaml_curies() and fixed there
+    2026-08-25; this call site had the identical gap. Falls back to scanning
+    every block if no block matches (or no phv given), same as before —
+    degrades to the old pooled behavior rather than hiding a result.
     """
     _NON_CURIE_SLOTS = {"associated_participant", "associated_visit",
                         "age_at_observation", "value_decimal", "value_integer",
@@ -596,6 +608,15 @@ def _check_yaml_slot(
         # YAML may be a list of blocks or a single dict
         blocks: list[dict] = raw if isinstance(raw, list) else [raw] if raw else []
 
+        if phv:
+            matching = [b for b in blocks if phv in str(b)]
+            if matching:
+                blocks = matching
+            # else: no block references this PHV directly (or the file uses a
+            # structure this substring check doesn't catch) — fall through and
+            # scan every block, same as the no-phv case, rather than silently
+            # returning nothing.
+
         all_slots: dict[str, list[str]] = {}
         entity_types: list[str] = []
 
@@ -609,15 +630,32 @@ def _check_yaml_slot(
                 if val and not str(val).startswith("{"):
                     all_slots.setdefault(s, []).append(str(val))
                 # CURIEs embedded in case() expressions: case(({phv} == 1, "ATC:C10A"))
+                # Prefix allows mixed case (RxCUI, MeSH) — only the code after
+                # the colon must be uppercase/digits/dots. Same fix applied to
+                # generate_curie_mapreview.py's _CURIE_RE on 2026-08-25; this
+                # was an independent copy of the same regex with the same gap.
                 expr = s_data.get("expr")
                 if expr:
-                    for emb in re.findall(r'\b([A-Z][A-Z0-9_]*:[A-Z0-9.]+)\b', str(expr)):
+                    for emb in re.findall(r'\b([A-Za-z][A-Za-z0-9_]*:[A-Z0-9.]+)\b', str(expr)):
                         all_slots.setdefault(s, []).append(emb)
-                # Coded value_mappings
-                for mapping in s_data.get("value_mappings", []) or []:
-                    mval = (mapping or {}).get("value")
-                    if mval:
-                        all_slots.setdefault(s, []).append(str(mval))
+                # Coded value_mappings. Real files use a flat dict
+                # ('0': ABSENT, '1': PRESENT, ...) — confirmed 2026-08-26 that
+                # 0 of 257 occurrences fleet-wide use a list-of-dicts form.
+                # The list branch is kept only as a defensive fallback; the
+                # bare-string .get("value") on a dict key used to raise
+                # AttributeError here, silently swallowed by this function's
+                # outer except-Exception, so this whole diagnostic returned
+                # empty with no visible error for nearly every real file.
+                vm = s_data.get("value_mappings")
+                if isinstance(vm, dict):
+                    for mval in vm.values():
+                        if mval:
+                            all_slots.setdefault(s, []).append(str(mval))
+                elif isinstance(vm, list):
+                    for mapping in vm:
+                        mval = mapping.get("value") if isinstance(mapping, dict) else None
+                        if mval:
+                            all_slots.setdefault(s, []).append(str(mval))
                 # Nested object_derivations (e.g. value_quantity → Quantity → unit)
                 for obj_block in s_data.get("object_derivations", []) or []:
                     for inner_class in (obj_block or {}).get("class_derivations", {}).values():
@@ -639,10 +677,10 @@ def _check_yaml_slot(
         return True, False, [], {}, []
 
 
-def _render_curie_not_in_mapreview(study: str, yaml_file: str, slot: str) -> None:
+def _render_curie_not_in_mapreview(study: str, yaml_file: str, slot: str, phv: str = "") -> None:
     """Show diagnostic when get_current_curies() returns empty."""
     yaml_exists, slot_found, yaml_curies, all_slots, entity_types = _check_yaml_slot(
-        study, yaml_file, slot
+        study, yaml_file, slot, phv=phv
     )
     fname = Path(yaml_file).name
     curie_csv_name = STUDIES[study]["curie_csv"].name
@@ -678,6 +716,12 @@ def _render_curie_not_in_mapreview(study: str, yaml_file: str, slot: str) -> Non
         st.caption("_(Read directly from YAML — not yet in curie CSV)_")
         for c in yaml_curies:
             _curie_link_md(c)
+        if not phv:
+            st.caption(
+                "_No PHV known for this row — the value(s) above are pooled across "
+                f"every block in `{fname}` that uses slot `{slot}`, and may belong to "
+                "a different source variable than the one being reviewed._"
+            )
         st.caption(
             f"⚠ `{fname}` is missing from `{curie_csv_name}`. "
             f"To fix: add this file with slot `{slot}` and its CURIE to the curie CSV, "
@@ -955,40 +999,45 @@ def _apply_yaml(
             "If this finding is genuinely wrong, mark it 'Reviewed — no change' instead."
         )
 
-    # Reached only when no phv was supplied at all (old-format pending entries) —
-    # every phv-known path above already returned.
-    #
-    # When original_curie is known, filter to just the block(s) whose CURRENT
-    # value matches what the curator actually reviewed — mirrors _apply_csv's
-    # existing original_curie safety filter, and covers both plain "value:"
-    # lines and expr: 'case((..., "CURIE"))' literals (e.g. drug_concept),
-    # which the coarser "do ALL blocks already agree" check below can't reach
-    # at all since it only understands "value:". Every matching occurrence is
-    # updated together (not just one), same as _apply_csv updating every row
-    # sharing that original value.
+    # Reached only when no phv was supplied at all (old-format pending entries).
+    # A single unambiguous block is still safe to update without a phv — there's
+    # nothing else it could be confused with. The actual danger (which corrupted
+    # 4 ARIC + 1 HCHS spirometry.yaml predicted-FVC blocks at once, 2026-08-26;
+    # see mapping_validation_preferences.md) is silently updating *multiple*
+    # matching blocks together just because they currently agree — that's no
+    # proof they're the same variable. So: refuse only when more than one block
+    # would be touched and there's no phv to say which one this finding is about.
     if original_curie:
         value_pattern = rf"(^[ \t]*{re.escape(slot)}:\s*\n[ \t]+value:\s+){re.escape(original_curie)}\b"
-        new_text, n = re.subn(value_pattern, lambda m: m.group(1) + new_curie, text, flags=re.MULTILINE)
-        if n:
-            yaml_path.write_text(new_text, encoding="utf-8")
-            return True, (
-                f"✓ YAML `{yaml_file}` [{slot}] → `{new_curie}` "
-                f"({n} block(s) matching original `{original_curie}`)"
-            )
         expr_pattern = rf'(^[ \t]*{re.escape(slot)}:\s*\n[ \t]+expr:.*?)"{re.escape(original_curie)}"'
-        new_text, n = re.subn(
-            expr_pattern, lambda m: m.group(1) + f'"{new_curie}"', text, flags=re.MULTILINE,
-        )
-        if n:
+        n_value = len(re.findall(value_pattern, text, flags=re.MULTILINE))
+        n_expr = len(re.findall(expr_pattern, text, flags=re.MULTILINE))
+        if n_value + n_expr > 1:
+            return False, (
+                f"⚠ {n_value + n_expr} `{slot}` blocks in `{yaml_file}` currently match original "
+                f"`{original_curie}`, and this finding has no phv to say which one it's about. "
+                "Refusing to update them as a group — edit the YAML file directly, or re-generate "
+                "this finding with its phv attached."
+            )
+        if n_value == 1:
+            new_text = re.sub(value_pattern, lambda m: m.group(1) + new_curie, text, count=1, flags=re.MULTILINE)
             yaml_path.write_text(new_text, encoding="utf-8")
             return True, (
                 f"✓ YAML `{yaml_file}` [{slot}] → `{new_curie}` "
-                f"({n} expr literal(s) matching original `{original_curie}`)"
+                f"(1 block matching original `{original_curie}`)"
+            )
+        if n_expr == 1:
+            new_text = re.sub(
+                expr_pattern, lambda m: m.group(1) + f'"{new_curie}"', text, count=1, flags=re.MULTILINE,
+            )
+            yaml_path.write_text(new_text, encoding="utf-8")
+            return True, (
+                f"✓ YAML `{yaml_file}` [{slot}] → `{new_curie}` "
+                f"(1 expr literal matching original `{original_curie}`)"
             )
         # original_curie given but found nowhere in this file/slot — fall
-        # through to the coarser check below rather than failing outright,
-        # in case original_curie itself is stale (e.g. YAML already updated
-        # since the finding was saved).
+        # through to the coarser check below, in case original_curie itself
+        # is stale (e.g. YAML already updated since the finding was saved).
 
     existing = re.findall(rf"^[ \t]*{re.escape(slot)}:\s*\n[ \t]+value:\s+(\S+)", text, re.MULTILINE)
     if not existing:
@@ -999,6 +1048,13 @@ def _apply_yaml(
         return False, (
             f"⚠ `{slot}` has {len(existing)} blocks with differing values ({vals}) — "
             "cannot apply uniformly. Edit the YAML file directly."
+        )
+    if len(existing) > 1:
+        return False, (
+            f"⚠ `{slot}` has {len(existing)} blocks in `{yaml_file}`, all currently holding "
+            f"`{existing[0]}`, and this finding has no phv to say which one it's about. Refusing "
+            "to update them as a group — edit the YAML file directly, or re-generate this finding "
+            "with its phv attached."
         )
     pattern = rf"(^[ \t]*{re.escape(slot)}:\s*\n[ \t]+value:\s+)\S+"
     new_text, n = re.subn(pattern, lambda m: m.group(1) + new_curie, text, flags=re.MULTILINE)
@@ -1011,6 +1067,25 @@ def _apply_csv(
     original_curie: str = "", phv: str = "",
 ) -> tuple[bool, str]:
     fieldnames, rows = load_curie_csv(study)
+    # A single unambiguous row is still safe to update without a phv — there's
+    # nothing else it could be confused with. The actual danger (same as
+    # _apply_yaml, fixed 2026-08-26; see mapping_validation_preferences.md) is
+    # silently updating *multiple* rows together just because they currently
+    # agree — that's no proof they're the same variable. So: refuse only when
+    # more than one row would be touched and there's no phv to say which one.
+    if not phv:
+        candidates = [
+            r for r in rows
+            if r.get("YAML File") == Path(yaml_file).name and r.get("Slot") == slot
+            and (not original_curie or r.get("CURIE") == original_curie)
+        ]
+        if len(candidates) > 1:
+            scope = f" with CURIE `{original_curie}`" if original_curie else ""
+            return False, (
+                f"⚠ {len(candidates)} CSV rows match `{yaml_file}` / `{slot}`{scope}, and this "
+                "finding has no phv to say which one it's about. Refusing to update them as a "
+                "group — edit the CSV directly, or re-generate this finding with its phv attached."
+            )
     updated, changed, skipped_other_curie, skipped_other_phv = [], 0, 0, 0
     for row in rows:
         if row.get("YAML File") == Path(yaml_file).name and row.get("Slot") == slot:
@@ -1290,7 +1365,7 @@ def render_row(row: dict, study: str, pending: dict, idx: int, force_expanded: b
                             for _r in blank_rows:
                                 _render_var_row_caption(_r)
                         else:
-                            _render_curie_not_in_mapreview(study, yaml_files[0], auto_slot)
+                            _render_curie_not_in_mapreview(study, yaml_files[0], auto_slot, phv=phv)
             with d_right:
                 det_terms = get_terminology_matches(study, yaml_files[0], auto_slot, phv) if auto_slot and yaml_files else []
                 det_conf_notes = _extract_confidence_notes(validator)
@@ -1419,7 +1494,7 @@ def render_row(row: dict, study: str, pending: dict, idx: int, force_expanded: b
                             for _r in blank_rows:
                                 _render_var_row_caption(_r)
                         else:
-                            _render_curie_not_in_mapreview(study, yaml_files[0], auto_slot)
+                            _render_curie_not_in_mapreview(study, yaml_files[0], auto_slot, phv=phv)
 
                 cr_terms = get_terminology_matches(study, yaml_files[0], auto_slot, phv) if auto_slot and yaml_files else []
                 if cr_terms:
