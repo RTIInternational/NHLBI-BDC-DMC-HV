@@ -544,12 +544,18 @@ def _render_var_row_caption(r: dict) -> None:
     phv  = r.get("PHV", "").strip()
     name = r.get("Variable Name", "").strip()
     desc = r.get("Variable Description", "").strip()
+    free_text = r.get("Free Text Value", "").strip()
+    target_phv = r.get("Target PHV", "").strip()
     parts = []
     if phv:
         parts.append(f"`{phv}`")
     parts.append(f"**Variable:** {name if name else '_blank_'}")
     parts.append(f"**Description:** {desc if desc else '_blank_'}")
+    if free_text:
+        parts.append(f"**Free text:** {free_text}")
     st.caption("↳ " + " · ".join(parts))
+    if target_phv and target_phv != phv:
+        st.caption(f"⚠️ **This CURIE belongs to `{target_phv}`**, not `{phv}` — pooled row, verify before trusting for this variable.")
 
 
 def _render_curies_with_vars(study: str, yaml_file: str, slot: str, curies: list[str]) -> None:
