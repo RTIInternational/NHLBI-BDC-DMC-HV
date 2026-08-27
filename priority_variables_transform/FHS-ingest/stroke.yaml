@@ -300,7 +300,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00010138}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010138}) + ":FHS ORIGINAL EXAM 6")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010138}) + ":FHS OFFSPRING EXAM 6")'
         condition_concept:
           value: MONDO:0005098
           range: string
@@ -327,7 +327,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00072044}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00072044}) + ":FHS ORIGINAL EXAM 8")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00072044}) + ":FHS OFFSPRING EXAM 8")'
         condition_concept:
           value: MONDO:0005098
           range: string
@@ -349,12 +349,12 @@
           range: string
 - class_derivations:
     Condition:
-      populated_from: pht000747
+      populated_from: pht000074
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00072044}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00021427}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00072044}) + ":FHS GENERATION 3 EXAM 1")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00021427}) + ":FHS GENERATION 3 EXAM 1")'
         condition_concept:
           value: MONDO:0005098
           range: string
