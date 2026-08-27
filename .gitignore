@@ -15,3 +15,15 @@ hv_dataqc/local_output/
 # not to be redistributed via GitHub. Kept locally for the
 # generate_curie_mapreview.py source-verification feature.
 data_element_map_validation/bdc_study_input/*_dbgap_study_variable.csv
+
+# LOINC/SNOMED/CPT4-derived OMOP concept mapping - not independently licensed
+# for redistribution (SNOMED CT requires an active national/UMLS-affiliate
+# license; CPT4 is AMA-copyrighted; LOINC itself is free with attribution but
+# is bundled here with the other two). See the license note in the file's own
+# SSSOM header for full detail. Kept locally only.
+data_element_map_validation/bdc_study_input/loinc2omop*
+
+# Local response cache for live terminology-agent API calls (mondo_agent.py,
+# etc.) - reduces repeat live calls to flaky endpoints (OLS4). Just a cache,
+# not a licensed dataset, but personal/local by design; not checked in.
+data_element_map_validation/bdc_study_input/terminology-cache/
