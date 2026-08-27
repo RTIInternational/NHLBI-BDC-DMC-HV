@@ -198,6 +198,44 @@ class TestApplyYaml:
         assert "ambiguous" in msg
         assert yf.read_text() == original  # file must be untouched
 
+    def test_original_curie_expr_single_quoted_literal_applied(self, tmp_path):
+        """Same as test_original_curie_expr_single_match_applied, but the CURIE
+        literal is wrapped in single quotes (tak_insulin.yaml's actual style,
+        the reverse of the fleet-standard double-quote-inside-single-quoted-expr
+        convention) — must still match and must preserve the original quote
+        style on write, not silently switch it."""
+        yf = tmp_path / "test.yaml"
+        yf.write_text(
+            "drug_concept:\n  expr: case(({phvAAA} == 2, 'MeSH:D007328'))\n",
+            encoding="utf-8",
+        )
+        with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
+            ok, msg = app._apply_yaml(
+                "TEST", "test.yaml", "drug_concept", "ATC:A10A",
+                original_curie="MeSH:D007328",
+            )
+        assert ok
+        assert "'ATC:A10A'" in yf.read_text()
+        assert "MeSH:D007328" not in yf.read_text()
+
+    def test_phv_expr_single_quoted_curie_literal_applied(self, tmp_path):
+        """phv-scoped expr branch must also accept a single-quoted CURIE literal,
+        not just the double-quoted fleet-standard style."""
+        yf = tmp_path / "test.yaml"
+        yf.write_text(
+            "- class_derivations:\n"
+            "    DrugExposure:\n"
+            "      populated_from: pht0001\n"
+            "      slot_derivations:\n"
+            "        drug_concept:\n"
+            "          expr: case(({phvAAA} == 2, 'MeSH:D007328'))\n",
+            encoding="utf-8",
+        )
+        with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
+            ok, msg = app._apply_yaml("TEST", "test.yaml", "drug_concept", "ATC:A10A", "phvAAA")
+        assert ok
+        assert "'ATC:A10A'" in yf.read_text()
+
     def test_original_curie_stale_falls_through_to_coarser_check(self, tmp_path):
         """original_curie given but not found anywhere (stale finding) — falls
         through to the coarser single-occurrence check rather than failing outright."""

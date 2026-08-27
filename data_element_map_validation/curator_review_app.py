@@ -966,19 +966,23 @@ def _apply_yaml(
             )
             if expr_m and f"{{{phv}}}" in expr_m.group(1):
                 expr_line = expr_m.group(1)
-                curie_literals = re.findall(r'"([A-Za-z][A-Za-z0-9_]*:[A-Za-z0-9.\-]+)"', expr_line)
-                if len(curie_literals) == 1:
-                    new_expr_line = expr_line.replace(f'"{curie_literals[0]}"', f'"{new_curie}"', 1)
+                # Accept both quote styles — the fleet is inconsistent (most files
+                # wrap the CURIE literal in double quotes inside a single-quoted
+                # expr: string, but some, e.g. tak_insulin.yaml, use the reverse).
+                curie_matches = re.findall(r'(["\'])([A-Za-z][A-Za-z0-9_]*:[A-Za-z0-9.\-]+)\1', expr_line)
+                if len(curie_matches) == 1:
+                    quote, old_curie = curie_matches[0]
+                    new_expr_line = expr_line.replace(f'{quote}{old_curie}{quote}', f'{quote}{new_curie}{quote}', 1)
                     new_block = block[:expr_m.start(1)] + new_expr_line + block[expr_m.end(1):]
                     new_text = text[:start] + new_block + text[end:]
                     yaml_path.write_text(new_text, encoding="utf-8")
                     return True, (
                         f"✓ YAML `{yaml_file}` [{slot}] → `{new_curie}` "
-                        f"(expr block for phv `{phv}`, line {line_number}, was `{curie_literals[0]}`)"
+                        f"(expr block for phv `{phv}`, line {line_number}, was `{old_curie}`)"
                     )
                 return False, (
                     f"⚠ `{slot}` expr for phv `{phv}` (line {line_number}) has "
-                    f"{len(curie_literals)} CURIE-shaped literals on one line — ambiguous which to "
+                    f"{len(curie_matches)} CURIE-shaped literals on one line — ambiguous which to "
                     "replace. Edit that block's literal CURIE string directly in the YAML file."
                 )
             return False, (
@@ -1015,7 +1019,9 @@ def _apply_yaml(
     # would be touched and there's no phv to say which one this finding is about.
     if original_curie:
         value_pattern = rf"(^[ \t]*{re.escape(slot)}:\s*\n[ \t]+value:\s+){re.escape(original_curie)}\b"
-        expr_pattern = rf'(^[ \t]*{re.escape(slot)}:\s*\n[ \t]+expr:.*?)"{re.escape(original_curie)}"'
+        # Accept both quote styles around the CURIE literal — see the phv-targeted
+        # expr path above for why (fleet is inconsistent, e.g. tak_insulin.yaml).
+        expr_pattern = rf'(^[ \t]*{re.escape(slot)}:\s*\n[ \t]+expr:.*?)(["\']){re.escape(original_curie)}\2'
         n_value = len(re.findall(value_pattern, text, flags=re.MULTILINE))
         n_expr = len(re.findall(expr_pattern, text, flags=re.MULTILINE))
         if n_value + n_expr > 1:
@@ -1034,7 +1040,8 @@ def _apply_yaml(
             )
         if n_expr == 1:
             new_text = re.sub(
-                expr_pattern, lambda m: m.group(1) + f'"{new_curie}"', text, count=1, flags=re.MULTILINE,
+                expr_pattern, lambda m: m.group(1) + m.group(2) + new_curie + m.group(2),
+                text, count=1, flags=re.MULTILINE,
             )
             yaml_path.write_text(new_text, encoding="utf-8")
             return True, (

@@ -48,9 +48,11 @@
     "yaml_files": [
       "tak_insulin.yaml"
     ],
-    "notes": "",
-    "applied": false,
-    "saved_date": "2026-08-17"
+    "notes": "CSV had already been updated to ATC:A10A on 2026-08-17, but the YAML transform (tak_insulin.yaml) was never updated to match, and the app's own Submit refused to reconcile it: the CURIE literal in this file's expr: case() is single-quoted ('MeSH:D007328'), while _apply_yaml's expr-matching regex only recognized double-quoted literals -- fixed 2026-08-27 to accept either quote style. YAML corrected directly to match the already-approved CSV value.",
+    "applied": true,
+    "saved_date": "2026-08-17",
+    "applied_date": "2026-08-27",
+    "applied_by": "Curator"
   },
   "CARDIA::confirmed::creat_bld.yaml": {
     "study": "CARDIA",
