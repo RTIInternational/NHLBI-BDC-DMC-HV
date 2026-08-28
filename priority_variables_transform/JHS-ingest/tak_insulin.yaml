@@ -8,15 +8,15 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
           range: string
         drug_concept:
-          expr: 'case(({phv00401102} == 1, "MeSH:D007328"))'
+          expr: 'case(({phv00401102} == "Yes", "MeSH:D007328"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00401102
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            'No': ABSENT
+            'Yes': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht008730
@@ -27,15 +27,15 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401273}) + ":JHS Exam 2")'
           range: string
         drug_concept:
-          expr: 'case(({phv00401294} == 1, "MeSH:D007328"))'
+          expr: 'case(({phv00401294} == "Yes", "MeSH:D007328"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00401294
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            'No': ABSENT
+            'Yes': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht008731
@@ -46,15 +46,15 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
           range: string
         drug_concept:
-          expr: 'case(({phv00401395} == 1, "MeSH:D007328"))'
+          expr: 'case(({phv00401395} == "Yes", "MeSH:D007328"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00401395
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            'No': ABSENT
+            'Yes': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht008734
@@ -65,12 +65,12 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401565}) + ":JHS Exam 3")'
           range: string
         drug_concept:
-          expr: 'case(({phv00401574} == 1, "MeSH:D007328"))'
+          expr: 'case(({phv00401574} == "Yes", "MeSH:D007328"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00401574
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            'No': ABSENT
+            'Yes': PRESENT

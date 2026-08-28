@@ -100,15 +100,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002946}) + ":FHS ORIGINAL EXAM 16")'
         drug_concept:
-          expr: 'case(({phv00002705} == 1, "MeSH:D007328"))'
+          expr: 'case(({phv00002705} == 4, "MeSH:D007328"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00002705
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            '3': ABSENT
+            '4': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000019

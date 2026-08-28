@@ -47,17 +47,17 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403792}) + ":JHS Exam 6")'
         drug_concept:
-          expr: 'case(({phv00403802} == 1, "ATC:C02"))'
+          expr: 'case(({phv00403802} == "Yes", "ATC:C02"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
         exposure_status:
           populated_from: phv00403802
           value_mappings:
-            '1': PRESENT
-            '2': ABSENT
-            '7': UNKNOWN
-            '8': UNKNOWN
-            '9': UNKNOWN
+            'Yes': PRESENT
+            'No': ABSENT
+            "Don't Know": UNKNOWN
+            'Refused': UNKNOWN
+            'Missing': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht008783
@@ -67,14 +67,14 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403830}) + ":JHS Exam 1")'
         drug_concept:
-          expr: 'case(({phv00403840} == 1, "ATC:C02"))'
+          expr: 'case(({phv00403840} == "Yes", "ATC:C02"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
         exposure_status:
           populated_from: phv00403840
           value_mappings:
-            '1': PRESENT
-            '2': ABSENT
-            '7': UNKNOWN
-            '8': UNKNOWN
-            '9': UNKNOWN
+            'Yes': PRESENT
+            'No': ABSENT
+            "Don't Know": UNKNOWN
+            'Refused': UNKNOWN
+            'Missing': UNKNOWN
