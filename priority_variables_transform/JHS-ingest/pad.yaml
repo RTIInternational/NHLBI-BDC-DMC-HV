@@ -1,34 +1,39 @@
-# JHS PAD: Peripheral Arterial Disease from Ankle-Brachial Index (ABI)
-# Source: pht008729.v2 (analysis1), Visit 1 only
-# Variable: phv00401122.v1 (abi) — Ankle Brachial Index, numeric, range 0.44-2.17
-# PAD criterion: ABI < 0.9 (standard clinical diagnostic threshold per ACC/AHA)
-# All participants in pht008729 are emitted:
-#   - ABI < 0.9  → condition_status: PRESENT (PAD confirmed)
-#   - ABI >= 0.9 → condition_status: ABSENT (PAD ruled out)
-#   - ABI null   → condition_status: UNKNOWN (measurement not taken)
-# Previous source (pht008725 phv00400971 PADEVER) removed: that variable is a
-# cumulative AFU self-report accumulating incident diagnoses over 10+ years of
-# follow-up, making it unsuitable as a baseline PAD prevalence indicator.
+# JHS PAD: Peripheral Arterial Disease from Annual Follow-Up self-report
+# Source: pht008725.v2 (afulong), Annual Follow-Up
+# Variable: phv00400971.v1 (PADEVER) -- "Has a doctor ever said that you have
+#   peripheral vascular disease or intermittent claudication?"
+#   Observed: N=19,750 (98.1%), Y=308 (1.5%), U=78 (0.4%)
+# Coded values are mapped directly; no derived criterion is applied.
+#
+# Ankle-Brachial Index (pht008729 phv00401122) is deliberately NOT used here.
+# ABI is a valid measurement and a recognised indicator of PAD, but deriving a
+# PAD diagnosis from an ABI threshold is a clinical assertion this project is
+# not authorised to make. Unlike ARIC, JHS publishes no study-derived PAD flag
+# from ABI -- only the raw index. ABI will be harmonized as a
+# MeasurementObservation in a future round.
 - class_derivations:
     Condition:
-      populated_from: pht008729
+      populated_from: pht008725
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401078}) + ":JHS")'
-        age_at_condition_start:
-          expr: '{phv00401085} * 365'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00400849}) + ":JHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400849}) + ":JHS AFU")'
+          range: string
         condition_concept:
           value: MONDO:0005386
           range: string
         condition_status:
-          expr: 'case(({phv00401122} < 0.9, "PRESENT"), ({phv00401122} >= 0.9, "ABSENT"), (True, "UNKNOWN"))'
+          populated_from: phv00400971
+          value_mappings:
+            N: ABSENT
+            Y: HISTORICAL
+            U: UNKNOWN
         condition_provenance:
-          value: STUDY_RECORD
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
         associated_evidence:
-          value: "Analysis derived"
+          value: "Annual Follow-Up"
         relationship_to_participant:
           value: ONESELF
           range: string
