@@ -160,60 +160,9 @@
                           populated_from: phv00210285
                         unit:
                           value: "mm[Hg]"
-- class_derivations:
-    MeasurementObservationSet:
-      populated_from: pht004192
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00210296}) + ":ARIC")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210296}) + ":ARIC EXAM 1")'
-        observations:
-          class_derivations:
-          - MeasurementObservation:
-              populated_from: pht004192
-              slot_derivations:
-                associated_participant:
-                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00210296}) + ":ARIC")'
-                observation_type:
-                  value: OMOP:4152194
-                body_position:
-                  value: "SITTING_POSITION"
-                body_site:
-                  value: "Right arm"
-                method_type:
-                  value: "Seated random-zero zero reading"
-                value_quantity:
-                  class_derivations:
-                  - Quantity:
-                      populated_from: pht004192
-                      slot_derivations:
-                        value_decimal:
-                          populated_from: phv00210286
-                        unit:
-                          value: "mm[Hg]"
-          - MeasurementObservation:
-              populated_from: pht004192
-              slot_derivations:
-                associated_participant:
-                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00210296}) + ":ARIC")'
-                observation_type:
-                  value: OMOP:4154790
-                body_position:
-                  value: "SITTING_POSITION"
-                body_site:
-                  value: "Right arm"
-                method_type:
-                  value: "Seated random-zero zero reading"
-                value_quantity:
-                  class_derivations:
-                  - Quantity:
-                      populated_from: pht004192
-                      slot_derivations:
-                        value_decimal:
-                          populated_from: phv00210286
-                        unit:
-                          value: "mm[Hg]"
+# Removed: phv00210286 (SBPA17, "2nd zero reading") emitted as both systolic and
+# diastolic. The random-zero sphygmomanometer zero reading is a calibration offset
+# (dbGaP mean 20.3, range 2-40), not a blood pressure. 2nd reading is block above.
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004192
@@ -268,60 +217,8 @@
                           populated_from: phv00210288
                         unit:
                           value: "mm[Hg]"
-- class_derivations:
-    MeasurementObservationSet:
-      populated_from: pht004192
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00210296}) + ":ARIC")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210296}) + ":ARIC EXAM 1")'
-        observations:
-          class_derivations:
-          - MeasurementObservation:
-              populated_from: pht004192
-              slot_derivations:
-                associated_participant:
-                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00210296}) + ":ARIC")'
-                observation_type:
-                  value: OMOP:4152194
-                body_position:
-                  value: "SITTING_POSITION"
-                body_site:
-                  value: "Right arm"
-                method_type:
-                  value: "Seated random-zero zero reading"
-                value_quantity:
-                  class_derivations:
-                  - Quantity:
-                      populated_from: pht004192
-                      slot_derivations:
-                        value_decimal:
-                          populated_from: phv00210289
-                        unit:
-                          value: "mm[Hg]"
-          - MeasurementObservation:
-              populated_from: pht004192
-              slot_derivations:
-                associated_participant:
-                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00210296}) + ":ARIC")'
-                observation_type:
-                  value: OMOP:4154790
-                body_position:
-                  value: "SITTING_POSITION"
-                body_site:
-                  value: "Right arm"
-                method_type:
-                  value: "Seated random-zero zero reading"
-                value_quantity:
-                  class_derivations:
-                  - Quantity:
-                      populated_from: pht004192
-                      slot_derivations:
-                        value_decimal:
-                          populated_from: phv00210289
-                        unit:
-                          value: "mm[Hg]"
+# Removed: phv00210289 (SBPA20, "3rd zero reading") -- same calibration-offset issue
+# as phv00210286 above. 3rd reading is the block above.
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004193

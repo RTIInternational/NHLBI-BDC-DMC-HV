@@ -1,3 +1,5 @@
+# phv00159701 (Asthma) / phv00159702 (AsthmaAge) are "Collected in: P1 P2" per dbGaP,
+# so P3/P3B branches were removed -- null condition_status there would default to ABSENT.
 - class_derivations:
     Condition:
       populated_from: pht002239
@@ -6,9 +8,7 @@
           expr: case(({phv00568798} == 'P1', uuid5('https://w3id.org/bdchm/Visit',
             str({phv00159568}) + ':COPDGene P1')), ({phv00568798} == 'P2',
             uuid5('https://w3id.org/bdchm/Visit', str({phv00159568}) + ':COPDGene P2')),
-            ({phv00568798} == 'P3', uuid5('https://w3id.org/bdchm/Visit',
-            str({phv00159568}) + ':COPDGene P3')), ({phv00568798} == 'P3B',
-            uuid5('https://w3id.org/bdchm/Visit', str({phv00159568}) + ':COPDGene P3B')))
+            (True, None))
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00159568}) + ":COPDGene")'
         age_at_condition_start:
