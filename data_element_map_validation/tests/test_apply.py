@@ -321,6 +321,103 @@ class TestApplyYaml:
         assert "condition_concept:\n  value: MONDO:9999999" in content
 
 
+class TestApplyYamlFallbackExprSupport:
+    """No phv, no resolvable original_curie -- the old-format-entry fallback
+    path. Previously understood only a plain `value:` line; reported
+    2026-08-29 that this silently refused (reporting 'no pattern') for any
+    file using expr:/case() here instead, even when there was really just
+    one unambiguous block -- and that refusal let a concurrent _apply_csv
+    write proceed anyway, desyncing CSV from YAML (82 historical entries,
+    9 files). These tests cover the fix: the fallback now also recognizes
+    single-line expr: case() CURIE literals, file-wide."""
+
+    def test_single_expr_block_no_phv_applied(self, tmp_path):
+        yf = tmp_path / "test.yaml"
+        yf.write_text(
+            "drug_concept:\n  expr: case(({phvAAA} == 1, \"RxCUI:1111\"))\n",
+            encoding="utf-8",
+        )
+        with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
+            ok, msg = app._apply_yaml("TEST", "test.yaml", "drug_concept", "RxCUI:9999")
+        assert ok
+        assert '"RxCUI:9999"' in yf.read_text()
+
+    def test_single_expr_block_no_phv_single_quoted_applied(self, tmp_path):
+        yf = tmp_path / "test.yaml"
+        yf.write_text(
+            "drug_concept:\n  expr: case(({phvAAA} == 1, 'RxCUI:1111'))\n",
+            encoding="utf-8",
+        )
+        with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
+            ok, msg = app._apply_yaml("TEST", "test.yaml", "drug_concept", "RxCUI:9999")
+        assert ok
+        assert "'RxCUI:9999'" in yf.read_text()
+
+    def test_multiple_expr_blocks_differing_values_refused(self, tmp_path):
+        original = (
+            "drug_concept:\n  expr: case(({phvAAA} == 1, \"RxCUI:1111\"))\n"
+            "---\n"
+            "drug_concept:\n  expr: case(({phvBBB} == 1, \"RxCUI:2222\"))\n"
+        )
+        yf = tmp_path / "test.yaml"
+        yf.write_text(original, encoding="utf-8")
+        with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
+            ok, msg = app._apply_yaml("TEST", "test.yaml", "drug_concept", "RxCUI:9999")
+        assert not ok
+        assert "differing values" in msg
+        assert yf.read_text() == original
+
+    def test_multiple_expr_blocks_same_value_no_phv_refused(self, tmp_path):
+        original = (
+            "drug_concept:\n  expr: case(({phvAAA} == 1, \"RxCUI:1111\"))\n"
+            "---\n"
+            "drug_concept:\n  expr: case(({phvBBB} == 1, \"RxCUI:1111\"))\n"
+        )
+        yf = tmp_path / "test.yaml"
+        yf.write_text(original, encoding="utf-8")
+        with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
+            ok, msg = app._apply_yaml("TEST", "test.yaml", "drug_concept", "RxCUI:9999")
+        assert not ok
+        assert "no phv to say which one" in msg
+        assert yf.read_text() == original
+
+    def test_ambiguous_multi_literal_expr_line_refused(self, tmp_path):
+        original = (
+            'drug_concept:\n  expr: case(({phvAAA} == 1, "RxCUI:1111"), ({phvAAA} == 2, "RxCUI:2222"))\n'
+        )
+        yf = tmp_path / "test.yaml"
+        yf.write_text(original, encoding="utf-8")
+        with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
+            ok, msg = app._apply_yaml("TEST", "test.yaml", "drug_concept", "RxCUI:9999")
+        assert not ok
+        assert "ambiguous" in msg
+        assert yf.read_text() == original
+
+    def test_mixed_value_and_expr_forms_differing_refused(self, tmp_path):
+        """A plain value: block and an expr: block for the same slot, with
+        different CURIEs -- must be treated as 2 disagreeing blocks, not
+        silently pick one form over the other."""
+        original = (
+            "drug_concept:\n  value: RxCUI:1111\n"
+            "---\n"
+            "drug_concept:\n  expr: case(({phvAAA} == 1, \"RxCUI:2222\"))\n"
+        )
+        yf = tmp_path / "test.yaml"
+        yf.write_text(original, encoding="utf-8")
+        with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
+            ok, msg = app._apply_yaml("TEST", "test.yaml", "drug_concept", "RxCUI:9999")
+        assert not ok
+        assert "differing values" in msg
+
+    def test_still_refuses_when_truly_no_pattern_at_all(self, tmp_path):
+        yf = tmp_path / "test.yaml"
+        yf.write_text("other_slot:\n  value: RxCUI:1111\n", encoding="utf-8")
+        with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")):
+            ok, msg = app._apply_yaml("TEST", "test.yaml", "drug_concept", "RxCUI:9999")
+        assert not ok
+        assert "No" in msg and "pattern" in msg
+
+
 # ---------------------------------------------------------------------------
 # _apply_csv
 # ---------------------------------------------------------------------------
@@ -482,6 +579,36 @@ class TestSubmitAllBookkeeping:
              patch.object(app, "_next_log_path", return_value=log):
             app.submit_all("TEST", pending, "Curator")
         assert "applied" not in pending["key1"]
+
+    def test_csv_write_skipped_when_yaml_fails(self, tmp_path):
+        """The actual fix: _apply_csv must never even be called when
+        _apply_yaml didn't land -- not just 'applied' staying unset. Reported
+        2026-08-29: 82 historical entries where the CSV write proceeded
+        anyway and desynced from a YAML edit that silently no-op'd."""
+        pending = self._pending()
+        log = tmp_path / "log.json"
+        mock_csv = MagicMock(return_value=(True, "✓ CSV updated"))
+        with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")), \
+             patch.object(app, "_apply_yaml", return_value=(False, "⚠ No `condition_concept: value:` pattern")), \
+             patch.object(app, "_apply_csv", mock_csv), \
+             patch.object(app, "_save_pending"), \
+             patch.object(app, "_next_log_path", return_value=log):
+            app.submit_all("TEST", pending, "Curator")
+        mock_csv.assert_not_called()
+        assert "applied" not in pending["key1"]
+
+    def test_csv_write_still_happens_when_yaml_succeeds(self, tmp_path):
+        pending = self._pending()
+        log = tmp_path / "log.json"
+        mock_csv = MagicMock(return_value=(True, "✓ CSV updated"))
+        with patch.dict(app.STUDIES, _studies_patch(tmp_path, tmp_path / "c.csv")), \
+             patch.object(app, "_apply_yaml", return_value=(True, "✓ YAML updated")), \
+             patch.object(app, "_apply_csv", mock_csv), \
+             patch.object(app, "_save_pending"), \
+             patch.object(app, "_next_log_path", return_value=log):
+            app.submit_all("TEST", pending, "Curator")
+        mock_csv.assert_called_once()
+        assert pending["key1"].get("applied") is True
 
     def test_already_applied_entries_skipped(self, tmp_path):
         pending = {
