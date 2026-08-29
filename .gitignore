@@ -23,6 +23,11 @@ data_element_map_validation/bdc_study_input/*_dbgap_study_variable.csv
 # SSSOM header for full detail. Kept locally only.
 data_element_map_validation/bdc_study_input/loinc2omop*
 
+# Same treatment as loinc2omop* above: RxNorm/OMOP vocabulary crosswalk
+# content sourced from UMLS-affiliated vocabularies, not cleared for
+# redistribution. Kept locally only.
+data_element_map_validation/bdc_study_input/rxnorm2omop*
+
 # Local response cache for live terminology-agent API calls (mondo_agent.py,
 # etc.) - reduces repeat live calls to flaky endpoints (OLS4). Just a cache,
 # not a licensed dataset, but personal/local by design; not checked in.
