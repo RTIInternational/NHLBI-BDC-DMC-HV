@@ -44,11 +44,42 @@ DRUG_CURIE_OVERRIDES: dict[str, str] = {
                                                   # ranking for this exact concept was found to be
                                                   # unreliable across phrasings, so it's pinned
                                                   # here rather than left to search ranking)
+    "insulin":              "ATC:A10A",          # Insulins and analogues (class-level). RxNorm has
+                                                  # no single generic "insulin" Ingredient concept —
+                                                  # only specific formulations (insulin glargine,
+                                                  # insulin isophane, etc.) — and a bare "are you
+                                                  # taking insulin" survey question can't resolve to
+                                                  # any one of those. Confirmed via two independent
+                                                  # cases this session: CARDIA tak_insulin.yaml
+                                                  # (fix #33) and CHS tak_insulin.yaml, 16 PHVs
+                                                  # (fix #38), both landed on this exact class code.
+    "insulins":             "ATC:A10A",          # Plural form — CHS's real dbGaP variable
+                                                  # description text is literally "Insulins" for
+                                                  # several of the 16 PHVs in fix #38, so this must
+                                                  # match on its own, not just singular "insulin".
 }
-# All three values confirmed 2026-08-26 against the CARDIA tak_statin.yaml
-# review comment's own resolved-name table. Plain "niacin" (no dose) is
-# deliberately NOT overridden — it stays on the live Ingredient-only search
-# path, which already resolves it correctly on its own.
+# All values confirmed against dbGaP-verified real cases this session. Plain
+# "niacin" (no dose) is deliberately NOT overridden — it stays on the live
+# Ingredient-only search path, which already resolves it correctly on its own.
+
+# "insulin"/"insulins" are class-level fallbacks for a bare yes/no insulin
+# question — but RxNorm DOES have specific formulation concepts (insulin
+# glargine, insulin isophane, etc., confirmed present in the local
+# rxnorm2omop_standard.csv reference table). A query naming one of those
+# specific types is more specific than the class-level fallback and should
+# fall through to the RxNorm lookup instead, where it can resolve to its own
+# concept — but the distinguishing signal is NOT "more than one word": real
+# dbGaP text for a still-generic insulin question is routinely multi-word
+# ("TAKE INSULIN", CHS; "CURRENTLY TAKING INSULIN OR ORAL DRUGS? Q 14",
+# CARDIA fix #33) and must still hit the override. What actually
+# distinguishes a specific mention is a recognized insulin-type modifier
+# word alongside "insulin" — so those are excluded by name instead of by
+# word count.
+_INSULIN_TYPE_MODIFIERS = {
+    "glargine", "aspart", "lispro", "isophane", "detemir", "degludec",
+    "regular", "nph", "human", "beef", "pork", "zinc", "lente", "ultralente",
+    "protamine",
+}
 
 _OVERRIDE_PATTERNS = {
     name: re.compile(r"(?<!\w)" + re.escape(name) + r"(?!\w)", re.IGNORECASE)
@@ -60,8 +91,17 @@ def get_drug_curie_override(drug_name: str) -> str | None:
     """Return a curated full CURIE for *drug_name* if it matches a known
     override, else None. Checked before the live API call in
     generate_curie_mapreview.py's drug_concept branch.
+
+    "insulin"/"insulins" match as a bounded word anywhere in the query (same
+    rule as every other entry) UNLESS the query also names a specific
+    insulin type (see _INSULIN_TYPE_MODIFIERS) — in that case the override
+    is skipped so the more specific RxNorm lookup can run instead.
     """
+    words = set(re.findall(r"[a-z]+", drug_name.lower()))
+    is_specific_insulin = ("insulin" in words or "insulins" in words) and bool(words & _INSULIN_TYPE_MODIFIERS)
     for name, pattern in _OVERRIDE_PATTERNS.items():
+        if name in ("insulin", "insulins") and is_specific_insulin:
+            continue
         if pattern.search(drug_name):
             return DRUG_CURIE_OVERRIDES[name]
     return None
