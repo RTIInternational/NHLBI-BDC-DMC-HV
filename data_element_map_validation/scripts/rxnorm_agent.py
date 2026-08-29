@@ -11,6 +11,7 @@ Usage examples:
 """
 
 import json
+import re
 import sys
 
 import click
@@ -18,6 +19,52 @@ import requests
 
 ATLAS_BASE_URL = "https://atlas-demo.ohdsi.org/WebAPI"
 DEFAULT_CONCEPT_CLASS = "Ingredient"
+
+# ---------------------------------------------------------------------------
+# Curated drug-name -> full CURIE overrides.
+#
+# Free-text medication-name fields (e.g. "name of chol lowering medication")
+# sometimes get case()-matched against specific drug names and assigned an
+# RxCUI by hand during curation. When the correct classification is really
+# an ATC therapeutic class (not an RxNorm ingredient concept), the live
+# Atlas WebAPI lookup can't produce that — it only returns OMOP concept IDs,
+# which generate_curie_mapreview.py wraps as "OMOP:<id>". These overrides
+# return the full CURIE directly, bypassing that wrapping, so future
+# pipeline re-runs land on the correct classification instead of drifting
+# back to a bare RxCUI/OMOP concept.
+#
+# Match is case-insensitive, whole-word (so "niacin 500mg tablets" still
+# matches "niacin"). Add entries here as new mismapped free-text drugs turn up.
+# ---------------------------------------------------------------------------
+DRUG_CURIE_OVERRIDES: dict[str, str] = {
+    "gemfibrozil":          "ATC:C10AB",         # fibrate
+    "metoprolol":           "RxCUI:6918",        # beta blocker, ingredient-level
+    "niacin 500mg tablets": "RxCUI:198024",      # niacin 500 MG Oral Tablet (immediate-release,
+                                                  # matches the source text exactly — live search
+                                                  # ranking for this exact concept was found to be
+                                                  # unreliable across phrasings, so it's pinned
+                                                  # here rather than left to search ranking)
+}
+# All three values confirmed 2026-08-26 against the CARDIA tak_statin.yaml
+# review comment's own resolved-name table. Plain "niacin" (no dose) is
+# deliberately NOT overridden — it stays on the live Ingredient-only search
+# path, which already resolves it correctly on its own.
+
+_OVERRIDE_PATTERNS = {
+    name: re.compile(r"(?<!\w)" + re.escape(name) + r"(?!\w)", re.IGNORECASE)
+    for name in DRUG_CURIE_OVERRIDES
+}
+
+
+def get_drug_curie_override(drug_name: str) -> str | None:
+    """Return a curated full CURIE for *drug_name* if it matches a known
+    override, else None. Checked before the live API call in
+    generate_curie_mapreview.py's drug_concept branch.
+    """
+    for name, pattern in _OVERRIDE_PATTERNS.items():
+        if pattern.search(drug_name):
+            return DRUG_CURIE_OVERRIDES[name]
+    return None
 
 
 def search_omop_concepts(

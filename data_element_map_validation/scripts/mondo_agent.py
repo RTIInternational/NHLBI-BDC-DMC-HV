@@ -25,15 +25,93 @@ Usage examples:
 """
 
 import json
+import os
 import re
 import sys
+import threading
+import time
 from difflib import SequenceMatcher
+from pathlib import Path
 from urllib.parse import quote
 
 import click
 import requests
 
 OLS4_SEARCH_URL = "https://www.ebi.ac.uk/ols4/api/search"
+
+# ---------------------------------------------------------------------------
+# Local response cache (2026-08-27) — OLS4 is a live, occasionally flaky
+# endpoint, and this fleet re-asks the same handful of clinical terms
+# ("hypertension", "diabetes", "asthma", ...) across many cohorts. Cache raw
+# API responses locally, keyed by the exact query actually sent, so a repeat
+# query never touches the network again. Kept out of git (see .gitignore) —
+# same treatment as the loinc2omop.* files: local-only, not redistributed.
+# ---------------------------------------------------------------------------
+_CACHE_PATH = Path(__file__).parent.parent / "bdc_study_input" / "terminology-cache" / "mondo-index.json"
+_cache: dict[str, list[dict]] | None = None
+# generate_curie_mapreview.py drives this agent through a ThreadPoolExecutor
+# (10 workers by default) -- guards the read-modify-write-replace cycle below
+# against two races reported 2026-08-28: json.dumps() iterating the shared
+# _cache dict while another thread mutates it, and every thread writing the
+# same fixed tmp path before os.replace, so one thread's rename could pull
+# the file out from under another's (reproduced as FileNotFoundError in
+# ~48% of concurrent calls). Reads elsewhere (the `key in cache` check in
+# _fetch_docs) stay unlocked -- a plain dict lookup can't corrupt state, and
+# a stale miss just costs a redundant fetch, never wrong data. RLock (not
+# Lock) because _save_cache_entry holds the lock while calling _load_cache(),
+# which also acquires it -- same thread re-entering, which a plain Lock
+# would deadlock on.
+_cache_lock = threading.RLock()
+
+
+def _cache_key(query: str, rows: int) -> str:
+    return f"{rows}|{query.strip().lower()}"
+
+
+def _load_cache() -> dict[str, list[dict]]:
+    global _cache
+    if _cache is not None:
+        return _cache
+    # Only the first call per process actually touches disk (subsequent
+    # calls short-circuit above) -- but on Windows, os.replace() in
+    # _save_cache_entry can raise PermissionError if another thread has the
+    # destination file open for reading at that exact moment (unlike POSIX,
+    # which allows atomic replace of an open file). With 10 concurrent
+    # workers, several can race to do that first disk read simultaneously,
+    # so it shares the same lock as the write path.
+    with _cache_lock:
+        if _cache is None:
+            if _CACHE_PATH.exists():
+                try:
+                    _cache = json.loads(_CACHE_PATH.read_text(encoding="utf-8"))
+                except (json.JSONDecodeError, OSError):
+                    _cache = {}
+            else:
+                _cache = {}
+    return _cache
+
+
+def _save_cache_entry(key: str, docs: list[dict]) -> None:
+    with _cache_lock:
+        cache = _load_cache()
+        cache[key] = docs
+        _CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        tmp_path = _CACHE_PATH.with_suffix(f".tmp.{threading.get_ident()}.json")
+        tmp_path.write_text(json.dumps(cache, indent=2, ensure_ascii=False), encoding="utf-8")
+        # os.replace() can still transiently raise PermissionError on Windows
+        # even with zero contention from our own threads (the lock above
+        # already serializes those) -- something external (AV real-time
+        # scanning, a search indexer, a backup/sync agent) can briefly hold
+        # its own open handle on a just-written file. A short retry is the
+        # standard, pragmatic mitigation for this well-known Windows quirk.
+        for attempt in range(5):
+            try:
+                os.replace(tmp_path, _CACHE_PATH)
+                break
+            except PermissionError:
+                if attempt == 4:
+                    raise
+                time.sleep(0.05 * (attempt + 1))
 
 # Survey-language phrases that precede or follow a clinical term.
 # Pattern: "<ClinicalTerm>: <SurveyPhrase>" or "<SurveyPhrase> <ClinicalTerm>"
@@ -104,11 +182,24 @@ def _similarity(query: str, concept: dict) -> float:
 
 
 def _fetch_docs(query: str, *, rows: int) -> list[dict]:
-    """Call OLS4 and return raw docs for MONDO concepts only."""
+    """Call OLS4 and return raw docs for MONDO concepts only.
+
+    Checks the local response cache first (see _CACHE_PATH) — a repeat query
+    never touches the network. Only successful responses are cached; a
+    network/HTTP error is never written, so a transient failure doesn't
+    poison future lookups.
+    """
+    key = _cache_key(query, rows)
+    cache = _load_cache()
+    if key in cache:
+        return cache[key]
+
     url = f"{OLS4_SEARCH_URL}?ontology=mondo&q={quote(query)}&rows={rows}"
     resp = requests.get(url, timeout=30)
     resp.raise_for_status()
-    return resp.json().get("response", {}).get("docs", [])
+    docs = resp.json().get("response", {}).get("docs", [])
+    _save_cache_entry(key, docs)
+    return docs
 
 
 def _docs_to_concepts(docs: list[dict]) -> list[dict]:
@@ -177,18 +268,30 @@ def get_mondo_id(description: str, **kwargs) -> str | None:
         >>> get_mondo_id("Emphysema: Have you ever had emphysema")
         'MONDO:0004849'
     """
+    mondo_id, _score = get_mondo_id_with_score(description, **kwargs)
+    return mondo_id
+
+
+def get_mondo_id_with_score(description: str, **kwargs) -> tuple[str | None, float]:
+    """Like get_mondo_id, but also returns the top match's similarity score.
+
+    The score is the same composite label/synonym similarity used to rank
+    candidates in search_mondo_terms — a text-match confidence, not a
+    guarantee of ontological correctness. Callers can bucket it into
+    curator-facing confidence tiers or compare it against another vocabulary's
+    score to pick a priority_curie (see generate_curie_mapreview.py).
+    """
     results = search_mondo_terms(description, **kwargs)
     if results:
-        return results[0]["mondo_id"]
+        return results[0]["mondo_id"], _similarity(description, results[0])
 
-    # Pass 2: strip survey language and retry
     cleaned = _extract_clinical_term(description)
     if cleaned.lower() != description.lower():
         results2 = search_mondo_terms(cleaned, **kwargs)
         if results2:
-            return results2[0]["mondo_id"]
+            return results2[0]["mondo_id"], _similarity(cleaned, results2[0])
 
-    return None
+    return None, 0.0
 
 
 # ---------------------------------------------------------------------------
