@@ -104,7 +104,16 @@ def main(study: str, manifest_path: Path) -> None:
         phv = row.get("PHV", "").strip()
         yaml_file = row.get("YAML File", "").strip()
         free_text = row.get("Free Text Value", "").strip() if sl == "drug_concept" else ""
-        key = (vn, sl, et, phv, free_text) if free_text else (vn, sl, et, phv)
+        # YAML File must be part of the key: a PHV can be a genuine primary
+        # variable in one file and a shared "companion" reference (e.g. an
+        # age variable pulled in via an age_at_observation expr) in many
+        # others, all sharing the same Variable Name/Slot/Entity Type. Without
+        # yaml_file here, refreshing one file's row would also silently
+        # overwrite every other file's row for that same companion PHV in the
+        # merge step below (this bled OMOP:37311566/MONDO:0005098 from the
+        # vege_serving.yaml/stroke.yaml fixes into unrelated files' rows in
+        # CHS/JHS/WHI/FHS mapreview.csv, found and fixed 2026-08-28).
+        key = (vn, sl, et, phv, yaml_file, free_text) if free_text else (vn, sl, et, phv, yaml_file)
         if key in fresh:
             continue
 
@@ -175,8 +184,10 @@ def main(study: str, manifest_path: Path) -> None:
         print(f"  refreshed: {yaml_file} / {phv} / {sl}")
 
     # Merge into the EXISTING mapreview.csv — only rows whose (Variable Name,
-    # Slot, Entity Type, PHV) key is in `fresh` get their columns overwritten;
-    # every other row is copied through unchanged.
+    # Slot, Entity Type, PHV, YAML File) key is in `fresh` get their columns
+    # overwritten; every other row is copied through unchanged. YAML File is
+    # part of the key (see comment above `fresh[key]` construction) so a
+    # shared companion PHV's row in an unrelated file is never touched.
     with open(gcm.OUTPUT_CSV, newline="", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
         fieldnames = reader.fieldnames
@@ -191,6 +202,7 @@ def main(study: str, manifest_path: Path) -> None:
             sl,
             row.get("Entity Type", "").strip(),
             row.get("PHV", "").strip(),
+            row.get("YAML File", "").strip(),
         )
         key = base_key + (free_text,) if free_text else base_key
         if key in fresh:

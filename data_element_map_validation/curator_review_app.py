@@ -7,6 +7,7 @@ Usage:
 """
 
 import csv
+import hashlib
 import json
 import re
 import subprocess
@@ -1233,16 +1234,31 @@ def _extract_yaml_files(raw: str) -> list[str]:
     return [f.strip() for f in re.split(r"[;,]+", clean) if f.strip().endswith(".yaml")]
 
 
-def _row_key(study: str, file_field: str, phv: str = "") -> str:
+def _row_key(study: str, file_field: str, phv: str = "", finding: str = "") -> str:
     """Identity key for a finding. Includes PHV when known, since a single
     YAML file can now carry multiple distinct per-variable findings (the
     MeasurementObservationSet cross-product pattern) — without PHV, two
     different variables' decisions would collide on the same pending-changes
     entry. phv="" preserves the old file-only key for backward compatibility
     with existing pending_changes.json entries and studies not yet re-run
-    under the per-variable finding schema."""
+    under the per-variable finding schema.
+
+    `finding` (typically the row's "Final issue" text) further disambiguates
+    two *different* findings that share the same (study, file, phv) — e.g. a
+    "current mapping is definitely wrong" schema-violation finding and an
+    "agent suggests better CURIE" finding can both fire for the same PHV *and
+    the same slot* (reported 2026-08-28), so slot alone wouldn't separate
+    them; the finding text always differs by construction between trigger
+    types in generate_semantic_review.py, and already encodes slot too.
+    Hashed (not embedded raw) to keep keys short and JSON-safe. Omitted when
+    the caller doesn't have the finding text, preserving the phv-only key for
+    backward compatibility the same way phv itself is optional above."""
     base = f"{study}::confirmed::{_unescape_md(file_field)}"
-    return f"{base}::{phv}" if phv else base
+    if phv:
+        base = f"{base}::{phv}"
+    if finding:
+        base = f"{base}::{hashlib.md5(finding.encode('utf-8')).hexdigest()[:10]}"
+    return base
 
 
 # ── Confirmed Findings row renderer ──────────────────────────────────────────
@@ -1269,7 +1285,7 @@ def render_row(row: dict, study: str, pending: dict, idx: int, force_expanded: b
     validator   = row.get("semantic validator review", "")
     phv         = row.get("PHV", "").strip()
 
-    row_id = _row_key(study, file_field, phv)
+    row_id = _row_key(study, file_field, phv, issue)
     saved  = pending.get(row_id, {})
 
     badge      = "🎯" if priority.startswith("🎯") else {"P1": "🔴", "P2": "🟡", "P3": "🟢"}.get(priority, "⚪")
@@ -1679,7 +1695,7 @@ def render_row(row: dict, study: str, pending: dict, idx: int, force_expanded: b
 def _orphan_pending(study: str, pending: dict, confirmed_rows: list[dict]) -> dict:
     """Return pending entries that have no corresponding review-MD row."""
     anchored = {
-        _row_key(study, row["File"], row.get("PHV", "").strip())
+        _row_key(study, row["File"], row.get("PHV", "").strip(), row.get("Final issue", ""))
         for row in confirmed_rows if row.get("File")
     }
     return {
@@ -2497,7 +2513,7 @@ def main() -> None:
         # mid-edit.
         with st.sidebar.expander(f"💾 Jump to pending ({n_pending})", expanded=False):
             for _row in confirmed_rows:
-                _rid = _row_key(study, _row.get("File", ""), _row.get("PHV", "").strip())
+                _rid = _row_key(study, _row.get("File", ""), _row.get("PHV", "").strip(), _row.get("Final issue", ""))
                 _saved = pending.get(_rid, {})
                 if not (_saved.get("change_request") and not _saved.get("applied")):
                     continue
@@ -2711,7 +2727,7 @@ def main() -> None:
             for i, row in enumerate(confirmed_rows):
                 if row.get("Priority") not in priority_filter:
                     continue
-                _rid = _row_key(study, row.get("File", ""), row.get("PHV", "").strip())
+                _rid = _row_key(study, row.get("File", ""), row.get("PHV", "").strip(), row.get("Final issue", ""))
                 render_row(row, study, pending, i, force_expanded=(_rid == _jump_to_row_id))
                 shown += 1
             if shown == 0:

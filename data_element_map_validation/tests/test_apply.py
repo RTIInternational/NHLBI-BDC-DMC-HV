@@ -501,3 +501,41 @@ class TestSubmitAllBookkeeping:
              patch.object(app, "_next_log_path", return_value=log):
             app.submit_all("TEST", pending, "Curator")
         mock_yaml.assert_not_called()
+
+
+class TestRowKey:
+    """_row_key must give two genuinely different findings on the same
+    (study, file, phv) -- even the same slot -- distinct pending-changes
+    keys, or saving a decision on one silently overwrites the other
+    (reported 2026-08-28: a schema-violation finding and an 'agent suggests
+    better CURIE' finding both fired for the same phv+slot)."""
+
+    def test_same_phv_same_slot_different_finding_text_gives_different_keys(self):
+        k1 = app._row_key(
+            "TEST", "obesity.yaml", "phv00001111",
+            "Current mapping for `condition_concept` is definitely wrong: ...",
+        )
+        k2 = app._row_key(
+            "TEST", "obesity.yaml", "phv00001111",
+            "Agent suggests better CURIE for `condition_concept`: MONDO recommends `MONDO:0011122`",
+        )
+        assert k1 != k2
+
+    def test_same_finding_text_is_stable_across_calls(self):
+        issue = "Current mapping for `condition_concept` is definitely wrong: ..."
+        k1 = app._row_key("TEST", "obesity.yaml", "phv00001111", issue)
+        k2 = app._row_key("TEST", "obesity.yaml", "phv00001111", issue)
+        assert k1 == k2
+
+    def test_no_finding_text_preserves_old_phv_only_key(self):
+        """Backward compatibility: callers that don't pass finding text
+        (or existing pending_changes.json entries saved before this fix)
+        must still resolve to the same key as before."""
+        assert app._row_key("TEST", "obesity.yaml", "phv00001111") == \
+            "TEST::confirmed::obesity.yaml::phv00001111"
+
+    def test_different_phv_same_finding_text_gives_different_keys(self):
+        issue = "Agent suggests better CURIE for `condition_concept`: MONDO recommends `MONDO:0011122`"
+        k1 = app._row_key("TEST", "obesity.yaml", "phv00001111", issue)
+        k2 = app._row_key("TEST", "obesity.yaml", "phv00002222", issue)
+        assert k1 != k2

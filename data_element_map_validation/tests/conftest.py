@@ -23,3 +23,5 @@ sys.modules["streamlit"] = st_mock
 
 # Put the app directory on the path so tests can import curator_review_app.
 sys.path.insert(0, str(Path(__file__).parent.parent))
+# Put scripts/ on the path so tests can import mondo_agent and friends.
+sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))

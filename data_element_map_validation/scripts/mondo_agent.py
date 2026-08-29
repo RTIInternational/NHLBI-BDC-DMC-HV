@@ -28,6 +28,8 @@ import json
 import os
 import re
 import sys
+import threading
+import time
 from difflib import SequenceMatcher
 from pathlib import Path
 from urllib.parse import quote
@@ -47,6 +49,19 @@ OLS4_SEARCH_URL = "https://www.ebi.ac.uk/ols4/api/search"
 # ---------------------------------------------------------------------------
 _CACHE_PATH = Path(__file__).parent.parent / "bdc_study_input" / "terminology-cache" / "mondo-index.json"
 _cache: dict[str, list[dict]] | None = None
+# generate_curie_mapreview.py drives this agent through a ThreadPoolExecutor
+# (10 workers by default) -- guards the read-modify-write-replace cycle below
+# against two races reported 2026-08-28: json.dumps() iterating the shared
+# _cache dict while another thread mutates it, and every thread writing the
+# same fixed tmp path before os.replace, so one thread's rename could pull
+# the file out from under another's (reproduced as FileNotFoundError in
+# ~48% of concurrent calls). Reads elsewhere (the `key in cache` check in
+# _fetch_docs) stay unlocked -- a plain dict lookup can't corrupt state, and
+# a stale miss just costs a redundant fetch, never wrong data. RLock (not
+# Lock) because _save_cache_entry holds the lock while calling _load_cache(),
+# which also acquires it -- same thread re-entering, which a plain Lock
+# would deadlock on.
+_cache_lock = threading.RLock()
 
 
 def _cache_key(query: str, rows: int) -> str:
@@ -55,24 +70,48 @@ def _cache_key(query: str, rows: int) -> str:
 
 def _load_cache() -> dict[str, list[dict]]:
     global _cache
-    if _cache is None:
-        if _CACHE_PATH.exists():
-            try:
-                _cache = json.loads(_CACHE_PATH.read_text(encoding="utf-8"))
-            except (json.JSONDecodeError, OSError):
+    if _cache is not None:
+        return _cache
+    # Only the first call per process actually touches disk (subsequent
+    # calls short-circuit above) -- but on Windows, os.replace() in
+    # _save_cache_entry can raise PermissionError if another thread has the
+    # destination file open for reading at that exact moment (unlike POSIX,
+    # which allows atomic replace of an open file). With 10 concurrent
+    # workers, several can race to do that first disk read simultaneously,
+    # so it shares the same lock as the write path.
+    with _cache_lock:
+        if _cache is None:
+            if _CACHE_PATH.exists():
+                try:
+                    _cache = json.loads(_CACHE_PATH.read_text(encoding="utf-8"))
+                except (json.JSONDecodeError, OSError):
+                    _cache = {}
+            else:
                 _cache = {}
-        else:
-            _cache = {}
     return _cache
 
 
 def _save_cache_entry(key: str, docs: list[dict]) -> None:
-    cache = _load_cache()
-    cache[key] = docs
-    _CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
-    tmp_path = _CACHE_PATH.with_suffix(".tmp.json")
-    tmp_path.write_text(json.dumps(cache, indent=2, ensure_ascii=False), encoding="utf-8")
-    os.replace(tmp_path, _CACHE_PATH)
+    with _cache_lock:
+        cache = _load_cache()
+        cache[key] = docs
+        _CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        tmp_path = _CACHE_PATH.with_suffix(f".tmp.{threading.get_ident()}.json")
+        tmp_path.write_text(json.dumps(cache, indent=2, ensure_ascii=False), encoding="utf-8")
+        # os.replace() can still transiently raise PermissionError on Windows
+        # even with zero contention from our own threads (the lock above
+        # already serializes those) -- something external (AV real-time
+        # scanning, a search indexer, a backup/sync agent) can briefly hold
+        # its own open handle on a just-written file. A short retry is the
+        # standard, pragmatic mitigation for this well-known Windows quirk.
+        for attempt in range(5):
+            try:
+                os.replace(tmp_path, _CACHE_PATH)
+                break
+            except PermissionError:
+                if attempt == 4:
+                    raise
+                time.sleep(0.05 * (attempt + 1))
 
 # Survey-language phrases that precede or follow a clinical term.
 # Pattern: "<ClinicalTerm>: <SurveyPhrase>" or "<SurveyPhrase> <ClinicalTerm>"
