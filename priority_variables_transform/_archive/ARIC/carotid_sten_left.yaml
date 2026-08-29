@@ -1,0 +1,46 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004061
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00204606
+        associated_visit:
+          value: ARIC Hospital Form
+        observation_type:
+          value: OMOP:43020498
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004061
+                slot_derivations:
+                  value_concept:
+                    populated_from: phv00204529
+                    value_mappings:
+                      'A': Normal
+                      'B': 0-29
+                      'C': 30-69
+                      'D': 70-89
+                      'E': '>= 90'
+                  unit:
+                    value: '%'
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht004061
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00204606
+        associated_visit:
+          value: ARIC Hospital Form
+        observation_type:
+          value: OMOP:43020498
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht004061
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00204553
+                  unit:
+                    value: '%'                    

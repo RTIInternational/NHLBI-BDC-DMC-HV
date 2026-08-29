@@ -1,0 +1,74 @@
+class_derivations:
+  Observation:
+    populated_from: FHS
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00177237
+      associated_visit:
+        expr: "'FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'"
+      observation_type: "'OMOP:4076114'" #family income
+      value_quantity.value_concept:
+        populated_from: phv00177608
+        value_mappings:
+          '1': < $20,000
+          '2': $20,000 - $34,999
+          '3': $35,000 - $54,999
+          '4': $55,000 - $74,999
+          '5': $75,000 - $100,000
+          '6': '> $100,000'
+          '9': UNKNOWN
+      value_quantity.unit:
+        expr: "'USD'"
+class_derivations:
+  Observation:
+    populated_from: FHS
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00273700
+      associated_visit:
+        expr: "'FHS NEW OFFSPRING SPOUSE EXAM 1'"
+      observation_type: "'OMOP:4076114'" #family income
+      value_quantity.value_concept:
+        populated_from: phv00274078
+        value_mappings:
+          '1': < $12,000
+          '2': $12,000 - $24,000
+          '3': $25,000 - $49,999
+          '4': $50,000 - $74,999
+          '5': $75,000 - $100,000
+          '6': '> $100,000'
+      value_quantity.unit:
+        expr: "'USD'"
+class_derivations:
+  Observation:
+    populated_from: FHS
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00021427
+      associated_visit:
+        expr: "'FHS GENERATION 3 EXAM 1'"
+      observation_type: "'OMOP:4076114'" #family income
+      value_quantity.value_concept:
+        populated_from: phv00021256
+        value_mappings:
+          '1': < $12,000
+          '2': $12,000 - $24,000
+          '3': $25,000 - $49,999
+          '4': $50,000 - $74,999
+          '5': $75,000 - $100,000
+          '6': '> $100,000'
+      value_quantity.unit:
+        expr: "'USD'"
+class_derivations:
+  Observation:
+    populated_from: FHS
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00022553
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 3'"
+      observation_type: "'OMOP:4076114'" #family income
+      value_quantity.value_decimal:
+        populated_from: phv00022428
+      value_quantity.unit:
+        expr: "'USD'"

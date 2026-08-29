@@ -1,0 +1,297 @@
+priority_variable: 
+  name: asthma
+  raw_variable: phv00159701
+    identifiers:
+      phs: phs000179
+      pht: pht002239
+    input_data_type: enum
+    value_set:
+      value: 0
+        function: Add one condition
+        Condition:
+          identity:
+          condition_concept: MONDO:0004979 #asthma
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_status: ABSENT
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:
+      value: 1
+        function: Add one condition and look at phv00159704 and phv00159705 - then look at phv00159702
+                  if phv00159704 is 0 and phv00159705 is 0
+        Condition:
+          identity:
+          condition_concept: MONDO:0004979 #asthma
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_status: HISTORICAL
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:
+                  if phv00159704 is 0 and phv00159705 is 1
+        Condition:
+          identity:
+          condition_concept: MONDO:0004979 #asthma
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_status: PRESENT
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:                  
+                  if phv00159704 is 0 and phv00159705 is 3
+        Condition:
+          identity:
+          condition_concept: MONDO:0004979 #asthma
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_status: HISTORICAL
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:
+                  if phv00159704 is 1 and phv00159705 is 0
+        Condition:
+          identity:
+          condition_concept: MONDO:0004979 #asthma
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: CLINICAL_DIAGNOSIS
+          condition_status: HISTORICAL
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:                
+                  if phv00159704 is 1 and phv00159705 is 1
+        Condition:
+          identity:
+          condition_concept: MONDO:0004979 #asthma
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: CLINICAL_DIAGNOSIS
+          condition_status: PRESENT
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:
+                  if phv00159704 is 1 and phv00159705 is 3
+        Condition:
+          identity:
+          condition_concept: MONDO:0004979 #asthma
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: CLINICAL_DIAGNOSIS
+          condition_status: HISTORICAL
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:
+                  if phv00159704 is 3 and phv00159705 is 0
+        Condition:
+          identity:
+          condition_concept: MONDO:0004979 #asthma
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_status: HISTORICAL
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:
+                  if phv00159704 is 3 and phv00159705 is 1
+        Condition:
+          identity:
+          condition_concept: MONDO:0004979 #asthma
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_status: PRESENT
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:
+                  if phv00159704 is 3 and phv00159705 is 3
+        Condition:
+          identity:
+          condition_concept: MONDO:0004979 #asthma
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_status: UNKNOWN
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:                  
+      value: 3
+        function: Add one condition and look at phv00159704 and phv00159705 - then look at phv00159702
+                  if phv00159704 is 0 and phv00159705 is 0
+        Condition: Add one condition
+          identity:
+          condition_concept: MONDO:0004979 #asthma
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_status: ABSENT
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:
+                  if phv00159704 is 0 and phv00159705 is 1
+        Condition:
+          identity:
+          condition_concept: MONDO:0004979 #asthma
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_status: PRESENT
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:                  
+                  if phv00159704 is 0 and phv00159705 is 3
+        Condition:
+          identity:
+          condition_concept: MONDO:0004979 #asthma
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_status: ABSENT
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:
+                  if phv00159704 is 1 and phv00159705 is 0
+        Condition:
+          identity:
+          condition_concept: MONDO:0004979 #asthma
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: CLINICAL_DIAGNOSIS
+          condition_status: HISTORICAL
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:                
+                  if phv00159704 is 1 and phv00159705 is 1
+        Condition:
+          identity:
+          condition_concept: MONDO:0004979 #asthma
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: CLINICAL_DIAGNOSIS
+          condition_status: PRESENT
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:
+                  if phv00159704 is 1 and phv00159705 is 3
+        Condition:
+          identity:
+          condition_concept: MONDO:0004979 #asthma
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: CLINICAL_DIAGNOSIS
+          condition_status: UNKNOWN
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:
+                  if phv00159704 is 3 and phv00159705 is 0
+        Condition:
+          identity:
+          condition_concept: MONDO:0004979 #asthma
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_status: ABSENT
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:
+                  if phv00159704 is 3 and phv00159705 is 1
+        Condition:
+          identity:
+          condition_concept: MONDO:0004979 #asthma
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_status: PRESENT
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:
+                  if phv00159704 is 3 and phv00159705 is 3
+        Condition:
+          identity:
+          condition_concept: MONDO:0004979 #asthma
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: PATIENT_SELF-REPORTED_CONDITION
+          condition_status: UNKNOWN
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:                  
+          
+priority_variable: 
+  name: asthma
+  raw_variable: phv00159702
+    identifiers:
+      phs: phs000179
+      pht: pht002239
+    input_data_type: decimal and string
+    value_set:
+      value: 
+        function: transform from years to days and add to age at condition start
+        Condition:
+          identity:
+          condition_concept: MONDO:0004979 #asthma
+          age_at_condition_start: #add age in days
+          age_at_condition_end:
+          condition_provenance: #existing value
+          condition_status: #existing value
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:
+      value: "Don't Know"
+        function: Do nothing
+        Condition:
+          identity:
+          condition_concept: MONDO:0004979 #asthma
+          age_at_condition_start:
+          age_at_condition_end:
+          condition_provenance: #existing value
+          condition_status: #existing value
+          condition_severity:
+          relationship_to_participant: ONESELF
+          associated_participant:
+          associated_visit:
+          id:

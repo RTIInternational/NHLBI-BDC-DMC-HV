@@ -1,0 +1,160 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00002946
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 16'"
+      value_decimal:
+        populated_from: 
+          expr: {phv00002682} / 10
+      observation_type:
+        expr: "OMOP:4176265'" #FVC
+      value_quantity.unit:
+        expr: "'L'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00003261
+      associated_visit:
+        expr: "'FHS ORIGINAL EXAM 17'"
+      value_decimal:
+        populated_from: 
+          expr: {phv00003249} / 10
+      observation_type:
+        expr: "OMOP:4176265'" #FVC
+      value_quantity.unit:
+        expr: "'L'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00022566
+      associated_visit:
+        expr: "'FHS OFFFSPRING EXAM 5'"
+      value_decimal:
+        populated_from: phv00022555
+      observation_type:
+        expr: "OMOP:4176265'" #FVC
+      value_quantity.unit:
+        expr: "'L'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00022579
+      associated_visit:
+        expr: "'FHS GENERATION 3 EXAM 1'"
+      value_decimal:
+        populated_from: phv00022571
+      observation_type:
+        expr: "OMOP:4176265'" #FVC
+      value_quantity.unit:
+        expr: "'L'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00022687
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 3'"
+      value_decimal:
+        populated_from: phv00022678
+      observation_type:
+        expr: "OMOP:4176265'" #FVC
+      value_quantity.unit:
+        expr: "'L'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00022700
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 7'"
+      value_decimal:
+        populated_from: phv00022689
+      observation_type:
+        expr: "OMOP:4176265'" #FVC
+      value_quantity.unit:
+        expr: "'L'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00056635
+      associated_visit:
+        expr: "'FHS OFFSPRING BASELINE'"
+      value_decimal:
+        populated_from: phv00055266
+      observation_type:
+        expr: "OMOP:4176265'" #FVC
+      value_quantity.unit:
+        expr: "'L'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00073843
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 8'"
+      value_decimal:
+        populated_from: phv00073832
+      observation_type:
+        expr: "OMOP:4176265'" #FVC
+      value_quantity.unit:
+        expr: "'L'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00196546
+      associated_visit:
+        expr: "'FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'"
+      value_decimal:
+        populated_from: phv00196552
+      observation_type:
+        expr: "OMOP:4176265'" #FVC
+      value_quantity.unit:
+        expr: "'L'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00257829
+      associated_visit:
+        populated_from: phv00257830
+        value_mappings:
+          '1': 'FHS OFFSPRING EXAM 9'
+          '7': 'FHS OMNI 1 EXAM 4'
+      value_decimal:
+        populated_from: phv00257838
+      observation_type:
+        expr: "OMOP:4176265'" #FVC
+      value_quantity.unit:
+        expr: "'L'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00257846
+      associated_visit:
+        expr: "'FHS NEW OFFSPRING SPOUSE, OMNI 2 EXAM 1'"
+      value_decimal:
+        populated_from: phv00257853
+      observation_type:
+        expr: "OMOP:4176265'" #FVC
+      value_quantity.unit:
+        expr: "'L'"
+        

@@ -1,0 +1,51 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      observation_type:
+        expr: "'OMOP:37396400'"
+      range_low:
+        value_decimal: 
+        unit: "unit"
+      value_concept:
+        populated_from:
+          expr: case(({phv00056501} == 0, "'< 50'"))
+
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      observation_type:
+        expr: "'OMOP:37396400'"
+      range_low:
+        value_decimal: 
+        unit: "unit"
+      value_concept:
+        populated_from:
+          expr: case(({phv00056501} == 1, "'> 50'"))
+
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      observation_type:
+        expr: "'OMOP:37396400'"
+      range_low:
+        value_decimal: 
+        unit: "unit"
+      value_concept:
+        populated_from:
+          expr: case(({phv00198702} == 0, "'< 50'"))
+
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      observation_type:
+        expr: "'OMOP:37396400'"
+      range_low:
+        value_decimal: 
+        unit: "unit"
+      value_concept:
+        populated_from:
+          expr: case(({phv00198702} == 1, "'> 50'"))

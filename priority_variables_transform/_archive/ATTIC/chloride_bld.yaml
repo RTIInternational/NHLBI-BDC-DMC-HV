@@ -1,0 +1,56 @@
+priority_variable:
+  name: chloride_bld
+    phv: phv00008103
+      identifiers:
+        phs: phs000007
+        pht: pht000031
+      input_data_type: decimal
+      value_set:
+        value:
+          function: add new MeasurementObservation
+          MeasurementObservation:
+            range_low:
+            range_high:
+            age_at_observation:
+            category:
+            observation_type: OBA:VT0003018 #chloride in blood
+            method_type:
+            focus:
+            associated_participant:
+            associated_visit:
+            performed_by:
+            value_string:
+            value_boolean:
+            value_quantity:
+              value_decimal: #value goes here
+              unit: mmol/L
+              id:
+            value_enum:
+            id:
+    phv: phv00081017
+      identifiers:
+        phs: phs000007
+        pht: pht001045
+      input_data_type: decimal
+      value_set:
+        value:
+          function: add new MeasurementObservation, transform units from mmol/dL to mmol/L
+          MeasurementObservation:
+            range_low:
+            range_high:
+            age_at_observation:
+            category:
+            observation_type: OBA:VT0003018 #chloride in blood
+            method_type:
+            focus:
+            associated_participant:
+            associated_visit:
+            performed_by:
+            value_string:
+            value_boolean:
+            value_quantity:
+              value_decimal: #value goes here
+              unit: mmol/L
+              id:
+            value_enum:
+            id:            

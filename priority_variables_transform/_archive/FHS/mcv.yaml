@@ -1,0 +1,45 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht000031
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00008379
+      associated_visit:
+        expr: "'FHS OFFSPRING EXAM 2'"
+      value_decimal:
+        populated_from: phv00008112
+      observation_type:
+        expr: "'OBA:0003460'"  #mean corpuscular volume
+      value_quantity.unit:
+        expr: "'fL'"
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht002889
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00172159
+      associated_visit:
+        expr: "'FHS GENERATION 3, NEW OFFSPRING SPOUSE, OMNI 2 EXAM 2'"
+      value_decimal:
+        populated_from: phv00172182
+      observation_type:
+        expr: "'OBA:0003460'"  #mean corpuscular volume
+      value_quantity.unit:
+        expr: "'fL'"   
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht001045
+    slot_derivations:
+      associated_participant:
+        populated_from: phv00172159
+      associated_visit:
+        populated_from: phv00081047
+        value_mappings:
+          '20': 'FHS ORIGINAL EXAM 20'
+          '21': 'FHS ORIGINAL EXAM 21'
+      value_decimal:
+        populated_from: phv00081033
+      observation_type:
+        expr: "'OBA:0003460'"  #mean corpuscular volume
+      value_quantity.unit:
+        expr: "'fL'"           

@@ -1,0 +1,13 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00227285
+      observation_type:
+        expr: "'OMOP:4112223'"
+      value_quantity.unit:
+        expr: "'{ratio}'"
+      range_low:
+        value_decimal: 
+        unit: {ratio}

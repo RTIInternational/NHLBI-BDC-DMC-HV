@@ -1,0 +1,27 @@
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00085074
+      observation_type:
+        expr: "'OMOP:3011888'"
+      value_quantity.unit:
+        expr: "'pg/mL'"
+      range_low:
+        value_decimal: 
+        unit: pg/mL
+
+class_derivations:
+  MeasurementObservation:
+    populated_from: FHS
+    slot_derivations:
+      value_decimal:
+        populated_from: phv00120666
+      observation_type:
+        expr: "'OMOP:3011888'"
+      value_quantity.unit:
+        expr: "'pg/mL'"
+      range_low:
+        value_decimal: 
+        unit: pg/mL
