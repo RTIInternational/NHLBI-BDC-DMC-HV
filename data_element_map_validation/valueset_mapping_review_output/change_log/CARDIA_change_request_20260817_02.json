@@ -1,0 +1,41 @@
+{
+  "submitted_date": "2026-08-17",
+  "study": "CARDIA",
+  "curator": "stephanie",
+  "changes": {
+    "CARDIA::confirmed::tak_insulin.yaml": {
+      "study": "CARDIA",
+      "change_request": "ATC:A10A",
+      "original_curie": "MeSH:D007328",
+      "slot": "drug_concept",
+      "yaml_files": [
+        "tak_insulin.yaml"
+      ],
+      "notes": "",
+      "applied": false,
+      "saved_date": "2026-08-17",
+      "apply_results": [
+        "⚠ No `drug_concept: value:` pattern in `tak_insulin.yaml`",
+        "✓ CSV: 1 row(s) → `ATC:A10A` for `tak_insulin.yaml` [drug_concept]"
+      ]
+    },
+    "CARDIA::confirmed::hyperten.yaml": {
+      "study": "CARDIA",
+      "change_request": "MONDO:0005044",
+      "original_curie": "HP:0000822",
+      "slot": "condition_concept",
+      "yaml_files": [
+        "hyperten.yaml"
+      ],
+      "notes": "http://purl.obolibrary.org/obo/HP_0000822\nhttp://purl.obolibrary.org/obo/MONDO_0005044",
+      "applied": true,
+      "saved_date": "2026-08-17",
+      "applied_date": "2026-08-17",
+      "applied_by": "stephanie",
+      "apply_results": [
+        "✓ YAML `hyperten.yaml` [condition_concept] → `MONDO:0005044` (7 block(s) updated)",
+        "✓ CSV: 16 row(s) → `MONDO:0005044` for `hyperten.yaml` [condition_concept]"
+      ]
+    }
+  }
+}
