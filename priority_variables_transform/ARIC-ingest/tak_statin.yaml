@@ -7,7 +7,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204295}) + ":ARIC Hospital Form")'
         drug_concept:
-          expr: case(({phv00204156} == 1, "ATC:C10A"))
+          expr: case(({phv00204156} == 'Y', "ATC:C10A"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
         exposure_status:

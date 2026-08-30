@@ -7,7 +7,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         drug_concept:
-          expr: case(({phv00206919} == 1, "ATC:C09A"))
+          expr: case(({phv00206919} == 'Y', "ATC:C09A"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
         exposure_status:
@@ -24,7 +24,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         drug_concept:
-          expr: case(({phv00206920} == 1, "ATC:C09A"))
+          expr: case(({phv00206920} == 'Y', "ATC:C09A"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
         exposure_status:

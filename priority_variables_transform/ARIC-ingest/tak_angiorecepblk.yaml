@@ -8,7 +8,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203808}) + ":ARIC Death Event")'
           range: string
         drug_concept:
-          expr: case(({phv00203803} == 1, "ATC:C09C"))
+          expr: case(({phv00203803} == 'Y', "ATC:C09C"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -28,7 +28,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204295}) + ":ARIC Hospital Form")'
           range: string
         drug_concept:
-          expr: case(({phv00203973} == 1, "ATC:C09C"))
+          expr: case(({phv00203973} == 'Y', "ATC:C09C"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -66,7 +66,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
         drug_concept:
-          expr: case(({phv00206921} == 1, "ATC:C09C"))
+          expr: case(({phv00206921} == 'Y', "ATC:C09C"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -85,7 +85,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
         drug_concept:
-          expr: case(({phv00206964} == 1, "ATC:C09C"))
+          expr: case(({phv00206964} == 'Y', "ATC:C09C"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
