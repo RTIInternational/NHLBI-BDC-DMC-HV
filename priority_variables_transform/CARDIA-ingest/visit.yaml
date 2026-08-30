@@ -117,8 +117,9 @@
 # standard CARDIA Individual_ID — uuid5 produces matching Visit IDs across these tables.
 # pht003298 (HeartGO_CARDIA) uses HeartGO New_SUBJID (GENEVA subject ID) — these produce
 # separate Visit entities that do not cross-link with standard Individual_ID-keyed tables.
-# pht003298 (HeartGO_CARDIA) uses phv00190622 (ESP_age_at_serum_creatinine) as exam-age proxy;
-# all other YEAR 20 tables lack a direct exam-age variable and omit age_at_visit.
+# phv00190622 (ESP_age_at_serum_creatinine) is NOT participant age (var_report shows mean
+# 3.15, range 0.15-23.1 -- a specimen/assay-interval field, not exam age) -- omitted below,
+# same as the other YEAR 20 tables which also lack a direct exam-age variable.
 - class_derivations:
     Visit:
       populated_from: pht001857
@@ -191,10 +192,6 @@
           value: HEALTH_EXAMINATION
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190551}) + ":CARDIA")'
-        age_at_visit_start:
-          expr: "None if str({phv00190622}) == 'M' else float({phv00190622}) * 365"
-        age_at_visit_end:
-          expr: "None if str({phv00190622}) == 'M' else float({phv00190622}) * 365"
         visit_provenance:
           value: STUDY_RECORD
           range: string

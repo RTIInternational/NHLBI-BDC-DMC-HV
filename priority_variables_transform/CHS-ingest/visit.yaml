@@ -62,9 +62,9 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00099663}) + ":CHS")'
         age_at_visit_start:
-          expr: '({pht001450.phv00098799} * 365) + ({phv00100283} * 365)'
+          expr: '{pht001450.phv00098799} * 365'
         age_at_visit_end:
-          expr: '({pht001450.phv00098799} * 365) + ({phv00100283} * 365)'
+          expr: '{pht001450.phv00098799} * 365'
         visit_provenance:
           value: STUDY_RECORD
           range: string
