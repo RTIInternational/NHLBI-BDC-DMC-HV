@@ -1,3 +1,5 @@
+# All four FHS sources are CDI "OTHER PERIPHERAL VASCULAR DISEASE", so this file
+# emits PVD (MONDO:0005294), not PAD. Claudication-derived blocks removed per HV #801.
 # Offspring Exam 5 (pht000034): CDI-Other Peripheral Vascular Disease (phv00009530)
 # Replaces non-functional Offspring Exam 8 block (pht000747) — "FHS OFFSPRING EXAM 8"
 # visit label does not exist in the pipeline output. Exam 5 is the earliest Offspring
@@ -40,7 +42,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00021427}) + ":FHS GENERATION 3 EXAM 1")'
         condition_concept:
-          value: MONDO:0005386
+          value: MONDO:0005294
           range: string
         condition_status:
           populated_from: phv00021192
@@ -65,7 +67,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00273700}) + ":FHS NEW OFFSPRING SPOUSE EXAM 1")'
         condition_concept:
-          value: MONDO:0005386
+          value: MONDO:0005294
           range: string
         condition_status:
           populated_from: phv00274014
@@ -90,7 +92,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00274193}) + ":FHS OMNI 2 EXAM 1")'
         condition_concept:
-          value: MONDO:0005386
+          value: MONDO:0005294
           range: string
         condition_status:
           populated_from: phv00566177
@@ -102,153 +104,6 @@
           range: string
         associated_evidence:
           value: Clinical Diagnostic Impression
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht000074
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00021427}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00021427}) + ":FHS GENERATION 3 EXAM 1")'
-        condition_concept:
-          value: MONDO:0005386
-          range: string
-        condition_status:
-          populated_from: phv00021067
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: PATIENT_SELF_REPORT
-          range: string
-        associated_evidence:
-          value: Rose Claudication Questionnaire
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht004813
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00250282}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00250282}) + ":FHS OMNI 1 EXAM 1")'
-        condition_concept:
-          value: MONDO:0005386
-          range: string
-        condition_status:
-          populated_from: phv00565682
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: PATIENT_SELF_REPORT
-          range: string
-        associated_evidence:
-          value: Rose Claudication Questionnaire
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht006005
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00273700}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00273700}) + ":FHS NEW OFFSPRING SPOUSE EXAM 1")'
-        condition_concept:
-          value: MONDO:0005386
-          range: string
-        condition_status:
-          populated_from: phv00273900
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: PATIENT_SELF_REPORT
-          range: string
-        associated_evidence:
-          value: Rose Claudication Questionnaire
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht006006
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00274193}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00274193}) + ":FHS OMNI 2 EXAM 1")'
-        condition_concept:
-          value: MONDO:0005386
-          range: string
-        condition_status:
-          populated_from: phv00566063
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: PATIENT_SELF_REPORT
-          range: string
-        associated_evidence:
-          value: Rose Claudication Questionnaire
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-# Original cohort: pht000309 (Sequence of Events) with cross-table join to pht003099
-# EVENT code 30 = "IC, first episode only" (Intermittent Claudication)
-# DATE (phv00036471) = days from baseline; DATE <= 0 means event at or before baseline
-# This recovers ~5,000 Original cohort participants who have no questionnaire-based
-# PAD data but have adjudicated cardiovascular event records.
-- class_derivations:
-    Condition:
-      populated_from: pht000309
-      joins:
-        pht003099:
-          source_key: phv00036472
-          lookup_key: phv00177926
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00036472}) + ":FHS")'
-        associated_visit:
-          expr: >
-            uuid5("https://w3id.org/bdchm/Visit", str({phv00036472}) + ":" +
-            case(
-              ({phv00036470} == 0, "FHS ORIGINAL EXAM 4"),
-              ({phv00036470} == 1, "FHS OFFSPRING EXAM 1"),
-              ({phv00036470} == 2, "FHS NEW OFFSPRING SPOUSE EXAM 1"),
-              ({phv00036470} == 3, "FHS GENERATION 3 EXAM 1"),
-              ({phv00036470} == 7, "FHS OMNI 1 EXAM 1"),
-              ({phv00036470} == 72, "FHS OMNI 2 EXAM 1"),
-              (True, "FHS UNKNOWN VISIT")
-            ))
-        age_at_condition_start:
-          expr: "case(({phv00036469} == 30 and int({phv00036471}) <= 0, ({pht003099.phv00177930} * 365) + int({phv00036471})))"
-        condition_concept:
-          value: MONDO:0005386
-          range: string
-        condition_status:
-          expr: >
-            case(
-              ({phv00036469} == 30 and int({phv00036471}) <= 0, "PRESENT"),
-              (True, None)
-            )
-        condition_provenance:
-          value: PHYSICIAN_ADJUDICATION
-          range: string
-        associated_evidence:
-          value: Adjudicated cardiovascular event (Sequence of Events)
           range: string
         relationship_to_participant:
           value: ONESELF
