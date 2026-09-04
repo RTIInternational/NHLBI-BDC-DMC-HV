@@ -32,6 +32,10 @@ def iter_nested_class_derivs(slot_def):
 
 
 # Known duplicates tracked in #455. Remove entries as they are fixed.
+#
+# Re-triaged in #735 once this check could see MeasurementObservationSet.
+# Seven entries were dropped as genuinely resolved; the two below are still
+# live and were only invisible because they sit inside a Set.
 KNOWN_ISSUES = {
     "phv00001581",  # FHS tot_chol_bld.yaml — missing observation_type in block 60
     "phv00079854",  # WHI bp_diastolic / bp_systolic
@@ -40,13 +44,44 @@ KNOWN_ISSUES = {
     "phv00079857",  # WHI bp_diastolic / bp_systolic
     "phv00100046",  # CHS albumin_bld / mch
     "phv00112688",  # CARDIA hemo / mchc
+
     "phv00210286",  # ARIC bp_diastolic / bp_systolic
     "phv00210289",  # ARIC bp_diastolic / bp_systolic
+    # sigfried (77e6efd5e) added this note about ARIC bp_diastolic / bp_systolic above:
     # ARIC lympho_ct / whtbld_ct read the same column. Awaiting a spec-owner
     # decision; full account and the steps to resolve are in
     # transform_assessment/OPEN_ARIC_LYMPHO_CT_PHV.md
+
+    # corey (ce16cfaec) added this note, with no change to code:
+    # ARIC blood_pressure.yaml emits the same random-zero "zero reading"
+    # (SBPA17 / SBPA20) twice, typed as both OMOP:4152194 (systolic) and
+    # OMOP:4154790 (diastolic), distinguished only by method_type. Whether
+    # a calibration offset should carry a BP concept at all is open in #735.
+
     "phv00294954",
 }
+
+
+def _measurement_value_phvs(slots, block_index):
+    """Yield (phv, concept, block_index) for one MeasurementObservation's slots.
+
+    Shared by top-level MeasurementObservation derivations and those nested
+    inside a MeasurementObservationSet.
+    """
+    concept = (slots.get("observation_type") or {}).get("value")
+    for qty_name, qty in iter_nested_class_derivs(slots.get("value_quantity")):
+        if qty_name != "Quantity":
+            continue
+        qty_slots = qty.get("slot_derivations") or {}
+        # value_concept carries the measured value for coded quantities; slots
+        # that also declare value_mappings or expr are skipped below, so only
+        # raw populated_from concepts are counted.
+        for val_slot in ("value_decimal", "value_integer", "value_string", "value_concept"):
+            slot_def = qty_slots.get(val_slot) or {}
+            if "populated_from" in slot_def and "value_mappings" not in slot_def and "expr" not in slot_def:
+                phv = slot_def["populated_from"]
+                if phv and str(phv).startswith("phv"):
+                    yield phv, concept, block_index
 
 
 def extract_value_phvs(block, block_index):
@@ -70,17 +105,19 @@ def extract_value_phvs(block, block_index):
                     yield phv, concept, block_index
 
         elif class_name == "MeasurementObservation":
-            concept = (slots.get("observation_type") or {}).get("value")
-            for qty_name, qty in iter_nested_class_derivs(slots.get("value_quantity")):
-                if qty_name != "Quantity":
+            yield from _measurement_value_phvs(slots, block_index)
+
+        elif class_name == "MeasurementObservationSet":
+            # Measurements bundled in a Set hang off `observations` rather than
+            # sitting at the top level, but they are value-bearing in exactly
+            # the same way -- skipping them left blood_pressure and spirometry
+            # specs unchecked.
+            for obs_name, obs in iter_nested_class_derivs(slots.get("observations")):
+                if obs_name != "MeasurementObservation":
                     continue
-                qty_slots = qty.get("slot_derivations") or {}
-                for val_slot in ("value_decimal", "value_integer", "value_string"):
-                    slot_def = qty_slots.get(val_slot) or {}
-                    if "populated_from" in slot_def and "value_mappings" not in slot_def and "expr" not in slot_def:
-                        phv = slot_def["populated_from"]
-                        if phv and str(phv).startswith("phv"):
-                            yield phv, concept, block_index
+                yield from _measurement_value_phvs(
+                    obs.get("slot_derivations") or {}, block_index
+                )
 
 
 def main() -> int:

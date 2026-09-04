@@ -76,8 +76,10 @@
       "tak_aceinhib.yaml"
     ],
     "notes": "ATC:C09A = ACE inhibitors, plain",
-    "applied": false,
-    "saved_date": "2026-06-15"
+    "applied": true,
+    "saved_date": "2026-06-15",
+    "applied_date": "2026-08-21",
+    "applied_by": "Curator"
   },
   "HCHS::confirmed::HCHS-ingest/asthma.yaml": {
     "study": "HCHS",
@@ -88,7 +90,57 @@
       "HCHS-ingest/asthma.yaml"
     ],
     "notes": "confirming that asthma is a condition, with MONDO:0004979",
-    "applied": false,
-    "saved_date": "2026-06-16"
+    "applied": true,
+    "saved_date": "2026-06-16",
+    "applied_date": "2026-08-17",
+    "applied_by": "stephanie"
+  },
+  "HCHS::confirmed::spirometry.yaml": {
+    "study": "HCHS",
+    "change_request": "OMOP:3011505",
+    "original_curie": "OMOP:3002094",
+    "slot": "observations",
+    "yaml_files": [
+      "spirometry.yaml"
+    ],
+    "notes": "OMOP:3011505 is more correct if FEV1/FVC ratio \nBreathing; End tidal volume; Exp; FEV; FEV1; FEV1%; FEV1/FVC\nLOINC:19926-5| FEV1/FVC\n -- Data-integrity fix (2026-08-19): the 2026-08-17 app Submit (commit f5c7bc65) blanket-overwrote all 42 CSV rows tagged (spirometry.yaml, observations) to OMOP:3011505, corrupting 35 rows that held 4 other distinct concepts (OMOP:3022891, 3024594, 4176265, 4241837). Restored those 35 rows to their original values from git history (f5c7bc65^). The 7 rows that genuinely held OMOP:3002094 were set to OMOP:3011505, matching the single corresponding YAML block (populated_from pht004715, line 114) which was updated the same way. -- Follow-up correction (2026-08-19, same day): 1 of those 7 rows belonged to the 'AGE' variable (phv00226251), which only ever appears in the YAML as age_at_observation, never as observation_type — its OMOP:3002094 pairing was a pre-existing CSV cross-product artifact unrelated to the FVC finding, per curator instruction not to change it from what it was. Reverted all 6 rows for that phv (not just the one matching original_curie) back to their true original per-row values. Real target-fix count is now 6, not 7.",
+    "applied": true,
+    "saved_date": "2026-08-17",
+    "applied_date": "2026-08-19",
+    "applied_by": "stephanie",
+    "apply_results": [
+      "YAML: 1 block updated: OMOP:3002094 -> OMOP:3011505",
+      "CSV: 6 row(s) updated to OMOP:3011505; 36 previously-corrupted/artifact row(s) restored to original distinct values (see notes)"
+    ]
+  },
+  "HCHS::confirmed::HCHS-ingest/pacem_stat.yaml": {
+    "study": "HCHS",
+    "phv": "",
+    "change_request": "OMOP:45772840",
+    "original_curie": "OMOP:45772840",
+    "slot": "observation_type",
+    "yaml_files": [
+      "HCHS-ingest/pacem_stat.yaml"
+    ],
+    "notes": "leaving a note here - OMOP:36310218",
+    "applied": true,
+    "saved_date": "2026-08-21",
+    "applied_date": "2026-08-21",
+    "applied_by": "Curator"
+  },
+  "HCHS::confirmed::waist_hip.yaml::phv00226399": {
+    "study": "HCHS",
+    "phv": "phv00226399",
+    "change_request": "OMOP:4087501",
+    "original_curie": "OBA:2100052",
+    "slot": "observation_type",
+    "yaml_files": [
+      "waist_hip.yaml"
+    ],
+    "notes": "OMOP:4087501 is more accurate",
+    "applied": true,
+    "saved_date": "2026-08-21",
+    "applied_date": "2026-08-21",
+    "applied_by": "Curator"
   }
 }

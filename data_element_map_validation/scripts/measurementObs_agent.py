@@ -405,8 +405,24 @@ def get_loinc_id(description: str, **kwargs) -> str | None:
         >>> get_loinc_id("hemoglobin")
         'LOINC:718-7'
     """
+    loinc_id, _score = get_loinc_id_with_score(description, **kwargs)
+    return loinc_id
+
+
+def get_loinc_id_with_score(description: str, **kwargs) -> tuple[str | None, float]:
+    """Like get_loinc_id, but also returns the top match's similarity score.
+
+    Note: LOINC is a vocabulary/slot mismatch for observation_type (see
+    _SLOT_VOCAB_RULES in generate_semantic_review.py — LOINC belongs in
+    method_type, not observation_type). This score reflects match quality
+    against the description, not whether LOINC is the right vocabulary for
+    the slot; it's useful context if the curator is relocating the code to
+    method_type.
+    """
     results = match_loinc(description, **kwargs)
-    return results[0]["loinc_id"] if results else None
+    if results:
+        return results[0]["loinc_id"], results[0]["score"]
+    return None, 0.0
 
 
 # ---------------------------------------------------------------------------
