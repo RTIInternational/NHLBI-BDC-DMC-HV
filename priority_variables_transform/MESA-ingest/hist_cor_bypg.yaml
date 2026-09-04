@@ -1,50 +1,36 @@
 - class_derivations:
-    Condition:
+    Procedure:
       populated_from: pht001111
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
-        condition_concept:
+        procedure_concept:
           value: OMOP:4336464
-          range: string
-        condition_status:
+        procedure_status:
           populated_from: phv00082876
           value_mappings:
             '0': ABSENT
             '1': PRESENT
-        condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-        associated_evidence:
-          value: "self-report questionnaire"
+        procedure_provenance:
+          value: PATIENT_SELF_REPORT
           range: string
 - class_derivations:
-    Condition:
+    Procedure:
       populated_from: pht001123
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00087848}) + ":MESA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00087848}) + ":MESA CLASSIC CVE")'
-        condition_concept:
+        procedure_concept:
           value: OMOP:4336464
-          range: string
-        condition_status:
+        procedure_status:
           populated_from: phv00087865
           value_mappings:
             '0': ABSENT
             '1': PRESENT
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-        associated_evidence:
-          value: "hospital record abstraction"
+        procedure_provenance:
+          value: HEALTH_RECORD
           range: string

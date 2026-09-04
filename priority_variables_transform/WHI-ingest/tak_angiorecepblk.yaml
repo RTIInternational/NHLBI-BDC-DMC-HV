@@ -12,8 +12,13 @@
         drug_concept:
           expr: case(({phv00283675} == 1, "ATC:C09C"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00283675
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht006223
@@ -28,5 +33,10 @@
         drug_concept:
           expr: case(({phv00283676} == 1, "ATC:C09C"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00283676
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT

@@ -15,7 +15,7 @@
             Y: PRESENT
             N: ABSENT
         procedure_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
 - class_derivations:
     Procedure:
@@ -34,7 +34,7 @@
             Y: PRESENT
             N: ABSENT
         procedure_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
 - class_derivations:
     Procedure:
@@ -50,10 +50,10 @@
         procedure_status:
           populated_from: phv00403115
           value_mappings:
-            '1': PRESENT
-            '2': ABSENT
+            'Yes': PRESENT
+            'No': ABSENT
         procedure_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
 - class_derivations:
     Procedure:
@@ -69,8 +69,8 @@
         procedure_status:
           populated_from: phv00403190
           value_mappings:
-            '1': PRESENT
-            '2': ABSENT
+            'Yes': PRESENT
+            'No': ABSENT
         procedure_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string

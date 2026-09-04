@@ -18,10 +18,10 @@
             '8': UNKNOWN
             M: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -41,10 +41,10 @@
             '2': HISTORICAL
             M: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -66,10 +66,10 @@
             '8': UNKNOWN
             M: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PHYSICIAN_ADJUDICATION
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -88,7 +88,7 @@
             '1': ABSENT
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: "self-report questionnaire"
           range: string
@@ -113,9 +113,9 @@
             '8': UNKNOWN
             M: UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PHYSICIAN_ADJUDICATION
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF

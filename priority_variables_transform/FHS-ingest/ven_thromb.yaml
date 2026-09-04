@@ -15,11 +15,11 @@
             '0': ABSENT
             '2': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -39,11 +39,11 @@
           value_mappings:
             '0': ABSENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -65,11 +65,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -87,12 +87,16 @@
         condition_status:
           populated_from: phv00071923
           value_mappings:
-            '110': PRESENT  # PE by pulmonary arteriogram, CTPA, or MRI
+            # PE by pulmonary arteriogram, CTPA, or MRI
+            '110': PRESENT
         condition_provenance:
-          value: OMOP:4822160
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Final Diagnostic Summary
+          range: string
+        relationship_to_participant:
+          value: ONESELF
           range: string
 
 - class_derivations:
@@ -109,12 +113,16 @@
         condition_status:
           populated_from: phv00071924
           value_mappings:
-            '111': PRESENT  # PE by history and high probability V/Q scan
+            # PE by history and high probability V/Q scan
+            '111': PRESENT
         condition_provenance:
-          value: OMOP:4822160
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Final Diagnostic Summary
+          range: string
+        relationship_to_participant:
+          value: ONESELF
           range: string
 
 - class_derivations:
@@ -131,12 +139,16 @@
         condition_status:
           populated_from: phv00071925
           value_mappings:
-            '112': PRESENT  # PE by clinical high suspicion & documented DVT source
+            # PE by clinical high suspicion & documented DVT source
+            '112': PRESENT
         condition_provenance:
-          value: OMOP:4822160
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Final Diagnostic Summary
+          range: string
+        relationship_to_participant:
+          value: ONESELF
           range: string
 
 - class_derivations:
@@ -153,12 +165,16 @@
         condition_status:
           populated_from: phv00071926
           value_mappings:
-            '113': PRESENT  # PE by autopsy
+            # PE by autopsy
+            '113': PRESENT
         condition_provenance:
-          value: OMOP:4822160
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Final Diagnostic Summary
+          range: string
+        relationship_to_participant:
+          value: ONESELF
           range: string
 
 - class_derivations:
@@ -175,12 +191,16 @@
         condition_status:
           populated_from: phv00071928
           value_mappings:
-            '3': ABSENT  # No PE
+            # No PE
+            '3': ABSENT
         condition_provenance:
-          value: OMOP:4822160
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Final Diagnostic Summary
+          range: string
+        relationship_to_participant:
+          value: ONESELF
           range: string
 
 - class_derivations:
@@ -197,12 +217,16 @@
         condition_status:
           populated_from: phv00071929
           value_mappings:
-            '4': UNKNOWN  # Maybe PE
+            # Maybe PE
+            '4': UNKNOWN
         associated_evidence:
           value: 'Final Diagnostic Summary'
           range: string
         condition_provenance:
-          value: OMOP:4822160
+          value: STUDY_RECORD
+          range: string
+        relationship_to_participant:
+          value: ONESELF
           range: string
 - class_derivations:
     Condition:
@@ -222,7 +246,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -244,11 +268,11 @@
             '0': ABSENT
             '2': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -269,11 +293,11 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: Clinical Diagnostic Impression
-          range: string
+        # associated_evidence:
+        #   value: Clinical Diagnostic Impression
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -293,11 +317,11 @@
           value_mappings:
             '0': ABSENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: Clinical Diagnostic Impression
-          range: string
+        # associated_evidence:
+        #   value: Clinical Diagnostic Impression
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -318,11 +342,11 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -343,11 +367,11 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -368,11 +392,11 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -393,11 +417,11 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -419,11 +443,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: WORKING_DIAGNOSIS
           range: string
-        associated_evidence:
-          value: Clinical Diagnostic Impression
-          range: string
+        # associated_evidence:
+        #   value: Clinical Diagnostic Impression
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -445,11 +469,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -471,7 +495,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: OMOP:4822126
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Venogram
@@ -497,7 +521,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: OMOP:4822126
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Doppler Ultrasound
@@ -523,7 +547,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: OMOP:4822126
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Impedance Plethysmography
@@ -549,7 +573,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: OMOP:4822126
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Computed Tomography
@@ -571,12 +595,16 @@
         condition_status:
           populated_from: phv00071930
           value_mappings:
-            '114': PRESENT  # DVT by imaging (SOE 114)
+            # DVT by imaging (SOE 114)
+            '114': PRESENT
         condition_provenance:
-          value: OMOP:4822160
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Final Diagnostic Summary
+          range: string
+        relationship_to_participant:
+          value: ONESELF
           range: string
 - class_derivations:
     Condition:
@@ -592,12 +620,16 @@
         condition_status:
           populated_from: phv00071932
           value_mappings:
-            '3': ABSENT  # No DVT
+            # No DVT
+            '3': ABSENT
         condition_provenance:
-          value: OMOP:4822160
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Final Diagnostic Summary
+          range: string
+        relationship_to_participant:
+          value: ONESELF
           range: string
 - class_derivations:
     Condition:
@@ -613,12 +645,16 @@
         condition_status:
           populated_from: phv00071933
           value_mappings:
-            '4': UNKNOWN  # Maybe DVT
+            # Maybe DVT
+            '4': UNKNOWN
         associated_evidence:
           value: 'Final Diagnostic Summary'
           range: string
         condition_provenance:
-          value: OMOP:4822160
+          value: STUDY_RECORD
+          range: string
+        relationship_to_participant:
+          value: ONESELF
           range: string
 - class_derivations:
     Condition:
@@ -638,7 +674,7 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -659,11 +695,11 @@
           value_mappings:
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string

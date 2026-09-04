@@ -15,11 +15,11 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -40,36 +40,11 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht005140
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00254010}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
-        condition_concept:
-          value: MONDO:0005044
-          range: string
-        condition_status:
-          populated_from: phv00254023
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-          range: string
-        associated_evidence:
-          value: Clinical Diagnostic Impression
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -91,11 +66,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
-        associated_evidence:
-          value: Clinical Diagnostic Impression
-          range: string
+        # associated_evidence:
+        #   value: Clinical Diagnostic Impression
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -119,11 +94,11 @@
             '2': PRESENT
             '3': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
-        associated_evidence:
-          value: Clinical Diagnostic Impression
-          range: string
+        # associated_evidence:
+        #   value: Clinical Diagnostic Impression
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -145,11 +120,11 @@
             '1': PRESENT
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
-        associated_evidence:
-          value: Clinical Diagnostic Impression
-          range: string
+        # associated_evidence:
+        #   value: Clinical Diagnostic Impression
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -173,7 +148,7 @@
             '2': PRESENT
             '3': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Medical History
@@ -198,7 +173,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Medical History
@@ -224,11 +199,11 @@
             '1': PRESENT
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
-        associated_evidence:
-          value: Clinical Diagnostic Impression
-          range: string
+        # associated_evidence:
+        #   value: Clinical Diagnostic Impression
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -239,7 +214,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008378}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008378}) + ":FHS OFFSPRING EXAM 1")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008378}) + ":FHS OFFSPRING EXAM 2")'
         condition_concept:
           value: MONDO:0005044
           range: string
@@ -249,7 +224,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -272,11 +247,11 @@
             '1': PRESENT
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
-        associated_evidence:
-          value: Clinical Diagnostic Impression
-          range: string
+        # associated_evidence:
+        #   value: Clinical Diagnostic Impression
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -298,11 +273,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: SELF_DIAGNOSIS
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: Awareness of Coronary Factors Questionnaire
-          range: string
+        # associated_evidence:
+        #   value: Awareness of Coronary Factors Questionnaire
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -323,11 +298,11 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: SELF_DIAGNOSIS
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: Awareness of Coronary Factors Questionnaire
-          range: string
+        # associated_evidence:
+        #   value: Awareness of Coronary Factors Questionnaire
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string

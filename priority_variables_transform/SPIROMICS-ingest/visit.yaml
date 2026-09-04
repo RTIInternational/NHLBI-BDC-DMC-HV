@@ -9,8 +9,11 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00528692}) + ":SPIROMICS")'
         visit_category:
-          value: HEALTH_EXAMINATION
+          value: STUDY_SITE_VISIT
         age_at_visit_start:
           expr: '{phv00528706} * 365'
         age_at_visit_end:
           expr: '{phv00528706} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string

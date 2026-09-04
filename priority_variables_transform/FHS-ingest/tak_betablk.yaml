@@ -9,7 +9,7 @@
         drug_concept:
           expr: case(({phv00002221} == 1, "RxCUI:8787"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00002221
@@ -27,7 +27,7 @@
         drug_concept:
           expr: case(({phv00002441} == 1, "RxCUI:8787"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00002441
@@ -43,15 +43,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002946}) + ":FHS ORIGINAL EXAM 16")'
         drug_concept:
-          expr: case(({phv00002695} == 1, "RxCUI:8787"))
+          expr: case(({phv00002695} == 4, "RxCUI:8787"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00002695
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            '3': ABSENT
+            '4': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000031
@@ -61,15 +61,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008378}) + ":FHS OFFSPRING EXAM 2")'
         drug_concept:
-          expr: case(({phv00007704} == 1, "RxCUI:8787"))
+          expr: case(({phv00007704} == 4, "RxCUI:8787"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00007704
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            '3': ABSENT
+            '4': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht006018
@@ -81,34 +81,13 @@
         drug_concept:
           expr: case(({phv00276806} == 1, "ATC:C07A"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00276806
           value_mappings:
             '0': ABSENT
             '1': PRESENT
-- class_derivations:
-    DrugExposure:
-      populated_from: pht004814
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00250718}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00250718}) + ":FHS OMNI 1 EXAM 2")'
-        drug_concept:
-          expr: case(({phv00250734} == 1, "ATC:C07A"))
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-          range: string
-        exposure_status:
-          populated_from: phv00250734
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '2': HISTORICAL
-            '3': UNKNOWN
-            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht004814
@@ -126,8 +105,16 @@
             '5': "RxCUI:6918"
             '9': "ATC:C07A"
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00250734
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': HISTORICAL
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000019
@@ -139,28 +126,10 @@
         drug_concept:
           expr: case(({phv00002955} == 1, "ATC:C07A"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00002955
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-- class_derivations:
-    DrugExposure:
-      populated_from: pht000020
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00003667}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003667}) + ":FHS ORIGINAL EXAM 18")'
-        drug_concept:
-          expr: case(({phv00003328} == 1, "ATC:C07A"))
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-          range: string
-        exposure_status:
-          populated_from: phv00003328
           value_mappings:
             '0': ABSENT
             '1': PRESENT
@@ -181,8 +150,16 @@
             '5': "RxCUI:6918"
             '9': "ATC:C07A"
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00003328
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': HISTORICAL
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000021
@@ -194,7 +171,7 @@
         drug_concept:
           expr: case(({phv00003768} == 1, "ATC:C07A"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00003768
@@ -212,7 +189,7 @@
         drug_concept:
           expr: case(({phv00004203} == 1, "ATC:C07A"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00004203
@@ -230,7 +207,7 @@
         drug_concept:
           expr: case(({phv00004598} == 1, "ATC:C07A"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00004598
@@ -248,7 +225,7 @@
         drug_concept:
           expr: case(({phv00004952} == 1, "ATC:C07A"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00004952
@@ -270,7 +247,7 @@
             == 6, "RxCUI: 8332"),({phv00004953} == 7, "RxCUI: 149"),({phv00004953}
             == 8, "RxCUI: 6185"),({phv00004953} == 9, "RxCUI: C07A"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00004953
@@ -289,7 +266,7 @@
         drug_concept:
           expr: case(({phv00005572} == 1, "ATC:C07A"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00005572
@@ -312,7 +289,7 @@
             == 7, "RxCUI:149"), ({phv00005573} == 8, "RxCUI:6185"),({phv00005573}
             == 9, "RxCUI: C07A"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00005573
@@ -331,7 +308,7 @@
         drug_concept:
           expr: case(({phv00006124} == 1, "ATC:C07A"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00006124
@@ -358,7 +335,7 @@
                    ({phv00006125} == 8, "RxCUI:6185"),
                    ({phv00006125} == 9, "ATC:C07A"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00006125
@@ -377,7 +354,7 @@
         drug_concept:
           expr: case(({phv00006466} == 1, "ATC:C07A"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00006466
@@ -404,7 +381,7 @@
                    ({phv00006467} == 8, "RxCUI:6185"),
                    ({phv00006467} == 9, "RxCUI: C07A"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00006467
@@ -423,7 +400,7 @@
         drug_concept:
           expr: case(({phv00006854} == 1, "ATC:C07A"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00006854
@@ -446,7 +423,7 @@
             ({phv00006855} == 7, "RxCUI:149"), ({phv00006855} ==
             8, "RxCUI:6185"),({phv00006855} == 9, "RxCUI: C07A"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00006855
@@ -465,7 +442,7 @@
         drug_concept:
           expr: case(({phv00007291} == 1, "ATC:C07A"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00007291
@@ -488,7 +465,7 @@
             ({phv00007292} == 7, "RxCUI:149"), ({phv00007292} ==
             8, "RxCUI:6185"),({phv00007292} == 9, "RxCUI: C07A"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00007292
@@ -507,7 +484,7 @@
         drug_concept:
           expr: case(({phv00008784} == 1, "ATC:C07A"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00008784
@@ -530,7 +507,7 @@
             ({phv00009180} == 7, "RxCUI:149"), ({phv00009180} ==
             8, "RxCUI:6185"), ({phv00009180} == 9, "ATC:C07A"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00009180
@@ -549,7 +526,7 @@
         drug_concept:
           expr: case(({phv00009680} == 1, "ATC:C07A"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00009680
@@ -572,7 +549,7 @@
             ({phv00009681} == 7, "RxCUI:149"), ({phv00009681} ==
             8, "RxCUI:6185"), ({phv00009681} == 9, "RxCUI: C07A"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00009681
@@ -591,7 +568,7 @@
         drug_concept:
           expr: case(({phv00010160} == 1, "ATC:C07A"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00010160
@@ -614,7 +591,7 @@
             == 7, "RxCUI:149"), ({phv00010161} == 8, "RxCUI:6185"),({phv00010161}
             == 9, "RxCUI: C07A"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00010161
@@ -633,7 +610,7 @@
         drug_concept:
           expr: case(({phv00055374} == 1, "ATC:C07A"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00055374
@@ -651,7 +628,7 @@
         drug_concept:
           expr: case(({phv00055375} == 1, "ATC:C07A"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00055375
@@ -669,7 +646,7 @@
         drug_concept:
           expr: case(({phv00008387} == 1, "ATC:C07A"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00008387
@@ -687,7 +664,7 @@
         drug_concept:
           expr: case(({phv00009179} == 1, "ATC:C07A"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00009179

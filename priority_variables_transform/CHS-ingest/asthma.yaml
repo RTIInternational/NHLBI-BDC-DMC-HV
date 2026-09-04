@@ -16,13 +16,13 @@
         condition_status:
           expr: case(({phv00099087} == 0, ABSENT), ({phv00099088} == 0, HISTORICAL), (True, PRESENT))
         condition_provenance:
-          expr: case(({phv00099466} == 1, "CLINICAL_DIAGNOSIS"), (True, "PATIENT_SELF-REPORTED_CONDITION"))
+          expr: case(({phv00099466} == 1, "STUDY_RECORD"), (True, "PATIENT_SELF_REPORT"))
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001452
@@ -40,7 +40,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -66,14 +66,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001475
@@ -92,14 +92,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001476
@@ -118,14 +118,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001477
@@ -144,14 +144,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001478
@@ -170,14 +170,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001479
@@ -196,14 +196,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001480
@@ -222,14 +222,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001481
@@ -248,14 +248,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001482
@@ -274,14 +274,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001483
@@ -300,14 +300,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001484
@@ -326,14 +326,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001485
@@ -352,14 +352,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001486
@@ -378,14 +378,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001487
@@ -404,39 +404,17 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht001487
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00103730}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00103730}) + ":CHS YEAR 17")'
-        condition_concept:
-          value: MONDO:0004979
-          range: string
-        condition_status:
-          populated_from: phv00103740
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
+# Removed duplicate pht001487 block: same participant, visit, and concept as the
+# block above but mapped '0': ABSENT (never occurs) and '1': PRESENT, where
+# phv00103740 code 1 is "NEVER TOLD" -- it inverted asthma status for 1,614 rows.
 - class_derivations:
     Condition:
       populated_from: pht001490
@@ -454,14 +432,14 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          expr: case(({phv00105885} == 1, "CLINICAL_DIAGNOSIS"), ({phv00106407} ==
-            1, "CLINICAL_DIAGNOSIS"), (True, "PATIENT_SELF-REPORTED_CONDITION"))
+          expr: case(({phv00105885} == 1, "PATIENT_SELF_REPORT_DR_CONFIRMED"), ({phv00106407} ==
+            1, "PATIENT_SELF_REPORT_DR_CONFIRMED"), (True, "PATIENT_SELF_REPORT"))
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001490
@@ -480,13 +458,13 @@
         condition_status:
           expr: case(({phv00106022} == 0, ABSENT), ({phv00106023} == 0, HISTORICAL), (True, PRESENT))
         condition_provenance:
-          expr: case(({phv00106024} == 1, "CLINICAL_DIAGNOSIS"), (True, "PATIENT_SELF-REPORTED_CONDITION"))
+          expr: case(({phv00106024} == 1, "PATIENT_SELF_REPORT_DR_CONFIRMED"), (True, "PATIENT_SELF_REPORT"))
         relationship_to_participant:
           value: ONESELF
           range: string          
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001492
@@ -504,15 +482,15 @@
           expr: case(({phv00107849} == 0, "ABSENT"), ({phv00107850} == 0, "HISTORICAL"),
             (True, "PRESENT"))
         condition_provenance:
-          expr: case(({phv00107851} == 1, "CLINICAL_DIAGNOSIS"), ({phv00108215} ==
-            1, "CLINICAL_DIAGNOSIS"), ({phv00108216} == 1, "CLINICAL_DIAGNOSIS"),
-            (True, "PATIENT_SELF-REPORTED_CONDITION"))
+          expr: case(({phv00107851} == 1, "PATIENT_SELF_REPORT_DR_CONFIRMED"), ({phv00108215} ==
+            1, "PATIENT_SELF_REPORT_DR_CONFIRMED"), ({phv00108216} == 1, "PATIENT_SELF_REPORT_DR_CONFIRMED"),
+            (True, "PATIENT_SELF_REPORT"))
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001495
@@ -531,14 +509,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht003699
@@ -557,13 +535,13 @@
             '1': PRESENT
             '8': UNKNOWN
         condition_provenance:
-          expr: case(({phv00197463} == 1, "CLINICAL_DIAGNOSIS"), (True, "PATIENT_SELF-REPORTED_CONDITION"))
+          expr: case(({phv00197463} == 1, "PATIENT_SELF_REPORT_DR_CONFIRMED"), (True, "PATIENT_SELF_REPORT"))
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht003700
@@ -577,13 +555,13 @@
           range: string
         condition_status:
           expr: case(({phv00198892} == 0, "ABSENT"),({phv00198892} == 1,case(({phv00198893}
-            == 0, "HISTORICAL"),(True, "PRESENT"))),(True, "UNKKNOWN"))
+            == 0, "HISTORICAL"),(True, "PRESENT"))),(True, "UNKNOWN"))
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string

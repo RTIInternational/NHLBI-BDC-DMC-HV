@@ -10,8 +10,14 @@
         drug_concept:
           expr: case(({phv00127944} == "Y", "RxCUI:1191"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00127944
+          value_mappings:
+            D: UNKNOWN
+            N: ABSENT
+            Y: PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht008725
@@ -24,8 +30,18 @@
         drug_concept:
           expr: case(({phv00400887} == "Y", "RxCUI:1191"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00400887
+          value_mappings:
+            A: UNKNOWN
+            K: UNKNOWN
+            M: UNKNOWN
+            N: ABSENT
+            R: UNKNOWN
+            U: UNKNOWN
+            Y: PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht008768
@@ -38,8 +54,16 @@
         drug_concept:
           expr: case(({phv00403340} == 1, "RxCUI:1191"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00403340
+          value_mappings:
+            '1': PRESENT
+            '2': ABSENT
+            '7': UNKNOWN
+            '8': UNKNOWN
+            '9': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht008769
@@ -52,5 +76,13 @@
         drug_concept:
           expr: case(({phv00403394} == 1, "RxCUI:1191"))
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00403394
+          value_mappings:
+            '1': PRESENT
+            '2': ABSENT
+            '7': UNKNOWN
+            '8': UNKNOWN
+            '9': UNKNOWN

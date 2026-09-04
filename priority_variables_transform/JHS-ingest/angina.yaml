@@ -13,10 +13,10 @@
           expr: case(({phv00400917} == "N", "ABSENT"),({phv00400917} == "U", "UNKNOWN"),({phv00400918}
             == "Y", "PRESENT"),({phv00400918} == "N", "HISTORICAL"),({phv00400918} == "U", "HISTORICAL"))
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
-        associated_evidence:
-          value: "Annual Follow-Up"
+        # associated_evidence:
+        #   value: "Annual Follow-Up"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -38,7 +38,7 @@
             '2': ABSENT
             '7': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: "Self-Report Questionnaire"
@@ -63,7 +63,7 @@
             '2': ABSENT
             '7': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: "Self-Report Questionnaire"

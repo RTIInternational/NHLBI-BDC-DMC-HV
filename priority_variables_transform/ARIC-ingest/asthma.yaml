@@ -14,10 +14,10 @@
             'N': ABSENT
             'Y': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: HEALTH_RECORD
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -37,10 +37,10 @@
             'Y': PRESENT
             'U': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -60,10 +60,10 @@
             'Y': PRESENT
             'U': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -83,7 +83,7 @@
             'Y': PRESENT
             'U': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: "self-report questionnaire"
           range: string
@@ -106,10 +106,10 @@
             'Y': PRESENT
             'U': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -129,10 +129,10 @@
         condition_status:
           expr: case(({phv00209714} == 0, 'ABSENT'), ({phv00209717} == 0, 'HISTORICAL'), (True, 'PRESENT'))
         condition_provenance:
-          expr: case(({phv00209715} == 0, 'PATIENT_SELF-REPORTED_CONDITION'), (True, 'CLINICAL_DIAGNOSIS'))
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          expr: case(({phv00209715} == 0, 'PATIENT_SELF_REPORT'), (True, 'PATIENT_SELF_REPORT_DR_CONFIRMED'))
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -152,10 +152,10 @@
         condition_status:
           expr: case(({phv00298007} == 0, 'ABSENT'), ({phv00298010} == 0, 'HISTORICAL'), (True, 'PRESENT'))
         condition_provenance:
-          expr: case(({phv00298008} == 0, 'PATIENT_SELF-REPORTED_CONDITION'), (True, 'CLINICAL_DIAGNOSIS'))
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+          expr: case(({phv00298008} == 0, 'PATIENT_SELF_REPORT'), (True, 'PATIENT_SELF_REPORT_DR_CONFIRMED'))
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -174,7 +174,7 @@
             'N': ABSENT
             'Y': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: "self-report questionnaire"
           range: string
@@ -196,7 +196,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -215,7 +215,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -234,6 +234,6 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT
         relationship_to_participant:
           value: ONESELF

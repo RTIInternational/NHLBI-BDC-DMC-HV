@@ -8,10 +8,15 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
           range: string
         drug_concept:
-          expr: 'case(({phv00401114} == 1, "ATC:C10AA"))'
+          expr: 'case(({phv00401114} == "Yes", "ATC:C10AA"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00401114
+          value_mappings:
+            'No': ABSENT
+            'Yes': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht008730
@@ -22,10 +27,15 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401273}) + ":JHS Exam 2")'
           range: string
         drug_concept:
-          expr: 'case(({phv00401296} == 1, "ATC:C10AA"))'
+          expr: 'case(({phv00401296} == "Yes", "ATC:C10AA"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00401296
+          value_mappings:
+            'No': ABSENT
+            'Yes': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht008731
@@ -36,7 +46,12 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
           range: string
         drug_concept:
-          expr: 'case(({phv00401397} == 1, "ATC:C10AA"))'
+          expr: 'case(({phv00401397} == "Yes", "ATC:C10AA"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00401397
+          value_mappings:
+            'No': ABSENT
+            'Yes': PRESENT
