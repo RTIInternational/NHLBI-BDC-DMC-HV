@@ -7,8 +7,9 @@ Reference for validating mapped terms in the semantic validator. For each domain
 - **RTI International (bdchm)** — validate against the BioData Catalyst harmonized model's ontology-backed enums (CURIE-based).
 - **OMOP WebAPI** — resolve and validate concept IDs through the OHDSI OMOP WebAPI / Athena vocabulary service.
 - **EMBL-EBI OLS4 REST APIS** - Condition concept use the MONDO ontology
+- **SIREN / HL7 FHIR Gravity Project** — validate SDOH domain terms against the Gravity Project's SDOH Clinical Care FHIR Implementation Guide (LOINC-coded screening instruments; SNOMED CT / ICD-10-CM coded problems, goals, and interventions). The Gravity Project originated as an independent, multi-stakeholder SDOH data-standards initiative (led by SIREN — the Social Interventions Research and Evaluation Network — with philanthropic backing) before becoming an HL7 FHIR Accelerator project; RTI International/BDCHM consumes this vocabulary but did not originate it.
 
-## Preferences by domainRTI International (bdchm) — validate 
+## Preferences by domain
 
 | Domain (slot / enum) | Vocabulary behind the CURIE | Validation source |
 |---|---|---|
@@ -23,7 +24,7 @@ Reference for validating mapped terms in the semantic validator. For each domain
 | Species / breed | NCBITaxon and Vertebrate Breed Ontology (VBO) | RTI International (bdchm) |
 | Units | Units of Measurement ontology (UOM) or UCUM | OMOP vocabulary (UCUM unit concept IDs) |
 | Consent / data use | Data Use Ontology (DUO) | RTI International (bdchm) |
-| SDOH | Gravity Project domains | RTI International (bdchm) |
+| SDOH | Gravity Project domains | SIREN / HL7 FHIR Gravity Project |
 | Race / ethnicity | US OMB categories | OMB standard categories |
 
 ---
