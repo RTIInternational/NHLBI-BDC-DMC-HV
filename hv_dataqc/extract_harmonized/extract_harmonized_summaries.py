@@ -58,6 +58,22 @@ from hv_dataqc.hv_dataqc_common import (
     continuous_stats,
     write_json_atomic,
 )
+# --- Table S4/S5 additions (2026-08) ----------------------------------------
+# The label_map import, the `label_map` parameter on the extract function, the
+# `bdc_label` field it populates, and the _participant_col / _valid_value_mask
+# helpers below were added for the supplementary tables (see
+# transform_assessment/README.md).  They are load-bearing for Table S5, which
+# groups per-observation_type summaries into per-variable rows and cannot do
+# that without `bdc_label`.
+#
+# Flagging the boundary because this module has other authors: everything else
+# here is shared QC infrastructure.  _valid_value_mask is not S4/S5-specific
+# though -- it fixes a real counting bug in this extractor (see its docstring).
+# Moving the S4/S5 pieces into their own module is queued, not done.
+from hv_dataqc.extract_harmonized.label_map import (
+    DEFAULT_PATH as DEFAULT_LABEL_MAP_PATH,
+    load_label_map,
+)
 
 # Entity TSV files produced by dm-bip
 ENTITY_FILES = {
@@ -284,6 +300,35 @@ def participant_count_from_entity(df: pd.DataFrame, preferred_cols: tuple[str, .
     return 0
 
 
+# Column names that have historically held the participant ID across the
+# different dm-bip-emitted entity TSVs.  Tried in order; first available wins.
+_PARTICIPANT_COL_CANDIDATES = ("associated_participant", "participant", "participant_id")
+
+
+def _participant_col(df: pd.DataFrame) -> str | None:
+    """Return the first participant-ID column present in *df*, or None."""
+    for col in _PARTICIPANT_COL_CANDIDATES:
+        if col in df.columns:
+            return col
+    return None
+
+
+def _valid_value_mask(series: pd.Series, *, is_continuous: bool) -> pd.Series:
+    """Return the row-mask used by continuous_stats / categorical_stats for n_valid.
+
+    continuous_stats coerces to numeric via ``pd.to_numeric(..., errors="coerce")``
+    before dropping NaN, so a row with a non-numeric string in the value column
+    contributes to n_total but NOT to n_valid.  categorical_stats drops only
+    raw NaN.  Distinct-participant counts must use the SAME mask as the n_valid
+    computation, otherwise rows whose value coerces to NaN inflate participants
+    past n_valid — Anne caught FHS ALT SGPT showing participants=3,732 over
+    n_valid=3,728 because four rows had non-numeric value strings.
+    """
+    if is_continuous:
+        return pd.to_numeric(series, errors="coerce").notna()
+    return series.notna()
+
+
 # ---------------------------------------------------------------------------
 # Summary statistics
 # ---------------------------------------------------------------------------
@@ -308,6 +353,7 @@ def process_measurements(
     df: pd.DataFrame,
     visit_id_to_label: dict[str, str],
     by_visit: bool = False,
+    label_map: dict[str, str] | None = None,
 ) -> dict[str, dict]:
     """Extract per-observation_type summaries from MeasurementObservation.
 
@@ -319,6 +365,8 @@ def process_measurements(
         visit_id_to_label: UUID-to-label map built from Visit.tsv. Resolves
             UUIDs in associated_visit before building by-visit stats.
         by_visit: If True, include per-visit breakdowns.
+        label_map: Optional observation_type -> bdc_label lookup. When supplied,
+            each variable's ``bdc_label`` field is populated (otherwise ``None``).
     """
     variables: dict[str, dict] = {}
 
@@ -354,6 +402,8 @@ def process_measurements(
         df = df.copy()
         df["associated_visit"] = resolve_visit_series(df["associated_visit"], visit_id_to_label)
 
+    pcol = _participant_col(df)
+
     for obs_type, group in df.groupby("observation_type", dropna=False):
         key = str(obs_type) if pd.notna(obs_type) else "MISSING_OBS_TYPE"
 
@@ -368,15 +418,20 @@ def process_measurements(
                 flat_col = candidate
                 break
 
+        value_col_used: str | None = None
         if has_decimal or has_integer:
             value_col = DECIMAL_COL if has_decimal else INTEGER_COL
             summary = continuous_stats(group[value_col])
+            value_col_used = value_col
         elif has_coded:
             summary = categorical_stats(group[CODED_COL])
+            value_col_used = CODED_COL
         elif has_q_value_concept:
             summary = categorical_stats(group[Q_VALUE_CONCEPT_COL])
+            value_col_used = Q_VALUE_CONCEPT_COL
         elif flat_col:
             summary = categorical_stats(group[flat_col])
+            value_col_used = flat_col
         else:
             summary = {
                 "type": "unknown",
@@ -387,6 +442,21 @@ def process_measurements(
 
         summary["entity"] = "MeasurementObservation"
         summary["observation_type"] = key
+        summary["bdc_label"] = (label_map or {}).get(key)
+        # Distinct participants COUNTED OVER THE SAME POPULATION AS n_valid.
+        # See _valid_value_mask for why this needs to mirror the stat
+        # helper's NaN-handling (and not just raw .notna()).
+        if pcol is not None:
+            if value_col_used is not None:
+                valid_mask = _valid_value_mask(
+                    group[value_col_used],
+                    is_continuous=(summary.get("type") == "continuous"),
+                )
+                summary["participants"] = int(
+                    group.loc[valid_mask, pcol].nunique(dropna=True)
+                )
+            else:
+                summary["participants"] = 0
 
         if by_visit and "associated_visit" in df.columns:
             by_visit_stats: dict[str, dict] = {}
@@ -474,13 +544,21 @@ def process_conditions(
     return variables
 
 
-def process_observations(df: pd.DataFrame) -> dict[str, dict]:
+def process_observations(
+    df: pd.DataFrame,
+    label_map: dict[str, str] | None = None,
+) -> dict[str, dict]:
     """Extract per-observation_type summaries from Observation entity.
 
     Checks multiple candidate value column names — different YAML slot names
     produce different column names in the output TSV. Includes nested
     Quantity columns (value_quantity__*) emitted by dm-bip when the YAML
     uses an object_derivation for value_quantity (e.g., fam_income.yaml).
+
+    Args:
+        df: Observation DataFrame.
+        label_map: Optional observation_type -> bdc_label lookup. When supplied,
+            each variable's ``bdc_label`` field is populated (otherwise ``None``).
     """
     variables: dict[str, dict] = {}
 
@@ -505,6 +583,8 @@ def process_observations(df: pd.DataFrame) -> dict[str, dict]:
         "value_as_concept_name",
     ]
 
+    pcol = _participant_col(df)
+
     for obs_type, group in df.groupby("observation_type", dropna=False):
         key = str(obs_type) if pd.notna(obs_type) else "MISSING_OBS_TYPE"
 
@@ -519,20 +599,39 @@ def process_observations(df: pd.DataFrame) -> dict[str, dict]:
                 flat_col = candidate
                 break
 
+        value_col_used: str | None = None
         if has_decimal or has_integer:
             value_col = DECIMAL_COL if has_decimal else INTEGER_COL
             summary = continuous_stats(group[value_col])
+            value_col_used = value_col
         elif has_q_coded:
             summary = categorical_stats(group[CODED_COL])
+            value_col_used = CODED_COL
         elif has_q_concept:
             summary = categorical_stats(group[Q_VALUE_CONCEPT])
+            value_col_used = Q_VALUE_CONCEPT
         elif flat_col:
             summary = categorical_stats(group[flat_col])
+            value_col_used = flat_col
         else:
             summary = {"type": "categorical", "n_total": int(len(group)), "n_valid": 0}
 
         summary["entity"] = "Observation"
         summary["observation_type"] = key
+        summary["bdc_label"] = (label_map or {}).get(key)
+        # Distinct participants COUNTED OVER THE SAME POPULATION AS n_valid.
+        # See process_measurements for rationale.
+        if pcol is not None:
+            if value_col_used is not None:
+                valid_mask = _valid_value_mask(
+                    group[value_col_used],
+                    is_continuous=(summary.get("type") == "continuous"),
+                )
+                summary["participants"] = int(
+                    group.loc[valid_mask, pcol].nunique(dropna=True)
+                )
+            else:
+                summary["participants"] = 0
         variables[f"observation_{key}"] = summary
 
     return variables
@@ -543,6 +642,7 @@ def process_measurement_observation_sets(
     visit_id_to_label: dict[str, str],
     by_visit: bool = False,
     diagnostics_out: dict | None = None,
+    label_map: dict[str, str] | None = None,
 ) -> dict[str, dict]:
     """Extract per-observation_type summaries from MeasurementObservationSet entity.
 
@@ -571,6 +671,11 @@ def process_measurement_observation_sets(
     if "associated_visit" in df.columns:
         df = df.copy()
         df["associated_visit"] = resolve_visit_series(df["associated_visit"], visit_id_to_label)
+
+    # Participant IDs live on the outer set row, not in the exploded
+    # sub-observation dict.  Propagate them so we can compute per-
+    # observation_type distinct participant counts after the explode.
+    outer_pcol = _participant_col(df)
 
     rows: list[dict] = []
     parse_errors = 0
@@ -614,6 +719,9 @@ def process_measurement_observation_sets(
             if "associated_visit" in df.columns
             else None
         )
+        participant_val = (
+            df[outer_pcol].iloc[idx] if outer_pcol is not None else None
+        )
 
         for obs in obs_list:
             if not isinstance(obs, dict):
@@ -644,6 +752,7 @@ def process_measurement_observation_sets(
                     CODED_FIELD: vq.get(CODED_FIELD),
                     CONCEPT_FIELD: vq.get(CONCEPT_FIELD),
                     "associated_visit": visit_val,
+                    "_participant_id": participant_val,
                 }
             )
 
@@ -706,6 +815,21 @@ def process_measurement_observation_sets(
             }
         summary["entity"] = "MeasurementObservationSet"
         summary["observation_type"] = obs_type_str
+        summary["bdc_label"] = (label_map or {}).get(obs_type_str)
+        # Distinct participants COUNTED OVER THE SAME POPULATION AS n_valid.
+        # See process_measurements for rationale.  The "unknown" branch
+        # left n_valid=0 -> no participants either.
+        if "_participant_id" in group.columns:
+            if int(summary.get("n_valid", 0) or 0) > 0:
+                valid_mask = _valid_value_mask(
+                    group[value_field],
+                    is_continuous=(summary.get("type") == "continuous"),
+                )
+                summary["participants"] = int(
+                    group.loc[valid_mask, "_participant_id"].nunique(dropna=True)
+                )
+            else:
+                summary["participants"] = 0
         if method_str:
             summary["method_type"] = method_str
 
@@ -859,6 +983,11 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
                    help="Override output JSON filename.")
     p.add_argument("--extract-config", metavar="YAML",
                    help=f"Harmonized extractor config YAML (default: {_DEFAULT_EXTRACT_CONFIG})")
+    p.add_argument("--label-map", metavar="TSV", default=None,
+                   help="Table S1 TSV path. Resolves observation_type "
+                        "to bdc_label for each measurement / observation entry. "
+                        "Pass an empty string to skip (default: shipped TSV at "
+                        "extract_harmonized/config/TableS1.tsv).")
     return p.parse_args(argv)
 
 
@@ -871,6 +1000,20 @@ def main(argv: list[str] | None = None) -> None:
     extract_config_path = Path(args.extract_config) if args.extract_config else _DEFAULT_EXTRACT_CONFIG
     extract_config = load_harmonized_extract_config(extract_config_path)
     apply_harmonized_extract_config(extract_config)
+
+    # Load observation_type -> bdc_label map.  An empty string explicitly
+    # disables labeling; None (default) uses the shipped TSV.  A path string
+    # overrides to a custom map.
+    label_map: dict[str, str] = {}
+    if args.label_map == "":
+        print("Label map: disabled (--label-map='')")
+    else:
+        label_map_path = Path(args.label_map) if args.label_map else DEFAULT_LABEL_MAP_PATH
+        try:
+            label_map = load_label_map(label_map_path)
+            print(f"Label map: {len(label_map)} entries from {label_map_path.name}")
+        except FileNotFoundError:
+            print(f"WARNING: label map not found at {label_map_path} -- bdc_label will be None for all entries")
 
     # Resolve mapped-data directories
     if args.mapped_data_dirs:
@@ -926,6 +1069,7 @@ def main(argv: list[str] | None = None) -> None:
             log_path=log_path,
             extract_config=extract_config,
             extract_config_path=extract_config_path,
+            label_map=label_map,
         )
     finally:
         # Ensure stdout is restored and the log file is closed even if an
@@ -943,6 +1087,7 @@ def _run_extract(
     log_path: Path,
     extract_config: dict | None,
     extract_config_path: Path,
+    label_map: dict[str, str] | None = None,
 ) -> None:
     print("=" * 60)
     print(f"  HV-DataQC Harmonized Extractor: {cohort}")
@@ -1025,7 +1170,7 @@ def _run_extract(
         participant_count_candidates["MeasurementObservation"] = participant_count_from_entity(
             meas_df, ("associated_participant", "participant", "participant_id")
         )
-        mo_vars = process_measurements(meas_df, visit_id_to_label, args.by_visit)
+        mo_vars = process_measurements(meas_df, visit_id_to_label, args.by_visit, label_map=label_map)
         merge_variable_summaries(variables, mo_vars, extraction_warnings)
         n_types = (
             int(meas_df["observation_type"].nunique()) if "observation_type" in meas_df.columns else 0
@@ -1051,7 +1196,8 @@ def _run_extract(
             meas_set_df, ("associated_participant", "participant", "participant_id")
         )
         mos_vars = process_measurement_observation_sets(
-            meas_set_df, visit_id_to_label, args.by_visit, diagnostics_out=extraction_warnings
+            meas_set_df, visit_id_to_label, args.by_visit,
+            diagnostics_out=extraction_warnings, label_map=label_map,
         )
         merge_variable_summaries(variables, mos_vars, extraction_warnings)
         print(f"    Total: {len(meas_set_df):,} rows | {len(mos_vars)} observation types extracted")
@@ -1094,7 +1240,7 @@ def _run_extract(
         participant_count_candidates["Observation"] = participant_count_from_entity(
             obs_df, ("associated_participant", "participant", "participant_id")
         )
-        obs_vars = process_observations(obs_df)
+        obs_vars = process_observations(obs_df, label_map=label_map)
         variables.update(obs_vars)
         print(f"    Total: {len(obs_df):,} rows | {len(obs_vars)} observation types")
     else:

@@ -37,12 +37,28 @@ def iter_nested_class_derivs(slot_def):
 # Seven entries were dropped as genuinely resolved; the two below are still
 # live and were only invisible because they sit inside a Set.
 KNOWN_ISSUES = {
+    "phv00001581",  # FHS tot_chol_bld.yaml — missing observation_type in block 60
+    "phv00079854",  # WHI bp_diastolic / bp_systolic
+    "phv00079855",  # WHI bp_diastolic / bp_systolic
+    "phv00079856",  # WHI bp_diastolic / bp_systolic
+    "phv00079857",  # WHI bp_diastolic / bp_systolic
+    "phv00100046",  # CHS albumin_bld / mch
+    "phv00112688",  # CARDIA hemo / mchc
+
+    "phv00210286",  # ARIC bp_diastolic / bp_systolic
+    "phv00210289",  # ARIC bp_diastolic / bp_systolic
+    # sigfried (77e6efd5e) added this note about ARIC bp_diastolic / bp_systolic above:
+    # ARIC lympho_ct / whtbld_ct read the same column. Awaiting a spec-owner
+    # decision; full account and the steps to resolve are in
+    # transform_assessment/OPEN_ARIC_LYMPHO_CT_PHV.md
+
+    # corey (ce16cfaec) added this note, with no change to code:
     # ARIC blood_pressure.yaml emits the same random-zero "zero reading"
     # (SBPA17 / SBPA20) twice, typed as both OMOP:4152194 (systolic) and
     # OMOP:4154790 (diastolic), distinguished only by method_type. Whether
     # a calibration offset should carry a BP concept at all is open in #735.
-    "phv00210286",
-    "phv00210289",
+
+    "phv00294954",
 }
 
 
