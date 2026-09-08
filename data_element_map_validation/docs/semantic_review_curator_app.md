@@ -14,6 +14,7 @@ data_element_map_validation/
 ├── scripts/
 │   ├── generate_curie_mapreview.py    # Step 1 — REST agent queries + YAML spot-check
 │   ├── generate_semantic_review.py    # Step 2 — findings MD + summary MD
+│   ├── curie_normalizer.py            # Translator Node Normalizer clique-check (condition_concept confidence)
 │   └── pipeline_status.py            # Scans outputs, writes pipeline_status.json
 ├── bdc_study_input/
 │   ├── {STUDY}_curie.csv              # Source CURIE mapping (input, versioned)
@@ -47,6 +48,11 @@ Reads `{STUDY}_curie.csv` (303–1762 rows per study), queries agents per variab
 | `mondo_maps_to` | MONDO OLS4 REST API best match |
 | `hpo_maps_to` | HPO OLS4 REST API best match |
 | `omop_maps_to` | OMOP/LOINC Athena API best match |
+| `oba_maps_to` | OBA OLS4 REST API best match (`observation_type` only) |
+| `suggestion_confidence` | `condition_concept`: Translator Node Normalizer clique-check (`curie_normalizer.py`) — confirmed synonym vs distinct concept. `observation_type`: OBA text-similarity tier (`oba_agent.get_oba_id_with_score`) |
+| `loinc_confidence` | `observation_type` only: LOINC agent's own text-similarity tier (`measurementObs_agent.get_loinc_id_with_score`) for the `omop_maps_to` candidate — independent from `suggestion_confidence` since a row can carry both an OBA and a LOINC candidate at once |
+
+See `docs/mapping_validation_preferences.md` → "Suggestion Confidence" for the full mechanics and worked examples.
 
 ### Step 2 — `generate_semantic_review.py`
 
@@ -72,8 +78,11 @@ For studies with no human reviewer MD, all rows are auto-generated.
 
 | Priority | Condition | Rationale |
 |:---|:---|:---|
+| **🎯 Priority Correction** | Either: (a) the *existing* CSV CURIE itself violates `_SLOT_VOCAB_RULES` for its slot (`_existing_curie_vocab_violation` — rule-based, unambiguous), or (b) the agent's candidate has `suggestion_confidence` starting with `high` (normalizer-confirmed synonym, or strong OBA text match) | Surfaces the findings with the strongest evidence of a real error above the routine High/Medium noise, so a curator with limited review time can filter to these first. Still a review category, not an auto-apply — the curator approves via the normal Apply flow. |
 | **High** | Agent suggests a CURIE from a valid vocabulary that differs from the CSV CURIE | Primary goal — fixing incorrect CURIEs in the source CSV |
 | **Medium** | CSV CURIE differs from the live value in the YAML file | Secondary — sync issue between CSV and YAML transform |
+
+Added 2026-08-18 alongside the confidence-scoring work (see below). The 🎯 badge is rendered in `curator_review_app.py`'s `render_row()`; the priority filter in the sidebar picks it up automatically since it's derived from whatever priority values are actually present in a study's findings.
 
 ### Vocab/Slot Validation (`_SLOT_VOCAB_RULES`)
 

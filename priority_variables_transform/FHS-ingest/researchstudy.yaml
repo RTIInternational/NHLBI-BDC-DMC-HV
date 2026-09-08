@@ -15,9 +15,21 @@
         accession_authority:
           value: dbGaP
         version:
-          value: 'v35'
+          value: '35'
         url:
           value: https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000007.v35.p16
+        year_range:
+          class_derivations:
+          - TimePeriod:
+              slot_derivations:
+                period_start:
+                  class_derivations:
+                  - TimePoint:
+                      slot_derivations:
+                        date_time:
+                          value: '1948-01-01T00:00:00'
+        research_project_type:
+          value: STUDY
 - class_derivations:
     ResearchStudy:
       populated_from: pht003099
@@ -28,6 +40,24 @@
           value: 'FHS Original'
         part_of:
           value: 'Framingham Heart Study'
+        year_range:
+          class_derivations:
+          - TimePeriod:
+              slot_derivations:
+                period_start:
+                  class_derivations:
+                  - TimePoint:
+                      slot_derivations:
+                        date_time:
+                          value: '1948-01-01T00:00:00'
+                period_end:
+                  class_derivations:
+                  - TimePoint:
+                      slot_derivations:
+                        date_time:
+                          value: '2014-12-31T23:59:59'
+        research_project_type:
+          value: STUDY
 - class_derivations:
     ResearchStudy:
       populated_from: pht003099
@@ -38,6 +68,18 @@
           value: 'FHS Offspring'
         part_of:
           value: 'Framingham Heart Study'
+        year_range:
+          class_derivations:
+          - TimePeriod:
+              slot_derivations:
+                period_start:
+                  class_derivations:
+                  - TimePoint:
+                      slot_derivations:
+                        date_time:
+                          value: '1971-01-01T00:00:00'
+        research_project_type:
+          value: STUDY
 - class_derivations:
     ResearchStudy:
       populated_from: pht003099
@@ -48,6 +90,18 @@
           value: 'FHS New Offspring Spouse'
         part_of:
           value: 'Framingham Heart Study'
+        year_range:
+          class_derivations:
+          - TimePeriod:
+              slot_derivations:
+                period_start:
+                  class_derivations:
+                  - TimePoint:
+                      slot_derivations:
+                        date_time:
+                          value: '2003-01-01T00:00:00'
+        research_project_type:
+          value: STUDY
 - class_derivations:
     ResearchStudy:
       populated_from: pht003099
@@ -58,6 +112,18 @@
           value: 'FHS Generation 3'
         part_of:
           value: 'Framingham Heart Study'
+        year_range:
+          class_derivations:
+          - TimePeriod:
+              slot_derivations:
+                period_start:
+                  class_derivations:
+                  - TimePoint:
+                      slot_derivations:
+                        date_time:
+                          value: '2002-01-01T00:00:00'
+        research_project_type:
+          value: STUDY
 - class_derivations:
     ResearchStudy:
       populated_from: pht003099
@@ -68,6 +134,18 @@
           value: 'FHS Omni 1'
         part_of:
           value: 'Framingham Heart Study'
+        year_range:
+          class_derivations:
+          - TimePeriod:
+              slot_derivations:
+                period_start:
+                  class_derivations:
+                  - TimePoint:
+                      slot_derivations:
+                        date_time:
+                          value: '1994-01-01T00:00:00'
+        research_project_type:
+          value: STUDY
 - class_derivations:
     ResearchStudy:
       populated_from: pht003099
@@ -78,3 +156,15 @@
           value: 'FHS Omni 2'
         part_of:
           value: 'Framingham Heart Study'
+        year_range:
+          class_derivations:
+          - TimePeriod:
+              slot_derivations:
+                period_start:
+                  class_derivations:
+                  - TimePoint:
+                      slot_derivations:
+                        date_time:
+                          value: '2003-01-01T00:00:00'
+        research_project_type:
+          value: STUDY

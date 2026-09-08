@@ -1,0 +1,39 @@
+{
+  "submitted_date": "2026-08-17",
+  "study": "HCHS",
+  "curator": "stephanie",
+  "changes": {
+    "HCHS::confirmed::tak_aceinhib.yaml": {
+      "study": "HCHS",
+      "change_request": "ATC:C09A",
+      "original_curie": "ATC:C09A",
+      "slot": "drug_concept",
+      "yaml_files": [
+        "tak_aceinhib.yaml"
+      ],
+      "notes": "ATC:C09A = ACE inhibitors, plain",
+      "applied": false,
+      "saved_date": "2026-06-15",
+      "apply_results": [
+        "⚠ No `drug_concept: value:` pattern in `tak_aceinhib.yaml`",
+        "✓ CSV: 2 row(s) → `ATC:C09A` for `tak_aceinhib.yaml` [drug_concept]"
+      ]
+    },
+    "HCHS::confirmed::spirometry.yaml": {
+      "study": "HCHS",
+      "change_request": "OMOP:3011505",
+      "original_curie": "OMOP:3002094",
+      "slot": "observations",
+      "yaml_files": [
+        "spirometry.yaml"
+      ],
+      "notes": "OMOP:3011505 is more correct if FEV1/FVC ratio \nBreathing; End tidal volume; Exp; FEV; FEV1; FEV1%; FEV1/FVC\nLOINC:19926-5| FEV1/FVC\n",
+      "applied": false,
+      "saved_date": "2026-08-17",
+      "apply_results": [
+        "⚠ No `observations: value:` pattern in `spirometry.yaml`",
+        "✓ CSV: 42 row(s) → `OMOP:3011505` for `spirometry.yaml` [observations]"
+      ]
+    }
+  }
+}

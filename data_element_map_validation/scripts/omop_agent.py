@@ -40,6 +40,7 @@ Usage examples:
 import json
 import re
 import sys
+import time
 from difflib import SequenceMatcher
 from urllib.parse import quote
 
@@ -207,8 +208,91 @@ def get_omop_concept_id(description: str, **kwargs) -> str | None:
         >>> get_omop_concept_id("cholecystostomy", code_system="procedure")
         'OMOP:4178670'
     """
+    omop_id, _score = get_omop_concept_id_with_score(description, **kwargs)
+    return omop_id
+
+
+def get_omop_concept_id_with_score(description: str, **kwargs) -> tuple[str | None, float]:
+    """Like get_omop_concept_id, but also returns the top match's similarity score.
+
+    The score is the same composite similarity used to rank candidates in
+    search_omop_concepts — a text-match confidence, not a guarantee of
+    ontological correctness. Callers can compare it against another
+    vocabulary's score to pick a priority_curie (see generate_curie_mapreview.py's
+    condition_concept handling, which weighs this against MONDO/HPO scores).
+    """
     results = search_omop_concepts(description, **kwargs)
-    return results[0]["omop_id"] if results else None
+    if results:
+        return results[0]["omop_id"], _similarity(description, results[0])
+    return None, 0.0
+
+
+def get_omop_concept_id_from_loinc(loinc_code: str, base_url: str = ATLAS_BASE_URL) -> str | None:
+    """Resolve a LOINC source code to its OMOP standard concept_id, as 'OMOP:<id>'.
+
+    Thin wrapper over get_omop_concept_id_from_loinc_with_status() for callers
+    that only need the concept_id. Collapses "no exact match" and "API error"
+    into the same None — callers that need to tell those apart (e.g. to avoid
+    presenting an unresolved lookup as a confirmed non-match) should call
+    get_omop_concept_id_from_loinc_with_status() directly instead.
+
+    Example:
+        >>> get_omop_concept_id_from_loinc("LOINC:718-7")
+        'OMOP:3000963'
+    """
+    concept_id, _status = get_omop_concept_id_from_loinc_with_status(loinc_code, base_url=base_url)
+    return concept_id
+
+
+def get_omop_concept_id_from_loinc_with_status(
+    loinc_code: str, base_url: str = ATLAS_BASE_URL,
+) -> tuple[str | None, str]:
+    """Like get_omop_concept_id_from_loinc, but also reports *why* it's None.
+
+    Returns (concept_id_or_none, status) where status is one of:
+      "resolved"       — exact LOINC source-code match found, concept_id is set
+      "no_exact_match" — Atlas responded, but no exact (VOCABULARY_ID=="LOINC",
+                          CONCEPT_CODE==code) record was in the results — a
+                          confirmed negative, not a failure.
+      "api_error"       — every retry failed (timeout/connection error) — the
+                          lookup was never actually completed. This must not be
+                          treated the same as "no_exact_match": a blank
+                          omop_maps_to caused by a timeout is not evidence the
+                          concept doesn't exist, and presenting it that way to
+                          a curator (or silently dropping the candidate from
+                          priority_curie contention) misrepresents an unknown
+                          as a confirmed answer.
+
+    Every LOINC term is itself an OMOP concept — this looks it up by exact source
+    code match rather than by text similarity, since the code is already known.
+    """
+    code = loinc_code.split(":", 1)[1] if ":" in loinc_code else loinc_code
+    url = f"{base_url}/vocabulary/search/{quote(code)}"
+
+    # atlas-demo.ohdsi.org is a shared community instance that reliably times out
+    # under concurrent load (observed ~93% failure rate at 8 workers with a single
+    # 30s attempt). Retry with backoff and a longer timeout before giving up.
+    docs = None
+    for attempt, (timeout, backoff) in enumerate([(30, 0), (45, 2), (60, 5)]):
+        if backoff:
+            time.sleep(backoff)
+        try:
+            resp = requests.get(url, timeout=timeout)
+            resp.raise_for_status()
+            docs = resp.json()
+            break
+        except requests.RequestException:
+            continue
+    if docs is None:
+        return None, "api_error"
+
+    match = next(
+        (d for d in docs if d.get("VOCABULARY_ID") == "LOINC" and d.get("CONCEPT_CODE") == code),
+        None,
+    )
+    if match:
+        return f"OMOP:{match['CONCEPT_ID']}", "resolved"
+    return None, "no_exact_match"
 
 
 # ---------------------------------------------------------------------------

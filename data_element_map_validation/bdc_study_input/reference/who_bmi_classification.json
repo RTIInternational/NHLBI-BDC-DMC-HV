@@ -1,0 +1,47 @@
+{
+  "_description": "Reference: WHO/clinical BMI classification schemes seen across the BDC-DMC-HV fleet's dbGaP source variables. Two DISTINCT schemes exist in the wild in this fleet -- never assume one universally. Check a variable's own coded value labels against both before mapping a BMI-category variable to a condition_concept/observation.",
+  "modern_who_scheme": {
+    "_description": "Current WHO/NIH/CDC adult BMI classification. 'Overweight' is its own category, distinct from 'Obesity'; obesity itself has 3 grades/classes. 6 tiers total (including underweight/normal).",
+    "categories": [
+      {"label": "Underweight", "bmi_range": "< 18.5"},
+      {"label": "Normal weight", "bmi_range": "18.5 - 24.9"},
+      {"label": "Overweight", "bmi_range": "25.0 - 29.9", "note": "Not itself a 'grade' of obesity in this scheme"},
+      {"label": "Obesity Grade/Class I", "bmi_range": "30.0 - 34.9"},
+      {"label": "Obesity Grade/Class II", "bmi_range": "35.0 - 39.9"},
+      {"label": "Obesity Grade/Class III", "bmi_range": ">= 40.0", "aka": ["morbid obesity", "severe obesity"]}
+    ],
+    "seen_in_fleet": [
+      {
+        "study": "HCHS",
+        "phv": "phv00526246",
+        "variable_name": "BMIGRP_C6",
+        "dbgap_description": "6-level grouped Body Mass Index - WHO",
+        "status": "Not currently wired into any YAML transform as of 2026-08-27 (no HCHS obesity.yaml exists at all). Level count (6) matches this scheme exactly -- verify against THIS scheme, not the classic scheme below, if/when this variable is used.",
+        "sibling_variable": {"phv": "phv00526200", "variable_name": "BMIGRP_C4", "dbgap_description": "4-level grouped Body Mass Index - WHO", "note": "Likely a coarser collapse of the same 6-level scheme (exact 4-way grouping not yet confirmed) -- also unused."}
+      }
+    ]
+  },
+  "classic_garrow_scheme": {
+    "_description": "Older 'graded overweight' classification (Garrow-style, pre-dates the modern WHO scheme). ALL non-normal tiers are labeled '...overweight', including what the modern scheme calls obesity -- a critical terminology trap when read against modern-scheme category names. Only 4 tiers total.",
+    "categories": [
+      {"label": "Normal", "bmi_range": "18.5 - 24.9"},
+      {"label": "Grade 1 overweight", "bmi_range": "25.0 - 29.9"},
+      {"label": "Grade 2 overweight", "bmi_range": "30.0 - 39.9", "note": "Corresponds to modern Obesity Class I + II combined -- general/non-morbid obesity, MONDO:0011122 in this fleet's convention"},
+      {"label": "Grade 3 overweight", "bmi_range": ">= 40.0", "note": "Corresponds to modern Obesity Class III -- morbid/severe obesity, MONDO:0005139 in this fleet's convention. Matches ARIC's plain-language 'Morbid obesity (BMI more or equal to 40)' threshold (phv00294619, fix #24) exactly.", "aka": ["morbid obesity"]}
+    ],
+    "seen_in_fleet": [
+      {
+        "study": "MESA",
+        "phv": "phv00082692 (and 6 sibling exam-wave PHVs: phv00084491, phv00085804, phv00086303, phv00086756, phv00174645, phv00176068)",
+        "variable_name": "bmicat1c (and sibling bmicat2c..bmicat5c)",
+        "dbgap_description": "BODY MASS INDEX, WHO CATEGORIES",
+        "yaml_file": "MESA-ingest/obesity.yaml",
+        "status": "ACTIVE DEFECT (external review item C1, flagged 2026-08-27, not yet resolved). value_mappings across all 8 blocks only mark code '4' (Grade 3 overweight, BMI>=40) as PRESENT -- codes '1'/'2'/'3' (Normal, Grade 1, Grade 2) all map to ABSENT. But condition_concept is labeled MONDO:0011122 (this fleet's general/BMI>=30 obesity term), not MONDO:0005139 (morbid). The block's own associated_evidence text ('BMI WHO grade 3 overweight (BMI >= 30)') is self-contradictory under EITHER scheme (grade 3 means BMI>=40 in both). Remedy is a derivation-logic/case-definition decision (either flip '3' to PRESENT to match the general-obesity label, or relabel condition_concept to MONDO:0005139 to match the actual BMI>=40 logic) -- not yet resolved as of this writing."
+      }
+    ]
+  },
+  "fleet_check_2026-08-27": {
+    "method": "grep across every priority_variables_transform/*/*.yaml (excluding _archive) and every *_dbgap_study_variable.csv for GRADE/OVERWEIGHT/WHO CATEGOR/WHO grade patterns",
+    "result": "MESA is the only study with an ACTIVE YAML transform using the classic Garrow scheme. HCHS has two WHO-graded BMI variables present in its dbGaP dictionary (4-level and 6-level) but wired into no current YAML file -- no active bug today, but check scheme carefully before building any future HCHS obesity derivation. No other study (ARIC, CARDIA, CHS, COPDGene, FHS, JHS, SPIROMICS, WHI) has any matching pattern in either its YAML transforms or its dbGaP variable descriptions."
+  }
+}
