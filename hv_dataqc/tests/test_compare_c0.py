@@ -41,7 +41,10 @@ class TestC0EntityFileCoverage(unittest.TestCase):
         self.assertEqual(len(fails), 1)
         self.assertEqual(fails[0].detail["entity"], "Observation")
 
-    def test_unrecognized_status_in_all_groups_is_not_a_pass(self) -> None:
+    def test_unrecognized_status_in_all_groups_is_fail(self) -> None:
+        """An unrecognized status literal in every group is a real anomaly --
+        it must not be given the same benefit of the doubt as a file that was
+        genuinely never produced anywhere."""
         harmonized = {
             "consent_group_file_status": {
                 "c1": {"Observation": {"status": "weird"}},
@@ -49,8 +52,8 @@ class TestC0EntityFileCoverage(unittest.TestCase):
             }
         }
         results = check_c0_entity_file_coverage(harmonized)
-        self.assertFalse(any(r.status == "PASS" for r in results))
-        self.assertGreaterEqual(len(results), 1)
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].status, "FAIL")
 
     def test_empty_coverage_map_skips_instead_of_passing(self) -> None:
         """consent_group_file_status present but no entities recorded anywhere:
@@ -87,9 +90,11 @@ class TestC0EntityFileCoverage(unittest.TestCase):
         self.assertEqual(len(fails), 1)
         self.assertEqual(fails[0].detail["entity"], "Condition")
 
-    def test_zero_rows_in_all_groups_is_info_not_fail(self) -> None:
-        """A consistently 0-row entity across every group is not an anomaly --
-        same INFO treatment as an entity missing everywhere."""
+    def test_zero_rows_in_all_groups_is_fail_not_info(self) -> None:
+        """A file produced (header parses fine) but carrying 0 rows in EVERY
+        consent group is a stronger signal than 'never attempted' -- the
+        transform ran and found nothing. Unlike a file that's genuinely never
+        produced anywhere, this must FAIL, not INFO."""
         harmonized = {
             "consent_group_file_status": {
                 "c1": {"Procedure": {"status": "loaded", "rows": 0}},
@@ -98,7 +103,49 @@ class TestC0EntityFileCoverage(unittest.TestCase):
         }
         results = check_c0_entity_file_coverage(harmonized)
         self.assertEqual(len(results), 1)
-        self.assertEqual(results[0].status, "INFO")
+        self.assertEqual(results[0].status, "FAIL")
+
+    def test_produced_in_one_group_missing_in_another_is_fail(self) -> None:
+        """An entity loaded with real rows in one consent group but never
+        produced at all in a sibling group is the core C0 anomaly."""
+        harmonized = {
+            "consent_group_file_status": {
+                "c1": {"Condition": {"status": "loaded", "rows": 500}},
+                "c2": {"Condition": {"status": "missing"}},
+            }
+        }
+        results = check_c0_entity_file_coverage(harmonized)
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].status, "FAIL")
+        self.assertEqual(results[0].detail["entity"], "Condition")
+
+    def test_missing_and_zero_rows_mixed_with_no_real_data_is_fail(self) -> None:
+        """Boundary case: one group never produced the file, another produced
+        it with 0 rows -- neither group has real data, but this is NOT the
+        'never produced anywhere' pattern (one group DID produce a file), so
+        it must FAIL rather than fall back to INFO."""
+        harmonized = {
+            "consent_group_file_status": {
+                "c1": {"Procedure": {"status": "missing"}},
+                "c2": {"Procedure": {"status": "loaded", "rows": 0}},
+            }
+        }
+        results = check_c0_entity_file_coverage(harmonized)
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].status, "FAIL")
+
+    def test_parse_failure_in_all_groups_is_fail_not_info(self) -> None:
+        """A genuine read/parse exception in EVERY consent group is a real bug,
+        not a benign 'entity not used by this cohort' situation -- must FAIL."""
+        harmonized = {
+            "consent_group_file_status": {
+                "c1": {"Observation": {"status": "empty", "error": "UnicodeDecodeError"}},
+                "c2": {"Observation": {"status": "empty", "error": "UnicodeDecodeError"}},
+            }
+        }
+        results = check_c0_entity_file_coverage(harmonized)
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].status, "FAIL")
 
 
 if __name__ == "__main__":
