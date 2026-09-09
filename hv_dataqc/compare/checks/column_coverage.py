@@ -163,8 +163,8 @@ def check_c15_column_coverage(
         return [CheckResult(
             "C15", "_column_coverage", "SKIP",
             "No column data found in consent_group_file_status -- "
-            "re-run extract_harmonized_summaries.py (columns field added "
-            "in hv-dataqc issue #730)",
+            "re-run extract_harmonized_summaries.py with a version that "
+            "records entity TSV columns",
         )]
 
     # Build YAML-derived expected columns once (only when yaml_dir is supplied).

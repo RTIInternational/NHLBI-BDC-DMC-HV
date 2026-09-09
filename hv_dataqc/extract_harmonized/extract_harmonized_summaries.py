@@ -211,7 +211,7 @@ def load_entity(
             ``DMC_…`` directory name two levels above each mapped-data dir).
             Values are status dicts with one of three shapes::
 
-                {"status": "loaded", "rows": N}
+                {"status": "loaded", "rows": N, "columns": ["col_a", ...]}
                 {"status": "empty",  "error": "<exception text>"}
                 {"status": "missing"}
     """
