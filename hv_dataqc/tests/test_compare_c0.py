@@ -72,6 +72,34 @@ class TestC0EntityFileCoverage(unittest.TestCase):
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0].status, "INFO")
 
+    def test_zero_rows_in_one_group_fails_when_other_group_has_rows(self) -> None:
+        """A header-only TSV (parses fine, 0 rows) must not read as PASS when
+        the same entity produced real rows in a sibling consent group."""
+        harmonized = {
+            "consent_group_file_status": {
+                "c1": {"Condition": {"status": "loaded", "rows": 0}},
+                "c2": {"Condition": {"status": "loaded", "rows": 500}},
+            }
+        }
+        results = check_c0_entity_file_coverage(harmonized)
+        self.assertFalse(any(r.status == "PASS" for r in results))
+        fails = [r for r in results if r.status == "FAIL"]
+        self.assertEqual(len(fails), 1)
+        self.assertEqual(fails[0].detail["entity"], "Condition")
+
+    def test_zero_rows_in_all_groups_is_info_not_fail(self) -> None:
+        """A consistently 0-row entity across every group is not an anomaly --
+        same INFO treatment as an entity missing everywhere."""
+        harmonized = {
+            "consent_group_file_status": {
+                "c1": {"Procedure": {"status": "loaded", "rows": 0}},
+                "c2": {"Procedure": {"status": "loaded", "rows": 0}},
+            }
+        }
+        results = check_c0_entity_file_coverage(harmonized)
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].status, "INFO")
+
 
 if __name__ == "__main__":
     unittest.main()

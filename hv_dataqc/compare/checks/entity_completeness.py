@@ -44,7 +44,7 @@ def check_c0_entity_file_coverage(harmonized: dict) -> list[CheckResult]:
     results: list[CheckResult] = []
 
     for entity in sorted(all_entities):
-        loaded: list[tuple[str, int]] = []    # [(label, rows), ...]
+        loaded: list[tuple[str, int]] = []    # [(label, rows), ...] rows > 0
         empty: list[tuple[str, str]] = []     # [(label, error), ...]
         missing: list[str] = []               # [label, ...]
 
@@ -56,7 +56,13 @@ def check_c0_entity_file_coverage(harmonized: dict) -> list[CheckResult]:
                 continue
             status = st.get("status")
             if status == "loaded":
-                loaded.append((cg_label, int(st.get("rows", 0))))
+                rows = int(st.get("rows", 0))
+                if rows == 0:
+                    # Parses fine (e.g. header-only TSV) but carries no data —
+                    # same anomaly class as "empty" when a sibling group has rows.
+                    empty.append((cg_label, "0 rows (header-only file)"))
+                else:
+                    loaded.append((cg_label, rows))
             elif status == "empty":
                 empty.append((cg_label, st.get("error", "")))
             elif status == "missing":
@@ -73,14 +79,17 @@ def check_c0_entity_file_coverage(harmonized: dict) -> list[CheckResult]:
             continue  # all groups loaded — no issue
 
         if not loaded:
-            # Entity absent in ALL consent groups — this is expected for optional
-            # entities; report as INFO rather than FAIL.
+            # Entity produced no rows in ANY consent group (missing, empty, or
+            # header-only everywhere) — this is expected for optional entities;
+            # report as INFO rather than FAIL.
             results.append(CheckResult(
                 "C0", f"{entity}_file_coverage", "INFO",
-                f"{entity}.tsv not found in any consent group ({len(missing)} group(s))",
+                f"{entity}.tsv produced no rows in any consent group "
+                f"({len(missing)} missing, {len(empty)} empty/header-only)",
                 {
                     "entity": entity,
                     "missing_groups": sorted(missing),
+                    "empty_groups": sorted(lbl for lbl, _ in empty),
                 },
             ))
             continue
@@ -95,7 +104,10 @@ def check_c0_entity_file_coverage(harmonized: dict) -> list[CheckResult]:
 
         parts: list[str] = []
         if empty_labels:
-            parts.append(f"empty (0 bytes or parse failure): {', '.join(empty_labels)}")
+            detail_bits = "; ".join(
+                f"{lbl} ({err})" if err else lbl for lbl, err in sorted(empty)
+            )
+            parts.append(f"empty or header-only (no rows): {detail_bits}")
         if missing_labels:
             parts.append(f"file not found: {', '.join(missing_labels)}")
 

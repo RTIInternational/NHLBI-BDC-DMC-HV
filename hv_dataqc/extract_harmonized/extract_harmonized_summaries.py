@@ -1235,9 +1235,10 @@ def _run_extract(
     print()
 
     # ------------------------------------------------------------------
-    # 7. Participant / Person (for entity count tracking only)
+    # 7. Participant / Person / DrugExposure / Procedure (for entity count
+    #    tracking only -- no variable-level processing defined for these yet)
     # ------------------------------------------------------------------
-    for entity in ["Participant", "Person"]:
+    for entity in ["Participant", "Person", "DrugExposure", "Procedure"]:
         ent_df = _load(entity)
         if ent_df is not None:
             datasets_loaded.append(entity)
