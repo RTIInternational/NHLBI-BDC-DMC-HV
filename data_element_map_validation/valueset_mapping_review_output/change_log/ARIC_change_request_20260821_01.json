@@ -1,0 +1,23 @@
+{
+  "submitted_date": "2026-08-21",
+  "study": "ARIC",
+  "curator": "Curator",
+  "changes": {
+    "ARIC::confirmed::blood_pressure.yaml": {
+      "study": "ARIC",
+      "change_request": "OMOP:3003205",
+      "original_curie": "OMOP:4152194",
+      "slot": "observation_type",
+      "yaml_files": [
+        "blood_pressure.yaml"
+      ],
+      "notes": "OMOP:3003205|https://athena.ohdsi.org/search-terms/terms/3003205\nBrachial artery Systolic blood pressure\nLOINC:8508-4 | Brachial artery Systolic blood pressure",
+      "applied": false,
+      "saved_date": "2026-08-17",
+      "apply_results": [
+        "⚠ `observation_type` has 114 blocks with differing values (`OMOP:4152194`, `OMOP:4154790`) — cannot apply uniformly. Edit the YAML file directly.",
+        "⚠ No CSV rows match `blood_pressure.yaml` / `observation_type` with CURIE `OMOP:4152194` — 14 row(s) for this file/slot exist but hold a different CURIE and were left untouched. Re-check the finding before applying."
+      ]
+    }
+  }
+}

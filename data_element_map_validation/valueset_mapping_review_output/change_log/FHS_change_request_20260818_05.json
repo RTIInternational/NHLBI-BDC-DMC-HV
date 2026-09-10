@@ -1,0 +1,87 @@
+{
+  "submitted_date": "2026-08-18",
+  "study": "FHS",
+  "curator": "stephanie",
+  "changes": {
+    "FHS::confirmed::asthma.yaml": {
+      "study": "FHS",
+      "change_request": "MONDO:0004979",
+      "original_curie": "HP:0003193",
+      "slot": "condition_concept",
+      "yaml_files": [
+        "asthma.yaml"
+      ],
+      "notes": "Should use asthma condition curie - http://purl.obolibrary.org/obo/MONDO_0004979 - bronchial disease that is characterized by chronic inflammation and narrowing of the airways along with the Historical status, i.e. condition_concept = MONDO:0004979 with condition_status=HISTORICAL",
+      "applied": false,
+      "saved_date": "2026-08-10",
+      "apply_results": [
+        "⚠ `condition_concept` has 84 blocks with differing values (`HP:0003193`, `HP:0012393`, `HP:0030828`, `MONDO:0004784`, `MONDO:0004979`, `MONDO:0005492`, `MONDO:0024355`, `MONDO:0850282`) — cannot apply uniformly. Edit the YAML file directly.",
+        "✓ CSV: 93 row(s) → `MONDO:0004979` for `asthma.yaml` [condition_concept]"
+      ]
+    },
+    "FHS::confirmed::tak_statin.yaml": {
+      "study": "FHS",
+      "change_request": "ATC:C10AA",
+      "original_curie": "ATC:C10A",
+      "slot": "drug_concept",
+      "yaml_files": [
+        "tak_statin.yaml"
+      ],
+      "notes": "C10AA =HMG CoA reductase inhibitors— the specific subclass covering lovastatin, pravastatin, fluvastatin, atorvastatin, rosuvastatin, and pitavastatin — i.e., statins exactly as named in the variable",
+      "applied": false,
+      "saved_date": "2026-08-14",
+      "apply_results": [
+        "⚠ No `drug_concept: value:` pattern in `tak_statin.yaml`",
+        "✓ CSV: 9 row(s) → `ATC:C10AA` for `tak_statin.yaml` [drug_concept]"
+      ]
+    },
+    "FHS::confirmed::tak_orlhypoag.yaml": {
+      "study": "FHS",
+      "change_request": "OMOP:1594973",
+      "original_curie": "RxCUI:2404",
+      "slot": "drug_concept",
+      "yaml_files": [
+        "tak_orlhypoag.yaml"
+      ],
+      "notes": "OMOP:1594973=chlorpropamide\nhttps://athena.ohdsi.org/search-terms/terms/1594973\nORAL HYPOGLYCEMICS: CHLORPROPAMIDE",
+      "applied": false,
+      "saved_date": "2026-08-15",
+      "apply_results": [
+        "⚠ No `drug_concept: value:` pattern in `tak_orlhypoag.yaml`",
+        "✓ CSV: 24 row(s) → `OMOP:1594973` for `tak_orlhypoag.yaml` [drug_concept]"
+      ]
+    },
+    "FHS::confirmed::tak_cenactag.yaml": {
+      "study": "FHS",
+      "change_request": "OMOP: 1398937",
+      "original_curie": "RxCUI:2599",
+      "slot": "drug_concept",
+      "yaml_files": [
+        "tak_cenactag.yaml"
+      ],
+      "notes": "https://athena.ohdsi.org/search-terms/terms/1398937\nHas form (RxNorm) - ingredient of \nclonidine hydrochloride",
+      "applied": false,
+      "saved_date": "2026-08-17",
+      "apply_results": [
+        "⚠ No `drug_concept: value:` pattern in `tak_cenactag.yaml`",
+        "✓ CSV: 21 row(s) → `OMOP: 1398937` for `tak_cenactag.yaml` [drug_concept]"
+      ]
+    },
+    "FHS::confirmed::tak_aldorecepblk.yaml": {
+      "study": "FHS",
+      "change_request": "OMOP:970250",
+      "original_curie": "RxCUI:9997",
+      "slot": "drug_concept",
+      "yaml_files": [
+        "tak_aldorecepblk.yaml"
+      ],
+      "notes": "https://athena.ohdsi.org/search-terms/terms/970250",
+      "applied": false,
+      "saved_date": "2026-08-17",
+      "apply_results": [
+        "⚠ No `drug_concept: value:` pattern in `tak_aldorecepblk.yaml`",
+        "✓ CSV: 4 row(s) → `OMOP:970250` for `tak_aldorecepblk.yaml` [drug_concept]"
+      ]
+    }
+  }
+}

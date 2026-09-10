@@ -1,0 +1,27 @@
+{
+  "submitted_date": "2026-08-19",
+  "study": "HCHS",
+  "curator": "stephanie",
+  "changes": {
+    "HCHS::confirmed::spirometry.yaml": {
+      "study": "HCHS",
+      "change_request": "OMOP:3011505",
+      "original_curie": "OMOP:3002094",
+      "slot": "observations",
+      "yaml_files": ["spirometry.yaml"],
+      "notes": "Data-integrity fix (2026-08-19): the 2026-08-17 app Submit (commit f5c7bc65) blanket-overwrote all 42 CSV rows tagged (spirometry.yaml, observations) to OMOP:3011505, corrupting 35 rows that held 4 other distinct concepts (OMOP:3022891, 3024594, 4176265, 4241837). Restored those 35 rows to their original values from git history (f5c7bc65^). The 7 rows that genuinely held OMOP:3002094 were set to OMOP:3011505, matching the single corresponding YAML block (populated_from pht004715, line 114) which was updated the same way.",
+      "applied": true,
+      "applied_date": "2026-08-19",
+      "applied_by": "stephanie",
+      "apply_results": [
+        "YAML: 1 block updated: OMOP:3002094 -> OMOP:3011505",
+        "CSV: 7 row(s) updated to OMOP:3011505; 35 previously-corrupted row(s) restored to original distinct values (see notes)"
+      ]
+    }
+  },
+  "code_fix": {
+    "file": "curator_review_app.py",
+    "function": "_apply_csv",
+    "description": "Added original_curie parameter; CSV rows are now only updated when their current CURIE matches the reviewed finding's original_curie, mirroring the existing multi-value safety check in _apply_yaml. Prevents a (yaml_file, slot) pair that spans multiple distinct pre-existing CURIEs from being blanket-overwritten. Fixed once, in the same commit series as the ARIC restoration (see ARIC_change_request_20260819_06.json)."
+  }
+}

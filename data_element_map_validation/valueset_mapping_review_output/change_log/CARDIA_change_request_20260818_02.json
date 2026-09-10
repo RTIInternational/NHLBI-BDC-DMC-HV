@@ -1,0 +1,25 @@
+{
+  "submitted_date": "2026-08-18",
+  "study": "CARDIA",
+  "curator": "stephanie",
+  "changes": {
+    "CARDIA::confirmed::tak_statin.yaml": {
+      "study": "CARDIA",
+      "change_request": "ATC:C10AD (niacin), ATC:C10AB (gemfibrozil), ATC:C07AB (metoprolol)",
+      "original_curie": "RxCUI:7393/RxCUI:316343 (niacin), RxCUI:4719 (gemfibrozil), RxCUI:6918 (metoprolol)",
+      "slot": "drug_concept",
+      "yaml_files": [
+        "tak_statin.yaml"
+      ],
+      "notes": "Free-text medication names mismapped as RxCUI within a statin-flag file; corrected to proper ATC classes: metoprolol=beta-blocker(ATC:C07AB), niacin=nicotinic acid deriv.(ATC:C10AD), gemfibrozil=fibrate(ATC:C10AB). Other RxCUI entries (mevacor, zocor, cholestid, pravachol, lopid, etc.) left untouched — curator-reviewed cross-study consistency pass, 2026-08-18.",
+      "applied": true,
+      "saved_date": "2026-08-18",
+      "applied_date": "2026-08-18",
+      "applied_by": "stephanie",
+      "apply_results": [
+        "YAML: niacin -> ATC:C10AD (2 entries), gemfibrozil -> ATC:C10AB, metoprolol -> ATC:C07AB",
+        "CSV: 4 row(s) updated"
+      ]
+    }
+  }
+}
