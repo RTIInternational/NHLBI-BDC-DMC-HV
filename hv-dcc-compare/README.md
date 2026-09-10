@@ -275,6 +275,7 @@ python compare/translate_bdc_json.py ./runs/bdc/bdc_aric_summary_old.json
 | `compare/batch_scorecard.py` | Processes all cohorts in batch; produces cross-cohort summary table |
 | `compare/translate_bdc_json.py` | Post-processes a BDC JSON to rename raw concept codes to canonical TOPMed variable names |
 | `compare/core_variable_coverage_table.py` | Cross-cohort 19 Core Variable coverage matrix (requires HV repo path) |
+| `compare/scan_units.py` | Finds continuous variables whose values do not fit their declared unit (read-only) |
 | `compare/scan_positive_only.py` | Finds categoricals that lost a category arm (positive or negative) or their value (read-only) |
 | `compare/reconcile_dictionary.py` | Reports where `config.py`'s concept maps disagree with the BDC-HM data dictionary (read-only) |
 | `data/BDC-HM-*DataDictionary*.csv` | Optional label source for concepts `config.py` does not map |

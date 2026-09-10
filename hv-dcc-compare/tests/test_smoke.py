@@ -587,6 +587,90 @@ class HvDccCompareSmokeTests(unittest.TestCase):
         finally:
             sys.path[:] = original_sys_path
 
+    def test_reads_integer_and_concept_value_columns(self) -> None:
+        """dm-bip spreads values across four columns and cohorts differ in which
+        they use. Reading only value_decimal/value_enum turned real data into a
+        presence count -- 15,061 ARIC household-income values became "present".
+        value_string must still be refused: free text is disclosive.
+        """
+        original_sys_path = sys.path.copy()
+        try:
+            sys.path.insert(0, str(ROOT / "extract-harmonized"))
+            sys.path.insert(0, str(ROOT))
+            import extract_harmonized_summaries as ex  # type: ignore  # noqa: PLC0415
+            import pandas as pd  # noqa: PLC0415
+
+            def frame(col: str, values: list) -> pd.DataFrame:
+                return pd.DataFrame({col: values})
+
+            # value_decimal -- unchanged behaviour
+            s, src, kind = ex.select_value_series(
+                frame("value_quantity__value_decimal", [1.5, 2.5, 3.5]))
+            self.assertEqual(kind, "numeric")
+            self.assertEqual(list(s), [1.5, 2.5, 3.5])
+
+            # value_integer only -- previously fell through to presence-only
+            s, src, kind = ex.select_value_series(
+                frame("value_quantity__value_integer", [1, 2, 3]))
+            self.assertEqual(kind, "numeric")
+            self.assertEqual(src, "value_quantity__value_integer")
+            self.assertEqual(list(s), [1, 2, 3])
+
+            # value_concept only -- coded, not numeric
+            s, src, kind = ex.select_value_series(
+                frame("value_quantity__value_concept", ["OMOP:8527", "OMOP:8516"]))
+            self.assertEqual(kind, "coded")
+            self.assertEqual(src, "value_quantity__value_concept")
+
+            # value_enum wins over value_concept when both are coded
+            s, src, kind = ex.select_value_series(pd.DataFrame({
+                "value_enum": ["A", "B"],
+                "value_quantity__value_concept": ["OMOP:1", "OMOP:2"]}))
+            self.assertEqual(src, "value_enum")
+
+            # numeric wins over coded: a variable populating both is a quantity
+            s, src, kind = ex.select_value_series(pd.DataFrame({
+                "value_quantity__value_integer": [4, 5],
+                "value_enum": ["A", "B"]}))
+            self.assertEqual(kind, "numeric")
+
+            # value_string is NEVER read -- must fall through to nothing
+            s, src, kind = ex.select_value_series(
+                frame("value_string", ["free text a", "free text b"]))
+            self.assertEqual(kind, "")
+            self.assertEqual(src, "")
+            self.assertEqual(len(s), 0)
+
+            # decimal and integer coalesce per row rather than one winning
+            values, used, n_raw = ex.coalesce_numeric_values(pd.DataFrame({
+                "value_quantity__value_decimal": [1.5, None, None],
+                "value_quantity__value_integer": [None, 7, 8]}))
+            self.assertEqual(list(values.dropna()), [1.5, 7.0, 8.0])
+            self.assertEqual(len(used), 2)
+            self.assertEqual(n_raw, 3)
+
+            # The parse floor: a column that is mostly non-numeric is a coded
+            # variable, not a quantity. Without this, one numeric-looking entry
+            # among coded answers turns every other row into a missing value.
+            s, src, kind = ex.select_value_series(
+                frame("value_quantity__value_decimal", ["refused"] * 9 + ["7"]))
+            self.assertEqual(kind, "coded", "10% numeric must not read as a quantity")
+            s, src, kind = ex.select_value_series(
+                frame("value_quantity__value_decimal", ["refused"] * 5 + list("12345")))
+            self.assertEqual(kind, "numeric", "50% numeric is at the floor")
+
+            # A populated enum outranks a mostly-text decimal column.
+            s, src, kind = ex.select_value_series(pd.DataFrame({
+                "value_quantity__value_decimal": ["refused"] * 9 + ["7"],
+                "value_enum": ["A"] * 10}))
+            self.assertEqual(src, "value_enum")
+
+            # the policy tuples must not grow to include free text
+            self.assertNotIn("value_string", ex.NUMERIC_VALUE_COLUMNS)
+            self.assertNotIn("value_string", ex.CODED_VALUE_COLUMNS)
+        finally:
+            sys.path[:] = original_sys_path
+
     def test_no_known_participant_level_debug_prints(self) -> None:
         source_files = [
             ROOT / "extract-harmonized" / "extract_harmonized_summaries.py",

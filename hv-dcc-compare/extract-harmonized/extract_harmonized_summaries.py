@@ -242,6 +242,141 @@ def load_tsv_files(directories: list[str], glob_pattern: str) -> pd.DataFrame:
     return pd.concat(dfs, ignore_index=True)
 
 
+# Value columns the extractor may read, in priority order within each kind.
+# dm-bip spreads values across four columns and not every cohort uses the same
+# ones: ARIC/CHS emit value_concept, CARDIA/HCHS-SOL/JHS emit value_integer,
+# FHS/MESA emit both, COPDGene/WHI neither.
+NUMERIC_VALUE_COLUMNS = (
+    "value_quantity__value_decimal",
+    "value_quantity__value_integer",
+)
+CODED_VALUE_COLUMNS = (
+    "value_enum",
+    "value_quantity__value_concept",
+    # Last resort, preserving prior behaviour: when a decimal column holds
+    # mostly non-numeric entries it is a coded variable written to the wrong
+    # column, and its answers are more informative than a bare presence count.
+    # Individually rare values are still withheld by small-cell suppression.
+    "value_quantity__value_decimal",
+)
+# value_string is deliberately absent and must stay absent: free text is
+# individually disclosive and must never become a distribution key. A variable
+# whose only populated value column is value_string still falls through to a
+# presence-only count, by design.
+
+
+# A numeric column must be at least this parseable to be treated as a
+# quantity. Without the floor, one numeric-looking entry in a column of coded
+# or free-text answers ("refused", "not asked") would make the whole variable
+# continuous and silently turn every non-numeric row into a missing value.
+NUMERIC_PARSE_FLOOR = 0.5
+
+
+def coalesce_numeric_values(df: pd.DataFrame) -> tuple[pd.Series, list[str], int]:
+    """First populated numeric value per row across the numeric columns.
+
+    Returns (values, columns_used, n_non_null_raw). Coalescing rather than
+    picking one column because a cohort emitting both puts different variables
+    in each. n_non_null_raw counts populated cells BEFORE coercion so the
+    caller can tell "mostly numeric" from "mostly text with a stray number".
+    """
+    result = pd.Series(pd.NA, index=df.index, dtype="object")
+    used: list[str] = []
+    raw_non_null = pd.Series(False, index=df.index)
+    for col in NUMERIC_VALUE_COLUMNS:
+        if col not in df.columns:
+            continue
+        candidate = pd.to_numeric(df[col], errors="coerce")
+        raw_non_null = raw_non_null | df[col].notna()
+        if candidate.notna().any():
+            used.append(col)
+            result = result.where(result.notna(), candidate)
+    return pd.to_numeric(result, errors="coerce"), used, int(raw_non_null.sum())
+
+
+def count_dedup_conflicts(df: pd.DataFrame, value_col_hint: str | None = None) -> int:
+    """Participants whose duplicate rows carry DIFFERENT non-null values.
+
+    Deduplication keeps the first non-null value per column, which correctly
+    coalesces the sparse multi-block rows most YAMLs produce. It only becomes
+    arbitrary when two rows disagree, and then the winner is decided by file
+    ordering rather than by any stated preference -- BASELINE_VISIT_PREFS exists
+    but is not consulted as a tie-break.
+
+    Measured rather than assumed: CHS carries two baseline rows per participant
+    and its output matches the reference exactly on 13 of 18 continuous
+    variables, so the duplicates there agree. This counter is what would catch
+    a cohort where they stop agreeing.
+    """
+    id_col = "associated_participant"
+    if id_col not in df.columns or df.empty:
+        return 0
+    candidates = [c for c in (
+        [value_col_hint] if value_col_hint else
+        list(NUMERIC_VALUE_COLUMNS) + list(CODED_VALUE_COLUMNS)
+    ) if c and c in df.columns]
+    if not candidates:
+        return 0
+    conflicted = set()
+    for col in candidates:
+        sub = df[[id_col, col]].dropna()
+        if sub.empty:
+            continue
+        distinct = sub.groupby(id_col)[col].nunique()
+        conflicted |= set(distinct[distinct > 1].index)
+    return len(conflicted)
+
+
+def observed_unit(df: pd.DataFrame) -> str:
+    """The unit recorded in the data, for comparison against the declared one.
+
+    config.py asserts a unit and both sides of a comparison are labelled from
+    it, so a disagreement between the datasets is otherwise invisible. The
+    extract carries its own value_quantity__unit column -- 4.4M non-null rows
+    in ARIC alone -- which nothing previously read.
+
+    Returns the single unit when the rows agree, a "a | b" list when they do
+    not (itself a finding), or "" when the column is absent or empty. Aggregate
+    only: unit strings are metadata, not participant values.
+    """
+    col = "value_quantity__unit"
+    if col not in df.columns:
+        return ""
+    values = df[col].dropna().astype(str).str.strip()
+    values = values[values != ""]
+    if values.empty:
+        return ""
+    distinct = sorted(values.unique())
+    if len(distinct) == 1:
+        return distinct[0]
+    # More than one unit within a single variable is worth surfacing verbatim;
+    # cap the list so a pathological column cannot flood the summary.
+    return " | ".join(distinct[:5]) + (f" | +{len(distinct) - 5} more"
+                                       if len(distinct) > 5 else "")
+
+
+def select_value_series(df: pd.DataFrame) -> tuple[pd.Series, str, str]:
+    """Pick the value series for a set of rows.
+
+    Returns (series, column_label, kind) with kind one of "numeric", "coded"
+    or "" when nothing readable is populated. Numeric wins over coded: a
+    quantity is more informative than its coded form, and a variable
+    populating both is a quantity.
+    """
+    numeric, used, n_raw = coalesce_numeric_values(df)
+    n_numeric = int(numeric.notna().sum())
+    # Restores the parse floor the single-column version applied. A column that
+    # is mostly non-numeric is a coded variable, not a quantity.
+    if n_raw > 0 and n_numeric / n_raw >= NUMERIC_PARSE_FLOOR:
+        return numeric, " + ".join(used), "numeric"
+    for col in CODED_VALUE_COLUMNS:
+        if col in df.columns:
+            values = df[col].dropna()
+            if len(values) > 0:
+                return values, col, "coded"
+    return pd.Series(dtype=object), "", ""
+
+
 def _strip_list_wrapper(raw: str) -> str:
     """Strip Python list-literal wrapper from dm-bip output values.
     dm-bip often writes OMOP IDs as "['OMOP:8527']" instead of "OMOP:8527".
@@ -990,7 +1125,8 @@ def process_measurements(
     # Participants absent here never attended the baseline visit and should be
     # counted as missing (not "No") for medication status.
     baseline_meas_ids: set = set()
-    value_col = "value_quantity__value_decimal"
+    # (value columns are selected per row-set by select_value_series /
+    # coalesce_numeric_values -- see NUMERIC_VALUE_COLUMNS.)
 
     for bdc_code, spec in BDC_MEASUREMENT_MAP.items():
         # Collect rows matching the primary code AND any aliases
@@ -1073,11 +1209,12 @@ def process_measurements(
         if "associated_participant" in baseline.columns:
             baseline_meas_ids.update(baseline["associated_participant"].dropna().unique())
 
-        if value_col in baseline.columns:
-            values = pd.to_numeric(baseline[value_col], errors="coerce")
+        if any(c in baseline.columns for c in NUMERIC_VALUE_COLUMNS):
+            values, _num_cols_used, _n_raw = coalesce_numeric_values(baseline)
             # Debug: if we have rows but all values are NaN, report aggregate-only diagnostics
             if len(baseline) > 0 and values.notna().sum() == 0:
-                print(f"    [debug] {spec['bdc_label']}: {len(baseline)} rows but 0 valid numeric values. "
+                print(f"    [debug] {spec['bdc_label']}: {len(baseline)} rows but 0 valid numeric values "
+                      f"across {list(NUMERIC_VALUE_COLUMNS)}. "
                       f"Raw values were not printed to keep logs aggregate-only.")
         else:
             values = pd.Series(dtype=float)
@@ -1103,6 +1240,20 @@ def process_measurements(
         stats["bdc_label"] = spec["bdc_label"]
         stats["topmed_variable"] = topmed_var
         stats["dataset"] = "baseline_covariates"
+        # The unit the data itself carries, so a disagreement with the
+        # unit config asserts becomes visible instead of silent.
+        stats["unit_observed"] = observed_unit(baseline)
+        # Record the method actually filtered on and, where documented, what the
+        # reference pipeline used. The BDC filter can drop 90%+ of rows, so a
+        # reader needs both to judge whether the sides are comparable.
+        _pref = (spec.get("preferred_method_override", {}).get(cohort)
+                 or spec.get("preferred_method"))
+        if _pref:
+            stats["bdc_method"] = _pref
+        _ref = spec.get("reference_method")
+        if isinstance(_ref, dict):
+            _ref = _ref.get(cohort)
+        stats["reference_method"] = _ref or ""
         stats["visit_label"] = visit_used
         stats["bdc_concept_code"] = bdc_code
         variable_stats[topmed_var] = stats
@@ -1140,6 +1291,11 @@ def process_measurements(
             # Dedup per participant — coalesce (first non-null) for same reason
             # as the BDC_MEASUREMENT_MAP loop above.
             n_pre_dedup = len(baseline)
+            _n_conflicts = count_dedup_conflicts(baseline, value_col_hint=None)
+            if _n_conflicts:
+                print(f"      {disc_code}: WARNING {_n_conflicts:,} participant(s) had "
+                      f"CONFLICTING values before dedup -- 'first' picks by row order, "
+                      f"so this variable depends on file ordering")
             if "associated_participant" in baseline.columns:
                 id_col_disc = "associated_participant"
                 internal_cols_disc = [c for c in baseline.columns if c.startswith("_")]
@@ -1161,15 +1317,11 @@ def process_measurements(
             if "associated_participant" in baseline.columns:
                 baseline_meas_ids.update(baseline["associated_participant"].dropna().unique())
 
-            # Try numeric first
-            is_continuous = False
-            numeric_vals = pd.Series(dtype=float)
-            if value_col in baseline.columns:
-                numeric_vals = pd.to_numeric(baseline[value_col], errors="coerce")
-                n_numeric = int(numeric_vals.notna().sum())
-                n_non_null = int(baseline[value_col].notna().sum())
-                if n_non_null > 0 and n_numeric / n_non_null >= 0.5:
-                    is_continuous = True
+            # Pick the value series across every readable column, not just
+            # value_decimal -- see NUMERIC_VALUE_COLUMNS / CODED_VALUE_COLUMNS.
+            value_series, value_source, value_kind = select_value_series(baseline)
+            is_continuous = value_kind == "numeric"
+            numeric_vals = value_series if is_continuous else pd.Series(dtype=float)
 
             if is_continuous:
                 stats = continuous_stats(numeric_vals)
@@ -1179,17 +1331,11 @@ def process_measurements(
                     stats["n_missing"] / n_participants * 100, 1
                 ) if n_participants > 0 else 0.0
             else:
-                # Try categorical columns. value_string (free text) is deliberately
-                # excluded — its raw contents are individually disclosive and must
-                # never become distribution keys. If only free-text values exist,
-                # fall back to an aggregate presence-only count.
-                cat_series = pd.Series(dtype=object)
-                for cat_col in ("value_enum", value_col):
-                    if cat_col in baseline.columns:
-                        vals = baseline[cat_col].dropna()
-                        if len(vals) > 0:
-                            cat_series = vals
-                            break
+                # Coded values (value_enum or value_concept). value_string stays
+                # excluded: free text is individually disclosive and must never
+                # become a distribution key, so a variable populating only
+                # value_string still falls through to a presence-only count.
+                cat_series = value_series if value_kind == "coded" else pd.Series(dtype=object)
                 if len(cat_series) > 0:
                     stats = categorical_stats(cat_series)
                     stats["n_total"] = n_participants
@@ -1220,9 +1366,13 @@ def process_measurements(
             # rather than a wall of CURIEs. Display only - this does
             # not bring the concept into the TOPMed comparison.
             stats["bdc_label"] = display_label(disc_code, "MeasurementObservation", "observation_type")
-            _relabel_distribution(stats, "MeasurementObservation", "value_enum")
+            _relabel_distribution(stats, "MeasurementObservation",
+                                  value_source or "value_enum")
             stats["topmed_variable"] = None
             stats["dataset"] = "bdc_measurement"
+            # The unit the data itself carries, so a disagreement with the
+            # unit config asserts becomes visible instead of silent.
+            stats["unit_observed"] = observed_unit(baseline)
             stats["visit_label"] = visit_used
             stats["bdc_concept_code"] = disc_code
             discovered_key = f"discovered:measurement:{var_key}"
@@ -2105,6 +2255,9 @@ def process_observations(
             stats["bdc_label"] = "Ever smoker"
             stats["topmed_variable"] = "ever_smoker_baseline_1"
             stats["dataset"] = "baseline_covariates"
+            # The unit the data itself carries, so a disagreement with the
+            # unit config asserts becomes visible instead of silent.
+            stats["unit_observed"] = observed_unit(baseline)
             stats["visit_label"] = visit_used
             stats["n_total"] = n_participants
             stats["n_missing"] = n_participants - stats["n_valid"]
@@ -2174,25 +2327,13 @@ def process_observations(
 
             var_key = disc_code
 
-            # Try to find the best value column
-            value_col = None
-            # value_string (free text) is deliberately excluded from the value
-            # candidates — its raw contents are individually disclosive. When only
-            # value_string is populated, value_col stays None and the presence-only
-            # branch below emits an aggregate count instead of raw keys.
-            for col_name in ("value_quantity__value_decimal", "value_enum"):
-                if col_name in baseline.columns and baseline[col_name].notna().any():
-                    value_col = col_name
-                    break
-
-            is_continuous = False
-            numeric_vals = pd.Series(dtype=float)
-            if value_col == "value_quantity__value_decimal":
-                numeric_vals = pd.to_numeric(baseline[value_col], errors="coerce")
-                n_numeric = int(numeric_vals.notna().sum())
-                n_non_null = int(baseline[value_col].notna().sum())
-                if n_non_null > 0 and n_numeric / n_non_null >= 0.5:
-                    is_continuous = True
+            # Pick the value series across every readable column. value_string
+            # stays excluded: free text is individually disclosive, so a
+            # variable populating only value_string falls through to the
+            # presence-only branch below rather than emitting raw keys.
+            value_series, value_source, value_kind = select_value_series(baseline)
+            is_continuous = value_kind == "numeric"
+            numeric_vals = value_series if is_continuous else pd.Series(dtype=float)
 
             if is_continuous:
                 stats = continuous_stats(numeric_vals)
@@ -2201,9 +2342,8 @@ def process_observations(
                 stats["pct_missing"] = round(
                     stats["n_missing"] / n_participants * 100, 1
                 ) if n_participants > 0 else 0.0
-            elif value_col:
-                cat_series = baseline[value_col].dropna()
-                stats = categorical_stats(cat_series)
+            elif value_kind == "coded":
+                stats = categorical_stats(value_series)
                 stats["n_total"] = n_participants
                 stats["n_missing"] = n_participants - stats["n_valid"]
                 stats["pct_missing"] = round(
@@ -2231,9 +2371,13 @@ def process_observations(
             # rather than a wall of CURIEs. Display only - this does
             # not bring the concept into the TOPMed comparison.
             stats["bdc_label"] = display_label(disc_code, "Observation", "observation_type")
-            _relabel_distribution(stats, "Observation", "value_enum")
+            _relabel_distribution(stats, "Observation",
+                                  value_source or "value_enum")
             stats["topmed_variable"] = None
             stats["dataset"] = "bdc_observation"
+            # The unit the data itself carries, so a disagreement with the
+            # unit config asserts becomes visible instead of silent.
+            stats["unit_observed"] = observed_unit(baseline)
             stats["visit_label"] = visit_used
             stats["bdc_concept_code"] = disc_code
             discovered_key = f"discovered:observation:{var_key}"
@@ -2514,6 +2658,25 @@ def run_dq_checks(
             flags.append(
                 f"WARNING: {stats.get('bdc_label', var_name)} has {pct_missing:.1f}% missing "
                 f"({stats.get('n_missing', 0):,}/{stats.get('n_total', 0):,})"
+            )
+
+    # Declared vs observed unit. config.py asserts the unit and both sides of a
+    # comparison are labelled from it, so a disagreement with the data was
+    # previously invisible -- it surfaced only as an unexplained mean delta.
+    for var_name, stats in variable_stats.items():
+        declared = (stats.get("unit") or "").strip()
+        observed = (stats.get("unit_observed") or "").strip()
+        if not declared or not observed:
+            continue
+        if "|" in observed:
+            flags.append(
+                f"WARNING: {stats.get('bdc_label', var_name)} carries more than one "
+                f"unit in the data ({observed}) against declared {declared!r}"
+            )
+        elif observed != declared:
+            flags.append(
+                f"WARNING: {stats.get('bdc_label', var_name)} unit mismatch -- "
+                f"config declares {declared!r}, data carries {observed!r}"
             )
 
     # Check for implausible continuous values

@@ -904,6 +904,15 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
         # the seated sphygmomanometer net average. This matches the JHS DBP override
         # below — both BP components should use the same instrument (sphygmomanometer).
         "preferred_method_override": {"ARIC": "Seated random-zero average", "JHS": "Sphygmomanometer average"},
+        # What the reference pipeline used, so a report reader can confirm the
+        # two sides measured the same thing. Transcribed from the comments
+        # above; absent for any cohort where it was never documented.
+        "reference_method": {
+            "ARIC": "pht004192 SBPA21 (phv00210290) -- ARIC-team pre-computed "
+                    "zero-corrected average of seated readings 2 and 3",
+            "JHS": "pht001974 SBPA19 (phv00128376) -- seated sphygmomanometer "
+                   "net average",
+        },
     },
     "OMOP:4154790": {
         "topmed_var": "bp_diastolic_1",
@@ -923,6 +932,11 @@ BDC_MEASUREMENT_MAP: dict[str, dict] = {
         # "Seated random-zero average". Without the override, 7.1% BDC missing vs
         # 0.8% TOPMed and +1.7 mmHg mean elevation from mixed positional readings.
         "preferred_method_override": {"JHS": "Sphygmomanometer average", "ARIC": "Seated random-zero average"},
+        # See the note on reference_method for bp_systolic_1.
+        "reference_method": {
+            "ARIC": "pht004192 SBPA22 (phv00210291) -- seated random-zero average",
+            "JHS": "pht001974 SBPA20 -- random-zero sphygmomanometer",
+        },
     },
     # ── Lipids ───────────────────────────────────────────────────────────────
     "OBA:VT0000184": {

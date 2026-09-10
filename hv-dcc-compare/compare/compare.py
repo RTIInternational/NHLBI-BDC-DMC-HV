@@ -170,10 +170,22 @@ def print_continuous_comparison(
         ("N implausible", "n_implausible", True),
     ]
 
+    # Method provenance: the BDC side is filtered to one protocol and the
+    # reference side is not, so state both. "not recorded" is the honest
+    # answer where the reference protocol was never documented.
+    bdc_method = b.get("bdc_method") or ""
+    ref_method = b.get("reference_method") or ""
+    method_note = ""
+    if bdc_method:
+        method_note = (f"Method -- BDC filtered to {bdc_method!r}; "
+                       f"reference: {ref_method or 'not recorded'}")
+
     if _REPORT_FMT == "md":
         print(f"\n#### {_md_cell(bdc_label)} (`{_md_cell(var_name)}`)")
         if unit:
             print(f"\n*Unit: {_md_cell(unit)}*")
+        if method_note:
+            print(f"*{_md_cell(method_note)}*")
         if b_visit:
             print(f"*BDC visit: {_md_cell(b_visit)}*")
         if suppression_note:
@@ -198,6 +210,8 @@ def print_continuous_comparison(
         print(f"    Unit: {unit}")
     if b_visit:
         print(f"    BDC visit: {b_visit}")
+    if method_note:
+        print(f"    {method_note}")
     if suppression_note:
         print(f"    NOTE: {suppression_note}")
 
