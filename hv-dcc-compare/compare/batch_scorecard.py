@@ -405,7 +405,7 @@ def main():
     )
     parser.add_argument(
         "--all-vars", action="store_true", default=False,
-        help="Score all matched variables instead of the 28-variable core set",
+        help="Score all matched variables instead of the 19-variable core set",
     )
     args = parser.parse_args()
 

@@ -597,12 +597,29 @@ DATASETS: dict[str, dict] = {
             "carotid_stenosis_1": {
                 "bdc_label": "Carotid stenosis",
                 "var_type": "categorical",
-                "value_map": None,  # unknown categories — pass through raw
+                # Deliberately still unmapped -- NOT the same shape as
+                # carotid_plaque_1. TOPMed grades this 0-5, an ordinal
+                # severity scale (MESA: 3,692/1,814/782/30/15/5), and the MESA
+                # YAML bands it as '1':'1-24', '2':'25-49', ... Writing labels
+                # here means committing to what grades 3-5 stand for, which
+                # needs the DCC data dictionary rather than inference from the
+                # pattern. It would change no grade today regardless: BDC
+                # emits 0 valid values for this variable in the only cohort
+                # that has it, so its D is a coverage gap, not a label
+                # mismatch.
+                "value_map": None,
             },
             "carotid_plaque_1": {
                 "bdc_label": "Carotid plaque",
                 "var_type": "categorical",
-                "value_map": None,  # pass through raw
+                # TOPMed emits raw 0/1 while BDC emits the prior-history
+                # labels, so with no map the two sides shared no category at
+                # all and every cohort carrying it graded D on a ~66pp
+                # "difference". The counts already agreed: MESA had TOPMed
+                # 1 = 2,657 against BDC "Prior History" = 2,657 exactly.
+                # Binary with the same semantics as the *_prior_1 family, so
+                # it takes the same map.
+                "value_map": TOPMED_PRIOR_HISTORY_MAP,
             },
         },
     },
@@ -772,6 +789,21 @@ OMOP_SEX_MAP = {
     "8532": "Female", "8507": "Male",
 }
 
+# NOTE ON "UNKNOWN": BDC-HM declares UNKNOWN as a permissible value name for
+# Demography.race (label "Unknown") alongside the OMOP CURIEs. config accepted
+# only the CURIEs, so it collapsed to UNMAPPED -- 100% of HCHS/SOL (11,831) and
+# 26% of MESA (2,177), which graded both cohorts D on race.
+#
+# Those are the same participants the reference files under "Other": MESA's
+# 2,177 UNKNOWN are exactly its 2,177 TOPMed "Other", and are exactly its 2,177
+# Hispanic participants, with Asian, White and Black agreeing to within 2.
+# Mapped to Other to match the reference convention for comparison purposes
+# (agreed 2026-09-10).
+#
+# This asserts equivalence of CONVENTION, not of meaning: "unknown race" and
+# "other race" are different claims and only the former is what BDC-HM records.
+# It is the right call for scoring against TOPMed and the wrong one to carry
+# into anything that reports race on its own.
 OMOP_RACE_MAP = {
     "OMOP:8527": "White", "OMOP:8515": "Asian",
     "OMOP:8516": "Black or African American",
@@ -784,8 +816,14 @@ OMOP_RACE_MAP = {
     "8657": "American Indian or Alaska Native",
     "8557": "Native Hawaiian or Other Pacific Islander",
     "45880900": "Multiple Races", "8552": "Other",
+    # Permissible value name rather than a CURIE -- see the note above.
+    "UNKNOWN": "Other",
 }
 
+# Ethnicity has its own UNKNOWN permissible value in BDC-HM, deliberately left
+# unmapped: the reference's ethnicity vocabulary is HL / notHL / both with no
+# "Other" bucket, so there is nothing to align it to and inventing one would
+# manufacture agreement. No cohort emitted it in the 2026-09-10 run.
 OMOP_ETHNICITY_MAP = {
     "OMOP:38003563": "Hispanic or Latino",
     "OMOP:38003564": "Not Hispanic or Latino",

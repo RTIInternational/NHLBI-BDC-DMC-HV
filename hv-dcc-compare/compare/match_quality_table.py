@@ -1631,7 +1631,7 @@ if __name__ == '__main__':
     parser.add_argument('output_file', nargs='?', default=None, help='Output file (optional)')
     parser.add_argument(
         '--all-vars', action='store_true', default=False,
-        help='Compare all matched variables instead of the 28-variable core set'
+        help='Compare all matched variables instead of the 19-variable core set'
     )
     args = parser.parse_args()
     run(args.topmed_json, args.bdc_json, args.output_file, all_vars=args.all_vars)
