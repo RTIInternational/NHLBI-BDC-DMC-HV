@@ -1,48 +1,57 @@
 #!/usr/bin/env python3
 """
-scan_positive_only.py -- find categorical variables emitting only the
-affirmative case
+scan_positive_only.py -- categorical variables that lost an arm, or their value
 
-Several BDC transforms emit a category only when the answer is "yes" and leave
-the negative arm null, so participants who do NOT have the condition become
-missing rather than negative:
-
-    WHI coronary angioplasty   reference 1,467 prior / 139,657 no
-                               BDC       1,467 prior /       0 no   (-> null)
-
-The affirmative arm is harmonized correctly -- WHI's positive count matches the
-reference exactly -- but a dataset that cannot separate "no prior angioplasty"
-from "we don't know" breaks every denominator, prevalence and unexposed-group
-comparison built on it. That is a defect on its own terms, independent of any
-comparison against TOPMed.
-
-Read-only. It classifies and counts; it changes nothing and fixes nothing,
-because whether a source form can justify emitting an explicit negative is a
-per-table curation judgement (a checklist supports it, free text usually does
-not).
+Started as a hunt for transforms that emit a category only when the answer is
+"yes", leaving the negative arm null. The first real run (2026-09-10) showed
+three distinct defects wearing that disguise, with opposite consequences, so
+they are now reported separately.
 
 FINDINGS
 
-  CONFIRMED  BDC emits one category, the reference emits two or more, and the
-             categories BDC lacks account for its extra missing. Strongest
-             evidence: the data exists on the reference side.
+  CONFIRMED -- affirmative arm only
+      Only the positive category survives; the reference has more. Destroys the
+      DENOMINATOR: participants who do not have the condition become missing
+      rather than negative, so no prevalence or unexposed-group analysis holds.
+          WHI coronary angioplasty: reference 1,467 prior / 139,657 no
+                                    BDC       1,467 prior /       0 no
 
-  PARTIAL    BDC emits several categories but is missing one the reference has.
-             Same defect, narrower.
+  NEGATIVE ARM ONLY
+      Only the negative category survives. Destroys the NUMERATOR, which is
+      worse: the harmonized data says nobody has the condition at all. MESA
+      atrial fibrillation and FHS pulmonary embolism emit "Unaffected" and
+      nothing else -- a researcher querying prevalence gets zero, not an error.
 
-  SUSPECTED  BDC emits one category with high missingness and there is no
-             reference counterpart to check against. These are the ones no
-             comparison report can surface -- the reason for scanning rather
-             than reading the D-grade list.
+  PARTIAL
+      Several categories, but one the reference has is absent. Categories the
+      reference carries BY DESIGN and BDC-HM does not model (its ethnicity
+      "both/inconsistent" bucket) are excluded -- BDC lacking those is correct.
 
-  (A single category with LOW missingness is not reported: a genuinely uniform
-  population, e.g. an all-Hispanic cohort's ethnicity, looks like that and is
-  correct.)
+  NO VALUE EXTRACTED
+      A presence count rather than a category: the variable had no safe enum or
+      numeric value column, so the extractor recorded only that a row existed.
+      Every case found was a variable that must carry a value -- a depression
+      scale total, household income, urine albumin, dietary servings.
+
+  SUSPECTED
+      One category, high missingness, no reference counterpart to check
+      against. These are invisible to every comparison report, which is the
+      reason for scanning rather than reading the D-grade list.
+
+  A single category with LOW missingness is deliberately NOT reported: a
+  genuinely uniform population (an all-Hispanic cohort's ethnicity) looks
+  exactly like the defect and is correct.
+
+Read-only. It classifies and counts; it changes nothing, because whether a
+source form can justify an explicit negative is a per-table curation judgement
+-- a checklist supports it, free text usually does not, and emitting "No" where
+the source only supports "not recorded" trades a visible gap for an invisible
+false negative that happens to score better.
 
 Usage:
     python compare/scan_positive_only.py --bdc-dir runs/<ts>/bdc
-    python compare/scan_positive_only.py --bdc-dir runs/<ts>/bdc \\
-        --topmed-dir /data/topmed-dcc-summaries        # enables CONFIRMED/PARTIAL
+    python compare/scan_positive_only.py --bdc-dir runs/<ts>/bdc \
+        --topmed-dir /data/topmed-dcc-summaries   # enables CONFIRMED/PARTIAL
     python compare/scan_positive_only.py --bdc-dir runs/<ts>/bdc --verbose
 """
 
@@ -65,13 +74,48 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 # negative arm.
 DEFAULT_MISSING_THRESHOLD = 25.0
 
-# Category names that read as an explicit negative. Used only to say whether a
-# variable that DOES emit two categories is already doing the right thing.
-NEGATIVE_HINTS = {
+# Categories that read as an explicit negative, and as an explicit positive.
+# Which arm survives decides what a researcher gets: only-positive destroys the
+# denominator, only-negative destroys the numerator (nobody appears to have the
+# condition at all). Opposite consequences, so they are reported separately.
+NEGATIVE_CATEGORIES = {
     "no", "no prior history", "not current smoker", "never smoked",
     "not exposed", "unaffected", "absent", "not hispanic or latino",
-    "control", "negative", "none",
+    "control", "negative", "none", "no prior hist",
 }
+POSITIVE_CATEGORIES = {
+    "yes", "prior history", "current smoker", "ever smoked", "exposed",
+    "affected", "present condition", "hispanic or latino", "case", "positive",
+}
+
+# Reference-side categories with no BDC counterpart BY DESIGN. The reference
+# ethnicity vocabulary carries a "both/inconsistent" bucket that BDC-HM simply
+# does not model, so BDC "lacking" it is correct, not a gap. Matched on the
+# label, which says so outright.
+REFERENCE_ONLY_MARKERS = ("topmed-only", "reference-only")
+
+# The extractor writes this single pseudo-category when a variable has no safe
+# enum or numeric value column -- it is a presence count, not a clinical
+# category. That is a different defect (no value extracted) and is reported
+# separately rather than as a missing negative arm.
+PRESENCE_PLACEHOLDER = "present"
+
+
+def reference_only(category: str) -> bool:
+    low = category.lower()
+    return any(marker in low for marker in REFERENCE_ONLY_MARKERS)
+
+
+def arm_of(categories: list[str]) -> str:
+    """'positive', 'negative' or 'unknown' for a single emitted category."""
+    if len(categories) != 1:
+        return "unknown"
+    low = categories[0].strip().lower()
+    if low in NEGATIVE_CATEGORIES:
+        return "negative"
+    if low in POSITIVE_CATEGORIES:
+        return "positive"
+    return "unknown"
 
 
 def load_summaries(directory: Path, pattern: str) -> dict[str, dict]:
@@ -104,12 +148,12 @@ def is_binaryish(stats: dict) -> bool:
 
 def main() -> int:
     ap = argparse.ArgumentParser(
-        description="Find BDC categorical variables that emit only the affirmative case."
+        description="Find BDC categoricals that lost a category arm or their value."
     )
     ap.add_argument("--bdc-dir", required=True, type=Path,
                     help="Directory of bdc_*_summary_*.json.")
     ap.add_argument("--topmed-dir", type=Path, default=None,
-                    help="Directory of topmed_*_summary.json. Enables CONFIRMED/PARTIAL.")
+                    help="Directory of topmed_*_summary.json. Enables CONFIRMED/PARTIAL/NEGATIVE.")
     ap.add_argument("--missing-threshold", type=float, default=DEFAULT_MISSING_THRESHOLD,
                     help=f"%%-missing above which a lone category is suspicious "
                          f"(default {DEFAULT_MISSING_THRESHOLD}).")
@@ -129,7 +173,7 @@ def main() -> int:
               if args.topmed_dir and args.topmed_dir.is_dir() else {})
 
     print("=" * 78)
-    print("  Categorical variables emitting only the affirmative case")
+    print("  Categorical variables that lost an arm, or their value")
     print("=" * 78)
     print(f"  cohorts        : {len(bdc)}")
     print(f"  reference side : {'available (' + str(len(topmed)) + ' cohorts)' if topmed else 'NOT supplied -- CONFIRMED/PARTIAL disabled'}")
@@ -139,6 +183,8 @@ def main() -> int:
     confirmed: list[tuple] = []
     partial: list[tuple] = []
     suspected: list[tuple] = []
+    negative_only: list[tuple] = []
+    no_value: list[tuple] = []
 
     for cohort, variables in sorted(bdc.items()):
         tvars = topmed.get(cohort, {})
@@ -149,14 +195,31 @@ def main() -> int:
             pct_missing = float(stats.get("pct_missing") or 0.0)
             label = stats.get("bdc_label", var)
             tstats = tvars.get(var)
-            tcats = categories(tstats) if tstats else []
+            # A reference-only category is not something BDC is missing.
+            tcats = [c for c in (categories(tstats) if tstats else [])
+                     if not reference_only(c)]
 
+            row_base = (cohort, var, label, cats, pct_missing)
+
+            # No usable value column: the extractor emitted a presence count,
+            # so there is no category to be missing. Separate defect.
+            if cats == [PRESENCE_PLACEHOLDER]:
+                no_value.append((*row_base[:4], [], pct_missing))
+                continue
+
+            arm = arm_of(cats)
             if tcats and len(cats) < len(tcats):
                 missing_cats = [c for c in tcats if c not in cats]
                 row = (cohort, var, label, cats, missing_cats, pct_missing)
-                (confirmed if len(cats) <= 1 else partial).append(row)
+                if len(cats) > 1:
+                    partial.append(row)
+                elif arm == "negative":
+                    negative_only.append(row)
+                else:
+                    confirmed.append(row)
             elif not tstats and len(cats) == 1 and pct_missing >= args.missing_threshold:
-                suspected.append((cohort, var, label, cats, [], pct_missing))
+                row = (cohort, var, label, cats, [], pct_missing)
+                (negative_only if arm == "negative" else suspected).append(row)
 
     def emit(title: str, rows: list[tuple], note: str) -> None:
         print("-" * 78)
@@ -181,16 +244,25 @@ def main() -> int:
                     print(f"      lacks   : {missing_cats}")
         print()
 
-    emit("CONFIRMED", confirmed,
-         "BDC emits one category; the reference emits more. The data exists.")
+    emit("CONFIRMED -- affirmative arm only", confirmed,
+         "Only the positive category survives. Destroys the denominator: the "
+         "unexposed become missing.")
+    emit("NEGATIVE ARM ONLY", negative_only,
+         "Only the negative category survives. Destroys the NUMERATOR -- the "
+         "harmonized data shows nobody has the condition.")
     emit("PARTIAL", partial,
-         "BDC emits several categories but lacks one the reference has.")
+         "Several categories, but one the reference has is absent "
+         "(reference-only categories excluded).")
+    emit("NO VALUE EXTRACTED", no_value,
+         "A presence count, not a category: the variable had no safe enum or "
+         "numeric value column.")
     emit("SUSPECTED", suspected,
          "One category, high missingness, no reference counterpart to check.")
 
-    total = len(confirmed) + len(partial) + len(suspected)
-    affected_vars = {r[1] for r in confirmed + partial + suspected}
-    affected_cohorts = {r[0] for r in confirmed + partial + suspected}
+    every = confirmed + negative_only + partial + no_value + suspected
+    total = len(every)
+    affected_vars = {r[1] for r in every}
+    affected_cohorts = {r[0] for r in every}
     print("=" * 78)
     print(f"  {total} cohort-variable instance(s); "
           f"{len(affected_vars)} distinct variable(s); "
