@@ -1992,6 +1992,18 @@ def load_data_dictionary(explicit: str | None = None, verbose: bool = True) -> d
             for row in csv.DictReader(fh):
                 code = (row.get("code_in_data") or "").strip()
                 label = (row.get("label") or "").strip()
+                definition = (row.get("definition") or "").strip()
+                # 26 OBA rows in the 2026-08-31 export carry a label that is
+                # just the CURIE re-cased ("OBA:VT0001253" -> "Oba:vt0001253")
+                # with the real name stranded in definition ("Height"). Prefer
+                # the definition's first clause in exactly that case. Narrowly
+                # scoped to CURIE codes whose label differs from the code only
+                # by case, so permissible value names like ABSENT -> "Absent"
+                # keep their perfectly good labels.
+                if ":" in code and label.lower() == code.lower() and definition:
+                    first_clause = definition.split("|")[0].strip()
+                    if first_clause:
+                        label = first_clause
                 if not code or not label:
                     continue
                 table = (row.get("output_table") or "").strip()

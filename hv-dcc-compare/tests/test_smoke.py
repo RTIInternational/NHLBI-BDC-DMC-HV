@@ -554,6 +554,39 @@ class HvDccCompareSmokeTests(unittest.TestCase):
         finally:
             sys.path[:] = original_sys_path
 
+    def test_dictionary_prefers_definition_over_echoed_curie_label(self) -> None:
+        """26 OBA rows label a CURIE with the CURIE re-cased; the real name is
+        in definition. Permissible value names must keep their labels."""
+        original_sys_path = sys.path.copy()
+        try:
+            sys.path.insert(0, str(ROOT))
+            import config  # type: ignore  # noqa: PLC0415
+
+            with tempfile.TemporaryDirectory() as tmp:
+                csv_path = Path(tmp) / "BDC-HM-X-DataDictionary-20260831.csv"
+                csv_path.write_text(
+                    "output_table,output_column,code_in_data,label,definition,"
+                    "vocabulary,code_form" + NL +
+                    "MeasurementObservation,observation_type,OBA:VT0001253,"
+                    "Oba:vt0001253,Height | the vertical measurement,OBA,x" + NL +
+                    "Condition,condition_status,ABSENT,Absent,"
+                    "was absent at observation time,BDC-HM,x" + NL +
+                    "Condition,condition_concept,MONDO:0005002,"
+                    "chronic obstructive pulmonary disease,a lung disease,MONDO,x" + NL,
+                    encoding="utf-8",
+                )
+                d = config.load_data_dictionary(str(csv_path), verbose=False)
+                # Echoed CURIE label -> first clause of the definition.
+                self.assertEqual(config.label_for_code("OBA:VT0001253", dictionary=d),
+                                 "Height")
+                # Permissible value name that merely re-cases -> keep the label.
+                self.assertEqual(config.label_for_code("ABSENT", dictionary=d), "Absent")
+                # A real label is never overridden by its definition.
+                self.assertEqual(config.label_for_code("MONDO:0005002", dictionary=d),
+                                 "chronic obstructive pulmonary disease")
+        finally:
+            sys.path[:] = original_sys_path
+
     def test_no_known_participant_level_debug_prints(self) -> None:
         source_files = [
             ROOT / "extract-harmonized" / "extract_harmonized_summaries.py",
