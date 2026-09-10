@@ -1,7 +1,7 @@
 """Generate per-variable match quality table for any cohort BDC vs TOPMed comparison.
 
 Usage:
-    # Core variables only (default — 28 variables, 5+ cohort coverage)
+    # Core variables only (default — 19 variables, 5+ cohort coverage)
     python match_quality_table.py <topmed_json> <bdc_json> [output_file]
 
     # All matched variables
@@ -24,9 +24,15 @@ if hasattr(sys.stdout, "reconfigure"):
 # error — it reflects a deliberate design choice, extended coverage, or a
 # different (often more complete) aggregation strategy — add an entry here.
 #
-# These variables will receive an asterisk (*) annotation on their value tier,
-# and will have their methodological note printed in the output. The statistical
-# diff is still displayed in full so the magnitude is transparent.
+# These variables have their methodological note printed in a dedicated section
+# below the table, tagged "(tier kept)". The statistical diff is still displayed
+# in full so the magnitude is transparent.
+#
+# NOTE ON THE TIER ANNOTATION: entries may set "no_override": True to keep the
+# computed tier as-is. Every current entry does, so the asterisk (*) annotation
+# implemented further down never fires in practice -- the notes are advisory
+# only and never change a grade. Drop "no_override" from an entry if you do want
+# its tier starred.
 #
 # KEY FORMAT:  (COHORT_UPPERCASE, topmed_variable_name)
 # The cohort is read from t['metadata']['cohort'] in the input JSON.
@@ -38,6 +44,13 @@ if hasattr(sys.stdout, "reconfigure"):
 #   AGGREGATION_DIFF     — Different rollup logic (e.g., any-positive vs first-record)
 #   LABEL_REMAP          — Same data, different category label conventions
 #
+# The codes are free-text and nothing validates them, so the set has grown well
+# past the five above (ADMIN_VS_SURVEY, PARTICIPANT_UNIVERSE_DIFF, IMPUTATION_DIFF,
+# DERIVED_VS_STORED, STRUCTURAL_GAP, ... ~26 in use). Reuse an existing code where
+# one fits rather than coining a near-synonym; run
+#   grep -o '"code": "[A-Z_]*"' match_quality_table.py | sort -u
+# to see the current set.
+#
 # TO ADD A NEW ENTRY:
 #   1. Run match_quality_table.py and identify the T5-tier variable
 #   2. Investigate the extract log and YAML to confirm it's methodological
@@ -47,7 +60,7 @@ if hasattr(sys.stdout, "reconfigure"):
 # ─────────────────────────────────────────────────────────────────────────────
 # CORE VARIABLE SET
 # ─────────────────────────────────────────────────────────────────────────────
-# 20 variables present in both BDC and TOPMed extracts across at least 5 of 8
+# 19 variables present in both BDC and TOPMed extracts across at least 5 of 9
 # cohorts, organised by clinical group. This is the default comparison scope.
 #
 # Defined in: QC/reports/BDC-vs-TOPMed-Comparison-Scope-2026-04-01.md
@@ -56,6 +69,9 @@ if hasattr(sys.stdout, "reconfigure"):
 # Order within and across groups is the display order in the output table.
 # CORE_VARIABLES (the flat frozenset used for filtering) is derived from this.
 # ─────────────────────────────────────────────────────────────────────────────
+# NOTE: core_variable_coverage_table.py carries its own copy of this list as
+# CORE_VARS. The two are currently identical (19/19); keep them in sync when
+# editing either one.
 CORE_VARIABLE_GROUPS: list[tuple[str, list[str]]] = [
     ("Demographics", [
         "annotated_sex_1",
@@ -1319,9 +1335,9 @@ COHORT_LEVEL_NOTES: dict[str, dict] = {
 
 
 def run(topmed_path, bdc_path, outfile=None, all_vars=False):
-    with open(topmed_path) as f:
+    with open(topmed_path, encoding="utf-8") as f:
         t = json.load(f)
-    with open(bdc_path) as f:
+    with open(bdc_path, encoding="utf-8") as f:
         b = json.load(f)
 
     tv = t['variables']
@@ -1601,7 +1617,7 @@ def run(topmed_path, bdc_path, outfile=None, all_vars=False):
     print(output)
 
     if outfile:
-        with open(outfile, 'w') as f:
+        with open(outfile, 'w', encoding='utf-8') as f:
             f.write(output + '\n')
         print(f'\nSaved to: {outfile}')
 

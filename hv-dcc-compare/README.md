@@ -34,7 +34,7 @@ can be — but by default nothing leaves the enclave.
 That is why every output is **aggregate-only** — no participant IDs, raw source
 values, or individual-level rows are written to JSON, stdout, stderr, or log
 files. Categorical distributions also apply small-cell suppression (any category
-with n&lt;5 is pooled into an `Other (n<5)` bucket). These guards exist so a
+with n<5 is pooled into an `Other (n<5)` bucket). These guards exist so a
 summary or report *could* be released when a specific export is justified; they
 are not an invitation to run any step outside the enclave.
 
@@ -112,7 +112,7 @@ Common options for `run_dcc_compare.sh`:
 | `--cohorts "ARIC CHS WHI"` | Restrict to specific cohorts (default: all discovered) |
 | `--all-vars` | Grade every matched variable, not just the 19 core |
 | `--out <dir>` | Custom run directory (default: `runs/<timestamp>/`) |
-| `--hv-repo <path>` | HV checkout for the coverage matrix (default: two levels up) |
+| `--hv-repo <path>` | HV checkout for the coverage matrix (default: the parent of `hv-dcc-compare/`) |
 | `--skip-coverage` | Skip the YAML coverage matrix |
 
 The whole thing runs inside the enclave, where the input data lives — extraction

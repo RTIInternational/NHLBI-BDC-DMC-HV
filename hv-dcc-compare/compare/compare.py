@@ -144,6 +144,18 @@ def print_continuous_comparison(
 
     unit = t.get("unit") or b.get("unit") or ""
 
+    # A suppressed side reports counts only (n_valid below the small-cell
+    # floor), which would otherwise render as a column of dashes that reads
+    # identically to "no data at all". Say which side was suppressed and why.
+    suppressed_sides = [
+        name for name, st in (("TOPMed", t), ("BDC", b)) if st.get("suppressed")
+    ]
+    suppression_note = (
+        f"Small-cell suppression: {' and '.join(suppressed_sides)} n_valid below "
+        f"the disclosure floor; distributional statistics omitted."
+        if suppressed_sides else ""
+    )
+
     stat_keys = [
         ("N (valid)", "n_valid", True),
         ("N (missing)", "n_missing", True),
@@ -153,8 +165,8 @@ def print_continuous_comparison(
         ("Median", "median", False),
         ("Q1", "q1", False),
         ("Q3", "q3", False),
-        ("Min", "min", False),
-        ("Max", "max", False),
+        ("P1", "p1", False),
+        ("P99", "p99", False),
         ("N implausible", "n_implausible", True),
     ]
 
@@ -164,6 +176,8 @@ def print_continuous_comparison(
             print(f"\n*Unit: {_md_cell(unit)}*")
         if b_visit:
             print(f"*BDC visit: {_md_cell(b_visit)}*")
+        if suppression_note:
+            print(f"{chr(10)}> {_md_cell(suppression_note)}")
         print("\n| Statistic | TOPMed | BDC | Delta |")
         print("|:---|---:|---:|---:|")
         for display, key, is_int in stat_keys:
@@ -184,6 +198,8 @@ def print_continuous_comparison(
         print(f"    Unit: {unit}")
     if b_visit:
         print(f"    BDC visit: {b_visit}")
+    if suppression_note:
+        print(f"    NOTE: {suppression_note}")
 
     print(f"    {'Statistic':<25} {'TOPMed':>15} {'BDC':>15} {'Delta':>12}")
     print("    " + "-" * 70)

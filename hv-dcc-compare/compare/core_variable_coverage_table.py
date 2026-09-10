@@ -38,6 +38,9 @@ if hasattr(sys.stdout, "reconfigure"):
 # 19 CORE VARIABLES — validated comparison scope (2026-04-01)
 # Organized by clinical group.
 # ---------------------------------------------------------------------------
+# NOTE: match_quality_table.py carries its own copy of this list as
+# CORE_VARIABLE_GROUPS. The two are currently identical (19/19); keep them in
+# sync when editing either one.
 CORE_VARS: list[tuple[str, list[str]]] = [
     ("Demographics", [
         "annotated_sex_1",

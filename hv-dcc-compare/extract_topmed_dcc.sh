@@ -44,6 +44,7 @@ fi
 TOPMED_DIR=""
 OUT_DIR=""
 COHORTS=""
+EXTRACT_ROOT=""
 PASSTHRU=()
 
 die() { echo "ERROR: $*" >&2; exit 1; }
@@ -54,6 +55,7 @@ while [[ $# -gt 0 ]]; do
         --topmed-dir) TOPMED_DIR="$2"; shift 2 ;;
         --out)        OUT_DIR="$2"; shift 2 ;;
         --cohorts)    COHORTS="$2"; shift 2 ;;
+        --extract-root) EXTRACT_ROOT="$2"; shift 2 ;;
         --)           shift; PASSTHRU=("$@"); break ;;
         -h|--help)    usage 0 ;;
         *)            die "Unknown argument: $1  (try --help)" ;;
@@ -64,6 +66,11 @@ done
 [[ -d "$TOPMED_DIR" ]] || die "--topmed-dir not found: $TOPMED_DIR"
 [[ -n "$OUT_DIR"    ]] || die "--out is required (stable reference directory for topmed_*_summary.json)."
 mkdir -p "$OUT_DIR"
+
+# Reference data is often mounted read-only in the enclave; --extract-root
+# lets the caller put tar.gz extraction somewhere writable.
+EXTRACT_ARGS=()
+if [[ -n "$EXTRACT_ROOT" ]]; then EXTRACT_ARGS=(--extract-root "$EXTRACT_ROOT"); fi
 
 COHORT_ARGS=()
 if [[ -n "$COHORTS" ]]; then
@@ -78,12 +85,14 @@ echo "============================================================"
 echo "  input (EAV) : $TOPMED_DIR"
 echo "  output ref  : $OUT_DIR"
 [[ -n "$COHORTS" ]] && echo "  cohorts     : $COHORTS"
+[[ -n "$EXTRACT_ROOT" ]] && echo "  extract root: $EXTRACT_ROOT"
 echo
 
 $PYTHON extract-topmed/extract_topmed_summaries.py \
     --base-dir   "$TOPMED_DIR" \
     --output-dir "$OUT_DIR" \
-    "${COHORT_ARGS[@]}" \
+    ${COHORT_ARGS[@]+"${COHORT_ARGS[@]}"} \
+    ${EXTRACT_ARGS[@]+"${EXTRACT_ARGS[@]}"} \
     ${PASSTHRU[@]+"${PASSTHRU[@]}"}
 
 echo

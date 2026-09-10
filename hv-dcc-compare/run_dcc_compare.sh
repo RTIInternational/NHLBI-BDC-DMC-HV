@@ -81,7 +81,7 @@ done
 ls "$TOPMED_SUMMARIES"/topmed_*_summary.json >/dev/null 2>&1 \
     || die "No topmed_*_summary.json in $TOPMED_SUMMARIES. Build the reference first with extract_topmed_dcc.sh."
 
-# Default HV repo = two levels up (hv-dcc-compare lives inside the HV checkout).
+# Default HV repo = the parent dir (hv-dcc-compare/ lives inside the HV checkout).
 if [[ -z "$HV_REPO" ]]; then HV_REPO="$(cd "$SCRIPT_DIR/.." && pwd)"; fi
 
 # Timestamped run directory keeps each run's BDC JSONs isolated (Phase-2 globs
@@ -117,7 +117,7 @@ banner "[1/4] Extracting BDC harmonized summaries"
 $PYTHON extract-harmonized/extract_harmonized_summaries.py \
     --base-dir   "$BDC_DIR" \
     --output-dir "$BDC_OUT" \
-    "${COHORT_ARGS[@]}"
+    ${COHORT_ARGS[@]+"${COHORT_ARGS[@]}"}
 
 ls "$BDC_OUT"/bdc_*_summary_*.json >/dev/null 2>&1 \
     || die "No bdc_*_summary_*.json produced. Check that --bdc-dir points at the level containing DMC_*_<COHORT>_Processed_* folders."
@@ -136,7 +136,7 @@ $PYTHON compare/batch_scorecard.py \
     --topmed-dir "$TOPMED_SUMMARIES" \
     --output-dir "$SCORECARDS_OUT" \
     ${ALL_VARS} \
-    "${COHORT_ARGS[@]}"
+    ${COHORT_ARGS[@]+"${COHORT_ARGS[@]}"}
 
 # --- 4. Coverage matrix (needs HV YAML checkout; no participant data) --------
 if [[ -z "$SKIP_COVERAGE" && -d "$HV_REPO/priority_variables_transform" ]]; then

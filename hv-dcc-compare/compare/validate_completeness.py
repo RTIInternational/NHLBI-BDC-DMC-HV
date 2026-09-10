@@ -417,9 +417,9 @@ def compare_profiles(topmed_path: str, bdc_path: str) -> None:
     Load two completeness profiles and produce a side-by-side comparison.
     This mode works entirely from the aggregate JSONs.
     """
-    with open(topmed_path) as f:
+    with open(topmed_path, encoding="utf-8") as f:
         topmed = json.load(f)
-    with open(bdc_path) as f:
+    with open(bdc_path, encoding="utf-8") as f:
         bdc = json.load(f)
 
     t_total = topmed["total_participants"]
@@ -532,7 +532,7 @@ def main() -> None:
 
         out_path = Path(args.output_dir) / f"topmed_{args.cohort}_completeness.json"
         out_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(out_path, "w") as f:
+        with open(out_path, "w", encoding="utf-8") as f:
             json.dump(result, f, indent=2)
         print(f"\n  Saved: {out_path}")
 
@@ -550,7 +550,7 @@ def main() -> None:
 
         out_path = Path(args.output_dir) / f"bdc_{args.cohort}_completeness.json"
         out_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(out_path, "w") as f:
+        with open(out_path, "w", encoding="utf-8") as f:
             json.dump(result, f, indent=2)
         print(f"\n  Saved: {out_path}")
 

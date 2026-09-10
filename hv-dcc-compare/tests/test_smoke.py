@@ -121,6 +121,84 @@ class HvDccCompareSmokeTests(unittest.TestCase):
             self.assertIn("height_baseline_1", data["variables"])
             self.assertNotIn("OBA:VT0001253", data["variables"])
 
+    def test_continuous_stats_suppressed_below_small_cell_floor(self) -> None:
+        """Below the floor, every distributional statistic describes one person."""
+        original_sys_path = sys.path.copy()
+        try:
+            sys.path.insert(0, str(ROOT / "extract-topmed"))
+            import extract_topmed_summaries as ex  # type: ignore  # noqa: PLC0415
+            import pandas as pd  # noqa: PLC0415
+
+            below = ex.continuous_stats(pd.Series([170.0, 171.0, 172.0]))
+            self.assertTrue(below["suppressed"])
+            self.assertEqual(below["n_valid"], 3)
+            for key in ("mean", "sd", "median", "q1", "q3", "p1", "p99"):
+                self.assertIsNone(below[key], f"{key} leaked below the floor")
+
+            at_floor = ex.continuous_stats(pd.Series([1.0, 2.0, 3.0, 4.0, 5.0]))
+            self.assertNotIn("suppressed", at_floor)
+            self.assertIsNotNone(at_floor["mean"])
+
+            # min/max name a single participant's value and must not be emitted.
+            self.assertNotIn("min", at_floor)
+            self.assertNotIn("max", at_floor)
+            self.assertIn("p1", at_floor)
+            self.assertIn("p99", at_floor)
+        finally:
+            sys.path[:] = original_sys_path
+
+    def test_unmapped_diagnostic_respects_small_cell_floor(self) -> None:
+        """Unmapped raw values are named only at or above the disclosure floor."""
+        original_sys_path = sys.path.copy()
+        try:
+            sys.path.insert(0, str(ROOT / "extract-topmed"))
+            import extract_topmed_summaries as ex  # type: ignore  # noqa: PLC0415
+            import pandas as pd  # noqa: PLC0415
+
+            series = pd.Series(
+                ["White"] * 10
+                + ["LEGACY_CODE_ABOVE_FLOOR"] * 6
+                + ["RARE_CODE_BELOW_FLOOR"] * 2
+            )
+            stats = ex.categorical_stats(series, {"White": "White"})
+            diag = stats["unmapped_diagnostics"]
+
+            self.assertEqual(diag["n_unmapped"], 8)
+            self.assertEqual(diag["n_distinct_raw_values"], 2)
+            self.assertIn("LEGACY_CODE_ABOVE_FLOOR", diag["raw_values_at_or_above_floor"])
+            self.assertNotIn("RARE_CODE_BELOW_FLOOR", diag["raw_values_at_or_above_floor"])
+            self.assertEqual(diag["n_distinct_below_floor"], 1)
+
+            # The withheld value must not reach the JSON by any other route.
+            self.assertNotIn("RARE_CODE_BELOW_FLOOR", json.dumps(stats))
+        finally:
+            sys.path[:] = original_sys_path
+
+    def test_value_map_lookup_is_whitespace_insensitive_on_both_sides(self) -> None:
+        """Both extractors must normalize identically, or the same source value
+        maps on one side and lands in UNMAPPED on the other."""
+        original_sys_path = sys.path.copy()
+        try:
+            sys.path.insert(0, str(ROOT / "extract-topmed"))
+            sys.path.insert(0, str(ROOT / "extract-harmonized"))
+            import extract_topmed_summaries as topmed  # type: ignore  # noqa: PLC0415
+            import extract_harmonized_summaries as bdc  # type: ignore  # noqa: PLC0415
+            import pandas as pd  # noqa: PLC0415
+
+            # Six values: above the small-cell floor, so "Female" survives as
+            # its own distribution key rather than being pooled.
+            series = pd.Series(
+                ["female", "female  ", "  female", "female", " female ", "female"]
+            )
+            value_map = {"female": "Female"}
+            for name, mod in (("topmed", topmed), ("bdc", bdc)):
+                dist = mod.categorical_stats(series, value_map)["distribution"]
+                with self.subTest(extractor=name):
+                    self.assertEqual(dist.get("Female", {}).get("n"), 6)
+                    self.assertNotIn("UNMAPPED", dist)
+        finally:
+            sys.path[:] = original_sys_path
+
     def test_no_known_participant_level_debug_prints(self) -> None:
         source_files = [
             ROOT / "extract-harmonized" / "extract_harmonized_summaries.py",

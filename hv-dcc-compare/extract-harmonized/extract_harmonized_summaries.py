@@ -148,6 +148,31 @@ def _ci_glob_processed_dirs(base: Path, cohort: str) -> list[Path]:
     return results
 
 
+def parse_dbgap_version_from_dirs(dirs: list[str]) -> tuple[str, str]:
+    """Recover (phs, version) from a dm-bip output path.
+
+    dm-bip encodes the source accession in its output folder name, e.g.
+        DMC_aric_phs000280_v9_r1_c1_ARIC_Processed_20260101
+    That is the version the extract was actually built from, which is what the
+    summary's provenance should record -- a hardcoded table drifts silently and
+    then misreports which dbGaP release the numbers came from.
+
+    Returns ("", "") when no accession can be recovered, so the caller can fall
+    back to config. If the run spans more than one version, the disagreement is
+    itself a finding and every value seen is returned.
+    """
+    found: dict[str, set[str]] = {}
+    pat = re.compile(r"(phs\d{6})[._]?v(\d+)", re.IGNORECASE)
+    for d in dirs:
+        for phs, ver in pat.findall(str(d)):
+            found.setdefault(phs.lower(), set()).add(f"v{ver}")
+    if not found:
+        return "", ""
+    phs = sorted(found)[0]
+    versions = sorted(found[phs])
+    return phs, versions[0] if len(versions) == 1 else " / ".join(versions)
+
+
 def discover_all_cohorts(base_dir: str | Path) -> list[str]:
     """Auto-discover all cohort names from DMC_*_Processed_* directories under base_dir.
 
@@ -364,6 +389,32 @@ def categorical_stats(
             "k_categories": suppressed_k,
         }
 
+
+    # Unmapped-value diagnostics. When a value map misses, the distribution
+    # collapses to a single "UNMAPPED" key and the cause becomes undebuggable
+    # from inside the enclave -- you see "100% UNMAPPED" and nothing else.
+    # A raw source string shared by at least SMALL_CELL_THRESHOLD participants
+    # is not individually disclosive, so it can safely be named; anything below
+    # the floor is reported only as a count of distinct values.
+    unmapped_diagnostics = None
+    if value_map:
+        unmapped_mask = normalized == "UNMAPPED"
+        if bool(unmapped_mask.any()):
+            raw_counts = (
+                series[unmapped_mask].astype(str).str.strip().value_counts()
+            )
+            named = {
+                str(v): int(c)
+                for v, c in raw_counts.items()
+                if int(c) >= SMALL_CELL_THRESHOLD
+            }
+            unmapped_diagnostics = {
+                "n_unmapped": int(unmapped_mask.sum()),
+                "n_distinct_raw_values": int(len(raw_counts)),
+                "raw_values_at_or_above_floor": named,
+                "n_distinct_below_floor": int(len(raw_counts) - len(named)),
+            }
+
     return {
         "type": "categorical",
         "n_total": n_total,
@@ -371,6 +422,7 @@ def categorical_stats(
         "n_missing": n_missing,
         "pct_missing": round(n_missing / n_total * 100, 1) if n_total > 0 else 0.0,
         "distribution": distribution,
+        "unmapped_diagnostics": unmapped_diagnostics,
     }
 
 
@@ -380,7 +432,21 @@ def continuous_stats(
     plausible_lo: float | None = None,
     plausible_hi: float | None = None,
 ) -> dict:
-    """Compute descriptive statistics for a continuous variable."""
+    """Compute descriptive statistics for a continuous variable.
+
+    Small-cell suppression applies here exactly as it does to categorical
+    distributions: below SMALL_CELL_THRESHOLD valid observations, every
+    distributional statistic describes an identifiable individual (at n=1,
+    mean == median == p1 == p99 == that participant's measurement), so only
+    the counts are emitted.
+
+    p1/p99 are reported instead of min/max deliberately. The extremes are a
+    single participant's value; the 1st/99th percentiles preserve the
+    unit-error and sentinel-value diagnostic (a p1 of 0.0 mmHg still shows a
+    sentinel leaking through) without writing one person's measurement to a
+    file that may leave the enclave. n_implausible carries the rest of that
+    signal.
+    """
     numeric = pd.to_numeric(series, errors="coerce")
     n_total = int(len(numeric))
     s = numeric.dropna()
@@ -392,22 +458,37 @@ def continuous_stats(
         implausible = s[(s < plausible_lo) | (s > plausible_hi)]
         n_implausible = int(len(implausible))
 
-    return {
+    result = {
         "type": "continuous",
         "unit": unit,
         "n_total": n_total,
         "n_valid": n_valid,
         "n_missing": n_missing,
         "pct_missing": round(n_missing / n_total * 100, 1) if n_total > 0 else 0.0,
+        "n_implausible": n_implausible,
+    }
+
+    if 0 < n_valid < SMALL_CELL_THRESHOLD:
+        # Counts only - see docstring. The suppression is recorded explicitly so
+        # a downstream reader can tell "too few to describe" from "no data".
+        result.update({
+            "mean": None, "sd": None, "median": None, "q1": None, "q3": None,
+            "p1": None, "p99": None,
+            "suppressed": True,
+            "suppression_reason": f"n_valid < {SMALL_CELL_THRESHOLD}",
+        })
+        return result
+
+    result.update({
         "mean": round(float(s.mean()), 4) if n_valid > 0 else None,
         "sd": round(float(s.std()), 4) if n_valid > 1 else None,
         "median": round(float(s.median()), 4) if n_valid > 0 else None,
         "q1": round(float(s.quantile(0.25)), 4) if n_valid > 0 else None,
         "q3": round(float(s.quantile(0.75)), 4) if n_valid > 0 else None,
-        "min": round(float(s.min()), 4) if n_valid > 0 else None,
-        "max": round(float(s.max()), 4) if n_valid > 0 else None,
-        "n_implausible": n_implausible,
-    }
+        "p1": round(float(s.quantile(0.01)), 4) if n_valid > 0 else None,
+        "p99": round(float(s.quantile(0.99)), 4) if n_valid > 0 else None,
+    })
+    return result
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -964,6 +1045,13 @@ def process_measurements(
         print(f"      ... and {len(obs_types) - 25} more types")
 
     found_vars = []
+    # Visit-resolution failures are a CONFIGURATION problem, not a coverage gap:
+    # every variable in the cohort will be skipped, so the report shows blanket
+    # "BDC missing" for measurements that are actually present in the extract.
+    # Surface the full diagnostic from _select_baseline_visit on the first
+    # failure, then just count the rest so the log stays readable.
+    visit_fail_detail: str | None = None
+    visit_fail_vars: list[str] = []
     # Track participants who appear in ANY baseline measurement — used by
     # process_drugs as the denominator for medication binary variables.
     # Participants absent here never attended the baseline visit and should be
@@ -1009,8 +1097,16 @@ def process_measurements(
             baseline, visit_used = _select_baseline_visit(subset, cohort,
                                                            visit_mapping=visit_mapping,
                                                            override_visits=visit_override)
-        except ValueError:
-            print(f"    {spec['bdc_label']} ({bdc_code}): SKIPPED — no baseline visit data")
+        except ValueError as exc:
+            if visit_fail_detail is None:
+                visit_fail_detail = str(exc)
+                print(f"    {spec['bdc_label']} ({bdc_code}): SKIPPED — no baseline visit data")
+                for line in visit_fail_detail.splitlines():
+                    print(f"      {line}", file=sys.stderr)
+            else:
+                print(f"    {spec['bdc_label']} ({bdc_code}): SKIPPED — no baseline visit data "
+                      f"(same cause as above)")
+            visit_fail_vars.append(spec["bdc_label"])
             continue
 
         # DEFENSIVE: Deduplicate to one value per participant.
@@ -1188,6 +1284,16 @@ def process_measurements(
             n_valid = stats["n_valid"]
             print(f"      {disc_code}: {len(baseline):,} participants "
                   f"({type_tag}, n_valid={n_valid:,}) [visit: {visit_used}]")
+
+    if visit_fail_vars:
+        print(f"\n    CRITICAL: {len(visit_fail_vars)} measurement variable(s) skipped for "
+              f"{cohort} because no baseline visit could be resolved.")
+        print("    This is a visit-mapping/configuration failure, NOT a BDC coverage gap. "
+              "Downstream reports will show these variables as missing on the BDC side.")
+        print(f"    Skipped: {', '.join(visit_fail_vars)}")
+        print(f"\n    CRITICAL: {len(visit_fail_vars)} measurement variable(s) skipped for "
+              f"{cohort} — no baseline visit resolved (configuration failure, "
+              f"not a coverage gap).", file=sys.stderr)
 
     return found_vars, baseline_meas_ids
 
@@ -1913,8 +2019,11 @@ def process_observations(
             baseline, visit_used = _select_baseline_visit(smoking_df, cohort,
                                                            visit_mapping=visit_mapping,
                                                            override_visits=smoking_override)
-        except ValueError:
+        except ValueError as exc:
             print(f"    Smoking ({SMOKING_OBSERVATION_TYPE}): SKIPPED — no baseline visit data")
+            print("    This is a visit-mapping/configuration failure, NOT a BDC coverage gap.")
+            for line in str(exc).splitlines():
+                print(f"      {line}", file=sys.stderr)
             baseline = smoking_df.head(0)  # empty DF so downstream code is safe
             visit_used = "none"
 
@@ -2401,9 +2510,27 @@ def run_dq_checks(
             dist = stats.get("distribution", {})
             unmapped = [k for k in dist if k == "UNMAPPED" or k.startswith("UNMAPPED:")]
             if unmapped:
+                diag = stats.get("unmapped_diagnostics") or {}
+                n_un = diag.get("n_unmapped", dist.get("UNMAPPED", {}).get("n", 0))
+                named = diag.get("raw_values_at_or_above_floor", {})
+                below = diag.get("n_distinct_below_floor", 0)
+                detail = ""
+                if named:
+                    shown = ", ".join(
+                        f"{v!r} (n={c:,})"
+                        for v, c in sorted(named.items(), key=lambda kv: -kv[1])[:10]
+                    )
+                    detail = f" -- unmapped source values: {shown}"
+                    if len(named) > 10:
+                        detail += f", +{len(named) - 10} more"
+                if below:
+                    detail += (
+                        f" [{below} further distinct value(s) withheld: "
+                        f"below the n<{SMALL_CELL_THRESHOLD} disclosure floor]"
+                    )
                 flags.append(
-                    f"WARNING: {stats.get('bdc_label', var_name)} has unmapped values: "
-                    f"{unmapped}"
+                    f"WARNING: {stats.get('bdc_label', var_name)} has {n_un:,} "
+                    f"unmapped value(s) -- add the mapping to config.py{detail}"
                 )
 
     if not flags:
@@ -2705,6 +2832,22 @@ def extract_one_cohort(
         # ── Step 8: Build output ────────────────────────────────────────────────
         cohort_meta = COHORTS.get(cohort, {}) if _HAS_CONFIG else {}
 
+        # Provenance: prefer what this run was actually built from over the
+        # static table in config.py, which drifts (see
+        # parse_dbgap_version_from_dirs).
+        observed_phs, observed_version = parse_dbgap_version_from_dirs(dirs)
+        config_version = cohort_meta.get("bdc_version", "")
+        bdc_version = observed_version or config_version
+        version_source = "dm-bip output path" if observed_version else "config.py (fallback)"
+        if observed_version and config_version and observed_version != config_version:
+            print(
+                f"    [provenance] NOTE: dbGaP version from the run "
+                f"({observed_version}) differs from config.py "
+                f"({config_version}) -- recording the run's value. "
+                f"Update COHORTS['{cohort}']['bdc_version'] if config is stale.",
+                file=sys.stderr,
+            )
+
         result = {
             "metadata": {
                 "source": "BDC DMC",
@@ -2717,8 +2860,10 @@ def extract_one_cohort(
             "cohort": {
                 "name": cohort,
                 "full_name": cohort_meta.get("full_name", ""),
-                "phs": cohort_meta.get("phs", ""),
-                "bdc_version": cohort_meta.get("bdc_version", ""),
+                "phs": observed_phs or cohort_meta.get("phs", ""),
+                "bdc_version": bdc_version,
+                "bdc_version_source": version_source,
+                "bdc_version_in_config": config_version,
             },
             "total_participants": n_participants,
             "datasets_loaded": datasets_loaded,

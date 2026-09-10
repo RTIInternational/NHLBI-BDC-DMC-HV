@@ -216,9 +216,9 @@ def find_topmed_json(topmed_dir: Path, cohort_key: str) -> Path | None:
 
 def run_cohort_scorecard(topmed_path: Path, bdc_path: Path, all_vars: bool = False) -> dict:
     """Run scorecard for one cohort. Returns structured result dict."""
-    with open(topmed_path) as f:
+    with open(topmed_path, encoding="utf-8") as f:
         t = json.load(f)
-    with open(bdc_path) as f:
+    with open(bdc_path, encoding="utf-8") as f:
         b = json.load(f)
 
     tv = t["variables"]

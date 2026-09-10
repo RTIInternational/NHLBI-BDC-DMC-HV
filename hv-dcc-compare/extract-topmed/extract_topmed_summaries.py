@@ -81,6 +81,7 @@ import argparse
 import json
 import sys
 import tarfile
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -130,6 +131,45 @@ def _classify_tgz(filename: str) -> str | None:
         if pattern in lower:
             return key
     return None
+
+
+def _resolve_extract_root(base_dir: Path, override: str | None) -> Path:
+    """Pick a writable directory for tar.gz extraction.
+
+    Reference data in an enclave is normally mounted read-only, so the default
+    <base-dir>/extracted/ can fail with an unhandled OSError partway through
+    the one-time setup step. Probe it first and fall back to a temp directory,
+    logging loudly -- a silent relocation is its own kind of confusing.
+    """
+    if override:
+        root = Path(override)
+        root.mkdir(parents=True, exist_ok=True)
+        print(f"  Extraction root (--extract-root): {root}")
+        return root
+
+    root = base_dir / "extracted"
+    try:
+        root.mkdir(parents=True, exist_ok=True)
+        probe = root / ".write-probe"
+        probe.touch()
+        probe.unlink()
+        return root
+    except OSError as exc:
+        fallback = Path(tempfile.mkdtemp(prefix="hv-dcc-compare-extract-"))
+        print(
+            f"  WARNING: {root} is not writable ({exc.strerror or exc}). "
+            f"Extracting to a temporary directory instead:",
+            file=sys.stderr,
+        )
+        print(f"  WARNING:   {fallback}", file=sys.stderr)
+        print(
+            "  WARNING: This directory is NOT cleaned up automatically and is "
+            "subject to the enclave's temp retention policy. Pass --extract-root "
+            "to choose the location explicitly.",
+            file=sys.stderr,
+        )
+        print(f"  Extraction root (temporary fallback): {fallback}")
+        return fallback
 
 
 def discover_tgz_files(
@@ -337,7 +377,7 @@ def categorical_stats(series: pd.Series, value_map: dict | None) -> dict:
     # Normalize values through the value map
     if value_map:
         normalized = series.map(
-            lambda x: value_map.get(str(x), "UNMAPPED") if pd.notna(x) else None
+            lambda x: value_map.get(str(x).strip(), "UNMAPPED") if pd.notna(x) else None
         )
     else:
         normalized = series.copy()
@@ -372,6 +412,32 @@ def categorical_stats(series: pd.Series, value_map: dict | None) -> dict:
             "k_categories": suppressed_k,
         }
 
+
+    # Unmapped-value diagnostics. When a value map misses, the distribution
+    # collapses to a single "UNMAPPED" key and the cause becomes undebuggable
+    # from inside the enclave -- you see "100% UNMAPPED" and nothing else.
+    # A raw source string shared by at least SMALL_CELL_THRESHOLD participants
+    # is not individually disclosive, so it can safely be named; anything below
+    # the floor is reported only as a count of distinct values.
+    unmapped_diagnostics = None
+    if value_map:
+        unmapped_mask = normalized == "UNMAPPED"
+        if bool(unmapped_mask.any()):
+            raw_counts = (
+                series[unmapped_mask].astype(str).str.strip().value_counts()
+            )
+            named = {
+                str(v): int(c)
+                for v, c in raw_counts.items()
+                if int(c) >= SMALL_CELL_THRESHOLD
+            }
+            unmapped_diagnostics = {
+                "n_unmapped": int(unmapped_mask.sum()),
+                "n_distinct_raw_values": int(len(raw_counts)),
+                "raw_values_at_or_above_floor": named,
+                "n_distinct_below_floor": int(len(raw_counts) - len(named)),
+            }
+
     return {
         "type": "categorical",
         "n_total": n_total,
@@ -379,6 +445,7 @@ def categorical_stats(series: pd.Series, value_map: dict | None) -> dict:
         "n_missing": n_missing,
         "pct_missing": round(n_missing / n_total * 100, 1) if n_total > 0 else 0.0,
         "distribution": distribution,
+        "unmapped_diagnostics": unmapped_diagnostics,
     }
 
 
@@ -388,7 +455,21 @@ def continuous_stats(
     plausible_lo: float | None = None,
     plausible_hi: float | None = None,
 ) -> dict:
-    """Compute descriptive statistics for a continuous variable."""
+    """Compute descriptive statistics for a continuous variable.
+
+    Small-cell suppression applies here exactly as it does to categorical
+    distributions: below SMALL_CELL_THRESHOLD valid observations, every
+    distributional statistic describes an identifiable individual (at n=1,
+    mean == median == p1 == p99 == that participant's measurement), so only
+    the counts are emitted.
+
+    p1/p99 are reported instead of min/max deliberately. The extremes are a
+    single participant's value; the 1st/99th percentiles preserve the
+    unit-error and sentinel-value diagnostic (a p1 of 0.0 mmHg still shows a
+    sentinel leaking through) without writing one person's measurement to a
+    file that may leave the enclave. n_implausible carries the rest of that
+    signal.
+    """
     numeric = pd.to_numeric(series, errors="coerce")
     n_total = int(len(numeric))
     s = numeric.dropna()
@@ -407,15 +488,29 @@ def continuous_stats(
         "n_valid": n_valid,
         "n_missing": n_missing,
         "pct_missing": round(n_missing / n_total * 100, 1) if n_total > 0 else 0.0,
+        "n_implausible": n_implausible,
+    }
+
+    if 0 < n_valid < SMALL_CELL_THRESHOLD:
+        # Counts only - see docstring. The suppression is recorded explicitly so
+        # a downstream reader can tell "too few to describe" from "no data".
+        result.update({
+            "mean": None, "sd": None, "median": None, "q1": None, "q3": None,
+            "p1": None, "p99": None,
+            "suppressed": True,
+            "suppression_reason": f"n_valid < {SMALL_CELL_THRESHOLD}",
+        })
+        return result
+
+    result.update({
         "mean": round(float(s.mean()), 4) if n_valid > 0 else None,
         "sd": round(float(s.std()), 4) if n_valid > 1 else None,
         "median": round(float(s.median()), 4) if n_valid > 0 else None,
         "q1": round(float(s.quantile(0.25)), 4) if n_valid > 0 else None,
         "q3": round(float(s.quantile(0.75)), 4) if n_valid > 0 else None,
-        "min": round(float(s.min()), 4) if n_valid > 0 else None,
-        "max": round(float(s.max()), 4) if n_valid > 0 else None,
-        "n_implausible": n_implausible,
-    }
+        "p1": round(float(s.quantile(0.01)), 4) if n_valid > 0 else None,
+        "p99": round(float(s.quantile(0.99)), 4) if n_valid > 0 else None,
+    })
     return result
 
 
@@ -461,8 +556,27 @@ def run_dq_checks(
             dist = stats.get("distribution", {})
             unmapped = [k for k in dist if k == "UNMAPPED" or k.startswith("UNMAPPED:")]
             if unmapped:
+                diag = stats.get("unmapped_diagnostics") or {}
+                n_un = diag.get("n_unmapped", dist.get("UNMAPPED", {}).get("n", 0))
+                named = diag.get("raw_values_at_or_above_floor", {})
+                below = diag.get("n_distinct_below_floor", 0)
+                detail = ""
+                if named:
+                    shown = ", ".join(
+                        f"{v!r} (n={c:,})"
+                        for v, c in sorted(named.items(), key=lambda kv: -kv[1])[:10]
+                    )
+                    detail = f" -- unmapped source values: {shown}"
+                    if len(named) > 10:
+                        detail += f", +{len(named) - 10} more"
+                if below:
+                    detail += (
+                        f" [{below} further distinct value(s) withheld: "
+                        f"below the n<{SMALL_CELL_THRESHOLD} disclosure floor]"
+                    )
                 flags.append(
-                    f"WARNING: {var_name} has unmapped values: {unmapped}"
+                    f"WARNING: {var_name} has {n_un:,} unmapped value(s)"
+                    f" -- add the mapping to config.py{detail}"
                 )
 
     if not flags:
@@ -632,8 +746,21 @@ def parse_args() -> argparse.Namespace:
             "The script scans this directory for all recognised dataset archives "
             "and also checks for a 'upload_2020-05-21' subdirectory, whose files "
             "take precedence over same-dataset files in the base directory. "
-            "Archives are extracted automatically into <base-dir>/extracted/. "
+            "Archives are extracted automatically into <base-dir>/extracted/ "
+            "(or a temporary directory if that path is not writable; see "
+            "--extract-root). "
             "Explicit --*-file arguments override auto-discovered paths."
+        ),
+    )
+    parser.add_argument(
+        "--extract-root",
+        default=None,
+        metavar="DIR",
+        help=(
+            "Directory to extract tar.gz bundles into. Defaults to "
+            "<base-dir>/extracted/. An enclave typically mounts reference data "
+            "read-only, so if the default is not writable the script falls back "
+            "to a temporary directory and logs the path it used."
         ),
     )
     parser.add_argument(
@@ -712,7 +839,7 @@ def main() -> None:
         upload_dir: Path | None = Path(args.upload_dir) if args.upload_dir else None
         tgz_map = discover_tgz_files(base_dir, upload_dir)
 
-        extract_root = base_dir / "extracted"
+        extract_root = _resolve_extract_root(base_dir, args.extract_root)
         n_found = 0
         print(f"  Auto-discovery from: {base_dir}")
         if not tgz_map:

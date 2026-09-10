@@ -18,6 +18,18 @@ import re
 # SHARED COHORTS (9 studies present in both TOPMed DCC and BDC DMC)
 # Keys = TOPMed `topmed_study` column values
 # ─────────────────────────────────────────────────────────────────────────────
+# NOTE ON bdc_version: verified 2026-09-09 against the staged dbGaP metadata in
+# BDC-DMC-Harmonization-Virtual-Team/data/dbgap-cache/<cohort>/GapExchange_*.xml,
+# which is the release the harmonization actually works from. CARDIA (was v4) and
+# MESA (was v15) were corrected to v3 and v13 to match; the other seven already
+# agreed. (The ARIC manifest still reads v8, but the cache and this table agree
+# on v9, so the manifest is the stale one there.)
+#
+# This field is provenance only -- no logic branches on it. The BDC extractor
+# prefers the accession parsed out of the dm-bip output path (see
+# parse_dbgap_version_from_dirs in extract_harmonized_summaries.py) and falls
+# back here only when the path carries none, warning on any disagreement. Re-run
+# that comparison when bumping a cohort rather than editing this table blind.
 COHORTS: dict[str, dict] = {
     "ARIC": {
         "full_name": "Atherosclerosis Risk in Communities",
@@ -29,7 +41,7 @@ COHORTS: dict[str, dict] = {
         "full_name": "Coronary Artery Risk Development in Young Adults",
         "phs": "phs000285",
         "topmed_version": "v3",
-        "bdc_version": "v4",
+        "bdc_version": "v3",
     },
     "CHS": {
         "full_name": "Cardiovascular Health Study",
@@ -65,7 +77,7 @@ COHORTS: dict[str, dict] = {
         "full_name": "Multi-Ethnic Study of Atherosclerosis",
         "phs": "phs000209",
         "topmed_version": "v13",
-        "bdc_version": "v15",
+        "bdc_version": "v13",
     },
     "WHI": {
         "full_name": "Women's Health Initiative",
