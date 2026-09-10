@@ -1873,3 +1873,122 @@ def consent_group_from_path(tsv_path) -> str:
             return parent.name[: -len("_BDCHM")]
     parts = p.parts
     return parts[-4] if len(parts) >= 4 else p.parent.name
+
+
+# =============================================================================
+# PART 4 -- BDC-HM DATA DICTIONARY (optional label resolver)
+# =============================================================================
+# The BDC-HM data dictionary export maps every code the pipeline can emit to a
+# human label:
+#
+#   output_table,output_column,code_in_data,label,definition,vocabulary,code_form
+#   Condition,condition_concept,MONDO:0005002,chronic obstructive pulmonary disease,...
+#
+# It is used for DISPLAY ONLY. A concept absent from BDC_MEASUREMENT_MAP and
+# friends stays out of the TOPMed comparison whether or not it has a label here
+# -- the dictionary says what a code means, not whether it is equivalent to a
+# TOPMed variable. That equivalence is a curation judgement and stays in the
+# hand-maintained maps above.
+#
+# Without it, unmapped concepts print as bare CURIEs ("MONDO:0005002"), which is
+# what a COPDGene report looked like on 2026-09-10. It is optional: absent, the
+# toolkit behaves exactly as before.
+# =============================================================================
+
+DATA_DICTIONARY_GLOB = "BDC-HM-*DataDictionary*.csv"
+
+_DATA_DICTIONARY_CACHE: dict | None = None
+
+
+def find_data_dictionary(explicit: str | None = None):
+    """Locate the BDC-HM data dictionary CSV, or None.
+
+    Search order: an explicit path, then the toolkit root and its data/
+    subdirectory, newest first when several are present.
+    """
+    from pathlib import Path
+
+    if explicit:
+        p = Path(explicit)
+        return p if p.is_file() else None
+
+    here = Path(__file__).resolve().parent
+    candidates = []
+    for folder in (here, here / "data"):
+        try:
+            candidates.extend(folder.glob(DATA_DICTIONARY_GLOB))
+        except OSError:
+            pass
+    if not candidates:
+        return None
+    return sorted(candidates, key=lambda p: p.name, reverse=True)[0]
+
+
+def load_data_dictionary(explicit: str | None = None, verbose: bool = True) -> dict:
+    """Load the dictionary into {(table, column, code): label} plus {code: label}.
+
+    The bare-code fallback exists because a code's meaning does not change with
+    the column it lands in; the qualified key wins when both are present, so a
+    value_enum and an observation_type sharing a code cannot collide.
+
+    Returns {} when no dictionary is available -- callers fall back to codes.
+    """
+    import csv
+
+    global _DATA_DICTIONARY_CACHE
+    if _DATA_DICTIONARY_CACHE is not None and explicit is None:
+        return _DATA_DICTIONARY_CACHE
+
+    path = find_data_dictionary(explicit)
+    if path is None:
+        if verbose:
+            print("    [dictionary] none found - unmapped concepts will print as codes")
+        if explicit is None:
+            _DATA_DICTIONARY_CACHE = {}
+        return {}
+
+    lookup: dict = {}
+    try:
+        # utf-8-sig: the export carries a BOM.
+        with open(path, newline="", encoding="utf-8-sig") as fh:
+            for row in csv.DictReader(fh):
+                code = (row.get("code_in_data") or "").strip()
+                label = (row.get("label") or "").strip()
+                if not code or not label:
+                    continue
+                table = (row.get("output_table") or "").strip()
+                column = (row.get("output_column") or "").strip()
+                lookup[(table, column, code)] = label
+                lookup.setdefault(code, label)
+    except (OSError, csv.Error) as exc:
+        print(f"    [dictionary] WARNING: could not read {path}: {exc}", file=__import__("sys").stderr)
+        return {}
+
+    if verbose:
+        n_codes = sum(1 for k in lookup if isinstance(k, str))
+        print(f"    [dictionary] {path.name}: {n_codes:,} codes")
+    if explicit is None:
+        _DATA_DICTIONARY_CACHE = lookup
+    return lookup
+
+
+def label_for_code(code: str, table: str = "", column: str = "",
+                   dictionary: dict | None = None) -> str | None:
+    """Human label for a code, or None. Qualified match preferred."""
+    if not code:
+        return None
+    d = load_data_dictionary() if dictionary is None else dictionary
+    if not d:
+        return None
+    return d.get((table, column, code)) or d.get(code)
+
+
+def display_label(code: str, table: str = "", column: str = "",
+                  dictionary: dict | None = None) -> str:
+    """Label with the code retained, or the bare code when unknown.
+
+    Keeps the code visible ("chronic obstructive pulmonary disease
+    [MONDO:0005002]") so a report stays traceable back to the extract.
+    """
+    label = label_for_code(code, table, column, dictionary)
+    return f"{label} [{code}]" if label else code

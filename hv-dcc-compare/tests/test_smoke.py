@@ -16,6 +16,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
+# Building TSV fixtures from explicit separators keeps the escapes
+# readable inline and avoids doubling them inside nested literals.
+TAB = '\t'
+NL = '\n'
+
 
 class HvDccCompareSmokeTests(unittest.TestCase):
     def run_script(self, relative_path: str, *args: str) -> subprocess.CompletedProcess[str]:
@@ -357,6 +362,100 @@ class HvDccCompareSmokeTests(unittest.TestCase):
                 with self.subTest(consent_group=segment):
                     path = f"/base/run/consent_groups/{segment}/{segment}_BDCHM/mapped-data"
                     self.assertEqual(ex.parse_dbgap_version_from_dirs([path]), expected)
+        finally:
+            sys.path[:] = original_sys_path
+
+    def test_data_dictionary_labels_unmapped_concepts(self) -> None:
+        """Unmapped concepts must print as labels, not bare CURIEs."""
+        original_sys_path = sys.path.copy()
+        try:
+            sys.path.insert(0, str(ROOT))
+            import config  # type: ignore  # noqa: PLC0415
+
+            with tempfile.TemporaryDirectory() as tmp:
+                csv_path = Path(tmp) / "BDC-HM-Test-DataDictionary-20260831.csv"
+                csv_path.write_text(
+                    "output_table,output_column,code_in_data,label,definition,"
+                    "vocabulary,code_form" + NL +
+                    "Condition,condition_concept,MONDO:0005002,chronic obstructive "
+                    "pulmonary disease,,MONDO,ontology code (CURIE)" + NL +
+                    "MeasurementObservation,observation_type,OMOP:4282779,"
+                    "Cigarette smoking tobacco,,OMOP,ontology code (CURIE)" + NL,
+                    encoding="utf-8",
+                )
+                d = config.load_data_dictionary(str(csv_path), verbose=False)
+
+                self.assertEqual(
+                    config.label_for_code("MONDO:0005002", dictionary=d),
+                    "chronic obstructive pulmonary disease",
+                )
+                # Qualified lookup wins, bare code still resolves.
+                self.assertEqual(
+                    config.label_for_code("OMOP:4282779", "MeasurementObservation",
+                                          "observation_type", dictionary=d),
+                    "Cigarette smoking tobacco",
+                )
+                # The code stays visible so a report is traceable.
+                self.assertEqual(
+                    config.display_label("MONDO:0005002", dictionary=d),
+                    "chronic obstructive pulmonary disease [MONDO:0005002]",
+                )
+                # Unknown codes degrade to the bare code, never to an error.
+                self.assertEqual(config.display_label("MONDO:9999999", dictionary=d),
+                                 "MONDO:9999999")
+                self.assertIsNone(config.label_for_code("", dictionary=d))
+
+            # No dictionary at all is a supported state, not a failure.
+            self.assertEqual(config.load_data_dictionary(str(Path(tmp) / "gone.csv"),
+                                                         verbose=False), {})
+            self.assertEqual(config.display_label("MONDO:0005002", dictionary={}),
+                             "MONDO:0005002")
+        finally:
+            sys.path[:] = original_sys_path
+
+    def test_smoking_found_in_measurement_observation_file(self) -> None:
+        """COPDGene emits smoking as a MeasurementObservation, not an
+        Observation. Looking in only one file reported BDC as missing both
+        smoking core variables for 10,371 participants who had it."""
+        original_sys_path = sys.path.copy()
+        try:
+            sys.path.insert(0, str(ROOT / "extract-harmonized"))
+            sys.path.insert(0, str(ROOT))
+            import extract_harmonized_summaries as ex  # type: ignore  # noqa: PLC0415
+
+            with tempfile.TemporaryDirectory() as tmp:
+                md = (Path(tmp) / "DMC_COPDGene_20260831_203118" / "consent_groups"
+                      / "copdgene_phs000179_v7_r1_c1"
+                      / "copdgene_phs000179_v7_r1_c1_BDCHM" / "mapped-data")
+                md.mkdir(parents=True)
+                header = ("associated_participant" + TAB + "observation_type" + TAB
+                          + "value_enum" + TAB + "associated_visit" + NL)
+                rows = []
+                for i in range(30):
+                    code = "OMOP:40766945" if i < 15 else "OMOP:45883537"
+                    rows.append(f"P{i:04d}" + TAB + "OMOP:4282779" + TAB + code
+                                + TAB + "v1" + NL)
+                (md / "MeasurementObservation.tsv").write_text(
+                    header + "".join(rows), encoding="utf-8")
+                (md / "Visit.tsv").write_text(
+                    "id" + TAB + "name" + NL + "v1" + TAB + "COPDGene P1" + NL,
+                    encoding="utf-8")
+
+                stats: dict = {}
+                ex.process_observations(
+                    [str(md)], "COPDGene", set(), 30, stats,
+                    visit_mapping=ex.load_visit_mapping([str(md)]),
+                )
+
+                # Both smoking core variables must now be derived.
+                self.assertIn("current_smoker_baseline_1", stats)
+                self.assertIn("ever_smoker_baseline_1", stats)
+                self.assertEqual(
+                    stats["current_smoker_baseline_1"]["distribution"]
+                    ["Current Smoker"]["n"], 15)
+                self.assertEqual(
+                    stats["ever_smoker_baseline_1"]["distribution"]
+                    ["Never Smoked"]["n"], 15)
         finally:
             sys.path[:] = original_sys_path
 

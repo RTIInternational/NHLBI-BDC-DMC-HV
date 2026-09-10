@@ -129,8 +129,29 @@ from config import (
     cohort_for_run_dir,
     consent_group_from_path,
     cohort_lookup,
+    display_label,
+    label_for_code,
+    load_data_dictionary,
 )
 _HAS_CONFIG = True
+
+def _relabel_distribution(stats: dict, table: str, column: str) -> dict:
+    """Swap CURIE keys in a distribution for their dictionary labels.
+
+    Only for discovered (BDC-only) variables: they have no TOPMed counterpart,
+    so no category key is ever compared against the other side and renaming is
+    display-only. Unknown codes keep their raw value.
+    """
+    dist = stats.get("distribution")
+    if not isinstance(dist, dict) or not dist:
+        return stats
+    relabelled = {}
+    for key, val in dist.items():
+        label = label_for_code(str(key), table, column)
+        relabelled[f"{label} [{key}]" if label else key] = val
+    stats["distribution"] = relabelled
+    return stats
+
 
 def parse_dbgap_version_from_dirs(dirs: list[str]) -> tuple[str, str]:
     """Recover (phs, version) from a dm-bip output path.
@@ -1082,6 +1103,10 @@ def process_measurements(
     # Also exclude alias codes — they're already aggregated into their primary
     for _spec in BDC_MEASUREMENT_MAP.values():
         known_codes.update(_spec.get("aliases", []))
+    # Smoking is claimed by process_observations wherever it is emitted; without
+    # this it would ALSO surface here as an unmapped discovered variable showing
+    # raw OMOP value codes.
+    known_codes.add(SMOKING_OBSERVATION_TYPE)
     all_obs_types = set(df["_obs_type"].dropna().unique())
     discovered_codes = sorted(all_obs_types - known_codes)
 
@@ -1181,7 +1206,12 @@ def process_measurements(
                         }},
                     }
 
-            stats["bdc_label"] = disc_code
+            # Unmapped concepts have no curated label; fall back to the
+            # BDC-HM dictionary so the report reads as an inventory
+            # rather than a wall of CURIEs. Display only - this does
+            # not bring the concept into the TOPMed comparison.
+            stats["bdc_label"] = display_label(disc_code, "MeasurementObservation", "observation_type")
+            _relabel_distribution(stats, "MeasurementObservation", "value_enum")
             stats["topmed_variable"] = None
             stats["dataset"] = "bdc_measurement"
             stats["visit_label"] = visit_used
@@ -1543,7 +1573,12 @@ def process_conditions(
 
             labels = ["Affected"] * n_affected + ["Unaffected"] * n_unaffected + [None] * n_no_data
             stats = categorical_stats(pd.Series(labels))
-            stats["bdc_label"] = disc_code
+            # Unmapped concepts have no curated label; fall back to the
+            # BDC-HM dictionary so the report reads as an inventory
+            # rather than a wall of CURIEs. Display only - this does
+            # not bring the concept into the TOPMed comparison.
+            stats["bdc_label"] = display_label(disc_code, "Condition", "condition_concept")
+            _relabel_distribution(stats, "Condition", "condition_status")
             stats["topmed_variable"] = None
             stats["dataset"] = "bdc_condition"
             stats["bdc_concept_code"] = disc_code
@@ -1870,7 +1905,11 @@ def process_procedures(
 
             labels = ["Affected"] * n_affected + ["Unaffected"] * n_unaffected + [None] * n_no_data
             stats = categorical_stats(pd.Series(labels))
-            stats["bdc_label"] = disc_code
+            # Unmapped concepts have no curated label; fall back to the
+            # BDC-HM dictionary so the report reads as an inventory
+            # rather than a wall of CURIEs. Display only - this does
+            # not bring the concept into the TOPMed comparison.
+            stats["bdc_label"] = display_label(disc_code, "Procedure", "procedure_concept")
             stats["topmed_variable"] = None
             stats["dataset"] = "bdc_procedure"
             stats["bdc_concept_code"] = disc_code
@@ -1900,17 +1939,48 @@ def process_observations(
     Returns list of TOPMed variable names found.
     """
     print("\n  [Observation] Loading...")
-    # Use exact filename to avoid matching MeasurementObservation.tsv
+    # Exact filename so the general Observation load does not swallow
+    # MeasurementObservation.tsv.
     df = load_tsv_files(dirs, "Observation.tsv")
+    if not df.empty and "observation_type" in df.columns:
+        df["_obs_type"] = clean_concept(df["observation_type"])
+    else:
+        if df.empty:
+            print("    No Observation files found.")
+        else:
+            print("    WARNING: 'observation_type' column missing.", file=sys.stderr)
+        df = pd.DataFrame(columns=["observation_type", "_obs_type"])
+
+    # Smoking is not consistently placed. Some cohorts' YAML emits it as an
+    # Observation, others (COPDGene, seen 2026-09-10) as a MeasurementObservation.
+    # Looking only in Observation.tsv reported BDC as missing both smoking core
+    # variables for 10,371 COPDGene participants whose smoking status was in the
+    # extract all along, so search both files rather than assuming placement.
+    smoking_extra = load_tsv_files(dirs, "*MeasurementObservation*.tsv")
+    if not smoking_extra.empty and "observation_type" in smoking_extra.columns:
+        smoking_extra = smoking_extra.copy()
+        smoking_extra["_obs_type"] = clean_concept(smoking_extra["observation_type"])
+        smoking_extra = smoking_extra[smoking_extra["_obs_type"] == SMOKING_OBSERVATION_TYPE]
+        if not smoking_extra.empty:
+            already = (not df.empty) and bool(
+                (df["_obs_type"] == SMOKING_OBSERVATION_TYPE).any()
+            )
+            if already:
+                print(f"    [smoking] {SMOKING_OBSERVATION_TYPE} present in BOTH "
+                      f"Observation.tsv and MeasurementObservation.tsv - using "
+                      f"Observation.tsv and ignoring "
+                      f"{len(smoking_extra):,} duplicate row(s).")
+            else:
+                print(f"    [smoking] {SMOKING_OBSERVATION_TYPE} found in "
+                      f"MeasurementObservation.tsv ({len(smoking_extra):,} rows), "
+                      f"not Observation.tsv - folding it in.")
+                df = pd.concat([df, smoking_extra], ignore_index=True)
+
     if df.empty:
-        print("    No Observation files found.")
         return []
 
-    if "observation_type" not in df.columns:
-        print("    WARNING: 'observation_type' column missing.", file=sys.stderr)
+    if "_obs_type" not in df.columns:
         return []
-
-    df["_obs_type"] = clean_concept(df["observation_type"])
 
     obs_types = df["_obs_type"].value_counts()
     print(f"    Observation types found ({len(obs_types)}):")
@@ -2123,7 +2193,12 @@ def process_observations(
                                                   if n_participants > 0 else 0.0}},
                 }
 
-            stats["bdc_label"] = disc_code
+            # Unmapped concepts have no curated label; fall back to the
+            # BDC-HM dictionary so the report reads as an inventory
+            # rather than a wall of CURIEs. Display only - this does
+            # not bring the concept into the TOPMed comparison.
+            stats["bdc_label"] = display_label(disc_code, "Observation", "observation_type")
+            _relabel_distribution(stats, "Observation", "value_enum")
             stats["topmed_variable"] = None
             stats["dataset"] = "bdc_observation"
             stats["visit_label"] = visit_used
@@ -2355,7 +2430,11 @@ def process_drugs(
 
                 labels = ["Exposed"] * n_on + ["Not Exposed"] * n_off
                 stats = categorical_stats(pd.Series(labels))
-                stats["bdc_label"] = disc_code
+                # Unmapped concepts have no curated label; fall back to the
+                # BDC-HM dictionary so the report reads as an inventory
+                # rather than a wall of CURIEs. Display only - this does
+                # not bring the concept into the TOPMed comparison.
+                stats["bdc_label"] = display_label(disc_code, "DrugExposure", "drug_concept")
                 stats["topmed_variable"] = None
                 stats["dataset"] = "bdc_drug_exposure"
                 stats["bdc_concept_code"] = disc_code
@@ -2544,6 +2623,18 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--data-dictionary",
+        default=None,
+        metavar="CSV",
+        help=(
+            "BDC-HM data dictionary export used to label concepts that have no "
+            "entry in config.py's concept maps. Display only -- it never changes "
+            "which variables are compared. Defaults to the newest "
+            "BDC-HM-*DataDictionary*.csv in the toolkit root or its data/ "
+            "subdirectory; omit entirely and unmapped concepts print as codes."
+        ),
+    )
+    parser.add_argument(
         "--base-dir",
         metavar="DIR",
         default=".",
@@ -2580,6 +2671,17 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+
+    # Prime the label cache once. An explicit --data-dictionary path is loaded
+    # into the module cache so every later lookup sees it; with no flag the
+    # default search runs, and with no dictionary at all lookups return None
+    # and concepts print as bare codes.
+    if getattr(args, "data_dictionary", None):
+        import config as _config
+
+        _config._DATA_DICTIONARY_CACHE = load_data_dictionary(args.data_dictionary)
+    else:
+        load_data_dictionary()
 
     # ── Resolve cohort list ──────────────────────────────────────────────────
     if args.cohort and args.cohorts:

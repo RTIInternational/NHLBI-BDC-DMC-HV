@@ -275,9 +275,53 @@ python compare/translate_bdc_json.py ./runs/bdc/bdc_aric_summary_old.json
 | `compare/batch_scorecard.py` | Processes all cohorts in batch; produces cross-cohort summary table |
 | `compare/translate_bdc_json.py` | Post-processes a BDC JSON to rename raw concept codes to canonical TOPMed variable names |
 | `compare/core_variable_coverage_table.py` | Cross-cohort 19 Core Variable coverage matrix (requires HV repo path) |
+| `compare/reconcile_dictionary.py` | Reports where `config.py`'s concept maps disagree with the BDC-HM data dictionary (read-only) |
+| `data/BDC-HM-*DataDictionary*.csv` | Optional label source for concepts `config.py` does not map |
 
 Note: the deprecated legacy `mapping-quality-table.py` wrapper was not carried
 forward. Use `compare/match_quality_table.py` for per-variable grading.
+
+---
+
+## Concept labels (BDC-HM data dictionary)
+
+Concepts the pipeline emits that `config.py` has no mapping for are still
+reported -- they are real output, and hiding them would misrepresent what the
+cohort produced. Without a label source they print as bare CURIEs:
+
+```
+MONDO:0005002   categorical  n=10,371  [Unaffected:7026, Affected:3345]
+```
+
+Drop a BDC-HM data dictionary export into `data/` (or pass
+`--data-dictionary <csv>`) and they become readable:
+
+```
+chronic obstructive pulmonary disease [MONDO:0005002]   categorical  n=10,371
+```
+
+The code is kept alongside the label so a report stays traceable to the extract.
+
+**This is display only.** The dictionary says what a code *means*; it does not
+say whether a concept is equivalent to a TOPMed variable. That judgement stays
+in the hand-maintained maps in `config.py`, so labelling a concept never brings
+it into the comparison. Most unmapped concepts *should* stay BDC-only -- TOPMed
+DCC never harmonized spirometry, COPD diagnosis, or bronchodilator use.
+
+The dictionary is optional: with none present, everything behaves as before.
+
+To check the maps against it:
+
+```bash
+uv run python compare/reconcile_dictionary.py          # summary
+uv run python compare/reconcile_dictionary.py --verbose  # full inventory
+```
+
+It reports codes `config.py` compares that the dictionary does not list
+(distinguishing primary codes, where the comparison can never match, from
+alias fallbacks, which are usually benign), vocabulary mismatches between the
+two, and dictionary codes with no mapping. It changes nothing -- every case is
+a curation decision.
 
 ---
 
