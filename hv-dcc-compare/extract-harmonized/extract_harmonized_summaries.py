@@ -42,8 +42,8 @@ USAGE:
     # Explicit mapped-data dirs (overrides auto-discovery, single cohort only)
     python extract_harmonized_summaries.py \\
         --mapped-data-dirs \\
-            ./DMC_parent-WHI_HMB-IRB_-phs000200-v12-p3-c1_WHI_Processed_20260322_141514/parent-WHI_HMB-IRB_-phs000200-v12-p3-c1_BDCHM/mapped-data \\
-            ./DMC_parent-WHI_HMB-IRB-NPU_-phs000200-v12-p3-c2_WHI_Processed_20260322_173030/parent-WHI_HMB-IRB-NPU_-phs000200-v12-p3-c2_BDCHM/mapped-data \\
+            ./DMC_WHI_20260831_203632/consent_groups/parent-WHI_HMB-IRB_-phs000200-v12-p3-c1/parent-WHI_HMB-IRB_-phs000200-v12-p3-c1_BDCHM/mapped-data \\
+            ./DMC_WHI_20260831_203632/consent_groups/parent-WHI_HMB-IRB-NPU_-phs000200-v12-p3-c2/parent-WHI_HMB-IRB-NPU_-phs000200-v12-p3-c2_BDCHM/mapped-data \\
         --cohort WHI \\
         --output-dir ./comparison_output/
 """
@@ -123,160 +123,70 @@ from config import (
     OMOP_ETHNICITY_MAP,
     SMOKING_OBSERVATION_TYPE,
     OMOP_SMOKING_MAP,
+    find_dmc_run_dirs,
+    find_mapped_data_dirs,
+    cohort_from_dmc_dir_name,
+    cohort_for_run_dir,
+    consent_group_from_path,
+    cohort_lookup,
 )
 _HAS_CONFIG = True
-
-def _ci_glob_processed_dirs(base: Path, cohort: str) -> list[Path]:
-    """Find DMC_*_{cohort}_Processed_* directories with case-insensitive cohort matching.
-
-    Linux glob is case-sensitive, so 'DMC_*_COPDGENE_Processed_*' won't match
-    'DMC_copdgene_phs000179_v7_r1_c1_COPDGene_Processed_...'.  This helper
-    scans top-level entries and matches the cohort portion case-insensitively.
-    """
-    import re
-    # Match: DMC_<anything>_{cohort}_Processed_<timestamp>
-    pat = re.compile(
-        rf"^DMC_.*_{re.escape(cohort)}_Processed_\d+", re.IGNORECASE
-    )
-    results = []
-    try:
-        for entry in sorted(base.iterdir()):
-            if entry.is_dir() and pat.match(entry.name):
-                results.append(entry)
-    except OSError:
-        pass
-    return results
-
 
 def parse_dbgap_version_from_dirs(dirs: list[str]) -> tuple[str, str]:
     """Recover (phs, version) from a dm-bip output path.
 
-    dm-bip encodes the source accession in its output folder name, e.g.
-        DMC_aric_phs000280_v9_r1_c1_ARIC_Processed_20260101
-    That is the version the extract was actually built from, which is what the
-    summary's provenance should record -- a hardcoded table drifts silently and
-    then misreports which dbGaP release the numbers came from.
+    dm-bip encodes the source accession in the consent-group directory name:
+        .../consent_groups/nih-nhlbi-topmed-parent-aric-phs000280-v8-r1-c1/...
+        .../consent_groups/copdgene_phs000179_v7_r1_c1/...
+        .../consent_groups/parent-MESA_HMB_-phs000209-v13-p3-c1/...
+    and, in the legacy layout, in the run directory name. That is the version
+    the extract was actually built from, which is what the summary's provenance
+    should record -- a hardcoded table drifts silently and then misreports which
+    dbGaP release the numbers came from.
+
+    Note the separator before "v" varies by cohort (hyphen, underscore, or
+    none), so all three are accepted.
 
     Returns ("", "") when no accession can be recovered, so the caller can fall
     back to config. If the run spans more than one version, the disagreement is
     itself a finding and every value seen is returned.
     """
     found: dict[str, set[str]] = {}
-    pat = re.compile(r"(phs\d{6})[._]?v(\d+)", re.IGNORECASE)
+    pat = re.compile(r"(phs\d{6})[-._]?v(\d+)", re.IGNORECASE)
     for d in dirs:
         for phs, ver in pat.findall(str(d)):
             found.setdefault(phs.lower(), set()).add(f"v{ver}")
     if not found:
         return "", ""
     phs = sorted(found)[0]
-    versions = sorted(found[phs])
+    versions = sorted(found[phs], key=lambda v: int(v[1:]))
     return phs, versions[0] if len(versions) == 1 else " / ".join(versions)
 
 
 def discover_all_cohorts(base_dir: str | Path) -> list[str]:
-    """Auto-discover all cohort names from DMC_*_Processed_* directories under base_dir.
+    """Auto-discover every cohort with dm-bip output under base_dir.
 
-    Uses the known cohort list from config (if available) to probe
-    for matching directories.  Also scans for any unrecognized cohort directories
-    by extracting the segment before '_Processed_' in folder names.
+    Layout handling lives in config.find_dmc_run_dirs / cohort_from_dmc_dir_name
+    so this and compare/validate_completeness.py cannot drift apart -- the
+    2026-08-31 layout change broke both because each had its own copy.
 
-    Returns a sorted, deduplicated list of uppercase cohort names
-    (e.g., ['ARIC', 'CHS', 'FHS', 'WHI']).
+    Returns canonical config keys (e.g. "COPDGene", "HCHS_SOL"), sorted.
     """
-    import re
-    base = Path(base_dir)
     found: set[str] = set()
-
-    # Phase 1: Check all known cohorts from config
-    known_cohorts = list(COHORTS.keys()) if _HAS_CONFIG else [
-        "ARIC", "CARDIA", "CHS", "COPDGENE", "FHS", "HCHS_SOL", "JHS", "MESA", "SPIROMICS", "WHI",
-    ]
-    for cohort in known_cohorts:
-        if _ci_glob_processed_dirs(base, cohort):
-            found.add(cohort.upper())
-        else:
-            # Try folder-name aliases (e.g. HCHS_SOL → try HCHS)
-            for alias in COHORT_CANONICAL_TO_ALIASES.get(cohort.upper(), []):
-                if _ci_glob_processed_dirs(base, alias):
-                    found.add(cohort.upper())  # store canonical name
-                    break
-
-    # Phase 2: Scan for any DMC_*_Processed_* dirs not covered by known cohorts
-    proc_pat = re.compile(r"^DMC_.*_Processed_\d+", re.IGNORECASE)
-    try:
-        for entry in sorted(base.iterdir()):
-            if not entry.is_dir() or not proc_pat.match(entry.name):
-                continue
-            # Already matched by a known cohort (or its alias)?
-            already = False
-            for c in found:
-                dirs = _ci_glob_processed_dirs(base, c)
-                if dirs and entry in dirs:
-                    already = True
-                    break
-                # Also check aliases
-                for alias in COHORT_CANONICAL_TO_ALIASES.get(c, []):
-                    dirs = _ci_glob_processed_dirs(base, alias)
-                    if dirs and entry in dirs:
-                        already = True
-                        break
-                if already:
-                    break
-            if already:
-                continue
-            # Extract candidate: segment(s) before _Processed_ after [-_]c\d+_
-            m = re.search(r"[-_]c\d+_([A-Za-z][A-Za-z0-9_]*)_Processed_", entry.name,
-                          re.IGNORECASE)
-            if m:
-                raw_name = m.group(1).upper()
-                # Normalize to canonical config name if alias exists
-                canonical = COHORT_FOLDER_TO_CANONICAL.get(raw_name, raw_name)
-                found.add(canonical)
-    except OSError:
-        pass
-
+    for run_dir in find_dmc_run_dirs(base_dir):
+        cohort = cohort_for_run_dir(run_dir)
+        if cohort:
+            found.add(cohort)
     return sorted(found)
 
 
 def discover_mapped_data_dirs(base_dir: str | Path, cohort: str) -> list[str]:
-    """Auto-discover mapped-data directories for a cohort under base_dir.
+    """Auto-discover mapped-data directories for one cohort under base_dir.
 
-    Searches for the dm-bip output folder pattern:
-        DMC_*_{COHORT}_Processed_*/*_BDCHM/mapped-data/
-
-    Uses case-insensitive matching on the cohort name so that mixed-case
-    folder names (e.g. COPDGene) are found on case-sensitive file systems.
-    Also tries known aliases (e.g. HCHS for HCHS_SOL).
-
-    Returns sorted list of discovered mapped-data directory paths.
+    Thin wrapper over config.find_mapped_data_dirs; see that function for the
+    layouts covered.
     """
-    base = Path(base_dir)
-    hits: list[Path] = []
-
-    # Find top-level DMC_*_{cohort}_Processed_* dirs (case-insensitive)
-    proc_dirs = _ci_glob_processed_dirs(base, cohort)
-    # Also try aliases if no match on canonical name
-    if not proc_dirs:
-        for alias in COHORT_CANONICAL_TO_ALIASES.get(cohort.upper(), []):
-            proc_dirs = _ci_glob_processed_dirs(base, alias)
-            if proc_dirs:
-                break
-
-    # Look for *_BDCHM/mapped-data inside each processed dir
-    for proc_dir in proc_dirs:
-        for bdchm in sorted(proc_dir.glob("*_BDCHM")):
-            mapped = bdchm / "mapped-data"
-            if mapped.is_dir():
-                hits.append(mapped)
-
-    # Fallback: maybe mapped-data is missing — files directly in _BDCHM
-    if not hits:
-        for proc_dir in proc_dirs:
-            for bdchm in sorted(proc_dir.glob("*_BDCHM")):
-                if bdchm.is_dir() and list(bdchm.glob("*.tsv")):
-                    hits.append(bdchm)
-
-    return [str(h) for h in sorted(hits)]
+    return find_mapped_data_dirs(base_dir, cohort)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -298,7 +208,7 @@ def load_tsv_files(directories: list[str], glob_pattern: str) -> pd.DataFrame:
     for f in files:
         try:
             chunk = pd.read_csv(f, sep="\t", low_memory=False)
-            consent_label = Path(f).parts[-4] if len(Path(f).parts) >= 4 else Path(f).parent.name
+            consent_label = consent_group_from_path(f)
             chunk["_consent_group"] = consent_label
             dfs.append(chunk)
             print(f"      [{consent_label}] {Path(f).name}: {len(chunk):,} rows")
@@ -835,7 +745,7 @@ def _select_baseline_visit(
         # No baseline visit matched at all — this is a configuration error, not a
         # coverage gap. All cohort visit.yamls must emit a 'name:' slot so Visit.tsv
         # has a descriptive label column matching BASELINE_VISIT_CONFIG.
-        config = BASELINE_VISIT_CONFIG.get(cohort, {})
+        config = cohort_lookup(BASELINE_VISIT_CONFIG, cohort, {})
         raise ValueError(
             f"[_select_baseline_visit] No baseline visit matched for cohort '{cohort}'.\n"
             f"  Expected (exact):   {config.get('exact', [])}\n"
@@ -1408,7 +1318,7 @@ def process_conditions(
                   f"retained ({len(baseline_df)/len(df)*100:.1f}%)")
         else:
             # No baseline visit matched — warn and use all rows as fallback
-            config = BASELINE_VISIT_CONFIG.get(cohort, {})
+            config = cohort_lookup(BASELINE_VISIT_CONFIG, cohort, {})
             print(f"    [baseline filter] WARNING: No baseline visit matched for conditions.")
             print(f"      Expected: {config.get('exact', [])}")
             print(f"      Available: {sorted(available_visits)}")
@@ -1747,7 +1657,7 @@ def process_procedures(
             print(f"    [baseline filter] Matched: {baseline_label} "
                   f"({len(baseline_df):,} / {len(df):,} rows)")
         else:
-            config = BASELINE_VISIT_CONFIG.get(cohort, {})
+            config = cohort_lookup(BASELINE_VISIT_CONFIG, cohort, {})
             print(f"    [baseline filter] WARNING: No baseline visit matched for procedures.")
             print(f"      Expected: {config.get('exact', [])}")
             print(f"      Available: {sorted(available_visits)}")
@@ -2344,7 +2254,7 @@ def process_drugs(
             df = df[df[label_col].isin(matched_prefs)]
             visit_used = " + ".join(matched_prefs) if len(matched_prefs) > 1 else matched_prefs[0]
         else:
-            config = BASELINE_VISIT_CONFIG.get(cohort, {})
+            config = cohort_lookup(BASELINE_VISIT_CONFIG, cohort, {})
             print(f"    [baseline filter] WARNING: No baseline visit matched for drugs.")
             print(f"      Expected: {config.get('exact', [])}")
             print(f"      Available: {sorted(available)}")
@@ -2638,7 +2548,11 @@ def parse_args() -> argparse.Namespace:
         metavar="DIR",
         default=".",
         help=(
-            "Root directory to search for DMC_*_<COHORT>_Processed_* folders. "
+            "Where the dm-bip output lives. Accepts a single run directory "
+            "(DMC_<COHORT>_<date>_<time>), the directory holding several of "
+            "them, or one level above that; consent groups underneath are "
+            "always discovered automatically. The legacy "
+            "DMC_*_<COHORT>_Processed_*/ layout is also recognised. "
             "Defaults to current directory. When no cohort is specified, all "
             "cohorts found under this directory are processed."
         ),
@@ -2685,7 +2599,7 @@ def main() -> None:
         # Default: auto-discover all cohorts from --base-dir
         cohort_list = discover_all_cohorts(args.base_dir)
         if not cohort_list:
-            print(f"ERROR: No DMC_*_Processed_* directories found under "
+            print(f"ERROR: No dm-bip run directories (DMC_<COHORT>_<date>_<time>) found under "
                   f"'{Path(args.base_dir).resolve()}'.", file=sys.stderr)
             print("  Specify --cohort NAME, --cohorts NAME [NAME ...], or "
                   "check --base-dir.", file=sys.stderr)
@@ -2746,8 +2660,12 @@ def extract_one_cohort(
         if not dirs:
             print(f"ERROR: No mapped-data directories found for '{cohort}' "
                   f"under '{Path(base_dir).resolve()}'.", file=sys.stderr)
-            print(f"  Looked for: DMC_*_{cohort}_Processed_*/*_BDCHM/mapped-data  (case-insensitive)",
+            print(f"  Looked for: DMC_{cohort}_<date>_<time>/**/*_BDCHM/mapped-data",
                   file=sys.stderr)
+            print(f"        also: DMC_*_{cohort}_Processed_*/**/*_BDCHM/mapped-data  (legacy layout)",
+                  file=sys.stderr)
+            print("        both case-insensitive, and one directory level below "
+                  "--base-dir is searched as well.", file=sys.stderr)
             print(f"  Either specify --mapped-data-dirs explicitly, or check --base-dir.",
                   file=sys.stderr)
             raise SystemExit(1)
@@ -2830,7 +2748,7 @@ def extract_one_cohort(
             print(f"{prefix} {flag}")
 
         # ── Step 8: Build output ────────────────────────────────────────────────
-        cohort_meta = COHORTS.get(cohort, {}) if _HAS_CONFIG else {}
+        cohort_meta = cohort_lookup(COHORTS, cohort, {})
 
         # Provenance: prefer what this run was actually built from over the
         # static table in config.py, which drifts (see

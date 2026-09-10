@@ -1508,6 +1508,26 @@ def normalize_cohort_name(name: str) -> str:
     return cohort_key_map.get(upper, upper)
 
 
+def cohort_lookup(mapping: dict, cohort: str, default=None):
+    """Case-insensitive cohort-keyed lookup.
+
+    The cohort-keyed dicts in this file do not agree on capitalisation --
+    COHORTS uses "COPDGene" while BASELINE_VISIT_CONFIG and
+    BASELINE_VISIT_PREFS use "COPDGENE". Whichever spelling flows in from a
+    directory name, one of the two lookups used to miss silently: an uppercased
+    name lost the COHORTS metadata, and the exact config key lost the baseline
+    visits (which skips every measurement for the cohort). Resolve by name, not
+    by spelling.
+    """
+    if cohort in mapping:
+        return mapping[cohort]
+    want = cohort.upper()
+    for key, value in mapping.items():
+        if isinstance(key, str) and key.upper() == want:
+            return value
+    return default
+
+
 def resolve_baseline_visits(cohort: str, available_visits: set[str]) -> list[str]:
     """Resolve which available visits are baseline for this cohort.
 
@@ -1523,7 +1543,7 @@ def resolve_baseline_visits(cohort: str, available_visits: set[str]) -> list[str
     Returns:
         List of matched visit labels (preserving original case from available_visits)
     """
-    config = BASELINE_VISIT_CONFIG.get(cohort, {})
+    config = cohort_lookup(BASELINE_VISIT_CONFIG, cohort, {})
     if not config:
         return []
 
@@ -1621,3 +1641,235 @@ CONDITION_PROCEDURE_VISIT_OVERRIDE: dict[str, dict[str, list[str]]] = {
     },
 }
 
+
+# =============================================================================
+# PART 3 -- dm-bip OUTPUT LAYOUT DISCOVERY
+# =============================================================================
+# dm-bip has emitted two different output layouts. Both are supported so a
+# comparison can be run against an older extract without reorganising it.
+#
+# CURRENT (seen 2026-08-31 "FinalAlignmentTest" onward) -- the run directory is
+# named for the cohort alone, and consent groups are nested one level deeper
+# under a consent_groups/ directory:
+#
+#   <base>/DMC_<COHORT>_<YYYYMMDD>_<HHMMSS>/
+#       consent_groups/
+#           <consent-group>/
+#               <consent-group>_BDCHM/
+#                   mapped-data/*.tsv
+#
+#   e.g. DMC_ARIC_20260831_202820/consent_groups/
+#            nih-nhlbi-topmed-parent-aric-phs000280-v8-r1-c1/
+#            nih-nhlbi-topmed-parent-aric-phs000280-v8-r1-c1_BDCHM/mapped-data
+#
+# LEGACY -- one run directory per consent group, cohort embedded mid-name, and
+# a literal "_Processed_" segment:
+#
+#   <base>/DMC_<consent-group>_<COHORT>_Processed_<timestamp>/
+#       <consent-group>_BDCHM/
+#           mapped-data/*.tsv
+#
+# Consent-group directory naming is NOT consistent across cohorts -- compare
+# "nih-nhlbi-topmed-parent-aric-phs000280-v8-r1-c1" against
+# "parent-CHS_DS-CVD-MDS_-phs000287-v7-p1-c3" and "copdgene_phs000179_v7_r1_c1".
+# Nothing here should parse that name beyond pulling out the accession; treat it
+# as an opaque label.
+# =============================================================================
+
+# Run dir named for the cohort alone, with a date_time suffix.
+_DMC_RUN_CURRENT = re.compile(r"^DMC_(?P<cohort>.+?)_\d{8}_\d{6}$", re.IGNORECASE)
+
+# Legacy run dir: cohort sits immediately before the "_Processed_" marker.
+_DMC_RUN_LEGACY = re.compile(
+    r"^DMC_.*?(?:^|[-_])(?P<cohort>[A-Za-z][A-Za-z0-9]*)_Processed_\d+",
+    re.IGNORECASE,
+)
+
+
+def _cohort_aliases(cohort: str) -> list[str]:
+    """Canonical cohort name plus any directory aliases (HCHS_SOL -> HCHS)."""
+    up = cohort.upper()
+    return [cohort] + [a for a in COHORT_CANONICAL_TO_ALIASES.get(up, []) if a.upper() != up]
+
+
+def cohort_from_dmc_dir_name(name: str) -> str | None:
+    """Recover the cohort from a dm-bip run directory name, or None.
+
+    Returns the canonical config key where the folder uses a known alias
+    (DMC_HCHS_... -> HCHS_SOL).
+    """
+    # Legacy first: it requires the literal "_Processed_" marker, so it is the
+    # more specific of the two. Legacy names also end in _<date>_<time>
+    # (DMC_..._WHI_Processed_20260322_141514), which the current-layout pattern
+    # would otherwise match, swallowing "..._WHI_Processed" as the cohort.
+    for pattern in (_DMC_RUN_LEGACY, _DMC_RUN_CURRENT):
+        m = pattern.match(name)
+        if m:
+            raw = m.group("cohort").upper()
+            canon = COHORT_FOLDER_TO_CANONICAL.get(raw, raw)
+            # Return the exact COHORTS key so metadata lookups resolve --
+            # the folder says COPDGene/copdgene, the key is "COPDGene", and
+            # an uppercased "COPDGENE" silently misses COHORTS.get().
+            for key in COHORTS:
+                if key.upper() == canon.upper():
+                    return key
+            return canon
+    return None
+
+
+def _phs_to_cohort() -> dict:
+    """phs accession -> canonical cohort key."""
+    return {meta["phs"].lower(): name for name, meta in COHORTS.items() if meta.get("phs")}
+
+
+def looks_like_run_dir(path) -> bool:
+    """True if this directory IS a dm-bip run directory.
+
+    Recognised either by name or by structure, so a run directory that has been
+    renamed or copied still resolves. Structure is the reliable signal: a run
+    directory holds consent_groups/ (current layout) or *_BDCHM/ (legacy).
+    """
+    try:
+        if not path.is_dir():
+            # A name-only match on a path that does not exist would be reported
+            # as "run directory with no output" instead of "bad path".
+            return False
+        if cohort_from_dmc_dir_name(path.name):
+            return True
+        if (path / "consent_groups").is_dir():
+            return True
+        return any(path.glob("*_BDCHM"))
+    except OSError:
+        return False
+
+
+def cohort_for_run_dir(path) -> str | None:
+    """Cohort owning a run directory, from its name or its contents.
+
+    Falls back to the phs accession embedded in the consent-group directory
+    names, so a renamed run directory still identifies itself.
+    """
+    named = cohort_from_dmc_dir_name(path.name)
+    if named:
+        return named
+    phs_map = _phs_to_cohort()
+    try:
+        for bdchm in path.rglob("*_BDCHM"):
+            haystack = str(bdchm).lower()
+            for phs, cohort in phs_map.items():
+                if phs in haystack:
+                    return cohort
+    except OSError:
+        pass
+    return None
+
+
+def find_dmc_run_dirs(base_dir, cohort: str | None = None) -> list:
+    """Find dm-bip run directories under base_dir.
+
+    With `cohort`, returns only that cohort's runs (case-insensitive, aliases
+    included). Without it, returns every run directory found.
+
+    base_dir may be any of three levels, so a path that is "obviously right" to
+    a human resolves rather than returning nothing:
+
+      1. a single run directory  .../DMC_ARIC_20260831_202820
+      2. the directory holding them  .../20260831_FinalAlignmentTest
+      3. one level above that  .../project-files
+
+    Level 1 is the common case when comparing one cohort; level 2 is what the
+    wrapper uses to sweep every cohort in a run.
+    """
+    from pathlib import Path
+
+    base = Path(base_dir)
+    wanted = {a.upper() for a in _cohort_aliases(cohort)} if cohort else None
+
+    # base_dir IS a run directory -- the natural thing to pass when working on
+    # one cohort. Scanning beneath it would find only consent_groups/ and
+    # report "no output found" for a path that plainly has output in it.
+    if looks_like_run_dir(base):
+        if wanted is None:
+            return [base]
+        owner = cohort_for_run_dir(base)
+        # An unidentifiable run dir is accepted on the caller's say-so:
+        # an explicit --cohort outranks a name we could not parse.
+        if owner is None or owner.upper() in wanted:
+            return [base]
+        return []
+
+    def scan(root) -> list:
+        hits = []
+        try:
+            entries = sorted(root.iterdir())
+        except OSError:
+            return hits
+        for entry in entries:
+            if not entry.is_dir():
+                continue
+            found = cohort_from_dmc_dir_name(entry.name)
+            if found is None:
+                continue
+            if wanted is None or found.upper() in wanted:
+                hits.append(entry)
+        return hits
+
+    dirs = scan(base)
+    if dirs:
+        return dirs
+
+    # One level down: base_dir points at the parent of a dated run folder.
+    nested = []
+    try:
+        for child in sorted(base.iterdir()):
+            if child.is_dir():
+                nested.extend(scan(child))
+    except OSError:
+        pass
+    return nested
+
+
+def find_mapped_data_dirs(base_dir, cohort: str) -> list:
+    """Return every mapped-data directory for a cohort, as strings.
+
+    Walks each run directory for *_BDCHM/mapped-data at any depth, which covers
+    the consent_groups/ level in the current layout and the flat legacy layout
+    with one expression. Falls back to a _BDCHM directory holding TSVs directly
+    when mapped-data/ is absent.
+    """
+    hits = []
+    for run_dir in find_dmc_run_dirs(base_dir, cohort):
+        for bdchm in sorted(run_dir.rglob("*_BDCHM")):
+            if not bdchm.is_dir():
+                continue
+            mapped = bdchm / "mapped-data"
+            if mapped.is_dir():
+                hits.append(mapped)
+            elif any(bdchm.glob("*.tsv")):
+                hits.append(bdchm)
+    # Deduplicate while preserving order; rglob can revisit via odd nesting.
+    seen = set()
+    ordered = []
+    for h in hits:
+        key = str(h)
+        if key not in seen:
+            seen.add(key)
+            ordered.append(key)
+    return ordered
+
+
+def consent_group_from_path(tsv_path) -> str:
+    """Label a TSV with the consent group it came from.
+
+    Uses the nearest *_BDCHM ancestor with the suffix stripped -- that directory
+    is named for the consent group in both layouts. Falls back to the
+    grandparent directory name when no such ancestor exists.
+    """
+    from pathlib import Path
+
+    p = Path(tsv_path)
+    for parent in p.parents:
+        if parent.name.endswith("_BDCHM"):
+            return parent.name[: -len("_BDCHM")]
+    parts = p.parts
+    return parts[-4] if len(parts) >= 4 else p.parent.name

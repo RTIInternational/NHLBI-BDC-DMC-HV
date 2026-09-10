@@ -97,6 +97,7 @@ from config import (
     COHORTS,
     DATASETS,
     get_variable_spec,
+    cohort_lookup,
 )
 
 # Track which files have already been profiled (one-time diagnostic per file)
@@ -603,7 +604,7 @@ def process_cohort(
     print(f"  Processing: {cohort_name}")
     print(f"  {'─' * 60}")
 
-    cohort_meta = COHORTS.get(cohort_name, {})
+    cohort_meta = cohort_lookup(COHORTS, cohort_name, {})
 
     merged, loaded_datasets, vars_found = load_all_datasets(file_args, cohort_name, verbose=verbose)
 

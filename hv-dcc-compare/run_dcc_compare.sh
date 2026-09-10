@@ -7,7 +7,7 @@
 # The TOPMed DCC side is a FIXED reference and is NOT extracted here. Build it
 # once with extract_topmed_dcc.sh, then pass that stable summaries directory in
 # via --topmed-summaries. This script only:
-#   1. extract-harmonized  (BDC dm-bip DMC_*_Processed_* output -> bdc_*.json)
+#   1. extract-harmonized  (BDC dm-bip DMC_<COHORT>_<date>_<time> output -> bdc_*.json)
 #   2. compare/compare.py --batch          -> per-cohort + cross-cohort reports
 #   3. compare/batch_scorecard.py          -> letter-grade scorecards
 #   4. compare/core_variable_coverage_table.py -> 19-core YAML coverage matrix
@@ -74,7 +74,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 # --- validate ----------------------------------------------------------------
-[[ -n "$BDC_DIR" ]] || die "--bdc-dir is required (dm-bip output root holding DMC_*_Processed_* folders)."
+[[ -n "$BDC_DIR" ]] || die "--bdc-dir is required (a DMC_<COHORT>_<date>_<time> run folder, or a directory holding several)."
 [[ -d "$BDC_DIR" ]] || die "--bdc-dir not found: $BDC_DIR"
 [[ -n "$TOPMED_SUMMARIES" ]] || die "--topmed-summaries is required (dir of topmed_*_summary.json from extract_topmed_dcc.sh)."
 [[ -d "$TOPMED_SUMMARIES" ]] || die "--topmed-summaries not found: $TOPMED_SUMMARIES"
@@ -120,7 +120,7 @@ $PYTHON extract-harmonized/extract_harmonized_summaries.py \
     ${COHORT_ARGS[@]+"${COHORT_ARGS[@]}"}
 
 ls "$BDC_OUT"/bdc_*_summary_*.json >/dev/null 2>&1 \
-    || die "No bdc_*_summary_*.json produced. Check that --bdc-dir points at the level containing DMC_*_<COHORT>_Processed_* folders."
+    || die "No bdc_*_summary_*.json produced. Check that --bdc-dir points at the level containing DMC_<COHORT>_<date>_<time> folders (legacy DMC_*_Processed_* also works)."
 
 # --- 2. Comparison reports (batch) — reads the fixed TOPMed reference in place
 banner "[2/4] Building comparison reports (TXT + MD)"

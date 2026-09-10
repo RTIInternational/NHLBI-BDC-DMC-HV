@@ -83,8 +83,8 @@ Re-run this only when the TOPMed DCC release itself changes.
 ### Step 2 — compare a dm-bip run against the reference
 
 Point `--bdc-dir` at your dm-bip output root — the directory holding the
-`DMC_*_<COHORT>_Processed_*` folders (e.g. the `/root` output mount from the
-Docker workflow) — and `--topmed-summaries` at the Step 1 reference:
+`DMC_<COHORT>_<date>_<time>` run folders — and `--topmed-summaries` at the
+Step 1 reference:
 
 ```bash
 ./run_dcc_compare.sh \
@@ -93,7 +93,55 @@ Docker workflow) — and `--topmed-summaries` at the Step 1 reference:
 ```
 
 This extracts the BDC side (all cohorts auto-discovered), then builds reports,
-scorecards, and the coverage matrix into a timestamped run directory:
+scorecards, and the coverage matrix into a timestamped run directory.
+
+<details>
+<summary>Expected dm-bip output layout</summary>
+
+The current layout names each run for the cohort and nests consent groups
+underneath:
+
+```
+<bdc-dir>/DMC_<COHORT>_<YYYYMMDD>_<HHMMSS>/
+    consent_groups/
+        <consent-group>/
+            <consent-group>_BDCHM/
+                mapped-data/*.tsv
+```
+
+for example:
+
+```
+20260831_FinalAlignmentTest/
+    DMC_ARIC_20260831_202820/consent_groups/
+        nih-nhlbi-topmed-parent-aric-phs000280-v8-r1-c1/
+            nih-nhlbi-topmed-parent-aric-phs000280-v8-r1-c1_BDCHM/mapped-data/
+        nih-nhlbi-topmed-parent-aric-phs000280-v8-r1-c2/
+            ...
+```
+
+`--bdc-dir` accepts any of these levels:
+
+| Pass this | Gets you |
+|---|---|
+| `.../20260831_FinalAlignmentTest` | every cohort in the run (what the wrapper expects) |
+| `.../DMC_ARIC_20260831_202820` | that one cohort, all of its consent groups |
+| `.../project-files` | every cohort (one level above the run set) |
+| `.../consent_groups/<consent-group>` | that single consent group, for debugging |
+
+Consent groups are always discovered automatically -- there is no need to list
+them, and all of a cohort's groups are pooled into one summary (each row is
+tagged with its consent group, and cross-group duplicate participants are
+reported and deduplicated).
+
+The older one-run-per-consent-group layout
+(`DMC_<consent-group>_<COHORT>_Processed_<timestamp>/<cg>_BDCHM/mapped-data`)
+is still recognised, so previous extracts can be re-compared without being
+reorganised. Layout rules live in `config.py` (Part 3) and are shared by the
+extractor and `validate_completeness.py`.
+
+</details>
+
 
 ```
 runs/<timestamp>/

@@ -146,47 +146,13 @@ def load_topmed_wide(file_args: dict, cohort: str, verbose: bool = False) -> pd.
 def discover_bdc_dirs(base_dir: str, cohort: str) -> list[str]:
     """Auto-discover BDC mapped-data directories for a cohort.
 
-    Uses case-insensitive matching on the cohort name so that mixed-case
-    folder names (e.g. COPDGene) are found on case-sensitive file systems.
-    Also tries known aliases (e.g. HCHS for HCHS_SOL).
+    Delegates to config.find_mapped_data_dirs so this stays in step with the
+    extractor; both previously carried their own copy of the layout rules and
+    both broke on the 2026-08-31 change.
     """
-    import re
-    # Build alias map from centralized COHORT_FOLDER_TO_CANONICAL (invert it)
-    from config import COHORT_FOLDER_TO_CANONICAL
-    _CANONICAL_ALIASES: dict[str, list[str]] = {}
-    for alias, canon in COHORT_FOLDER_TO_CANONICAL.items():
-        _CANONICAL_ALIASES.setdefault(canon, []).append(alias)
+    from config import find_mapped_data_dirs
 
-    base = Path(base_dir)
-    pat = re.compile(
-        rf"^DMC_.*_{re.escape(cohort)}_Processed_\d+", re.IGNORECASE
-    )
-    dirs = []
-    try:
-        for proc_dir in sorted(base.iterdir()):
-            if proc_dir.is_dir() and pat.match(proc_dir.name):
-                for mapped in proc_dir.rglob("mapped-data"):
-                    if mapped.is_dir():
-                        dirs.append(str(mapped))
-    except OSError:
-        pass
-    # Fallback: try aliases if no match on canonical name
-    if not dirs:
-        for alias in _CANONICAL_ALIASES.get(cohort.upper(), []):
-            alias_pat = re.compile(
-                rf"^DMC_.*_{re.escape(alias)}_Processed_\d+", re.IGNORECASE
-            )
-            try:
-                for proc_dir in sorted(base.iterdir()):
-                    if proc_dir.is_dir() and alias_pat.match(proc_dir.name):
-                        for mapped in proc_dir.rglob("mapped-data"):
-                            if mapped.is_dir():
-                                dirs.append(str(mapped))
-            except OSError:
-                pass
-            if dirs:
-                break
-    return dirs
+    return find_mapped_data_dirs(base_dir, cohort)
 
 
 def load_bdc_wide(dirs: list[str], verbose: bool = False) -> pd.DataFrame:

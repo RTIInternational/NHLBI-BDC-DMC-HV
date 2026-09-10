@@ -199,6 +199,167 @@ class HvDccCompareSmokeTests(unittest.TestCase):
         finally:
             sys.path[:] = original_sys_path
 
+    def _build_layout(self, root: Path, layout: str) -> None:
+        """Write a minimal dm-bip tree in the current or legacy layout."""
+        if layout == "current":
+            md = (root / "DMC_ARIC_20260831_202820" / "consent_groups"
+                  / "nih-nhlbi-topmed-parent-aric-phs000280-v8-r1-c1"
+                  / "nih-nhlbi-topmed-parent-aric-phs000280-v8-r1-c1_BDCHM"
+                  / "mapped-data")
+        else:
+            md = (root / "DMC_aric-phs000280-v8-r1-c1_ARIC_Processed_20260322_141514"
+                  / "aric-phs000280-v8-r1-c1_BDCHM" / "mapped-data")
+        md.mkdir(parents=True, exist_ok=True)
+        (md / "Demography.tsv").write_text(
+            "associated_participant\tsex\n" + "".join(
+                f"P{i:04d}\tOMOP:8532\n" for i in range(10)
+            ),
+            encoding="utf-8",
+        )
+
+    def test_discovers_both_dm_bip_layouts(self) -> None:
+        """dm-bip changed its output layout on 2026-08-31; both must work."""
+        original_sys_path = sys.path.copy()
+        try:
+            sys.path.insert(0, str(ROOT))
+            import config  # type: ignore  # noqa: PLC0415
+
+            for layout in ("current", "legacy"):
+                with self.subTest(layout=layout), tempfile.TemporaryDirectory() as tmp:
+                    root = Path(tmp)
+                    self._build_layout(root, layout)
+
+                    self.assertEqual(config.discover_cohorts(root)
+                                     if hasattr(config, "discover_cohorts")
+                                     else ["ARIC"], ["ARIC"])
+                    dirs = config.find_mapped_data_dirs(root, "ARIC")
+                    self.assertEqual(len(dirs), 1, f"{layout}: {dirs}")
+                    self.assertTrue(dirs[0].endswith("mapped-data"))
+
+                    # --base-dir one level too high still resolves.
+                    dirs_up = config.find_mapped_data_dirs(root.parent, "ARIC")
+                    self.assertTrue(any("mapped-data" in d for d in dirs_up))
+        finally:
+            sys.path[:] = original_sys_path
+
+    def test_base_dir_accepts_the_run_directory_itself(self) -> None:
+        """Pointing --base-dir at .../DMC_ARIC_<date>_<time> must find the
+        consent_groups/ beneath it, not report "no output found"."""
+        original_sys_path = sys.path.copy()
+        try:
+            sys.path.insert(0, str(ROOT))
+            import config  # type: ignore  # noqa: PLC0415
+
+            with tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp) / "project-files" / "20260831_FinalAlignmentTest"
+                run = root / "DMC_ARIC_20260831_202820"
+                for cg in ("nih-nhlbi-topmed-parent-aric-phs000280-v8-r1-c1",
+                           "nih-nhlbi-topmed-parent-aric-phs000280-v8-r1-c2"):
+                    md = run / "consent_groups" / cg / f"{cg}_BDCHM" / "mapped-data"
+                    md.mkdir(parents=True)
+                    (md / "Demography.tsv").write_text(
+                        "associated_participant\tsex\nP0001\tOMOP:8532\n",
+                        encoding="utf-8",
+                    )
+
+                # Every level down to the run directory resolves, and each
+                # finds both consent groups.
+                for label, base in (("run dir", run),
+                                    ("run set", root),
+                                    ("above run set", root.parent)):
+                    with self.subTest(level=label):
+                        dirs = config.find_mapped_data_dirs(base, "ARIC")
+                        self.assertEqual(len(dirs), 2, f"{label}: {dirs}")
+                        self.assertTrue(all(d.endswith("mapped-data") for d in dirs))
+
+                # A run dir belonging to another cohort must not be claimed.
+                self.assertEqual(config.find_mapped_data_dirs(run, "CHS"), [])
+
+                # A path that does not exist is not a run directory, even though
+                # its name matches the pattern.
+                missing = Path(tmp) / "nope" / "DMC_ARIC_20260831_202820"
+                self.assertEqual(config.find_dmc_run_dirs(missing), [])
+        finally:
+            sys.path[:] = original_sys_path
+
+    def test_run_dir_name_resolves_to_canonical_cohort_key(self) -> None:
+        """Folder spellings must land on the exact COHORTS key."""
+        original_sys_path = sys.path.copy()
+        try:
+            sys.path.insert(0, str(ROOT))
+            import config  # type: ignore  # noqa: PLC0415
+
+            cases = {
+                "DMC_ARIC_20260831_202820": "ARIC",
+                "DMC_COPDGene_20260831_203118": "COPDGene",
+                "DMC_copdgene_20260831_203118": "COPDGene",
+                "DMC_HCHS_20260831_203257": "HCHS_SOL",
+                "DMC_aric_phs000280_v8_r1_c1_ARIC_Processed_20260101": "ARIC",
+                "not_a_run_dir": None,
+            }
+            for name, expected in cases.items():
+                with self.subTest(dir=name):
+                    self.assertEqual(config.cohort_from_dmc_dir_name(name), expected)
+                    if expected:
+                        self.assertIn(expected, config.COHORTS)
+        finally:
+            sys.path[:] = original_sys_path
+
+    def test_cohort_lookup_is_case_insensitive(self) -> None:
+        """COHORTS says "COPDGene", BASELINE_VISIT_CONFIG says "COPDGENE".
+
+        Whichever spelling arrives, both lookups must resolve -- a miss on the
+        visit config silently skips every measurement for the cohort.
+        """
+        original_sys_path = sys.path.copy()
+        try:
+            sys.path.insert(0, str(ROOT))
+            import config  # type: ignore  # noqa: PLC0415
+
+            for spelling in ("COPDGene", "COPDGENE", "copdgene"):
+                with self.subTest(spelling=spelling):
+                    self.assertTrue(
+                        config.cohort_lookup(config.COHORTS, spelling),
+                        "cohort metadata lookup missed",
+                    )
+                    self.assertTrue(
+                        config.cohort_lookup(config.BASELINE_VISIT_CONFIG, spelling),
+                        "baseline visit lookup missed",
+                    )
+
+            # Every cohort must have a resolvable baseline visit config.
+            for cohort in config.COHORTS:
+                with self.subTest(cohort=cohort):
+                    self.assertTrue(
+                        config.cohort_lookup(config.BASELINE_VISIT_CONFIG, cohort),
+                        f"{cohort} has no baseline visit config",
+                    )
+        finally:
+            sys.path[:] = original_sys_path
+
+    def test_dbgap_version_parsed_from_every_consent_group_naming_style(self) -> None:
+        """Consent-group dirs use hyphens, underscores, or neither before the
+        version; provenance must survive all three."""
+        original_sys_path = sys.path.copy()
+        try:
+            sys.path.insert(0, str(ROOT / "extract-harmonized"))
+            sys.path.insert(0, str(ROOT))
+            import extract_harmonized_summaries as ex  # type: ignore  # noqa: PLC0415
+
+            cases = {
+                "nih-nhlbi-topmed-parent-aric-phs000280-v8-r1-c1": ("phs000280", "v8"),
+                "parent-CHS_HMB-MDS_-phs000287-v7-p1-c1": ("phs000287", "v7"),
+                "copdgene_phs000179_v7_r1_c1": ("phs000179", "v7"),
+                "parent-MESA_HMB_-phs000209-v13-p3-c1": ("phs000209", "v13"),
+                "nih-nhlbi-topmed-parent-fhs-phs000007-v35-r1-c1": ("phs000007", "v35"),
+            }
+            for segment, expected in cases.items():
+                with self.subTest(consent_group=segment):
+                    path = f"/base/run/consent_groups/{segment}/{segment}_BDCHM/mapped-data"
+                    self.assertEqual(ex.parse_dbgap_version_from_dirs([path]), expected)
+        finally:
+            sys.path[:] = original_sys_path
+
     def test_no_known_participant_level_debug_prints(self) -> None:
         source_files = [
             ROOT / "extract-harmonized" / "extract_harmonized_summaries.py",
