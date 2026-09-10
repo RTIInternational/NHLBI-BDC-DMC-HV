@@ -7,8 +7,7 @@ Orchestrates the Phase 5 sub-components:
 Usage:
     python hv-lint/phase-5/run_phase5.py
     python hv-lint/phase-5/run_phase5.py --cohort FHS
-    python hv-lint/phase-5/run_phase5.py --cohort WHI --visit-cache hv-lint/dbgap-cache
-    python hv-lint/phase-5/run_phase5.py --visit-cache hv-lint/dbgap-cache --cache-dir hv-lint/dbgap-cache
+    python hv-lint/phase-5/run_phase5.py --cohort WHI --cache-dir hv-lint/dbgap-cache
 """
 
 from __future__ import annotations
@@ -50,10 +49,6 @@ def parse_args() -> argparse.Namespace:
         help="Minimum severity to cause non-zero exit (default: error)",
     )
     p.add_argument(
-        "--visit-cache", default=None,
-        help="Directory with per-cohort visit cache JSON files (checks 5.3, 5.5)",
-    )
-    p.add_argument(
         "--cache-dir", default=None,
         help="Directory with per-cohort .json.gz PHV indexes (check 5.4)",
     )
@@ -68,15 +63,17 @@ def run_component(
     name: str,
     cohort: str,
     fail_on: str,
-    visit_cache: str | None,
     cache_dir: str | None,
 ) -> int:
     """Run a single Phase 5 component and return its exit code."""
     comp = COMPONENTS[name]
     script = comp["script"]
     if not script.exists():
-        print(f"  WARNING: {script.name} not found -- skipping")
-        return 0
+        # A component that is not on disk did not run, so it cannot have passed. This
+        # returned 0 -- a missing checker was silently indistinguishable from a clean one.
+        print(f"  ERROR: {script.name} not found -- this component DID NOT RUN",
+              file=sys.stderr)
+        return 1
 
     cmd = [sys.executable, str(script)]
 
@@ -85,8 +82,6 @@ def run_component(
 
     cmd.extend(["--fail-on", fail_on])
 
-    if visit_cache:
-        cmd.extend(["--visit-cache", visit_cache])
     if cache_dir:
         cmd.extend(["--cache-dir", cache_dir])
 
@@ -108,18 +103,12 @@ def main() -> int:
     if args.cache_dir is None:
         args.cache_dir = str(SCRIPT_DIR.parent / "dbgap-cache")
 
-    # Default visit-cache to the same directory as cache-dir
-    # (update_data.py writes *_visit.json alongside *.json.gz)
-    if args.visit_cache is None:
-        args.visit_cache = args.cache_dir
 
     print("=" * 70)
     print("HV-Lint Phase 5: Visit Structure Validation")
     print(f"Cohort: {args.cohort}")
     if args.hv_root:
         print(f"HV root: {os.environ['HV_ROOT']}")
-    if args.visit_cache:
-        print(f"Visit cache: {args.visit_cache}")
     if args.cache_dir:
         print(f"Cache dir: {args.cache_dir}")
     print("=" * 70)
@@ -133,7 +122,7 @@ def main() -> int:
         print(f"\n--- {comp['label']} ---\n")
         rc = run_component(
             name, args.cohort, args.fail_on,
-            args.visit_cache, args.cache_dir,
+            args.cache_dir,
         )
         results[name] = rc
 

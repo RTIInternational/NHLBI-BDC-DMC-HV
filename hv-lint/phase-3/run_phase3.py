@@ -60,6 +60,11 @@ def parse_args() -> argparse.Namespace:
         help="Skip one or more components"
     )
     p.add_argument(
+        "--expect-study", default=None,
+        help="Fail unless each cohort's cache was built from this dbGaP study "
+             "(phs000287 or phs000287.v7). Forwarded to every component."
+    )
+    p.add_argument(
         "--fail-on", default="error",
         choices=["critical", "error", "high", "warning", "info"],
         help="Passed to sub-components (default: error)"
@@ -77,13 +82,16 @@ def parse_args() -> argparse.Namespace:
 
 
 def run_component(name: str, cohort: str, fail_on: str,
-                  cache_dir: str) -> int:
+                  cache_dir: str, expect_study: str | None = None) -> int:
     """Run a single Phase 3 component and return its exit code."""
     comp = COMPONENTS[name]
     script = comp["script"]
     if not script.exists():
-        print(f"  WARNING: {script.name} not found -- skipping")
-        return 0
+        # A component that is not on disk did not run, so it cannot have passed. This
+        # returned 0 -- a missing checker was silently indistinguishable from a clean one.
+        print(f"  ERROR: {script.name} not found -- this component DID NOT RUN",
+              file=sys.stderr)
+        return 1
 
     cmd = [sys.executable, str(script)]
 
@@ -93,6 +101,8 @@ def run_component(name: str, cohort: str, fail_on: str,
         cmd.extend([comp["cohort_flag"], cohort])
 
     cmd.extend(["--fail-on", fail_on])
+    if expect_study:
+        cmd.extend(["--expect-study", expect_study])
     cmd.extend(comp["extra_args"])
 
     print(f"\n{'='*70}")
@@ -120,7 +130,8 @@ def main() -> int:
         if name in args.skip:
             print(f"\nSkipping: {COMPONENTS[name]['label']}")
             continue
-        rc = run_component(name, args.cohort, args.fail_on, args.cache_dir)
+        rc = run_component(name, args.cohort, args.fail_on, args.cache_dir,
+                           args.expect_study)
         results[name] = rc
 
     # Summary

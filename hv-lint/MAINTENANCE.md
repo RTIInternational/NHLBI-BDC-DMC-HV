@@ -141,12 +141,115 @@ What changes between versions:
    python hv-lint/update_data.py --cohort newcohort
    ```
 
-3. **Verify**:
+3. **Verify** -- both that the indexes exist and that they record which study version
+   they were built from:
    ```bash
    python hv-lint/update_data.py --summary
+   python -c "import sys; sys.path.insert(0,'hv-lint'); import _cohorts;        print(_cohorts.study_label('hv-lint/dbgap-cache', 'newcohort'))"
    ```
+   A `PROVENANCE UNKNOWN` answer means the cache exists but cannot say which dbGaP release it
+   holds -- rebuild it with `build_phv_index.py` rather than shipping it.
 
-That's it. The new cohort's indexes are ready for lint.
+That's it. **No code change is needed to onboard a cohort**, and that is new as of
+2026-09-10 -- this section previously ended here and was wrong. Onboarding also required
+editing four hard-coded `COHORT_TO_CACHE_KEY` dicts (three in `phase-3/`, one in `phase-5/`)
+and two `COHORTS` lists enforced as argparse `choices=` in `phase-1/run_yamllint.py` and
+`phase-1/check_quoting_rules.py`. Measured against a cohort staged as `LTRC-ingest`:
+
+| symptom | cause |
+|---|---|
+| Phase 1 FAILED having read no files | the two `choices=` lists rejected `--cohort LTRC`, exit 2 |
+| `ERROR: No dbGaP indexes found. Run build_phv_index.py.` | the cohort was absent from the dicts; the cache was irrelevant |
+| `--cohort all` scanned 0 files and exited 0 | `all` expanded to the fixed ten-cohort list |
+
+The cohort set is now derived: `_cohorts.ingest_cohorts()` reads `*-ingest/` directories and
+`_cohorts.discover_cache_keys()` reads `dbgap-cache/*.json.gz`, which is how the CI workflow
+already picked the cohort (it `sed`s the name out of the PR's changed paths and consults no
+list).
+
+### Cache artifacts are named by STUDY RELEASE, not by cohort
+
+As of 2026-09-10 the three cache artifacts for a study are keyed `<phs######>.<v#>`:
+
+```
+phs000280.v8.json.gz          PHV -> PHT index          (Phase 3, Phase 5 checks 5.3 + 5.4)
+phs000280.v8_detail.json.gz   + name/type/desc/codes    (Phase 3, check 5.8)
+```
+
+There is deliberately **no visit cache**. `update_data.py` step 5 can generate one by
+regex-matching variable names and table descriptions, and Phase 5 checks 5.5 and 5.7 used to
+read it -- both were removed on 2026-09-10, because a regex inference cannot be the oracle a
+transform spec is validated against. Check 5.3 now reads its PHT set from the PHV index, which
+is a fact. `data/visit-cache/` is not an authoritative alternative: it holds the same generated
+regex output in a different shape.
+
+Why: a cohort-named file (`aric.json.gz`) cannot hold two releases of one study, and its name
+records nothing about which release it is. Keyed by release, `phs000280.v8` and `phs000280.v9`
+sit side by side, a version bump is additive rather than destructive, and a migration can lint
+the old release against the new one. Caches built before the rename still resolve.
+
+**Which release a cohort uses is its DECLARED release** -- `current_version` in
+`hv_dataqc/cache_fetcher/manifests/_manifest-<cohort>.yaml`, the file a version bump already
+edits. So bumping a version means: edit that file, build the new release's artifacts, done; the
+old ones stay for comparison.
+
+Build both from any dbGaP staging tree (each discovers cohorts by globbing the source):
+
+```bash
+python hv-lint/build_phv_index.py        --source-cache <dbgap staging dir>
+python hv-lint/build_phv_detail_index.py --source-cache <dbgap staging dir>
+```
+
+A staging directory may carry the release in its name (`aric-v8`, `fhs-v33`); the suffix is
+stripped when recording the cohort, so `aric-v8` records `cohort: ARIC`.
+
+### The release check is MANDATORY
+
+Phase 3 always verifies that the cache it loaded is the cohort's declared release. There is no
+"lint against whatever is present" mode, because that is how a superseded release goes
+unnoticed:
+
+| situation | result |
+|---|---|
+| cache release == declared release | passes, and prints `[phs000280.v8, built ...]` |
+| cache release != declared release | **hard failure**, naming both |
+| cache records no release | **hard failure** -- an unpinnable cache cannot be checked |
+| cohort declares no release | **hard failure** -- add `_manifest-<cohort>.yaml` or pass `--expect-study` |
+
+`--expect-study phs000280.v9` overrides the declaration for a one-off (a migration dry-run, say).
+A bare accession (`phs000280`) accepts any version of that study.
+
+### Cache provenance -- which dbGaP version am I linting against?
+
+`dbgap-cache/manifest.json` records, per cache key, the `phs######` accession and `v#` version
+the builders actually parsed out of the `*.data_dict.xml` filenames, plus PHV/PHT counts. Phase 3
+prints it on every load:
+
+```
+  Loaded LTRC: 1,577 PHVs across 27 PHTs [phs001662.v4]
+```
+
+This matters because a cache payload is a bare `{phv: pht}` mapping with no metadata, and Phase 3
+validates spec PHVs against it: a cache built from a superseded release reports PHVs that exist
+only in the newer release as absent, which is indistinguishable from a real mapping error.
+
+To enforce it rather than merely report it:
+
+```bash
+python hv-lint/run_all.py --cohort LTRC --expect-study phs001662.v4     # Phase 3
+python hv-lint/phase-3/run_phase3.py --cohort CHS --expect-study phs000287
+```
+
+A bare accession ignores the version. **A cache with no recorded provenance FAILS the pin
+rather than passing it** -- an unpinnable cache is the case the pin exists to catch.
+
+**ARIC is why this exists.** The cache committed before the rename held 34,155 PHVs and was a
+strict SUPERSET of both `phs000280.v8` (27,987) and `phs000280.v9` (32,388) -- 0 PHVs absent from
+it, every shared PHV on the identical PHT -- so it was a union of releases that no single
+`data_version` describes, while `_manifest-aric.yaml` declared `v8.p2`. Rebuilt at the declared
+v8, Phase 3 surfaces **16 error-level cross-reference findings that the union cache had masked**:
+of the 1,341 PHVs ARIC's specs reference, 14 are outside v8. Measured 2026-09-10; note that v9 is
+missing *more* of them (32), so the specs really are v8-aligned.
 
 ### Rebuild Without Network
 

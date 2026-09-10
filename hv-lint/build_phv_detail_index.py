@@ -21,11 +21,15 @@ indexes from already-fetched FTP data dictionaries.
 from __future__ import annotations
 
 import argparse
+import datetime as _dt
 import gzip
 import json
 import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _cohorts  # noqa: E402
 
 
 def parse_data_dict(path: Path) -> dict[str, dict]:
@@ -148,6 +152,7 @@ def main() -> int:
     print()
 
     total_phvs = 0
+    manifest: dict[str, dict] = {}
 
     for cohort_dir in sorted(source.iterdir()):
         if not cohort_dir.is_dir():
@@ -167,17 +172,48 @@ def main() -> int:
             cohort_index.update(records)
 
         total_phvs += len(cohort_index)
+        # Name the artifact by the STUDY, not by the source directory. A directory name is a
+        # local convention (`aric`, `aric-v8`, `aric-v9`) that nothing validates and that cannot
+        # hold two releases of one study at once; `phs000280.v8` can, and carries its own
+        # provenance. Falls back to the directory name, loudly, when no accession is parseable.
+        accession, version, _seen = _cohorts.study_from_data_dicts(cohort_dir)
+        if accession:
+            key = f"{accession}.{version}"
+        else:
+            key = cohort_dir.name.lower()
+            print(
+                f"  WARNING: {cohort_dir.name}: no single phs######.v# accession in its data "
+                f"dictionaries -- naming by directory ('{key}') and recording NO provenance",
+                file=sys.stderr,
+            )
 
         # Write compressed JSON
         json_bytes = json.dumps(
             cohort_index, separators=(",", ":"), ensure_ascii=True
         ).encode("utf-8")
-        gz_path = output / f"{cohort_dir.name.lower()}_detail.json.gz"
+        gz_path = output / f"{key}_detail.json.gz"
         with gzip.open(gz_path, "wb") as f:
             f.write(json_bytes)
 
         gz_size = gz_path.stat().st_size
         n_coded = sum(1 for r in cohort_index.values() if r.get("codes"))
+        if accession:
+            manifest[key] = {
+                "cohort": _cohorts.cohort_from_source_dir(cohort_dir.name),
+                "study": accession,
+                "study_version": version,
+                "phvs": len(cohort_index),
+                "phts": len({r.get("pht") for r in cohort_index.values() if r.get("pht")}),
+                "data_dicts": len(data_dict_files),
+                "source_dir": cohort_dir.name,
+                "built": _dt.datetime.now(tz=_dt.UTC).date().isoformat(),
+            }
+        else:
+            print(
+                f"  WARNING: {cohort_dir.name}: data dictionaries do not agree on one "
+                f"phs######.v# accession -- provenance NOT recorded",
+                file=sys.stderr,
+            )
         print(
             f"  {cohort_dir.name:12s}: {len(cohort_index):>7,} PHVs "
             f"({n_coded:>5,} coded), "
@@ -186,6 +222,10 @@ def main() -> int:
         )
 
     print(f"\nTotal: {total_phvs:,} PHVs indexed with detail metadata")
+    if manifest:
+        mpath = _cohorts.write_manifest_entries(output, manifest)
+        print()
+        print(f"Provenance recorded for {len(manifest)} cohort(s) -> {mpath.name}")
     return 0
 
 
