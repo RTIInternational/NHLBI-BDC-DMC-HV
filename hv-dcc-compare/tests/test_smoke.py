@@ -671,6 +671,59 @@ class HvDccCompareSmokeTests(unittest.TestCase):
         finally:
             sys.path[:] = original_sys_path
 
+    def test_unit_comparison_ignores_notation_but_not_real_differences(self) -> None:
+        """dm-bip writes UCUM and config writes conventional notation, so a
+        literal comparison flagged 48 variables on the 2026-09-10 run with all
+        but one being notation. A check that cries wolf gets ignored."""
+        original_sys_path = sys.path.copy()
+        try:
+            sys.path.insert(0, str(ROOT / "extract-harmonized"))
+            sys.path.insert(0, str(ROOT))
+            import extract_harmonized_summaries as ex  # type: ignore  # noqa: PLC0415
+
+            same = [("mmHg", "mm[Hg]"), ("10^3/uL", "10*3/uL"), ("hours", "h"),
+                    ("pg", "pg/{cell}"), ("mg/dL", "mg/dl"), ("10^6/uL", "10*6/uL")]
+            for a, b in same:
+                with self.subTest(same=(a, b)):
+                    self.assertEqual(ex.normalize_unit(a), ex.normalize_unit(b))
+
+            differ = [("cm", "in"), ("kg", "lb"), ("mg/dL", "g/dL"),
+                      ("mm3", '#reported_units: "Hounsfield units (HU)')]
+            for a, b in differ:
+                with self.subTest(differ=(a, b)):
+                    self.assertNotEqual(ex.normalize_unit(a), ex.normalize_unit(b))
+
+            self.assertEqual(ex.normalize_unit(""), "")
+            self.assertEqual(ex.normalize_unit(None), "")
+        finally:
+            sys.path[:] = original_sys_path
+
+    def test_numeric_values_in_a_coded_column_are_quantities(self) -> None:
+        """ARIC writes dietary servings into value_concept; they came out as
+        categories ['0.0','0.5','1.0',...] instead of a mean. Real CURIEs must
+        still be treated as codes."""
+        original_sys_path = sys.path.copy()
+        try:
+            sys.path.insert(0, str(ROOT / "extract-harmonized"))
+            sys.path.insert(0, str(ROOT))
+            import extract_harmonized_summaries as ex  # type: ignore  # noqa: PLC0415
+            import pandas as pd  # noqa: PLC0415
+
+            numbers = pd.DataFrame({"value_quantity__value_concept":
+                                    ["0.0", "0.5", "1.0", "3.0", "5.5", "7.0"]})
+            series, src, kind = ex.select_value_series(numbers)
+            self.assertEqual(kind, "numeric")
+            self.assertEqual(src, "value_quantity__value_concept")
+            self.assertAlmostEqual(float(series.mean()), 2.8333, places=3)
+
+            curies = pd.DataFrame({"value_quantity__value_concept":
+                                   ["OMOP:8527", "OMOP:8516", "OMOP:8527"]})
+            series, src, kind = ex.select_value_series(curies)
+            self.assertEqual(kind, "coded")
+        finally:
+            sys.path[:] = original_sys_path
+
+
     def test_no_known_participant_level_debug_prints(self) -> None:
         source_files = [
             ROOT / "extract-harmonized" / "extract_harmonized_summaries.py",

@@ -327,6 +327,43 @@ def count_dedup_conflicts(df: pd.DataFrame, value_col_hint: str | None = None) -
     return len(conflicted)
 
 
+# Unit spellings that mean the same thing. dm-bip writes UCUM ("mm[Hg]",
+# "10*3/uL") while config.py uses conventional notation ("mmHg", "10^3/uL"), so
+# a literal comparison reports a disagreement on nearly every variable -- 48
+# warnings on the 2026-09-10 run, all but one of them notation.
+_UNIT_ALIASES = {
+    "mm[hg]": "mmhg",
+    "h": "hours", "hr": "hours", "hrs": "hours",
+    "pg/{cell}": "pg",
+    "{score}": "score", "agatston": "score",
+    "{#}/wk": "/wk", "{servings}/wk": "/wk",
+}
+
+
+def normalize_unit(unit: str) -> str:
+    """Canonical form of a unit string for equality testing.
+
+    Folds case and whitespace, converts the UCUM exponent marker ``*`` to ``^``,
+    strips UCUM annotation braces, and applies a small alias table. Comparing
+    normalised forms keeps the check for real disagreements (mm3 against a
+    density unit) without reporting every notation difference.
+    """
+    if not unit:
+        return ""
+    u = str(unit).strip().lower().replace(" ", "")
+    u = _UNIT_ALIASES.get(u, u)
+    # UCUM writes 10*3/uL where config writes 10^3/uL.
+    u = u.replace("*", "^")
+    # Drop UCUM annotations: {cell}, {score} etc. carry no dimension.
+    while "{" in u and "}" in u:
+        start, end = u.index("{"), u.index("}")
+        if end < start:
+            break
+        u = u[:start] + u[end + 1:]
+    u = u.replace("[", "").replace("]", "").replace("/", "/")
+    return _UNIT_ALIASES.get(u, u)
+
+
 def observed_unit(df: pd.DataFrame) -> str:
     """The unit recorded in the data, for comparison against the declared one.
 
@@ -372,8 +409,17 @@ def select_value_series(df: pd.DataFrame) -> tuple[pd.Series, str, str]:
     for col in CODED_VALUE_COLUMNS:
         if col in df.columns:
             values = df[col].dropna()
-            if len(values) > 0:
-                return values, col, "coded"
+            if len(values) == 0:
+                continue
+            # A concept column can hold plain numbers rather than CURIEs -- ARIC
+            # writes dietary servings into value_concept, which came out as
+            # categories ['0.0','0.5','1.0',...] instead of a mean. Treat a
+            # mostly-numeric coded column as the quantity it is; genuine CURIEs
+            # ("OMOP:8527") do not parse and stay coded.
+            as_numeric = pd.to_numeric(values, errors="coerce")
+            if as_numeric.notna().sum() / len(values) >= NUMERIC_PARSE_FLOOR:
+                return pd.to_numeric(df[col], errors="coerce"), col, "numeric"
+            return values, col, "coded"
     return pd.Series(dtype=object), "", ""
 
 
@@ -1184,6 +1230,16 @@ def process_measurements(
             continue
 
         n_visit_resolved += 1
+
+        # Mapped variables are the ones that get compared and graded, so they
+        # matter more here than the discovered ones. The counter was originally
+        # added only to the discovery loop, which is why the 43 conflicts on the
+        # 2026-09-10 run all sat outside the comparison.
+        _n_conflicts_mapped = count_dedup_conflicts(baseline)
+        if _n_conflicts_mapped:
+            print(f"      {spec['bdc_label']}: WARNING {_n_conflicts_mapped:,} "
+                  f"participant(s) had CONFLICTING values before dedup -- 'first' "
+                  f"picks by row order, so this variable depends on file ordering")
 
         # DEFENSIVE: Deduplicate to one value per participant.
         # In practice, each measurement block produces complete rows (value,
@@ -2669,11 +2725,15 @@ def run_dq_checks(
         if not declared or not observed:
             continue
         if "|" in observed:
-            flags.append(
-                f"WARNING: {stats.get('bdc_label', var_name)} carries more than one "
-                f"unit in the data ({observed}) against declared {declared!r}"
-            )
-        elif observed != declared:
+            # More than one unit within a single variable, after normalisation.
+            distinct = {normalize_unit(u) for u in observed.split("|")}
+            distinct.discard("")
+            if len(distinct) > 1:
+                flags.append(
+                    f"WARNING: {stats.get('bdc_label', var_name)} carries more than one "
+                    f"unit in the data ({observed}) against declared {declared!r}"
+                )
+        elif normalize_unit(observed) != normalize_unit(declared):
             flags.append(
                 f"WARNING: {stats.get('bdc_label', var_name)} unit mismatch -- "
                 f"config declares {declared!r}, data carries {observed!r}"
