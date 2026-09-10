@@ -18,24 +18,27 @@ import re
 # SHARED COHORTS (9 studies present in both TOPMed DCC and BDC DMC)
 # Keys = TOPMed `topmed_study` column values
 # ─────────────────────────────────────────────────────────────────────────────
-# NOTE ON bdc_version: verified 2026-09-09 against the staged dbGaP metadata in
-# BDC-DMC-Harmonization-Virtual-Team/data/dbgap-cache/<cohort>/GapExchange_*.xml,
-# which is the release the harmonization actually works from. CARDIA (was v4) and
-# MESA (was v15) were corrected to v3 and v13 to match; the other seven already
-# agreed. (The ARIC manifest still reads v8, but the cache and this table agree
-# on v9, so the manifest is the stale one there.)
+# NOTE ON bdc_version: this is the dbGaP release the HV harmonization is built
+# on -- NOT necessarily the newest release staged in the local dbGaP cache.
+# Corrected 2026-09-09: CARDIA v4 -> v3, MESA v15 -> v13, ARIC v9 -> v8.
+#
+# Do not infer this value from the cache's GapExchange_*.xml alone. A cohort
+# mid-migration has both releases staged at once: the ARIC cache carries ~64k
+# v9.p3 references alongside ~55k v8.p2, because the v8 -> v9 migration has been
+# analysed but not adopted. The harmonization is still on v8 there, and only the
+# HV mappings themselves (or the study lead) can settle which release is live.
+# The other eight cohorts each have a single dominant version in cache.
 #
 # This field is provenance only -- no logic branches on it. The BDC extractor
 # prefers the accession parsed out of the dm-bip output path (see
 # parse_dbgap_version_from_dirs in extract_harmonized_summaries.py) and falls
-# back here only when the path carries none, warning on any disagreement. Re-run
-# that comparison when bumping a cohort rather than editing this table blind.
+# back here only when the path carries none, warning on any disagreement.
 COHORTS: dict[str, dict] = {
     "ARIC": {
         "full_name": "Atherosclerosis Risk in Communities",
         "phs": "phs000280",
         "topmed_version": "v5",
-        "bdc_version": "v9",
+        "bdc_version": "v8",
     },
     "CARDIA": {
         "full_name": "Coronary Artery Risk Development in Young Adults",
