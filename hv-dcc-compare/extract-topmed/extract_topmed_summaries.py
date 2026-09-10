@@ -80,6 +80,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import pathlib
 import tarfile
 import tempfile
 from datetime import datetime, timezone
@@ -234,8 +235,21 @@ def extract_eav_from_tgz(tgz_path: Path, extract_root: Path) -> Path | None:
         for member in tf.getmembers():
             if member.issym() or member.islnk():
                 raise ValueError(f"Unsafe tar link member rejected: {member.name!r}")
+            if not (member.isfile() or member.isdir()):
+                # Block devices, FIFOs and other special types outright; the
+                # DCC bundles contain only regular files and directories.
+                raise ValueError(
+                    f"Unsafe tar member type rejected: {member.name!r} "
+                    f"(type {member.type!r})"
+                )
+            if pathlib.PurePosixPath(member.name).is_absolute():
+                raise ValueError(f"Absolute tar member path rejected: {member.name!r}")
             member_path = (dest / member.name).resolve()
-            if not str(member_path).startswith(str(dest_resolved)):
+            # Path.is_relative_to, not str.startswith: a prefix comparison
+            # accepts a sibling directory whose name merely begins with the
+            # destination's ("/x/foo" vs "/x/foobar"), which escapes the
+            # intended directory while passing the check.
+            if not member_path.is_relative_to(dest_resolved):
                 raise ValueError(f"Unsafe tar member path rejected: {member.name!r}")
         tf.extractall(dest)
 

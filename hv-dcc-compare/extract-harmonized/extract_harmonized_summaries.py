@@ -983,6 +983,8 @@ def process_measurements(
     # failure, then just count the rest so the log stays readable.
     visit_fail_detail: str | None = None
     visit_fail_vars: list[str] = []
+    visit_fail_available: dict[str, str] = {}
+    n_visit_resolved = 0
     # Track participants who appear in ANY baseline measurement — used by
     # process_drugs as the denominator for medication binary variables.
     # Participants absent here never attended the baseline visit and should be
@@ -1029,16 +1031,23 @@ def process_measurements(
                                                            visit_mapping=visit_mapping,
                                                            override_visits=visit_override)
         except ValueError as exc:
+            # Pull the visits this variable DOES have out of the exception --
+            # that is the actionable part. "Only at Exam 5" is a fact about the
+            # study, not a defect.
+            available = ""
+            for line in str(exc).splitlines():
+                if "Available labels:" in line:
+                    available = line.split("Available labels:", 1)[1].strip()
+                    break
             if visit_fail_detail is None:
                 visit_fail_detail = str(exc)
-                print(f"    {spec['bdc_label']} ({bdc_code}): SKIPPED — no baseline visit data")
-                for line in visit_fail_detail.splitlines():
-                    print(f"      {line}", file=sys.stderr)
-            else:
-                print(f"    {spec['bdc_label']} ({bdc_code}): SKIPPED — no baseline visit data "
-                      f"(same cause as above)")
             visit_fail_vars.append(spec["bdc_label"])
+            visit_fail_available[spec["bdc_label"]] = available
+            print(f"    {spec['bdc_label']} ({bdc_code}): no data at the baseline "
+                  f"visit; present at {available or 'no visits'}")
             continue
+
+        n_visit_resolved += 1
 
         # DEFENSIVE: Deduplicate to one value per participant.
         # In practice, each measurement block produces complete rows (value,
@@ -1226,14 +1235,32 @@ def process_measurements(
                   f"({type_tag}, n_valid={n_valid:,}) [visit: {visit_used}]")
 
     if visit_fail_vars:
-        print(f"\n    CRITICAL: {len(visit_fail_vars)} measurement variable(s) skipped for "
-              f"{cohort} because no baseline visit could be resolved.")
-        print("    This is a visit-mapping/configuration failure, NOT a BDC coverage gap. "
-              "Downstream reports will show these variables as missing on the BDC side.")
-        print(f"    Skipped: {', '.join(visit_fail_vars)}")
-        print(f"\n    CRITICAL: {len(visit_fail_vars)} measurement variable(s) skipped for "
-              f"{cohort} — no baseline visit resolved (configuration failure, "
-              f"not a coverage gap).", file=sys.stderr)
+        if n_visit_resolved == 0:
+            # Nothing at all resolved: the cohort's visit labels do not match
+            # BASELINE_VISIT_CONFIG, so every measurement is suppressed. This is
+            # the configuration failure the diagnostic exists for.
+            print(f"\n    CRITICAL: no measurement variable resolved a baseline visit "
+                  f"for {cohort} ({len(visit_fail_vars)} skipped).")
+            print("    Every measurement is suppressed, so reports will show blanket "
+                  "'BDC missing'. This is a visit-mapping/configuration failure, NOT a "
+                  "coverage gap.")
+            if visit_fail_detail:
+                for line in visit_fail_detail.splitlines():
+                    print(f"      {line}", file=sys.stderr)
+            print(f"\n    CRITICAL: {cohort} resolved no baseline visit for any "
+                  f"measurement - visit configuration failure.", file=sys.stderr)
+        else:
+            # Some resolved, some did not: the config works and these variables
+            # simply were not measured at baseline. Reported so the BDC-side
+            # blanks in the report are explainable, not as a defect.
+            print(f"\n    NOTE: {len(visit_fail_vars)} of "
+                  f"{n_visit_resolved + len(visit_fail_vars)} mapped measurement "
+                  f"variable(s) have no data at {cohort}'s baseline visit.")
+            print("    The visit configuration is working (others resolved); these are "
+                  "collected at other visits only, so they appear blank on the BDC side.")
+            for label in visit_fail_vars:
+                where = visit_fail_available.get(label) or "no visits"
+                print(f"      {label}: present at {where}")
 
     return found_vars, baseline_meas_ids
 
@@ -2000,10 +2027,16 @@ def process_observations(
                                                            visit_mapping=visit_mapping,
                                                            override_visits=smoking_override)
         except ValueError as exc:
-            print(f"    Smoking ({SMOKING_OBSERVATION_TYPE}): SKIPPED — no baseline visit data")
-            print("    This is a visit-mapping/configuration failure, NOT a BDC coverage gap.")
+            available = ""
             for line in str(exc).splitlines():
-                print(f"      {line}", file=sys.stderr)
+                if "Available labels:" in line:
+                    available = line.split("Available labels:", 1)[1].strip()
+                    break
+            print(f"    Smoking ({SMOKING_OBSERVATION_TYPE}): no data at the baseline "
+                  f"visit; present at {available or 'no visits'}")
+            print("    If other measurements resolved for this cohort the visit config "
+                  "is fine and smoking simply was not collected at baseline; if nothing "
+                  "resolved, check the cohort's visit.yaml.")
             baseline = smoking_df.head(0)  # empty DF so downstream code is safe
             visit_used = "none"
 
@@ -2848,6 +2881,16 @@ def extract_one_cohort(
         for flag in dq_flags:
             prefix = "    ⚠" if "WARNING" in flag else "    🚨" if "CRITICAL" in flag else "    ✓"
             print(f"{prefix} {flag}")
+
+        # Record label-source status inside the per-cohort log: the dictionary
+        # is loaded once in main(), before per-cohort logging starts, so without
+        # this an exported log gives no way to tell whether labels were applied.
+        _dict = load_data_dictionary(verbose=False)
+        _n_labels = len([k for k in _dict if isinstance(k, str)])
+        if _dict:
+            print(f"\n  [dictionary] {_n_labels:,} concept labels available")
+        else:
+            print("\n  [dictionary] none loaded - unmapped concepts print as codes")
 
         # ── Step 8: Build output ────────────────────────────────────────────────
         cohort_meta = cohort_lookup(COHORTS, cohort, {})

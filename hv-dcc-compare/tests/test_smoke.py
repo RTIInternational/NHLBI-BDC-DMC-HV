@@ -459,6 +459,101 @@ class HvDccCompareSmokeTests(unittest.TestCase):
         finally:
             sys.path[:] = original_sys_path
 
+    def test_baseline_absence_is_not_reported_as_config_failure(self) -> None:
+        """A variable collected only at a later exam is a fact about the study,
+        not a broken visit config. The 2026-09-10 run raised 66 CRITICAL banners
+        this way, every one of them false."""
+        original_sys_path = sys.path.copy()
+        try:
+            sys.path.insert(0, str(ROOT / "extract-harmonized"))
+            sys.path.insert(0, str(ROOT))
+            import extract_harmonized_summaries as ex  # type: ignore  # noqa: PLC0415
+            import io, contextlib  # noqa: PLC0415
+
+            def run(visit_rows: str):
+                with tempfile.TemporaryDirectory() as tmp:
+                    md = Path(tmp) / "md"
+                    md.mkdir()
+                    meas = ["associated_participant" + TAB + "observation_type" + TAB
+                            + "value_quantity__value_decimal" + TAB
+                            + "value_quantity__unit" + TAB + "associated_visit"]
+                    for i in range(20):
+                        meas.append(f"P{i:04d}" + TAB + "OBA:VT0001253" + TAB
+                                    + "170.0" + TAB + "cm" + TAB + "v1")
+                        meas.append(f"P{i:04d}" + TAB + "OBA:VT0000223" + TAB
+                                    + "0.5" + TAB + "10*9/L" + TAB + "v5")
+                    (md / "MeasurementObservation.tsv").write_text(
+                        NL.join(meas) + NL, encoding="utf-8")
+                    (md / "Visit.tsv").write_text(visit_rows, encoding="utf-8")
+                    buf = io.StringIO()
+                    with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
+                        ex.process_measurements(
+                            [str(md)], "ARIC", set(), 20, {},
+                            visit_mapping=ex.load_visit_mapping([str(md)]),
+                        )
+                    return buf.getvalue()
+
+            # Config works; one variable is exam-5 only -> informational only.
+            good = run("id" + TAB + "name" + NL + "v1" + TAB + "ARIC EXAM 1" + NL
+                       + "v5" + TAB + "ARIC EXAM 5" + NL)
+            self.assertNotIn("CRITICAL", good)
+            self.assertIn("NOTE:", good)
+            self.assertIn("ARIC EXAM 5", good)  # says where the data is
+
+            # Nothing resolves -> the real configuration failure still alarms.
+            bad = run("id" + TAB + "name" + NL + "v1" + TAB + "BOGUS A" + NL
+                      + "v5" + TAB + "BOGUS B" + NL)
+            self.assertIn("CRITICAL", bad)
+            self.assertIn("configuration failure", bad)
+        finally:
+            sys.path[:] = original_sys_path
+
+    def test_tar_extraction_rejects_prefix_sibling_escape(self) -> None:
+        """Containment must use is_relative_to, not a string prefix.
+
+        A prefix comparison accepts a sibling directory whose name merely begins
+        with the destination's ("/x/foo" vs "/x/foobar"), letting a member land
+        outside the intended directory. Flagged by Copilot on PR #572.
+        """
+        original_sys_path = sys.path.copy()
+        try:
+            sys.path.insert(0, str(ROOT / "extract-topmed"))
+            sys.path.insert(0, str(ROOT))
+            import tarfile, io  # noqa: PLC0415
+            import extract_topmed_summaries as ex  # type: ignore  # noqa: PLC0415
+
+            with tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                tgz = root / "bundle.tar.gz"
+
+                def write_archive(member_name: str) -> None:
+                    payload = b"pwned"
+                    with tarfile.open(tgz, "w:gz") as tf:
+                        info = tarfile.TarInfo(member_name)
+                        info.size = len(payload)
+                        tf.addfile(info, io.BytesIO(payload))
+
+                extract_root = root / "extract"
+                # dest becomes <extract_root>/bundle; escape into a sibling
+                # directory sharing that prefix.
+                write_archive("../bundle_evil/payload.txt")
+                with self.assertRaises(ValueError):
+                    ex.extract_eav_from_tgz(tgz, extract_root)
+                self.assertFalse((extract_root / "bundle_evil").exists(),
+                                 "member escaped the destination directory")
+
+                # Plain parent-directory traversal stays blocked too.
+                write_archive("../../escape.txt")
+                with self.assertRaises(ValueError):
+                    ex.extract_eav_from_tgz(tgz, extract_root)
+
+                # An absolute member path is rejected.
+                write_archive("/abs/escape.txt")
+                with self.assertRaises(ValueError):
+                    ex.extract_eav_from_tgz(tgz, extract_root)
+        finally:
+            sys.path[:] = original_sys_path
+
     def test_no_known_participant_level_debug_prints(self) -> None:
         source_files = [
             ROOT / "extract-harmonized" / "extract_harmonized_summaries.py",

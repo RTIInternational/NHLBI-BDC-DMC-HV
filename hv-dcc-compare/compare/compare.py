@@ -1,5 +1,5 @@
 """
-compare_bdc_topmed.py — Cross-cohort comparison of BDC vs TOPMed DCC summaries
+compare.py — Cross-cohort comparison of BDC vs TOPMed DCC summaries
 ================================================================================
 Reads per-cohort aggregate JSON summaries from extract_topmed_summaries.py and
 extract_harmonized_summaries.py, then produces a structured side-by-side comparison report.
@@ -11,20 +11,20 @@ OUTPUT: Text report (stdout and/or file) with per-variable comparison tables.
 
 USAGE:
     # Single cohort comparison (original mode)
-    python compare_bdc_topmed.py \\
+    python compare/compare.py \\
         --topmed-json  /path/to/topmed_whi_summary.json \\
         --bdc-json     /path/to/bdc_whi_summary.json \\
         [--output      /path/to/WHI_comparison_report.txt]
 
     # Batch mode: auto-discover and compare all cohorts
-    python compare_bdc_topmed.py \\
+    python compare/compare.py \\
         --batch \\
         --bdc-dir      /path/to/BDC_Output/ \\
         --topmed-dir   /path/to/TOPMed_Output/ \\
         [--output-dir  /path/to/comparison_output/]
 
     # Batch with default paths (run from TOPMed_DCC_Compare directory)
-    python compare_bdc_topmed.py --batch
+    python compare/compare.py --batch
 """
 
 from __future__ import annotations
@@ -1093,7 +1093,7 @@ def main() -> None:
             json_data = {
                 "metadata": {
                     "generated": datetime.now(timezone.utc).isoformat(),
-                    "script": "compare_bdc_topmed.py --batch",
+                    "script": "compare/compare.py --batch",
                     "n_cohorts": len(cohort_results),
                 },
                 "cohorts": cohort_results,
