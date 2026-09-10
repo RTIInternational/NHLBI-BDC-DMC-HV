@@ -15,16 +15,15 @@
           value: ELISA
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000198
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00024571
-                  unit:
-                    value: '%{Normal}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000198
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00024571
+                unit:
+                  value: '%{Normal}'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004806
@@ -41,13 +40,12 @@
         method_type:
           value: 'platelet aggregation'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004806
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00227097
-                  unit:
-                    value: '%{Normal}'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht004806
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00227097
+                unit:
+                  value: '%{Normal}'
+                  range: string

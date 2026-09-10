@@ -15,15 +15,14 @@
         age_at_observation:
           expr: '{phv00429049} * 365'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht010057
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00429059
-                  unit:
-                    value: cm
+          class_derivations:
+          - Quantity:
+              populated_from: pht010057
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00429059
+                unit:
+                  value: cm
 - class_derivations:
     MeasurementObservation:
       populated_from: pht010057
@@ -41,12 +40,11 @@
         age_at_observation:
           expr: '{phv00429049} * 365'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht010057
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00429060
-                  unit:
-                    value: kg
+          class_derivations:
+          - Quantity:
+              populated_from: pht010057
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00429060
+                unit:
+                  value: kg

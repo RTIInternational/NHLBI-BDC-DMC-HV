@@ -137,18 +137,21 @@
           value: HEALTH_EXAMINATION
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120930}) + ":CARDIA")'
-- class_derivations:
-    Visit:
-      populated_from: pht001874
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121724}) + ":CARDIA YEAR 15")'
-        name:
-          value: CARDIA YEAR 15
-        visit_category:
-          value: HEALTH_EXAMINATION
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121724}) + ":CARDIA")'
+# DISABLED: pht001874 (Z33E06, CARDIA Year 15 CHD questionnaire) is absent from c2
+# consent group. linkml-map 0.5.3rc3 crashes on missing source tables (regression
+# from 0.4.0 behavior). Re-enable when upstream graceful-missing-table is fixed.
+# - class_derivations:
+#     Visit:
+#       populated_from: pht001874
+#       slot_derivations:
+#         id:
+#           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121724}) + ":CARDIA YEAR 15")'
+#         name:
+#           value: CARDIA YEAR 15
+#         visit_category:
+#           value: HEALTH_EXAMINATION
+#         associated_participant:
+#           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121724}) + ":CARDIA")'
 - class_derivations:
     Visit:
       populated_from: pht003298

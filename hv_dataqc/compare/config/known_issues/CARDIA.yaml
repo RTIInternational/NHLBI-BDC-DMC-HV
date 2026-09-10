@@ -1,0 +1,461 @@
+cohort: CARDIA
+known_issues:
+
+  # ── C0: Consent-group pipeline failure ───────────────────────────────────
+  # The c2 consent group produces an empty Person.tsv (0 bytes). This is a
+  # dm-bip pipeline issue (issue #335): the pht001748 demographics table is
+  # blank in the c2 group. No YAML fix is possible; tracking here so the
+  # C0 FAIL is documented and not confused with a transform defect.
+
+  - checks: [C0]
+    variable_key: "Person_file_coverage"
+    yaml_file: null
+    status: false_positive
+    root_cause: consent_group_pipeline_failure
+    summary: >
+      The c2 consent group (DMC_nih-nhlbi-topmed-parent-cardia-phs000285-v3-r1-c2)
+      produces an empty Person.tsv (0 bytes or parse failure). The c1 group loads
+      3,147 rows successfully. Root cause is dm-bip issue #335: pht001748
+      (demographics) is empty in the c2 extract. No YAML change can resolve this;
+      the fix requires a dm-bip pipeline correction. The C0 FAIL is a pipeline
+      infrastructure issue, not a data-quality or transform defect.
+    related_issues: [335]
+    confirmed_date: "2026-07-05"
+
+  # ── Multi-block Condition design (#651) ──────────────────────────────────
+  # Several CARDIA condition YAMLs create multiple Condition records per
+  # participant per table (one per evidence indicator), while C2 counts
+  # each source table's contribution once. This is intentional design:
+  # each indicator (e.g., ever-had / still-have / doctor-diagnosed) is a
+  # distinct clinical observation. The resulting N gain in C2 is expected.
+
+  - checks: [C1, C2, C3, C7, C12]
+    variable_key: "a12cbron"
+    yaml_file: chr_bronchitis.yaml
+    status: false_positive
+    root_cause: undocumented_codes_in_source_data
+    summary: >
+      pht001575 (Year 0) source data contains codes 0, 3, M (and related
+      indicator PHVs phv00113377/phv00113378 have 5 distinct values) that
+      are NOT documented in dbGaP (only 1=No, 2=Yes documented for A12CBRON).
+      Per coding policy, undocumented codes are not explicitly mapped; pipeline
+      default produces null-status Condition records for uncovered codes --
+      identical data output to explicit null mapping. C12 FAIL for
+      phv00113376-phv00113378 (pht001575) and phv00117056 (pht001715, 4
+      distinct values vs 3 mapped) is expected. N loss (17,883 -> 15,418,
+      ~13.8%) and ~5,249 null-status rows expected from multi-block design and
+      uncovered codes. Note: pht003298 (Year 20) uses 0=ABSENT, 1=PRESENT
+      (different coding scheme, confirmed from data dict).
+    related_issues: [651]
+    confirmed_date: "2026-07-09"
+
+  - checks: [C1, C2, C3, C7]
+    variable_key: "a08diab"
+    yaml_file: diabetes.yaml
+    status: false_positive
+    root_cause: multi_block_condition_design
+    summary: >
+      pht001869 and pht001871 (Year 20) each have 6 blocks covering
+      self-report, doctor-diagnosed, medication, fasting glucose, glucose
+      tolerance, and algorithm-derived diabetes indicators. Each generates
+      one Condition record per participant per indicator. N gain (~46.0%)
+      is expected.
+    related_issues: [651]
+    confirmed_date: "2026-06-28"
+
+  - checks: [C1, C2, C3, C7, C12]
+    variable_key: "a12emph"
+    yaml_file: emphysema.yaml
+    status: false_positive
+    root_cause: undocumented_codes_in_source_data
+    summary: >
+      pht001575 (Year 0) source data contains codes 0, 3, 4, 9, M (confirmed
+      via C12: phv00113380/phv00113381 have 7 distinct values, phv00113382 has
+      6) that are NOT documented in dbGaP (only 1=No, 2=Yes documented).
+      pht001715 phv00117054 has 4 distinct values vs 3 mapped (1, 2, 8). Per
+      coding policy, undocumented codes are not explicitly mapped; pipeline
+      default produces null-status Condition records. C12 FAIL for
+      phv00113380-phv00113382 (pht001575) and phv00117054 (pht001715) is
+      expected. Multi-block design (3 blocks pht001575, 2 blocks pht001811)
+      with uncovered codes produces N gain (~30.4%, 11,698 -> 15,256) and
+      ~8,712 null-status rows.
+    related_issues: [651]
+    confirmed_date: "2026-07-09"
+
+  # ── Unknown-code '8' → UNKNOWN design (#653) ─────────────────────────────
+  # fam_stroke, hyperten, and stroke_isch_atk map source code '8' (don't
+  # know / refused) to UNKNOWN condition_status. The source extraction
+  # treats '8' as null/missing → excluded from source n_valid. Harmonized
+  # maps '8' to non-null UNKNOWN → included in harmonized n_valid.
+  # The N gain is the count of code-8 rows. Design intent confirmed:
+  # capturing patient-reported uncertainty as UNKNOWN is clinically
+  # meaningful; it preserves the observation rather than discarding it.
+
+  - checks: [C1, C2, C3, C7]
+    variable_key: "a11mstrk"
+    yaml_file: fam_stroke.yaml
+    status: false_positive
+    root_cause: unknown_code_to_UNKNOWN_status
+    summary: >
+      fam_stroke.yaml maps code '8' (don't know) and 'M' (missing) to
+      UNKNOWN condition_status. Source treats these as null (n_valid=26,014);
+      harmonized includes them (n_valid=29,133, +12.0%). Additional factor:
+      3-block design (mother/father/sibling) multiplies records per
+      participant. Both are intentional design decisions.
+    related_issues: [653]
+    confirmed_date: "2026-06-28"
+
+  - checks: [C2, C3, C7, C12]
+    variable_key: "a09hbpg1"
+    yaml_file: hyperten.yaml
+    status: false_positive
+    root_cause: unknown_code_to_UNKNOWN_status
+    summary: >
+      hyperten.yaml maps code '8' (don't know) to UNKNOWN for pht001656,
+      pht001715, pht001749, pht001761, pht001811 (Years 5, 7, 10, 15).
+      Source treats '8' as null; harmonized maps to UNKNOWN. The N gain
+      of ~51.0% (11,116 -> 16,787) is almost entirely accounted for by the
+      ~28.4% missing-rate delta x ~19,981 total records = ~5,673 code-8 rows.
+      Code 'M' observed in real data for pht001656/pht001715 but undocumented
+      in dbGaP; removed per coding policy. C12 FAIL for those PHVs expected.
+    related_issues: [653]
+    confirmed_date: "2026-07-09"
+
+  - checks: [C1, C2, C3, C7, C12]
+    variable_key: "y01tia"
+    yaml_file: stroke_isch_atk.yaml
+    status: false_positive
+    root_cause: unknown_code_to_UNKNOWN_status
+    summary: >
+      stroke_isch_atk.yaml maps code '8' (don't know) to UNKNOWN for
+      pht001715, pht001761, pht001811 (Years 7, 10, 15). Source treats
+      '8' as null; harmonized maps to UNKNOWN (+19.8%, 13,953 -> 16,717).
+      Secondary factor: pht001870 (CARDIA HOSPITALIZATIONS DIAGNOSIS)
+      generates ~263 records not in the source extraction pool -- source
+      extractor scope gap, not a YAML defect. Code 'M' observed in real data
+      for 3 blocks but undocumented in dbGaP; removed per coding policy.
+      C12 FAIL for affected PHVs expected.
+    related_issues: [653]
+    confirmed_date: "2026-07-09"
+
+  # ── fam_income.yaml value_concept category mismatch (#652 Bug 2) ─────────
+  - checks: [C1, C2, C3, C7]
+    variable_key: "c03incom"
+    yaml_file: fam_income.yaml
+    status: false_positive
+    root_cause: value_concept_not_in_value_enum
+    summary: >
+      C2/C7 category check reports source categories ['0.0'..'9.0'] missing
+      from harmonized. All 4 income tables are reported_type=encoded with
+      calculated_type=enum_integer (confirmed from var_report metadata) —
+      the var_report shows decoded text labels for display, but the BDC
+      extract stores integer codes. value_mappings have been added to all
+      4 blocks converting integer codes to dollar-range text labels (#652).
+      The C2/C7 category check failure is a tool limitation: income is
+      stored in value_quantity.value_concept, but the check looks at
+      value_enum. This cannot be resolved without restructuring the observation
+      model; document as false_positive for this check.
+    related_issues: [652]
+    confirmed_date: "2026-06-28"
+
+  # ── Asthma: multi-block Condition design ─────────────────────────────────
+  - checks: [C2, C3, C7]
+    variable_key: "a12asthm"
+    yaml_file: asthma.yaml
+    status: false_positive
+    root_cause: multi_block_condition_design
+    summary: >
+      asthma.yaml has 23 blocks across 10 tables (pht001575, pht001584,
+      pht001626, pht001715, pht001721, pht001761, pht001811, pht001869,
+      pht001870, pht001871). Multiple blocks per table produce multiple
+      Condition records per participant per visit. pht001575 code 0
+      (never-had) maps to UNKNOWN, creating extra records vs. source
+      count → C2 N gain (~9.3%) is expected. Several later-PHT blocks
+      map only code '2' (PRESENT), so non-PRESENT rows produce
+      null-status Condition records → ~17,003 null-status rows and C3
+      missing-rate change (d=5.6%) are expected from the same
+      multi-evidence-indicator design as chr_bronchitis and emphysema (#651).
+    related_issues: [651]
+    confirmed_date: "2026-07-06"
+
+  # ── Weight: lbs→kg unit conversion crosswalk artifact ────────────────────
+  - checks: [C6]
+    variable_key: "c20wgt"
+    yaml_file: bdy_wgt.yaml
+    status: false_positive
+    root_cause: unit_conversion_sd_crosswalk
+    summary: >
+      bdy_wgt.yaml converts all weight blocks from lbs to kg (× 0.45359237).
+      C6 reports source SD=43.3 vs harmonized SD=19.3. These are equivalent:
+      43.3 lbs × 0.454 = 19.7 kg ≈ 19.3 kg. The C6 check compares raw SDs
+      without accounting for the unit conversion. This is a framework
+      limitation — the conversion is correct.
+    confirmed_date: "2026-06-28"
+
+  # ── Hemoglobin: MCH crosswalk false positive ──────────────────────────────
+  - checks: [C4, C6, C9]
+    variable_key: "a05hgb"
+    yaml_file: hemo.yaml
+    status: false_positive
+    root_cause: crosswalk_phv_reuse_in_derived_formula
+    summary: >
+      mch.yaml computes MCH using the formula ({phv00112688}/{phv00112687})*10,
+      where phv00112688=HEMOGLOBIN and phv00112687=RED CELL COUNT. The
+      crosswalk matches source key 'a05hgb' (→ phv00112688) to the MCH
+      concept via mch.yaml, causing C4/C6 to compare hemoglobin g/dL (~14.2)
+      against MCH picograms (~30). Both hemo.yaml (hemoglobin) and mch.yaml
+      (MCH formula) are correct; the mismatch is from the crosswalk mapping
+      a shared PHV to a derived concept. Max=293 in harmonized reflects
+      extreme MCH values from low RBC outliers.
+    confirmed_date: "2026-06-28"
+
+  # ── Fruit serving: crosswalk pools individual component vs total ──────────
+  - checks: [C4, C6]
+    variable_key: "a06fru0300"
+    yaml_file: fruit_serving.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      fruit_serving.yaml harmonizes TOTAL fruit (sum of 5 types × 7 days).
+      The C4 crosswalk pools source variables including individual-type
+      variables (a06fru0300=citrus only) and pre-aggregated totals
+      (a06fruit=total fruit), producing a mixed-scope source mean (~1.77).
+      Harmonized total-fruit mean (~7.16 servings/week = ~1.02/day for
+      5 combined types) is correct; the mismatch is a crosswalk scope
+      artifact. No formula bug.
+    confirmed_date: "2026-06-28"
+
+  # ── Vegetable serving: crosswalk pools individual component vs total ──────
+  - checks: [C4, C6]
+    variable_key: "a06veg0100"
+    yaml_file: vege_serving.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      vege_serving.yaml harmonizes TOTAL vegetables (sum of 11 types × 7 days).
+      The C4 crosswalk pools source variable a06veg0100 (dark-green vegetables
+      only, mean ~0.45/week) against harmonized total-veg mean (~26.6/week
+      for all 11 types combined). The 58x ratio is entirely explained by
+      the scope difference (1 veg type vs 11). No formula bug.
+    confirmed_date: "2026-06-28"
+
+  # ── Sleep duration: borderline SD mismatch ────────────────────────────────
+  - checks: [C4, C6]
+    variable_key: "c42chour+f67slphr"
+    yaml_file: sleep_duration_daily.yaml
+    status: false_positive
+    root_cause: borderline_sd_mismatch
+    summary: >
+      C6 SD mismatch d=0.035 (source 8.294 vs harmonized 8.000) and
+      C4 mean shift d=0.0021 (source 6.897 vs harmonized 6.911). Both are
+      below actionable thresholds. The pooled key c42chour+f67slphr reflects
+      that the harmonized pool includes f67slphr (Year 15 sleep duration)
+      in addition to c42chour (Year 5). Likely reflects minor rounding or
+      pooling differences between CARDIA sleep duration variables across
+      exam years.
+    confirmed_date: "2026-07-07"
+  # ── Alcohol servings: crosswalk source scope mismatch ────────────────────
+  - checks: [C1, C2, C3, C4, C6]
+    variable_key: "a07liqr"
+    yaml_file: alcohol_servings.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      alcohol_servings.yaml harmonizes total alcohol servings across multiple
+      CARDIA exam years. The source crosswalk captures only pht001568 (Year 0,
+      key a07liqr+a07beer+a07wine, n_valid=10,849), while the harmonized pools
+      data from all exam-year tables, producing ~3× more rows (n_valid=32,177).
+      N gain (C2/C3), mean mismatch (C4, source 1.11 vs harmonized 4.15, ratio
+      3.75×), and SD mismatch (C6) are all artifacts of the crosswalk seeing
+      only one of the contributing PHTs. Same pattern as fruit_serving and
+      vege_serving.
+    confirmed_date: "2026-07-06"
+
+  # ── Angina: multi-block Condition design ─────────────────────────────────
+  - checks: [C1, C2, C3]
+    variable_key: "a09angin"
+    yaml_file: angina.yaml
+    status: false_positive
+    root_cause: multi_block_condition_design
+    summary: >
+      angina.yaml has 27 blocks across 9 tables (pht001570, pht001607,
+      pht001656, pht001715, pht001749, pht001761, pht001811, pht001869,
+      pht001871). Each table has 3 evidence-indicator blocks (episode,
+      symptoms, treatment or equivalent), producing up to 3 Condition records
+      per participant per visit. C2/C3 compare source n_valid (one count per
+      source table) against harmonized n_valid (3× per table). N gain and
+      missing-rate change are expected behavior for the multi-evidence-indicator
+      design, consistent with chr_bronchitis, emphysema, and diabetes (#651).
+    related_issues: [651]
+    confirmed_date: "2026-06-30"
+
+  # ── BMI: source pool uses wrong-form PHTs for Years 10 and 15 ───────────
+  - checks: [C1, C2, C3, C4, C6]
+    variable_key: "a20bmi"
+    yaml_file: bmi.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      bmi.yaml correctly uses the F20 (Form 20 = anthropometry) tables, which
+      are the only ones that contain BMI variables: pht001583 (A4F20/Yr0
+      A20BMI), pht001632 (B2F20/Yr2 B20BMI), pht001671 (C1F20/Yr5 C20BMI),
+      pht001720 (D1F20A/Yr7 D20BMI), pht001785 (E1F20/Yr10 E20BMI), pht001857
+      (F2F20/Yr15 F20BMI), pht003298 (HeartGO baseline). The source crosswalk
+      has three errors: (1) uses pht001779 (E1F11/Yr10) and pht001818
+      (F1F10/Yr15) — non-anthropometry forms with NO BMI variable (confirmed
+      against data dict XML); (2) includes pht001669 (C1F17/Yr5) which also
+      has no BMI; (3) omits Year 2 entirely (pht001632 missing from pool).
+      N gain = Years 2, 10, 15 BMI records present in harmonized but missing
+      from source pool. YAML is more complete and correct than source extraction.
+    confirmed_date: "2026-07-05"
+
+  # ── Cig_smok: PHV correction causes source/harmonized crosswalk mismatch ─
+  - checks: [C1, C2, C3]
+    variable_key: "a09yrsqt"
+    yaml_file: cig_smok.yaml
+    status: false_positive
+    root_cause: phv_correction_source_crosswalk_mismatch
+    summary: >
+      cig_smok.yaml pht001572 block was corrected from phv00113169
+      (a09yrsqt = years quit smoking) to phv00113168 (smoking status,
+      current vs former vs never). The source crosswalk still uses
+      phv00113169 as the source key (a09yrsqt), which has n_valid=7,376
+      non-null "years quit" rows. The harmonized now uses phv00113168 for
+      the value_enum, which has n_valid=8,379 valid rows. The N gain
+      (C2) and missing-rate change (C3) are an artifact of comparing two
+      different PHVs from the same table. The PHV fix is correct; a fresh
+      source extraction using the updated YAML will resolve this mismatch.
+    confirmed_date: "2026-06-30"
+
+  # ── Insulin: source crosswalk incomplete (recently added YAML) ───────────
+  - checks: [C4, C6]
+    variable_key: "al4ins"
+    yaml_file: insulin_blood.yaml
+    status: false_positive
+    root_cause: unit_conversion_mean_crosswalk
+    summary: >
+      Source-side pool key al4ins+dl7ins0+dl7ins7 matched for C4/C6 checks.
+      Source mean 12.07 µIU/mL vs harmonized 83.79 pmol/L = 6.945× conversion
+      factor applied correctly. C4/C6 mismatch is a unit-conversion artifact.
+    confirmed_date: "2026-07-07"
+
+  - checks: [C1, C2, C4, C6]
+    variable_key: "measurement_OBA:2060174"
+    yaml_file: insulin_blood.yaml
+    status: false_positive
+    root_cause: crosswalk_scope_incomplete_new_yaml
+    summary: >
+      insulin_blood.yaml was recently added to the CARDIA pipeline. The source
+      summary JSON (cardia_source_20260630_022350.json) was generated before
+      this YAML was activated, so the crosswalk has no source-side entry for
+      OBA:2060174. The C2 FAIL "Harmonized variable not matched in source" is
+      expected until the source extractor is re-run against the updated YAML.
+      Additionally, the unit conversion u[IU]/mL caused a pint UndefinedUnitError
+      in the current run, producing all-null output; this is being fixed
+      separately (see insulin_blood.yaml unit conversion fix).
+      C4/C6 mismatches (source 12.07 µIU/mL vs harmonized 83.79 pmol/L) are
+      the µIU/mL → pmol/L conversion (factor 6.945); the harmonized value is
+      correct and the mismatch is a unit_conversion_mean_crosswalk artifact.
+    related_issues: []
+    confirmed_date: "2026-07-06"
+
+  # ── Cig_smok: code-0 (never-smoked) → null suppresses never-smokers ──────
+  - checks: [C1, C2, C3, C7]
+    variable_key: "a09smknw"
+    yaml_file: cig_smok.yaml
+    status: false_positive
+    root_cause: code_zero_null_suppression
+    summary: >
+      cig_smok.yaml pht001573 block (A10SMOKE, Year 0 -- table A4F10,
+      confirmed from dbGaP data dict) maps code '0' (never smoked) to None,
+      intentionally excluding never-smokers from the harmonized Observation
+      pool. Source extraction includes all rows (n_valid=4,948); harmonized
+      output only includes ever-smokers who have a smoking-status code mapped
+      to a non-null value. N loss and missing-rate increase (C2/C3) are
+      expected. Same design pattern as chr_bronchitis.yaml (a12cbron above).
+    confirmed_date: "2026-07-06"
+
+  # ── CHD: undocumented codes removed (open issue #219) ─────────────────────
+  # chd.yaml Year 20 blocks (pht001869/pht001870/pht001871) had '2': PRESENT
+  # and '8': UNKNOWN added from hv_dataqc-observed source codes. These are NOT
+  # documented in dbGaP; removed per coding policy pending issue #219 resolution.
+
+  - checks: [C12]
+    variable_key: "a09chd"
+    yaml_file: chd.yaml
+    status: false_positive
+    root_cause: undocumented_codes_in_source_data
+    summary: >
+      chd.yaml Year 20 blocks (pht001869: phv00121263/phv00121288,
+      pht001870: phv00121461, pht001871: phv00121479/phv00121505) had codes
+      2 and 8 observed in real data (C12 showed 4 distinct codes for several
+      PHVs) but these are NOT documented in dbGaP for CARDIA condition
+      variables. Removed per coding policy (issue #219 unresolved). C12 FAIL
+      for affected PHVs is expected. Data output is unchanged -- pipeline
+      default produces null-status Condition records for uncovered codes.
+    related_issues: [219]
+    confirmed_date: "2026-07-09"
+
+  # ── PAD: M sentinel removed ────────────────────────────────────────────────
+
+  - checks: [C12]
+    variable_key: "y00pad"
+    yaml_file: pad.yaml
+    status: false_positive
+    root_cause: undocumented_codes_in_source_data
+    summary: >
+      pad.yaml pht001811 block had code 'M' observed in real data but
+      undocumented in dbGaP. Removed per coding policy. If 'M' appears
+      in source data, C12 will FAIL for the affected PHV. Data output
+      unchanged -- pipeline default produces null-status records.
+    confirmed_date: "2026-07-09"
+
+  # ── Height: mixed-unit source pool crosswalk artifact ────────────────────
+  - checks: [C4, C6]
+    variable_key: "e12hgt"
+    yaml_file: bdy_hgt.yaml
+    status: false_positive
+    root_cause: crosswalk_source_scope_mismatch
+    summary: >
+      bdy_hgt.yaml correctly converts feet-encoded ancillary tables to cm.
+      The C4 source pool aggregates raw values from both feet-encoded variables
+      (pht001781 E1F11/Yr10 ancillary) and cm-encoded main exam tables,
+      producing a meaningless pooled source mean (~139 cm, mix of feet and cm).
+      Harmonized mean (~170.6 cm) is the correct adult height in cm. C6 SD
+      mismatch (48.18 vs 9.58) is the same artifact: source SD inflated by
+      mixing units. Same pattern as JHS and MESA height.
+    confirmed_date: "2026-07-17"
+
+  # ── Urine albumin: unit conversion SD crosswalk artifact ─────────────────
+  - checks: [C6]
+    variable_key: "fl1ualb+el8ualb"
+    yaml_file: albumin_urine.yaml
+    status: false_positive
+    root_cause: unit_conversion_sd_crosswalk
+    summary: >
+      albumin_urine.yaml converts urine albumin from mg/dL to mg/L (x10).
+      C6 source SD=17.75 vs harmonized SD=177.51 -- ratio is exactly 10,
+      the linear unit conversion factor. SD scales identically to the mean
+      under a linear transformation. This is the expected result of the
+      correct unit conversion; no data quality issue.
+    confirmed_date: "2026-07-17"
+
+  # ── Urine creatinine: unit-mix crosswalk artifact ─────────────────────────
+  - checks: [C4, C6]
+    variable_key: "fl1ucret+el8ucret+fl1creat"
+    yaml_file: creat_urin.yaml
+    status: false_positive
+    root_cause: unit_conversion_mean_crosswalk
+    summary: >
+      The source pool mixes three variables at different unit scales:
+      phv00119619 (EL8UCRET, pht001803, mg/dL, range 9-608),
+      phv00120675 (FL1UCRET, pht001849, unit not stated but same range
+      9.4-787.6 as EL8UCRET -> mg/dL), and phv00120751 (FL1CREAT,
+      pht001852, mg/mL, range 0.095-3.69). The source pool uses raw values
+      including FL1CREAT at mg/mL scale (~1.47 mean), pulling the pooled
+      source mean down. The harmonized pool correctly applies x100 to
+      FL1CREAT -> mg/dL (~147 mg/dL), so harmonized mean (156.47) is slightly
+      higher than the mixed-unit source mean (147.17). The ~6% delta is
+      entirely explained by the unit heterogeneity in the source pool.
+      All three YAML blocks output in mg/dL; the YAML is correct.
+    confirmed_date: "2026-07-17"

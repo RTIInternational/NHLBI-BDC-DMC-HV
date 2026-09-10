@@ -7,51 +7,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210296}) + ":ARIC EXAM 1")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004192
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero average"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004192
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210290
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004192
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero average"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004192
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210291
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004192
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero average"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004192
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210290
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004192
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero average"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004192
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210291
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004192
@@ -61,51 +57,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210296}) + ":ARIC EXAM 1")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004192
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004192
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210281
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004192
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004192
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210282
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004192
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004192
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210281
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004192
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004192
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210282
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004192
@@ -115,51 +107,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210296}) + ":ARIC EXAM 1")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004192
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004192
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210284
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004192
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004192
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210285
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004192
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004192
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210284
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004192
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004192
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210285
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004192
@@ -169,51 +157,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210296}) + ":ARIC EXAM 1")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004192
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero zero reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004192
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210286
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004192
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero zero reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004192
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210286
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004192
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero zero reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004192
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210286
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004192
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero zero reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004192
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210286
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004192
@@ -223,51 +207,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210296}) + ":ARIC EXAM 1")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004192
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004192
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210287
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004192
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004192
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210288
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004192
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004192
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210287
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004192
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004192
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210288
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004192
@@ -277,51 +257,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210296}) + ":ARIC EXAM 1")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004192
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero zero reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004192
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210289
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004192
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero zero reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004192
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210289
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004192
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero zero reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004192
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210289
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004192
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero zero reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004192
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210289
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004193
@@ -331,51 +307,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210321}) + ":ARIC EXAM 2")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004193
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero average"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004193
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210316
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004193
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero average"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004193
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210317
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004193
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero average"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004193
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210316
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004193
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero average"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004193
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210317
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004193
@@ -385,51 +357,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210321}) + ":ARIC EXAM 2")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004193
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004193
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210307
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004193
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004193
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210308
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004193
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004193
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210307
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004193
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004193
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210308
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004193
@@ -439,51 +407,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210321}) + ":ARIC EXAM 2")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004193
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004193
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210310
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004193
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004193
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210311
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004193
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004193
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210310
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004193
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004193
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210311
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004193
@@ -493,51 +457,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210321}) + ":ARIC EXAM 2")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004193
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004193
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210313
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004193
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004193
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210314
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004193
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004193
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210313
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004193
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004193
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210314
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004194
@@ -547,51 +507,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210347}) + ":ARIC EXAM 3")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004194
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero average"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004194
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210340
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004194
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero average"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004194
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210341
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004194
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero average"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004194
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210340
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004194
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero average"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004194
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210341
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004194
@@ -601,51 +557,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210347}) + ":ARIC EXAM 3")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004194
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004194
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210331
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004194
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004194
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210332
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004194
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004194
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210331
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004194
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004194
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210332
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004194
@@ -655,51 +607,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210347}) + ":ARIC EXAM 3")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004194
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004194
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210334
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004194
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004194
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210335
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004194
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004194
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210334
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004194
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004194
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210335
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004194
@@ -709,51 +657,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210347}) + ":ARIC EXAM 3")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004194
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004194
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210337
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004194
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated random-zero reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004194
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210338
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004194
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004194
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210337
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004194
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated random-zero reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004194
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210338
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004195
@@ -763,51 +707,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210370}) + ":ARIC EXAM 4")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004195
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated sphygmomanometer average"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004195
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210363
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004195
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated sphygmomanometer average"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004195
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210364
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004195
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated sphygmomanometer average"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004195
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210363
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004195
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated sphygmomanometer average"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004195
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210364
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004195
@@ -817,51 +757,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210370}) + ":ARIC EXAM 4")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004195
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated sphygmomanometer reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004195
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210357
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004195
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated sphygmomanometer reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004195
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210358
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004195
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated sphygmomanometer reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004195
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210357
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004195
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated sphygmomanometer reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004195
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210358
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004195
@@ -871,51 +807,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00210370}) + ":ARIC EXAM 4")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004195
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated sphygmomanometer reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004195
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210360
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004195
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated sphygmomanometer reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004195
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00210361
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004195
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated sphygmomanometer reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004195
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210360
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004195
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated sphygmomanometer reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004195
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00210361
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht006480
@@ -925,51 +857,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00298028}) + ":ARIC Lab Form")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006480
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated sphygmomanometer average"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006480
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00298043
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006480
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated sphygmomanometer average"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006480
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00298044
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht006480
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated sphygmomanometer average"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006480
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00298043
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht006480
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated sphygmomanometer average"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006480
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00298044
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht006480
@@ -979,51 +907,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00298028}) + ":ARIC Lab Form")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006480
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated sphygmomanometer reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006480
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00298034
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006480
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated sphygmomanometer reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006480
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00298035
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht006480
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated sphygmomanometer reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006480
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00298034
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht006480
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated sphygmomanometer reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006480
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00298035
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht006480
@@ -1033,51 +957,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00298028}) + ":ARIC Lab Form")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006480
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated sphygmomanometer reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006480
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00298037
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006480
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated sphygmomanometer reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006480
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00298038
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht006480
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated sphygmomanometer reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006480
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00298037
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht006480
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated sphygmomanometer reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006480
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00298038
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht006480
@@ -1087,51 +1007,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00298028}) + ":ARIC Lab Form")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006480
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated sphygmomanometer reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006480
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00298040
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006480
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SITTING_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Seated sphygmomanometer reading"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006480
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00298041
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht006480
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated sphygmomanometer reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006480
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00298040
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht006480
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SITTING_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Seated sphygmomanometer reading"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006480
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00298041
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004027
@@ -1149,15 +1065,14 @@
         method_type:
           value: "ABI form measurement"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004027
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00202843
-                  unit:
-                    value: "mm[Hg]"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004027
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00202843
+                unit:
+                  value: "mm[Hg]"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004027
@@ -1175,15 +1090,14 @@
         method_type:
           value: "ABI form measurement"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004027
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00202844
-                  unit:
-                    value: "mm[Hg]"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004027
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00202844
+                unit:
+                  value: "mm[Hg]"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004028
@@ -1201,15 +1115,14 @@
         method_type:
           value: "ABI form measurement"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004028
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00202852
-                  unit:
-                    value: "mm[Hg]"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004028
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00202852
+                unit:
+                  value: "mm[Hg]"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004028
@@ -1227,15 +1140,14 @@
         method_type:
           value: "ABI form measurement"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004028
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00202853
-                  unit:
-                    value: "mm[Hg]"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004028
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00202853
+                unit:
+                  value: "mm[Hg]"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004029
@@ -1253,15 +1165,14 @@
         method_type:
           value: "ABI form measurement"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004029
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00202862
-                  unit:
-                    value: "mm[Hg]"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004029
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00202862
+                unit:
+                  value: "mm[Hg]"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004029
@@ -1279,15 +1190,14 @@
         method_type:
           value: "ABI form measurement"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004029
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00202863
-                  unit:
-                    value: "mm[Hg]"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004029
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00202863
+                unit:
+                  value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht006414
@@ -1297,55 +1207,51 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00294489}) + ":ARIC EXAM 5")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006414
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI form measurement"
-                  age_at_observation:
-                    expr: "{phv00294491} * 365"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006414
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00294506
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006414
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI form measurement"
-                  age_at_observation:
-                    expr: "{phv00294491} * 365"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006414
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00294508
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht006414
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI form measurement"
+                age_at_observation:
+                  expr: "{phv00294491} * 365"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006414
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00294506
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht006414
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI form measurement"
+                age_at_observation:
+                  expr: "{phv00294491} * 365"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006414
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00294508
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht006414
@@ -1355,55 +1261,51 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00294489}) + ":ARIC EXAM 5")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006414
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Left arm"
-                  method_type:
-                    value: "ABI form measurement"
-                  age_at_observation:
-                    expr: "{phv00294491} * 365"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006414
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00294509
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006414
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Left arm"
-                  method_type:
-                    value: "ABI form measurement"
-                  age_at_observation:
-                    expr: "{phv00294491} * 365"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006414
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00294511
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht006414
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Left arm"
+                method_type:
+                  value: "ABI form measurement"
+                age_at_observation:
+                  expr: "{phv00294491} * 365"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006414
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00294509
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht006414
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Left arm"
+                method_type:
+                  value: "ABI form measurement"
+                age_at_observation:
+                  expr: "{phv00294491} * 365"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006414
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00294511
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht006414
@@ -1413,55 +1315,51 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00294489}) + ":ARIC EXAM 5")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006414
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right ankle"
-                  method_type:
-                    value: "ABI form measurement"
-                  age_at_observation:
-                    expr: "{phv00294491} * 365"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006414
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00294512
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006414
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right ankle"
-                  method_type:
-                    value: "ABI form measurement"
-                  age_at_observation:
-                    expr: "{phv00294491} * 365"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006414
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00294514
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht006414
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right ankle"
+                method_type:
+                  value: "ABI form measurement"
+                age_at_observation:
+                  expr: "{phv00294491} * 365"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006414
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00294512
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht006414
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right ankle"
+                method_type:
+                  value: "ABI form measurement"
+                age_at_observation:
+                  expr: "{phv00294491} * 365"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006414
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00294514
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht006414
@@ -1471,55 +1369,51 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00294489}) + ":ARIC EXAM 5")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006414
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Left ankle"
-                  method_type:
-                    value: "ABI form measurement"
-                  age_at_observation:
-                    expr: "{phv00294491} * 365"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006414
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00294515
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006414
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Left ankle"
-                  method_type:
-                    value: "ABI form measurement"
-                  age_at_observation:
-                    expr: "{phv00294491} * 365"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006414
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00294517
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht006414
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Left ankle"
+                method_type:
+                  value: "ABI form measurement"
+                age_at_observation:
+                  expr: "{phv00294491} * 365"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006414
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00294515
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht006414
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Left ankle"
+                method_type:
+                  value: "ABI form measurement"
+                age_at_observation:
+                  expr: "{phv00294491} * 365"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006414
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00294517
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004041
@@ -1537,15 +1431,14 @@
         method_type:
           value: "ABI ultrasound measurement"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004041
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00203315
-                  unit:
-                    value: "mm[Hg]"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004041
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00203315
+                unit:
+                  value: "mm[Hg]"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004041
@@ -1563,15 +1456,14 @@
         method_type:
           value: "ABI ultrasound measurement"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004041
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00203316
-                  unit:
-                    value: "mm[Hg]"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004041
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00203316
+                unit:
+                  value: "mm[Hg]"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004041
@@ -1589,15 +1481,14 @@
         method_type:
           value: "ABI ultrasound measurement"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004041
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00203317
-                  unit:
-                    value: "mm[Hg]"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004041
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00203317
+                unit:
+                  value: "mm[Hg]"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004041
@@ -1615,15 +1506,14 @@
         method_type:
           value: "ABI ultrasound measurement"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004041
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00203318
-                  unit:
-                    value: "mm[Hg]"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004041
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00203318
+                unit:
+                  value: "mm[Hg]"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004041
@@ -1641,15 +1531,14 @@
         method_type:
           value: "ABI ultrasound measurement"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004041
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00203319
-                  unit:
-                    value: "mm[Hg]"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004041
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00203319
+                unit:
+                  value: "mm[Hg]"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004041
@@ -1667,15 +1556,14 @@
         method_type:
           value: "ABI ultrasound measurement"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004041
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00203320
-                  unit:
-                    value: "mm[Hg]"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004041
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00203320
+                unit:
+                  value: "mm[Hg]"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004041
@@ -1693,15 +1581,14 @@
         method_type:
           value: "ABI ultrasound measurement"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004041
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00203321
-                  unit:
-                    value: "mm[Hg]"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004041
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00203321
+                unit:
+                  value: "mm[Hg]"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004041
@@ -1719,15 +1606,14 @@
         method_type:
           value: "ABI ultrasound measurement"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004041
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00203322
-                  unit:
-                    value: "mm[Hg]"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004041
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00203322
+                unit:
+                  value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004042
@@ -1737,51 +1623,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203348}) + ":ARIC EXAM 3")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004042
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004042
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203334
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004042
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004042
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203335
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004042
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004042
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203334
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004042
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004042
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203335
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004042
@@ -1791,51 +1673,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203348}) + ":ARIC EXAM 3")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004042
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004042
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203336
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004042
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004042
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203337
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004042
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004042
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203336
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004042
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004042
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203337
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004042
@@ -1845,51 +1723,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203348}) + ":ARIC EXAM 3")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004042
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004042
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203338
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004042
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004042
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203339
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004042
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004042
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203338
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004042
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004042
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203339
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004042
@@ -1899,51 +1773,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203348}) + ":ARIC EXAM 3")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004042
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004042
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203340
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004042
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004042
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203341
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004042
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004042
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203340
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004042
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004042
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203341
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004042
@@ -1953,51 +1823,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203348}) + ":ARIC EXAM 3")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004042
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004042
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203342
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004042
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004042
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203343
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004042
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004042
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203342
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004042
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004042
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203343
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004042
@@ -2007,51 +1873,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203348}) + ":ARIC EXAM 3")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004042
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004042
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203344
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004042
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004042
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203345
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004042
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004042
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203344
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004042
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004042
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203345
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004042
@@ -2061,51 +1923,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203348}) + ":ARIC EXAM 3")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004042
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004042
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203346
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004042
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004042
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203347
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004042
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004042
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203346
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004042
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004042
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203347
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004043
@@ -2115,51 +1973,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203372}) + ":ARIC EXAM 4")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004043
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004043
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203358
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004043
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004043
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203359
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004043
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004043
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203358
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004043
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004043
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203359
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004043
@@ -2169,51 +2023,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203372}) + ":ARIC EXAM 4")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004043
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004043
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203360
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004043
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004043
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203361
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004043
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004043
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203360
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004043
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004043
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203361
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004043
@@ -2223,51 +2073,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203372}) + ":ARIC EXAM 4")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004043
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004043
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203362
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004043
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004043
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203363
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004043
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004043
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203362
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004043
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004043
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203363
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004043
@@ -2277,51 +2123,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203372}) + ":ARIC EXAM 4")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004043
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004043
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203364
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004043
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004043
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203365
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004043
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004043
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203364
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004043
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004043
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203365
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004043
@@ -2331,51 +2173,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203372}) + ":ARIC EXAM 4")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004043
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004043
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203366
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004043
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004043
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203367
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004043
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004043
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203366
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004043
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004043
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203367
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004043
@@ -2385,51 +2223,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203372}) + ":ARIC EXAM 4")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004043
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004043
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203368
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004043
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004043
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203369
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004043
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004043
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203368
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004043
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004043
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203369
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004043
@@ -2439,51 +2273,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203372}) + ":ARIC EXAM 4")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004043
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004043
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203370
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004043
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI ultrasound measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004043
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00203371
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004043
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004043
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203370
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004043
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI ultrasound measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004043
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00203371
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht006415
@@ -2493,55 +2323,51 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00294559}) + ":ARIC EXAM 5")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006415
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI derived calculation"
-                  age_at_observation:
-                    expr: "{phv00294561} * 365"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006415
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00294568
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006415
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "ABI derived calculation"
-                  age_at_observation:
-                    expr: "{phv00294561} * 365"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006415
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00294570
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht006415
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI derived calculation"
+                age_at_observation:
+                  expr: "{phv00294561} * 365"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006415
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00294568
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht006415
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "ABI derived calculation"
+                age_at_observation:
+                  expr: "{phv00294561} * 365"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006415
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00294570
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht006415
@@ -2551,55 +2377,51 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00294559}) + ":ARIC EXAM 5")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006415
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Left arm"
-                  method_type:
-                    value: "ABI derived calculation"
-                  age_at_observation:
-                    expr: "{phv00294561} * 365"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006415
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00294571
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006415
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Left arm"
-                  method_type:
-                    value: "ABI derived calculation"
-                  age_at_observation:
-                    expr: "{phv00294561} * 365"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006415
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00294573
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht006415
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Left arm"
+                method_type:
+                  value: "ABI derived calculation"
+                age_at_observation:
+                  expr: "{phv00294561} * 365"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006415
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00294571
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht006415
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Left arm"
+                method_type:
+                  value: "ABI derived calculation"
+                age_at_observation:
+                  expr: "{phv00294561} * 365"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006415
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00294573
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht006415
@@ -2609,55 +2431,51 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00294559}) + ":ARIC EXAM 5")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006415
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right ankle"
-                  method_type:
-                    value: "ABI derived calculation"
-                  age_at_observation:
-                    expr: "{phv00294561} * 365"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006415
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00294574
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006415
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right ankle"
-                  method_type:
-                    value: "ABI derived calculation"
-                  age_at_observation:
-                    expr: "{phv00294561} * 365"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006415
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00294576
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht006415
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right ankle"
+                method_type:
+                  value: "ABI derived calculation"
+                age_at_observation:
+                  expr: "{phv00294561} * 365"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006415
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00294574
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht006415
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right ankle"
+                method_type:
+                  value: "ABI derived calculation"
+                age_at_observation:
+                  expr: "{phv00294561} * 365"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006415
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00294576
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht006415
@@ -2667,55 +2485,51 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00294559}) + ":ARIC EXAM 5")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006415
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Left ankle"
-                  method_type:
-                    value: "ABI derived calculation"
-                  age_at_observation:
-                    expr: "{phv00294561} * 365"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006415
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00294577
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht006415
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Left ankle"
-                  method_type:
-                    value: "ABI derived calculation"
-                  age_at_observation:
-                    expr: "{phv00294561} * 365"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht006415
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00294579
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht006415
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Left ankle"
+                method_type:
+                  value: "ABI derived calculation"
+                age_at_observation:
+                  expr: "{phv00294561} * 365"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006415
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00294577
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht006415
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Left ankle"
+                method_type:
+                  value: "ABI derived calculation"
+                age_at_observation:
+                  expr: "{phv00294561} * 365"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht006415
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00294579
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004229
@@ -2725,51 +2539,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00215518}) + ":ARIC EXAM 1")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004229
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Carotid distensibility measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004229
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00215412
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004229
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Carotid distensibility measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004229
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00215413
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004229
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Carotid distensibility measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004229
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00215412
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004229
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Carotid distensibility measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004229
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00215413
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004229
@@ -2779,51 +2589,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00215518}) + ":ARIC EXAM 1")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004229
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Carotid distensibility measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004229
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00215414
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004229
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Carotid distensibility measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004229
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00215415
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004229
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Carotid distensibility measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004229
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00215414
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004229
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Carotid distensibility measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004229
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00215415
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004229
@@ -2833,51 +2639,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00215518}) + ":ARIC EXAM 1")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004229
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Carotid distensibility measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004229
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00215416
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004229
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Carotid distensibility measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004229
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00215417
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004229
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Carotid distensibility measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004229
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00215416
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004229
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Carotid distensibility measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004229
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00215417
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004230
@@ -2887,51 +2689,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00215626}) + ":ARIC EXAM 2")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004230
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Carotid distensibility measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004230
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00215520
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004230
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Carotid distensibility measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004230
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00215521
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004230
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Carotid distensibility measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004230
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00215520
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004230
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Carotid distensibility measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004230
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00215521
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004230
@@ -2941,51 +2739,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00215626}) + ":ARIC EXAM 2")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004230
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Carotid distensibility measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004230
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00215522
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004230
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Carotid distensibility measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004230
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00215523
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004230
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Carotid distensibility measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004230
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00215522
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004230
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Carotid distensibility measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004230
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00215523
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004230
@@ -2995,51 +2789,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00215626}) + ":ARIC EXAM 2")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004230
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Carotid distensibility measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004230
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00215524
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004230
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  body_site:
-                    value: "Right arm"
-                  method_type:
-                    value: "Carotid distensibility measurement"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004230
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00215525
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004230
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Carotid distensibility measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004230
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00215524
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004230
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                body_site:
+                  value: "Right arm"
+                method_type:
+                  value: "Carotid distensibility measurement"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004230
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00215525
+                        unit:
+                          value: "mm[Hg]"
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht004079
@@ -3049,48 +2839,44 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00205920}) + ":ARIC EXAM 3")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004079
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4152194
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  method_type:
-                    value: "Echocardiography measurement"
-                  age_at_observation:
-                    expr: "{phv00510683} * 365"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004079
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00205847
-                            unit:
-                              value: "mm[Hg]"
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht004079
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4154790
-                  body_position:
-                    value: "SUPINE_BODY_POSITION"
-                  method_type:
-                    value: "Echocardiography measurement"
-                  age_at_observation:
-                    expr: "{phv00510683} * 365"
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht004079
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00205848
-                            unit:
-                              value: "mm[Hg]"
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht004079
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4152194
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                method_type:
+                  value: "Echocardiography measurement"
+                age_at_observation:
+                  expr: "{phv00510683} * 365"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004079
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00205847
+                        unit:
+                          value: "mm[Hg]"
+          - MeasurementObservation:
+              populated_from: pht004079
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4154790
+                body_position:
+                  value: "SUPINE_BODY_POSITION"
+                method_type:
+                  value: "Echocardiography measurement"
+                age_at_observation:
+                  expr: "{phv00510683} * 365"
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht004079
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00205848
+                        unit:
+                          value: "mm[Hg]"

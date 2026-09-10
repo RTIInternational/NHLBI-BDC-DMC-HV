@@ -99,28 +99,66 @@ def load_phv_name_map(
     return phv_names
 
 
+# Maximum number of distinct values enumerated in a categorical distribution.
+# Genuine dbGaP categorical variables have well under this many codes; a higher
+# count indicates a free-text / date / identifier-like column whose full value
+# enumeration would bloat the artifact.
+# Above the cap we keep the most frequent values and
+# fold the remainder into an "__other__" bucket, so counts still reconcile while
+# no long tail of rare values is enumerated.
+MAX_CATEGORICAL_KEYS = 100
+
+
 def categorical_stats(series: pd.Series) -> dict[str, Any]:
-    """Return value distribution for a categorical series."""
+    """Return value distribution for a categorical series.
+
+    Distribution keys are normalized via ``normalize_category_key`` so that
+    values differing only by dtype/formatting (``1.0`` vs ``1``, ``" 1 "`` vs
+    ``1``) collapse to a single key. This keeps the source and harmonized
+    extractors dtype-independent and prevents false C7/C12 category mismatches;
+    counts for values that normalize to the same key are summed. When the number
+    of distinct keys exceeds ``MAX_CATEGORICAL_KEYS`` the distribution is
+    truncated to the most frequent keys plus an ``"__other__"`` aggregate.
+    """
     n_total = int(len(series))
     n_missing = int(series.isna().sum())
     n_valid = n_total - n_missing
-    counts = series.value_counts(dropna=True, sort=True)
-    distribution: dict[str, dict[str, Any]] = {}
-    for val, cnt in counts.items():
-        distribution[str(val)] = {
-            "n": int(cnt),
-            "pct": round(100.0 * int(cnt) / n_valid, 2) if n_valid > 0 else 0.0,
-        }
 
-    return {
+    counts = series.value_counts(dropna=True, sort=True)
+    agg: dict[str, int] = {}
+    for val, cnt in counts.items():
+        key = normalize_category_key(val)
+        agg[key] = agg.get(key, 0) + int(cnt)
+
+    n_distinct = len(agg)
+    truncated = n_distinct > MAX_CATEGORICAL_KEYS
+    if truncated:
+        ordered = sorted(agg.items(), key=lambda kv: kv[1], reverse=True)
+        agg = dict(ordered[:MAX_CATEGORICAL_KEYS])
+        other_n = sum(n for _, n in ordered[MAX_CATEGORICAL_KEYS:])
+        if other_n:
+            agg["__other__"] = other_n
+
+    distribution: dict[str, dict[str, Any]] = {
+        key: {
+            "n": n,
+            "pct": round(100.0 * n / n_valid, 2) if n_valid > 0 else 0.0,
+        }
+        for key, n in agg.items()
+    }
+
+    result: dict[str, Any] = {
         "type": "categorical",
         "n_total": n_total,
         "n_valid": n_valid,
         "n_missing": n_missing,
         "pct_missing": round(n_missing / n_total * 100, 2) if n_total > 0 else 0.0,
-        "n_distinct": int(series.nunique(dropna=True)),
+        "n_distinct": n_distinct,
         "distribution": distribution,
     }
+    if truncated:
+        result["distribution_truncated"] = True
+    return result
 
 
 def continuous_stats(series: pd.Series) -> dict[str, Any]:

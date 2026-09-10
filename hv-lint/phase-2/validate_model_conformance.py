@@ -46,6 +46,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
+from _derivations import classify_derivation_item  # noqa: E402
 
 TRANSFORM_DIR = find_transform_dir()
 
@@ -105,7 +106,8 @@ def _derive_valid_keys():
         "unit_conversion", "value_mappings",
         # HV extensions (not in base linkml-map model -- Assumption A3):
         "value",               # Static value assignment
-        "object_derivations",  # Nested object structure (e.g., Quantity)
+        "class_derivations",   # Nested object structure, list-based (e.g., Quantity)
+        "object_derivations",  # Legacy nested object structure (deprecated)
     })
     # -------------------------------------------------------------------------
 
@@ -117,6 +119,7 @@ def _derive_valid_keys():
         cd_keys = frozenset(ClassDerivation.model_fields.keys())
         sd_keys = frozenset(SlotDerivation.model_fields.keys()) | {
             "value",
+            "class_derivations",
             "object_derivations",
         }
         return ts_keys, cd_keys, sd_keys
@@ -664,6 +667,62 @@ def validate_class_derivations(
                             od["class_derivations"], block_idx, rel_path,
                             ctx, nested_path
                         ))
+
+            # -- Check 2.5: nested class_derivations structure (list-based) --
+            slot_cds = slot_def.get("class_derivations")
+            if slot_cds is not None:
+                if not isinstance(slot_cds, list):
+                    findings.append(Finding(
+                        rel_path, block_idx, "2.5", "ERROR",
+                        f"class_derivations must be a list on "
+                        f"{path_prefix}{class_name}.{slot_name}"
+                    ))
+                else:
+                    nested_path = f"{path_prefix}{class_name}.{slot_name}."
+                    for cd_idx, cd in enumerate(slot_cds):
+                        if not isinstance(cd, dict):
+                            findings.append(Finding(
+                                rel_path, block_idx, "2.5", "ERROR",
+                                f"class_derivation item {cd_idx} is not a dict "
+                                f"on {path_prefix}{class_name}.{slot_name}"
+                            ))
+                            continue
+                        nested_cls, nested_spec = classify_derivation_item(cd)
+                        if nested_cls is None:
+                            # Neither `- name: X` nor a single class-keyed
+                            # mapping. Report it: falling through would skip
+                            # both 2.5b and the recursion with no finding.
+                            findings.append(Finding(
+                                rel_path, block_idx, "2.5", "ERROR",
+                                f"class_derivation item {cd_idx} on "
+                                f"{path_prefix}{class_name}.{slot_name} is not a "
+                                f"recognized derivation: expected `- name: X` or "
+                                f"a single class-keyed mapping `- X: {{...}}`, "
+                                f"got keys {sorted(cd)}"
+                            ))
+                            continue
+                        # -- Check 2.5b: nested class matches slot range --
+                        expected_range = ctx.slot_ranges.get(
+                            class_name, {}
+                        ).get(slot_name)
+                        if expected_range and nested_cls:
+                            ancestors = ctx.class_ancestors.get(nested_cls, set())
+                            if expected_range not in ancestors:
+                                findings.append(Finding(
+                                    rel_path, block_idx, "2.5b", "ERROR",
+                                    f"Nested class '{nested_cls}' in "
+                                    f"{path_prefix}{class_name}.{slot_name} does "
+                                    f"not match expected range '{expected_range}'"
+                                ))
+                        # Recurse per entry -- a slot may hold several
+                        # derivations of the same class (e.g. multiple
+                        # MeasurementObservation under 'observations'), which a
+                        # name-keyed dict would collapse.
+                        if nested_cls:
+                            findings.extend(validate_class_derivations(
+                                {nested_cls: nested_spec}, block_idx, rel_path,
+                                ctx, nested_path
+                            ))
 
         # -- Check 2.4: Required/recommended slots --
         if class_name in ctx.required_slots:

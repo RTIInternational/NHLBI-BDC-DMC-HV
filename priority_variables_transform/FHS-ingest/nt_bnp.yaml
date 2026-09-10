@@ -15,37 +15,34 @@
           value: immunoassay
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000823
-                slot_derivations:
-                  value_decimal:
-                    expr: case(({phv00073727} > 4, {phv00073727}), (True, None))
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000823
+              slot_derivations:
+                value_decimal:
+                  expr: case(({phv00073727} > 4, {phv00073727}), (True, None))
+                unit:
+                  value: pg/mL
+                  range: string
         range_low:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000823
-                slot_derivations:
-                  value_decimal:
-                    value: '5'
-                    range: string
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000823
+              slot_derivations:
+                value_decimal:
+                  value: '5'
+                  range: string
+                unit:
+                  value: pg/mL
+                  range: string
         range_high:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000823
-                slot_derivations:
-                  value_decimal:
-                    value: '35000'
-                    range: string
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000823
+              slot_derivations:
+                value_decimal:
+                  value: '35000'
+                  range: string
+                unit:
+                  value: pg/mL
+                  range: string

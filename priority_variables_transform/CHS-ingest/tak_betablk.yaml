@@ -63,19 +63,6 @@
           range: string
 - class_derivations:
     DrugExposure:
-      populated_from: pht001452
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00100285}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100285}) + ":CHS BASELINE BOTH")'
-        drug_concept:
-          expr: case(({phv00100595} == 1, "ATC:C02"))
-        exposure_provenance:
-          value: PATIENT_SELF_REPORTED_MEDICATION
-          range: string
-- class_derivations:
-    DrugExposure:
       populated_from: pht001474
       slot_derivations:
         associated_participant:

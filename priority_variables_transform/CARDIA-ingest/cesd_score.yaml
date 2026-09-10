@@ -11,16 +11,15 @@
         method_type:
           value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001676
-                slot_derivations:
-                  value_integer:
-                    expr: "None if str({phv00116000}) == 'M' else int({phv00116000})"
-                  unit:
-                    value: "{score}"
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001676
+              slot_derivations:
+                value_integer:
+                  expr: "None if str({phv00116000}) == 'M' else int({phv00116000})"
+                unit:
+                  value: "{score}"
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001788
@@ -34,16 +33,15 @@
         method_type:
           value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001788
-                slot_derivations:
-                  value_integer:
-                    expr: "None if str({phv00119231}) == 'M' else int({phv00119231})"
-                  unit:
-                    value: "{score}"
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001788
+              slot_derivations:
+                value_integer:
+                  expr: "None if str({phv00119231}) == 'M' else int({phv00119231})"
+                unit:
+                  value: "{score}"
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001824
@@ -57,13 +55,12 @@
         method_type:
           value: "questionnaire"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001824
-                slot_derivations:
-                  value_integer:
-                    expr: "None if str({phv00120325}) == 'M' else int({phv00120325})"
-                  unit:
-                    value: "{score}"
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001824
+              slot_derivations:
+                value_integer:
+                  expr: "None if str({phv00120325}) == 'M' else int({phv00120325})"
+                unit:
+                  value: "{score}"
+                  range: string

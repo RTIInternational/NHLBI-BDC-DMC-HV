@@ -11,15 +11,14 @@
         method_type:
           value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004108
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00207274
-                  unit:
-                    value: "%{WBCs}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004108
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00207274
+                unit:
+                  value: "%{WBCs}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004107
@@ -33,12 +32,11 @@
         method_type:
           value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004107
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00207259
-                  unit:
-                    value: "%{WBCs}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004107
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00207259
+                unit:
+                  value: "%{WBCs}"

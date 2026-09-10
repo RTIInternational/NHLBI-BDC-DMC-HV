@@ -15,40 +15,37 @@
           value: Particle Enhanced Immunonephelometry
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000080
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00021690
-                  unit:
-                    value: mg/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000080
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00021690
+                unit:
+                  value: mg/L
+                  range: string
         range_low:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000080
-                slot_derivations:
-                  value_decimal:
-                    value: '0.16'
-                    range: string
-                  unit:
-                    value: mg/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000080
+              slot_derivations:
+                value_decimal:
+                  value: '0.16'
+                  range: string
+                unit:
+                  value: mg/L
+                  range: string
         range_high:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000080
-                slot_derivations:
-                  value_decimal:
-                    value: '550'
-                    range: string
-                  unit:
-                    value: mg/L
-                    range: string                     
+          class_derivations:
+          - Quantity:
+              populated_from: pht000080
+              slot_derivations:
+                value_decimal:
+                  value: '550'
+                  range: string
+                unit:
+                  value: mg/L
+                  range: string                     
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000081
@@ -66,40 +63,37 @@
           value: Particle Enhanced Immunonephelometry
           range: string          
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000081
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00021693
-                  unit:
-                    value: mg/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000081
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00021693
+                unit:
+                  value: mg/L
+                  range: string
         range_low:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000080
-                slot_derivations:
-                  value_decimal:
-                    value: '0.16'
-                    range: string
-                  unit:
-                    value: mg/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000080
+              slot_derivations:
+                value_decimal:
+                  value: '0.16'
+                  range: string
+                unit:
+                  value: mg/L
+                  range: string
         range_high:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000080
-                slot_derivations:
-                  value_decimal:
-                    value: '550'
-                    range: string
-                  unit:
-                    value: mg/L
-                    range: string                     
+          class_derivations:
+          - Quantity:
+              populated_from: pht000080
+              slot_derivations:
+                value_decimal:
+                  value: '550'
+                  range: string
+                unit:
+                  value: mg/L
+                  range: string                     
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
@@ -116,30 +110,28 @@
         method_type:
           value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002889
-                slot_derivations:
-                  value_decimal:
-                    expr: case(({phv00172177} > 0.15, {phv00172177}), ({phv00462201} == 1, 0.15), (True, {phv00172177}))
-                  operator:
-                    expr: 'case(({phv00462201} == 1, "LESS_THAN"))'
-                  unit:
-                    value: mg/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht002889
+              slot_derivations:
+                value_decimal:
+                  expr: case(({phv00172177} > 0.15, {phv00172177}), ({phv00462201} == 1, 0.15), (True, {phv00172177}))
+                operator:
+                  expr: 'case(({phv00462201} == 1, "LESS_THAN"))'
+                unit:
+                  value: mg/L
+                  range: string
         range_low:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002889
-                slot_derivations:
-                  value_decimal:
-                    value: '0.15'
-                    range: string
-                  unit:
-                    value: mg/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht002889
+              slot_derivations:
+                value_decimal:
+                  value: '0.15'
+                  range: string
+                unit:
+                  value: mg/L
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
@@ -149,37 +141,35 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00227023}) + ":" + case(({phv00227024} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00227024} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
-          expr: case(({phv00227024} == 1, {pht003099.phv00177946} * 365), case({phv00227024} == 7, {pht003099.phv00177936} * 365))
+          expr: case(({phv00227024} == 1, {pht003099.phv00177946} * 365), ({phv00227024} == 7, {pht003099.phv00177936} * 365))
         observation_type:
           value: OMOP:4208414
           range: string
         method_type:
           value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004802
-                slot_derivations:
-                  value_decimal:
-                    expr: case(({phv00227060} > 0.15, {phv00227060}), ({phv00227067} == 1, 0.15), (True, {phv00227060}))
-                  operator:
-                    expr: 'case(({phv00227067} == 1, "LESS_THAN"))'
-                  unit:
-                    value: mg/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht004802
+              slot_derivations:
+                value_decimal:
+                  expr: case(({phv00227060} > 0.15, {phv00227060}), ({phv00227067} == 1, 0.15), (True, {phv00227060}))
+                operator:
+                  expr: 'case(({phv00227067} == 1, "LESS_THAN"))'
+                unit:
+                  value: mg/L
+                  range: string
         range_low:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004802
-                slot_derivations:
-                  value_decimal:
-                    value: '0.15'
-                    range: string
-                  unit:
-                    value: mg/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht004802
+              slot_derivations:
+                value_decimal:
+                  value: '0.15'
+                  range: string
+                unit:
+                  value: mg/L
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012880
@@ -194,28 +184,26 @@
           value: OMOP:4208414
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012880
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00520365
-                  unit:
-                    value: mg/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht012880
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00520365
+                unit:
+                  value: mg/L
+                  range: string
         range_low:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012880
-                slot_derivations:
-                  value_decimal:
-                    value: '0.15'
-                    range: string
-                  unit:
-                    value: mg/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht012880
+              slot_derivations:
+                value_decimal:
+                  value: '0.15'
+                  range: string
+                unit:
+                  value: mg/L
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht010726
@@ -230,30 +218,28 @@
           value: OMOP:4208414
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht010726
-                slot_derivations:
-                  value_decimal:
-                    expr: case(({phv00462196} > 0.15, {phv00462196}), ({phv00462201} == 1, 0.15), (True, {phv00462196}))
-                  operator:
-                    expr: 'case(({phv00462201} == 1, "LESS_THAN"))'
-                  unit:
-                    value: mg/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht010726
+              slot_derivations:
+                value_decimal:
+                  expr: case(({phv00462196} > 0.15, {phv00462196}), ({phv00462201} == 1, 0.15), (True, {phv00462196}))
+                operator:
+                  expr: 'case(({phv00462201} == 1, "LESS_THAN"))'
+                unit:
+                  value: mg/L
+                  range: string
         range_low:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht010726
-                slot_derivations:
-                  value_decimal:
-                    value: '0.15'
-                    range: string
-                  unit:
-                    value: mg/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht010726
+              slot_derivations:
+                value_decimal:
+                  value: '0.15'
+                  range: string
+                unit:
+                  value: mg/L
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012881
@@ -268,16 +254,15 @@
           value: OMOP:4208414
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012881
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00520381
-                  unit:
-                    value: mg/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht012881
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00520381
+                unit:
+                  value: mg/L
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht012882
@@ -292,15 +277,14 @@
           value: OMOP:4208414
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht012882
-                slot_derivations:
-                  value_decimal:
-                    expr: 'case(({phv00520398} == 0.14, 0.15), (True, {phv00520398}))'
-                  operator:
-                    expr: 'case(({phv00520398} == 0.14, "LESS_THAN"))'
-                  unit:
-                    value: mg/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht012882
+              slot_derivations:
+                value_decimal:
+                  expr: 'case(({phv00520398} == 0.14, 0.15), (True, {phv00520398}))'
+                operator:
+                  expr: 'case(({phv00520398} == 0.14, "LESS_THAN"))'
+                unit:
+                  value: mg/L
+                  range: string

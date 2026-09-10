@@ -8,21 +8,20 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00111654}) + ":WHI SCREENING")'
           range: string
         observation_type:
-          value: OMOP:4042886
+          value: OMOP:37311566
         method_type:
           value: "questionnaire"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001517
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00111871} * 7'
-                  unit:
-                    value: '{#}/wk'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001517
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00111871} * 7'
+                unit:
+                  value: '{#}/wk'
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006218
@@ -33,18 +32,17 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283348}) + ":WHI SCREENING")'
           range: string
         observation_type:
-          value: OMOP:4042886
+          value: OMOP:37311566
         method_type:
           value: "questionnaire"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006218
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00283395} * 7'
-                  unit:
-                    value: '{#}/wk'
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht006218
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00283395} * 7'
+                unit:
+                  value: '{#}/wk'
+                  range: string

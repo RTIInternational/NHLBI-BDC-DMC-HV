@@ -1,0 +1,31 @@
+# Known false positives and expected anomalies for WHI comparison reports.
+#
+# Last reviewed: 2026-06-27
+# Report reviewed: whi_comparison_report_20260626T122401Z.md
+
+known_issues:
+
+  # ── insulin_blood: C2 FAIL ────────────────────────────────────────────────
+  - checks: [C2]
+    variable_key: "measurement_OBA:2060174"
+    yaml_file: insulin_blood.yaml
+    status: false_positive
+    root_cause: source_crosswalk_gap
+    summary: >
+      DCC source crosswalk does not map COREINSU (phv00077389, pht000987) to
+      OBA:2060174; the compare tool cannot verify these records and misreports
+      them as having no source block.
+    detail: >
+      insulin_blood.yaml maps COREINSU (phv00077389) from the WHI core labs
+      table (pht000987) to OBA:2060174 (Fasting blood insulin measurement) via
+      unit conversion {phv00077389} * 6.945 (uIU/mL -> pmol/L).
+      COREINSU var_report: n=12,503 valid values, nulls=3,298, visit filter
+      applied via COREVTYP (phv00077370, enum_integer) codes 1/3/4.
+      The data is valid and the YAML transform is correct. The C2 FAIL is
+      produced because the DCC compare source file (whi_source_*.json) does not
+      include a COREINSU -> OBA:2060174 crosswalk entry, causing the compare
+      tool to report "no YAML block proposed this concept" (expected_n=0).
+      The 12,503 harmonized insulin records are correct. This is a gap in the
+      source crosswalk, not a YAML error.
+    related_issues: []
+    confirmed_date: "2026-06-27"

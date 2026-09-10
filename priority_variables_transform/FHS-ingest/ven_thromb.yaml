@@ -87,7 +87,7 @@
         condition_status:
           populated_from: phv00071923
           value_mappings:
-            "PE by pulmonary arteriogram, CTPA, or MRI": "PRESENT"
+            '110': PRESENT  # PE by pulmonary arteriogram, CTPA, or MRI
         condition_provenance:
           value: OMOP:4822160
           range: string
@@ -109,7 +109,7 @@
         condition_status:
           populated_from: phv00071924
           value_mappings:
-            "PE by history and high probability ventilation/perfusion (V/Q) Scan": "PRESENT"
+            '111': PRESENT  # PE by history and high probability V/Q scan
         condition_provenance:
           value: OMOP:4822160
           range: string
@@ -131,7 +131,7 @@
         condition_status:
           populated_from: phv00071925
           value_mappings:
-            "PE by clinical high suspicion & documented source of PE (DVT)": "PRESENT"
+            '112': PRESENT  # PE by clinical high suspicion & documented DVT source
         condition_provenance:
           value: OMOP:4822160
           range: string
@@ -153,7 +153,7 @@
         condition_status:
           populated_from: phv00071926
           value_mappings:
-            "PE by autopsy": "PRESENT"
+            '113': PRESENT  # PE by autopsy
         condition_provenance:
           value: OMOP:4822160
           range: string
@@ -175,7 +175,7 @@
         condition_status:
           populated_from: phv00071928
           value_mappings:
-            No PE: ABSENT
+            '3': ABSENT  # No PE
         condition_provenance:
           value: OMOP:4822160
           range: string
@@ -197,7 +197,7 @@
         condition_status:
           populated_from: phv00071929
           value_mappings:
-            Maybe PE: UNKNOWN
+            '4': UNKNOWN  # Maybe PE
         associated_evidence:
           value: 'Final Diagnostic Summary'
           range: string
@@ -571,7 +571,7 @@
         condition_status:
           populated_from: phv00071930
           value_mappings:
-            DVT: PRESENT
+            '114': PRESENT  # DVT by imaging (SOE 114)
         condition_provenance:
           value: OMOP:4822160
           range: string
@@ -592,7 +592,7 @@
         condition_status:
           populated_from: phv00071932
           value_mappings:
-            No DVT: ABSENT
+            '3': ABSENT  # No DVT
         condition_provenance:
           value: OMOP:4822160
           range: string
@@ -613,7 +613,7 @@
         condition_status:
           populated_from: phv00071933
           value_mappings:
-            Maybe DVT: UNKNOWN
+            '4': UNKNOWN  # Maybe DVT
         associated_evidence:
           value: 'Final Diagnostic Summary'
           range: string

@@ -33,8 +33,12 @@ from pathlib import Path
 # Path resolution -- works in both control center and HV repo
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
+from _derivations import iter_nested_class_derivs  # noqa: E402
 
 import yaml
+
+
+
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -240,30 +244,23 @@ def extract_slot_refs(
                     for m in PHV_STRICT_RE.finditer(k):
                         _add_ref(m.group(), f"expression_to_value_mappings in {slot_name} on {class_name}")
 
-        # Recurse into object_derivations
-        od_list = slot_def.get("object_derivations") or []
-        if not isinstance(od_list, list):
-            od_list = []
-        for od in od_list:
-            if isinstance(od, dict) and "class_derivations" in od:
-                nested_cd = od["class_derivations"]
-                if not isinstance(nested_cd, dict):
-                    continue
-                for nested_cls, nested_def in nested_cd.items():
-                    if isinstance(nested_def, dict):
-                        nested_slots = nested_def.get("slot_derivations")
-                        nested_slots = nested_slots if isinstance(nested_slots, dict) else {}
-                        nested_phvs, nested_joins = extract_slot_refs(nested_slots, nested_cls)
-                        for ref in nested_phvs:
-                            if ref not in phv_refs_seen:
-                                phv_refs_seen.add(ref)
-                                phv_refs.append(ref)
-                        join_phts.update(nested_joins)
+        # Recurse into nested class derivations (list-based or legacy
+        # object_derivations)
+        for nested_cls, nested_def in iter_nested_class_derivs(slot_def):
+            if isinstance(nested_def, dict):
+                nested_slots = nested_def.get("slot_derivations")
+                nested_slots = nested_slots if isinstance(nested_slots, dict) else {}
+                nested_phvs, nested_joins = extract_slot_refs(nested_slots, nested_cls)
+                for ref in nested_phvs:
+                    if ref not in phv_refs_seen:
+                        phv_refs_seen.add(ref)
+                        phv_refs.append(ref)
+                join_phts.update(nested_joins)
 
-                        # Nested class populated_from PHT
-                        npht = nested_def.get("populated_from")
-                        if isinstance(npht, str) and PHT_STRICT_RE.fullmatch(npht):
-                            join_phts.add(npht)
+                # Nested class populated_from PHT
+                npht = nested_def.get("populated_from")
+                if isinstance(npht, str) and PHT_STRICT_RE.fullmatch(npht):
+                    join_phts.add(npht)
 
     return phv_refs, join_phts
 
@@ -362,23 +359,17 @@ def _collect_slot_accessions(
                         for m in PHV_LOOSE_RE.finditer(k):
                             results.append((m.group(), f"{key_name} in {slot_name} on {class_name}"))
 
-        # Recurse into object_derivations
-        od_list = slot_def.get("object_derivations") or []
-        if not isinstance(od_list, list):
-            od_list = []
-        for od in od_list:
-            if isinstance(od, dict) and "class_derivations" in od:
-                nested_cd = od["class_derivations"]
-                if isinstance(nested_cd, dict):
-                    for nested_cls, nested_def in nested_cd.items():
-                        if isinstance(nested_def, dict):
-                            npf = nested_def.get("populated_from")
-                            if isinstance(npf, str):
-                                for m in PHT_LOOSE_RE.finditer(npf):
-                                    results.append((m.group(), f"nested populated_from on {nested_cls}"))
-                            nested_slots = nested_def.get("slot_derivations")
-                            if isinstance(nested_slots, dict):
-                                results.extend(_collect_slot_accessions(nested_slots, nested_cls))
+        # Recurse into nested class derivations (list-based or legacy
+        # object_derivations)
+        for nested_cls, nested_def in iter_nested_class_derivs(slot_def):
+            if isinstance(nested_def, dict):
+                npf = nested_def.get("populated_from")
+                if isinstance(npf, str):
+                    for m in PHT_LOOSE_RE.finditer(npf):
+                        results.append((m.group(), f"nested populated_from on {nested_cls}"))
+                nested_slots = nested_def.get("slot_derivations")
+                if isinstance(nested_slots, dict):
+                    results.extend(_collect_slot_accessions(nested_slots, nested_cls))
     return results
 
 

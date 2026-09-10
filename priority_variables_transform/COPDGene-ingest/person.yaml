@@ -2,7 +2,9 @@
     Person:
       populated_from: pht016246
       slot_derivations:
-        identity:
+        id:
           expr: 'uuid5("https://w3id.org/bdchm/Person", str({dbGaP_Subject_ID}))'
+        identity:
+          populated_from: dbGaP_Subject_ID
         species:
           value: NCBITaxon:9606

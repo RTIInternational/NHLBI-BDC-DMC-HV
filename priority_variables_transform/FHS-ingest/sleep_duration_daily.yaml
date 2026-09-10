@@ -14,16 +14,15 @@
         method_type:
           value: 'Physical Activity Questionnaire'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000098
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00022090
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000098
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00022090
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003094
@@ -40,16 +39,15 @@
         method_type:
           value: 'Physical Activity Questionnaire'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003094
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00177686
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003094
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00177686
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht006005
@@ -66,16 +64,15 @@
         method_type:
           value: 'Physical Activity Questionnaire'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006005
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00274175
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht006005
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00274175
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004814
@@ -92,16 +89,15 @@
         method_type:
           value: 'Physical Activity Questionnaire'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004814
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00251253
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht004814
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00251253
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004815
@@ -118,16 +114,15 @@
         method_type:
           value: 'Physical Activity Questionnaire'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004815
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00251570
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht004815
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00251570
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004815
@@ -144,16 +139,15 @@
         method_type:
           value: 'Sleep Questionnaire'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004815
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00251771
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht004815
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00251771
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht005140
@@ -163,23 +157,22 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
-          expr: case(({phv00254011} == 1, {pht003099.phv00177946} * 365), case({phv00254011} == 7, {pht003099.phv00177936} * 365))
+          expr: case(({phv00254011} == 1, {pht003099.phv00177946} * 365), ({phv00254011} == 7, {pht003099.phv00177936} * 365))
         observation_type:
           value: OBA:2040171
           range: string
         method_type:
           value: 'Physical Activity Questionnaire'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht005140
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00254343
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht005140
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00254343
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht005140
@@ -189,23 +182,22 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00254010}) + ":" + case(({phv00254011} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00254011} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
-          expr: case(({phv00254011} == 1, {pht003099.phv00177946} * 365), case({phv00254011} == 7, {pht003099.phv00177936} * 365))            
+          expr: case(({phv00254011} == 1, {pht003099.phv00177946} * 365), ({phv00254011} == 7, {pht003099.phv00177936} * 365))            
         observation_type:
           value: OBA:2040171
           range: string
         method_type:
           value: 'Sleep Questionnaire'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht005140
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00254569
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht005140
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00254569
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000014
@@ -222,16 +214,15 @@
         method_type:
           value: 'Medical History'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000014
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00001902
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000014
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00001902
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000022
@@ -248,16 +239,15 @@
         method_type:
           value: 'Physical Activity Questionnaire'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000022
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00004158
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000022
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00004158
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000031
@@ -274,16 +264,15 @@
         method_type:
           value: 'Medical History'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000031
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00007754
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000031
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00007754
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000033
@@ -300,16 +289,15 @@
         method_type:
           value: 'Medical History'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000033
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00009109
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000033
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00009109
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000036
@@ -326,16 +314,15 @@
         method_type:
           value: 'Physical Activity Questionnaire'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000036
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00010680
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000036
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00010680
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000747
@@ -352,16 +339,15 @@
         method_type:
           value: 'Physical Activity Questionnaire'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000747
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00072369
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000747
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00072369
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000747
@@ -378,16 +364,15 @@
         method_type:
           value: 'Sleep Questionnaire'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000747
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00072556
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000747
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00072556
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000074
@@ -404,16 +389,15 @@
         method_type:
           value: 'Physical Activity Questionnaire'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000074
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00021348
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000074
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00021348
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000395
@@ -430,16 +414,15 @@
         method_type:
           value: 'health interview'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000395
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00055390
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000395
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00055390
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000395
@@ -456,16 +439,15 @@
         method_type:
           value: 'Sleep Questionnaire'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000395
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00055471
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000395
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00055471
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000395
@@ -482,16 +464,15 @@
         method_type:
           value: 'Sleep Questionnaire'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000395
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00055472
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000395
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00055472
+                unit:
+                  value: h
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000395
@@ -506,14 +487,13 @@
           value: OBA:2040171
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000395
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00056652
-                  unit:
-                    value: h
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000395
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00056652
+                unit:
+                  value: h
+                  range: string
                 

@@ -35,7 +35,9 @@
         condition_status:
           populated_from: phv00121462
           value_mappings:
-            '1': ABSENT
+            '0': ABSENT
+            '1': PRESENT
+            '2': PRESENT
         condition_provenance:
           value: CLINICAL_DIAGNOSIS
         associated_evidence:
@@ -61,6 +63,7 @@
             '1': ABSENT
             '2': PRESENT
             '8': UNKNOWN
+            'M': None
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
         associated_evidence:

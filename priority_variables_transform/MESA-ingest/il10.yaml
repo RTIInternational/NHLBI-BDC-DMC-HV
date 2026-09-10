@@ -13,40 +13,37 @@
           value: "blood assay"
           range: string
         range_high:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002099
-                slot_derivations:
-                  value_decimal:
-                    value: '10000'
-                    range: string
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht002099
+              slot_derivations:
+                value_decimal:
+                  value: '10000'
+                  range: string
+                unit:
+                  value: pg/mL
+                  range: string
         range_low:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002099
-                slot_derivations:
-                  value_decimal:
-                    value: '0.13'
-                    range: string
-                  unit:
-                    value: pg/mL
-                    range: string                      
+          class_derivations:
+          - Quantity:
+              populated_from: pht002099
+              slot_derivations:
+                value_decimal:
+                  value: '0.13'
+                  range: string
+                unit:
+                  value: pg/mL
+                  range: string                      
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002099
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00142667
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht002099
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00142667
+                unit:
+                  value: pg/mL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002105
@@ -62,13 +59,12 @@
           value: "blood assay"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002105
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00160519
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht002105
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00160519
+                unit:
+                  value: pg/mL
+                  range: string

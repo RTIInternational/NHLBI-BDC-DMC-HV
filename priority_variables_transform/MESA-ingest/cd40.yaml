@@ -9,19 +9,18 @@
         age_at_observation:
           expr: '{phv00084442} * 365'
         observation_type:
-          value: OMOP:4209737
+          value: OBA:2052305
           range: string
         method_type:
           value: "blood assay"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001116
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00085021
-                  unit:
-                    value: pg/mL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001116
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00085021
+                unit:
+                  value: pg/mL
+                  range: string

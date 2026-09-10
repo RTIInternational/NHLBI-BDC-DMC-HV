@@ -298,28 +298,32 @@
         associated_evidence:
           value: "Electrocardiogram"
           range: string
-- class_derivations:
-    Condition:
-      populated_from: pht003697
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00197325}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197325}) + ":CHS SHHS 1")'
-        condition_concept:
-          value: HP:0001712
-          range: string
-        condition_status:
-          populated_from: phv00197326
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-        associated_evidence:
-          value: "Electrocardiogram"
-          range: string
+# DISABLED: pht003697 (SHHS1_ecg) is absent from consent groups that don't include
+# SHHS ancillary data (e.g. c3 DS-CVD-MDS). linkml-map 0.5.3rc3 crashes on missing
+# source tables instead of producing empty output (regression from 0.4.0 behavior).
+# c2/c4 work correctly. Re-enable when upstream graceful-missing-table handling is fixed.
+# - class_derivations:
+#     Condition:
+#       populated_from: pht003697
+#       slot_derivations:
+#         associated_participant:
+#           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00197325}) + ":CHS")'
+#         associated_visit:
+#           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197325}) + ":CHS SHHS 1")'
+#         condition_concept:
+#           value: HP:0001712
+#           range: string
+#         condition_status:
+#           populated_from: phv00197326
+#           value_mappings:
+#             '0': ABSENT
+#             '1': PRESENT
+#         condition_provenance:
+#           value: CLINICAL_DIAGNOSIS
+#           range: string
+#         relationship_to_participant:
+#           value: ONESELF
+#           range: string
+#         associated_evidence:
+#           value: "Electrocardiogram"
+#           range: string

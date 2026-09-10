@@ -118,75 +118,79 @@
         relationship_to_participant:
           value: ONESELF
           range: string
-- class_derivations:
-    Condition:
-      populated_from: pht001874
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121724}) + ":CARDIA")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121724}) + ":CARDIA YEAR 15")'
-        condition_concept:
-          value: MONDO:0005010
-        condition_status:
-          populated_from: phv00121727
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-          range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht001874
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121724}) + ":CARDIA")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121724}) + ":CARDIA YEAR 15")'
-        condition_concept:
-          value: MONDO:0005010
-        condition_status:
-          populated_from: phv00121732
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-          range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht001874
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121724}) + ":CARDIA")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121724}) + ":CARDIA YEAR 15")'
-        condition_concept:
-          value: MONDO:0005010
-        condition_status:
-          populated_from: phv00121731
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-          range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
+# DISABLED: pht001874 (Z33E06, CARDIA Year 15 CHD questionnaire) is absent from c2
+# consent group (HMB-IRB-NPU). linkml-map 0.5.3rc3 crashes on missing source tables
+# instead of producing empty output (regression from 0.4.0 behavior). c1 works.
+# Re-enable when upstream graceful-missing-table handling is fixed.
+# - class_derivations:
+#     Condition:
+#       populated_from: pht001874
+#       slot_derivations:
+#         associated_participant:
+#           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121724}) + ":CARDIA")'
+#         associated_visit:
+#           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121724}) + ":CARDIA YEAR 15")'
+#         condition_concept:
+#           value: MONDO:0005010
+#         condition_status:
+#           populated_from: phv00121727
+#           value_mappings:
+#             '0': ABSENT
+#             '1': PRESENT
+#         condition_provenance:
+#           value: CLINICAL_DIAGNOSIS
+#           range: string
+#         associated_evidence:
+#           value: "self-report questionnaire"
+#           range: string
+#         relationship_to_participant:
+#           value: ONESELF
+#           range: string
+# - class_derivations:
+#     Condition:
+#       populated_from: pht001874
+#       slot_derivations:
+#         associated_participant:
+#           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121724}) + ":CARDIA")'
+#         associated_visit:
+#           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121724}) + ":CARDIA YEAR 15")'
+#         condition_concept:
+#           value: MONDO:0005010
+#         condition_status:
+#           populated_from: phv00121732
+#           value_mappings:
+#             '0': ABSENT
+#             '1': PRESENT
+#         condition_provenance:
+#           value: CLINICAL_DIAGNOSIS
+#           range: string
+#         associated_evidence:
+#           value: "self-report questionnaire"
+#           range: string
+#         relationship_to_participant:
+#           value: ONESELF
+#           range: string
+# - class_derivations:
+#     Condition:
+#       populated_from: pht001874
+#       slot_derivations:
+#         associated_participant:
+#           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121724}) + ":CARDIA")'
+#         associated_visit:
+#           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121724}) + ":CARDIA YEAR 15")'
+#         condition_concept:
+#           value: MONDO:0005010
+#         condition_status:
+#           populated_from: phv00121731
+#           value_mappings:
+#             '0': ABSENT
+#             '1': PRESENT
+#         condition_provenance:
+#           value: CLINICAL_DIAGNOSIS
+#           range: string
+#         associated_evidence:
+#           value: "self-report questionnaire"
+#           range: string
+#         relationship_to_participant:
+#           value: ONESELF
+#           range: string

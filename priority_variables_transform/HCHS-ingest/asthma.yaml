@@ -40,7 +40,7 @@
           value: MONDO:0004979
           range: string
         condition_status:
-          expr: case(({phv00226387} == 0, 'ABSENT'), ({phv00526887} == 1 and {phv00526889} == 1, 'PRESENT'), ({phv00526887} == 1 and {phv00526889} == 0, 'HISTORICAL'), (True, 'UNKNOWN'))
+          expr: case(({phv00226387} == 0, 'ABSENT'), ({phv00526878} > 0, 'HISTORICAL'), ({phv00226387} == 1, 'PRESENT'), (True, 'UNKNOWN'))
         condition_provenance:
           populated_from: phv00226388
           value_mappings:

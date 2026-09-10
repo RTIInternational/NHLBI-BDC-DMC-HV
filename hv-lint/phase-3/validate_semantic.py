@@ -42,6 +42,10 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
+from _derivations import iter_nested_class_derivs  # noqa: E402
+
+
+
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -660,24 +664,17 @@ def _walk_slot_derivations(block: dict):
             for slot_name, slot_def in slot_derivs.items():
                 if isinstance(slot_def, dict):
                     yield cls_name, slot_name, slot_def, pht
-                    # Check nested object_derivations (e.g., Quantity)
-                    obj_derivs = slot_def.get("object_derivations")
-                    if isinstance(obj_derivs, list):
-                        for od in obj_derivs:
-                            if not isinstance(od, dict):
-                                continue
-                            nested_cd = od.get("class_derivations")
-                            if not isinstance(nested_cd, dict):
-                                continue
-                            for ncls, ncls_def in nested_cd.items():
-                                if not isinstance(ncls_def, dict):
-                                    continue
-                                nested_pht = ncls_def.get("populated_from", pht)
-                                nested_sd = ncls_def.get("slot_derivations")
-                                if isinstance(nested_sd, dict):
-                                    for ns_name, ns_def in nested_sd.items():
-                                        if isinstance(ns_def, dict):
-                                            yield ncls, ns_name, ns_def, nested_pht
+                    # Check nested class derivations (e.g., Quantity), both
+                    # list-based class_derivations and legacy object_derivations
+                    for ncls, ncls_def in iter_nested_class_derivs(slot_def):
+                        if not isinstance(ncls_def, dict):
+                            continue
+                        nested_pht = ncls_def.get("populated_from", pht)
+                        nested_sd = ncls_def.get("slot_derivations")
+                        if isinstance(nested_sd, dict):
+                            for ns_name, ns_def in nested_sd.items():
+                                if isinstance(ns_def, dict):
+                                    yield ncls, ns_name, ns_def, nested_pht
 
 
 def check_unit_conversion_mismatch(
@@ -1048,23 +1045,14 @@ def check_quantity_missing_unit(
         for slot_name, slot_def in slot_derivs.items():
             if not isinstance(slot_def, dict):
                 continue
-            obj_derivs = slot_def.get("object_derivations")
-            if not isinstance(obj_derivs, list):
-                continue
-            for od in obj_derivs:
-                if not isinstance(od, dict):
+            for ncls_name, ncls_def in iter_nested_class_derivs(slot_def):
+                if not isinstance(ncls_def, dict):
                     continue
-                nested_cd = od.get("class_derivations")
-                if not isinstance(nested_cd, dict):
-                    continue
-                for ncls_name, ncls_def in nested_cd.items():
-                    if not isinstance(ncls_def, dict):
-                        continue
-                    if ncls_name == "Quantity":
-                        _check_quantity_slots(
-                            ncls_name, ncls_def,
-                            f"{cls_name}.{slot_name}",
-                        )
+                if ncls_name == "Quantity":
+                    _check_quantity_slots(
+                        ncls_name, ncls_def,
+                        f"{cls_name}.{slot_name}",
+                    )
 
     return findings
 

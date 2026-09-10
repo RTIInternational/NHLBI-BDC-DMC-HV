@@ -11,15 +11,16 @@
         method_type:
           value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004098
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00206651
-                  unit:
-                    value: "%{normal}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004098
+              slot_derivations:
+                value_decimal:
+                  # ARIC sentinel codes (A, O, M, R, N, U, T, L, H) and any other non-numeric value become null;
+                  # "nan"/"NaN" parse as numbers so they are excluded too.
+                  expr: 'float({phv00206651}) if is_numeric({phv00206651}) and str({phv00206651}) not in ("nan", "NaN") else None'
+                unit:
+                  value: "%{normal}"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004099
@@ -33,12 +34,13 @@
         method_type:
           value: "blood assay"
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004099
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00206657
-                  unit:
-                    value: "%{normal}"
+          class_derivations:
+          - Quantity:
+              populated_from: pht004099
+              slot_derivations:
+                value_decimal:
+                  # ARIC sentinel codes (A, O, M, R, N, U, T, L, H) and any other non-numeric value become null;
+                  # "nan"/"NaN" parse as numbers so they are excluded too.
+                  expr: 'float({phv00206657}) if is_numeric({phv00206657}) and str({phv00206657}) not in ("nan", "NaN") else None'
+                unit:
+                  value: "%{normal}"

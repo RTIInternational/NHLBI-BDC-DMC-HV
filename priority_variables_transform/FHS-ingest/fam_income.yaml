@@ -12,24 +12,15 @@
           value: OMOP:4076114
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003094
-                slot_derivations:
-                  value_concept:
-                    populated_from: phv00177608
-                    value_mappings:
-                      '1': < $20,000
-                      '2': $20,000 - $34,999
-                      '3': $35,000 - $54,999
-                      '4': $55,000 - $74,999
-                      '5': $75,000 - $100,000
-                      '6': '> $100,000'
-                      '9': None
-                  unit:
-                    value: USD
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003094
+              slot_derivations:
+                value_concept:
+                  expr: 'case((str({phv00177608}) == "1", "< $20,000"), (str({phv00177608}) == "2", "$20,000 - $34,999"), (str({phv00177608}) == "3", "$35,000 - $54,999"), (str({phv00177608}) == "4", "$55,000 - $74,999"), (str({phv00177608}) == "5", "$75,000 - $100,000"), (str({phv00177608}) == "6", "> $100,000"), (True, None))'
+                unit:
+                  value: USD
+                  range: string
 - class_derivations:
     Observation:
       populated_from: pht006005
@@ -44,24 +35,15 @@
           value: OMOP:4076114
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht006005
-                slot_derivations:
-                  value_concept:
-                    populated_from: phv00274078
-                    value_mappings:
-                      '1': < $12,000
-                      '2': $12,000 - $24,999
-                      '3': $25,000 - $49,999
-                      '4': $50,000 - $74,999
-                      '5': $75,000 - $100,000
-                      '6': '> $100,000'
-                      '9': None
-                  unit:
-                    value: USD
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht006005
+              slot_derivations:
+                value_concept:
+                  expr: 'case((str({phv00274078}) == "1", "< $12,000"), (str({phv00274078}) == "2", "$12,000 - $24,999"), (str({phv00274078}) == "3", "$25,000 - $49,999"), (str({phv00274078}) == "4", "$50,000 - $74,999"), (str({phv00274078}) == "5", "$75,000 - $100,000"), (str({phv00274078}) == "6", "> $100,000"), (True, None))'
+                unit:
+                  value: USD
+                  range: string
 - class_derivations:
     Observation:
       populated_from: pht000074
@@ -76,24 +58,15 @@
           value: OMOP:4076114
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000074
-                slot_derivations:
-                  value_concept:
-                    populated_from: phv00021256
-                    value_mappings:
-                      '1': < $12,000
-                      '2': $12,000 - $24,999
-                      '3': $25,000 - $49,999
-                      '4': $50,000 - $74,999
-                      '5': $75,000 - $100,000
-                      '6': '> $100,000'
-                      '9': None
-                  unit:
-                    value: USD
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000074
+              slot_derivations:
+                value_concept:
+                  expr: 'case((str({phv00021256}) == "1", "< $12,000"), (str({phv00021256}) == "2", "$12,000 - $24,999"), (str({phv00021256}) == "3", "$25,000 - $49,999"), (str({phv00021256}) == "4", "$50,000 - $74,999"), (str({phv00021256}) == "5", "$75,000 - $100,000"), (str({phv00021256}) == "6", "> $100,000"), (True, None))'
+                unit:
+                  value: USD
+                  range: string
 - class_derivations:
     Observation:
       populated_from: pht000100
@@ -108,21 +81,19 @@
           value: OMOP:4076114
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000100
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00022428
-                    value_mappings:
-                      '1': < $20,000
-                      '2': $20,000 - $34,999
-                      '3': $35,000 - $54,999
-                      '4': $55,000 - $74,999
-                      '5': $75,000 - $100,000
-                      '6': '> $100,000'
-                      '9': None
-                  unit:
-                    value: USD
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000100
+              slot_derivations:
+                # PY125 (Offspring Exam 3): dbGaP v35 collapses raw codes 1,2,3 -> 3 for
+                # confidentiality, so codes 1-2 never occur in delivered data (var_report min=3).
+                # Code 3 is therefore the lowest case, labeled "< $10,000" (the collapsed
+                # no-income..$9,000 bucket) -- matching WHI's "< $10,000" and the dominant
+                # cross-cohort "< $X" open-low style. Codes 4-12 use the authoritative
+                # PY124/PY125 codebook brackets (dbGaP doc phd000509.2). Codes 1-2 are omitted
+                # (they cannot appear; any unexpected value falls through to null).
+                value_concept:
+                  expr: 'case((str({phv00022428}) == "3", "< $10,000"), (str({phv00022428}) == "4", "$10,000 - $14,000"), (str({phv00022428}) == "5", "$15,000 - $19,000"), (str({phv00022428}) == "6", "$20,000 - $24,000"), (str({phv00022428}) == "7", "$25,000 - $29,000"), (str({phv00022428}) == "8", "$30,000 - $34,000"), (str({phv00022428}) == "9", "$35,000 - $39,000"), (str({phv00022428}) == "10", "$40,000 - $44,000"), (str({phv00022428}) == "11", "$45,000 - $49,000"), (str({phv00022428}) == "12", "> $50,000"), (True, None))'
+                unit:
+                  value: USD
+                  range: string

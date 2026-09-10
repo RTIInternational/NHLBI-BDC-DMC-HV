@@ -15,16 +15,15 @@
           value: "blood assay"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001120
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00191191
-                  unit:
-                    value: mmol/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001120
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00191191
+                unit:
+                  value: mmol/L
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht003089
@@ -40,13 +39,12 @@
           value: "blood assay"
           range: string
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht003089
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00175982
-                  unit:
-                    value: mmol/L
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht003089
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00175982
+                unit:
+                  value: mmol/L
+                  range: string

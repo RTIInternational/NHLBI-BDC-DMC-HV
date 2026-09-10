@@ -163,17 +163,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001187}) + ":FHS ORIGINAL EXAM 8")'
         condition_concept:
-          populated_from: phv00001184
-          value_mappings:
-            '1': MONDO:0005453
-            '2': MONDO:0005453
-            '3': MONDO:0004911
-            '4': MONDO_0004911
-            '5': null
-            '6': null
-            '7': MONDO:0005267
-            '8': MONDO:0005267
-            '9': HP:0031664
+          expr: 'case((str({phv00001184}) in ("1","2"), "MONDO:0005453"), (str({phv00001184}) in ("3","4"), "MONDO:0004911"), (str({phv00001184}) in ("7","8"), "MONDO:0005267"), (str({phv00001184}) == "9", "HP:0031664"), (True, None))'
         condition_status:
           value: PRESENT
           range: string

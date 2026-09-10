@@ -16,6 +16,31 @@ from pathlib import Path
 import yaml
 
 from hv_dataqc.compare.helpers import _canonical_phv_id
+from hv_dataqc.compare.expected_summary import _has_true_catchall, _true_arm_output_phvs
+
+
+def _iter_nested_class_derivs(slot_def):
+    """Yield (class_name, class_spec) for a slot's nested class derivations,
+    handling list-based class_derivations in both `- name: X` and dict-keyed
+    `- X: {...}` form, plus legacy object_derivations.
+
+    Deliberately local: this module is outside hv-lint/ and importing from a
+    hyphenated script tree would invert the dependency. The canonical copy is
+    hv-lint/_derivations.py -- keep the two in sync."""
+    slot_def = slot_def or {}
+    for cd in slot_def.get("class_derivations") or []:
+        if not isinstance(cd, dict):
+            continue
+        if "name" in cd:
+            yield cd.get("name"), cd
+        elif len(cd) == 1:
+            # dict-keyed form: `- ClassName: {...}`
+            cls_name, spec = next(iter(cd.items()))
+            # a null body (`- X:`) parses as {X: None}; callers expect a dict
+            yield cls_name, spec if isinstance(spec, dict) else {}
+    for od in slot_def.get("object_derivations") or []:
+        for name, spec in ((od or {}).get("class_derivations") or {}).items():
+            yield name, spec
 
 
 # ---------------------------------------------------------------------------
@@ -69,6 +94,7 @@ _COMMON_UNIT_FACTORS: dict[tuple[str, str], float] = {
     ("kg", "lbs"): 2.20462,
     ("in", "cm"): 2.54,
     ("[in_i]", "cm"): 2.54,
+    ("[in_us]", "cm"): 2.54,
     ("cm", "in"): 0.393701,
     ("mg/dL", "mmol/L glucose"): 0.0555,
     ("mg/dL", "mmol/L cholesterol"): 0.02586,
@@ -181,11 +207,17 @@ def _extract_conversion_factor(expr: str) -> float | None:
 
     Returns None for compound expressions involving multiple PHVs, additions,
     or any pattern that cannot be expressed as a single scalar factor.
+
+    A single PHV that appears more than once (e.g. a null-guard ternary such as
+    ``None if str({phv}) in ('M', '') else float({phv}) * 6.945``) is treated
+    as a single-PHV expression; the scalar is still unambiguous.
     """
-    # Require exactly one PHV — compound exprs don't produce a single factor
-    if len(re.findall(r"phv\d+", expr)) != 1:
+    # Require exactly one *unique* PHV — compound exprs don't produce a single factor
+    if len(set(re.findall(r"phv\d+", expr))) != 1:
         return None
-    m = _SCALAR_MULT_RE.search(expr)
+    # Normalize: strip float() / int() wrappers so "float({phv}) * N" → "{phv} * N"
+    normalized = re.sub(r"(?:float|int)\((\{phv\d+\})\)", r"\1", expr)
+    m = _SCALAR_MULT_RE.search(normalized)
     if not m:
         return None
     # Group layout: (op1, scalar1) for PHV*scalar, (scalar2, op2) for scalar*PHV
@@ -397,17 +429,15 @@ def _extract_crosswalk_from_class_derivations(
         if entity_class == "MeasurementObservationSet":
             obs_slot = slots.get("observations", {})
             if isinstance(obs_slot, dict):
-                for od in obs_slot.get("object_derivations", []):
-                    if isinstance(od, dict):
-                        inner_cd = od.get("class_derivations")
-                        if inner_cd and isinstance(inner_cd, dict):
-                            _extract_crosswalk_from_class_derivations(
-                                inner_cd,
-                                yaml_filename,
-                                phv_names,
-                                crosswalk,
-                                inside_mos=True,
-                            )
+                for inner_name, inner_spec in _iter_nested_class_derivs(obs_slot):
+                    if inner_name and isinstance(inner_spec, dict):
+                        _extract_crosswalk_from_class_derivations(
+                            {inner_name: inner_spec},
+                            yaml_filename,
+                            phv_names,
+                            crosswalk,
+                            inside_mos=True,
+                        )
             continue
 
         # --- Standard path: gather PHVs and concept code ---
@@ -460,78 +490,74 @@ def _extract_crosswalk_from_class_derivations(
                         }
                     )
 
-            # PHVs nested inside object_derivations (e.g. Quantity)
-            obj_d = slot_body.get("object_derivations")
-            if isinstance(obj_d, list):
-                for od in obj_d:
-                    if not isinstance(od, dict):
+            # PHVs nested inside class derivations (e.g. Quantity), both
+            # list-based class_derivations and legacy object_derivations
+            for inner_class, inner_body in _iter_nested_class_derivs(slot_body):
+                if not isinstance(inner_body, dict):
+                    continue
+                for inner_slot, inner_slot_body in (
+                    inner_body.get("slot_derivations", {}).items()
+                ):
+                    if not isinstance(inner_slot_body, dict):
                         continue
-                    inner_cd = od.get("class_derivations")
-                    if not inner_cd or not isinstance(inner_cd, dict):
-                        continue
-                    for inner_class, inner_body in inner_cd.items():
-                        if not isinstance(inner_body, dict):
-                            continue
-                        for inner_slot, inner_slot_body in (
-                            inner_body.get("slot_derivations", {}).items()
-                        ):
-                            if not isinstance(inner_slot_body, dict):
-                                continue
-                            inner_pf = str(inner_slot_body.get("populated_from", ""))
-                            is_inner_value_slot = _is_value_slot_name(inner_slot, "")
-                            if inner_pf.startswith("phv"):
-                                inner_cf_from_block = _unit_conversion_factor(
-                                    inner_slot_body.get("unit_conversion")
-                                )
-                                primary_phvs.append(
-                                    {
-                                        "phv": inner_pf,
-                                        "slot": f"{slot_name}.{inner_slot}",
-                                        "is_value_slot": is_inner_value_slot,
-                                        "role": _phv_role_for_slot(
-                                            inner_slot, "", None, is_inner_value_slot
-                                        ),
-                                        "value_map": _extract_value_mappings(inner_slot_body),
-                                        "conversion_factor": inner_cf_from_block,
-                                    }
-                                )
-                            inner_expr = inner_slot_body.get("expr", "")
-                            if isinstance(inner_expr, str):
-                                is_inner_value_expr = _is_value_slot_name(inner_slot, "")
-                                if is_inner_value_expr:
-                                    value_exprs.append(inner_expr)
-                                inner_cf = (
-                                    _extract_conversion_factor(inner_expr)
-                                    if inner_slot in ("value_decimal", "value_integer")
-                                    else None
-                                )
-                                for phv in re.findall(r"(phv\d+)", inner_expr):
-                                    primary_phvs.append(
-                                        {
-                                            "phv": phv,
-                                            "slot": f"{slot_name}.{inner_slot}",
-                                            "is_value_slot": is_inner_value_expr,
-                                            "role": _phv_role_for_slot(
-                                                inner_slot, "", None, is_inner_value_expr
-                                            ),
-                                            "value_map": None,
-                                            "conversion_factor": inner_cf,
-                                            "expr": inner_expr,
-                                        }
-                                    )
+                    inner_pf = str(inner_slot_body.get("populated_from", ""))
+                    is_inner_value_slot = _is_value_slot_name(inner_slot, "")
+                    if inner_pf.startswith("phv"):
+                        inner_uc = inner_slot_body.get("unit_conversion")
+                        inner_cf_from_block = _unit_conversion_factor(inner_uc)
+                        primary_phvs.append(
+                            {
+                                "phv": inner_pf,
+                                "slot": f"{slot_name}.{inner_slot}",
+                                "is_value_slot": is_inner_value_slot,
+                                "role": _phv_role_for_slot(
+                                    inner_slot, "", None, is_inner_value_slot
+                                ),
+                                "value_map": _extract_value_mappings(inner_slot_body),
+                                "conversion_factor": inner_cf_from_block,
+                                "has_unit_conversion_def": isinstance(inner_uc, dict),
+                            }
+                        )
+                    inner_expr = inner_slot_body.get("expr", "")
+                    if isinstance(inner_expr, str):
+                        is_inner_value_expr = _is_value_slot_name(inner_slot, "")
+                        if is_inner_value_expr:
+                            value_exprs.append(inner_expr)
+                        inner_cf = (
+                            _extract_conversion_factor(inner_expr)
+                            if inner_slot in ("value_decimal", "value_integer")
+                            else None
+                        )
+                        for phv in re.findall(r"(phv\d+)", inner_expr):
+                            primary_phvs.append(
+                                {
+                                    "phv": phv,
+                                    "slot": f"{slot_name}.{inner_slot}",
+                                    "is_value_slot": is_inner_value_expr,
+                                    "role": _phv_role_for_slot(
+                                        inner_slot, "", None, is_inner_value_expr
+                                    ),
+                                    "value_map": None,
+                                    "conversion_factor": inner_cf,
+                                    "expr": inner_expr,
+                                }
+                            )
 
         if not primary_phvs or not concept_codes:
             continue
 
-        # method_type creates a compound harmonized key ``|<method_type>`` for
-        # any MeasurementObservation block that has a method_type slot, whether
-        # it is nested inside a MeasurementObservationSet or is a standalone MO.
-        # The dm-bip harmonized extractor groups by (observation_type, method_type)
-        # when method_type is present and emits keys like
-        # ``measurement_OMOP:XXX|<method_type>``.  Standalone MO files without
-        # a method_type slot (bdy_hgt, bmi, hrt_rt, ...) keep bare keys.
+        # method_type creates a compound harmonized key ``|<method_type>`` ONLY
+        # for MeasurementObservation blocks nested inside a
+        # MeasurementObservationSet. process_measurement_observation_sets() in
+        # the harmonized extractor groups those by (observation_type, method_type)
+        # and emits ``measurement_<concept>|<method_type>``. Standalone
+        # MeasurementObservation files (bmi, bdy_hgt, labs, ...) are grouped by
+        # observation_type ONLY by process_measurements(), so they must keep bare
+        # ``measurement_<concept>`` keys even when they declare a method_type
+        # slot -- otherwise the crosswalk key never matches the harmonized key
+        # and the concept is falsely reported "not matched in source".
         method_type_val: str | None = None
-        if entity_class == "MeasurementObservation" and "method_type" in slots:
+        if entity_class == "MeasurementObservation" and inside_mos and "method_type" in slots:
             mt = slots["method_type"]
             if isinstance(mt, dict):
                 method_type_val = (
@@ -542,7 +568,24 @@ def _extract_crosswalk_from_class_derivations(
         prefix = ENTITY_PREFIX.get(entity_class, f"{entity_class.lower()}_")
 
         value_phvs = [p for p in primary_phvs if p["is_value_slot"]]
-        primary = value_phvs[0] if value_phvs else primary_phvs[0]
+        if not value_phvs:
+            # Condition blocks may have a coded concept PHV (e.g. PADDX or
+            # STROKEDX via value_mappings) but a fixed condition_status value
+            # such as 'PRESENT'.  The concept PHV is the driving variable in
+            # that case — promote it to primary so the crosswalk builds
+            # per-concept source entries (concept_phv == phv_id path in
+            # build_expected_summary).  This resolves the "no YAML block
+            # proposed this concept" false positive for such blocks (#670).
+            concept_role_phvs = [p for p in primary_phvs if p.get("role") == "concept"]
+            if concept_role_phvs:
+                value_phvs = concept_role_phvs
+            else:
+                # No value PHV and no concept PHV — would use a structural PHV
+                # (e.g. associated_participant / SUBJID) as the source key,
+                # producing a misleading "subjid: N loss" C2 label.  Skip so
+                # the unmatched-harmonized reporter surfaces the concept CURIE.
+                continue
+        primary = value_phvs[0]
 
         source_phv_roles: list[dict[str, str]] = []
         comparison_phvs: set[str] = set()
@@ -559,6 +602,14 @@ def _extract_crosswalk_from_class_derivations(
                 seen_role_keys.add(role_key)
             if role in {"value", "concept"}:
                 comparison_phvs.add(phv_id)
+
+        # Add any PHV referenced in the output of a (True, {phv}) fallback arm.
+        # These PHVs drive most harmonized records but don't appear in conditions,
+        # so they are absent from comparison_phvs without this step (issue #663).
+        # set.update() deduplicates: Sub-type A patterns where the True-arm PHV
+        # already appears in conditions are silently no-ops.
+        for expr in value_exprs:
+            comparison_phvs.update(_true_arm_output_phvs(expr))
 
         src_name = phv_names.get(primary["phv"], "")
         if not src_name:
@@ -590,12 +641,13 @@ def _extract_crosswalk_from_class_derivations(
                     "concept_value_map": concept_value_map,
                     "method_type": method_type_val,
                     "conversion_factor": primary.get("conversion_factor"),
+                    "has_unit_conversion": primary.get("has_unit_conversion_def", False),
                     "source_phvs": sorted(comparison_phvs),
                     "source_phv_roles": source_phv_roles,
                     "value_exprs": value_exprs,
+                    "has_true_catchall": any(_has_true_catchall(e) for e in value_exprs),
                 }
             )
-
 
 def build_yaml_crosswalk(
     yaml_dir: Path,

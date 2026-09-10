@@ -1,0 +1,55 @@
+{
+  "submitted_date": "2026-08-19",
+  "study": "ARIC",
+  "curator": "Curator",
+  "changes": {
+    "ARIC::confirmed::hist_hrtfail.yaml": {
+      "study": "ARIC",
+      "change_request": "MONDO:0005252",
+      "original_curie": "MONDO:0005009",
+      "slot": "condition_concept",
+      "yaml_files": [
+        "hist_hrtfail.yaml"
+      ],
+      "notes": "",
+      "applied": false,
+      "saved_date": "2026-08-17",
+      "apply_results": [
+        "⚠ `condition_concept` has 21 blocks with differing values (`MONDO:0005009`, `MONDO:0005252`) — cannot apply uniformly. Edit the YAML file directly.",
+        "✓ CSV: 21 row(s) → `MONDO:0005252` for `hist_hrtfail.yaml` [condition_concept]"
+      ]
+    },
+    "ARIC::confirmed::spirometry.yaml": {
+      "study": "ARIC",
+      "change_request": "OMOP: 3003197",
+      "original_curie": "OMOP:3002094",
+      "slot": "observations",
+      "yaml_files": [
+        "spirometry.yaml"
+      ],
+      "notes": "https://athena.ohdsi.org/search-terms/terms/3003197",
+      "applied": false,
+      "saved_date": "2026-08-17",
+      "apply_results": [
+        "⚠ No `observations: value:` pattern in `spirometry.yaml`",
+        "✓ CSV: 194 row(s) → `OMOP: 3003197` for `spirometry.yaml` [observations]"
+      ]
+    },
+    "ARIC::confirmed::blood_pressure.yaml": {
+      "study": "ARIC",
+      "change_request": "OMOP:3003205",
+      "original_curie": "OMOP:4152194",
+      "slot": "observation_type",
+      "yaml_files": [
+        "blood_pressure.yaml"
+      ],
+      "notes": "OMOP:3003205|https://athena.ohdsi.org/search-terms/terms/3003205\nBrachial artery Systolic blood pressure\nLOINC:8508-4 | Brachial artery Systolic blood pressure",
+      "applied": false,
+      "saved_date": "2026-08-17",
+      "apply_results": [
+        "⚠ `observation_type` has 114 blocks with differing values (`OMOP:4152194`, `OMOP:4154790`) — cannot apply uniformly. Edit the YAML file directly.",
+        "✓ CSV: 14 row(s) → `OMOP:3003205` for `blood_pressure.yaml` [observation_type]"
+      ]
+    }
+  }
+}

@@ -83,17 +83,9 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
         condition_concept:
-          populated_from: phv00401131
-          value_mappings:
-            '0': MONDO:0005015
-            '1': MONDO:0006920
-            '2': MONDO:0005015
+          expr: "case(({phv00401131} == 0, 'MONDO:0005015'), ({phv00401131} == 1, 'MONDO:0006920'), ({phv00401131} == 2, 'MONDO:0005015'))"
         condition_status:
-          populated_from: phv00401131
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '2': PRESENT
+          expr: "case(({phv00401131} == 0, 'ABSENT'), ({phv00401131} == 1, 'PRESENT'), ({phv00401131} == 2, 'PRESENT'))"
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -135,17 +127,9 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401273}) + ":JHS Exam 2")'
         condition_concept:
-          populated_from: phv00401319
-          value_mappings:
-            '0': MONDO:0005015
-            '1': MONDO:0006920
-            '2': MONDO:0005015
+          expr: "case(({phv00401319} == 0, 'MONDO:0005015'), ({phv00401319} == 1, 'MONDO:0006920'), ({phv00401319} == 2, 'MONDO:0005015'))"
         condition_status:
-          populated_from: phv00401319
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '2': PRESENT
+          expr: "case(({phv00401319} == 0, 'ABSENT'), ({phv00401319} == 1, 'PRESENT'), ({phv00401319} == 2, 'PRESENT'))"
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string
@@ -187,17 +171,9 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
         condition_concept:
-          populated_from: phv00401422
-          value_mappings:
-            '0': MONDO:0005015
-            '1': MONDO:0006920
-            '2': MONDO:0005015
+          expr: "case(({phv00401422} == 0, 'MONDO:0005015'), ({phv00401422} == 1, 'MONDO:0006920'), ({phv00401422} == 2, 'MONDO:0005015'))"
         condition_status:
-          populated_from: phv00401422
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '2': PRESENT
+          expr: "case(({phv00401422} == 0, 'ABSENT'), ({phv00401422} == 1, 'PRESENT'), ({phv00401422} == 2, 'PRESENT'))"
         condition_provenance:
           value: PATIENT_SELF-REPORTED_CONDITION
           range: string

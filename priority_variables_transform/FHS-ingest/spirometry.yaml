@@ -7,51 +7,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002946}) + ":FHS ORIGINAL EXAM 16")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000018
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4176265
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177960} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000018
-                          slot_derivations:
-                            value_decimal:
-                              expr: '{phv00002682} / 10'
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000018
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4241837
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177960} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000018
-                          slot_derivations:
-                            value_decimal:
-                              expr: '{phv00002684} / 10'
-                            unit:
-                              value: L
-                              range: string
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht000018
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4176265
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                age_at_observation:
+                  expr: '{pht003099.phv00177960} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000018
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00002682} / 100'
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000018
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4241837
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                age_at_observation:
+                  expr: '{pht003099.phv00177960} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000018
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00002684} / 100'
+                        unit:
+                          value: L
+                          range: string
 
 - class_derivations:
     MeasurementObservationSet:
@@ -62,51 +58,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003261}) + ":FHS ORIGINAL EXAM 17")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000019
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4176265
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177962} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000019
-                          slot_derivations:
-                            value_decimal:
-                              expr: '{phv00003249} / 10'
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000019
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4241837
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177962} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000019
-                          slot_derivations:
-                            value_decimal:
-                              expr: '{phv00003251} / 10'
-                            unit:
-                              value: L
-                              range: string
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht000019
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4176265
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                age_at_observation:
+                  expr: '{pht003099.phv00177962} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000019
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00003249} / 100'
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000019
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4241837
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                age_at_observation:
+                  expr: '{pht003099.phv00177962} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000019
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00003251} / 100'
+                        unit:
+                          value: L
+                          range: string
 
 - class_derivations:
     MeasurementObservationSet:
@@ -117,73 +109,207 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00022662}) + ":FHS ORIGINAL EXAM 19")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000103
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4176265
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177966} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000103
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022584
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000103
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4241837
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177966} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000103
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022586
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000103
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3011505
-                    range: string
-                  method_type:
-                    value: 'calculated'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177966} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000103
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022585
-                            unit:
-                              value: '{ratio}'
-                              range: string
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht000103
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4176265
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                age_at_observation:
+                  expr: '{pht003099.phv00177966} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000103
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022584
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000103
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4241837
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                age_at_observation:
+                  expr: '{pht003099.phv00177966} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000103
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022586
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000103
+              slot_derivations:
+                observation_type:
+                  value: OMOP:3011505
+                  range: string
+                method_type:
+                  value: 'calculated'
+                age_at_observation:
+                  expr: '{pht003099.phv00177966} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000103
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022585
+                        unit:
+                          value: '%'
+                          range: string
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht000103
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00022662}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00022662}) + ":FHS ORIGINAL EXAM 19")'
+        observations:
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht000103
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4176265
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                age_at_observation:
+                  expr: '{pht003099.phv00177966} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000103
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022597
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000103
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4241837
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                age_at_observation:
+                  expr: '{pht003099.phv00177966} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000103
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022598
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000103
+              slot_derivations:
+                observation_type:
+                  value: OMOP:3011505
+                  range: string
+                method_type:
+                  value: 'calculated'
+                age_at_observation:
+                  expr: '{pht003099.phv00177966} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000103
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022600
+                        unit:
+                          value: '%'
+                          range: string
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht000103
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00022662}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00022662}) + ":FHS ORIGINAL EXAM 19")'
+        observations:
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht000103
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4176265
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                age_at_observation:
+                  expr: '{pht003099.phv00177966} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000103
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022610
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000103
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4241837
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                age_at_observation:
+                  expr: '{pht003099.phv00177966} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000103
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022611
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000103
+              slot_derivations:
+                observation_type:
+                  value: OMOP:3011505
+                  range: string
+                method_type:
+                  value: 'calculated'
+                age_at_observation:
+                  expr: '{pht003099.phv00177966} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000103
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022613
+                        unit:
+                          value: '%'
+                          range: string
 
 - class_derivations:
     MeasurementObservationSet:
@@ -194,73 +320,67 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00022662}) + ":FHS ORIGINAL EXAM 19")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000103
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4176265
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177966} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000103
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022597
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000103
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4241837
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177966} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000103
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022598
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000103
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3011505
-                    range: string
-                  method_type:
-                    value: 'calculated'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177966} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000103
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022600
-                            unit:
-                              value: '{ratio}'
-                              range: string
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht000103
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4176265
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                age_at_observation:
+                  expr: '{pht003099.phv00177966} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000103
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022623
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000103
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4241837
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                age_at_observation:
+                  expr: '{pht003099.phv00177966} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000103
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022624
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000103
+              slot_derivations:
+                observation_type:
+                  value: OMOP:3011505
+                  range: string
+                method_type:
+                  value: 'calculated'
+                age_at_observation:
+                  expr: '{pht003099.phv00177966} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000103
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022626
+                        unit:
+                          value: '%'
+                          range: string
 
 - class_derivations:
     MeasurementObservationSet:
@@ -271,227 +391,67 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00022662}) + ":FHS ORIGINAL EXAM 19")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000103
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4176265
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177966} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000103
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022610
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000103
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4241837
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177966} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000103
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022611
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000103
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3011505
-                    range: string
-                  method_type:
-                    value: 'calculated'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177966} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000103
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022613
-                            unit:
-                              value: '{ratio}'
-                              range: string
-
-- class_derivations:
-    MeasurementObservationSet:
-      populated_from: pht000103
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00022662}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00022662}) + ":FHS ORIGINAL EXAM 19")'
-        observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000103
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4176265
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177966} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000103
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022623
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000103
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4241837
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177966} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000103
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022624
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000103
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3011505
-                    range: string
-                  method_type:
-                    value: 'calculated'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177966} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000103
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022626
-                            unit:
-                              value: '{ratio}'
-                              range: string
-
-- class_derivations:
-    MeasurementObservationSet:
-      populated_from: pht000103
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00022662}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00022662}) + ":FHS ORIGINAL EXAM 19")'
-        observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000103
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4176265
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177966} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000103
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022636
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000103
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4241837
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177966} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000103
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022637
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000103
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3011505
-                    range: string
-                  method_type:
-                    value: 'calculated'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177966} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000103
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022639
-                            unit:
-                              value: '{ratio}'
-                              range: string
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht000103
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4176265
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                age_at_observation:
+                  expr: '{pht003099.phv00177966} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000103
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022636
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000103
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4241837
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                age_at_observation:
+                  expr: '{pht003099.phv00177966} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000103
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022637
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000103
+              slot_derivations:
+                observation_type:
+                  value: OMOP:3011505
+                  range: string
+                method_type:
+                  value: 'calculated'
+                age_at_observation:
+                  expr: '{pht003099.phv00177966} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000103
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022639
+                        unit:
+                          value: '%'
+                          range: string
 
 - class_derivations:
     MeasurementObservationSet:
@@ -502,74 +462,67 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00022662}) + ":FHS ORIGINAL EXAM 19 SUMMARY")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000103
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4176265
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177966} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000103
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022651
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000103
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4241837
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177966} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000103
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022652
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000103
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3011505
-                    range: string
-                  method_type:
-                    value: 'calculated'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177966} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000103
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022654
-                            unit:
-                              value: '{ratio}'
-                              range: string
-
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht000103
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4176265
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                age_at_observation:
+                  expr: '{pht003099.phv00177966} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000103
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022651
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000103
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4241837
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                age_at_observation:
+                  expr: '{pht003099.phv00177966} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000103
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022652
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000103
+              slot_derivations:
+                observation_type:
+                  value: OMOP:3011505
+                  range: string
+                method_type:
+                  value: 'calculated'
+                age_at_observation:
+                  expr: '{pht003099.phv00177966} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000103
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022654
+                        unit:
+                          value: '%'
+                          range: string
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht000105
@@ -579,80 +532,73 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00022687}) + ":FHS OFFSPRING EXAM 3")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000105
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4176265
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: '{pht003099.phv00177934} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000105
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022678
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000105
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4241837
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: '{pht003099.phv00177934} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000105
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022679
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000105
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3011505
-                    range: string
-                  method_type:
-                    value: 'calculated'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: '{pht003099.phv00177934} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000105
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022681
-                            unit:
-                              value: '{ratio}'
-                              range: string
-
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht000105
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4176265
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: '{pht003099.phv00177934} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000105
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022678
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000105
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4241837
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: '{pht003099.phv00177934} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000105
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022679
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000105
+              slot_derivations:
+                observation_type:
+                  value: OMOP:3011505
+                  range: string
+                method_type:
+                  value: 'calculated'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: '{pht003099.phv00177934} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000105
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00022681} * 100'
+                        unit:
+                          value: '%'
+                          range: string
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht000101
@@ -662,80 +608,73 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00022566}) + ":FHS OFFSPRING EXAM 5")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000101
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4176265
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: '{pht003099.phv00177938} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000101
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022555
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000101
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4241837
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: '{pht003099.phv00177938} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000101
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022556
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000101
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3011505
-                    range: string
-                  method_type:
-                    value: 'calculated'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: '{pht003099.phv00177938} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000101
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022565
-                            unit:
-                              value: '{ratio}'
-                              range: string
-
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht000101
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4176265
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: '{pht003099.phv00177938} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000101
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022555
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000101
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4241837
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: '{pht003099.phv00177938} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000101
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022556
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000101
+              slot_derivations:
+                observation_type:
+                  value: OMOP:3011505
+                  range: string
+                method_type:
+                  value: 'calculated'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: '{pht003099.phv00177938} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000101
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00022565} * 100'
+                        unit:
+                          value: '%'
+                          range: string
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht000104
@@ -745,80 +684,73 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00022675}) + ":FHS OFFSPRING EXAM 6")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000104
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4176265
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: '{pht003099.phv00177940} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000104
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022664
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000104
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4241837
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: '{pht003099.phv00177940} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000104
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022665
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000104
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3011505
-                    range: string
-                  method_type:
-                    value: 'calculated'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: '{pht003099.phv00177940} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000104
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022674
-                            unit:
-                              value: '{ratio}'
-                              range: string
-
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht000104
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4176265
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: '{pht003099.phv00177940} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000104
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022664
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000104
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4241837
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: '{pht003099.phv00177940} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000104
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022665
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000104
+              slot_derivations:
+                observation_type:
+                  value: OMOP:3011505
+                  range: string
+                method_type:
+                  value: 'calculated'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: '{pht003099.phv00177940} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000104
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00022674} * 100'
+                        unit:
+                          value: '%'
+                          range: string
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht000106
@@ -828,80 +760,73 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00022700}) + ":FHS OFFSPRING EXAM 7")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000106
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4176265
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: '{pht003099.phv00177942} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000106
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022689
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000106
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4241837
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: '{pht003099.phv00177942} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000106
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022690
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000106
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3011505
-                    range: string
-                  method_type:
-                    value: 'calculated'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: '{pht003099.phv00177942} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000106
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022699
-                            unit:
-                              value: '{ratio}'
-                              range: string
-
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht000106
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4176265
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: '{pht003099.phv00177942} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000106
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022689
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000106
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4241837
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: '{pht003099.phv00177942} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000106
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022690
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000106
+              slot_derivations:
+                observation_type:
+                  value: OMOP:3011505
+                  range: string
+                method_type:
+                  value: 'calculated'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: '{pht003099.phv00177942} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000106
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00022699} * 100'
+                        unit:
+                          value: '%'
+                          range: string
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht000395
@@ -911,53 +836,47 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":" + case(({phv00056607} == ''1'', ''FHS OFFSPRING SHHS EXAM 1''), ({phv00056607} == ''7'', ''FHS OMNI 1 SHHS EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000395
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4176265
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177930} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000395
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00055266
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000395
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4241837
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  age_at_observation:
-                    expr: '{phv00056587} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000395
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00055265
-                            unit:
-                              value: L
-                              range: string
-
-
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht000395
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4176265
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                age_at_observation:
+                  expr: '{pht003099.phv00177930} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000395
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00055266
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000395
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4241837
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                age_at_observation:
+                  expr: '{phv00056587} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000395
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00055265
+                        unit:
+                          value: L
+                          range: string
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht000832
@@ -967,80 +886,73 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00073843}) + ":FHS OFFSPRING EXAM 8")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000832
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4176265
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: '{pht003099.phv00177944} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000832
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00073832
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000832
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4241837
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: '{pht003099.phv00177944} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000832
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00073829
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000832
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3011505
-                    range: string
-                  method_type:
-                    value: 'calculated'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: '{pht003099.phv00177944} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000832
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00073837
-                            unit:
-                              value: '{ratio}'
-                              range: string
-
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht000832
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4176265
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: '{pht003099.phv00177944} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000832
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00073832
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000832
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4241837
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: '{pht003099.phv00177944} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000832
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00073829
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000832
+              slot_derivations:
+                observation_type:
+                  value: OMOP:3011505
+                  range: string
+                method_type:
+                  value: 'calculated'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: '{pht003099.phv00177944} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000832
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00073837} * 100'
+                        unit:
+                          value: '%'
+                          range: string
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht000102
@@ -1050,53 +962,51 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00022579}) + ":FHS GENERATION 3 EXAM 1")'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000102
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4176265
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177930} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000102
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022571
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht000102
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4241837
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  age_at_observation:
-                    expr: '{pht003099.phv00177930} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht000102
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00022569
-                            unit:
-                              value: L
-                              range: string
-
-
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht000102
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4176265
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                age_at_observation:
+                  expr: '{pht003099.phv00177930} * 365'
+                qualifier:
+                  value: MAXIMUM
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000102
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022571
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000102
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4241837
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                age_at_observation:
+                  expr: '{pht003099.phv00177930} * 365'
+                qualifier:
+                  value: MAXIMUM
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000102
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00022569
+                        unit:
+                          value: L
+                          range: string
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht005170
@@ -1106,80 +1016,73 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00257846}) + ":" + case(({phv00257848} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 1''), ({phv00257848} == ''72'', ''FHS OMNI 2 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht005170
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4176265
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: '{pht003099.phv00177930} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht005170
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00257853
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht005170
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4241837
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: '{pht003099.phv00177930} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht005170
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00257850
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht005170
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3011505
-                    range: string
-                  method_type:
-                    value: 'calculated'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: '{pht003099.phv00177930} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht005170
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00257858
-                            unit:
-                              value: '{ratio}'
-                              range: string
-
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht005170
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4176265
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: '{pht003099.phv00177930} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht005170
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00257853
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht005170
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4241837
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: '{pht003099.phv00177930} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht005170
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00257850
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht005170
+              slot_derivations:
+                observation_type:
+                  value: OMOP:3011505
+                  range: string
+                method_type:
+                  value: 'calculated'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: '{pht003099.phv00177930} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht005170
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00257858} * 100'
+                        unit:
+                          value: '%'
+                          range: string
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht003632
@@ -1189,80 +1092,73 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00196546}) + ":" + case(({phv00196547} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 2''), ({phv00196547} == ''3'', ''FHS GENERATION 3 EXAM 2''), ({phv00196547} == ''72'', ''FHS OMNI 2 EXAM 2''), (True, ''FHS UNKNOWN VISIT'')))'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht003632
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4176265
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: '{pht003099.phv00177932} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht003632
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00196552
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht003632
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4241837
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: '{pht003099.phv00177932} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht003632
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00196549
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht003632
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3011505
-                    range: string
-                  method_type:
-                    value: 'calculated'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: '{pht003099.phv00177932} * 365'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht003632
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00196557
-                            unit:
-                              value: '{ratio}'
-                              range: string
-
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht003632
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4176265
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: '{pht003099.phv00177932} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht003632
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00196552
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht003632
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4241837
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: '{pht003099.phv00177932} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht003632
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00196549
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht003632
+              slot_derivations:
+                observation_type:
+                  value: OMOP:3011505
+                  range: string
+                method_type:
+                  value: 'calculated'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: '{pht003099.phv00177932} * 365'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht003632
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00196557} * 100'
+                        unit:
+                          value: '%'
+                          range: string
 - class_derivations:
     MeasurementObservationSet:
       populated_from: pht005169
@@ -1272,77 +1168,70 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00257829}) + ":" + case(({phv00257830} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00257830} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         observations:
-          object_derivations:
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht005169
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4176265
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: 'case(({phv00257830} == 1, {pht003099.phv00177946} * 365), case({phv00257830} == 7, {pht003099.phv00177936} * 365))'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht005169
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00257838
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht005169
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:4241837
-                    range: string
-                  method_type:
-                    value: 'spirometry'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: 'case(({phv00257830} == 1, {pht003099.phv00177946} * 365), case({phv00257830} == 7, {pht003099.phv00177936} * 365))'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht005169
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00257835
-                            unit:
-                              value: L
-                              range: string
-          - class_derivations:
-              MeasurementObservation:
-                populated_from: pht005169
-                slot_derivations:
-                  observation_type:
-                    value: OMOP:3011505
-                    range: string
-                  method_type:
-                    value: 'calculated'
-                  qualifier:
-                    value: MAXIMUM
-                  age_at_observation:
-                    expr: 'case(({phv00257830} == 1, {pht003099.phv00177946} * 365), case({phv00257830} == 7, {pht003099.phv00177936} * 365))'
-                  value_quantity:
-                    object_derivations:
-                    - class_derivations:
-                        Quantity:
-                          populated_from: pht005169
-                          slot_derivations:
-                            value_decimal:
-                              populated_from: phv00257841
-                            unit:
-                              value: '{ratio}'
-                              range: string
-
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht005169
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4176265
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: 'case(({phv00257830} == 1, {pht003099.phv00177946} * 365), ({phv00257830} == 7, {pht003099.phv00177936} * 365))'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht005169
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00257838
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht005169
+              slot_derivations:
+                observation_type:
+                  value: OMOP:4241837
+                  range: string
+                method_type:
+                  value: 'spirometry'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: 'case(({phv00257830} == 1, {pht003099.phv00177946} * 365), ({phv00257830} == 7, {pht003099.phv00177936} * 365))'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht005169
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00257835
+                        unit:
+                          value: L
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht005169
+              slot_derivations:
+                observation_type:
+                  value: OMOP:3011505
+                  range: string
+                method_type:
+                  value: 'calculated'
+                qualifier:
+                  value: MAXIMUM
+                age_at_observation:
+                  expr: 'case(({phv00257830} == 1, {pht003099.phv00177946} * 365), ({phv00257830} == 7, {pht003099.phv00177936} * 365))'
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht005169
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00257841} * 100'
+                        unit:
+                          value: '%'
+                          range: string

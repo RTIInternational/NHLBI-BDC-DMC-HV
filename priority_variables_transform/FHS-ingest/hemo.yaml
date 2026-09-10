@@ -14,16 +14,15 @@
         method_type:
           value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000009
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00000535} / 10'
-                  unit:
-                    value: g/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000009
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00000535} / 10'
+                unit:
+                  value: g/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000009
@@ -40,16 +39,15 @@
         method_type:
           value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000009
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00000627} / 10'
-                  unit:
-                    value: g/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000009
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00000627} / 10'
+                unit:
+                  value: g/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000009
@@ -66,16 +64,15 @@
         method_type:
           value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000009
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00000634} / 10'
-                  unit:
-                    value: g/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000009
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00000634} / 10'
+                unit:
+                  value: g/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000009
@@ -92,16 +89,15 @@
         method_type:
           value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000009
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00000673} / 10'
-                  unit:
-                    value: g/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000009
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00000673} / 10'
+                unit:
+                  value: g/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000009
@@ -118,16 +114,15 @@
         method_type:
           value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000009
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00000764} / 10'
-                  unit:
-                    value: g/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000009
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00000764} / 10'
+                unit:
+                  value: g/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000009
@@ -144,16 +139,15 @@
         method_type:
           value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht000009
-                slot_derivations:
-                  value_decimal:
-                    expr: '{phv00000841} / 10'
-                  unit:
-                    value: g/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht000009
+              slot_derivations:
+                value_decimal:
+                  expr: '{phv00000841} / 10'
+                unit:
+                  value: g/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001045
@@ -163,23 +157,22 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00081012}) + ":" + case(({phv00081047} == ''20'', ''FHS ORIGINAL EXAM 20''), ({phv00081047} == ''21'', ''FHS ORIGINAL EXAM 21''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
-          expr: case(({phv00081047} == 20, {pht003099.phv00177968} * 365), case({phv00081047} == 21, {pht003099.phv00177970} * 365))
+          expr: case(({phv00081047} == 20, {pht003099.phv00177968} * 365), ({phv00081047} == 21, {pht003099.phv00177970} * 365))
         observation_type:
           value: OBA:2060175
           range: string
         method_type:
           value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht001045
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00081032
-                  unit:
-                    value: g/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht001045
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00081032
+                unit:
+                  value: g/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht002889
@@ -196,16 +189,15 @@
         method_type:
           value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht002889
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00172180
-                  unit:
-                    value: g/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht002889
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00172180
+                unit:
+                  value: g/dL
+                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht004802
@@ -215,20 +207,19 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00227023}) + ":" + case(({phv00227024} == ''1'', ''FHS OFFSPRING EXAM 9''), ({phv00227024} == ''7'', ''FHS OMNI 1 EXAM 4''), (True, ''FHS UNKNOWN VISIT'')))'
         age_at_observation:
-          expr: case(({phv00227024} == 1, {pht003099.phv00177946} * 365), case({phv00227024} == 7, {pht003099.phv00177936} * 365))            
+          expr: case(({phv00227024} == 1, {pht003099.phv00177946} * 365), ({phv00227024} == 7, {pht003099.phv00177936} * 365))            
         observation_type:
           value: OBA:2060175
           range: string
         method_type:
           value: 'blood assay'
         value_quantity:
-          object_derivations:
-          - class_derivations:
-              Quantity:
-                populated_from: pht004802
-                slot_derivations:
-                  value_decimal:
-                    populated_from: phv00227027
-                  unit:
-                    value: g/dL
-                    range: string
+          class_derivations:
+          - Quantity:
+              populated_from: pht004802
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00227027
+                unit:
+                  value: g/dL
+                  range: string
