@@ -13,7 +13,7 @@
         species:
           value: NCBITaxon:9606
         vital_status:
-          expr: 'case(({pht006220.phv00283413} == 1, "OMOP:434489"), ({pht006220.phv00283413} == 0, "OMOP:4230556"), (True, None))'
+          expr: 'case(({pht006220.phv00283413} == 1, "DEAD"), ({pht006220.phv00283413} == 0, "ALIVE"), (True, None))'
         age_at_death:
           expr: 'case(({pht006220.phv00283413} == 1, ({phv00078437} * 365) + {pht006220.phv00283414}), (True, None))'
         cause_of_death:
