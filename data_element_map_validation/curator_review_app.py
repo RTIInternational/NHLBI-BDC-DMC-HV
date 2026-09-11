@@ -1054,26 +1054,60 @@ def _apply_yaml(
         # is stale (e.g. YAML already updated since the finding was saved).
 
     existing = re.findall(rf"^[ \t]*{re.escape(slot)}:\s*\n[ \t]+value:\s+(\S+)", text, re.MULTILINE)
-    if not existing:
-        return False, f"⚠ No `{slot}: value:` pattern in `{yaml_file}`"
-    unique_existing = set(existing)
-    if len(unique_existing) > 1:
-        vals = ", ".join(f"`{v}`" for v in sorted(unique_existing))
+
+    # Also consider expr:-based case() CURIE literals for this slot (e.g.
+    # drug_concept: expr: case((... , "RxCUI:123"))) — same single-line
+    # capture style as the phv-scoped branch above, just applied file-wide
+    # instead of to one block, since there's no phv here to scope to.
+    # Previously this fallback only ever checked for a literal `value:`
+    # line, silently reporting "no pattern" for any file using expr:/case()
+    # here instead — even when there was really just one, unambiguous block
+    # to update. Reported 2026-08-29: 82 historical entries across 9 files
+    # where this refusal let a concurrent _apply_csv write proceed anyway,
+    # desyncing CSV from YAML (see submit_all()'s yaml-then-csv ordering fix).
+    expr_lines = re.findall(rf"^[ \t]*{re.escape(slot)}:\s*\n[ \t]+expr:.*\n?", text, re.MULTILINE)
+    expr_values: list[str] = []
+    for line in expr_lines:
+        curie_matches = re.findall(r'(["\'])([A-Za-z][A-Za-z0-9_]*:[A-Za-z0-9.\-]+)\1', line)
+        if len(curie_matches) == 1:
+            expr_values.append(curie_matches[0][1])
+        elif len(curie_matches) > 1:
+            return False, (
+                f"⚠ `{slot}` has an `expr:` block in `{yaml_file}` with multiple CURIE-shaped "
+                "literals on one line — ambiguous which to replace, and this finding has no phv "
+                "to disambiguate. Edit that block's literal CURIE string directly in the YAML file."
+            )
+
+    all_values = existing + expr_values
+    if not all_values:
+        return False, f"⚠ No `{slot}: value:` or `{slot}: expr:` CURIE pattern in `{yaml_file}`"
+    unique_values = set(all_values)
+    if len(unique_values) > 1:
+        vals = ", ".join(f"`{v}`" for v in sorted(unique_values))
         return False, (
-            f"⚠ `{slot}` has {len(existing)} blocks with differing values ({vals}) — "
+            f"⚠ `{slot}` has {len(all_values)} blocks with differing values ({vals}) — "
             "cannot apply uniformly. Edit the YAML file directly."
         )
-    if len(existing) > 1:
+    if len(all_values) > 1:
         return False, (
-            f"⚠ `{slot}` has {len(existing)} blocks in `{yaml_file}`, all currently holding "
-            f"`{existing[0]}`, and this finding has no phv to say which one it's about. Refusing "
+            f"⚠ `{slot}` has {len(all_values)} blocks in `{yaml_file}`, all currently holding "
+            f"`{all_values[0]}`, and this finding has no phv to say which one it's about. Refusing "
             "to update them as a group — edit the YAML file directly, or re-generate this finding "
             "with its phv attached."
         )
-    pattern = rf"(^[ \t]*{re.escape(slot)}:\s*\n[ \t]+value:\s+)\S+"
-    new_text, n = re.subn(pattern, lambda m: m.group(1) + new_curie, text, flags=re.MULTILINE)
+    if existing:
+        pattern = rf"(^[ \t]*{re.escape(slot)}:\s*\n[ \t]+value:\s+)\S+"
+        new_text, n = re.subn(pattern, lambda m: m.group(1) + new_curie, text, flags=re.MULTILINE)
+        yaml_path.write_text(new_text, encoding="utf-8")
+        return True, f"✓ YAML `{yaml_file}` [{slot}] → `{new_curie}` ({n} block(s) updated)"
+    old_curie = expr_values[0]
+    expr_pattern = rf'(^[ \t]*{re.escape(slot)}:\s*\n[ \t]+expr:.*?)(["\']){re.escape(old_curie)}\2'
+    new_text, n = re.subn(
+        expr_pattern, lambda m: m.group(1) + m.group(2) + new_curie + m.group(2),
+        text, count=1, flags=re.MULTILINE,
+    )
     yaml_path.write_text(new_text, encoding="utf-8")
-    return True, f"✓ YAML `{yaml_file}` [{slot}] → `{new_curie}` ({n} block(s) updated)"
+    return True, f"✓ YAML `{yaml_file}` [{slot}] → `{new_curie}` (1 expr literal, no phv)"
 
 
 def _apply_csv(
@@ -1177,8 +1211,18 @@ def submit_all(study: str, pending: dict, curator: str) -> tuple[list[str], int,
             # Do not mark applied — YAML and CSV are untouched
             continue
         for yf in yf_list:
-            row_res.append(_apply_yaml(study, yf, slot, new_curie, phv, original_curie))
-            row_res.append(_apply_csv(study, yf, slot, new_curie, original_curie, phv))
+            yaml_ok, yaml_msg = _apply_yaml(study, yf, slot, new_curie, phv, original_curie)
+            row_res.append((yaml_ok, yaml_msg))
+            # Only write the CSV half if the YAML half actually landed — never
+            # let the two drift apart. Reported 2026-08-29: 82 historical
+            # entries across 9 files where _apply_yaml silently no-op'd (its
+            # regex didn't recognize that file's CURIE form) while _apply_csv
+            # went ahead and wrote anyway, leaving the CSV recording a value
+            # the YAML never actually emitted.
+            if yaml_ok:
+                row_res.append(_apply_csv(study, yf, slot, new_curie, original_curie, phv))
+            else:
+                row_res.append((False, f"⚠ CSV write skipped — YAML edit did not land: {yaml_msg}"))
         msgs = [msg for _, msg in row_res]
         results.extend(msgs)
         ok_count += sum(1 for ok, _ in row_res if ok)

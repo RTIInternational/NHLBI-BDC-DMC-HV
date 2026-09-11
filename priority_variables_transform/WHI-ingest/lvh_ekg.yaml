@@ -16,7 +16,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: "Electrocardiogram"
@@ -47,10 +47,10 @@
             '5': PRESENT
             '6': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: "hospital record abstraction"
+        # associated_evidence:
+        #   value: "hospital record abstraction"
         condition_severity:
           populated_from: phv00283580
           value_mappings:

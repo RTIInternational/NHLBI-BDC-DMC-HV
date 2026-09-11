@@ -120,7 +120,10 @@ known_issues:
 
   # ── CRP C4/C6 FAIL ─────────────────────────────────────────────────────────
   - checks: [C4, C6]
-    variable_key: "crphs2+crphs2_cresult+hscrp"
+    # Key trimmed 2026-08-06: crphs2_cresult is no longer in the harmonized
+    # source pool (now crphs2+hscrp), so the former superset key stopped
+    # subset-matching. Report values (1.9966 -> 5.4913) confirm same issue.
+    variable_key: "crphs2+hscrp"
     yaml_file: crp.yaml
     status: false_positive
     root_cause: tooling_bug
@@ -166,3 +169,31 @@ known_issues:
       ~102.66 cm.
     related_issues: []
     confirmed_date: "2026-06-27"
+
+  # ── abi (PAD Condition): C2 N-gain + C3 missing->0 ─────────────────────────
+  - checks: [C2, C3]
+    variable_key: "abi"
+    yaml_file: pad.yaml
+    status: expected_behavior
+    root_cause: per_participant_condition_emission
+    summary: >
+      pad.yaml emits a PAD Condition (MONDO:0005386) for every pht008729
+      (Exam 1) participant via a case() with a True -> UNKNOWN catchall, so the
+      harmonized N equals the anchor participant count (3,883) with 0% missing,
+      while the source ABI measurement has 3,426 valid (11.77% missing). The C2
+      N-gain and C3 missing-rate drop are the expected result of per-participant
+      Condition emission, not data loss.
+    detail: >
+      phv00401122 (abi, Ankle-Brachial Index, pht008729 Visit 1) maps to a
+      peripheral arterial disease Condition using
+      condition_status = case((abi < 0.9, "PRESENT"), (abi >= 0.9, "ABSENT"),
+      (True, "UNKNOWN")). The True catchall assigns UNKNOWN to participants with
+      null ABI, so dm-bip emits a Condition row for all 3,883 Exam 1
+      participants (0% missing). The source ABI variable has 3,426 non-null
+      values (11.77% missing), so C2 reports +13.3% N gain (3,426 -> 3,883) and
+      C3 reports a missing-rate drop (11.77% -> 0.0%). Same mechanism as the
+      documented condition_MISSING_CONCEPT / diabetes per-participant Condition
+      pattern; the 457 UNKNOWN rows are Exam 1 attendees whose ABI was not
+      measured.
+    related_issues: []
+    confirmed_date: "2026-08-06"

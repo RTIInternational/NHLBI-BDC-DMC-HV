@@ -12,9 +12,9 @@
           expr: case(({phv00078472} == 0, "ABSENT"), ({phv00078473} == 0, "HISTORICAL"),
             (True, "PRESENT"))
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -31,9 +31,9 @@
           expr: case(({phv00078475} == 0, "ABSENT"), ({phv00078476} == 0, "HISTORICAL"),
             (True, "PRESENT"))
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -52,7 +52,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -71,7 +71,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -90,7 +90,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -109,7 +109,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -130,9 +130,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -153,9 +153,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "adjudicated event"
+          value: PHYSICIAN_ADJUDICATION
+        # associated_evidence:
+        #   value: "adjudicated event"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -173,7 +173,7 @@
           value_mappings:
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -191,7 +191,7 @@
           value_mappings:
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -210,7 +210,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: HEALTH_RECORD
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -229,7 +229,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -248,7 +248,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -267,7 +267,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -286,7 +286,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -305,7 +305,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: HEALTH_RECORD
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -324,7 +324,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -343,7 +343,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -362,7 +362,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -381,7 +381,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: DEATH_RECORD
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -402,9 +402,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -425,9 +425,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -448,9 +448,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -471,9 +471,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -494,9 +494,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -517,9 +517,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "hospital record abstraction"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -540,9 +540,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "hospital record abstraction"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -563,8 +563,8 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "hospital record abstraction"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF

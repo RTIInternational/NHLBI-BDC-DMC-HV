@@ -120,8 +120,9 @@ def check_c1_n_preservation(
 def check_c2_n_loss(
     src_var: dict, harmonized_var: dict, var_name: str,
     pass_pct: float = 0.5, warn_pct: float = 2.0,
-    gain_warn_pct: float | None = None, gain_fail_pct: float | None = None,
+    gain_fail_pct: float | None = None,
     expected_n: int | None = None,
+    per_pht_src: list[dict] | None = None,
 ) -> CheckResult:
     """C2: Per-variable valid-N comparison.
 
@@ -130,8 +131,13 @@ def check_c2_n_loss(
     in place of the raw source ``n_valid``.  This makes the check correctly
     handle one-source-to-many-concepts routing where the full source row
     count is not the right comparison target for a single harmonized concept.
+
+    When *per_pht_src* is provided (list of per-PHT source summaries, each
+    carrying a ``_pht`` key), a per-PHT breakdown is added to the result
+    ``detail`` so reviewers can quickly identify which contributing table
+    block is responsible for an N loss without needing external scripts.
     """
-    src_n_raw = src_var.get("n_valid", 0)
+    src_n_raw = src_var.get("_effective_n_valid", src_var.get("n_valid", 0))
     src_n = expected_n if expected_n is not None else src_n_raw
     harmonized_n = harmonized_var.get("n_valid", 0)
     confidence = src_var.get("_comparison_confidence")
@@ -148,6 +154,33 @@ def check_c2_n_loss(
     if expected_n is not None:
         detail_base["source_n_raw"] = src_n_raw
         detail_base["expected_n_for_concept"] = expected_n
+
+    # Per-PHT source breakdown — accelerates FAIL diagnosis by showing each
+    # contributing table's source n_valid without requiring external scripts.
+    # True-fallback blocks (has (True, <status>) terminal arm) show n_total
+    # because they generate a record for every source row including null-PHV rows.
+    if per_pht_src:
+        pht_rows = [
+            {
+                "phv": p.get("_phv", ""),
+                "pht": p.get("_pht", ""),
+                "source_n_valid": (
+                    p.get("n_total", 0) if p.get("_expected_n_basis") == "n_total"
+                    else p.get("n_valid", 0)
+                ),
+            }
+            for p in per_pht_src
+            if p.get("_pht") or p.get("_phv")
+        ]
+        if len(pht_rows) > 1:
+            detail_base["per_pht_src_breakdown"] = pht_rows
+
+    # harmonized n_total vs n_valid — distinguishes "blocks didn't fire"
+    # (n_total low) from "value_mappings null failures" (n_total OK, n_valid low).
+    h_n_total = harmonized_var.get("n_total")
+    if h_n_total is not None and h_n_total != harmonized_n:
+        detail_base["harmonized_n_total"] = h_n_total
+        detail_base["harmonized_null_status_rows"] = h_n_total - harmonized_n
 
     if confidence == "unsupported":
         return CheckResult(
@@ -181,8 +214,7 @@ def check_c2_n_loss(
                            f"Significant N loss: {_n(src_n)} -> {_n(harmonized_n)} ({loss_pct}%)",
                            detail_base)
     gain_pct = round(-loss_pct, 1)
-    gain_warn = warn_pct if gain_warn_pct is None else gain_warn_pct
-    gain_fail = gain_warn if gain_fail_pct is None else gain_fail_pct
+    gain_fail = warn_pct if gain_fail_pct is None else gain_fail_pct
     detail_base["gain_pct"] = gain_pct
     status = "FAIL" if gain_pct > gain_fail else "WARN"
     severity = "Large" if status == "FAIL" else "Moderate"

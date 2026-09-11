@@ -12,8 +12,13 @@
         drug_concept:
           expr: 'case(({phv00283691} == 1, "RxCUI:5470"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00283691
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht006223
@@ -28,5 +33,10 @@
         drug_concept:
           expr: 'case(({phv00283692} == 1, "RxCUI:5470"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00283692
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT

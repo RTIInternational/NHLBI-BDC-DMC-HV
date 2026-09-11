@@ -10,6 +10,12 @@
           expr: case(({phv00507370} == 1, "NDFRT:N0000175557"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00507370
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            T: UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht012504
@@ -22,6 +28,12 @@
           expr: case(({phv00507371} == 1, "NDFRT:N0000175557"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00507371
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            T: UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht012814
@@ -34,6 +46,12 @@
           expr: case(({phv00512214} == 1, "NDFRT:N0000175557"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00512214
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            T: UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht012814
@@ -46,6 +64,12 @@
           expr: case(({phv00512215} == 1, "NDFRT:N0000175557"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00512215
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            T: UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht012815
@@ -58,6 +82,12 @@
           expr: case(({phv00512279} == 1, "NDFRT:N0000175557"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00512279
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            T: UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht012815
@@ -70,3 +100,9 @@
           expr: case(({phv00512280} == 1, "NDFRT:N0000175557"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00512280
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            T: UNKNOWN
