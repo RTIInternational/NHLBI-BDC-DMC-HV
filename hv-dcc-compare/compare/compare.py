@@ -88,9 +88,6 @@ def print_categorical_comparison(
     b_dist = (b_stats or {}).get("distribution", {})
     all_cats = list(dict.fromkeys(list(t_dist.keys()) + list(b_dist.keys())))
 
-    t_total = (t_stats or {}).get("n_total", 0)
-    b_total = (b_stats or {}).get("n_total", 0)
-
     tM = (t_stats or {}).get("n_missing", 0)
     tMP = (t_stats or {}).get("pct_missing", 0.0)
     bM = (b_stats or {}).get("n_missing", 0)
@@ -139,7 +136,6 @@ def print_continuous_comparison(
     t = t_stats or {}
     b = b_stats or {}
 
-    t_visit = t.get("visit_label", "baseline")
     b_visit = b.get("visit_label", "")
 
     unit = t.get("unit") or b.get("unit") or ""
@@ -323,7 +319,6 @@ def run_comparison(topmed: dict, bdc: dict) -> dict:
     all_vars = list(dict.fromkeys(list(t_vars.keys()) + list(b_vars.keys())))
 
     t_cohort = topmed.get("cohort", {}).get("name", "?")
-    b_cohort = bdc.get("cohort", {}).get("name", "?")
 
     # ── Header ──
     section(f"{t_cohort} HARMONIZATION COMPARISON: TOPMed DCC vs. BDC DMC")

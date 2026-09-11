@@ -105,14 +105,11 @@ class Tee:
 # Add the hv-dcc-compare root to path so config.py is importable whether
 # this script is run from the repo root or from within extract-harmonized/.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from config import (
+from config import (  # noqa: E402
     COHORTS,
-    COHORT_FOLDER_TO_CANONICAL,
-    COHORT_CANONICAL_TO_ALIASES,
     normalize_cohort_name,
     resolve_baseline_visits,
     BASELINE_VISIT_CONFIG,
-    BASELINE_VISIT_PREFS,
     SMOKING_VISIT_OVERRIDE,
     CONDITION_PROCEDURE_VISIT_OVERRIDE,
     BDC_MEASUREMENT_MAP,
@@ -125,7 +122,6 @@ from config import (
     OMOP_SMOKING_MAP,
     find_dmc_run_dirs,
     find_mapped_data_dirs,
-    cohort_from_dmc_dir_name,
     cohort_for_run_dir,
     consent_group_from_path,
     cohort_lookup,
@@ -1582,10 +1578,10 @@ def process_conditions(
         else:
             # No baseline visit matched — warn and use all rows as fallback
             config = cohort_lookup(BASELINE_VISIT_CONFIG, cohort, {})
-            print(f"    [baseline filter] WARNING: No baseline visit matched for conditions.")
+            print("    [baseline filter] WARNING: No baseline visit matched for conditions.")
             print(f"      Expected: {config.get('exact', [])}")
             print(f"      Available: {sorted(available_visits)}")
-            print(f"      Falling back to all condition rows.")
+            print("      Falling back to all condition rows.")
             baseline_df = df
             baseline_label = "all rows (no baseline match)"
     else:
@@ -1926,10 +1922,10 @@ def process_procedures(
                   f"({len(baseline_df):,} / {len(df):,} rows)")
         else:
             config = cohort_lookup(BASELINE_VISIT_CONFIG, cohort, {})
-            print(f"    [baseline filter] WARNING: No baseline visit matched for procedures.")
+            print("    [baseline filter] WARNING: No baseline visit matched for procedures.")
             print(f"      Expected: {config.get('exact', [])}")
             print(f"      Available: {sorted(available_visits)}")
-            print(f"      Falling back to all procedure rows.")
+            print("      Falling back to all procedure rows.")
             baseline_df = df
             baseline_label = "all rows (no baseline match)"
     else:
@@ -2563,10 +2559,10 @@ def process_drugs(
             visit_used = " + ".join(matched_prefs) if len(matched_prefs) > 1 else matched_prefs[0]
         else:
             config = cohort_lookup(BASELINE_VISIT_CONFIG, cohort, {})
-            print(f"    [baseline filter] WARNING: No baseline visit matched for drugs.")
+            print("    [baseline filter] WARNING: No baseline visit matched for drugs.")
             print(f"      Expected: {config.get('exact', [])}")
             print(f"      Available: {sorted(available)}")
-            print(f"      Falling back to all drug rows.")
+            print("      Falling back to all drug rows.")
             # Don't filter — use all rows
             visit_used = "all rows (no baseline match)"
 
@@ -3024,7 +3020,7 @@ def extract_one_cohort(
                   file=sys.stderr)
             print("        both case-insensitive, and one directory level below "
                   "--base-dir is searched as well.", file=sys.stderr)
-            print(f"  Either specify --mapped-data-dirs explicitly, or check --base-dir.",
+            print("  Either specify --mapped-data-dirs explicitly, or check --base-dir.",
                   file=sys.stderr)
             raise SystemExit(1)
 
@@ -3167,7 +3163,7 @@ def extract_one_cohort(
         print(f"\n  Writing: {output_path}")
         with open(output_path, "w", encoding="utf-8") as f:
             json.dump(result, f, indent=2, ensure_ascii=False)
-        print(f"  Contains: aggregate counts and statistics ONLY (no individual data).")
+        print("  Contains: aggregate counts and statistics ONLY (no individual data).")
 
         total_vars = len(variable_stats)
         n_cat = sum(1 for v in variable_stats.values() if v["type"] == "categorical")
@@ -3178,7 +3174,7 @@ def extract_one_cohort(
         print(f"  BDC extraction complete for {cohort}.")
         print(f"  Output (JSON):    {output_path}")
         print(f"  Output (log):     {log_path}")
-        print(f"  Next: run compare script with TOPMed and BDC JSONs side-by-side.")
+        print("  Next: run compare script with TOPMed and BDC JSONs side-by-side.")
         print("=" * 60)
 
     finally:

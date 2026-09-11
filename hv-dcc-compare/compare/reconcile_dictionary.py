@@ -120,8 +120,8 @@ def main() -> int:
         # code means the comparison for that variable can never fire. A missing
         # alias is usually benign -- aliases are synonym fallbacks, and the
         # dictionary only declares the canonical code.
-        primaries = {c: l for c, l in unknown.items() if not l.endswith("(alias)")}
-        aliases = {c: l for c, l in unknown.items() if l.endswith("(alias)")}
+        primaries = {c: lb for c, lb in unknown.items() if not lb.endswith("(alias)")}
+        aliases = {c: lb for c, lb in unknown.items() if lb.endswith("(alias)")}
         if primaries:
             print("    PRIMARY codes (this comparison can never match):")
             for code, label in sorted(primaries.items()):
@@ -162,7 +162,7 @@ def main() -> int:
     drug_prefixes = {prefix_of(code) for (t, col, code) in qualified
                      if t == "DrugExposure" and col == "drug_concept"}
     if drug_prefixes:
-        print(f"\n  DrugExposure.drug_concept")
+        print("\n  DrugExposure.drug_concept")
         print(f"    dictionary declares: {', '.join(sorted(drug_prefixes))}")
         print("    config.py has no drug concept map; drug codes seen in an extract "
               "that use a different\n    vocabulary (e.g. ATC classes vs RxNorm "

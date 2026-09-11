@@ -299,7 +299,7 @@ def format_cross_cohort_summary(results: list[dict], timestamp: str) -> str:
     """Format cross-cohort summary table."""
     lines = []
     lines.append(f"{'='*90}")
-    lines.append(f"  DCCCompareBatch — Cross-Cohort Scorecard Summary")
+    lines.append("  DCCCompareBatch — Cross-Cohort Scorecard Summary")
     lines.append(f"  Generated: {timestamp}")
     lines.append(f"{'='*90}")
     lines.append("")
@@ -355,7 +355,7 @@ def format_cross_cohort_summary(results: list[dict], timestamp: str) -> str:
 
     # D-grade hot list (variables graded D across cohorts)
     lines.append(f"  {'='*70}")
-    lines.append(f"  D-Grade Hot List (variables with D in any cohort)")
+    lines.append("  D-Grade Hot List (variables with D in any cohort)")
     lines.append(f"  {'='*70}")
     lines.append("")
 

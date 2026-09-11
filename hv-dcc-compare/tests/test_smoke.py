@@ -468,7 +468,8 @@ class HvDccCompareSmokeTests(unittest.TestCase):
             sys.path.insert(0, str(ROOT / "extract-harmonized"))
             sys.path.insert(0, str(ROOT))
             import extract_harmonized_summaries as ex  # type: ignore  # noqa: PLC0415
-            import io, contextlib  # noqa: PLC0415
+            import io  # noqa: PLC0415
+            import contextlib  # noqa: PLC0415
 
             def run(visit_rows: str):
                 with tempfile.TemporaryDirectory() as tmp:
@@ -519,7 +520,8 @@ class HvDccCompareSmokeTests(unittest.TestCase):
         try:
             sys.path.insert(0, str(ROOT / "extract-topmed"))
             sys.path.insert(0, str(ROOT))
-            import tarfile, io  # noqa: PLC0415
+            import tarfile  # noqa: PLC0415
+            import io  # noqa: PLC0415
             import extract_topmed_summaries as ex  # type: ignore  # noqa: PLC0415
 
             with tempfile.TemporaryDirectory() as tmp:

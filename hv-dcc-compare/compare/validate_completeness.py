@@ -61,7 +61,7 @@ if hasattr(sys.stdout, "reconfigure"):
 
 # Add the hv-dcc-compare root to path so config.py is importable
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from config import COHORTS, DATASETS, get_variable_spec
+from config import DATASETS
 
 # Variables that are "trivially complete" (study-level coding, not measured):
 # These are 100% complete for all subjects regardless of exam participation.
@@ -295,7 +295,7 @@ def compute_completeness(
     print(f"  Trivially-complete vars: {len(trivially_present)}")
 
     # --- Per-variable completeness ---
-    print(f"\n  Per-variable completeness:")
+    print("\n  Per-variable completeness:")
     var_completeness = {}
     for var in sorted(all_vars):
         n_valid = int(wide[var].notna().sum())
@@ -341,7 +341,7 @@ def compute_completeness(
     n_low = sum(histogram.get(k, 0) for k in range(0, 3))  # 0-2 vars
     n_high = sum(histogram.get(k, 0) for k in range(max_possible - 2, max_possible + 1))
 
-    print(f"\n  KEY METRICS:")
+    print("\n  KEY METRICS:")
     print(f"    Participants with ZERO exam data:  {n_zero_exam:,} ({n_zero_exam/n_total*100:.1f}%)")
     print(f"    Participants with 0-2 exam vars:   {n_low:,} ({n_low/n_total*100:.1f}%)")
     print(f"    Participants with near-complete:    {n_high:,} ({n_high/n_total*100:.1f}%)")
@@ -396,14 +396,13 @@ def compare_profiles(topmed_path: str, bdc_path: str) -> None:
     b_metrics = bdc["key_metrics"]
 
     print(f"\n{'='*70}")
-    print(f"  PARTICIPANT COMPLETENESS COMPARISON")
+    print("  PARTICIPANT COMPLETENESS COMPARISON")
     print(f"  TOPMed: {topmed['metadata']['cohort']} ({t_total:,} participants)")
     print(f"  BDC:    {bdc['metadata']['cohort']} ({b_total:,} participants)")
     print(f"{'='*70}")
 
     # Side-by-side histogram
     all_bins = sorted(set(list(t_hist.keys()) + list(b_hist.keys())))
-    max_vars = max(all_bins) if all_bins else 0
 
     print(f"\n  {'Exam Vars':<12} {'TOPMed N':<12} {'TOPMed %':<10} {'BDC N':<12} {'BDC %':<10} {'Δ N':<10}")
     print(f"  {'─'*66}")
@@ -421,7 +420,7 @@ def compare_profiles(topmed_path: str, bdc_path: str) -> None:
     t_zero = t_metrics["n_zero_exam_data"]
     b_zero = b_metrics["n_zero_exam_data"]
 
-    print(f"\n  VERDICT:")
+    print("\n  VERDICT:")
     print(f"  {'─'*66}")
     print(f"  TOPMed participants with ZERO exam data: {t_zero:,} ({t_metrics['pct_zero_exam_data']:.1f}%)")
     print(f"  BDC participants with ZERO exam data:    {b_zero:,} ({b_metrics['pct_zero_exam_data']:.1f}%)")
@@ -431,13 +430,13 @@ def compare_profiles(topmed_path: str, bdc_path: str) -> None:
     if t_zero > 100:
         effective_topmed = t_total - t_zero
         print(f"  HYPOTHESIS CONFIRMED: TOPMed count includes {t_zero:,} enrollment-only subjects.")
-        print(f"  Effective data-bearing participants:")
+        print("  Effective data-bearing participants:")
         print(f"    TOPMed: {effective_topmed:,} (after removing zero-exam subjects)")
         print(f"    BDC:    {b_total:,}")
         print(f"    Adjusted gap: {effective_topmed - b_total:,} (version-driven consent restructuring)")
     else:
         print(f"  HYPOTHESIS NOT CONFIRMED: TOPMed has only {t_zero:,} zero-exam subjects.")
-        print(f"  The participant gap requires a different explanation.")
+        print("  The participant gap requires a different explanation.")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
