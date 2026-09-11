@@ -64,8 +64,18 @@ def check_c3_missing_accounting(
                                f"n_valid mismatch: {_n(src_valid)} -> {_n(harmonized_valid)} ({diff_pct:.1f}%)",
                                {"source_n_valid": src_valid, "harmonized_n_valid": harmonized_valid})
 
-    src_pct = src_var.get("pct_missing", 0)
-    harmonized_pct = harmonized_var.get("pct_missing", 0)
+    src_pct = src_var.get("pct_missing")
+    harmonized_pct = harmonized_var.get("pct_missing")
+    if src_pct is None or harmonized_pct is None:
+        # Reached when totals are absent/zero (so the n_valid fallback above did
+        # not run) AND a missing rate is unavailable on one side. Defaulting the
+        # absent rate to 0 would compare 0 vs 0 and report a false PASS on data
+        # that was never actually compared — SKIP instead (mirrors C1/C2).
+        return CheckResult(
+            "C3", var_name, "SKIP",
+            "Insufficient data for missing-rate comparison "
+            "(no valid denominator and pct_missing unavailable)",
+        )
     diff = abs(harmonized_pct - src_pct)
 
     if diff <= pass_pp:
