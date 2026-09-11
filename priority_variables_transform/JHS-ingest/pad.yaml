@@ -1,9 +1,12 @@
-# JHS PAD: Peripheral Arterial Disease from Annual Follow-Up self-report
+# JHS PVD: Peripheral Vascular Disease from Annual Follow-Up self-report
 # Source: pht008725.v2 (afulong), Annual Follow-Up
 # Variable: phv00400971.v1 (PADEVER) -- "Has a doctor ever said that you have
 #   peripheral vascular disease or intermittent claudication?"
 #   Observed: N=19,750 (98.1%), Y=308 (1.5%), U=78 (0.4%)
 # Coded values are mapped directly; no derived criterion is applied.
+# MONDO:0005294 (PVD), not MONDO:0005386 (PAD), per HV #801 (diatomsRcool,
+# 2026-09-01): the question conflates PVD and intermittent claudication in one
+# "Yes", so the broader PVD term is the one that legitimately covers both.
 #
 # Ankle-Brachial Index (pht008729 phv00401122) is deliberately NOT used here.
 # ABI is a valid measurement and a recognised indicator of PAD, but deriving a
@@ -21,7 +24,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400849}) + ":JHS AFU")'
           range: string
         condition_concept:
-          value: MONDO:0005386
+          value: MONDO:0005294
           range: string
         condition_status:
           populated_from: phv00400971
