@@ -14,10 +14,10 @@
             '1': ABSENT
             '2': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: PHYSICIAN_ADJUDICATION
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -36,10 +36,10 @@
             '1': ABSENT
             '2': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: PHYSICIAN_ADJUDICATION
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -57,10 +57,10 @@
           value_mappings:
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: PHYSICIAN_ADJUDICATION
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -78,10 +78,10 @@
           value_mappings:
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: PHYSICIAN_ADJUDICATION
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -99,10 +99,10 @@
           value_mappings:
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: PHYSICIAN_ADJUDICATION
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -120,10 +120,10 @@
           value_mappings:
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: PHYSICIAN_ADJUDICATION
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -141,10 +141,10 @@
           value_mappings:
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: PHYSICIAN_ADJUDICATION
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -162,10 +162,10 @@
           value_mappings:
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: WORKING_DIAGNOSIS
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -184,10 +184,10 @@
             '1': ABSENT
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: HEALTH_RECORD
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -206,32 +206,10 @@
             '1': ABSENT
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-- class_derivations:
-    Condition:
-      populated_from: pht001871
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121473}) + ":CARDIA")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121473}) + ":CARDIA MEDICAL HISTORY")'
-        condition_concept:
-          value: MONDO:0005386
-        condition_status:
-          populated_from: phv00121485
-          value_mappings:
-            '1': ABSENT
-            '2': PRESENT
-        condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: PHYSICIAN_ADJUDICATION
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -249,10 +227,10 @@
           value_mappings:
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: PHYSICIAN_ADJUDICATION
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -270,10 +248,10 @@
           value_mappings:
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: PHYSICIAN_ADJUDICATION
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -291,10 +269,10 @@
           value_mappings:
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: PHYSICIAN_ADJUDICATION
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -312,10 +290,10 @@
           value_mappings:
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: PHYSICIAN_ADJUDICATION
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -333,10 +311,10 @@
           value_mappings:
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: PHYSICIAN_ADJUDICATION
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -354,10 +332,10 @@
           value_mappings:
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: WORKING_DIAGNOSIS
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -375,10 +353,10 @@
           value_mappings:
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: PHYSICIAN_ADJUDICATION
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -400,10 +378,10 @@
             '1': ABSENT
             '8': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -425,10 +403,10 @@
             '1': ABSENT
             '8': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -450,9 +428,9 @@
             '1': ABSENT
             '8': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "hospital record abstraction"
-          range: string
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "hospital record abstraction"
+        #   range: string
         relationship_to_participant:
           value: ONESELF

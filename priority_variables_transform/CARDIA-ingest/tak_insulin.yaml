@@ -10,3 +10,8 @@
           expr: case(({phv00118386} == 2, 'ATC:A10A'))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00118386
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT
