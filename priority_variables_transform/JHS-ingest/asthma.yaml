@@ -19,9 +19,9 @@
             'Yes': PRESENT
             Dont know: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "Personal and Family History Questionnaire"
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
+        # associated_evidence:
+        #   value: "Personal and Family History Questionnaire"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -47,10 +47,10 @@
         condition_provenance:
           populated_from: phv00128345
           value_mappings:
-            'Yes': CLINICAL_DIAGNOSIS
-            'No': PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "Respiratory Disease Questionnaire"
+            'Yes': PATIENT_SELF_REPORT_DR_CONFIRMED
+            'No': PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "Respiratory Disease Questionnaire"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -70,9 +70,9 @@
           expr: case(({phv00400910} == "N", "ABSENT"),({phv00400910} == "U", "UNKNOWN"),({phv00400911}
             == "Y", "PRESENT"), ({phv00400911} == "U", "UNKNOWN"),(True, "HISTORICAL"))
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "Annual Follow-Up"
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
+        # associated_evidence:
+        #   value: "Annual Follow-Up"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -95,7 +95,7 @@
             '1': HISTORICAL
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: "Analysis derived"
         relationship_to_participant:
@@ -123,7 +123,7 @@
             '7': UNKNOWN
             '9': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: "Health History Questionnaire"
         relationship_to_participant:
@@ -150,7 +150,7 @@
             'No': ABSENT
             Don't know: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: "Personal and Family History Questionnaire"
         relationship_to_participant:

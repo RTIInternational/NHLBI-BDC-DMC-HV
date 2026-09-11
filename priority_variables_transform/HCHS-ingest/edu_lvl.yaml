@@ -9,7 +9,7 @@
         age_at_observation:
           expr: '{phv00226251} * 365'
         observation_type:
-          value: OMOP:42528763
+          value: EDUCATIONAL_ATTAINMENT
           range: string
         category:
           value: EDUCATIONAL_ATTAINMENT
@@ -17,6 +17,6 @@
         value_enum:
           populated_from: phv00226276
           value_mappings:
-            '1': LESS THAN HIGH SCHOOL
-            '2': HIGH SCHOOL OR EQUIVALENT
-            '3': GREATER THAN HIGH SCHOOL OR EQUIVALENT
+            '1': HIGH_SCHOOL_NO_DIPLOMA
+            '2': HIGH_SCHOOL_GRADUATE_GED
+            '3': GREATER_THAN_HIGH_SCHOOL_OR_EQUIVALENT

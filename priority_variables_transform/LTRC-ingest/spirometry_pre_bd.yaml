@@ -11,6 +11,8 @@
           - MeasurementObservation:
               populated_from: pht010064
               slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00429460}) + ":LTRC")'
                 observation_type:
                   value: OMOP:4241837
                 body_position:
@@ -19,11 +21,11 @@
                   value: spirometry
                 context:
                   class_derivations:
-                    Context:
+                  - Context:
                       slot_derivations:
                         activity:
                           class_derivations:
-                            Activity:
+                          - Activity:
                               slot_derivations:
                                 activity_type:
                                   value: BRONCHODILATOR_MEDICATION_USE
@@ -41,6 +43,8 @@
           - MeasurementObservation:
               populated_from: pht010064
               slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00429460}) + ":LTRC")'
                 observation_type:
                   value: OMOP:4176265
                 body_position:
@@ -49,11 +53,11 @@
                   value: spirometry
                 context:
                   class_derivations:
-                    Context:
+                  - Context:
                       slot_derivations:
                         activity:
                           class_derivations:
-                            Activity:
+                          - Activity:
                               slot_derivations:
                                 activity_type:
                                   value: BRONCHODILATOR_MEDICATION_USE
@@ -71,6 +75,8 @@
           - MeasurementObservation:
               populated_from: pht010064
               slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00429460}) + ":LTRC")'
                 observation_type:
                   value: OMOP:3011505
                 body_position:
@@ -79,11 +85,11 @@
                   value: calculated
                 context:
                   class_derivations:
-                    Context:
+                  - Context:
                       slot_derivations:
                         activity:
                           class_derivations:
-                            Activity:
+                          - Activity:
                               slot_derivations:
                                 activity_type:
                                   value: BRONCHODILATOR_MEDICATION_USE

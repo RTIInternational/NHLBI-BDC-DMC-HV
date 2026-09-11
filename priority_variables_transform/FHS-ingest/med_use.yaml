@@ -9,8 +9,16 @@
         drug_concept:
           expr: 'case(({phv00004948} == 1, "ATC:C01A"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004948
+          value_mappings:
+            '.': UNKNOWN
+            '1': PRESENT
+            '3': UNKNOWN
+            '2': PRESENT
+            '0': ABSENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -22,8 +30,16 @@
         drug_concept:
           expr: 'case(({phv00004949} == 1, "RxCUI:4917"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004949
+          value_mappings:
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
+            '2': PRESENT
+            '0': ABSENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -35,8 +51,16 @@
         drug_concept:
           expr: 'case(({phv00004950} == 1, "NDFRT:N0000175415"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004950
+          value_mappings:
+            '1': PRESENT
+            '3': UNKNOWN
+            '.': UNKNOWN
+            '0': ABSENT
+            '2': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -48,58 +72,16 @@
         drug_concept:
           expr: 'case(({phv00004951} == 1, "ATC:C08"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
-- class_derivations:
-    DrugExposure:
-      populated_from: pht000024
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00005557}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005557}) + ":FHS ORIGINAL EXAM 22")'
-        drug_concept:
-          expr: 'case(({phv00004952} == 1, "ATC:C07A"))'
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-          range: string
-- class_derivations:
-    DrugExposure:
-      populated_from: pht000024
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00005557}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005557}) + ":FHS ORIGINAL EXAM 22")'
-        drug_concept:
-          expr: 'case(({phv00004953} == 1, "ATC:C07A"))'
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-          range: string
-- class_derivations:
-    DrugExposure:
-      populated_from: pht000024
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00005557}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005557}) + ":FHS ORIGINAL EXAM 22")'
-        drug_concept:
-          populated_from: phv00004953
+        exposure_status:
+          populated_from: phv00004951
           value_mappings:
-            '0': None
-            '1': RxCUI:8787
-            '2': RxCUI:10600
-            '3': RxCUI:7226
-            '4': RxCUI:1202
-            '5': RxCUI:6918
-            '6': RxCUI:8332
-            '7': RxCUI:149
-            '8': RxCUI:6185
-            '9': ATC:C07A
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-          range: string
+            '2': PRESENT
+            '0': ABSENT
+            '3': UNKNOWN
+            '1': PRESENT
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -111,8 +93,16 @@
         drug_concept:
           expr: 'case(({phv00004955} == 1, "VANDF:CV702"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004955
+          value_mappings:
+            '2': PRESENT
+            '0': ABSENT
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -124,8 +114,16 @@
         drug_concept:
           expr: 'case(({phv00004957} == 1, "NDFRT:N0000175419"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004957
+          value_mappings:
+            '.': UNKNOWN
+            '1': PRESENT
+            '3': UNKNOWN
+            '2': PRESENT
+            '0': ABSENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -137,8 +135,16 @@
         drug_concept:
           expr: 'case(({phv00004958} == 1, "NDFRT:N0000175418"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004958
+          value_mappings:
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
+            '0': ABSENT
+            '2': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -150,8 +156,16 @@
         drug_concept:
           expr: 'case(({phv00004959} == 1, "RxCUI:8588"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004959
+          value_mappings:
+            '2': PRESENT
+            '0': ABSENT
+            '1': PRESENT
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -163,8 +177,16 @@
         drug_concept:
           expr: 'case(({phv00004960} == 1, "RxCUI:9260"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004960
+          value_mappings:
+            '0': ABSENT
+            '2': PRESENT
+            '1': PRESENT
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -176,8 +198,16 @@
         drug_concept:
           expr: 'case(({phv00004961} == 1, "RxCUI:6876"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004961
+          value_mappings:
+            '0': ABSENT
+            '2': PRESENT
+            '1': PRESENT
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -189,8 +219,16 @@
         drug_concept:
           expr: 'case(({phv00004962} == 1, "NDFRT:N0000009917"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004962
+          value_mappings:
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
+            '0': ABSENT
+            '2': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -202,8 +240,16 @@
         drug_concept:
           expr: 'case(({phv00004963} == 1, "NDFRT:N0000175553"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004963
+          value_mappings:
+            '3': UNKNOWN
+            '1': PRESENT
+            '.': UNKNOWN
+            '0': ABSENT
+            '2': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -215,8 +261,16 @@
         drug_concept:
           expr: 'case(({phv00004964} == 1, "NDFRT:N0000175562"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004964
+          value_mappings:
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
+            '0': ABSENT
+            '2': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -228,8 +282,16 @@
         drug_concept:
           expr: 'case(({phv00004965} == 1, "ATC:C04"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004965
+          value_mappings:
+            '0': ABSENT
+            '2': PRESENT
+            '.': UNKNOWN
+            '1': PRESENT
+            '3': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -241,8 +303,16 @@
         drug_concept:
           expr: 'case(({phv00004966} == 1, "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004966
+          value_mappings:
+            '.': UNKNOWN
+            '1': PRESENT
+            '3': UNKNOWN
+            '0': ABSENT
+            '2': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -254,8 +324,16 @@
         drug_concept:
           expr: 'case(({phv00004967} == 1, "C01B"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004967
+          value_mappings:
+            '2': PRESENT
+            '0': ABSENT
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -267,8 +345,16 @@
         drug_concept:
           expr: 'case(({phv00004969} == 1, "NDFRT:N0000175980"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004969
+          value_mappings:
+            '0': ABSENT
+            '2': PRESENT
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -280,8 +366,16 @@
         drug_concept:
           expr: 'case(({phv00004972} == 1, "NDFRT:N0000180292"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004972
+          value_mappings:
+            '0': ABSENT
+            '2': PRESENT
+            '.': UNKNOWN
+            '1': PRESENT
+            '3': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -293,8 +387,16 @@
         drug_concept:
           expr: 'case(({phv00004973} == 1, "NDFRT:N0000175594"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004973
+          value_mappings:
+            '1': PRESENT
+            '3': UNKNOWN
+            '.': UNKNOWN
+            '2': PRESENT
+            '0': ABSENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -306,8 +408,16 @@
         drug_concept:
           expr: 'case(({phv00004974} == 1, "NxCUI:C10AB"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004974
+          value_mappings:
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
+            '2': PRESENT
+            '0': ABSENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -319,8 +429,16 @@
         drug_concept:
           expr: 'case(({phv00004975} == 1, "NDFRT:N0000175589"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004975
+          value_mappings:
+            '.': UNKNOWN
+            '1': PRESENT
+            '3': UNKNOWN
+            '0': ABSENT
+            '2': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -332,8 +450,16 @@
         drug_concept:
           expr: 'case(({phv00004976} == 1, "ATC:C10A"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004976
+          value_mappings:
+            '1': PRESENT
+            '3': UNKNOWN
+            '.': UNKNOWN
+            '0': ABSENT
+            '2': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -345,8 +471,16 @@
         drug_concept:
           expr: 'case(({phv00004977} == 1, "ATC:M04"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004977
+          value_mappings:
+            '2': PRESENT
+            '0': ABSENT
+            '1': PRESENT
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -358,8 +492,16 @@
         drug_concept:
           expr: 'case(({phv00004978} == 1, "RxCUI:2683"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004978
+          value_mappings:
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
+            '2': PRESENT
+            '0': ABSENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -371,8 +513,16 @@
         drug_concept:
           expr: 'case(({phv00004979} == 1, "RxCUI:10572"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004979
+          value_mappings:
+            '2': PRESENT
+            '0': ABSENT
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -384,8 +534,16 @@
         drug_concept:
           expr: 'case(({phv00004980} == 1, "MeSH:D013974"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004980
+          value_mappings:
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
+            '2': PRESENT
+            '0': ABSENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -397,8 +555,16 @@
         drug_concept:
           expr: 'case(({phv00004981} == 1, "MeSH:D007328"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004981
+          value_mappings:
+            '2': PRESENT
+            '0': ABSENT
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -410,8 +576,16 @@
         drug_concept:
           expr: 'case(({phv00004983} == 1, "VANDF:HS502"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004983
+          value_mappings:
+            '.': UNKNOWN
+            '1': PRESENT
+            '3': UNKNOWN
+            '0': ABSENT
+            '2': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -423,8 +597,16 @@
         drug_concept:
           expr: 'case(({phv00004984} == 1, "RxCUI:4100"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004984
+          value_mappings:
+            '3': UNKNOWN
+            '1': PRESENT
+            '.': UNKNOWN
+            '2': PRESENT
+            '0': ABSENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -436,8 +618,16 @@
         drug_concept:
           expr: 'case(({phv00004985} == 1, "VANDF:HS051"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004985
+          value_mappings:
+            '2': PRESENT
+            '0': ABSENT
+            '3': UNKNOWN
+            '1': PRESENT
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -449,8 +639,16 @@
         drug_concept:
           expr: 'case(({phv00004986} == 1, "VANDF:CN104"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004986
+          value_mappings:
+            '0': ABSENT
+            '2': PRESENT
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -462,8 +660,16 @@
         drug_concept:
           expr: 'case(({phv00004988} == 1, "NDFRT:N0000175690"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004988
+          value_mappings:
+            '0': ABSENT
+            '2': PRESENT
+            '.': UNKNOWN
+            '1': PRESENT
+            '3': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -475,8 +681,16 @@
         drug_concept:
           expr: 'case(({phv00004991} == 1, "VANDF:AH000"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004991
+          value_mappings:
+            '3': UNKNOWN
+            '1': PRESENT
+            '.': UNKNOWN
+            '0': ABSENT
+            '2': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -488,8 +702,16 @@
         drug_concept:
           expr: 'case(({phv00004992} == 1, "VANDF:GA300"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00004992
+          value_mappings:
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
+            '2': PRESENT
+            '0': ABSENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
@@ -501,8 +723,16 @@
         drug_concept:
           expr: 'case(({phv00005568} == 1, "ATC:C01A"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00005568
+          value_mappings:
+            '0': ABSENT
+            '2': PRESENT
+            '.': UNKNOWN
+            '1': PRESENT
+            '3': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
@@ -514,8 +744,16 @@
         drug_concept:
           expr: 'case(({phv00005569} == 1, "RxCUI:4917"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00005569
+          value_mappings:
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
+            '0': ABSENT
+            '2': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
@@ -527,8 +765,16 @@
         drug_concept:
           expr: 'case(({phv00005570} == 1, "NDFRT:N0000175415"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00005570
+          value_mappings:
+            '3': UNKNOWN
+            '1': PRESENT
+            '.': UNKNOWN
+            '2': PRESENT
+            '0': ABSENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
@@ -540,58 +786,16 @@
         drug_concept:
           expr: 'case(({phv00005571} == 1, "ATC:C08"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
-- class_derivations:
-    DrugExposure:
-      populated_from: pht000025
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00005558}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005558}) + ":FHS ORIGINAL EXAM 23")'
-        drug_concept:
-          expr: 'case(({phv00005572} == 1, "ATC:C07A"))'
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-          range: string
-- class_derivations:
-    DrugExposure:
-      populated_from: pht000025
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00005558}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005558}) + ":FHS ORIGINAL EXAM 23")'
-        drug_concept:
-          expr: 'case(({phv00005573} == 1, "ATC:C07A"))'
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-          range: string
-- class_derivations:
-    DrugExposure:
-      populated_from: pht000025
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00005558}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005558}) + ":FHS ORIGINAL EXAM 23")'
-        drug_concept:
-          populated_from: phv00005572
+        exposure_status:
+          populated_from: phv00005571
           value_mappings:
-            '0': None
-            '1': RxCUI:8787
-            '2': RxCUI:10600
-            '3': RxCUI:7226
-            '4': RxCUI:1202
-            '5': RxCUI:6918
-            '6': RxCUI:8332
-            '7': RxCUI:149
-            '8': RxCUI:6185
-            '9': ATC:C07A
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-          range: string
+            '2': PRESENT
+            '0': ABSENT
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
@@ -603,8 +807,16 @@
         drug_concept:
           expr: 'case(({phv00005575} == 1, "VANDF:CV702"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00005575
+          value_mappings:
+            '3': UNKNOWN
+            '1': PRESENT
+            '.': UNKNOWN
+            '0': ABSENT
+            '2': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
@@ -616,8 +828,16 @@
         drug_concept:
           expr: 'case(({phv00005577} == 1, "NDFRT:N0000175419"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00005577
+          value_mappings:
+            '2': PRESENT
+            '0': ABSENT
+            '.': UNKNOWN
+            '1': PRESENT
+            '3': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
@@ -629,8 +849,16 @@
         drug_concept:
           expr: 'case(({phv00005578} == 1, "NDFRT:N0000175418"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00005578
+          value_mappings:
+            '0': ABSENT
+            '2': PRESENT
+            '3': UNKNOWN
+            '1': PRESENT
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
@@ -642,8 +870,16 @@
         drug_concept:
           expr: 'case(({phv00005582} == 1, "NDFRT:N0000009917"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00005582
+          value_mappings:
+            '3': UNKNOWN
+            '1': PRESENT
+            '.': UNKNOWN
+            '0': ABSENT
+            '2': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
@@ -655,8 +891,16 @@
         drug_concept:
           expr: 'case(({phv00005583} == 1, "VANDF:CV150"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00005583
+          value_mappings:
+            '2': PRESENT
+            '0': ABSENT
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
@@ -668,8 +912,16 @@
         drug_concept:
           expr: 'case(({phv00005584} == 1, "NDFRT:N0000175562"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00005584
+          value_mappings:
+            '3': UNKNOWN
+            '1': PRESENT
+            '.': UNKNOWN
+            '0': ABSENT
+            '2': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
@@ -681,8 +933,16 @@
         drug_concept:
           expr: 'case(({phv00005585} == 1, "ATC:C04"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00005585
+          value_mappings:
+            '2': PRESENT
+            '0': ABSENT
+            '3': UNKNOWN
+            '1': PRESENT
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
@@ -694,8 +954,16 @@
         drug_concept:
           expr: 'case(({phv00005586} == 1, "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00005586
+          value_mappings:
+            '0': ABSENT
+            '2': PRESENT
+            '1': PRESENT
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
@@ -707,8 +975,16 @@
         drug_concept:
           expr: 'case(({phv00005592} == 1, "NDFRT:N0000180292"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00005592
+          value_mappings:
+            '0': ABSENT
+            '2': PRESENT
+            '1': PRESENT
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
@@ -720,8 +996,16 @@
         drug_concept:
           expr: 'case(({phv00005593} == 1, "NDFRT:N0000175594"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00005593
+          value_mappings:
+            '.': UNKNOWN
+            '1': PRESENT
+            '3': UNKNOWN
+            '0': ABSENT
+            '2': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
@@ -733,8 +1017,16 @@
         drug_concept:
           expr: 'case(({phv00005594} == 1, "NxCUI:C10AB"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00005594
+          value_mappings:
+            '.': UNKNOWN
+            '1': PRESENT
+            '3': UNKNOWN
+            '2': PRESENT
+            '0': ABSENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
@@ -746,8 +1038,16 @@
         drug_concept:
           expr: 'case(({phv00005595} == 1, "NDFRT:N0000175589"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00005595
+          value_mappings:
+            '0': ABSENT
+            '2': PRESENT
+            '1': PRESENT
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
@@ -759,8 +1059,16 @@
         drug_concept:
           expr: 'case(({phv00005596} == 1, "ATC:C10A"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00005596
+          value_mappings:
+            '.': UNKNOWN
+            '1': PRESENT
+            '3': UNKNOWN
+            '0': ABSENT
+            '2': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
@@ -772,8 +1080,16 @@
         drug_concept:
           expr: 'case(({phv00005601} == 1, "MeSH:D007328"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00005601
+          value_mappings:
+            '.': UNKNOWN
+            '1': PRESENT
+            '3': UNKNOWN
+            '0': ABSENT
+            '2': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
@@ -785,8 +1101,16 @@
         drug_concept:
           expr: 'case(({phv00005603} == 1, "VANDF:HS502"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00005603
+          value_mappings:
+            '2': PRESENT
+            '0': ABSENT
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
@@ -798,8 +1122,16 @@
         drug_concept:
           expr: 'case(({phv00006119} == 1, "ATC:C01A"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006119
+          value_mappings:
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
+            '2': PRESENT
+            '0': ABSENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
@@ -811,8 +1143,16 @@
         drug_concept:
           expr: 'case(({phv00006120} == 1, "RxCUI:4917"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006120
+          value_mappings:
+            '0': ABSENT
+            '2': PRESENT
+            '3': UNKNOWN
+            '1': PRESENT
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
@@ -824,8 +1164,16 @@
         drug_concept:
           expr: 'case(({phv00006121} == 1, "NDFRT:N0000175415"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006121
+          value_mappings:
+            '.': UNKNOWN
+            '1': PRESENT
+            '3': UNKNOWN
+            '2': PRESENT
+            '0': ABSENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
@@ -837,8 +1185,16 @@
         drug_concept:
           expr: 'case(({phv00006122} == 1, "ATC:C08"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006122
+          value_mappings:
+            '0': ABSENT
+            '2': PRESENT
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
@@ -850,45 +1206,15 @@
         drug_concept:
           expr: 'case(({phv00006123} == 1, "ATC:C08"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
-- class_derivations:
-    DrugExposure:
-      populated_from: pht000026
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00006031}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006031}) + ":FHS ORIGINAL EXAM 24")'
-        drug_concept:
-          expr: 'case(({phv00006124} == 1, "ATC:C07A"))'
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-          range: string
-- class_derivations:
-    DrugExposure:
-      populated_from: pht000026
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00006031}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006031}) + ":FHS ORIGINAL EXAM 24")'
-        drug_concept:
-          populated_from: phv00006125
+        exposure_status:
+          populated_from: phv00006123
           value_mappings:
-            '0': None
-            '1': RxCUI:8787
-            '2': RxCUI:10600
-            '3': RxCUI:7226
-            '4': RxCUI:1202
-            '5': RxCUI:6918
-            '6': RxCUI:8332
-            '7': RxCUI:149
-            '8': RxCUI:6185
-            '9': ATC:C07A
-        exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
-          range: string
+            '0': ABSENT
+            '2': UNKNOWN
+            '1': PRESENT
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
@@ -900,8 +1226,16 @@
         drug_concept:
           expr: 'case(({phv00006127} == 1, "VANDF:CV702"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006127
+          value_mappings:
+            '.': UNKNOWN
+            '1': PRESENT
+            '3': UNKNOWN
+            '0': ABSENT
+            '2': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
@@ -913,8 +1247,16 @@
         drug_concept:
           expr: 'case(({phv00006129} == 1, "NDFRT:N0000175419"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006129
+          value_mappings:
+            '.': UNKNOWN
+            '1': PRESENT
+            '3': UNKNOWN
+            '0': ABSENT
+            '2': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
@@ -926,8 +1268,16 @@
         drug_concept:
           expr: 'case(({phv00006130} == 1, "NDFRT:N0000175418"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006130
+          value_mappings:
+            '0': ABSENT
+            '2': PRESENT
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
@@ -939,8 +1289,16 @@
         drug_concept:
           expr: 'case(({phv00006134} == 1, "NDFRT:N0000009917"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006134
+          value_mappings:
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
+            '2': PRESENT
+            '0': ABSENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
@@ -952,8 +1310,16 @@
         drug_concept:
           expr: 'case(({phv00006135} == 1, "NDFRT:N0000009918"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006135
+          value_mappings:
+            '3': UNKNOWN
+            '1': PRESENT
+            '.': UNKNOWN
+            '0': ABSENT
+            '2': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
@@ -965,8 +1331,16 @@
         drug_concept:
           expr: 'case(({phv00006136} == 1, "NDFRT:N0000175562"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006136
+          value_mappings:
+            '2': PRESENT
+            '0': ABSENT
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
@@ -978,8 +1352,16 @@
         drug_concept:
           expr: 'case(({phv00006137} == 1, "ATC:C04"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006137
+          value_mappings:
+            '2': PRESENT
+            '0': ABSENT
+            '.': UNKNOWN
+            '1': PRESENT
+            '3': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
@@ -991,8 +1373,16 @@
         drug_concept:
           expr: 'case(({phv00006138} == 1, "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006138
+          value_mappings:
+            '3': UNKNOWN
+            '1': PRESENT
+            '.': UNKNOWN
+            '2': PRESENT
+            '0': ABSENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
@@ -1004,8 +1394,16 @@
         drug_concept:
           expr: 'case(({phv00006143} == 1, "NDFRT:N0000180292"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006143
+          value_mappings:
+            '0': ABSENT
+            '2': PRESENT
+            '1': PRESENT
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
@@ -1017,8 +1415,16 @@
         drug_concept:
           expr: 'case(({phv00006144} == 1, "NDFRT:N0000175594"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006144
+          value_mappings:
+            '3': UNKNOWN
+            '1': PRESENT
+            '.': UNKNOWN
+            '0': ABSENT
+            '2': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
@@ -1030,8 +1436,16 @@
         drug_concept:
           expr: 'case(({phv00006145} == 1, "NxCUI:C10AB"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006145
+          value_mappings:
+            '2': PRESENT
+            '0': ABSENT
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
@@ -1043,8 +1457,16 @@
         drug_concept:
           expr: 'case(({phv00006146} == 1, "NDFRT:N0000175589"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006146
+          value_mappings:
+            '.': UNKNOWN
+            '3': UNKNOWN
+            '1': PRESENT
+            '0': ABSENT
+            '2': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
@@ -1056,8 +1478,16 @@
         drug_concept:
           expr: 'case(({phv00006147} == 1, "ATC:C02"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006147
+          value_mappings:
+            '1': PRESENT
+            '3': UNKNOWN
+            '.': UNKNOWN
+            '2': PRESENT
+            '0': ABSENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
@@ -1069,8 +1499,16 @@
         drug_concept:
           expr: 'case(({phv00006152} == 1, "MeSH:D007328"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006152
+          value_mappings:
+            '.': UNKNOWN
+            '1': PRESENT
+            '3': UNKNOWN
+            '2': PRESENT
+            '0': ABSENT
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
@@ -1082,5 +1520,13 @@
         drug_concept:
           expr: 'case(({phv00006154} == 1, "VANDF:HS502"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00006154
+          value_mappings:
+            '2': PRESENT
+            '0': ABSENT
+            '1': PRESENT
+            '3': UNKNOWN
+            '.': UNKNOWN
