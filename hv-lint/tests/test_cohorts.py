@@ -25,7 +25,9 @@ import _cohorts  # noqa: E402
 
 
 def _cache(tmp_path: Path, *keys: str, manifest: dict | None = None) -> Path:
-    d = tmp_path / "dbgap-cache"
+    """Make a cache dir. ``tmp_path`` may be a pytest tmp_path (a `dbgap-cache` child is added)
+    or an explicit directory to use as-is."""
+    d = tmp_path if tmp_path.name == "dbgap-cache" else tmp_path / "dbgap-cache"
     d.mkdir(parents=True, exist_ok=True)
     for key in keys:
         (d / f"{key}.json.gz").write_bytes(b"")
@@ -248,3 +250,41 @@ def test_manifest_entries_merge_field_wise(tmp_path):
     _cohorts.write_manifest_entries(cache, {"phs001662.v4": {"visit_tables": 27}})
     entry = _cohorts.manifest_entry(cache, "phs001662.v4")
     assert entry["phvs"] == 1577 and entry["visit_tables"] == 27 and entry["cohort"] == "LTRC"
+
+# --------------------------------------------------------------------- staged-tree resolution
+#
+# Both cases below were found by a real run on 2026-09-10, not by inspection, and both were
+# introduced by making the release check mandatory. The fleet regression ran against the REAL
+# HV tree and could not see either.
+
+def test_the_declaration_is_found_via_the_cache_dir_when_the_tree_is_staged(tmp_path):
+    """A caller linting STAGED output points --hv-root at a temp tree holding only
+    `<COHORT>-ingest`, which has no `hv_dataqc/` manifests. Resolving the root from the transform
+    dir alone made the mandatory release check fail for every staged run -- which is how the
+    AI-harmonization pipeline always invokes HV-Lint."""
+    real = _fetch_manifest(tmp_path / "clone", "ltrc", "phs001662", "v4.p2")
+    cache = _cache(real / "hv-lint" / "dbgap-cache", "phs001662.v4")
+    staged = tmp_path / "staged"
+    (staged / "priority_variables_transform" / "LTRC-ingest").mkdir(parents=True)
+    # hv_root points at the staged tree, which knows nothing; the cache path reaches the clone
+    assert _cohorts.declared_study("LTRC", staged) is None
+    assert _cohorts.declared_study("LTRC", staged, cache_dir=cache) == "phs001662.v4"
+    assert _cohorts.cache_key_for("LTRC", cache, staged) == "phs001662.v4"
+
+
+def test_two_releases_of_one_study_are_never_disambiguated_by_sort_order(tmp_path):
+    """Artifacts are keyed by release, so a study with two staged releases has two manifest
+    entries carrying the same cohort. Appending both made the first one win: LTRC resolved to
+    phs001662.v2 against a declared v4."""
+    cache = _cache(tmp_path / "dbgap-cache", "phs001662.v2", "phs001662.v4",
+                   manifest={
+                       "phs001662.v2": {"cohort": "LTRC", "study": "phs001662",
+                                        "study_version": "v2"},
+                       "phs001662.v4": {"cohort": "LTRC", "study": "phs001662",
+                                        "study_version": "v4"},
+                   })
+    # with a declaration, the declared release wins
+    root = _fetch_manifest(tmp_path / "clone", "ltrc", "phs001662", "v4.p2")
+    assert _cohorts.cache_key_for("LTRC", cache, root) == "phs001662.v4"
+    # with NO declaration, the ambiguous cohort match is refused rather than guessed
+    assert "phs001662.v2" not in _cohorts.candidate_keys("LTRC", cache, tmp_path / "nowhere")

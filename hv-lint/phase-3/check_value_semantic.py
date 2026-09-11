@@ -422,7 +422,7 @@ def main() -> int:
             # hv_dataqc/cache_fetcher/manifests/_manifest-<cohort>.yaml is the expectation. A
             # cohort that declares nothing is a hard failure, because "lint against whichever
             # cache happens to be present" is how a superseded release goes unnoticed.
-            expected = args.expect_study or _cohorts.declared_study(cohort_name)
+            expected = args.expect_study or _cohorts.declared_study(cohort_name, cache_dir=cache_dir)
             if not expected:
                 print(
                     f"ERROR: cohort '{cohort_name}' declares no dbGaP release, so the cache "

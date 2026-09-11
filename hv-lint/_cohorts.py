@@ -102,15 +102,20 @@ def candidate_keys(
     """
     token = (cohort or "").strip()
     cands: list[str] = []
-    declared = declared_study(token, hv_root)
+    # `cache_dir` is passed through because the declaration lives in the real HV clone, which a
+    # caller linting a STAGED tree can only reach via the cache path.
+    declared = declared_study(token, hv_root, cache_dir)
     if declared:
         cands.append(declared)
     if cache_dir:
-        # A manifest entry is the strongest signal: it names the cohort explicitly, so it
-        # survives any separator convention in the file name.
-        for key, entry in read_manifest(cache_dir).items():
-            if _squash(entry.get("cohort", "")) == _squash(token):
-                cands.append(key)
+        # A manifest entry naming this cohort, but ONLY when it is unambiguous. Artifacts are
+        # keyed by release, so a study with two staged releases has two entries carrying the
+        # same cohort -- appending both silently picked whichever sorted first, which resolved
+        # LTRC to phs001662.v2 against a declared v4. Ambiguity must fail loudly instead.
+        matches = [key for key, entry in read_manifest(cache_dir).items()
+                   if _squash(entry.get("cohort", "")) == _squash(token)]
+        if len(matches) == 1:
+            cands.append(matches[0])
     alias = ALIASES.get(token.upper())
     if alias:
         cands.append(alias)
@@ -136,7 +141,9 @@ def _hv_root() -> Path | None:
         return None
 
 
-def declared_study(cohort: str, hv_root: Path | str | None = None) -> str | None:
+def declared_study(
+    cohort: str, hv_root: Path | str | None = None, cache_dir: Path | str | None = None
+) -> str | None:
     """The release ``cohort`` is DECLARED to be harmonized against, e.g. ``phs000280.v8``.
 
     Read from ``hv_dataqc/cache_fetcher/manifests/_manifest-<cohort>.yaml`` (`current_version`),
@@ -148,11 +155,24 @@ def declared_study(cohort: str, hv_root: Path | str | None = None) -> str | None
     rather than a default, since "lint against whatever cache happens to be present" is how a
     superseded release goes unnoticed.
     """
-    root = Path(hv_root) if hv_root else _hv_root()
-    if root is None:
-        return None
-    base = root.joinpath(*_FETCH_MANIFESTS)
-    if not base.is_dir():
+    # Candidate roots, in order. The CACHE directory matters as much as the transform tree:
+    # a caller that lints STAGED output points --hv-root at a temporary tree holding only
+    # `<COHORT>-ingest`, which has no `hv_dataqc/` manifests -- so resolving the root from the
+    # transform dir alone made the mandatory release check fail for every staged run, which is
+    # how the AI-harmonization pipeline always invokes HV-Lint. The cache directory is in the
+    # real clone (`<hv>/hv-lint/dbgap-cache`), so its grandparent gets there.
+    roots: list[Path] = []
+    for cand in (Path(hv_root) if hv_root else _hv_root(), ):
+        if cand is not None:
+            roots.append(Path(cand))
+    if cache_dir:
+        cd = Path(cache_dir).resolve()
+        roots.extend(parent for parent in cd.parents if (parent / _FETCH_MANIFESTS[0]).is_dir())
+    base = next(
+        (r.joinpath(*_FETCH_MANIFESTS) for r in roots if r.joinpath(*_FETCH_MANIFESTS).is_dir()),
+        None,
+    )
+    if base is None:
         return None
     want = _squash(cohort)
     for path in sorted(base.glob("_manifest-*.yaml")):
