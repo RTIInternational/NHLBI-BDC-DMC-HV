@@ -45,8 +45,6 @@ import yaml
 # Constants
 # ---------------------------------------------------------------------------
 
-# Maps directory-derived cohort name -> dbGaP cache key
-
 # Files to skip entirely. Each entry suppresses cross-reference checks for one
 # file while a tracked data issue is resolved -- remove the entry once fixed.
 KNOWN_ISSUES: dict[str, str] = {}

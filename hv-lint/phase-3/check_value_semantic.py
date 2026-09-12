@@ -35,7 +35,6 @@ import yaml
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
 import _cohorts  # noqa: E402
-import _cohorts  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Constants

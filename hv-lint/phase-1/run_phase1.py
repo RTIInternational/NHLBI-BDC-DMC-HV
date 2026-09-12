@@ -25,6 +25,9 @@ from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 
+sys.path.insert(0, str(SCRIPT_DIR.parent))
+import _cohorts  # noqa: E402
+
 COMPONENTS = {
     "yamllint": {
         "script": SCRIPT_DIR / "run_yamllint.py",
@@ -121,6 +124,11 @@ def main() -> int:
     # Propagate --hv-root to child processes via environment variable
     if args.hv_root:
         os.environ["HV_ROOT"] = str(Path(args.hv_root).resolve())
+
+    # Canonicalise the cohort to the casing its ingest directory actually uses, BEFORE any
+    # component runs -- see run_all.py for the COPDGene casing defect this guards against.
+    if args.cohort.lower() != "all":
+        args.cohort = _cohorts.canonical_cohort(args.cohort)
 
     print("=" * 70)
     print("HV-Lint Phase 1: YAML Structural & Formatting")

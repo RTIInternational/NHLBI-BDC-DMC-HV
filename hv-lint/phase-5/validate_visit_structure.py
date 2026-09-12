@@ -177,13 +177,11 @@ class VisitReference:
 
 @dataclass
 class TransformBlock:
-    """Info about a class_derivation block for multi-visit checking."""
+    """Info about a class_derivation block."""
     file: str
     block_index: int
     class_name: str
     pht: str | None
-    has_associated_visit: bool
-    visit_uses_case: bool
 
 
 # -- Visit label extraction ---------------------------------------------------
@@ -444,13 +442,9 @@ def scan_transform_file(
             slot_derivs = class_def.get("slot_derivations", {})
             visit_slot = slot_derivs.get("associated_visit", {})
 
-            has_visit = False
-            visit_uses_case = False
-
             if isinstance(visit_slot, dict) and (
                 "value" in visit_slot or "expr" in visit_slot
             ):
-                has_visit = True
                 visit_id = None
                 visit_labels_set: set[str] = set()
                 is_dynamic = False
@@ -463,7 +457,6 @@ def scan_transform_file(
                     labels, is_dyn = extract_visit_labels_from_expr(expr_str)
                     visit_labels_set = labels
                     is_dynamic = is_dyn
-                    visit_uses_case = bool(CASE_USAGE_RE.search(expr_str))
 
                 if visit_labels_set or visit_id:
                     visit_refs.append(VisitReference(
@@ -475,14 +468,11 @@ def scan_transform_file(
                         is_dynamic=is_dynamic,
                     ))
 
-            # Record block info for multi-visit checking (5.5)
             transform_blocks.append(TransformBlock(
                 file=rel_path,
                 block_index=idx,
                 class_name=class_name,
                 pht=pht,
-                has_associated_visit=has_visit,
-                visit_uses_case=visit_uses_case,
             ))
 
             # Also scan nested object_derivations for visit references
