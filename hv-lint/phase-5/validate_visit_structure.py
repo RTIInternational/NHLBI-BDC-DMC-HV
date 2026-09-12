@@ -772,6 +772,19 @@ def check_5_6_orphan_visits(
     return findings
 
 
+# -- Collection interval parsing ----------------------------------------------
+
+# Matches "Collected in: P1 P2 P3" or "Collected in: P2 P3" style values
+_COLLECTED_IN_RE = re.compile(r"^Collected\s+in:\s*(.+)$", re.IGNORECASE)
+
+# Sub-phase aliases: if a parent phase is in coll_interval, its sub-phases
+# are considered covered.  COPDGene P3B is "Phase 3 Short-term 1-year
+# follow-up" -- a sub-visit of P3 that dbGaP rolls into "Collected in: P3".
+_PHASE_SUB_ALIASES: dict[str, str] = {
+    "P3B": "P3",  # COPDGene Phase 3B -> Phase 3
+}
+
+
 def expand_ci_phases(ci_phases: set[str]) -> set[str]:
     """Expand collection-interval phases to include known sub-phase aliases.
 
