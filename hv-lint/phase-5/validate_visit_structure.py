@@ -77,6 +77,17 @@ CASE_RESULT_SQ_RE = re.compile(r",\s*'([^']+)'\s*\)")
 SUFFIX_AFTER_PAREN_DQ_RE = re.compile(r'\)\s*\+\s*"([^"]*)"')
 SUFFIX_AFTER_PAREN_SQ_RE = re.compile(r"\)\s*\+\s*'([^']*)'")
 
+# Matches a case() branch whose result is a whole uuid5() call, with the visit label in the
+# seed: , uuid5("<ns>", str({phv}) + ":LABEL")
+#
+# Without this the branch result is not a bare quoted string, nothing matches above, and the
+# function falls through to the "no case()" path below -- which returns every quoted string in
+# the expression, including the DISCRIMINATOR CODES being compared against. A pht then appears
+# to carry twice the labels it has, which reads as a cross-file inconsistency that is not there.
+# COPDGene's shipped specs use this form in 48 associated_visit blocks, so the fallback
+# mis-parses production output, not only generated output.
+CASE_RESULT_UUID5_RE = re.compile(r""",\s*uuid5\(.*?\+\s*['"]:?([^'"]+)['"]\s*\)""")
+
 # Matches any quoted string (double or single)
 QUOTED_DQ_RE = re.compile(r'"([^"]+)"')
 QUOTED_SQ_RE = re.compile(r"'([^']+)'")
@@ -205,6 +216,7 @@ def extract_visit_labels_from_expr(expr: str) -> tuple[set[str], bool]:
     case_results = (
         CASE_RESULT_DQ_RE.findall(expr_str)
         + CASE_RESULT_SQ_RE.findall(expr_str)
+        + CASE_RESULT_UUID5_RE.findall(expr_str)
     )
 
     if case_results:
@@ -219,7 +231,9 @@ def extract_visit_labels_from_expr(expr: str) -> tuple[set[str], bool]:
             if (stripped
                     and not stripped.startswith("http")
                     and stripped != ":"
-                    and s not in case_results
+                    # `.lstrip(':')`: a suffix keeps its leading colon where a captured
+                    # label does not, so comparing raw lets a label be appended to itself.
+                    and s.lstrip(":") not in case_results
                     and any(c.isalpha() for c in stripped)):
                 visit_suffix = s
                 break
