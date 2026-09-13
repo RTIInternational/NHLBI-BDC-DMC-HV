@@ -23,6 +23,7 @@ from hv_dataqc.extract_source.extract_source_summaries import (
     is_system_column,
     load_source_data,
     load_source_type_map,
+    scope_columns_to_yaml_phvs,
 )
 from hv_dataqc.hv_dataqc_common import MAX_CATEGORICAL_KEYS, categorical_stats
 
@@ -263,6 +264,14 @@ class ExtractSourceSummaryTests(unittest.TestCase):
                 }
             },
         )
+
+
+    def test_scope_columns_to_yaml_phvs_resolves_and_lowercases(self) -> None:
+        yaml_phvs = {"phv00007567", "phv00172165", "phv99999999"}
+        name_map = {"phv00007567": "A40", "phv00172165": "AST"}
+        scoped = scope_columns_to_yaml_phvs(yaml_phvs, name_map)
+        # Resolved names are lowercased; the unresolved PHV falls back to its id.
+        self.assertEqual(scoped, {"a40", "ast", "phv99999999"})
 
 
 if __name__ == "__main__":

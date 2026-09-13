@@ -48,6 +48,17 @@ FTP_BASE = "https://ftp.ncbi.nlm.nih.gov/dbgap/studies"
 NCBI_DELAY_SECONDS = 0.5  # polite delay between real network requests
 USER_AGENT = "BDC-DMC-HV-DataQC-Fetcher/1.0 (cache-fetcher; contact: bdc-dmc-hv@rti.org)"
 
+# When True (set by --quiet), suppress progress chatter. Errors/warnings and
+# the final summary always print. Used by the runners to keep the cache fetch
+# from burying their own output.
+_QUIET = False
+
+
+def _say(msg: str) -> None:
+    """Print progress chatter unless --quiet is in effect."""
+    if not _QUIET:
+        print(msg)
+
 
 # ----------------------------------------------------------------------
 # HTTP session
@@ -152,7 +163,7 @@ def fetch_pheno_variable_summaries(
     dry_run: bool = False,
 ) -> tuple[int, int, int]:
     dir_url = f"{FTP_BASE}/{ftp_study_path}/pheno_variable_summaries/"
-    print(f"  Listing {dir_url}")
+    _say(f"  Listing {dir_url}")
 
     try:
         entries = list_ftp_directory(dir_url)
@@ -171,7 +182,7 @@ def fetch_pheno_variable_summaries(
 
     dd_count = sum(1 for t in targets if t.endswith(".data_dict.xml"))
     vr_count = sum(1 for t in targets if t.endswith(".var_report.xml"))
-    print(f"  Found {dd_count} data_dict + {vr_count} var_report files")
+    _say(f"  Found {dd_count} data_dict + {vr_count} var_report files")
 
     if dry_run:
         for fname in targets[:10]:
@@ -198,7 +209,7 @@ def fetch_pheno_variable_summaries(
             print(f"    !! {fname}: {msg}")
 
         if i % 25 == 0 or i == len(targets):
-            print(f"    [{i}/{len(targets)}] {downloaded} new, {skipped} cached, {failed} failed")
+            _say(f"    [{i}/{len(targets)}] {downloaded} new, {skipped} cached, {failed} failed")
 
     return downloaded, skipped, failed
 
@@ -253,9 +264,9 @@ def fetch_cohort(
     force: bool = False,
     dry_run: bool = False,
 ) -> bool:
-    print(f"\n{'=' * 60}")
-    print(f"  Cohort: {cohort_key.upper()}")
-    print(f"{'=' * 60}")
+    _say(f"\n{'=' * 60}")
+    _say(f"  Cohort: {cohort_key.upper()}")
+    _say(f"{'=' * 60}")
 
     try:
         manifest = load_manifest(cohort_key)
@@ -264,7 +275,7 @@ def fetch_cohort(
         print(f"  ERROR: {e}")
         return False
 
-    print(f"  FTP path: {FTP_BASE}/{ftp_path}/")
+    _say(f"  FTP path: {FTP_BASE}/{ftp_path}/")
 
     dl, sk, fl = fetch_pheno_variable_summaries(
         cohort_key, ftp_path, output_dir,
@@ -272,13 +283,13 @@ def fetch_cohort(
         force=force,
         dry_run=dry_run,
     )
-    print(f"  Pheno summaries: {dl} downloaded, {sk} cached, {fl} failed")
+    _say(f"  Pheno summaries: {dl} downloaded, {sk} cached, {fl} failed")
 
     if include_gap_exchange:
         gdl, gsk, gfl = fetch_gap_exchange(
             cohort_key, ftp_path, output_dir, force=force, dry_run=dry_run,
         )
-        print(f"  GapExchange:    {gdl} downloaded, {gsk} cached, {gfl} failed")
+        _say(f"  GapExchange:    {gdl} downloaded, {gsk} cached, {gfl} failed")
         fl += gfl
 
     return fl == 0
@@ -336,7 +347,13 @@ def main() -> int:
                         help="List available cohort keys and exit.")
     parser.add_argument("--summary", action="store_true",
                         help="Print cache summary and exit.")
+    parser.add_argument("--quiet", action="store_true",
+                        help="Suppress per-file/per-cohort progress; keep warnings and the "
+                             "final summary. Used by the report runners.")
     args = parser.parse_args()
+
+    global _QUIET
+    _QUIET = args.quiet
 
     output_dir = Path(args.output_dir).resolve()
     cohorts = discover_cohorts()
