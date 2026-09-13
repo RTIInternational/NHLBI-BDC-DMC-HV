@@ -726,6 +726,100 @@ class HvDccCompareSmokeTests(unittest.TestCase):
             sys.path[:] = original_sys_path
 
 
+    def _scorecard_module(self):
+        """Import compare/batch_scorecard.py by path.
+
+        It is a standalone script rather than an installed module, and it puts
+        the toolkit root on sys.path itself so `config` resolves.
+        """
+        import importlib.util  # noqa: PLC0415
+
+        # Running it as a script puts compare/ on sys.path automatically, which
+        # is how it finds its sibling match_quality_table; an importlib load
+        # does not, so add it here.
+        for extra in (str(ROOT), str(ROOT / "compare")):
+            if extra not in sys.path:
+                sys.path.insert(0, extra)
+        spec = importlib.util.spec_from_file_location(
+            "batch_scorecard_under_test", ROOT / "compare" / "batch_scorecard.py")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def test_ungraded_variables_reach_the_rollup(self) -> None:
+        """A variable that cannot be tiered must not vanish between `Match` and
+        the grade columns.
+
+        Raised on PR #572: with two of three variables ungraded, the summary
+        read `Match: 3`, grades summing to 1, and GOOD at 100% -- a real mean
+        gap nowhere in the table a reader triages from. Replacing the old
+        default-SD-to-1 with "?" fixed a wrong grade but moved the problem:
+        the variable disappeared instead of being mislabelled.
+        """
+        bs = self._scorecard_module()
+
+        def cont(mean, sd, n=100):
+            if mean is None:
+                # What continuous_stats emits below the small-cell floor.
+                return {"type": "continuous", "unit": "cm", "n_total": n, "n_valid": 3,
+                        "n_missing": n - 3, "pct_missing": 0.0, "mean": None, "sd": None,
+                        "n_implausible": 0, "suppressed": True}
+            return {"type": "continuous", "unit": "cm", "n_total": n, "n_valid": n,
+                    "n_missing": 0, "pct_missing": 0.0, "mean": mean, "sd": sd,
+                    "n_implausible": 0}
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tdir, bdir = Path(tmp) / "t", Path(tmp) / "b"
+            tdir.mkdir(), bdir.mkdir()
+            # Two suppressed on the reference side; one of those has a 25cm gap.
+            (tdir / "topmed_aric_summary.json").write_text(json.dumps({
+                "metadata": {"cohort": "ARIC"}, "total_participants": 100,
+                "variables": {"height_baseline_1": cont(170, 9),
+                              "weight_baseline_1": cont(None, None),
+                              "bmi_baseline_1": cont(None, None)}}), encoding="utf-8")
+            (bdir / "bdc_aric_summary_20260101_000000.json").write_text(json.dumps({
+                "metadata": {"cohort": "ARIC"}, "total_participants": 100,
+                "variables": {"height_baseline_1": cont(170.2, 9),
+                              "weight_baseline_1": cont(195, 14),
+                              "bmi_baseline_1": cont(27, 4)}}), encoding="utf-8")
+
+            result = bs.run_cohort_scorecard(
+                tdir / "topmed_aric_summary.json",
+                bdir / "bdc_aric_summary_20260101_000000.json")
+
+            self.assertEqual(result["matched_vars"], 3)
+            self.assertEqual(result["n_ungraded"], 2, "ungraded variables were not counted")
+            self.assertEqual(result["total_graded"], 1)
+            # The counts must account for every matched variable.
+            self.assertEqual(sum(result["grades"].values()) + result["n_ungraded"],
+                             result["matched_vars"])
+
+            summary = bs.format_cross_cohort_summary([result], "20260101_000000")
+            header = next(ln for ln in summary.splitlines() if ln.strip().startswith("Cohort"))
+            row = next(ln for ln in summary.splitlines() if ln.strip().startswith("ARIC"))
+            total = next(ln for ln in summary.splitlines() if ln.strip().startswith("TOTAL"))
+
+            self.assertIn("?", header, "summary table has no '?' column")
+            # The '?' count must land under the '?' header, and the TOTAL row
+            # must line up with it -- the totals row was a column short.
+            q_col = header.index("?")
+            for label, line in (("cohort row", row), ("TOTAL row", total)):
+                with self.subTest(line=label):
+                    self.assertEqual(line[q_col - 3:q_col + 2].strip(), "2",
+                                     f"'?' count not aligned under its header in the {label}")
+
+            card = bs.format_cohort_scorecard(result)
+            self.assertIn("?=2", card)
+            self.assertIn("1 of 3 matched", card)
+            self.assertIn("of graded", card, "A+B rate is not qualified as graded-only")
+            # Type comes from the recorded var_type: the "missing mean" branch
+            # carries no t_mean, so these used to print as `cat`.
+            for line in card.splitlines():
+                if line.strip().startswith(("weight_baseline_1", "bmi_baseline_1")):
+                    with self.subTest(row=line.split()[0]):
+                        self.assertIn("cont", line)
+                        self.assertIn("?", line)
+
     def test_no_known_participant_level_debug_prints(self) -> None:
         source_files = [
             ROOT / "extract-harmonized" / "extract_harmonized_summaries.py",

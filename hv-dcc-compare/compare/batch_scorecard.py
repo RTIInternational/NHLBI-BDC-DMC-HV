@@ -147,8 +147,10 @@ def grade_variable(var_name: str, t_stats: dict, b_stats: dict, cohort: str = ""
     """Grade a single variable. Appends * for known methodological diffs."""
     if t_stats.get("type") == "continuous":
         grade, detail = grade_continuous(t_stats, b_stats)
+        detail.setdefault("var_type", "continuous")
     else:
         grade, detail = grade_categorical(t_stats, b_stats)
+        detail.setdefault("var_type", "categorical")
 
     if cohort and KNOWN_METHODOLOGICAL_DIFFS.get((cohort.upper(), var_name)):
         entry = KNOWN_METHODOLOGICAL_DIFFS[(cohort.upper(), var_name)]
@@ -237,6 +239,7 @@ def run_cohort_scorecard(topmed_path: Path, bdc_path: Path, all_vars: bool = Fal
 
     grades = {"A+": 0, "A": 0, "B": 0, "C": 0, "D": 0}
     n_noted = 0
+    n_ungraded = 0
     variable_grades = {}
 
     for var in matched:
@@ -244,6 +247,10 @@ def run_cohort_scorecard(topmed_path: Path, bdc_path: Path, all_vars: bool = Fal
         base_grade = grade.rstrip("*")
         if base_grade in grades:
             grades[base_grade] += 1
+        else:
+            # "?" -- cannot be tiered. Counted so it cannot vanish between
+            # `matched_vars` and the grade columns.
+            n_ungraded += 1
         if grade.endswith("*"):
             n_noted += 1
         variable_grades[var] = {"grade": grade, **detail}
@@ -260,6 +267,8 @@ def run_cohort_scorecard(topmed_path: Path, bdc_path: Path, all_vars: bool = Fal
         "bdc_only": len(b_only),
         "grades": grades,
         "n_noted": n_noted,
+        "n_ungraded": n_ungraded,
+        "total_graded": total_graded,
         "pct_ab": pct_ab,
         "variable_grades": variable_grades,
         "topmed_file": str(topmed_path.name),
@@ -280,16 +289,27 @@ def format_cohort_scorecard(result: dict) -> str:
     lines.append(f"{'='*70}")
     lines.append(f"  TOPMed N: {result['topmed_n']:>10,}    BDC N: {result['bdc_n']:>10,}")
     lines.append(f"  Matched: {result['matched_vars']}    TOPMed-only: {result['topmed_only']}    BDC-only: {result['bdc_only']}")
-    lines.append(f"  Grades:  A+={g['A+']}  A={g['A']}  B={g['B']}  C={g['C']}  D={g['D']}")
+    lines.append(f"  Grades:  A+={g['A+']}  A={g['A']}  B={g['B']}  C={g['C']}  D={g['D']}"
+                 + (f"  ?={result['n_ungraded']}" if result.get('n_ungraded') else ""))
     if result.get('n_noted'):
         lines.append(f"  (* = {result['n_noted']} variable(s) with known methodological notes)")
-    lines.append(f"  A+B rate: {result['pct_ab']:.0f}%")
+    if result.get('n_ungraded'):
+        lines.append(f"  Graded: {result.get('total_graded', 0)} of {result['matched_vars']} matched "
+                     f"({result['n_ungraded']} could not be tiered -- see '?' rows below)")
+    lines.append(f"  A+B rate: {result['pct_ab']:.0f}%"
+                 + (" of graded" if result.get('n_ungraded') else ""))
     lines.append("")
     lines.append(f"  {'Variable':<35} {'Type':<5} {'Grade':<6}")
     lines.append(f"  {'-'*50}")
 
     for var, detail in sorted(result["variable_grades"].items()):
-        lines.append(f"  {var:<35} {'cont' if 't_mean' in detail else 'cat':<5} {detail['grade']:<6}")
+        # Use the recorded type rather than inferring from the presence of
+        # t_mean: the "missing mean" branch has no t_mean, so a suppressed
+        # continuous variable used to print as `cat`.
+        vtype = detail.get("var_type") or ("cont" if "t_mean" in detail else "cat")
+        vtype = {"continuous": "cont", "categorical": "cat"}.get(vtype, vtype)
+        reason = f"  ({detail['reason']})" if detail.get("reason") else ""
+        lines.append(f"  {var:<35} {vtype:<5} {detail['grade']:<6}{reason}")
 
     lines.append("")
     return "\n".join(lines)
@@ -305,8 +325,8 @@ def format_cross_cohort_summary(results: list[dict], timestamp: str) -> str:
     lines.append("")
 
     # Header
-    lines.append(f"  {'Cohort':<12} {'TOPMed N':>10} {'BDC N':>10} {'Match':>5} {'A+':>4} {'A':>4} {'B':>4} {'C':>4} {'D':>4} {'*':>4} {'A+B%':>6} {'Grade':>6}")
-    lines.append(f"  {'-'*80}")
+    lines.append(f"  {'Cohort':<12} {'TOPMed N':>10} {'BDC N':>10} {'Match':>5} {'A+':>4} {'A':>4} {'B':>4} {'C':>4} {'D':>4} {'?':>4} {'*':>4} {'A+B%':>6} {'Grade':>6}")
+    lines.append(f"  {'-'*85}")
 
     # Sort by cohort name
     for r in sorted(results, key=lambda x: x["cohort"]):
@@ -323,11 +343,12 @@ def format_cross_cohort_summary(results: list[dict], timestamp: str) -> str:
 
         lines.append(
             f"  {r['cohort']:<12} {r['topmed_n']:>10,} {r['bdc_n']:>10,} "
-            f"{r['matched_vars']:>5} {g['A+']:>4} {g['A']:>4} {g['B']:>4} {g['C']:>4} {g['D']:>4} {r.get('n_noted',0):>4} "
+            f"{r['matched_vars']:>5} {g['A+']:>4} {g['A']:>4} {g['B']:>4} {g['C']:>4} {g['D']:>4} "
+            f"{r.get('n_ungraded', 0):>4} {r.get('n_noted',0):>4} "
             f"{r['pct_ab']:>5.0f}% {overall:>6}"
         )
 
-    lines.append(f"  {'-'*80}")
+    lines.append(f"  {'-'*85}")
 
     # Totals
     total_aplus = sum(r["grades"]["A+"] for r in results)
@@ -336,12 +357,15 @@ def format_cross_cohort_summary(results: list[dict], timestamp: str) -> str:
     total_c = sum(r["grades"]["C"] for r in results)
     total_d = sum(r["grades"]["D"] for r in results)
     total_noted = sum(r.get("n_noted", 0) for r in results)
+    total_ungraded = sum(r.get("n_ungraded", 0) for r in results)
+    total_matched = sum(r.get("matched_vars", 0) for r in results)
     total_graded = total_aplus + total_a + total_b + total_c + total_d
     total_pct = ((total_aplus + total_a + total_b) / total_graded * 100) if total_graded > 0 else 0
 
     lines.append(
         f"  {'TOTAL':<12} {'':>10} {'':>10} "
-        f"{'':>5} {total_aplus:>4} {total_a:>4} {total_b:>4} {total_c:>4} {total_d:>4} {total_noted:>4} "
+        f"{total_matched:>5} {total_aplus:>4} {total_a:>4} {total_b:>4} {total_c:>4} {total_d:>4} "
+        f"{total_ungraded:>4} {total_noted:>4} "
         f"{total_pct:>5.0f}%"
     )
     lines.append("")
