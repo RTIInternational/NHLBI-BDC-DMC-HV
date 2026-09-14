@@ -16,7 +16,7 @@
         condition_status:
           expr: case(({phv00099087} == 0, ABSENT), ({phv00099088} == 0, HISTORICAL), (True, PRESENT))
         condition_provenance:
-          expr: case(({phv00099466} == 1, "STUDY_RECORD"), (True, "PATIENT_SELF_REPORT"))
+          expr: case(({phv00099466} == 1, "PATIENT_SELF_REPORT_DR_CONFIRMED"), (True, "PATIENT_SELF_REPORT"))
         relationship_to_participant:
           value: ONESELF
           range: string
