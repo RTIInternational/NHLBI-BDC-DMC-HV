@@ -16,7 +16,7 @@
         species:
           value: NCBITaxon:9606
         vital_status:
-          expr: 'case(({pht002075.phv00146741} is not None, "OMOP:434489"))'
+          expr: 'case(({pht002075.phv00146741} is not None, "DEAD"))'
         age_at_death:
           expr: 'case(({pht002075.phv00146741} is not None, {pht002075.phv00146741} * 365))'
         cause_of_death:
