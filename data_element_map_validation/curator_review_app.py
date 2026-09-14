@@ -888,7 +888,11 @@ def _find_block_for_phv(text: str, slot: str, phv: str) -> tuple[int, int, int] 
     if not markers:
         return None
 
-    slot_re = re.compile(rf"^[ \t]*{re.escape(slot)}:\s*\n[ \t]+(?:value|expr):", re.MULTILINE)
+    # value_mappings-backed slots (e.g. value_enum, race, sex) start with
+    # `populated_from:` on the line right after the slot, not `value:`/`expr:`
+    # directly — recognize that shape too, so _apply_yaml's phv-scoped path
+    # can find these blocks instead of falling through to a refusal.
+    slot_re = re.compile(rf"^[ \t]*{re.escape(slot)}:\s*\n[ \t]+(?:value|expr|populated_from):", re.MULTILINE)
     phv_re = re.compile(rf"\b{re.escape(phv)}\b")
     # A phv referenced only inside age_at_observation doesn't identify the block —
     # every block in a MeasurementObservationSet routinely shares the same age
@@ -919,6 +923,49 @@ def _find_block_for_phv(text: str, slot: str, phv: str) -> tuple[int, int, int] 
     _, start, end = candidates[0]
     line_number = text.count("\n", 0, start) + 1
     return start, end, line_number
+
+
+def _vm_table_re(slot: str) -> re.Pattern:
+    """Match a `value_mappings:` dict nested under `{slot}:` (usually via an
+    intervening `populated_from:` line). Group 1 is the table's own
+    indentation; group 2 is the entries block, matched only while each entry
+    line is indented strictly deeper than the table header (via backreference
+    to group 1) — this is what stops the capture at the first sibling key
+    (e.g. `condition_provenance:`) instead of swallowing the rest of the file.
+    """
+    return re.compile(
+        rf"^[ \t]*{re.escape(slot)}:\s*\n"
+        rf"(?:[ \t]+\S.*\n)*?"
+        rf"([ \t]+)value_mappings:\s*\n"
+        rf"((?:\1[ \t]+\S.*\n?)+)",
+        re.MULTILINE,
+    )
+
+
+_VM_ENTRY_RE = re.compile(r"^([ \t]+)(.+?):[ \t]+(\S+)[ \t]*\n?", re.MULTILINE)
+
+
+def _iter_value_mapping_entries(text_scope: str, slot: str, original_curie: str):
+    """Yield (entry_start, entry_end, key, line_text) for every value_mappings
+    entry under `{slot}:` anywhere in *text_scope* whose current value equals
+    *original_curie*. Offsets are absolute into *text_scope* (which may be a
+    single block or a whole file's text — caller adds its own base offset).
+
+    A single value_mappings table routinely maps several different codes to
+    several different CURIEs (confirmed via curie.csv, which files one row
+    per distinct CURIE a table emits for the same (yaml_file, slot, phv) —
+    e.g. ARIC cig_smok.yaml's value_enum table maps U/N/Y to three different
+    OMOP concepts). So a (yaml_file, slot, phv) triple alone never identifies
+    which code a finding is about — original_curie is required to pick the
+    one entry currently holding the value being corrected.
+    """
+    table_re = _vm_table_re(slot)
+    for tm in table_re.finditer(text_scope):
+        entries_text = tm.group(2)
+        entries_offset = tm.start(2)
+        for lm in _VM_ENTRY_RE.finditer(entries_text):
+            if lm.group(3) == original_curie:
+                yield entries_offset + lm.start(), entries_offset + lm.end(), lm.group(2), lm.group(0)
 
 
 def _apply_yaml(
@@ -986,10 +1033,46 @@ def _apply_yaml(
                     f"{len(curie_matches)} CURIE-shaped literals on one line — ambiguous which to "
                     "replace. Edit that block's literal CURIE string directly in the YAML file."
                 )
+            # Slot value comes from a value_mappings dict (code -> CURIE)
+            # rather than a plain value:/expr: line (e.g. race:, sex:,
+            # value_enum: — populated_from + value_mappings). original_curie
+            # is required here: see _iter_value_mapping_entries for why a
+            # (yaml_file, slot, phv) triple alone can't say which code this
+            # finding is about.
+            if _vm_table_re(slot).search(block):
+                if not original_curie:
+                    return False, (
+                        f"⚠ `{slot}` block for phv `{phv}` (line {line_number}) uses a "
+                        "`value_mappings:` table, and this finding has no `original_curie` to say "
+                        "which code's entry to update — refusing to guess. Edit the YAML file directly."
+                    )
+                entry_matches = list(_iter_value_mapping_entries(block, slot, original_curie))
+                if len(entry_matches) == 1:
+                    e_start, e_end, key, line_text = entry_matches[0]
+                    new_line_text = line_text.replace(original_curie, new_curie, 1)
+                    new_block = block[:e_start] + new_line_text + block[e_end:]
+                    new_text = text[:start] + new_block + text[end:]
+                    yaml_path.write_text(new_text, encoding="utf-8")
+                    return True, (
+                        f"✓ YAML `{yaml_file}` [{slot}] value_mappings[`{key.strip()}`] → `{new_curie}` "
+                        f"(block for phv `{phv}`, line {line_number}, was `{original_curie}`)"
+                    )
+                if len(entry_matches) > 1:
+                    keys = ", ".join(f"`{k.strip()}`" for _, _, k, _ in entry_matches)
+                    return False, (
+                        f"⚠ `{slot}`'s value_mappings table for phv `{phv}` (line {line_number}) has "
+                        f"{len(entry_matches)} codes all mapping to `{original_curie}` ({keys}) — "
+                        "ambiguous which to update. Edit the YAML file directly."
+                    )
+                return False, (
+                    f"⚠ `{slot}`'s value_mappings table for phv `{phv}` (line {line_number}) doesn't "
+                    f"contain an entry currently mapped to `{original_curie}` — it may already be "
+                    "updated, or this finding is stale. Edit the YAML file directly if needed."
+                )
             return False, (
                 f"⚠ `{slot}` block for phv `{phv}` found (line {line_number}) but doesn't use a "
-                "plain `value:` line, and its `expr:` (if any) doesn't reference this phv "
-                "directly — can't confirm which literal is this variable's own. "
+                "plain `value:` line, a `value_mappings:` table, and its `expr:` (if any) doesn't "
+                "reference this phv directly — can't confirm which literal is this variable's own. "
                 "Edit that block's literal CURIE string directly in the YAML file."
             )
         # A phv was given but doesn't resolve to a unique block. This is NOT the
@@ -1025,10 +1108,16 @@ def _apply_yaml(
         expr_pattern = rf'(^[ \t]*{re.escape(slot)}:\s*\n[ \t]+expr:.*?)(["\']){re.escape(original_curie)}\2'
         n_value = len(re.findall(value_pattern, text, flags=re.MULTILINE))
         n_expr = len(re.findall(expr_pattern, text, flags=re.MULTILINE))
-        if n_value + n_expr > 1:
+        # value_mappings entries matching original_curie, anywhere in the file
+        # (no phv here to scope to a single block, same as value_pattern/
+        # expr_pattern above) — see _iter_value_mapping_entries for why
+        # original_curie (not just slot) is what identifies a single entry.
+        vm_matches_all = list(_iter_value_mapping_entries(text, slot, original_curie))
+        n_vm = len(vm_matches_all)
+        if n_value + n_expr + n_vm > 1:
             return False, (
-                f"⚠ {n_value + n_expr} `{slot}` blocks in `{yaml_file}` currently match original "
-                f"`{original_curie}`, and this finding has no phv to say which one it's about. "
+                f"⚠ {n_value + n_expr + n_vm} `{slot}` blocks/entries in `{yaml_file}` currently match "
+                f"original `{original_curie}`, and this finding has no phv to say which one it's about. "
                 "Refusing to update them as a group — edit the YAML file directly, or re-generate "
                 "this finding with its phv attached."
             )
@@ -1048,6 +1137,15 @@ def _apply_yaml(
             return True, (
                 f"✓ YAML `{yaml_file}` [{slot}] → `{new_curie}` "
                 f"(1 expr literal matching original `{original_curie}`)"
+            )
+        if n_vm == 1:
+            e_start, e_end, key, line_text = vm_matches_all[0]
+            new_line_text = line_text.replace(original_curie, new_curie, 1)
+            new_text = text[:e_start] + new_line_text + text[e_end:]
+            yaml_path.write_text(new_text, encoding="utf-8")
+            return True, (
+                f"✓ YAML `{yaml_file}` [{slot}] value_mappings[`{key.strip()}`] → `{new_curie}` "
+                f"(1 code matching original `{original_curie}`, no phv)"
             )
         # original_curie given but found nowhere in this file/slot — fall
         # through to the coarser check below, in case original_curie itself
