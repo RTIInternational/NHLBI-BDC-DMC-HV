@@ -77,13 +77,59 @@ def _squash(text: str) -> str:
 _DIR_VERSION_SUFFIX = re.compile(r"[-_]v\d+(?:\.p\d+)?$", re.IGNORECASE)
 
 
-def cohort_from_source_dir(name: str) -> str:
+def _staging_pipeline_cohort(source_cache: Path | str, dir_name: str) -> str | None:
+    """The cohort slug the AI-harmonization pipeline recorded for ``dir_name``, or ``None``.
+
+    That pipeline stages dbGaP metadata under ``data/dbgap/<accession>/`` (its `RunOutputs`
+    counterpart for the source cache) and writes a SIBLING ``manifest.json`` --
+    ``{"entries": {"<accession>": {"cohort": "<slug>", "fetched": ...}}}`` -- recording which
+    cohort slug each accession-named directory holds. That is the only place this answer lives:
+    a bare accession (``phs000284.v2.p1``) carries no cohort token a regex can recover, unlike
+    the legacy ``<cohort>[-_]v#`` staging convention :func:`cohort_from_source_dir` was written
+    against.
+
+    Distinct from THIS module's own ``dbgap-cache/manifest.json`` (:func:`read_manifest` /
+    :func:`write_manifest_entries`), which lives in the HV clone, is keyed by STUDY RELEASE, and
+    is only ever correct here because THIS function fixed what gets written into its ``cohort``
+    field in the first place. Returns ``None`` -- never a guess -- when the file is absent,
+    unreadable, or silent on this exact directory name, so callers fall back to the name-derived
+    rule unchanged.
+    """
+    path = Path(source_cache) / "manifest.json"
+    if not path.is_file():
+        return None
+    try:
+        with path.open(encoding="utf-8") as f:
+            data = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return None
+    entries = data.get("entries")
+    entry = entries.get(dir_name) if isinstance(entries, dict) else None
+    cohort = entry.get("cohort") if isinstance(entry, dict) else None
+    return str(cohort) if cohort else None
+
+
+def cohort_from_source_dir(name: str, source_cache: Path | str | None = None) -> str:
     """``aric-v8`` -> ``ARIC``; ``hchs-sol`` -> ``HCHS``; ``ltrc`` -> ``LTRC``.
 
     The cohort a staging directory holds, independent of which release it holds. Recorded in the
     manifest so a lookup by cohort works regardless of how the directory was named -- without it,
     a cache built from ``aric-v8`` records the cohort as ``ARIC-V8`` and no ARIC lookup finds it.
+
+    ``source_cache``, when given, is checked FIRST via :func:`_staging_pipeline_cohort` --
+    measured 2026-09-16 against a real ``data/dbgap/phs000284.v2.p1/`` directory: the name-derived
+    rule below has no ``-v#``/``_v#`` suffix to strip there (the separator right before the
+    version token is ``.``, not ``-``/``_``), so it returned the accession itself, upper-cased,
+    as the "cohort" -- silently correct-shaped and wrong, and on a rebuild of an ALREADY-staged
+    cohort (COPDGene, staged as ``phs000179.v7.p2/`` the same day) it overwrites a previously
+    correct manifest entry rather than merely failing to add one. Falls back to the name-derived
+    guess when ``source_cache`` is omitted, the sidecar is absent, or it is silent on this
+    directory -- every existing caller and cache stay exactly as before.
     """
+    if source_cache is not None:
+        mapped = _staging_pipeline_cohort(source_cache, (name or "").strip())
+        if mapped:
+            return mapped.upper()
     stem = _DIR_VERSION_SUFFIX.sub("", (name or "").strip())
     # Fold the HCHS/SOL spellings onto the ingest stem the HV repo uses.
     if _squash(stem) == _squash("hchs_sol"):

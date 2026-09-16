@@ -113,6 +113,53 @@ def test_an_unstaged_cohort_passes_through_canonicalisation_unchanged(tmp_path):
     assert _cohorts.canonical_cohort("NEWSTUDY", _ingest(tmp_path, "CHS")) == "NEWSTUDY"
 
 
+# --------------------------------------------------------------------- cohort identity from
+# the source directory name, and its accession-only blind spot
+
+def test_cohort_from_source_dir_strips_the_legacy_version_suffix():
+    assert _cohorts.cohort_from_source_dir("aric-v8") == "ARIC"
+    assert _cohorts.cohort_from_source_dir("ltrc") == "LTRC"
+    assert _cohorts.cohort_from_source_dir("hchs-sol") == "HCHS"
+
+
+def test_an_accession_named_directory_has_no_cohort_the_rule_can_recover():
+    """Measured 2026-09-16 against a real `data/dbgap/phs000284.v2.p1/`: a bare accession has
+    no `-v#`/`_v#` suffix to strip (the character before the version token is `.`, not `-`/`_`),
+    so the rule alone returns the accession itself, upper-cased -- silently wrong-shaped as a
+    cohort name rather than failing loudly."""
+    assert _cohorts.cohort_from_source_dir("phs000284.v2.p1") == "PHS000284.V2.P1"
+
+
+def test_the_staging_pipeline_manifest_resolves_an_accession_directory(tmp_path):
+    """The AI-harmonization pipeline's own data/dbgap/manifest.json is the only place a bare
+    accession's cohort identity lives, and it must WIN over the rule above, not merely
+    supplement it."""
+    (tmp_path / "manifest.json").write_text(json.dumps({
+        "entries": {"phs000284.v2.p1": {"cohort": "cfs", "fetched": "2026-09-16T00:00:00+00:00"}}
+    }), encoding="utf-8")
+    assert _cohorts.cohort_from_source_dir("phs000284.v2.p1", tmp_path) == "CFS"
+
+
+def test_the_staging_manifest_falls_back_silently_when_absent_or_unlisted(tmp_path):
+    # No manifest.json at all -- the legacy `<cohort>-v#` directories never have one.
+    assert _cohorts.cohort_from_source_dir("aric-v8", tmp_path) == "ARIC"
+    # A manifest.json that exists but says nothing about this directory.
+    (tmp_path / "manifest.json").write_text(
+        json.dumps({"entries": {}}), encoding="utf-8")
+    assert _cohorts.cohort_from_source_dir("phs000284.v2.p1", tmp_path) == "PHS000284.V2.P1"
+
+
+def test_rebuilding_an_already_staged_cohort_does_not_corrupt_its_manifest_entry(tmp_path):
+    """COPDGene was re-staged as `phs000179.v7.p2/` the same day this was found. Measured against
+    the real dbgap-cache/manifest.json: without the fix, rebuilding from that directory
+    overwrites a PREVIOUSLY CORRECT `"cohort": "COPDGENE"` entry with `"PHS000179.V7.P2"` --
+    worse than merely failing to add one, because the correct entry already existed."""
+    (tmp_path / "manifest.json").write_text(json.dumps({
+        "entries": {"phs000179.v7.p2": {"cohort": "copdgene", "fetched": "2026-09-16T00:00:00+00:00"}}
+    }), encoding="utf-8")
+    assert _cohorts.cohort_from_source_dir("phs000179.v7.p2", tmp_path) == "COPDGENE"
+
+
 # --------------------------------------------------------------------- study provenance
 
 def test_the_study_accession_and_version_come_from_the_data_dict_names(tmp_path):

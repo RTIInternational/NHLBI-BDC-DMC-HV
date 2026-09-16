@@ -219,7 +219,7 @@ def main() -> int:
             )
         if accession:
             manifest[key] = {
-                "cohort": _cohorts.cohort_from_source_dir(cohort_dir.name),
+                "cohort": _cohorts.cohort_from_source_dir(cohort_dir.name, source),
                 "study": accession,
                 "study_version": version,
                 "phvs": len(mapping),

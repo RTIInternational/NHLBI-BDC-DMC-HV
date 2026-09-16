@@ -199,7 +199,7 @@ def main() -> int:
         n_coded = sum(1 for r in cohort_index.values() if r.get("codes"))
         if accession:
             manifest[key] = {
-                "cohort": _cohorts.cohort_from_source_dir(cohort_dir.name),
+                "cohort": _cohorts.cohort_from_source_dir(cohort_dir.name, source),
                 "study": accession,
                 "study_version": version,
                 "phvs": len(cohort_index),
