@@ -7,13 +7,16 @@
         name:
           value: CARDIA YEAR 0
         visit_category:
-          value: HEALTH_EXAMINATION
+          value: STUDY_SITE_VISIT
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00112417}) + ":CARDIA")'
         age_at_visit_start:
           expr: '{phv00112421} * 365'
         age_at_visit_end:
           expr: '{phv00112421} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht001626
@@ -23,13 +26,16 @@
         name:
           value: CARDIA YEAR 2
         visit_category:
-          value: HEALTH_EXAMINATION
+          value: STUDY_SITE_VISIT
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00114583}) + ":CARDIA")'
         age_at_visit_start:
           expr: '{phv00114610} * 365'
         age_at_visit_end:
           expr: '{phv00114610} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht001667
@@ -39,13 +45,16 @@
         name:
           value: CARDIA YEAR 5
         visit_category:
-          value: HEALTH_EXAMINATION
+          value: STUDY_SITE_VISIT
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00115618}) + ":CARDIA")'
         age_at_visit_start:
           expr: '{phv00115705} * 365'
         age_at_visit_end:
           expr: '{phv00115705} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht001706
@@ -55,13 +64,16 @@
         name:
           value: CARDIA YEAR 7
         visit_category:
-          value: HEALTH_EXAMINATION
+          value: STUDY_SITE_VISIT
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00116476}) + ":CARDIA")'
         age_at_visit_start:
           expr: '{phv00116478} * 365'
         age_at_visit_end:
           expr: '{phv00116478} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht001781
@@ -71,13 +83,16 @@
         name:
           value: CARDIA YEAR 10
         visit_category:
-          value: HEALTH_EXAMINATION
+          value: STUDY_SITE_VISIT
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00118837}) + ":CARDIA")'
         age_at_visit_start:
           expr: '{phv00118959} * 365'
         age_at_visit_end:
           expr: '{phv00118959} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht001851
@@ -87,20 +102,24 @@
         name:
           value: CARDIA YEAR 15
         visit_category:
-          value: HEALTH_EXAMINATION
+          value: STUDY_SITE_VISIT
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120733}) + ":CARDIA")'
         age_at_visit_start:
           expr: '{phv00120748} * 365'
         age_at_visit_end:
           expr: '{phv00120748} * 365'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 # CARDIA YEAR 15 visits: multiple tables cover this exam year with different participant keys.
 # pht001857 (F2F20), pht001854 (F2EBCT), pht001855 (F2F03), pht001874 (Z33E06) all use
 # standard CARDIA Individual_ID — uuid5 produces matching Visit IDs across these tables.
 # pht003298 (HeartGO_CARDIA) uses HeartGO New_SUBJID (GENEVA subject ID) — these produce
 # separate Visit entities that do not cross-link with standard Individual_ID-keyed tables.
-# pht003298 (HeartGO_CARDIA) uses phv00190622 (ESP_age_at_serum_creatinine) as exam-age proxy;
-# all other YEAR 20 tables lack a direct exam-age variable and omit age_at_visit.
+# phv00190622 (ESP_age_at_serum_creatinine) is NOT participant age (var_report shows mean
+# 3.15, range 0.15-23.1 -- a specimen/assay-interval field, not exam age) -- omitted below,
+# same as the other YEAR 20 tables which also lack a direct exam-age variable.
 - class_derivations:
     Visit:
       populated_from: pht001857
@@ -110,9 +129,12 @@
         name:
           value: CARDIA YEAR 15
         visit_category:
-          value: HEALTH_EXAMINATION
+          value: STUDY_SITE_VISIT
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120993}) + ":CARDIA")'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht001854
@@ -122,9 +144,12 @@
         name:
           value: CARDIA YEAR 15
         visit_category:
-          value: HEALTH_EXAMINATION
+          value: STUDY_SITE_VISIT
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120763}) + ":CARDIA")'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht001855
@@ -134,9 +159,12 @@
         name:
           value: CARDIA YEAR 15
         visit_category:
-          value: HEALTH_EXAMINATION
+          value: STUDY_SITE_VISIT
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00120930}) + ":CARDIA")'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 # DISABLED: pht001874 (Z33E06, CARDIA Year 15 CHD questionnaire) is absent from c2
 # consent group. linkml-map 0.5.3rc3 crashes on missing source tables (regression
 # from 0.4.0 behavior). Re-enable when upstream graceful-missing-table is fixed.
@@ -161,13 +189,12 @@
         name:
           value: CARDIA YEAR 20
         visit_category:
-          value: HEALTH_EXAMINATION
+          value: STUDY_SITE_VISIT
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190551}) + ":CARDIA")'
-        age_at_visit_start:
-          expr: "None if str({phv00190622}) == 'M' else float({phv00190622}) * 365"
-        age_at_visit_end:
-          expr: "None if str({phv00190622}) == 'M' else float({phv00190622}) * 365"
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 # pht001999 (GENEVA_CARDIA_Subject_Phenotypes) uses GENEVA_ID (phv00129484) as participant key —
 # a different ID space from standard CARDIA Individual_ID. Visit UUIDs here match the
 # associated_participant/associated_visit keys in cig_smok.yaml's pht001999 block.
@@ -180,13 +207,16 @@
         name:
           value: CARDIA YEAR 20
         visit_category:
-          value: HEALTH_EXAMINATION
+          value: STUDY_SITE_VISIT
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00129484}) + ":CARDIA")'
         age_at_visit_start:
           expr: "None if str({phv00129493}) == 'M' else float({phv00129493}) * 365"
         age_at_visit_end:
           expr: "None if str({phv00129493}) == 'M' else float({phv00129493}) * 365"
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 # CARDIA Medical History visit: pht001869 (Y1MORB06) and pht001871 (YM106) are
 # companion hospitalization-review tables representing the same conceptual visit.
 # Both use Individual_ID as participant key, so uuid5 produces the same Visit ID
@@ -205,6 +235,9 @@
           value: UNKNOWN
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121257}) + ":CARDIA")'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht001871
@@ -217,6 +250,9 @@
           value: UNKNOWN
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121473}) + ":CARDIA")'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string
 - class_derivations:
     Visit:
       populated_from: pht001870
@@ -229,3 +265,6 @@
           value: UNKNOWN
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121454}) + ":CARDIA")'
+        visit_provenance:
+          value: STUDY_RECORD
+          range: string

@@ -10,5 +10,10 @@
         drug_concept:
           expr: 'case(({phv00169610} == 1, "VANDF:HS051"))'
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00169610
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT

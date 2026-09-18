@@ -8,10 +8,16 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00203808}) + ":ARIC Death Event")'
           range: string
         drug_concept:
-          expr: case(({phv00203803} == 1, "ATC:C09C"))
+          expr: case(({phv00203803} == 'Y', "ATC:C09C"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00203803
+          value_mappings:
+            N: ABSENT
+            U: UNKNOWN
+            Y: PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht004053
@@ -22,10 +28,15 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00204295}) + ":ARIC Hospital Form")'
           range: string
         drug_concept:
-          expr: case(({phv00203973} == 1, "ATC:C09C"))
+          expr: case(({phv00203973} == 'Y', "ATC:C09C"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00203973
+          value_mappings:
+            N: ABSENT
+            Y: PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht004063
@@ -40,6 +51,11 @@
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00204712
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht004102
@@ -50,10 +66,15 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
         drug_concept:
-          expr: case(({phv00206921} == 1, "ATC:C09C"))
+          expr: case(({phv00206921} == 'Y', "ATC:C09C"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00206921
+          value_mappings:
+            N: ABSENT
+            Y: PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht004102
@@ -64,10 +85,15 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
         drug_concept:
-          expr: case(({phv00206964} == 1, "ATC:C09C"))
+          expr: case(({phv00206964} == 'Y', "ATC:C09C"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00206964
+          value_mappings:
+            N: ABSENT
+            Y: PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht012504
@@ -82,6 +108,12 @@
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00507368
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            T: UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht012504
@@ -96,6 +128,12 @@
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00507369
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            T: UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht012814
@@ -110,6 +148,12 @@
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00512212
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            T: UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht012814
@@ -124,6 +168,12 @@
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00512213
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            T: UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht012815
@@ -138,6 +188,12 @@
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00512277
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            T: UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht012815
@@ -152,3 +208,9 @@
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00512278
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            T: UNKNOWN

@@ -11,6 +11,11 @@
           expr: case(({phv00155223} == 1, "OMOP:45772840"))
         procedure_provenance:
           expr: case(({phv00155223} == 1, "OMOP:4822157"))
+        procedure_status:
+          populated_from: phv00155223
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
 - class_derivations:
     Procedure:
       populated_from: pht006223
@@ -26,3 +31,8 @@
           expr: case(({phv00283522} == 1, "OMOP:45772840"))
         procedure_provenance:
           expr: case(({phv00283522} == 1, "OMOP:4822157"))
+        procedure_status:
+          populated_from: phv00283522
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT

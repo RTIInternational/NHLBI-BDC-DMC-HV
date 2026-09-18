@@ -1,5 +1,5 @@
 - class_derivations:
-    Observation:
+    MeasurementObservation:
       populated_from: pht001977
       slot_derivations:
         associated_participant:
@@ -13,7 +13,7 @@
         value_enum:
           expr: 'case(({phv00128498} == "Yes", "OMOP:40766945"),({phv00128496} == "Yes", "OMOP:45883458"),({phv00128496} == "No", "OMOP:45883537"),(True, "OMOP:45885135"))'
 - class_derivations:
-    Observation:
+    MeasurementObservation:
       populated_from: pht008729
       slot_derivations:
         associated_participant:
