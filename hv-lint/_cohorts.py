@@ -104,6 +104,8 @@ def _staging_pipeline_cohort(source_cache: Path | str, dir_name: str) -> str | N
             data = json.load(f)
     except (OSError, json.JSONDecodeError):
         return None
+    if not isinstance(data, dict):
+        return None  # a valid JSON document that is not an object, e.g. `[]`
     entries = data.get("entries")
     entry = entries.get(dir_name) if isinstance(entries, dict) else None
     cohort = entry.get("cohort") if isinstance(entry, dict) else None
@@ -264,9 +266,18 @@ def canonical_cohort(cohort: str, transform_dir: Path | str | None = None) -> st
             transform_dir = find_transform_dir()
         except Exception:  # noqa: BLE001 -- no tree to consult; the token is the best answer
             return cohort
-    want = _squash(cohort)
+    # Fold through ALIASES as well as squashing, so the spellings that resolve to the right
+    # CACHE also resolve to the right DIRECTORY. `candidate_keys` has always accepted
+    # `HCHS-SOL`; squashing alone gives `hchssol`, which matches no `HCHS-ingest`, so the token
+    # passed through unchanged and the phase managers joined `HCHS-SOL-ingest` onto a path and
+    # read nothing. One spelling resolving the cache but not the tree is the worse failure of
+    # the two, because the cache load succeeds and only the file scan comes back empty.
+    def _fold(token: str) -> str:
+        return _squash(ALIASES.get(token.upper(), token))
+
+    want = _fold(cohort)
     for name in ingest_cohorts(transform_dir):
-        if _squash(name) == want:
+        if _squash(name) == want or _fold(name) == want:
             return name
     return cohort
 
@@ -290,7 +301,15 @@ def cohorts_to_load(
     """
     token = (cohort or "").strip()
     if token.lower() != "all":
-        return [(token, cache_key_for(token, cache_dir))]
+        # Canonicalise to the ingest directory's spelling whenever a tree is available. The
+        # indexes are keyed by the name returned here, while `detect_cohort` keys each FILE by
+        # its own directory -- so `--cohort copdgene` keyed the indexes `copdgene` against files
+        # keyed `COPDGene`, and every COPDGene file came back "No dbGaP index available for
+        # cohort". The phase MANAGERS already canonicalise; this covers a validator invoked
+        # directly, which is a documented way to run one. Falls through unchanged when no
+        # directory matches, so an unstaged cohort still yields exactly one pair.
+        name = canonical_cohort(token, transform_dir) if transform_dir else token
+        return [(name, cache_key_for(name, cache_dir))]
     names: list[str] = list(ingest_cohorts(transform_dir)) if transform_dir else []
     if not names:
         for entry in read_manifest(cache_dir).values():
@@ -343,6 +362,8 @@ def read_manifest(cache_dir: Path | str) -> dict[str, dict]:
             data = json.load(f)
     except (OSError, json.JSONDecodeError):
         return {}
+    if not isinstance(data, dict):
+        return {}  # a valid JSON document that is not an object, e.g. `[]`
     entries = data.get("entries")
     if not isinstance(entries, dict):
         return {}

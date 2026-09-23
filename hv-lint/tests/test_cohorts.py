@@ -112,6 +112,43 @@ def test_all_falls_back_to_the_manifest_only_when_no_ingest_directory_exists(tmp
     assert names == ["MESA"]
 
 
+def test_a_json_document_that_is_not_an_object_is_treated_as_absent(tmp_path):
+    """`[]` is valid JSON. Both manifest readers called `.get()` on it and raised
+    AttributeError, though each promises to degrade to absent/unknown instead."""
+    cache = tmp_path / "dbgap-cache"
+    cache.mkdir()
+    (cache / _cohorts.MANIFEST_NAME).write_text("[]", encoding="utf-8")
+    assert _cohorts.read_manifest(cache) == {}
+    # the staging-pipeline sidecar is a separate reader with the same shape
+    staging = tmp_path / "staging"
+    staging.mkdir()
+    (staging / "manifest.json").write_text("[]", encoding="utf-8")
+    assert _cohorts.cohort_from_source_dir("aric-v8", staging) == "ARIC"
+
+
+def test_every_hchs_spelling_reaches_the_ingest_directory_not_just_the_cache(tmp_path):
+    """`candidate_keys` has always accepted `HCHS-SOL`; `canonical_cohort` squashed separators
+    only, so the token passed through and the phase managers joined `HCHS-SOL-ingest` onto a
+    path and read nothing. One spelling resolving the cache but not the tree is the worse
+    failure: the cache loads and only the file scan comes back empty."""
+    tree = _ingest(tmp_path, "HCHS", "COPDGene")
+    for token in ("HCHS", "HCHS-SOL", "HCHS_SOL", "hchs_sol", "hchs-sol"):
+        assert _cohorts.canonical_cohort(token, tree) == "HCHS", token
+    for token in ("copdgene", "COPDGENE", "COPDGene"):
+        assert _cohorts.canonical_cohort(token, tree) == "COPDGene", token
+
+
+def test_a_named_cohort_is_canonicalised_to_its_directory_spelling(tmp_path):
+    """`cohorts_to_load` keyed the indexes by the RAW token while `detect_cohort` keys each
+    file by its directory, so `--cohort copdgene` reported every COPDGene file as
+    'No dbGaP index available for cohort'."""
+    cache = _cache(tmp_path, "copdgene")
+    tree = _ingest(tmp_path, "COPDGene")
+    assert _cohorts.cohorts_to_load("copdgene", cache, tree)[0][0] == "COPDGene"
+    # and an unstaged cohort still yields exactly one pair rather than vanishing
+    assert _cohorts.cohorts_to_load("NEWSTUDY", cache, tree)[0][0] == "NEWSTUDY"
+
+
 def test_a_malformed_manifest_entry_is_ignored_rather_than_crashing(tmp_path):
     """`read_manifest` checked only the OUTER container, so an entry that is a null or a bare
     string reached `entry.get(...)` in `candidate_keys` / `cohorts_to_load` and raised

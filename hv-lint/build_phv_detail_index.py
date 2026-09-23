@@ -123,6 +123,20 @@ def build_one(cohort_dir: Path, output: Path, source: Path) -> dict | None:
     for dd_file in data_dict_files:
         cohort_index.update(parse_data_dict(dd_file))
 
+    # `parse_data_dict` turns an XML parse error into `{}`, so a wholly corrupt fetch reaches
+    # here with files on disk and no records. Writing that produces an EMPTY detail index
+    # carrying valid provenance, which every consumer then treats as present -- check 5.8 reads
+    # it as "this cohort has no collection intervals" and skips, the one reading the absent-file
+    # guard was added to prevent. The basic builder has refused an empty mapping all along;
+    # this is the same refusal, and its absence here was an asymmetry between the two.
+    if not cohort_index:
+        print(
+            f"  WARNING: {cohort_dir.name}: {len(data_dict_files)} data dictionaries parsed to "
+            "ZERO records -- writing no detail index and recording no provenance",
+            file=sys.stderr,
+        )
+        return None
+
     # Name the artifact by the STUDY, not by the source directory. A directory name is a local
     # convention (`aric`, `aric-v8`, `aric-v9`) that nothing validates and that cannot hold two
     # releases of one study at once; `phs000280.v8` can, and carries its own provenance. Falls

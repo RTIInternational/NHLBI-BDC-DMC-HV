@@ -74,6 +74,10 @@ if str(HVLINT_DIR) not in sys.path:
 MANIFESTS_DIR = HVLINT_DIR.parent / "hv_dataqc" / "cache_fetcher" / "manifests"
 CACHE_DIR = HVLINT_DIR / "dbgap-cache"
 
+# dbGaP stamps every FTP data dictionary `phs######.v#.pht######.v#.<name>.data_dict.xml`.
+# Anchored, so a name merely containing an accession cannot match.
+_DATA_DICT_PREFIX = re.compile(r"^phs\d{6}\.v\d+\.pht\d+\.v\d+\.")
+
 FTP_BASE = "https://ftp.ncbi.nlm.nih.gov/dbgap/studies"
 CGI_BASE = "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin"
 NCBI_DELAY_SECONDS = 0.5  # polite delay between real network requests
@@ -194,6 +198,18 @@ def fetch_cgi_index(cohort_key: str, study_id: str, data_version: str,
         print(f"             -> {dest}")
         return True
 
+    # `variables.xml` carries no release in its name, so a cached copy from the PREVIOUS
+    # release looks identical to a current one. It is not inert: the PHV index merges it as a
+    # supplement, which would fold a superseded release's PHVs into an artifact whose manifest
+    # names the new one -- rebuilding, inside one file, the union cache this branch exists to
+    # eliminate. The data dictionaries already on disk are what say which release this
+    # directory currently holds, so they decide whether the cached copy is stale.
+    if dest.exists() and not force and staged_release_differs(
+        CACHE_DIR / cohort_key, study_id, data_version
+    ):
+        print("  [variables.xml] Cached copy is from a superseded release -- re-fetching")
+        force = True
+
     if dest.exists() and not force:
         size_kb = dest.stat().st_size // 1024
         print(f"  [variables.xml] Already cached ({size_kb:,} KB) -- use --force to re-download")
@@ -224,6 +240,48 @@ def fetch_cgi_index(cohort_key: str, study_id: str, data_version: str,
 # ---------------------------------------------------------------------------
 # Step 2: Fetch FTP data dictionaries
 # ---------------------------------------------------------------------------
+def staged_release_differs(cohort_dir: Path, study_id: str, data_version: str) -> bool:
+    """True when the data dictionaries already staged name a release other than this one.
+
+    False when the directory is empty, holds no parseable data dictionary, or already holds
+    this release -- absence is never read as disagreement, so a first fetch is not treated as
+    a version bump.
+    """
+    want = f"{study_id}.{data_version.split('.')[0]}."
+    names = [
+        p.name for p in (cohort_dir / "pheno_variable_summaries").glob("*.data_dict.xml")
+        if _DATA_DICT_PREFIX.match(p.name)
+    ]
+    return bool(names) and any(not n.startswith(want) for n in names)
+
+
+def retire_superseded_data_dicts(dest_dir: Path, study_id: str, data_version: str) -> int:
+    """Remove data dictionaries from a release other than the one being fetched. Returns count.
+
+    One staging directory per cohort is reused across version bumps, and the FTP fetch ADDS
+    filenames rather than replacing them -- dbGaP stamps the release into each name, so a v9
+    fetch over a v8 tree leaves both. `study_from_data_dicts` then sees two releases and
+    refuses to choose (correctly: the directory genuinely has no single answer), so the
+    documented update command cannot build the new cache at all. The bump this branch exists
+    to support was the one operation that did not work.
+
+    Only files whose `phs######.v#.` prefix names a DIFFERENT release are removed, so a
+    re-fetch of the same release removes nothing, and a file that does not match the prefix
+    pattern at all is left alone rather than guessed about.
+    """
+    want = f"{study_id}.{data_version.split('.')[0]}."
+    stale = [
+        p for p in sorted(dest_dir.glob("*.data_dict.xml"))
+        if _DATA_DICT_PREFIX.match(p.name) and not p.name.startswith(want)
+    ]
+    for path in stale:
+        path.unlink()
+    if stale:
+        print(f"  [FTP] Retired {len(stale)} data dictionaries from a superseded release "
+              f"(keeping {want[:-1]})")
+    return len(stale)
+
+
 def fetch_ftp_data_dicts(cohort_key: str, study_id: str, data_version: str,
                          *, force: bool = False, dry_run: bool = False) -> bool:
     """Fetch all *.data_dict.xml from NCBI FTP pheno_variable_summaries/."""
@@ -256,6 +314,7 @@ def fetch_ftp_data_dicts(cohort_key: str, study_id: str, data_version: str,
     print(f"  [FTP] Found {len(targets)} data_dict files")
     dest_dir = CACHE_DIR / cohort_key / "pheno_variable_summaries"
     dest_dir.mkdir(parents=True, exist_ok=True)
+    retire_superseded_data_dicts(dest_dir, study_id, data_version)
 
     downloaded = 0
     skipped = 0

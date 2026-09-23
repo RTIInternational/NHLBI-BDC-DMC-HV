@@ -6,6 +6,11 @@ on:
       - 'priority_variables_transform/**'
       - 'hv-lint/**'
       - '.github/workflows/hv_lint.yml'
+      # The release each cohort declares. It is the EXPECTATION the mandatory release check
+      # compares the cache against, so a PR that bumps a version and touches nothing else
+      # must run this workflow -- otherwise the one change the check exists to police is the
+      # one change that never reaches it.
+      - 'hv_dataqc/cache_fetcher/manifests/**'
   workflow_dispatch:
     inputs:
       bdchm_ref:

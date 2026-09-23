@@ -129,6 +129,50 @@ def test_no_visit_cache_is_written(staged):
     assert list(staged.glob("*_visit.json")) == []
 
 
+def test_a_version_bump_retires_the_superseded_data_dictionaries(tmp_path, monkeypatch):
+    """The bump this branch exists to support was the one operation that did not work.
+
+    One staging directory per cohort is reused across releases and the FTP fetch ADDS
+    filenames rather than replacing them, so a v4 fetch over a v3 tree left both.
+    `study_from_data_dicts` then refuses to choose -- correctly, the directory has no single
+    answer -- and the documented update command could not build the new cache.
+    """
+    cache = _stage(tmp_path, "bumped", "phs009999", "v3")
+    ftp = cache / "bumped" / "pheno_variable_summaries"
+    assert len(list(ftp.glob("*.data_dict.xml"))) == 2
+    monkeypatch.setattr(update_data, "CACHE_DIR", cache)
+
+    assert update_data.staged_release_differs(cache / "bumped", "phs009999", "v4.p1") is True
+    retired = update_data.retire_superseded_data_dicts(ftp, "phs009999", "v4.p1")
+    assert retired == 2
+    assert list(ftp.glob("*.data_dict.xml")) == []
+
+
+def test_re_fetching_the_same_release_retires_nothing(tmp_path):
+    """The guard must fire on a bump, not on every fetch."""
+    cache = _stage(tmp_path, "same", "phs009999", "v3")
+    ftp = cache / "same" / "pheno_variable_summaries"
+    assert update_data.staged_release_differs(cache / "same", "phs009999", "v3.p1") is False
+    assert update_data.retire_superseded_data_dicts(ftp, "phs009999", "v3.p1") == 0
+    assert len(list(ftp.glob("*.data_dict.xml"))) == 2
+
+
+def test_a_first_fetch_is_not_mistaken_for_a_bump(tmp_path):
+    """Nothing staged means no disagreement, not a disagreement."""
+    empty = tmp_path / "fresh"
+    (empty / "pheno_variable_summaries").mkdir(parents=True)
+    assert update_data.staged_release_differs(empty, "phs009999", "v3.p1") is False
+
+
+def test_data_dictionaries_that_do_not_carry_a_release_are_left_alone(tmp_path):
+    """A name that does not match the dbGaP stamp is not guessed about."""
+    cache = _stage(tmp_path, "odd", "phs009999", "v3")
+    ftp = cache / "odd" / "pheno_variable_summaries"
+    (ftp / "hand_written.data_dict.xml").write_text("<x/>", encoding="utf-8")
+    update_data.retire_superseded_data_dicts(ftp, "phs009999", "v4.p1")
+    assert [p.name for p in ftp.glob("*.data_dict.xml")] == ["hand_written.data_dict.xml"]
+
+
 def test_the_index_holds_the_phvs_from_the_data_dictionaries(staged):
     """Guards the delegation itself: the old builder read variables.xml, which a staging tree
     fetched for a new cohort may not even have yet."""
