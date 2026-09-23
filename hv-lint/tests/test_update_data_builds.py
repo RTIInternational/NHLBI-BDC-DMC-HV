@@ -179,7 +179,6 @@ def test_a_failed_fetch_is_not_indexed(tmp_path, monkeypatch):
     earned, indistinguishable at lint time from a complete cache."""
     cache = _stage(tmp_path, "partial", "phs009999", "v3")
     monkeypatch.setattr(update_data, "CACHE_DIR", cache)
-    monkeypatch.setattr(update_data, "fetch_cgi_index", lambda *a, **k: True)
     monkeypatch.setattr(update_data, "fetch_ftp_data_dicts", lambda *a, **k: False)
 
     result = update_data.process_cohort(
@@ -190,56 +189,54 @@ def test_a_failed_fetch_is_not_indexed(tmp_path, monkeypatch):
     assert _cohorts.read_manifest(cache) == {}
 
 
-def test_both_builders_must_succeed_before_provenance_is_recorded(tmp_path, monkeypatch):
-    """A valid PHV mapping must not mask a corrupt data-dictionary set.
+def test_both_builders_must_succeed_before_provenance_is_recorded(staged, monkeypatch):
+    """Neither index is published unless the pair is complete.
 
-    `variables.xml` can carry the PHV->PHT mapping on its own, so the basic index succeeds
-    while the detail index -- which can only come from the dictionaries -- parses to zero
-    records. Writing provenance then claims a complete cache, and the missing detail index
-    surfaces much later as a lint-time ERROR against the cohort rather than a build failure.
+    Driven by forcing ONE builder to fail over a staging tree that is otherwise good, because
+    that is the case the guard exists for -- both failing is the easy case and proves less.
+    They are not independent outputs: Phase 3's 3.9-3.16 and Phase 5's 5.8 read the detail
+    index, and a missing one is a lint-time ERROR, so success here would move a build failure
+    to a much later place that reads it as a cache fault.
     """
-    cache = tmp_path / "dbgap-cache"
-    ftp = cache / "halfbuilt" / "pheno_variable_summaries"
-    ftp.mkdir(parents=True)
-    # Valid FILENAME (so the release is parseable) over unparseable CONTENT.
-    (ftp / "phs009999.v3.pht0000001.v1.T0.data_dict.xml").write_text(
-        "<data_table><unclosed>", encoding="utf-8")
-    (cache / "halfbuilt" / "variables.xml").write_text(
-        "<table><tr><td>phv00000001.v1</td><td>n</td><td>d</td>"
-        "<td>pht0000001.v1</td><td>ds</td></tr></table>", encoding="utf-8")
-    monkeypatch.setattr(update_data, "CACHE_DIR", cache)
+    import build_phv_detail_index
+    monkeypatch.setattr(build_phv_detail_index, "build_one", lambda *a, **k: None)
 
-    assert _build(cohort="halfbuilt") is False
-    assert _cohorts.read_manifest(cache) == {}, "no provenance for a half-built pair"
-    assert not (cache / "phs009999.v3_detail.json.gz").exists()
+    assert _build(cohort="newcohort") is False
+    assert _cohorts.read_manifest(staged) == {}, "no provenance for a half-built pair"
+    assert list(staged.glob("*.json.gz")) == [], "and neither artifact is published"
 
 
-def test_a_superseded_variables_xml_is_discarded_even_if_the_refetch_fails(tmp_path,
-                                                                           monkeypatch):
-    """Found by audit, not by review: re-fetching is not enough.
+def test_a_stale_variables_xml_cannot_contaminate_a_release_keyed_index(staged):
+    """The CGI bulk index is no longer read at all, so a stale copy is inert.
 
-    `variables.xml` carries no release in its name and the PHV index merges it as a supplement.
-    If it is merely marked for re-fetch and the re-fetch fails, the stale copy survives -- and
-    a later `--build-only` run skips fetching entirely, so it never reaches this check and
-    folds a superseded release's mappings into an artifact keyed to the new one. Discarding is
-    the safe direction: a missing supplement costs coverage, a stale one costs correctness.
+    It carries no release in its name or contents, so a copy left from an earlier one was
+    indistinguishable from a current one and no guard could tell them apart. Three review
+    rounds closed three separate roads to the same contamination -- a forced re-fetch, an
+    empty staging directory, `--force` skipping the check -- which is the signal that the
+    input, not the guards, was the problem. It cost nothing to drop: every committed cache was
+    built from a staging tree that contains no `variables.xml` at all.
     """
-    cache = _stage(tmp_path, "bump", "phs009999", "v3")
-    variables = cache / "bump" / "variables.xml"
-    variables.write_text("<table/>", encoding="utf-8")
-    monkeypatch.setattr(update_data, "CACHE_DIR", cache)
+    (staged / "newcohort" / "variables.xml").write_text(
+        "<table><tr><td>phv09999999.v1</td><td>stale</td><td>d</td>"
+        "<td>pht0009999.v1</td><td>ds</td></tr></table>", encoding="utf-8")
+    assert _build() is True
+    with gzip.open(staged / "phs009999.v3.json.gz", "rt", encoding="utf-8") as f:
+        mapping = json.load(f)
+    assert "phv09999999" not in mapping
+    assert mapping == {"phv00000000": "pht0000001", "phv00000001": "pht0010001"}
 
-    class _Dead:
-        def get(self, *a, **k):
-            raise RuntimeError("network down")
 
-        cache = type("C", (), {"delete": staticmethod(lambda **k: None)})()
-
-    monkeypatch.setitem(sys.modules, "_http", type(sys)("_http"))
-    sys.modules["_http"].get_session = lambda: _Dead()
-
-    assert update_data.fetch_cgi_index("bump", "phs009999", "v4.p1") is False
-    assert not variables.exists(), "a superseded variables.xml must not survive a failed fetch"
+def test_a_data_dictionary_from_another_release_does_not_contribute(staged):
+    """`retire_superseded_data_dicts` deliberately leaves files it cannot attribute, so the
+    builder must not count them into an artifact that claims one specific release."""
+    ftp = staged / "newcohort" / "pheno_variable_summaries"
+    (ftp / "hand_written.data_dict.xml").write_text(
+        DATA_DICT.format(phs="phs009999", ver="v3", pht="pht0099999",
+                         phv="phv09999999", name="rogue"), encoding="utf-8")
+    assert _build() is True
+    with gzip.open(staged / "phs009999.v3.json.gz", "rt", encoding="utf-8") as f:
+        mapping = json.load(f)
+    assert "phv09999999" not in mapping, "an unstamped dictionary must not contribute"
 
 
 def test_a_half_built_pair_publishes_neither_artifact(tmp_path, monkeypatch):
@@ -250,17 +247,13 @@ def test_a_half_built_pair_publishes_neither_artifact(tmp_path, monkeypatch):
     every consumer, because the one thing that would have flagged it (the manifest) still
     describes the older, complete build.
     """
-    cache = tmp_path / "dbgap-cache"
-    ftp = cache / "half" / "pheno_variable_summaries"
-    ftp.mkdir(parents=True)
-    (ftp / "phs009999.v3.pht0000001.v1.T0.data_dict.xml").write_text(
-        "<data_table><unclosed>", encoding="utf-8")
-    (cache / "half" / "variables.xml").write_text(
-        "<table><tr><td>phv00000001.v1</td><td>n</td><td>d</td>"
-        "<td>pht0000001.v1</td><td>ds</td></tr></table>", encoding="utf-8")
+    cache = _stage(tmp_path, "half", "phs009999", "v3")
     # an existing good cache for the same release, as a prior successful build would leave
     (cache / "phs009999.v3.json.gz").write_bytes(b"prior")
     monkeypatch.setattr(update_data, "CACHE_DIR", cache)
+    # the SECOND builder fails over an otherwise good tree -- the case the guard exists for
+    import build_phv_detail_index
+    monkeypatch.setattr(build_phv_detail_index, "build_one", lambda *a, **k: None)
 
     assert _build(cohort="half") is False
     assert (cache / "phs009999.v3.json.gz").read_bytes() == b"prior", \

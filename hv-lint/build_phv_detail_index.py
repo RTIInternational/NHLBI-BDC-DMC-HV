@@ -115,7 +115,18 @@ def build_one(cohort_dir: Path, output: Path, source: Path) -> dict | None:
     if not ftp_dir.is_dir():
         return None
 
-    data_dict_files = sorted(ftp_dir.glob("*.data_dict.xml"))
+    # The release is decided FIRST, because it selects the inputs. `retire_superseded_data_dicts`
+    # deliberately leaves files whose names carry no release -- it refuses to guess about a name
+    # it cannot parse -- so without this filter a hand-written or legacy-named dictionary adds
+    # records to an artifact whose manifest claims one specific release. The basic builder had
+    # the identical hole; both are closed here rather than one at a time.
+    accession, version, _seen = _cohorts.study_from_data_dicts(cohort_dir)
+    prefix = f"{accession}.{version}." if accession else None
+    all_files = sorted(ftp_dir.glob("*.data_dict.xml"))
+    data_dict_files = [p for p in all_files if not prefix or p.name.startswith(prefix)]
+    if len(all_files) != len(data_dict_files):
+        print(f"  {cohort_dir.name}: skipped {len(all_files) - len(data_dict_files)} data "
+              f"dictionaries not stamped {prefix[:-1]}", file=sys.stderr)
     if not data_dict_files:
         return None
 

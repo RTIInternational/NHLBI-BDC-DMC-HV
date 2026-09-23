@@ -56,8 +56,7 @@ hv-lint/
 ### Data Flow
 
 ```
-NCBI CGI endpoint              --> variables.xml      (supplement: fills gaps)
-NCBI FTP mirror                 --> *.data_dict.xml    (primary + provenance)
+NCBI FTP mirror                 --> *.data_dict.xml    (the only source; carries the release)
                                         |
                     +-------------------+-------------------+
                     |                                       |
@@ -75,6 +74,13 @@ indexes, so the fetch path and a direct builder invocation cannot diverge. The r
 artifact's name comes from the `phs######.v#.` prefix on the data dictionaries, never from the
 version a cohort declares -- provenance taken from a declaration would make the release check
 confirm itself.
+
+**Only inputs carrying that prefix contribute.** A dictionary from another release, or one
+whose name cannot be attributed to any release, is skipped with a note. The CGI `variables.xml`
+bulk index was merged as a supplement until 2026-09-23 and is no longer fetched or read: it
+carries no release, so a copy left from an earlier one silently turned the artifact into a
+union of releases. Dropping it changed nothing -- verified byte-for-byte against the staging
+layout every committed cache was built from, which contains no `variables.xml` at all.
 
 There is no visit extract. It guessed visit metadata by regex into `*_visit.json`; checks 5.5
 and 5.7 were its only readers and both were removed.

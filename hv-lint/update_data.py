@@ -3,20 +3,22 @@
 update_data.py -- Fetch dbGaP source data and rebuild lint indexes.
 
 Single entry point for all dbGaP data maintenance in hv-lint. Performs:
-  1. Fetch CGI variable index (variables.xml) from NCBI
-  2. Fetch FTP data dictionaries (*.data_dict.xml) from NCBI FTP
-  3. Build the PHV-to-PHT index, via build_phv_index.build_one
-  4. Build the PHV detail index, via build_phv_detail_index.build_one
+  1. Fetch FTP data dictionaries (*.data_dict.xml) from NCBI FTP
+  2. Build the PHV-to-PHT index, via build_phv_index.build_one
+  3. Build the PHV detail index, via build_phv_detail_index.build_one
 
-Steps 3 and 4 DELEGATE to those two builders rather than repeating them, so this
+Steps 2 and 3 DELEGATE to those two builders rather than repeating them, so this
 path and a direct builder invocation produce the same artifact: keyed by study
 release (`phs000280.v8.json.gz`) and carrying the provenance the mandatory
 release check requires. This script held its own pair until 2026-09-23; they read
 only variables.xml and wrote `<cohort>.json.gz` with no provenance, so the
 onboarding command below produced exactly the cache that check rejects.
 
-There is no step 5. It extracted a visit cache by regex-guessing visit metadata;
-Phase 5 checks 5.5 and 5.7 were its only readers and both were removed.
+Two steps were removed. A visit cache was extracted by regex-guessing visit
+metadata, and Phase 5 checks 5.5/5.7 were its only readers. The CGI
+`variables.xml` bulk index was fetched as a supplement for the PHV index, and
+carries no release -- so a copy left from an earlier one made the artifact a
+union of releases, which is what keying by release exists to prevent.
 
 Fetched source XML files and intermediate data are written to
 hv-lint/dbgap-cache/ and are git-ignored. The compressed indexes
@@ -45,7 +47,7 @@ Usage:
 Requirements:
     pip install pyyaml requests-cache
 
-    requests-cache is only needed for --fetch operations (steps 1-2).
+    requests-cache is only needed for --fetch operations (step 1).
     --build-only requires only pyyaml and stdlib.
 """
 
@@ -80,7 +82,6 @@ CACHE_DIR = HVLINT_DIR / "dbgap-cache"
 _DATA_DICT_PREFIX = re.compile(r"^phs\d{6}\.v\d+\.pht\d+\.v\d+\.")
 
 FTP_BASE = "https://ftp.ncbi.nlm.nih.gov/dbgap/studies"
-CGI_BASE = "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin"
 NCBI_DELAY_SECONDS = 0.5  # polite delay between real network requests
 
 
@@ -148,105 +149,7 @@ class FTPDirectoryParser(HTMLParser):
 
 
 # ---------------------------------------------------------------------------
-# HTML parser for CGI variable index
-# ---------------------------------------------------------------------------
-class VariableTableParser(HTMLParser):
-    """Parse the dbGaP variable list HTML table.
-
-    Each row: [phv_accession, var_name, var_desc, pht_accession, dataset_name]
-    """
-
-    def __init__(self):
-        super().__init__()
-        self.in_td = False
-        self.current_row: list[str] = []
-        self.rows: list[list[str]] = []
-        self.current_text = ""
-
-    def handle_starttag(self, tag, attrs):
-        if tag == "td":
-            self.in_td = True
-            self.current_text = ""
-        elif tag == "tr":
-            self.current_row = []
-
-    def handle_endtag(self, tag):
-        if tag == "td":
-            self.in_td = False
-            self.current_row.append(self.current_text.strip())
-        elif tag == "tr" and self.current_row:
-            self.rows.append(self.current_row)
-
-    def handle_data(self, data):
-        if self.in_td:
-            self.current_text += data
-
-
-# ---------------------------------------------------------------------------
-# Step 1: Fetch CGI variable index (variables.xml)
-# ---------------------------------------------------------------------------
-def fetch_cgi_index(cohort_key: str, study_id: str, data_version: str,
-                    *, force: bool = False, dry_run: bool = False) -> bool:
-    """Fetch variables.xml from the CGI endpoint."""
-    url = (
-        f"{CGI_BASE}/GetListOfAllObjects.cgi"
-        f"?study_id={study_id}.{data_version}&object_type=variable"
-    )
-    dest = CACHE_DIR / cohort_key / "variables.xml"
-
-    if dry_run:
-        print(f"  [dry-run] Would fetch: {url}")
-        print(f"             -> {dest}")
-        return True
-
-    # `variables.xml` carries no release in its name, so a cached copy from the PREVIOUS
-    # release looks identical to a current one. It is not inert: the PHV index merges it as a
-    # supplement, which would fold a superseded release's PHVs into an artifact whose manifest
-    # names the new one -- rebuilding, inside one file, the union cache this branch exists to
-    # eliminate. The data dictionaries already on disk are what say which release this
-    # directory currently holds, so they decide whether the cached copy is stale.
-    if dest.exists() and not force and staged_release_differs(
-        CACHE_DIR / cohort_key, study_id, data_version
-    ):
-        # DELETE it, do not merely re-fetch it. If the re-fetch then fails, a stale copy left
-        # on disk still poisons a later `--build-only` run, which skips fetching entirely and
-        # so never reaches this check: the PHV index would merge a superseded release's
-        # mappings into an artifact keyed to the new one. Losing the supplement is the safe
-        # direction -- the builder treats a missing variables.xml as "no supplement" and the
-        # data dictionaries, which carry the release, remain its primary source.
-        print("  [variables.xml] Cached copy is from a superseded release -- discarding it")
-        dest.unlink()
-        force = True
-
-    if dest.exists() and not force:
-        size_kb = dest.stat().st_size // 1024
-        print(f"  [variables.xml] Already cached ({size_kb:,} KB) -- use --force to re-download")
-        return True
-
-    from _http import get_session
-
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    session = get_session()
-    try:
-        if force:
-            session.cache.delete(urls=[url])
-        resp = session.get(url, timeout=120)
-        resp.raise_for_status()
-        dest.write_bytes(resp.content)
-        size_kb = len(resp.content) // 1024
-        from_cache = getattr(resp, "from_cache", False)
-        source = "http-cache" if from_cache else "downloaded"
-        print(f"  [variables.xml] OK ({source}, {size_kb:,} KB)")
-        if not from_cache:
-            time.sleep(NCBI_DELAY_SECONDS)
-        return True
-    except Exception as exc:
-        print(f"  [variables.xml] FAILED: {exc}")
-        return False
-
-
-# ---------------------------------------------------------------------------
-# Step 2: Fetch FTP data dictionaries
+# Step 1: Fetch FTP data dictionaries
 # ---------------------------------------------------------------------------
 def staged_release_differs(cohort_dir: Path, study_id: str, data_version: str) -> bool:
     """True when the data dictionaries already staged name a release other than this one.
@@ -401,12 +304,12 @@ def process_cohort(
     ok = True
 
     if fetch:
-        # Step 1: CGI variable index
-        if not fetch_cgi_index(cohort_key, study_id, data_version,
-                               force=force, dry_run=dry_run):
-            ok = False
-
-        # Step 2: FTP data dictionaries
+        # The FTP data dictionaries are the only source fetched. The CGI `variables.xml` bulk
+        # index was fetched alongside them until 2026-09-23 and is not any more: it fed one
+        # consumer, the PHV index's supplement, and that was removed because a file carrying no
+        # release cannot be allowed to contribute to a release-keyed artifact. Fetching it now
+        # would write a file nothing reads -- which is exactly what made a stale copy hazardous
+        # in the first place.
         if not fetch_ftp_data_dicts(cohort_key, study_id, data_version,
                                     force=force, dry_run=dry_run):
             ok = False

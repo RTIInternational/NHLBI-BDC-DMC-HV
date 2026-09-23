@@ -3,12 +3,13 @@
 
 Primary source: ``*.data_dict.xml`` files in the FTP cache
 (``pheno_variable_summaries/`` sub-directory). These cover every table
-including restricted-access and HeartGO tables that are absent from the
-CGI ``variables.xml`` bulk index.
+including restricted-access and HeartGO tables.
 
-Fallback / supplement: ``variables.xml`` (legacy CGI bulk index). Any
-PHVs found there that are not already in the FTP-sourced mapping are
-added, so the output is always a strict superset of the old behaviour.
+Only inputs attributable to the release being recorded contribute: each
+``*.data_dict.xml`` must carry that release's ``phs######.v#.`` stamp. The
+CGI ``variables.xml`` bulk index was merged as a supplement until
+2026-09-23 and is not read any more -- it carries no release, so a copy
+left from an earlier one silently made the artifact a union.
 
 Produces compressed JSON files mapping base PHV accessions to base PHT
 accessions. These compact indexes are used by Phase 3
@@ -32,66 +33,10 @@ import gzip
 import json
 import sys
 import xml.etree.ElementTree as ET
-from html.parser import HTMLParser
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _cohorts  # noqa: E402
-
-
-class VariableTableParser(HTMLParser):
-    """Parse the dbGaP variable list HTML table.
-
-    Each row has 5 columns:
-      [0] Variable accession  (e.g., phv00098579.v7.p3)
-      [1] Variable name       (e.g., SUBJECT_ID)
-      [2] Variable description
-      [3] Dataset accession   (e.g., pht001440.v7.p3)
-      [4] Dataset name        (e.g., ARIC_Subject)
-    """
-
-    def __init__(self):
-        super().__init__()
-        self.in_td = False
-        self.current_row: list[str] = []
-        self.rows: list[list[str]] = []
-        self.current_text = ""
-
-    def handle_starttag(self, tag, attrs):
-        if tag == "td":
-            self.in_td = True
-            self.current_text = ""
-        elif tag == "tr":
-            self.current_row = []
-
-    def handle_endtag(self, tag):
-        if tag == "td":
-            self.in_td = False
-            self.current_row.append(self.current_text.strip())
-        elif tag == "tr" and self.current_row:
-            self.rows.append(self.current_row)
-
-    def handle_data(self, data):
-        if self.in_td:
-            self.current_text += data
-
-
-def parse_variable_html(path: Path) -> dict[str, str]:
-    """Parse HTML variable list and return {base_phv: base_pht} mapping."""
-    parser = VariableTableParser()
-    parser.feed(path.read_text(encoding="utf-8", errors="replace"))
-    parser.close()
-
-    mapping: dict[str, str] = {}
-    for row in parser.rows:
-        if len(row) < 4:
-            continue
-        phv_base = row[0].split(".")[0]  # strip .vN.pN version
-        pht_base = row[3].split(".")[0]
-        if phv_base.startswith("phv") and pht_base.startswith("pht"):
-            mapping[phv_base] = pht_base
-
-    return mapping
 
 
 def parse_data_dict_xml(path: Path) -> dict[str, str]:
@@ -117,14 +62,27 @@ def parse_data_dict_xml(path: Path) -> dict[str, str]:
     return mapping
 
 
-def build_mapping_from_ftp(cohort_dir: Path) -> dict[str, str]:
-    """Build {base_phv: base_pht} from FTP data dicts in pheno_variable_summaries/."""
+def build_mapping_from_ftp(cohort_dir: Path, prefix: str | None = None) -> dict[str, str]:
+    """Build {base_phv: base_pht} from FTP data dicts in pheno_variable_summaries/.
+
+    ``prefix`` is the ``phs######.v#.`` stamp of the release being recorded. When given, only
+    files carrying it contribute -- a file from another release, or one whose name cannot be
+    attributed to any release, must not add PHVs to an artifact that claims this one. Omitted,
+    every file contributes, which is correct only when no release is being claimed.
+    """
     ftp_dir = cohort_dir / "pheno_variable_summaries"
     if not ftp_dir.is_dir():
         return {}
     mapping: dict[str, str] = {}
+    skipped = 0
     for dd_file in sorted(ftp_dir.glob("*.data_dict.xml")):
+        if prefix and not dd_file.name.startswith(prefix):
+            skipped += 1
+            continue
         mapping.update(parse_data_dict_xml(dd_file))
+    if skipped:
+        print(f"  {cohort_dir.name}: skipped {skipped} data dictionaries not stamped "
+              f"{prefix[:-1]}", file=sys.stderr)
     return mapping
 
 
@@ -139,22 +97,30 @@ def build_one(cohort_dir: Path, output: Path, source: Path) -> dict | None:
     The returned entry carries ``study``/``study_version`` only when the data dictionaries name
     one release; callers must treat their ABSENCE as "provenance unknown" rather than filling it
     in from what a cohort declares, which would make the release check confirm itself.
-    """
-    # Primary: FTP data dicts (complete coverage including restricted tables)
-    mapping = build_mapping_from_ftp(cohort_dir)
-    ftp_count = len(mapping)
 
-    # Supplement: variables.xml (CGI bulk index) fills any gaps
-    vf = cohort_dir / "variables.xml"
-    if vf.exists():
-        html_mapping = parse_variable_html(vf)
-        before = len(mapping)
-        for phv, pht in html_mapping.items():
-            if phv not in mapping:
-                mapping[phv] = pht
-        html_added = len(mapping) - before
-    else:
-        html_added = 0
+    **Only inputs attributable to the recorded release contribute.** Every PHV here comes from a
+    ``*.data_dict.xml`` whose ``phs######.v#.`` stamp matches the release this artifact is keyed
+    and provenance-stamped by. Two sources used to slip past that and make the artifact a union
+    of releases -- the thing keying by release exists to prevent:
+
+    * ``variables.xml``, the CGI bulk index, was merged as a supplement. It carries no release
+      in its name or contents, so a copy left from an earlier release was indistinguishable from
+      a current one and there was no check that could tell. Removed rather than guarded, after
+      three review rounds closed three separate roads to the same contamination. It cost
+      nothing: every committed cache was built by ``--source-cache`` from a staging tree that
+      contains no ``variables.xml`` at all, so the supplement contributed zero PHVs to all of
+      them.
+    * unstamped ``*.data_dict.xml`` files, which `retire_superseded_data_dicts` deliberately
+      leaves alone (it refuses to guess about a name it cannot parse). They were still parsed
+      into the mapping, so a hand-written or legacy-named file added PHVs to an artifact whose
+      manifest claimed one specific release.
+    """
+    # The release is decided FIRST, because it selects the inputs. Deciding it afterwards is
+    # what allowed inputs from other releases to be counted into the artifact it names.
+    accession, version, _seen = _cohorts.study_from_data_dicts(cohort_dir)
+    prefix = f"{accession}.{version}." if accession else None
+    mapping = build_mapping_from_ftp(cohort_dir, prefix)
+    ftp_count = len(mapping)
 
     if not mapping:
         return None
@@ -164,7 +130,6 @@ def build_one(cohort_dir: Path, output: Path, source: Path) -> dict | None:
     # local convention (`aric`, `aric-v8`, `aric-v9`) that nothing validates and that cannot
     # hold two releases of one study at once; `phs000280.v8` can, and carries its own
     # provenance. Falls back to the directory name, loudly, when no accession is parseable.
-    accession, version, _seen = _cohorts.study_from_data_dicts(cohort_dir)
     entry: dict = {"phvs": len(mapping), "phts": phts, "source_dir": cohort_dir.name}
     if accession:
         key = f"{accession}.{version}"
@@ -189,10 +154,9 @@ def build_one(cohort_dir: Path, output: Path, source: Path) -> dict | None:
         f.write(json_bytes)
 
     gz_size = gz_path.stat().st_size
-    supplement = f" (+{html_added} from variables.xml)" if html_added else ""
     print(
         f"  {cohort_dir.name:12s}: {len(mapping):>7,} PHVs "
-        f"({ftp_count:,} FTP{supplement}), "
+        f"({ftp_count:,} FTP), "
         f"{phts:>4} PHTs -> {gz_size:>8,} bytes ({gz_path.name})"
     )
     return entry
