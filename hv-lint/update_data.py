@@ -5,9 +5,18 @@ update_data.py -- Fetch dbGaP source data and rebuild lint indexes.
 Single entry point for all dbGaP data maintenance in hv-lint. Performs:
   1. Fetch CGI variable index (variables.xml) from NCBI
   2. Fetch FTP data dictionaries (*.data_dict.xml) from NCBI FTP
-  3. Build compressed PHV-to-PHT index (.json.gz)
-  4. Build compressed PHV detail index (.json.gz)
-  5. Extract visit cache (visit-relevant metadata per table)
+  3. Build the PHV-to-PHT index, via build_phv_index.build_one
+  4. Build the PHV detail index, via build_phv_detail_index.build_one
+
+Steps 3 and 4 DELEGATE to those two builders rather than repeating them, so this
+path and a direct builder invocation produce the same artifact: keyed by study
+release (`phs000280.v8.json.gz`) and carrying the provenance the mandatory
+release check requires. This script held its own pair until 2026-09-23; they read
+only variables.xml and wrote `<cohort>.json.gz` with no provenance, so the
+onboarding command below produced exactly the cache that check rejects.
+
+There is no step 5. It extracted a visit cache by regex-guessing visit metadata;
+Phase 5 checks 5.5 and 5.7 were its only readers and both were removed.
 
 Fetched source XML files and intermediate data are written to
 hv-lint/dbgap-cache/ and are git-ignored. The compressed indexes
@@ -282,309 +291,6 @@ def fetch_ftp_data_dicts(cohort_key: str, study_id: str, data_version: str,
 
 
 # ---------------------------------------------------------------------------
-# Step 3: Build PHV-to-PHT index
-# ---------------------------------------------------------------------------
-def build_phv_index(cohort_key: str) -> int:
-    """Build compressed PHV-to-PHT index from variables.xml. Returns PHV count."""
-    vf = CACHE_DIR / cohort_key / "variables.xml"
-    if not vf.exists():
-        print(f"  [index] No variables.xml for {cohort_key} -- skipping basic index")
-        return 0
-
-    parser = VariableTableParser()
-    parser.feed(vf.read_text(encoding="utf-8", errors="replace"))
-    parser.close()
-
-    mapping: dict[str, str] = {}
-    for row in parser.rows:
-        if len(row) < 4:
-            continue
-        phv_base = row[0].split(".")[0]
-        pht_base = row[3].split(".")[0]
-        if phv_base.startswith("phv") and pht_base.startswith("pht"):
-            mapping[phv_base] = pht_base
-
-    json_bytes = json.dumps(mapping, separators=(",", ":")).encode("utf-8")
-    gz_path = CACHE_DIR / f"{cohort_key}.json.gz"
-    with gzip.open(gz_path, "wb") as f:
-        f.write(json_bytes)
-
-    phts = len(set(mapping.values()))
-    gz_size = gz_path.stat().st_size
-    print(
-        f"  [index] {cohort_key:12s}: {len(mapping):>7,} PHVs, "
-        f"{phts:>4} PHTs -> {gz_size:>8,} bytes"
-    )
-    return len(mapping)
-
-
-# ---------------------------------------------------------------------------
-# Step 4: Build PHV detail index
-# ---------------------------------------------------------------------------
-def parse_data_dict(path: Path) -> dict[str, dict]:
-    """Parse one data_dict.xml and return per-PHV detail records."""
-    try:
-        tree = ET.parse(path)
-    except ET.ParseError as exc:
-        print(f"  WARN: XML parse error in {path.name}: {exc}", file=sys.stderr)
-        return {}
-
-    root = tree.getroot()
-    base_pht = root.get("id", "").split(".")[0]
-
-    records: dict[str, dict] = {}
-    for var_elem in root.iter("variable"):
-        phv_raw = var_elem.get("id", "")
-        base_phv = phv_raw.split(".")[0]
-        if not base_phv.startswith("phv"):
-            continue
-
-        name_el = var_elem.find("name")
-        desc_el = var_elem.find("description")
-        type_el = var_elem.find("type")
-        unit_el = var_elem.find("unit")
-        ci_el = var_elem.find("coll_interval")
-
-        name = name_el.text.strip() if name_el is not None and name_el.text else ""
-        desc = desc_el.text.strip() if desc_el is not None and desc_el.text else ""
-        vtype = (type_el.text.strip().lower() if type_el is not None and type_el.text else "")
-        unit = unit_el.text.strip() if unit_el is not None and unit_el.text else None
-        coll_interval = ci_el.text.strip() if ci_el is not None and ci_el.text else None
-
-        codes: dict[str, str] | None = None
-        value_elems = var_elem.findall("value")
-        if value_elems:
-            codes = {}
-            for ve in value_elems:
-                code = ve.get("code", "")
-                label = (ve.text or "").strip()
-                if code:
-                    codes[code] = label
-
-        record: dict = {
-            "name": name,
-            "pht": base_pht,
-            "type": vtype,
-            "description": desc,
-        }
-        if unit is not None:
-            record["unit"] = unit
-        if codes:
-            record["codes"] = codes
-        if coll_interval:
-            record["coll_interval"] = coll_interval
-
-        records[base_phv] = record
-
-    return records
-
-
-def build_phv_detail_index(cohort_key: str) -> int:
-    """Build extended PHV detail index from FTP data dicts. Returns PHV count."""
-    ftp_dir = CACHE_DIR / cohort_key / "pheno_variable_summaries"
-    if not ftp_dir.is_dir():
-        print(f"  [detail] No pheno_variable_summaries for {cohort_key} -- skipping")
-        return 0
-
-    data_dict_files = sorted(ftp_dir.glob("*.data_dict.xml"))
-    if not data_dict_files:
-        print(f"  [detail] No data_dict.xml files for {cohort_key} -- skipping")
-        return 0
-
-    cohort_index: dict[str, dict] = {}
-    for dd_file in data_dict_files:
-        records = parse_data_dict(dd_file)
-        cohort_index.update(records)
-
-    json_bytes = json.dumps(
-        cohort_index, separators=(",", ":"), ensure_ascii=True
-    ).encode("utf-8")
-    gz_path = CACHE_DIR / f"{cohort_key}_detail.json.gz"
-    with gzip.open(gz_path, "wb") as f:
-        f.write(json_bytes)
-
-    gz_size = gz_path.stat().st_size
-    n_coded = sum(1 for r in cohort_index.values() if r.get("codes"))
-    print(
-        f"  [detail] {cohort_key:12s}: {len(cohort_index):>7,} PHVs "
-        f"({n_coded:>5,} coded), {len(data_dict_files):>4} files -> "
-        f"{gz_size:>9,} bytes"
-    )
-    return len(cohort_index)
-
-
-# ---------------------------------------------------------------------------
-# Step 5: Extract visit cache
-# ---------------------------------------------------------------------------
-
-# Regex patterns for visit-relevant variable detection
-_VISIT_DISCRIMINATOR_RE = [
-    re.compile(r"^VISIT$", re.IGNORECASE),
-    re.compile(r"^IDTYPE$", re.IGNORECASE),
-    re.compile(r"VTYP$", re.IGNORECASE),
-    re.compile(r"^visitnum$", re.IGNORECASE),
-    re.compile(r"^phase_study$", re.IGNORECASE),
-    re.compile(r"^visit_type$", re.IGNORECASE),
-]
-
-_AGE_RE = [
-    re.compile(r"\bage\b", re.IGNORECASE),
-    re.compile(r"^AGE", re.IGNORECASE),
-    re.compile(r"AGE\d*$", re.IGNORECASE),
-]
-
-_DATE_DAYS_RE = [
-    re.compile(r"\bDAYS?\b", re.IGNORECASE),
-    re.compile(r"\bDATE\b", re.IGNORECASE),
-    re.compile(r"^F\d+DAYS$", re.IGNORECASE),  # WHI: F80DAYS, etc.
-]
-
-_VISIT_DESC_RE = re.compile(
-    r"visit\s*\d|exam\s*\d|baseline|follow.?up|phase\s*\d|year\s*\d",
-    re.IGNORECASE,
-)
-
-
-def extract_visit_metadata(cohort_key: str) -> dict | None:
-    """Extract visit-relevant metadata from FTP data dicts for one cohort.
-
-    Returns a dict suitable for JSON serialization, or None if no data.
-    """
-    ftp_dir = CACHE_DIR / cohort_key / "pheno_variable_summaries"
-    if not ftp_dir.is_dir():
-        return None
-
-    data_dict_files = sorted(ftp_dir.glob("*.data_dict.xml"))
-    if not data_dict_files:
-        return None
-
-    tables: dict[str, dict] = {}
-
-    for dd_file in data_dict_files:
-        try:
-            tree = ET.parse(dd_file)
-        except ET.ParseError:
-            continue
-
-        root = tree.getroot()
-        table_id_raw = root.get("id", "")
-        base_pht = table_id_raw.split(".")[0]
-        if not base_pht.startswith("pht"):
-            continue
-
-        # Table description
-        desc_el = root.find(".//description")
-        table_desc = desc_el.text.strip() if desc_el is not None and desc_el.text else ""
-
-        discriminators = []
-        age_vars = []
-        date_days_vars = []
-        participant_ids = []
-        all_var_names = []
-
-        for var_elem in root.iter("variable"):
-            name_el = var_elem.find("name")
-            if name_el is None or not name_el.text:
-                continue
-            vname = name_el.text.strip()
-            all_var_names.append(vname)
-
-            # Visit discriminators
-            for pat in _VISIT_DISCRIMINATOR_RE:
-                if pat.search(vname):
-                    # Get coded values if any
-                    codes = {}
-                    for ve in var_elem.findall("value"):
-                        code = ve.get("code", "")
-                        label = (ve.text or "").strip()
-                        if code:
-                            codes[code] = label
-                    phv_raw = var_elem.get("id", "")
-                    base_phv = phv_raw.split(".")[0]
-                    entry = {"name": vname, "phv": base_phv}
-                    if codes:
-                        entry["codes"] = codes
-                    discriminators.append(entry)
-                    break
-
-            # Age variables
-            for pat in _AGE_RE:
-                if pat.search(vname):
-                    phv_raw = var_elem.get("id", "")
-                    age_vars.append({"name": vname, "phv": phv_raw.split(".")[0]})
-                    break
-
-            # Date/days variables
-            for pat in _DATE_DAYS_RE:
-                if pat.search(vname):
-                    phv_raw = var_elem.get("id", "")
-                    date_days_vars.append({"name": vname, "phv": phv_raw.split(".")[0]})
-                    break
-
-            # Participant IDs
-            if vname.upper() in ("SUBJECT_ID", "SHAREID", "SUBJID", "PID", "ID",
-                                  "RANID", "SID", "DBGAP_SUBJECT_ID"):
-                phv_raw = var_elem.get("id", "")
-                participant_ids.append({"name": vname, "phv": phv_raw.split(".")[0]})
-
-        table_entry: dict = {
-            "pht": base_pht,
-            "n_variables": len(all_var_names),
-        }
-        if table_desc:
-            table_entry["description"] = table_desc
-        if discriminators:
-            table_entry["visit_discriminators"] = discriminators
-            table_entry["is_multi_visit"] = True
-        if age_vars:
-            table_entry["age_variables"] = age_vars
-        if date_days_vars:
-            table_entry["date_days_variables"] = date_days_vars
-        if participant_ids:
-            table_entry["participant_id_variables"] = participant_ids
-
-        # Visit context clues
-        table_entry["visit_context_in_name"] = bool(
-            re.search(r"visit|exam|base|yr\d|phase|annual", base_pht, re.IGNORECASE)
-            or re.search(r"visit|exam|base|yr\d|phase|annual", dd_file.stem, re.IGNORECASE)
-        )
-        table_entry["visit_context_in_desc"] = bool(
-            _VISIT_DESC_RE.search(table_desc)
-        ) if table_desc else False
-
-        tables[base_pht] = table_entry
-
-    if not tables:
-        return None
-
-    return {
-        "cohort": cohort_key,
-        "n_tables": len(tables),
-        "n_multi_visit": sum(1 for t in tables.values() if t.get("is_multi_visit")),
-        "tables": tables,
-    }
-
-
-def build_visit_cache(cohort_key: str) -> bool:
-    """Extract visit metadata and write to dbgap-cache/<cohort>_visit.json."""
-    metadata = extract_visit_metadata(cohort_key)
-    if metadata is None:
-        print(f"  [visit] No data for {cohort_key} -- skipping")
-        return True
-
-    dest = CACHE_DIR / f"{cohort_key}_visit.json"
-    with open(dest, "w", encoding="utf-8") as f:
-        json.dump(metadata, f, indent=2, ensure_ascii=True)
-
-    n_multi = metadata["n_multi_visit"]
-    print(
-        f"  [visit] {cohort_key:12s}: {metadata['n_tables']} tables "
-        f"({n_multi} multi-visit) -> {dest.name}"
-    )
-    return True
-
-
-# ---------------------------------------------------------------------------
 # Orchestrator
 # ---------------------------------------------------------------------------
 def process_cohort(
@@ -620,14 +326,40 @@ def process_cohort(
             ok = False
 
     if build and not dry_run:
-        # Step 3: Basic PHV index
-        build_phv_index(cohort_key)
+        # Steps 3 and 4 delegate to the release-keyed builders rather than repeating them.
+        # This script used to hold its own pair, reading only `variables.xml` and writing
+        # `<cohort>.json.gz` with no provenance -- so the onboarding command MAINTENANCE.md
+        # documents produced exactly the cache the mandatory release check rejects. The
+        # builders read the data dictionaries fetched in step 2, which is where the
+        # `phs######.v#` provenance comes from; `variables.xml` stays as their supplement.
+        #
+        # Step 5 built `<cohort>_visit.json` by regex-guessing visit metadata. Checks 5.5 and
+        # 5.7 were its only readers and both were removed, so it is not built any more.
+        # Deferred, matching this file's convention for its other cross-module imports:
+        # --help must work without the builders' dependencies present.
+        import _cohorts
+        import build_phv_detail_index
+        import build_phv_index
 
-        # Step 4: Detail PHV index
-        build_phv_detail_index(cohort_key)
-
-        # Step 5: Visit cache
-        build_visit_cache(cohort_key)
+        cohort_dir = CACHE_DIR / cohort_key
+        if not cohort_dir.is_dir():
+            print(f"  ERROR: no staged source at {cohort_dir} -- fetch before building",
+                  file=sys.stderr)
+            return False
+        entries: dict[str, dict] = {}
+        for builder in (build_phv_index, build_phv_detail_index):
+            entry = builder.build_one(cohort_dir, CACHE_DIR, CACHE_DIR)
+            if entry and entry.get("study"):
+                entries[f"{entry['study']}.{entry['study_version']}"] = entry
+        if entries:
+            _cohorts.write_manifest_entries(CACHE_DIR, entries)
+        else:
+            # Not a warning to bury: an index carrying no release fails the mandatory check at
+            # lint time, far from here, and reads there as a cache problem rather than a build
+            # one.
+            print(f"  ERROR: {cohort_key}: built no release-keyed index -- the data "
+                  f"dictionaries in {cohort_dir} name no single phs######.v#", file=sys.stderr)
+            ok = False
 
     return ok
 

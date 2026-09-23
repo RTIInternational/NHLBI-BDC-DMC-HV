@@ -104,6 +104,71 @@ def parse_data_dict(path: Path) -> dict[str, dict]:
     return records
 
 
+def build_one(cohort_dir: Path, output: Path, source: Path) -> dict | None:
+    """Build one staging directory's PHV DETAIL index. Returns its manifest entry, or ``None``.
+
+    The companion of :func:`build_phv_index.build_one`, and callable from ``update_data.py`` for
+    the same reason: the fetch orchestrator must produce the release-keyed, provenance-carrying
+    artifact the mandatory release check expects, not a second one of its own.
+    """
+    ftp_dir = cohort_dir / "pheno_variable_summaries"
+    if not ftp_dir.is_dir():
+        return None
+
+    data_dict_files = sorted(ftp_dir.glob("*.data_dict.xml"))
+    if not data_dict_files:
+        return None
+
+    cohort_index: dict[str, dict] = {}
+    for dd_file in data_dict_files:
+        cohort_index.update(parse_data_dict(dd_file))
+
+    # Name the artifact by the STUDY, not by the source directory. A directory name is a local
+    # convention (`aric`, `aric-v8`, `aric-v9`) that nothing validates and that cannot hold two
+    # releases of one study at once; `phs000280.v8` can, and carries its own provenance. Falls
+    # back to the directory name, loudly, when no accession is parseable.
+    accession, version, _seen = _cohorts.study_from_data_dicts(cohort_dir)
+    entry: dict = {
+        "phvs": len(cohort_index),
+        "phts": len({r.get("pht") for r in cohort_index.values() if r.get("pht")}),
+        "data_dicts": len(data_dict_files),
+        "source_dir": cohort_dir.name,
+    }
+    if accession:
+        key = f"{accession}.{version}"
+        entry.update({
+            "cohort": _cohorts.cohort_from_source_dir(cohort_dir.name, source),
+            "study": accession,
+            "study_version": version,
+            "built": _dt.datetime.now(tz=_dt.UTC).date().isoformat(),
+        })
+    else:
+        key = cohort_dir.name.lower()
+        print(
+            f"  WARNING: {cohort_dir.name}: no single phs######.v# accession in its data "
+            f"dictionaries -- naming by directory ('{key}') and recording NO provenance",
+            file=sys.stderr,
+        )
+
+    # Write compressed JSON
+    json_bytes = json.dumps(
+        cohort_index, separators=(",", ":"), ensure_ascii=True
+    ).encode("utf-8")
+    gz_path = output / f"{key}_detail.json.gz"
+    with gzip.open(gz_path, "wb") as f:
+        f.write(json_bytes)
+
+    gz_size = gz_path.stat().st_size
+    n_coded = sum(1 for r in cohort_index.values() if r.get("codes"))
+    print(
+        f"  {cohort_dir.name:12s}: {len(cohort_index):>7,} PHVs "
+        f"({n_coded:>5,} coded), "
+        f"{len(data_dict_files):>4} files -> {gz_size:>9,} bytes "
+        f"({gz_path.name})"
+    )
+    return entry
+
+
 def main() -> int:
     hvlint_dir = Path(__file__).resolve().parent
     # Default source cache is hv-lint/dbgap-cache (same dir as output)
@@ -157,69 +222,12 @@ def main() -> int:
     for cohort_dir in sorted(source.iterdir()):
         if not cohort_dir.is_dir():
             continue
-        ftp_dir = cohort_dir / "pheno_variable_summaries"
-        if not ftp_dir.is_dir():
+        entry = build_one(cohort_dir, output, source)
+        if entry is None:
             continue
-
-        data_dict_files = sorted(ftp_dir.glob("*.data_dict.xml"))
-        if not data_dict_files:
-            continue
-
-        cohort_index: dict[str, dict] = {}
-
-        for dd_file in data_dict_files:
-            records = parse_data_dict(dd_file)
-            cohort_index.update(records)
-
-        total_phvs += len(cohort_index)
-        # Name the artifact by the STUDY, not by the source directory. A directory name is a
-        # local convention (`aric`, `aric-v8`, `aric-v9`) that nothing validates and that cannot
-        # hold two releases of one study at once; `phs000280.v8` can, and carries its own
-        # provenance. Falls back to the directory name, loudly, when no accession is parseable.
-        accession, version, _seen = _cohorts.study_from_data_dicts(cohort_dir)
-        if accession:
-            key = f"{accession}.{version}"
-        else:
-            key = cohort_dir.name.lower()
-            print(
-                f"  WARNING: {cohort_dir.name}: no single phs######.v# accession in its data "
-                f"dictionaries -- naming by directory ('{key}') and recording NO provenance",
-                file=sys.stderr,
-            )
-
-        # Write compressed JSON
-        json_bytes = json.dumps(
-            cohort_index, separators=(",", ":"), ensure_ascii=True
-        ).encode("utf-8")
-        gz_path = output / f"{key}_detail.json.gz"
-        with gzip.open(gz_path, "wb") as f:
-            f.write(json_bytes)
-
-        gz_size = gz_path.stat().st_size
-        n_coded = sum(1 for r in cohort_index.values() if r.get("codes"))
-        if accession:
-            manifest[key] = {
-                "cohort": _cohorts.cohort_from_source_dir(cohort_dir.name, source),
-                "study": accession,
-                "study_version": version,
-                "phvs": len(cohort_index),
-                "phts": len({r.get("pht") for r in cohort_index.values() if r.get("pht")}),
-                "data_dicts": len(data_dict_files),
-                "source_dir": cohort_dir.name,
-                "built": _dt.datetime.now(tz=_dt.UTC).date().isoformat(),
-            }
-        else:
-            print(
-                f"  WARNING: {cohort_dir.name}: data dictionaries do not agree on one "
-                f"phs######.v# accession -- provenance NOT recorded",
-                file=sys.stderr,
-            )
-        print(
-            f"  {cohort_dir.name:12s}: {len(cohort_index):>7,} PHVs "
-            f"({n_coded:>5,} coded), "
-            f"{len(data_dict_files):>4} files -> {gz_size:>9,} bytes "
-            f"({gz_path.name})"
-        )
+        total_phvs += entry["phvs"]
+        if entry.get("study"):
+            manifest[f"{entry['study']}.{entry['study_version']}"] = entry
 
     print(f"\nTotal: {total_phvs:,} PHVs indexed with detail metadata")
     if manifest:

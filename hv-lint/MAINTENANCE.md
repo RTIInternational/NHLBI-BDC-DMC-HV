@@ -56,17 +56,28 @@ hv-lint/
 ### Data Flow
 
 ```
-NCBI CGI endpoint              --> variables.xml
-NCBI FTP mirror                 --> *.data_dict.xml
+NCBI CGI endpoint              --> variables.xml      (supplement: fills gaps)
+NCBI FTP mirror                 --> *.data_dict.xml    (primary + provenance)
                                         |
                     +-------------------+-------------------+
-                    |                   |                   |
-            build_phv_index    build_phv_detail_index   visit extract
-                    |                   |                   |
-                *.json.gz         *_detail.json.gz    *_visit.json
-                    |                   |                   |
-            Phase 3 (3.1-3.5)   Phase 3 (3.9-3.16)   Phase 5 (5.7-5.8)
+                    |                                       |
+            build_phv_index.build_one         build_phv_detail_index.build_one
+                    |                                       |
+            phs######.v#.json.gz              phs######.v#_detail.json.gz
+                    |                                       |
+        Phase 3 (3.1-3.5), Phase 5 (5.3/5.4)   Phase 3 (3.9-3.16), Phase 5 (5.8)
+
+                          both also write --> manifest.json
 ```
+
+`update_data.py` calls those same two `build_one` functions rather than building its own
+indexes, so the fetch path and a direct builder invocation cannot diverge. The release in each
+artifact's name comes from the `phs######.v#.` prefix on the data dictionaries, never from the
+version a cohort declares -- provenance taken from a declaration would make the release check
+confirm itself.
+
+There is no visit extract. It guessed visit metadata by regex into `*_visit.json`; checks 5.5
+and 5.7 were its only readers and both were removed.
 
 ### What Gets Downloaded
 
@@ -148,7 +159,12 @@ What changes between versions:
    python -c "import sys; sys.path.insert(0,'hv-lint'); import _cohorts;        print(_cohorts.study_label('hv-lint/dbgap-cache', 'newcohort'))"
    ```
    A `PROVENANCE UNKNOWN` answer means the cache exists but cannot say which dbGaP release it
-   holds -- rebuild it with `build_phv_index.py` rather than shipping it.
+   holds, and the mandatory release check will reject it. As of 2026-09-23 `update_data.py`
+   records provenance itself, so this is now a genuine anomaly rather than the expected
+   outcome: until then it built its own unprovenanced, cohort-named indexes and this step was
+   a workaround telling you to rebuild with `build_phv_index.py`. If you see it now, the data
+   dictionaries in `dbgap-cache/<cohort>/` do not name one `phs######.v#` release -- check what
+   was fetched rather than rebuilding.
 
 That's it. **No code change is needed to onboard a cohort**, and that is new as of
 2026-09-10 -- this section previously ended here and was wrong. Onboarding also required

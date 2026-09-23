@@ -128,6 +128,76 @@ def build_mapping_from_ftp(cohort_dir: Path) -> dict[str, str]:
     return mapping
 
 
+def build_one(cohort_dir: Path, output: Path, source: Path) -> dict | None:
+    """Build one staging directory's PHV index. Returns its manifest entry, or ``None``.
+
+    Callable from ``update_data.py`` so the fetch orchestrator and this script build the same
+    artifact from the same source. It previously had its own ``variables.xml``-only builder that
+    wrote ``<cohort>.json.gz`` and recorded no provenance, so the documented onboarding command
+    produced a cache the mandatory release check then rejected.
+
+    The returned entry carries ``study``/``study_version`` only when the data dictionaries name
+    one release; callers must treat their ABSENCE as "provenance unknown" rather than filling it
+    in from what a cohort declares, which would make the release check confirm itself.
+    """
+    # Primary: FTP data dicts (complete coverage including restricted tables)
+    mapping = build_mapping_from_ftp(cohort_dir)
+    ftp_count = len(mapping)
+
+    # Supplement: variables.xml (CGI bulk index) fills any gaps
+    vf = cohort_dir / "variables.xml"
+    if vf.exists():
+        html_mapping = parse_variable_html(vf)
+        before = len(mapping)
+        for phv, pht in html_mapping.items():
+            if phv not in mapping:
+                mapping[phv] = pht
+        html_added = len(mapping) - before
+    else:
+        html_added = 0
+
+    if not mapping:
+        return None
+
+    phts = len(set(mapping.values()))
+    # Name the artifact by the STUDY, not by the source directory. A directory name is a
+    # local convention (`aric`, `aric-v8`, `aric-v9`) that nothing validates and that cannot
+    # hold two releases of one study at once; `phs000280.v8` can, and carries its own
+    # provenance. Falls back to the directory name, loudly, when no accession is parseable.
+    accession, version, _seen = _cohorts.study_from_data_dicts(cohort_dir)
+    entry: dict = {"phvs": len(mapping), "phts": phts, "source_dir": cohort_dir.name}
+    if accession:
+        key = f"{accession}.{version}"
+        entry.update({
+            "cohort": _cohorts.cohort_from_source_dir(cohort_dir.name, source),
+            "study": accession,
+            "study_version": version,
+            "built": _dt.datetime.now(tz=_dt.UTC).date().isoformat(),
+        })
+    else:
+        key = cohort_dir.name.lower()
+        print(
+            f"  WARNING: {cohort_dir.name}: no single phs######.v# accession in its data "
+            f"dictionaries -- naming by directory ('{key}') and recording NO provenance",
+            file=sys.stderr,
+        )
+
+    # Write compressed JSON
+    json_bytes = json.dumps(mapping, separators=(",", ":")).encode("utf-8")
+    gz_path = output / f"{key}.json.gz"
+    with gzip.open(gz_path, "wb") as f:
+        f.write(json_bytes)
+
+    gz_size = gz_path.stat().st_size
+    supplement = f" (+{html_added} from variables.xml)" if html_added else ""
+    print(
+        f"  {cohort_dir.name:12s}: {len(mapping):>7,} PHVs "
+        f"({ftp_count:,} FTP{supplement}), "
+        f"{phts:>4} PHTs -> {gz_size:>8,} bytes ({gz_path.name})"
+    )
+    return entry
+
+
 def main() -> int:
     # Auto-detect repo root -- works from control center (hv-lint/)
     # or HV repo (hv-lint/). The dbGaP cache is in the control center.
@@ -181,72 +251,12 @@ def main() -> int:
     for cohort_dir in sorted(source.iterdir()):
         if not cohort_dir.is_dir():
             continue
-
-        # Primary: FTP data dicts (complete coverage including restricted tables)
-        mapping = build_mapping_from_ftp(cohort_dir)
-        ftp_count = len(mapping)
-
-        # Supplement: variables.xml (CGI bulk index) fills any gaps
-        vf = cohort_dir / "variables.xml"
-        if vf.exists():
-            html_mapping = parse_variable_html(vf)
-            before = len(mapping)
-            for phv, pht in html_mapping.items():
-                if phv not in mapping:
-                    mapping[phv] = pht
-            html_added = len(mapping) - before
-        else:
-            html_added = 0
-
-        if not mapping:
+        entry = build_one(cohort_dir, output, source)
+        if entry is None:
             continue
-
-        phts = len(set(mapping.values()))
-        total_phvs += len(mapping)
-        # Name the artifact by the STUDY, not by the source directory. A directory name is a
-        # local convention (`aric`, `aric-v8`, `aric-v9`) that nothing validates and that cannot
-        # hold two releases of one study at once; `phs000280.v8` can, and carries its own
-        # provenance. Falls back to the directory name, loudly, when no accession is parseable.
-        accession, version, _seen = _cohorts.study_from_data_dicts(cohort_dir)
-        if accession:
-            key = f"{accession}.{version}"
-        else:
-            key = cohort_dir.name.lower()
-            print(
-                f"  WARNING: {cohort_dir.name}: no single phs######.v# accession in its data "
-                f"dictionaries -- naming by directory ('{key}') and recording NO provenance",
-                file=sys.stderr,
-            )
-        if accession:
-            manifest[key] = {
-                "cohort": _cohorts.cohort_from_source_dir(cohort_dir.name, source),
-                "study": accession,
-                "study_version": version,
-                "phvs": len(mapping),
-                "phts": phts,
-                "source_dir": cohort_dir.name,
-                "built": _dt.datetime.now(tz=_dt.UTC).date().isoformat(),
-            }
-        else:
-            print(
-                f"  WARNING: {cohort_dir.name}: data dictionaries do not agree on one "
-                f"phs######.v# accession -- provenance NOT recorded",
-                file=sys.stderr,
-            )
-
-        # Write compressed JSON
-        json_bytes = json.dumps(mapping, separators=(",", ":")).encode("utf-8")
-        gz_path = output / f"{key}.json.gz"
-        with gzip.open(gz_path, "wb") as f:
-            f.write(json_bytes)
-
-        gz_size = gz_path.stat().st_size
-        supplement = f" (+{html_added} from variables.xml)" if html_added else ""
-        print(
-            f"  {cohort_dir.name:12s}: {len(mapping):>7,} PHVs "
-            f"({ftp_count:,} FTP{supplement}), "
-            f"{phts:>4} PHTs -> {gz_size:>8,} bytes ({gz_path.name})"
-        )
+        total_phvs += entry["phvs"]
+        if entry.get("study"):
+            manifest[f"{entry['study']}.{entry['study_version']}"] = entry
 
     print(f"\nTotal: {total_phvs:,} PHVs indexed")
     if manifest:
