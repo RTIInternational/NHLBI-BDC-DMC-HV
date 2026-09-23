@@ -151,6 +151,19 @@ class FTPDirectoryParser(HTMLParser):
 # ---------------------------------------------------------------------------
 # Step 1: Fetch FTP data dictionaries
 # ---------------------------------------------------------------------------
+def _invalidate(session, urls: list[str]) -> None:
+    """Drop ``urls`` from the requests-cache store. Never fatal.
+
+    A cache that cannot be pruned is a reason to say so, not a reason to abandon the fetch --
+    the request still goes out and the server still answers; it may just answer from cache.
+    """
+    try:
+        session.cache.delete(urls=urls)
+    except Exception as exc:  # noqa: BLE001 -- best effort by design, see above
+        print(f"  [FTP] WARNING: could not invalidate {len(urls)} cached URL(s): {exc}",
+              file=sys.stderr)
+
+
 def staged_release_differs(cohort_dir: Path, study_id: str, data_version: str) -> bool:
     """True when the data dictionaries already staged name a release other than this one.
 
@@ -207,6 +220,14 @@ def fetch_ftp_data_dicts(cohort_key: str, study_id: str, data_version: str,
     from _http import get_session
 
     session = get_session()
+    # `--force` has to reach the HTTP cache, not just the local file check. `get_session`
+    # returns a requests-cache session with no expiry, so without this a forced refresh
+    # re-serves the PREVIOUS release's listing and files from disk -- and now that a complete
+    # fetch retires the superseded staging tree, that would delete the real tree and repopulate
+    # it from stale responses, with nothing in the output saying the bytes never moved.
+    if force:
+        _invalidate(session, [dir_url])
+
     try:
         resp = session.get(dir_url, timeout=60)
         resp.raise_for_status()
@@ -234,6 +255,12 @@ def fetch_ftp_data_dicts(cohort_key: str, study_id: str, data_version: str,
     print(f"  [FTP] Found {len(targets)} data_dict files")
     dest_dir = CACHE_DIR / cohort_key / "pheno_variable_summaries"
     dest_dir.mkdir(parents=True, exist_ok=True)
+    if force:
+        # Same reason as the listing above: the per-file URLs are cached too, so a forced
+        # refresh that skips this re-writes each file with the bytes it already had.
+        _invalidate(session, [
+            f"{FTP_BASE}/{study_id}/{qualified}/pheno_variable_summaries/{f}" for f in targets
+        ])
 
     downloaded = 0
     skipped = 0
@@ -329,7 +356,9 @@ def process_cohort(
         # `<cohort>.json.gz` with no provenance -- so the onboarding command MAINTENANCE.md
         # documents produced exactly the cache the mandatory release check rejects. The
         # builders read the data dictionaries fetched in step 2, which is where the
-        # `phs######.v#` provenance comes from; `variables.xml` stays as their supplement.
+        # `phs######.v#` provenance comes from. They read NO CGI supplement: an input carrying
+        # no release must not contribute to a release-keyed artifact, which is why
+        # `variables.xml` is neither fetched nor parsed any more.
         #
         # Step 5 built `<cohort>_visit.json` by regex-guessing visit metadata. Checks 5.5 and
         # 5.7 were its only readers and both were removed, so it is not built any more.

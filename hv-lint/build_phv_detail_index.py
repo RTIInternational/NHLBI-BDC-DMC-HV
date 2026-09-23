@@ -120,7 +120,18 @@ def build_one(cohort_dir: Path, output: Path, source: Path) -> dict | None:
     # it cannot parse -- so without this filter a hand-written or legacy-named dictionary adds
     # records to an artifact whose manifest claims one specific release. The basic builder had
     # the identical hole; both are closed here rather than one at a time.
-    accession, version, _seen = _cohorts.study_from_data_dicts(cohort_dir)
+    accession, version, seen = _cohorts.study_from_data_dicts(cohort_dir)
+    # Ambiguity is a refusal, not a fallback -- see the same guard in `build_phv_index.build_one`.
+    # Several stamped releases in one directory (`seen > 0`, no accession) would otherwise build
+    # a detail union named by directory. `update_data` happens to reject the returned entry, but
+    # the standalone builder publishes whatever is written, so the refusal belongs here.
+    if seen and not accession:
+        print(
+            f"  WARNING: {cohort_dir.name}: its {seen} data dictionaries name MORE THAN ONE "
+            f"release -- writing nothing, because an index over all of them is a union",
+            file=sys.stderr,
+        )
+        return None
     prefix = f"{accession}.{version}." if accession else None
     all_files = sorted(ftp_dir.glob("*.data_dict.xml"))
     data_dict_files = [p for p in all_files if not prefix or p.name.startswith(prefix)]

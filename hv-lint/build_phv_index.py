@@ -117,7 +117,20 @@ def build_one(cohort_dir: Path, output: Path, source: Path) -> dict | None:
     """
     # The release is decided FIRST, because it selects the inputs. Deciding it afterwards is
     # what allowed inputs from other releases to be counted into the artifact it names.
-    accession, version, _seen = _cohorts.study_from_data_dicts(cohort_dir)
+    accession, version, seen = _cohorts.study_from_data_dicts(cohort_dir)
+    # AMBIGUITY IS A REFUSAL, NOT A FALLBACK. That function returns no accession for two
+    # different reasons and they are not interchangeable: nothing stamped at all (`seen == 0`),
+    # or several releases stamped and it declines to choose (`seen > 0`). Falling back to an
+    # unprefixed build in the second case merges every release present into one artifact named
+    # by directory -- a union, the thing keying by release exists to prevent, and a mid-bump
+    # staging tree is routinely in exactly that state.
+    if seen and not accession:
+        print(
+            f"  WARNING: {cohort_dir.name}: its {seen} data dictionaries name MORE THAN ONE "
+            f"release -- writing nothing, because an index over all of them is a union",
+            file=sys.stderr,
+        )
+        return None
     prefix = f"{accession}.{version}." if accession else None
     mapping = build_mapping_from_ftp(cohort_dir, prefix)
     ftp_count = len(mapping)

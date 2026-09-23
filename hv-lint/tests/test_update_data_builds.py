@@ -290,6 +290,32 @@ def test_an_ftp_listing_with_no_dictionaries_refuses_to_leave_a_superseded_relea
     assert update_data.fetch_ftp_data_dicts("nostage", "phs009999", "v4.p1") is True
 
 
+def test_a_mixed_release_directory_publishes_nothing_at_all(tmp_path):
+    """Ambiguity was a FALLBACK where it had to be a refusal.
+
+    `study_from_data_dicts` returns no accession for two different reasons: nothing stamped
+    (`seen == 0`), or several releases stamped and it declines to choose (`seen > 0`). The
+    builders treated both as "no prefix", so the second case parsed every release into one
+    artifact named by directory -- a union, which is the thing keying by release exists to
+    prevent, and exactly the state a mid-bump staging tree is in. The orchestrator rejected the
+    entry, but the standalone builder had already written the file.
+    """
+    import build_phv_detail_index
+    import build_phv_index
+
+    cache = _stage(tmp_path, "mixed", "phs009999", "v3")
+    ftp = cache / "mixed" / "pheno_variable_summaries"
+    (ftp / "phs009999.v4.pht0090001.v1.T9.data_dict.xml").write_text(
+        DATA_DICT.format(phs="phs009999", ver="v4", pht="pht0090001",
+                         phv="phv09999999", name="other_release"), encoding="utf-8")
+    out = tmp_path / "out"
+    out.mkdir()
+
+    assert build_phv_index.build_one(cache / "mixed", out, cache) is None
+    assert build_phv_detail_index.build_one(cache / "mixed", out, cache) is None
+    assert list(out.glob("*.json.gz")) == [], "a union must not be written under ANY name"
+
+
 def test_the_index_holds_the_phvs_from_the_data_dictionaries(staged):
     """Guards the delegation itself: the old builder read variables.xml, which a staging tree
     fetched for a new cohort may not even have yet."""

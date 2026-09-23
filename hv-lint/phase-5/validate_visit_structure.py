@@ -1202,6 +1202,9 @@ def main() -> int:
         cohort_dirs = [args.cohort]
 
     all_findings: list[Finding] = []
+    # The mandatory release check fails the run on its own, independent of
+    # `--fail-on`: a threshold that can downgrade it to advisory is not mandatory.
+    release_check_failed = False
     cohorts_processed = 0
     cohorts_skipped: list[str] = []
 
@@ -1264,6 +1267,8 @@ def main() -> int:
 
         cache_key = _cohorts.cache_key_for(cohort, args.cache_dir or "")
         phv_index = None
+        mismatch = None
+        release_ok = True
 
         # A check that CANNOT run is reported as an ERROR against the cohort, not as a skip:
         # an unrun check that exits clean is indistinguishable from a passing one. Both the
@@ -1291,6 +1296,21 @@ def main() -> int:
                         f"priority_variables_transform/{cohort}-ingest", 0, "5.3/5.4/5.8",
                         "ERROR", f"declared release {declared}: {mismatch}"))
 
+            # The release check is MANDATORY, so it cannot rest on a finding alone: findings
+            # are weighed against `--fail-on`, and `--fail-on critical` would reduce a
+            # cache/version mismatch to advisory. It also must not go on to CHECK against the
+            # mismatched index -- that reports PHVs absent from the wrong release as mapping
+            # errors, the exact confusion the check exists to remove. So the index is not
+            # loaded, which leaves 5.3/5.4/5.8 unrun, and the run fails independently of the
+            # severity threshold. Phase 3 does the same by returning 1.
+            #
+            # Deliberately NOT `continue`: 5.6, 5.9 and 5.10 read no cache, and a cohort with a
+            # stale cache should still have its visit structure reported.
+            release_ok = bool(declared) and not mismatch
+            if not release_ok:
+                release_check_failed = True
+
+        if args.cache_dir and release_ok:
             phv_index = load_phv_index(Path(args.cache_dir), cache_key)
             if not phv_index:
                 all_findings.append(Finding(
@@ -1316,7 +1336,9 @@ def main() -> int:
         # 5.7 REMOVED 2026-09-10 -- same reason as 5.5.
 
         # 5.8: Collection interval vs visit case mismatch
-        if not args.cache_dir:
+        if not release_ok:
+            pass  # the release check above already reported it and failed the run
+        elif not args.cache_dir:
             all_findings.append(Finding(
                 f"priority_variables_transform/{cohort}-ingest", 0, "5.8", "ERROR",
                 f"no --cache-dir supplied, so check 5.8 DID NOT RUN for {cohort}"))
@@ -1394,6 +1416,15 @@ def main() -> int:
     if blocking:
         print(f"\nFAILED: {len(blocking)} findings at or above "
               f"'{args.fail_on}' severity")
+        return 1
+    elif release_check_failed:
+        # Checked BEFORE the pass branch and independent of `--fail-on`: a threshold that can
+        # downgrade the mandatory release check to advisory is not a mandatory check.
+        # `--fail-on critical` did exactly that, and the run then reported PASSED having
+        # skipped 5.3/5.4/5.8 for the cohort whose cache was the wrong release.
+        print("\nFAILED: the mandatory dbGaP release check did not pass for at least one "
+              "cohort, so checks 5.3/5.4/5.8 DID NOT RUN there. This is not weighed against "
+              "--fail-on.")
         return 1
     else:
         if all_findings:
