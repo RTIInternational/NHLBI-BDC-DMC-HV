@@ -30,10 +30,13 @@ where a guess is allowed to be a guess. `data/visit-cache/` is not an authoritat
 it holds the same generated regex results in a different shape.
 
 Data source:
-  --cache-dir     Directory with per-cohort .json.gz PHV indexes (checks 5.3, 5.4)
+  --cache-dir     Directory holding the release-keyed .json.gz indexes -- the PHV index for
+                  checks 5.3 and 5.4, the detail index for 5.8. Effectively REQUIRED: without
+                  it those checks cannot run, and a check that cannot run is reported as an
+                  ERROR against the cohort rather than skipped.
 
 Usage:
-    python validate_visit_structure.py --cohort FHS
+    python validate_visit_structure.py --cohort FHS --cache-dir hv-lint/dbgap-cache
     python validate_visit_structure.py --cohort all --cache-dir hv-lint/dbgap-cache
 """
 
