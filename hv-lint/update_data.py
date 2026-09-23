@@ -245,12 +245,21 @@ def fetch_ftp_data_dicts(cohort_key: str, study_id: str, data_version: str,
         # returning success here leaves it in place for the builders to index and
         # provenance-stamp as the release we asked for -- the update command reports success
         # and the contradiction surfaces at lint time, which is the wrong place for it.
-        if staged_release_differs(CACHE_DIR / cohort_key, study_id, data_version):
-            print(f"  [FTP] ...but a superseded release is staged for {cohort_key}. Refusing: "
-                  f"the listing for {study_id}.{data_version} has no dictionaries to replace "
-                  f"it with.", file=sys.stderr)
+        # The test is "is ANYTHING stamped already staged", not "is a DIFFERENT release
+        # staged". A same-release tree left partial by an earlier failed fetch is the case the
+        # narrower test missed: the listing says there is nothing to fetch, the partial files
+        # survive, and the builders index them into a complete-looking artifact carrying valid
+        # provenance. An empty listing contradicts whatever is on disk, whichever release it
+        # belongs to, so it cannot be used to confirm that disk state.
+        staged = [p for p in (CACHE_DIR / cohort_key / "pheno_variable_summaries")
+                  .glob("*.data_dict.xml") if _DATA_DICT_PREFIX.match(p.name)]
+        if staged:
+            print(f"  [FTP] ...but {len(staged)} data dictionaries are already staged for "
+                  f"{cohort_key}. Refusing: an empty listing for {study_id}.{data_version} "
+                  f"cannot confirm that what is on disk is complete or current.",
+                  file=sys.stderr)
             return False
-        return True  # Not an error -- some studies have none
+        return True  # Not an error -- some studies have none, and nothing is staged
 
     print(f"  [FTP] Found {len(targets)} data_dict files")
     dest_dir = CACHE_DIR / cohort_key / "pheno_variable_summaries"

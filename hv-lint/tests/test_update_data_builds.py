@@ -285,6 +285,11 @@ def test_an_ftp_listing_with_no_dictionaries_refuses_to_leave_a_superseded_relea
 
     # v4 asked for, no dictionaries offered, v3 still staged -> refuse
     assert update_data.fetch_ftp_data_dicts("empty_listing", "phs009999", "v4.p1") is False
+    # SAME release, left partial by an earlier failed fetch: an empty listing cannot confirm
+    # that what is on disk is complete, so this refuses too. The narrower "is a DIFFERENT
+    # release staged" test passed it, and the builders then indexed the partial files into a
+    # complete-looking artifact carrying valid provenance.
+    assert update_data.fetch_ftp_data_dicts("empty_listing", "phs009999", "v3.p1") is False
     # a study that genuinely has none, with nothing staged, stays benign
     (cache / "nostage" / "pheno_variable_summaries").mkdir(parents=True)
     assert update_data.fetch_ftp_data_dicts("nostage", "phs009999", "v4.p1") is True

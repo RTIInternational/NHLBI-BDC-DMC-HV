@@ -1202,9 +1202,12 @@ def main() -> int:
         cohort_dirs = [args.cohort]
 
     all_findings: list[Finding] = []
-    # The mandatory release check fails the run on its own, independent of
-    # `--fail-on`: a threshold that can downgrade it to advisory is not mandatory.
-    release_check_failed = False
+    # Any check that COULD NOT RUN fails the run on its own, independent of `--fail-on`.
+    # Reporting it as an ERROR finding is not enough: findings are weighed against the
+    # threshold, so `--fail-on critical` turned "this cohort was never checked" into a PASS --
+    # the exact reading the comment below the cohort loop exists to forbid. 29a4c5dd made only
+    # the release-mismatch path mandatory and left the three missing-input paths behind it.
+    unrun_check = False
     cohorts_processed = 0
     cohorts_skipped: list[str] = []
 
@@ -1277,6 +1280,7 @@ def main() -> int:
             all_findings.append(Finding(
                 f"priority_variables_transform/{cohort}-ingest", 0, "5.3/5.4", "ERROR",
                 f"no --cache-dir supplied, so checks 5.3 and 5.4 DID NOT RUN for {cohort}"))
+            unrun_check = True
         else:
             # The release is checked here for the reason Phase 3 checks it: `cache_key_for`
             # falls back to a legacy cohort-named key when the declared release file is absent,
@@ -1308,7 +1312,7 @@ def main() -> int:
             # stale cache should still have its visit structure reported.
             release_ok = bool(declared) and not mismatch
             if not release_ok:
-                release_check_failed = True
+                unrun_check = True
 
         if args.cache_dir and release_ok:
             phv_index = load_phv_index(Path(args.cache_dir), cache_key)
@@ -1317,6 +1321,7 @@ def main() -> int:
                     f"priority_variables_transform/{cohort}-ingest", 0, "5.3/5.4", "ERROR",
                     f"no PHV index for {cohort} (looked for '{cache_key}.json.gz' in "
                     f"{args.cache_dir}), so checks 5.3 and 5.4 DID NOT RUN"))
+                unrun_check = True
 
         # 5.3: Visit <-> PHT consistency, against the authoritative PHV index
         if phv_index:
@@ -1342,6 +1347,7 @@ def main() -> int:
             all_findings.append(Finding(
                 f"priority_variables_transform/{cohort}-ingest", 0, "5.8", "ERROR",
                 f"no --cache-dir supplied, so check 5.8 DID NOT RUN for {cohort}"))
+            unrun_check = True
         else:
             detail_idx = load_detail_index(Path(args.cache_dir), cache_key)
             # An ABSENT detail index is an ERROR, by the same rule stated above the PHV index
@@ -1353,6 +1359,7 @@ def main() -> int:
                     f"priority_variables_transform/{cohort}-ingest", 0, "5.8", "ERROR",
                     f"no detail index for {cohort} (looked for '{cache_key}_detail.json.gz' "
                     f"in {args.cache_dir}), so check 5.8 DID NOT RUN"))
+                unrun_check = True
             else:
                 # Check if this cohort has any coll_interval data
                 n_ci = sum(1 for v in detail_idx.values() if v.get("coll_interval"))
@@ -1417,7 +1424,7 @@ def main() -> int:
         print(f"\nFAILED: {len(blocking)} findings at or above "
               f"'{args.fail_on}' severity")
         return 1
-    elif release_check_failed:
+    elif unrun_check:
         # Checked BEFORE the pass branch and independent of `--fail-on`: a threshold that can
         # downgrade the mandatory release check to advisory is not a mandatory check.
         # `--fail-on critical` did exactly that, and the run then reported PASSED having
