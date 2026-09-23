@@ -7,7 +7,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00250718}) + ":FHS OMNI 1 EXAM 2")'
         drug_concept:
-          expr: 'case(({phv00250748} == 1, "ATC:C09C"))'
+          expr: 'case(({phv00250748} == 1, "ATC:C09C"), ({phv00250748} == 2, "ATC:C09C"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -28,7 +28,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007095}) + ":FHS ORIGINAL EXAM 26")'
         drug_concept:
-          expr: 'case(({phv00006868} == 1, "ATC:C09C"))'
+          expr: 'case(({phv00006868} == 1, "ATC:C09C"), ({phv00006868} == 2, "ATC:C09C"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -37,6 +37,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
 - class_derivations:
     DrugExposure:
       populated_from: pht000029
@@ -46,7 +47,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007534}) + ":FHS ORIGINAL EXAM 27")'
         drug_concept:
-          expr: 'case(({phv00007305} == 1, "ATC:C09C"))'
+          expr: 'case(({phv00007305} == 1, "ATC:C09C"), ({phv00007305} == 2, "ATC:C09C"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -55,6 +56,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
 - class_derivations:
     DrugExposure:
       populated_from: pht000036
@@ -64,7 +66,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010139}) + ":FHS OFFSPRING EXAM 7")'
         drug_concept:
-          expr: 'case(({phv00010174} == 1, "ATC:C09C"))'
+          expr: 'case(({phv00010174} == 1, "ATC:C09C"), ({phv00010174} == 2, "ATC:C09C"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -73,6 +75,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
 - class_derivations:
     DrugExposure:
       populated_from: pht000397

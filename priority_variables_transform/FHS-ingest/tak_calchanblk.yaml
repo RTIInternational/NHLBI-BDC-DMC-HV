@@ -7,7 +7,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00250718}) + ":FHS OMNI 1 EXAM 2")'
         drug_concept:
-          expr: case(({phv00250730} == 1, "ATC:C08"))
+          expr: case(({phv00250730} == 1, "ATC:C08"), ({phv00250730} == 2, "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -53,7 +53,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003261}) + ":FHS ORIGINAL EXAM 17")'
         drug_concept:
-          expr: case(({phv00002954} == 1, "ATC:C08"))
+          expr: case(({phv00002954} == 1, "ATC:C08"), ({phv00002954} == 2, "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -62,6 +62,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
 - class_derivations:
     DrugExposure:
       populated_from: pht000020
@@ -71,7 +72,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003667}) + ":FHS ORIGINAL EXAM 18")'
         drug_concept:
-          expr: case(({phv00003326} == 1, "ATC:C08"))
+          expr: case(({phv00003326} == 1, "ATC:C08"), ({phv00003326} == 2, "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -80,6 +81,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
 - class_derivations:
     DrugExposure:
       populated_from: pht000021
@@ -89,7 +91,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004083}) + ":FHS ORIGINAL EXAM 19")'
         drug_concept:
-          expr: case(({phv00003767} == 1, "ATC:C08"))
+          expr: case(({phv00003767} == 1, "ATC:C08"), ({phv00003767} == 2, "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -98,6 +100,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
 - class_derivations:
     DrugExposure:
       populated_from: pht000021
@@ -107,7 +110,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004083}) + ":FHS ORIGINAL EXAM 19")'
         drug_concept:
-          expr: case(({phv00004202} == 1, "ATC:C08"))
+          expr: case(({phv00004202} == 1, "ATC:C08"), ({phv00004202} == 2, "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -116,6 +119,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
 - class_derivations:
     DrugExposure:
       populated_from: pht000023
@@ -125,7 +129,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004939}) + ":FHS ORIGINAL EXAM 21")'
         drug_concept:
-          expr: case(({phv00004597} == 1, "ATC:C08"))
+          expr: case(({phv00004597} == 1, "ATC:C08"), ({phv00004597} == 2, "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -134,6 +138,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -143,7 +148,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005557}) + ":FHS ORIGINAL EXAM 22")'
         drug_concept:
-          expr: case(({phv00004951} == 1, "ATC:C08"))
+          expr: case(({phv00004951} == 1, "ATC:C08"), ({phv00004951} == 2, "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -152,6 +157,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
@@ -161,7 +167,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005558}) + ":FHS ORIGINAL EXAM 23")'
         drug_concept:
-          expr: case(({phv00005571} == 1, "ATC:C08"))
+          expr: case(({phv00005571} == 1, "ATC:C08"), ({phv00005571} == 2, "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -170,6 +176,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
@@ -179,7 +186,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006031}) + ":FHS ORIGINAL EXAM 24")'
         drug_concept:
-          expr: case(({phv00006122} == 1, "ATC:C08"))
+          expr: case(({phv00006122} == 1, "ATC:C08"), ({phv00006122} == 2, "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -188,6 +195,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
 - class_derivations:
     DrugExposure:
       populated_from: pht000027
@@ -197,7 +205,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006663}) + ":FHS ORIGINAL EXAM 25")'
         drug_concept:
-          expr: case(({phv00006462} == 1, "ATC:C08"))
+          expr: case(({phv00006462} == 1, "ATC:C08"), ({phv00006462} == 2, "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -206,6 +214,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
 - class_derivations:
     DrugExposure:
       populated_from: pht000027
@@ -242,7 +251,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007095}) + ":FHS ORIGINAL EXAM 26")'
         drug_concept:
-          expr: case(({phv00006850} == 1, "ATC:C08"))
+          expr: case(({phv00006850} == 1, "ATC:C08"), ({phv00006850} == 2, "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -251,6 +260,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
 - class_derivations:
     DrugExposure:
       populated_from: pht000028
@@ -288,7 +298,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007534}) + ":FHS ORIGINAL EXAM 27")'
         drug_concept:
-          expr: case(({phv00007287} == 1, "ATC:C08"))
+          expr: case(({phv00007287} == 1, "ATC:C08"), ({phv00007287} == 2, "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -297,6 +307,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
 - class_derivations:
     DrugExposure:
       populated_from: pht000029
@@ -334,7 +345,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008742}) + ":FHS OFFSPRING EXAM 3")'
         drug_concept:
-          expr: case(({phv00008386} == 1, "ATC:C08"))
+          expr: case(({phv00008386} == 1, "ATC:C08"), ({phv00008386} == 2, "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -343,6 +354,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
 - class_derivations:
     DrugExposure:
       populated_from: pht000033
@@ -352,7 +364,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00009127}) + ":FHS OFFSPRING EXAM 4")'
         drug_concept:
-          expr: case(({phv00008783} == 1, "ATC:C08"))
+          expr: case(({phv00008783} == 1, "ATC:C08"), ({phv00008783} == 2, "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -361,6 +373,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
 - class_derivations:
     DrugExposure:
       populated_from: pht000034
@@ -370,7 +383,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00009579}) + ":FHS OFFSPRING EXAM 5")'
         drug_concept:
-          expr: case(({phv00009178} == 1, "ATC:C08"))
+          expr: case(({phv00009178} == 1, "ATC:C08"), ({phv00009178} == 2, "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -379,6 +392,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
 - class_derivations:
     DrugExposure:
       populated_from: pht000035
@@ -388,7 +402,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010138}) + ":FHS OFFSPRING EXAM 6")'
         drug_concept:
-          expr: case(({phv00009679} == 1, "ATC:C08"))
+          expr: case(({phv00009679} == 1, "ATC:C08"), ({phv00009679} == 2, "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -397,6 +411,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
 - class_derivations:
     DrugExposure:
       populated_from: pht000036
@@ -406,7 +421,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010139}) + ":FHS OFFSPRING EXAM 7")'
         drug_concept:
-          expr: case(({phv00010156} == 1, "ATC:C08"))
+          expr: case(({phv00010156} == 1, "ATC:C08"), ({phv00010156} == 2, "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -415,6 +430,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
 - class_derivations:
     DrugExposure:
       populated_from: pht000036
