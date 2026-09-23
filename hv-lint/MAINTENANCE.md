@@ -190,8 +190,33 @@ the old release against the new one. Caches built before the rename still resolv
 
 **Which release a cohort uses is its DECLARED release** -- `current_version` in
 `hv_dataqc/cache_fetcher/manifests/_manifest-<cohort>.yaml`, the file a version bump already
-edits. So bumping a version means: edit that file, build the new release's artifacts, done; the
-old ones stay for comparison.
+edits. So bumping a version means: edit that file, build the new release's artifacts, done.
+
+#### Which releases to keep -- the one you are migrating TO, not the one you came FROM
+
+Only the declared release is reachable. `candidate_keys` puts it first, and the manifest-match
+fallback is skipped when a study has two entries, so a non-declared release is not even a
+candidate. `--expect-study` does not reach one either: it overrides the EXPECTATION, not which
+cache is loaded, so `--cohort FHS --expect-study phs000007.v33` loads v35 and then fails for not
+being v33. Verified 2026-09-22.
+
+So a second release earns its ~0.5-2 MB only across a migration window:
+
+| keep | because |
+|---|---|
+| the release the cohort is migrating **to**, staged ahead of the bump | it becomes reachable the moment `_manifest-<cohort>.yaml` is edited, with no rebuild |
+| the release it came **from**, until the bump has landed and been reviewed | it is what a diff compares against |
+
+After that, **drop the old one**: reaching it again would mean un-declaring the new release,
+which is a rollback, not a plan. `phs000007.v33` was kept past this point and removed on
+2026-09-22 -- 1,871 KB, 74% of the directory's growth, and no invocation could load it, FHS
+having declared v35. `phs000280.v9` is the other side of the same rule: ARIC declares v8, so v9
+is unreachable today and is kept because the v8 -> v9 migration is next.
+
+The `_detail` index is where the weight is -- name, type, description and coded values per PHV,
+against a bare `{phv: pht}` map. FHS v33 was 204 KB of index and 1,667 KB of detail, a ratio that
+holds across the fleet. A retained release that will only ever be cross-referenced, never
+value-checked, does not need its detail companion.
 
 Build both from any dbGaP staging tree (each discovers cohorts by globbing the source):
 
