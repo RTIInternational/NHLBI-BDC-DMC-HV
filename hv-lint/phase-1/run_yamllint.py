@@ -20,13 +20,10 @@ from pathlib import Path
 # Path resolution -- works in both control center and HV repo
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir, YAMLLINT_CONFIG  # noqa: E402
+import _cohorts  # noqa: E402
 
 TRANSFORM_DIR = find_transform_dir()
 
-COHORTS = [
-    "ARIC", "CARDIA", "CHS", "COPDGene",
-    "FHS", "HCHS", "JHS", "MESA", "SPIROMICS", "WHI",
-]
 
 
 def get_ingest_dir(cohort: str) -> Path:
@@ -145,7 +142,6 @@ def main():
     )
     parser.add_argument(
         "--cohort",
-        choices=COHORTS + ["all"],
         default="all",
         help="Cohort to lint (default: all)",
     )
@@ -184,7 +180,9 @@ def main():
             sys.exit(2)
         targets = [target_path]
     elif args.cohort == "all":
-        targets = [get_ingest_dir(c) for c in COHORTS if get_ingest_dir(c).is_dir()]
+        targets = [d for d in (get_ingest_dir(c)
+                               for c in _cohorts.ingest_cohorts(TRANSFORM_DIR))
+                   if d.is_dir()]
     else:
         d = get_ingest_dir(args.cohort)
         if not d.is_dir():

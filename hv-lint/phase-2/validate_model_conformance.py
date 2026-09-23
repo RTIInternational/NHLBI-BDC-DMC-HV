@@ -50,10 +50,6 @@ from _derivations import classify_derivation_item  # noqa: E402
 
 TRANSFORM_DIR = find_transform_dir()
 
-COHORTS = [
-    "ARIC", "CARDIA", "CHS", "COPDGene",
-    "FHS", "HCHS", "JHS", "MESA", "SPIROMICS", "WHI",
-]
 
 # ---------------------------------------------------------------------------
 # Constants

@@ -21,11 +21,15 @@ indexes from already-fetched FTP data dictionaries.
 from __future__ import annotations
 
 import argparse
+import datetime as _dt
 import gzip
 import json
 import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import _cohorts  # noqa: E402
 
 
 def parse_data_dict(path: Path) -> dict[str, dict]:
@@ -100,6 +104,107 @@ def parse_data_dict(path: Path) -> dict[str, dict]:
     return records
 
 
+def build_one(cohort_dir: Path, output: Path, source: Path) -> dict | None:
+    """Build one staging directory's PHV DETAIL index. Returns its manifest entry, or ``None``.
+
+    The companion of :func:`build_phv_index.build_one`, and callable from ``update_data.py`` for
+    the same reason: the fetch orchestrator must produce the release-keyed, provenance-carrying
+    artifact the mandatory release check expects, not a second one of its own.
+    """
+    ftp_dir = cohort_dir / "pheno_variable_summaries"
+    if not ftp_dir.is_dir():
+        return None
+
+    # The release is decided FIRST, because it selects the inputs. `retire_superseded_data_dicts`
+    # deliberately leaves files whose names carry no release -- it refuses to guess about a name
+    # it cannot parse -- so without this filter a hand-written or legacy-named dictionary adds
+    # records to an artifact whose manifest claims one specific release. The basic builder had
+    # the identical hole; both are closed here rather than one at a time.
+    accession, version, seen = _cohorts.study_from_data_dicts(cohort_dir)
+    # Ambiguity is a refusal, not a fallback -- see the same guard in `build_phv_index.build_one`.
+    # Several stamped releases in one directory (`seen > 0`, no accession) would otherwise build
+    # a detail union named by directory. `update_data` happens to reject the returned entry, but
+    # the standalone builder publishes whatever is written, so the refusal belongs here.
+    if seen and not accession:
+        print(
+            f"  WARNING: {cohort_dir.name}: its {seen} data dictionaries name MORE THAN ONE "
+            f"release -- writing nothing, because an index over all of them is a union",
+            file=sys.stderr,
+        )
+        return None
+    prefix = f"{accession}.{version}." if accession else None
+    all_files = sorted(ftp_dir.glob("*.data_dict.xml"))
+    data_dict_files = [p for p in all_files if not prefix or p.name.startswith(prefix)]
+    if len(all_files) != len(data_dict_files):
+        print(f"  {cohort_dir.name}: skipped {len(all_files) - len(data_dict_files)} data "
+              f"dictionaries not stamped {prefix[:-1]}", file=sys.stderr)
+    if not data_dict_files:
+        return None
+
+    cohort_index: dict[str, dict] = {}
+    for dd_file in data_dict_files:
+        cohort_index.update(parse_data_dict(dd_file))
+
+    # `parse_data_dict` turns an XML parse error into `{}`, so a wholly corrupt fetch reaches
+    # here with files on disk and no records. Writing that produces an EMPTY detail index
+    # carrying valid provenance, which every consumer then treats as present -- check 5.8 reads
+    # it as "this cohort has no collection intervals" and skips, the one reading the absent-file
+    # guard was added to prevent. The basic builder has refused an empty mapping all along;
+    # this is the same refusal, and its absence here was an asymmetry between the two.
+    if not cohort_index:
+        print(
+            f"  WARNING: {cohort_dir.name}: {len(data_dict_files)} data dictionaries parsed to "
+            "ZERO records -- writing no detail index and recording no provenance",
+            file=sys.stderr,
+        )
+        return None
+
+    # Name the artifact by the STUDY, not by the source directory. A directory name is a local
+    # convention (`aric`, `aric-v8`, `aric-v9`) that nothing validates and that cannot hold two
+    # releases of one study at once; `phs000280.v8` can, and carries its own provenance. Falls
+    # back to the directory name, loudly, when no accession is parseable.
+    accession, version, _seen = _cohorts.study_from_data_dicts(cohort_dir)
+    entry: dict = {
+        "phvs": len(cohort_index),
+        "phts": len({r.get("pht") for r in cohort_index.values() if r.get("pht")}),
+        "data_dicts": len(data_dict_files),
+        "source_dir": cohort_dir.name,
+    }
+    if accession:
+        key = f"{accession}.{version}"
+        entry.update({
+            "cohort": _cohorts.cohort_from_source_dir(cohort_dir.name, source),
+            "study": accession,
+            "study_version": version,
+            "built": _dt.datetime.now(tz=_dt.UTC).date().isoformat(),
+        })
+    else:
+        key = cohort_dir.name.lower()
+        print(
+            f"  WARNING: {cohort_dir.name}: no single phs######.v# accession in its data "
+            f"dictionaries -- naming by directory ('{key}') and recording NO provenance",
+            file=sys.stderr,
+        )
+
+    # Write compressed JSON
+    json_bytes = json.dumps(
+        cohort_index, separators=(",", ":"), ensure_ascii=True
+    ).encode("utf-8")
+    gz_path = output / f"{key}_detail.json.gz"
+    with gzip.open(gz_path, "wb") as f:
+        f.write(json_bytes)
+
+    gz_size = gz_path.stat().st_size
+    n_coded = sum(1 for r in cohort_index.values() if r.get("codes"))
+    print(
+        f"  {cohort_dir.name:12s}: {len(cohort_index):>7,} PHVs "
+        f"({n_coded:>5,} coded), "
+        f"{len(data_dict_files):>4} files -> {gz_size:>9,} bytes "
+        f"({gz_path.name})"
+    )
+    return entry
+
+
 def main() -> int:
     hvlint_dir = Path(__file__).resolve().parent
     # Default source cache is hv-lint/dbgap-cache (same dir as output)
@@ -148,44 +253,23 @@ def main() -> int:
     print()
 
     total_phvs = 0
+    manifest: dict[str, dict] = {}
 
     for cohort_dir in sorted(source.iterdir()):
         if not cohort_dir.is_dir():
             continue
-        ftp_dir = cohort_dir / "pheno_variable_summaries"
-        if not ftp_dir.is_dir():
+        entry = build_one(cohort_dir, output, source)
+        if entry is None:
             continue
-
-        data_dict_files = sorted(ftp_dir.glob("*.data_dict.xml"))
-        if not data_dict_files:
-            continue
-
-        cohort_index: dict[str, dict] = {}
-
-        for dd_file in data_dict_files:
-            records = parse_data_dict(dd_file)
-            cohort_index.update(records)
-
-        total_phvs += len(cohort_index)
-
-        # Write compressed JSON
-        json_bytes = json.dumps(
-            cohort_index, separators=(",", ":"), ensure_ascii=True
-        ).encode("utf-8")
-        gz_path = output / f"{cohort_dir.name.lower()}_detail.json.gz"
-        with gzip.open(gz_path, "wb") as f:
-            f.write(json_bytes)
-
-        gz_size = gz_path.stat().st_size
-        n_coded = sum(1 for r in cohort_index.values() if r.get("codes"))
-        print(
-            f"  {cohort_dir.name:12s}: {len(cohort_index):>7,} PHVs "
-            f"({n_coded:>5,} coded), "
-            f"{len(data_dict_files):>4} files -> {gz_size:>9,} bytes "
-            f"({gz_path.name})"
-        )
+        total_phvs += entry["phvs"]
+        if entry.get("study"):
+            manifest[f"{entry['study']}.{entry['study_version']}"] = entry
 
     print(f"\nTotal: {total_phvs:,} PHVs indexed with detail metadata")
+    if manifest:
+        mpath = _cohorts.write_manifest_entries(output, manifest)
+        print()
+        print(f"Provenance recorded for {len(manifest)} cohort(s) -> {mpath.name}")
     return 0
 
 

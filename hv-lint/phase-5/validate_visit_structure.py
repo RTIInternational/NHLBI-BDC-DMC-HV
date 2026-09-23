@@ -9,23 +9,35 @@ formula structure, multi-visit coverage, and orphan detection.
 Checks:
   5.1  Visit ID Uniqueness -- no duplicate visit IDs within a cohort
   5.2  Visit ID Referential Integrity -- associated_visit references resolve
-  5.3  Visit <-> PHT Consistency -- visit block PHTs exist in visit cache
+  5.3  Visit <-> PHT Consistency -- visit block PHTs exist in the dbGaP PHV index
   5.4  Age Formula Structural Check -- age expressions reference valid PHVs
-  5.5  Multi-Visit Table Coverage -- multi-visit table blocks need case() visit
   5.6  Orphan Visit References -- visit IDs defined but never referenced
-  5.7  Visit PHT/Label Alignment -- visit block PHTs match visit-cache context
   5.8  Collection Interval Mismatch -- data PHV coll_interval vs visit case
   5.9  Visit uuid5 Format Compliance -- visit IDs must use uuid5 expressions
   5.10 Visit uuid5 Namespace -- uuid5 must use canonical bdchm namespace URL
 
-Optional data sources:
-  --visit-cache   Directory with per-cohort visit cache JSONs (checks 5.3, 5.5)
-  --cache-dir     Directory with per-cohort .json.gz PHV indexes (check 5.4 PHV)
+Checks 5.5 (Multi-Visit Table Coverage) and 5.7 (Visit PHT/Label Alignment) were REMOVED on
+2026-09-10. Both rested entirely on a visit cache produced by regex-matching dbGaP variable
+names and table descriptions (`update_data.py` step 5: six name patterns such as `^VISIT$`,
+`VTYP$`, `^visitnum$`, plus a description pattern). That is an inference, not a published visit
+list, so validating a transform spec against it is one heuristic agreeing with another -- and a
+PASS from it reads as verification. Neither could gate anyway: their severities topped out at
+WARNING, and over the 11-cohort fleet they produced 1,982 INFO + 15 WARNING + 0 ERROR.
+
+The signal is still useful as a LEAD -- it is how WHI's 37 `*VTYP` columns across 40 multi-visit
+tables were spotted -- so the extraction now lives as an instrument in the AI-harmonization repo,
+where a guess is allowed to be a guess. `data/visit-cache/` is not an authoritative alternative:
+it holds the same generated regex results in a different shape.
+
+Data source:
+  --cache-dir     Directory holding the release-keyed .json.gz indexes -- the PHV index for
+                  checks 5.3 and 5.4, the detail index for 5.8. Effectively REQUIRED: without
+                  it those checks cannot run, and a check that cannot run is reported as an
+                  ERROR against the cohort rather than skipped.
 
 Usage:
-    python validate_visit_structure.py --cohort FHS
-    python validate_visit_structure.py --cohort WHI --visit-cache data/visit-cache
-    python validate_visit_structure.py --cohort all --visit-cache data/visit-cache --cache-dir hv-lint/dbgap-cache
+    python validate_visit_structure.py --cohort FHS --cache-dir hv-lint/dbgap-cache
+    python validate_visit_structure.py --cohort all --cache-dir hv-lint/dbgap-cache
 """
 
 from __future__ import annotations
@@ -41,6 +53,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
+import _cohorts  # noqa: E402
 from _derivations import iter_nested_class_derivs  # noqa: E402
 
 import yaml
@@ -54,19 +67,6 @@ SEVERITY_RANK = {"CRITICAL": 5, "ERROR": 4, "HIGH": 3, "WARNING": 2, "INFO": 1}
 
 # -- Cohort mapping -----------------------------------------------------------
 
-COHORT_TO_CACHE_KEY: dict[str, str] = {
-    "ARIC": "aric",
-    "CARDIA": "cardia",
-    "CHS": "chs",
-    "COPDGene": "copdgene",
-    "FHS": "fhs",
-    "HCHS": "hchs_sol",
-    "JHS": "jhs",
-    "MESA": "mesa",
-    "SPIROMICS": "spiromics",
-    "WHI": "whi",
-    "LTRC": "ltrc",
-}
 
 # -- Regex patterns -----------------------------------------------------------
 
@@ -79,6 +79,17 @@ CASE_RESULT_SQ_RE = re.compile(r",\s*'([^']+)'\s*\)")
 # Matches string concatenated after closing paren: ) + "SUFFIX" or ) + 'SUFFIX'
 SUFFIX_AFTER_PAREN_DQ_RE = re.compile(r'\)\s*\+\s*"([^"]*)"')
 SUFFIX_AFTER_PAREN_SQ_RE = re.compile(r"\)\s*\+\s*'([^']*)'")
+
+# Matches a case() branch whose result is a whole uuid5() call, with the visit label in the
+# seed: , uuid5("<ns>", str({phv}) + ":LABEL")
+#
+# Without this the branch result is not a bare quoted string, nothing matches above, and the
+# function falls through to the "no case()" path below -- which returns every quoted string in
+# the expression, including the DISCRIMINATOR CODES being compared against. A pht then appears
+# to carry twice the labels it has, which reads as a cross-file inconsistency that is not there.
+# COPDGene's shipped specs use this form in 48 associated_visit blocks, so the fallback
+# mis-parses production output, not only generated output.
+CASE_RESULT_UUID5_RE = re.compile(r""",\s*uuid5\(.*?\+\s*['"]:?([^'"]+)['"]\s*\)""")
 
 # Matches any quoted string (double or single)
 QUOTED_DQ_RE = re.compile(r'"([^"]+)"')
@@ -180,13 +191,11 @@ class VisitReference:
 
 @dataclass
 class TransformBlock:
-    """Info about a class_derivation block for multi-visit checking."""
+    """Info about a class_derivation block."""
     file: str
     block_index: int
     class_name: str
     pht: str | None
-    has_associated_visit: bool
-    visit_uses_case: bool
 
 
 # -- Visit label extraction ---------------------------------------------------
@@ -210,6 +219,7 @@ def extract_visit_labels_from_expr(expr: str) -> tuple[set[str], bool]:
     case_results = (
         CASE_RESULT_DQ_RE.findall(expr_str)
         + CASE_RESULT_SQ_RE.findall(expr_str)
+        + CASE_RESULT_UUID5_RE.findall(expr_str)
     )
 
     if case_results:
@@ -224,7 +234,9 @@ def extract_visit_labels_from_expr(expr: str) -> tuple[set[str], bool]:
             if (stripped
                     and not stripped.startswith("http")
                     and stripped != ":"
-                    and s not in case_results
+                    # `.lstrip(':')`: a suffix keeps its leading colon where a captured
+                    # label does not, so comparing raw lets a label be appended to itself.
+                    and s.lstrip(":") not in case_results
                     and any(c.isalpha() for c in stripped)):
                 visit_suffix = s
                 break
@@ -447,13 +459,9 @@ def scan_transform_file(
             slot_derivs = class_def.get("slot_derivations", {})
             visit_slot = slot_derivs.get("associated_visit", {})
 
-            has_visit = False
-            visit_uses_case = False
-
             if isinstance(visit_slot, dict) and (
                 "value" in visit_slot or "expr" in visit_slot
             ):
-                has_visit = True
                 visit_id = None
                 visit_labels_set: set[str] = set()
                 is_dynamic = False
@@ -466,7 +474,6 @@ def scan_transform_file(
                     labels, is_dyn = extract_visit_labels_from_expr(expr_str)
                     visit_labels_set = labels
                     is_dynamic = is_dyn
-                    visit_uses_case = bool(CASE_USAGE_RE.search(expr_str))
 
                 if visit_labels_set or visit_id:
                     visit_refs.append(VisitReference(
@@ -478,14 +485,11 @@ def scan_transform_file(
                         is_dynamic=is_dynamic,
                     ))
 
-            # Record block info for multi-visit checking (5.5)
             transform_blocks.append(TransformBlock(
                 file=rel_path,
                 block_index=idx,
                 class_name=class_name,
                 pht=pht,
-                has_associated_visit=has_visit,
-                visit_uses_case=visit_uses_case,
             ))
 
             # Also scan nested object_derivations for visit references
@@ -632,17 +636,17 @@ def check_5_2_referential_integrity(
 
 def check_5_3_visit_pht_consistency(
     registry: VisitRegistry,
-    visit_cache: dict,
+    phv_index: dict[str, str],
 ) -> list[Finding]:
-    """5.3: Visit block PHTs exist in the visit cache and are recognized."""
-    findings: list[Finding] = []
+    """5.3: Visit block PHTs are real tables in the dbGaP release being linted.
 
-    # Build PHT lookup from visit cache
-    known_phts: set[str] = set()
-    for table in visit_cache.get("tables", []):
-        pht = table.get("pht", "")
-        if pht:
-            known_phts.add(pht)
+    Reads the PHT set from the authoritative ``{phv: pht}`` index -- the same source check 3.2
+    uses -- rather than from the regex-derived visit cache. Two of the three assertions never
+    needed a cache at all, and the third needs only the set of PHTs in the release, which is a
+    fact rather than an inference.
+    """
+    findings: list[Finding] = []
+    known_phts: set[str] = set(phv_index.values())
 
     for vb in registry.blocks:
         if not vb.pht:
@@ -650,7 +654,7 @@ def check_5_3_visit_pht_consistency(
                 file=registry.file_path,
                 block=vb.block_index,
                 check="5.3",
-                severity="WARNING",
+                severity="ERROR",
                 message="Visit block has no populated_from PHT",
             ))
             continue
@@ -671,10 +675,11 @@ def check_5_3_visit_pht_consistency(
                 file=registry.file_path,
                 block=vb.block_index,
                 check="5.3",
-                severity="WARNING",
+                severity="ERROR",
                 message=(
                     f"Visit '{label}' references PHT '{vb.pht}' "
-                    f"not found in visit cache for {registry.cohort}"
+                    f"which is not in the dbGaP PHV index for {registry.cohort} -- "
+                    f"the table does not exist in the release being linted"
                 ),
             ))
 
@@ -737,59 +742,6 @@ def check_5_4_age_formula(
     return findings
 
 
-def check_5_5_multivist_coverage(
-    registry: VisitRegistry,
-    visit_cache: dict,
-    transform_blocks: list[TransformBlock],
-) -> list[Finding]:
-    """5.5: Blocks using multi-visit tables need case() visit discrimination."""
-    findings: list[Finding] = []
-
-    # Build set of multi-visit PHTs from visit cache
-    multi_visit_phts: set[str] = set()
-    pht_to_name: dict[str, str] = {}
-    for table in visit_cache.get("tables", []):
-        pht = table.get("pht", "")
-        if table.get("is_multi_visit_table") and pht:
-            multi_visit_phts.add(pht)
-            pht_to_name[pht] = table.get("table_name", "")
-
-    for tb in transform_blocks:
-        if not tb.pht or tb.pht not in multi_visit_phts:
-            continue
-
-        table_name = pht_to_name.get(tb.pht, "")
-        table_desc = f"{tb.pht} ({table_name})" if table_name else tb.pht
-
-        if not tb.has_associated_visit:
-            findings.append(Finding(
-                file=tb.file,
-                block=tb.block_index,
-                check="5.5",
-                severity="WARNING",
-                message=(
-                    f"{tb.class_name} uses multi-visit table {table_desc} "
-                    f"but has no associated_visit -- rows from different visits "
-                    f"will be indistinguishable"
-                ),
-            ))
-        elif not tb.visit_uses_case:
-            findings.append(Finding(
-                file=tb.file,
-                block=tb.block_index,
-                check="5.5",
-                severity="INFO",
-                message=(
-                    f"{tb.class_name} uses multi-visit table {table_desc} "
-                    f"with static associated_visit -- verify row-level visit "
-                    f"discrimination is handled elsewhere (e.g., case() on "
-                    f"value slots)"
-                ),
-            ))
-
-    return findings
-
-
 def check_5_6_orphan_visits(
     registry: VisitRegistry,
     all_refs: list[VisitReference],
@@ -831,133 +783,6 @@ def check_5_6_orphan_visits(
                     message=(
                         f"Visit block (labels include '{label_preview}') -- "
                         f"no labels referenced by any transform file"
-                    ),
-                ))
-
-    return findings
-
-
-def check_5_7_visit_pht_alignment(
-    registry: VisitRegistry,
-    visit_cache: dict,
-    phv_index: dict[str, str] | None,
-) -> list[Finding]:
-    """5.7: Visit block PHT <-> table visit-context alignment.
-
-    For each visit block, validates that the referenced PHT's visit-cache
-    metadata is consistent with the block's visit structure:
-
-    a) Multi-visit table blocks should use case() for visit discrimination.
-    b) When a multi-visit table has known discriminator PHVs in the visit
-       cache, at least one should appear in the visit block's expressions.
-    c) Single-visit table blocks should NOT use case() (simplicity signal).
-    d) Visit blocks using a PHT whose age variables are in the visit cache
-       should reference at least one of them.
-    """
-    findings: list[Finding] = []
-
-    # Build PHT -> table metadata lookup from visit cache
-    pht_meta: dict[str, dict] = {}
-    for table in visit_cache.get("tables", []):
-        pht = table.get("pht", "")
-        if pht:
-            pht_meta[pht] = table
-
-    for vb in registry.blocks:
-        if not vb.pht or not isinstance(vb.pht, str):
-            continue
-        table = pht_meta.get(vb.pht)
-        if table is None:
-            continue  # PHT not in visit cache -- 5.3 already flags this
-
-        label = vb.visit_id or next(iter(vb.visit_labels), f"block {vb.block_index}")
-        table_name = table.get("table_name", "")
-        is_multi = table.get("is_multi_visit_table", False)
-
-        # -- 5.7a: Multi-visit table should use case() for ID --
-        if is_multi:
-            has_case_in_id = vb.id_expr and "case(" in vb.id_expr
-            if not has_case_in_id and vb.id_is_dynamic:
-                # Dynamic UUID without case -- labels are static, but
-                # visit discrimination may be implicit. Skip.
-                pass
-            elif not has_case_in_id and not vb.visit_id:
-                pass  # No ID at all -- other checks catch this
-            elif vb.visit_id and not vb.id_expr:
-                # Static ID with multi-visit table -- this block represents
-                # a single visit from a multi-visit table, which is valid
-                # (each block filters different rows via case() on other
-                # slots). Only flag if this is the ONLY block for this PHT.
-                pht_blocks = [b for b in registry.blocks if b.pht == vb.pht]
-                if len(pht_blocks) == 1:
-                    findings.append(Finding(
-                        file=registry.file_path,
-                        block=vb.block_index,
-                        check="5.7",
-                        severity="WARNING",
-                        message=(
-                            f"Visit '{label}' uses multi-visit table "
-                            f"{vb.pht} ({table_name}) with a static ID "
-                            f"and is the only block for this table -- "
-                            f"verify visit discrimination is handled"
-                        ),
-                    ))
-
-        # -- 5.7b: Discriminator PHV cross-check --
-        if is_multi and vb.all_phvs:
-            discrim_vars = table.get("visit_discriminator_variables", table.get("visit_discriminators", []))
-            if discrim_vars:
-                discrim_phvs = set()
-                for dv in discrim_vars:
-                    dv_phv = dv.get("phv", "")
-                    # Strip version suffix (e.g., phv00098579.v7 -> phv00098579)
-                    base_phv = dv_phv.split(".")[0] if "." in dv_phv else dv_phv
-                    if base_phv:
-                        discrim_phvs.add(base_phv)
-
-                if discrim_phvs and not (vb.all_phvs & discrim_phvs):
-                    discrim_names = [dv.get("name", "?") for dv in discrim_vars]
-                    findings.append(Finding(
-                        file=registry.file_path,
-                        block=vb.block_index,
-                        check="5.7",
-                        severity="INFO",
-                        message=(
-                            f"Visit '{label}' uses multi-visit table "
-                            f"{vb.pht} ({table_name}) but its expressions "
-                            f"don't reference any known discriminator "
-                            f"variable ({', '.join(discrim_names)}) -- "
-                            f"visit discrimination may use a different "
-                            f"mechanism"
-                        ),
-                    ))
-
-        # -- 5.7c: Age variable alignment --
-        age_vars = table.get("age_variables", [])
-        if age_vars and vb.age_phvs:
-            age_phvs_in_cache = set()
-            for av in age_vars:
-                av_phv = av.get("phv", "")
-                base_phv = av_phv.split(".")[0] if "." in av_phv else av_phv
-                if base_phv:
-                    age_phvs_in_cache.add(base_phv)
-            if age_phvs_in_cache and not (vb.age_phvs & age_phvs_in_cache):
-                # The visit block's age PHVs don't match any from this table
-                # This is only informational -- age may come from a different
-                # table or use a different calculation entirely
-                cache_age_names = [av.get("name", "?") for av in age_vars[:3]]
-                block_age_phvs = sorted(vb.age_phvs)[:3]
-                findings.append(Finding(
-                    file=registry.file_path,
-                    block=vb.block_index,
-                    check="5.7",
-                    severity="INFO",
-                    message=(
-                        f"Visit '{label}' age PHVs "
-                        f"({', '.join(block_age_phvs)}) don't overlap "
-                        f"with table {vb.pht}'s age variables "
-                        f"({', '.join(cache_age_names)}) -- "
-                        f"verify age source is correct"
                     ),
                 ))
 
@@ -1328,45 +1153,6 @@ def load_phv_index(cache_dir: Path, cache_key: str) -> dict[str, str] | None:
         return json.load(f)
 
 
-def _normalize_visit_cache(raw: dict) -> dict:
-    """Normalize visit cache to canonical list-of-dicts format.
-
-    update_data.py writes tables as a dict keyed by PHT with
-    'is_multi_visit', while data/visit-cache/ uses a list of dicts
-    with 'is_multi_visit_table'.  Normalize to list format with
-    consistent key names so Phase 5 checks work with either source.
-    """
-    tables = raw.get("tables", [])
-    if isinstance(tables, dict):
-        normalized = []
-        for pht_key, entry in tables.items():
-            entry.setdefault("pht", pht_key)
-            if "is_multi_visit" in entry and "is_multi_visit_table" not in entry:
-                entry["is_multi_visit_table"] = entry["is_multi_visit"]
-            if "visit_discriminators" in entry and "visit_discriminator_variables" not in entry:
-                entry["visit_discriminator_variables"] = entry["visit_discriminators"]
-            normalized.append(entry)
-        raw["tables"] = normalized
-    return raw
-
-
-def load_visit_cache(visit_cache_dir: Path, cache_key: str) -> dict | None:
-    """Load the visit cache JSON for a cohort.
-
-    Checks two naming conventions:
-      - {cache_key}.json        (data/visit-cache/ layout)
-      - {cache_key}_visit.json  (hv-lint/dbgap-cache/ layout from update_data.py)
-
-    Normalizes the schema so Phase 5 checks work with either source.
-    """
-    for pattern in [f"{cache_key}.json", f"{cache_key}_visit.json"]:
-        json_path = visit_cache_dir / pattern
-        if json_path.exists():
-            with json_path.open(encoding="utf-8") as f:
-                return _normalize_visit_cache(json.load(f))
-    return None
-
-
 def load_detail_index(cache_dir: Path, cache_key: str) -> dict[str, dict] | None:
     """Load the extended PHV detail index (with coll_interval) for a cohort."""
     gz_path = cache_dir / f"{cache_key}_detail.json.gz"
@@ -1390,10 +1176,6 @@ def parse_args() -> argparse.Namespace:
         "--fail-on", default="error",
         choices=["critical", "error", "high", "warning", "info"],
         help="Minimum severity to cause non-zero exit (default: error)",
-    )
-    p.add_argument(
-        "--visit-cache", default=None,
-        help="Directory with per-cohort visit cache JSONs (checks 5.3, 5.5)",
     )
     p.add_argument(
         "--cache-dir", default=None,
@@ -1420,6 +1202,12 @@ def main() -> int:
         cohort_dirs = [args.cohort]
 
     all_findings: list[Finding] = []
+    # Any check that COULD NOT RUN fails the run on its own, independent of `--fail-on`.
+    # Reporting it as an ERROR finding is not enough: findings are weighed against the
+    # threshold, so `--fail-on critical` turned "this cohort was never checked" into a PASS --
+    # the exact reading the comment below the cohort loop exists to forbid. 29a4c5dd made only
+    # the release-mismatch path mandatory and left the three missing-input paths behind it.
+    unrun_check = False
     cohorts_processed = 0
     cohorts_skipped: list[str] = []
 
@@ -1480,52 +1268,99 @@ def main() -> int:
         # 5.2: Referential integrity
         all_findings.extend(check_5_2_referential_integrity(registry, cohort_refs))
 
-        # Load optional data once per cohort
-        cache_key = COHORT_TO_CACHE_KEY.get(cohort, cohort.lower())
-        visit_cache_data = None
+        cache_key = _cohorts.cache_key_for(cohort, args.cache_dir or "")
         phv_index = None
+        mismatch = None
+        release_ok = True
 
-        if args.visit_cache:
-            visit_cache_data = load_visit_cache(Path(args.visit_cache), cache_key)
-            if not visit_cache_data:
-                print(f"  INFO: No visit cache for {cohort} -- skipping 5.3, 5.5")
+        # A check that CANNOT run is reported as an ERROR against the cohort, not as a skip:
+        # an unrun check that exits clean is indistinguishable from a passing one. Both the
+        # "no directory was supplied" and "the file is not there" cases count.
+        if not args.cache_dir:
+            all_findings.append(Finding(
+                f"priority_variables_transform/{cohort}-ingest", 0, "5.3/5.4", "ERROR",
+                f"no --cache-dir supplied, so checks 5.3 and 5.4 DID NOT RUN for {cohort}"))
+            unrun_check = True
+        else:
+            # The release is checked here for the reason Phase 3 checks it: `cache_key_for`
+            # falls back to a legacy cohort-named key when the declared release file is absent,
+            # and a cache built from a superseded release reports PHVs that exist only in the
+            # newer one as absent -- indistinguishable from a real mapping error. Reported as a
+            # Finding, not an exit code, because Phase 5 reports per cohort.
+            declared = _cohorts.declared_study(cohort, cache_dir=args.cache_dir)
+            if not declared:
+                all_findings.append(Finding(
+                    f"priority_variables_transform/{cohort}-ingest", 0, "5.3/5.4/5.8", "ERROR",
+                    f"{cohort} declares no dbGaP release, so the cache cannot be checked -- add "
+                    f"hv_dataqc/cache_fetcher/manifests/_manifest-{cohort.lower()}.yaml"))
+            else:
+                mismatch = _cohorts.study_mismatch(args.cache_dir, cache_key, declared)
+                if mismatch:
+                    all_findings.append(Finding(
+                        f"priority_variables_transform/{cohort}-ingest", 0, "5.3/5.4/5.8",
+                        "ERROR", f"declared release {declared}: {mismatch}"))
 
-        if args.cache_dir:
+            # The release check is MANDATORY, so it cannot rest on a finding alone: findings
+            # are weighed against `--fail-on`, and `--fail-on critical` would reduce a
+            # cache/version mismatch to advisory. It also must not go on to CHECK against the
+            # mismatched index -- that reports PHVs absent from the wrong release as mapping
+            # errors, the exact confusion the check exists to remove. So the index is not
+            # loaded, which leaves 5.3/5.4/5.8 unrun, and the run fails independently of the
+            # severity threshold. Phase 3 does the same by returning 1.
+            #
+            # Deliberately NOT `continue`: 5.6, 5.9 and 5.10 read no cache, and a cohort with a
+            # stale cache should still have its visit structure reported.
+            release_ok = bool(declared) and not mismatch
+            if not release_ok:
+                unrun_check = True
+
+        if args.cache_dir and release_ok:
             phv_index = load_phv_index(Path(args.cache_dir), cache_key)
             if not phv_index:
-                print(f"  INFO: No PHV index for {cohort} -- "
-                      f"skipping PHV validation in 5.4")
+                all_findings.append(Finding(
+                    f"priority_variables_transform/{cohort}-ingest", 0, "5.3/5.4", "ERROR",
+                    f"no PHV index for {cohort} (looked for '{cache_key}.json.gz' in "
+                    f"{args.cache_dir}), so checks 5.3 and 5.4 DID NOT RUN"))
+                unrun_check = True
 
-        # 5.3: Visit <-> PHT consistency
-        if visit_cache_data:
+        # 5.3: Visit <-> PHT consistency, against the authoritative PHV index
+        if phv_index:
             all_findings.extend(
-                check_5_3_visit_pht_consistency(registry, visit_cache_data)
+                check_5_3_visit_pht_consistency(registry, phv_index)
             )
 
         # 5.4: Age formula structural check
         all_findings.extend(check_5_4_age_formula(registry, phv_index))
 
-        # 5.5: Multi-visit table coverage
-        if visit_cache_data:
-            all_findings.extend(
-                check_5_5_multivist_coverage(registry, visit_cache_data, cohort_blocks)
-            )
+        # 5.5 REMOVED 2026-09-10 -- it rested on a regex-derived visit cache; see the module
+        # docstring. The signal now lives as an instrument, not as a check.
 
         # 5.6: Orphan visit references
         all_findings.extend(check_5_6_orphan_visits(registry, cohort_refs))
 
-        # 5.7: Visit PHT <-> table visit-context alignment
-        if visit_cache_data:
-            all_findings.extend(
-                check_5_7_visit_pht_alignment(
-                    registry, visit_cache_data, phv_index
-                )
-            )
+        # 5.7 REMOVED 2026-09-10 -- same reason as 5.5.
 
         # 5.8: Collection interval vs visit case mismatch
-        if args.cache_dir:
+        if not release_ok:
+            pass  # the release check above already reported it and failed the run
+        elif not args.cache_dir:
+            all_findings.append(Finding(
+                f"priority_variables_transform/{cohort}-ingest", 0, "5.8", "ERROR",
+                f"no --cache-dir supplied, so check 5.8 DID NOT RUN for {cohort}"))
+            unrun_check = True
+        else:
             detail_idx = load_detail_index(Path(args.cache_dir), cache_key)
-            if detail_idx:
+            # An ABSENT detail index is an ERROR, by the same rule stated above the PHV index
+            # guard: a missing file made 5.8 exit clean, which reads as a pass. Only a detail
+            # index that is PRESENT and holds no intervals is a legitimate skip -- that is a
+            # fact about the cohort, not a missing input.
+            if detail_idx is None:
+                all_findings.append(Finding(
+                    f"priority_variables_transform/{cohort}-ingest", 0, "5.8", "ERROR",
+                    f"no detail index for {cohort} (looked for '{cache_key}_detail.json.gz' "
+                    f"in {args.cache_dir}), so check 5.8 DID NOT RUN"))
+                unrun_check = True
+            else:
                 # Check if this cohort has any coll_interval data
                 n_ci = sum(1 for v in detail_idx.values() if v.get("coll_interval"))
                 if n_ci > 0:
@@ -1588,6 +1423,15 @@ def main() -> int:
     if blocking:
         print(f"\nFAILED: {len(blocking)} findings at or above "
               f"'{args.fail_on}' severity")
+        return 1
+    elif unrun_check:
+        # Checked BEFORE the pass branch and independent of `--fail-on`: a threshold that can
+        # downgrade the mandatory release check to advisory is not a mandatory check.
+        # `--fail-on critical` did exactly that, and the run then reported PASSED having
+        # skipped 5.3/5.4/5.8 for the cohort whose cache was the wrong release.
+        print("\nFAILED: the mandatory dbGaP release check did not pass for at least one "
+              "cohort, so checks 5.3/5.4/5.8 DID NOT RUN there. This is not weighed against "
+              "--fail-on.")
         return 1
     else:
         if all_findings:

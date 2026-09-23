@@ -3,11 +3,22 @@
 update_data.py -- Fetch dbGaP source data and rebuild lint indexes.
 
 Single entry point for all dbGaP data maintenance in hv-lint. Performs:
-  1. Fetch CGI variable index (variables.xml) from NCBI
-  2. Fetch FTP data dictionaries (*.data_dict.xml) from NCBI FTP
-  3. Build compressed PHV-to-PHT index (.json.gz)
-  4. Build compressed PHV detail index (.json.gz)
-  5. Extract visit cache (visit-relevant metadata per table)
+  1. Fetch FTP data dictionaries (*.data_dict.xml) from NCBI FTP
+  2. Build the PHV-to-PHT index, via build_phv_index.build_one
+  3. Build the PHV detail index, via build_phv_detail_index.build_one
+
+Steps 2 and 3 DELEGATE to those two builders rather than repeating them, so this
+path and a direct builder invocation produce the same artifact: keyed by study
+release (`phs000280.v8.json.gz`) and carrying the provenance the mandatory
+release check requires. This script held its own pair until 2026-09-23; they read
+only variables.xml and wrote `<cohort>.json.gz` with no provenance, so the
+onboarding command below produced exactly the cache that check rejects.
+
+Two steps were removed. A visit cache was extracted by regex-guessing visit
+metadata, and Phase 5 checks 5.5/5.7 were its only readers. The CGI
+`variables.xml` bulk index was fetched as a supplement for the PHV index, and
+carries no release -- so a copy left from an earlier one made the artifact a
+union of releases, which is what keying by release exists to prevent.
 
 Fetched source XML files and intermediate data are written to
 hv-lint/dbgap-cache/ and are git-ignored. The compressed indexes
@@ -36,7 +47,7 @@ Usage:
 Requirements:
     pip install pyyaml requests-cache
 
-    requests-cache is only needed for --fetch operations (steps 1-2).
+    requests-cache is only needed for --fetch operations (step 1).
     --build-only requires only pyyaml and stdlib.
 """
 
@@ -46,6 +57,7 @@ import argparse
 import gzip
 import json
 import re
+import shutil
 import sys
 import time
 import xml.etree.ElementTree as ET
@@ -65,8 +77,11 @@ if str(HVLINT_DIR) not in sys.path:
 MANIFESTS_DIR = HVLINT_DIR.parent / "hv_dataqc" / "cache_fetcher" / "manifests"
 CACHE_DIR = HVLINT_DIR / "dbgap-cache"
 
+# dbGaP stamps every FTP data dictionary `phs######.v#.pht######.v#.<name>.data_dict.xml`.
+# Anchored, so a name merely containing an accession cannot match.
+_DATA_DICT_PREFIX = re.compile(r"^phs\d{6}\.v\d+\.pht\d+\.v\d+\.")
+
 FTP_BASE = "https://ftp.ncbi.nlm.nih.gov/dbgap/studies"
-CGI_BASE = "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin"
 NCBI_DELAY_SECONDS = 0.5  # polite delay between real network requests
 
 
@@ -134,87 +149,63 @@ class FTPDirectoryParser(HTMLParser):
 
 
 # ---------------------------------------------------------------------------
-# HTML parser for CGI variable index
+# Step 1: Fetch FTP data dictionaries
 # ---------------------------------------------------------------------------
-class VariableTableParser(HTMLParser):
-    """Parse the dbGaP variable list HTML table.
+def _invalidate(session, urls: list[str]) -> None:
+    """Drop ``urls`` from the requests-cache store. Never fatal.
 
-    Each row: [phv_accession, var_name, var_desc, pht_accession, dataset_name]
+    A cache that cannot be pruned is a reason to say so, not a reason to abandon the fetch --
+    the request still goes out and the server still answers; it may just answer from cache.
     """
-
-    def __init__(self):
-        super().__init__()
-        self.in_td = False
-        self.current_row: list[str] = []
-        self.rows: list[list[str]] = []
-        self.current_text = ""
-
-    def handle_starttag(self, tag, attrs):
-        if tag == "td":
-            self.in_td = True
-            self.current_text = ""
-        elif tag == "tr":
-            self.current_row = []
-
-    def handle_endtag(self, tag):
-        if tag == "td":
-            self.in_td = False
-            self.current_row.append(self.current_text.strip())
-        elif tag == "tr" and self.current_row:
-            self.rows.append(self.current_row)
-
-    def handle_data(self, data):
-        if self.in_td:
-            self.current_text += data
-
-
-# ---------------------------------------------------------------------------
-# Step 1: Fetch CGI variable index (variables.xml)
-# ---------------------------------------------------------------------------
-def fetch_cgi_index(cohort_key: str, study_id: str, data_version: str,
-                    *, force: bool = False, dry_run: bool = False) -> bool:
-    """Fetch variables.xml from the CGI endpoint."""
-    url = (
-        f"{CGI_BASE}/GetListOfAllObjects.cgi"
-        f"?study_id={study_id}.{data_version}&object_type=variable"
-    )
-    dest = CACHE_DIR / cohort_key / "variables.xml"
-
-    if dry_run:
-        print(f"  [dry-run] Would fetch: {url}")
-        print(f"             -> {dest}")
-        return True
-
-    if dest.exists() and not force:
-        size_kb = dest.stat().st_size // 1024
-        print(f"  [variables.xml] Already cached ({size_kb:,} KB) -- use --force to re-download")
-        return True
-
-    from _http import get_session
-
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    session = get_session()
     try:
-        if force:
-            session.cache.delete(urls=[url])
-        resp = session.get(url, timeout=120)
-        resp.raise_for_status()
-        dest.write_bytes(resp.content)
-        size_kb = len(resp.content) // 1024
-        from_cache = getattr(resp, "from_cache", False)
-        source = "http-cache" if from_cache else "downloaded"
-        print(f"  [variables.xml] OK ({source}, {size_kb:,} KB)")
-        if not from_cache:
-            time.sleep(NCBI_DELAY_SECONDS)
-        return True
-    except Exception as exc:
-        print(f"  [variables.xml] FAILED: {exc}")
-        return False
+        session.cache.delete(urls=urls)
+    except Exception as exc:  # noqa: BLE001 -- best effort by design, see above
+        print(f"  [FTP] WARNING: could not invalidate {len(urls)} cached URL(s): {exc}",
+              file=sys.stderr)
 
 
-# ---------------------------------------------------------------------------
-# Step 2: Fetch FTP data dictionaries
-# ---------------------------------------------------------------------------
+def staged_release_differs(cohort_dir: Path, study_id: str, data_version: str) -> bool:
+    """True when the data dictionaries already staged name a release other than this one.
+
+    False when the directory is empty, holds no parseable data dictionary, or already holds
+    this release -- absence is never read as disagreement, so a first fetch is not treated as
+    a version bump.
+    """
+    want = f"{study_id}.{data_version.split('.')[0]}."
+    names = [
+        p.name for p in (cohort_dir / "pheno_variable_summaries").glob("*.data_dict.xml")
+        if _DATA_DICT_PREFIX.match(p.name)
+    ]
+    return bool(names) and any(not n.startswith(want) for n in names)
+
+
+def retire_superseded_data_dicts(dest_dir: Path, study_id: str, data_version: str) -> int:
+    """Remove data dictionaries from a release other than the one being fetched. Returns count.
+
+    One staging directory per cohort is reused across version bumps, and the FTP fetch ADDS
+    filenames rather than replacing them -- dbGaP stamps the release into each name, so a v9
+    fetch over a v8 tree leaves both. `study_from_data_dicts` then sees two releases and
+    refuses to choose (correctly: the directory genuinely has no single answer), so the
+    documented update command cannot build the new cache at all. The bump this branch exists
+    to support was the one operation that did not work.
+
+    Only files whose `phs######.v#.` prefix names a DIFFERENT release are removed, so a
+    re-fetch of the same release removes nothing, and a file that does not match the prefix
+    pattern at all is left alone rather than guessed about.
+    """
+    want = f"{study_id}.{data_version.split('.')[0]}."
+    stale = [
+        p for p in sorted(dest_dir.glob("*.data_dict.xml"))
+        if _DATA_DICT_PREFIX.match(p.name) and not p.name.startswith(want)
+    ]
+    for path in stale:
+        path.unlink()
+    if stale:
+        print(f"  [FTP] Retired {len(stale)} data dictionaries from a superseded release "
+              f"(keeping {want[:-1]})")
+    return len(stale)
+
+
 def fetch_ftp_data_dicts(cohort_key: str, study_id: str, data_version: str,
                          *, force: bool = False, dry_run: bool = False) -> bool:
     """Fetch all *.data_dict.xml from NCBI FTP pheno_variable_summaries/."""
@@ -229,6 +220,14 @@ def fetch_ftp_data_dicts(cohort_key: str, study_id: str, data_version: str,
     from _http import get_session
 
     session = get_session()
+    # `--force` has to reach the HTTP cache, not just the local file check. `get_session`
+    # returns a requests-cache session with no expiry, so without this a forced refresh
+    # re-serves the PREVIOUS release's listing and files from disk -- and now that a complete
+    # fetch retires the superseded staging tree, that would delete the real tree and repopulate
+    # it from stale responses, with nothing in the output saying the bytes never moved.
+    if force:
+        _invalidate(session, [dir_url])
+
     try:
         resp = session.get(dir_url, timeout=60)
         resp.raise_for_status()
@@ -242,11 +241,35 @@ def fetch_ftp_data_dicts(cohort_key: str, study_id: str, data_version: str,
 
     if not targets:
         print(f"  [FTP] No data_dict.xml files found ({len(parser.links)} entries)")
-        return True  # Not an error -- some studies have none
+        # Benign only for a study that genuinely has none. If a SUPERSEDED release is staged,
+        # returning success here leaves it in place for the builders to index and
+        # provenance-stamp as the release we asked for -- the update command reports success
+        # and the contradiction surfaces at lint time, which is the wrong place for it.
+        # The test is "is ANYTHING stamped already staged", not "is a DIFFERENT release
+        # staged". A same-release tree left partial by an earlier failed fetch is the case the
+        # narrower test missed: the listing says there is nothing to fetch, the partial files
+        # survive, and the builders index them into a complete-looking artifact carrying valid
+        # provenance. An empty listing contradicts whatever is on disk, whichever release it
+        # belongs to, so it cannot be used to confirm that disk state.
+        staged = [p for p in (CACHE_DIR / cohort_key / "pheno_variable_summaries")
+                  .glob("*.data_dict.xml") if _DATA_DICT_PREFIX.match(p.name)]
+        if staged:
+            print(f"  [FTP] ...but {len(staged)} data dictionaries are already staged for "
+                  f"{cohort_key}. Refusing: an empty listing for {study_id}.{data_version} "
+                  f"cannot confirm that what is on disk is complete or current.",
+                  file=sys.stderr)
+            return False
+        return True  # Not an error -- some studies have none, and nothing is staged
 
     print(f"  [FTP] Found {len(targets)} data_dict files")
     dest_dir = CACHE_DIR / cohort_key / "pheno_variable_summaries"
     dest_dir.mkdir(parents=True, exist_ok=True)
+    if force:
+        # Same reason as the listing above: the per-file URLs are cached too, so a forced
+        # refresh that skips this re-writes each file with the bytes it already had.
+        _invalidate(session, [
+            f"{FTP_BASE}/{study_id}/{qualified}/pheno_variable_summaries/{f}" for f in targets
+        ])
 
     downloaded = 0
     skipped = 0
@@ -278,309 +301,17 @@ def fetch_ftp_data_dicts(cohort_key: str, study_id: str, data_version: str,
             print(f"    [{i}/{len(targets)}] {downloaded} new, {skipped} cached, {failed} failed")
 
     print(f"  [FTP] Done: {downloaded} downloaded, {skipped} cached, {failed} failed")
-    return failed == 0
-
-
-# ---------------------------------------------------------------------------
-# Step 3: Build PHV-to-PHT index
-# ---------------------------------------------------------------------------
-def build_phv_index(cohort_key: str) -> int:
-    """Build compressed PHV-to-PHT index from variables.xml. Returns PHV count."""
-    vf = CACHE_DIR / cohort_key / "variables.xml"
-    if not vf.exists():
-        print(f"  [index] No variables.xml for {cohort_key} -- skipping basic index")
-        return 0
-
-    parser = VariableTableParser()
-    parser.feed(vf.read_text(encoding="utf-8", errors="replace"))
-    parser.close()
-
-    mapping: dict[str, str] = {}
-    for row in parser.rows:
-        if len(row) < 4:
-            continue
-        phv_base = row[0].split(".")[0]
-        pht_base = row[3].split(".")[0]
-        if phv_base.startswith("phv") and pht_base.startswith("pht"):
-            mapping[phv_base] = pht_base
-
-    json_bytes = json.dumps(mapping, separators=(",", ":")).encode("utf-8")
-    gz_path = CACHE_DIR / f"{cohort_key}.json.gz"
-    with gzip.open(gz_path, "wb") as f:
-        f.write(json_bytes)
-
-    phts = len(set(mapping.values()))
-    gz_size = gz_path.stat().st_size
-    print(
-        f"  [index] {cohort_key:12s}: {len(mapping):>7,} PHVs, "
-        f"{phts:>4} PHTs -> {gz_size:>8,} bytes"
-    )
-    return len(mapping)
-
-
-# ---------------------------------------------------------------------------
-# Step 4: Build PHV detail index
-# ---------------------------------------------------------------------------
-def parse_data_dict(path: Path) -> dict[str, dict]:
-    """Parse one data_dict.xml and return per-PHV detail records."""
-    try:
-        tree = ET.parse(path)
-    except ET.ParseError as exc:
-        print(f"  WARN: XML parse error in {path.name}: {exc}", file=sys.stderr)
-        return {}
-
-    root = tree.getroot()
-    base_pht = root.get("id", "").split(".")[0]
-
-    records: dict[str, dict] = {}
-    for var_elem in root.iter("variable"):
-        phv_raw = var_elem.get("id", "")
-        base_phv = phv_raw.split(".")[0]
-        if not base_phv.startswith("phv"):
-            continue
-
-        name_el = var_elem.find("name")
-        desc_el = var_elem.find("description")
-        type_el = var_elem.find("type")
-        unit_el = var_elem.find("unit")
-        ci_el = var_elem.find("coll_interval")
-
-        name = name_el.text.strip() if name_el is not None and name_el.text else ""
-        desc = desc_el.text.strip() if desc_el is not None and desc_el.text else ""
-        vtype = (type_el.text.strip().lower() if type_el is not None and type_el.text else "")
-        unit = unit_el.text.strip() if unit_el is not None and unit_el.text else None
-        coll_interval = ci_el.text.strip() if ci_el is not None and ci_el.text else None
-
-        codes: dict[str, str] | None = None
-        value_elems = var_elem.findall("value")
-        if value_elems:
-            codes = {}
-            for ve in value_elems:
-                code = ve.get("code", "")
-                label = (ve.text or "").strip()
-                if code:
-                    codes[code] = label
-
-        record: dict = {
-            "name": name,
-            "pht": base_pht,
-            "type": vtype,
-            "description": desc,
-        }
-        if unit is not None:
-            record["unit"] = unit
-        if codes:
-            record["codes"] = codes
-        if coll_interval:
-            record["coll_interval"] = coll_interval
-
-        records[base_phv] = record
-
-    return records
-
-
-def build_phv_detail_index(cohort_key: str) -> int:
-    """Build extended PHV detail index from FTP data dicts. Returns PHV count."""
-    ftp_dir = CACHE_DIR / cohort_key / "pheno_variable_summaries"
-    if not ftp_dir.is_dir():
-        print(f"  [detail] No pheno_variable_summaries for {cohort_key} -- skipping")
-        return 0
-
-    data_dict_files = sorted(ftp_dir.glob("*.data_dict.xml"))
-    if not data_dict_files:
-        print(f"  [detail] No data_dict.xml files for {cohort_key} -- skipping")
-        return 0
-
-    cohort_index: dict[str, dict] = {}
-    for dd_file in data_dict_files:
-        records = parse_data_dict(dd_file)
-        cohort_index.update(records)
-
-    json_bytes = json.dumps(
-        cohort_index, separators=(",", ":"), ensure_ascii=True
-    ).encode("utf-8")
-    gz_path = CACHE_DIR / f"{cohort_key}_detail.json.gz"
-    with gzip.open(gz_path, "wb") as f:
-        f.write(json_bytes)
-
-    gz_size = gz_path.stat().st_size
-    n_coded = sum(1 for r in cohort_index.values() if r.get("codes"))
-    print(
-        f"  [detail] {cohort_key:12s}: {len(cohort_index):>7,} PHVs "
-        f"({n_coded:>5,} coded), {len(data_dict_files):>4} files -> "
-        f"{gz_size:>9,} bytes"
-    )
-    return len(cohort_index)
-
-
-# ---------------------------------------------------------------------------
-# Step 5: Extract visit cache
-# ---------------------------------------------------------------------------
-
-# Regex patterns for visit-relevant variable detection
-_VISIT_DISCRIMINATOR_RE = [
-    re.compile(r"^VISIT$", re.IGNORECASE),
-    re.compile(r"^IDTYPE$", re.IGNORECASE),
-    re.compile(r"VTYP$", re.IGNORECASE),
-    re.compile(r"^visitnum$", re.IGNORECASE),
-    re.compile(r"^phase_study$", re.IGNORECASE),
-    re.compile(r"^visit_type$", re.IGNORECASE),
-]
-
-_AGE_RE = [
-    re.compile(r"\bage\b", re.IGNORECASE),
-    re.compile(r"^AGE", re.IGNORECASE),
-    re.compile(r"AGE\d*$", re.IGNORECASE),
-]
-
-_DATE_DAYS_RE = [
-    re.compile(r"\bDAYS?\b", re.IGNORECASE),
-    re.compile(r"\bDATE\b", re.IGNORECASE),
-    re.compile(r"^F\d+DAYS$", re.IGNORECASE),  # WHI: F80DAYS, etc.
-]
-
-_VISIT_DESC_RE = re.compile(
-    r"visit\s*\d|exam\s*\d|baseline|follow.?up|phase\s*\d|year\s*\d",
-    re.IGNORECASE,
-)
-
-
-def extract_visit_metadata(cohort_key: str) -> dict | None:
-    """Extract visit-relevant metadata from FTP data dicts for one cohort.
-
-    Returns a dict suitable for JSON serialization, or None if no data.
-    """
-    ftp_dir = CACHE_DIR / cohort_key / "pheno_variable_summaries"
-    if not ftp_dir.is_dir():
-        return None
-
-    data_dict_files = sorted(ftp_dir.glob("*.data_dict.xml"))
-    if not data_dict_files:
-        return None
-
-    tables: dict[str, dict] = {}
-
-    for dd_file in data_dict_files:
-        try:
-            tree = ET.parse(dd_file)
-        except ET.ParseError:
-            continue
-
-        root = tree.getroot()
-        table_id_raw = root.get("id", "")
-        base_pht = table_id_raw.split(".")[0]
-        if not base_pht.startswith("pht"):
-            continue
-
-        # Table description
-        desc_el = root.find(".//description")
-        table_desc = desc_el.text.strip() if desc_el is not None and desc_el.text else ""
-
-        discriminators = []
-        age_vars = []
-        date_days_vars = []
-        participant_ids = []
-        all_var_names = []
-
-        for var_elem in root.iter("variable"):
-            name_el = var_elem.find("name")
-            if name_el is None or not name_el.text:
-                continue
-            vname = name_el.text.strip()
-            all_var_names.append(vname)
-
-            # Visit discriminators
-            for pat in _VISIT_DISCRIMINATOR_RE:
-                if pat.search(vname):
-                    # Get coded values if any
-                    codes = {}
-                    for ve in var_elem.findall("value"):
-                        code = ve.get("code", "")
-                        label = (ve.text or "").strip()
-                        if code:
-                            codes[code] = label
-                    phv_raw = var_elem.get("id", "")
-                    base_phv = phv_raw.split(".")[0]
-                    entry = {"name": vname, "phv": base_phv}
-                    if codes:
-                        entry["codes"] = codes
-                    discriminators.append(entry)
-                    break
-
-            # Age variables
-            for pat in _AGE_RE:
-                if pat.search(vname):
-                    phv_raw = var_elem.get("id", "")
-                    age_vars.append({"name": vname, "phv": phv_raw.split(".")[0]})
-                    break
-
-            # Date/days variables
-            for pat in _DATE_DAYS_RE:
-                if pat.search(vname):
-                    phv_raw = var_elem.get("id", "")
-                    date_days_vars.append({"name": vname, "phv": phv_raw.split(".")[0]})
-                    break
-
-            # Participant IDs
-            if vname.upper() in ("SUBJECT_ID", "SHAREID", "SUBJID", "PID", "ID",
-                                  "RANID", "SID", "DBGAP_SUBJECT_ID"):
-                phv_raw = var_elem.get("id", "")
-                participant_ids.append({"name": vname, "phv": phv_raw.split(".")[0]})
-
-        table_entry: dict = {
-            "pht": base_pht,
-            "n_variables": len(all_var_names),
-        }
-        if table_desc:
-            table_entry["description"] = table_desc
-        if discriminators:
-            table_entry["visit_discriminators"] = discriminators
-            table_entry["is_multi_visit"] = True
-        if age_vars:
-            table_entry["age_variables"] = age_vars
-        if date_days_vars:
-            table_entry["date_days_variables"] = date_days_vars
-        if participant_ids:
-            table_entry["participant_id_variables"] = participant_ids
-
-        # Visit context clues
-        table_entry["visit_context_in_name"] = bool(
-            re.search(r"visit|exam|base|yr\d|phase|annual", base_pht, re.IGNORECASE)
-            or re.search(r"visit|exam|base|yr\d|phase|annual", dd_file.stem, re.IGNORECASE)
-        )
-        table_entry["visit_context_in_desc"] = bool(
-            _VISIT_DESC_RE.search(table_desc)
-        ) if table_desc else False
-
-        tables[base_pht] = table_entry
-
-    if not tables:
-        return None
-
-    return {
-        "cohort": cohort_key,
-        "n_tables": len(tables),
-        "n_multi_visit": sum(1 for t in tables.values() if t.get("is_multi_visit")),
-        "tables": tables,
-    }
-
-
-def build_visit_cache(cohort_key: str) -> bool:
-    """Extract visit metadata and write to dbgap-cache/<cohort>_visit.json."""
-    metadata = extract_visit_metadata(cohort_key)
-    if metadata is None:
-        print(f"  [visit] No data for {cohort_key} -- skipping")
-        return True
-
-    dest = CACHE_DIR / f"{cohort_key}_visit.json"
-    with open(dest, "w", encoding="utf-8") as f:
-        json.dump(metadata, f, indent=2, ensure_ascii=True)
-
-    n_multi = metadata["n_multi_visit"]
-    print(
-        f"  [visit] {cohort_key:12s}: {metadata['n_tables']} tables "
-        f"({n_multi} multi-visit) -> {dest.name}"
-    )
+    if failed:
+        # Retire NOTHING on a partial fetch. The new release's filenames differ from the old
+        # one's, so both sets coexist harmlessly until the fetch completes -- whereas retiring
+        # first and then failing destroys the only complete staging tree the cohort has, and
+        # leaves a half-fetched release in its place. `study_from_data_dicts` refuses a
+        # two-release directory, and `process_cohort` refuses to build after a failed fetch,
+        # so the mixed state is reported rather than indexed.
+        print("  [FTP] Fetch incomplete -- keeping the superseded release's data dictionaries",
+              file=sys.stderr)
+        return False
+    retire_superseded_data_dicts(dest_dir, study_id, data_version)
     return True
 
 
@@ -609,25 +340,84 @@ def process_cohort(
     ok = True
 
     if fetch:
-        # Step 1: CGI variable index
-        if not fetch_cgi_index(cohort_key, study_id, data_version,
-                               force=force, dry_run=dry_run):
-            ok = False
-
-        # Step 2: FTP data dictionaries
+        # The FTP data dictionaries are the only source fetched. The CGI `variables.xml` bulk
+        # index was fetched alongside them until 2026-09-23 and is not any more: it fed one
+        # consumer, the PHV index's supplement, and that was removed because a file carrying no
+        # release cannot be allowed to contribute to a release-keyed artifact. Fetching it now
+        # would write a file nothing reads -- which is exactly what made a stale copy hazardous
+        # in the first place.
         if not fetch_ftp_data_dicts(cohort_key, study_id, data_version,
                                     force=force, dry_run=dry_run):
             ok = False
 
+    if build and not dry_run and not ok:
+        # A failed fetch must not be indexed. The builders read whatever is on disk and stamp
+        # the release they find into the manifest, so building over a half-fetched tree
+        # produces an index that CLAIMS a release it does not completely hold -- provenance it
+        # has not earned, and indistinguishable at lint time from a complete one.
+        print(f"  ERROR: {cohort_key}: fetch failed -- not building, because an index over a "
+              f"partial tree would record a release it does not hold", file=sys.stderr)
+        return False
+
     if build and not dry_run:
-        # Step 3: Basic PHV index
-        build_phv_index(cohort_key)
+        # Steps 3 and 4 delegate to the release-keyed builders rather than repeating them.
+        # This script used to hold its own pair, reading only `variables.xml` and writing
+        # `<cohort>.json.gz` with no provenance -- so the onboarding command MAINTENANCE.md
+        # documents produced exactly the cache the mandatory release check rejects. The
+        # builders read the data dictionaries fetched in step 2, which is where the
+        # `phs######.v#` provenance comes from. They read NO CGI supplement: an input carrying
+        # no release must not contribute to a release-keyed artifact, which is why
+        # `variables.xml` is neither fetched nor parsed any more.
+        #
+        # Step 5 built `<cohort>_visit.json` by regex-guessing visit metadata. Checks 5.5 and
+        # 5.7 were its only readers and both were removed, so it is not built any more.
+        # Deferred, matching this file's convention for its other cross-module imports:
+        # --help must work without the builders' dependencies present.
+        import _cohorts
+        import build_phv_detail_index
+        import build_phv_index
 
-        # Step 4: Detail PHV index
-        build_phv_detail_index(cohort_key)
-
-        # Step 5: Visit cache
-        build_visit_cache(cohort_key)
+        cohort_dir = CACHE_DIR / cohort_key
+        if not cohort_dir.is_dir():
+            print(f"  ERROR: no staged source at {cohort_dir} -- fetch before building",
+                  file=sys.stderr)
+            return False
+        # BOTH builders must succeed, and NOTHING is published until both have. They are not
+        # independent outputs: Phase 3's 3.9-3.16 and Phase 5's 5.8 read the detail index, and
+        # a missing one is an ERROR at lint time by the guard in 69769543. Accepting either
+        # builder's entry let a valid PHV mapping mask a wholly corrupt data-dictionary set,
+        # because `variables.xml` alone can carry the PHV->PHT mapping.
+        #
+        # They build into a scratch directory and are moved into place together. Writing
+        # straight into CACHE_DIR meant a failure of the SECOND builder still left the first's
+        # freshly-written artifact behind -- and against an existing manifest entry from an
+        # earlier successful build, that thinner index reads as a valid release-keyed cache.
+        # `Path.replace` is atomic within a filesystem, and the scratch directory is a child of
+        # the destination so that holds.
+        entries: dict[str, dict] = {}
+        missing: list[str] = []
+        scratch = CACHE_DIR / f".build-{cohort_key}"
+        shutil.rmtree(scratch, ignore_errors=True)
+        scratch.mkdir(parents=True, exist_ok=True)
+        try:
+            for label, builder in (("PHV index", build_phv_index),
+                                   ("detail index", build_phv_detail_index)):
+                entry = builder.build_one(cohort_dir, scratch, CACHE_DIR)
+                if entry and entry.get("study"):
+                    entries[f"{entry['study']}.{entry['study_version']}"] = entry
+                else:
+                    missing.append(label)
+            if missing:
+                print(f"  ERROR: {cohort_key}: built no {' and no '.join(missing)} -- the data "
+                      f"dictionaries in {cohort_dir} name no single phs######.v#, or parsed to "
+                      f"zero records. Publishing nothing.", file=sys.stderr)
+                ok = False
+            else:
+                for produced in sorted(scratch.glob("*.json.gz")):
+                    produced.replace(CACHE_DIR / produced.name)
+                _cohorts.write_manifest_entries(CACHE_DIR, entries)
+        finally:
+            shutil.rmtree(scratch, ignore_errors=True)
 
     return ok
 
