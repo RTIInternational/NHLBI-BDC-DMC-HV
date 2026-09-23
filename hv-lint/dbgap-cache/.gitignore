@@ -1,5 +1,6 @@
-# Compressed indexes (*.json.gz) are committed (~4 MB total) so that
-# CI and contributors can run lint without fetching from NCBI.
+# Compressed indexes (*.json.gz) and manifest.json are committed (~6.5 MB total) so that
+# CI and contributors can run lint without fetching from NCBI. Indexes are keyed by study
+# release (phs000280.v8), so several releases of one study coexist here.
 # Rebuild with: python hv-lint/update_data.py --build-only
 
 # Backup / scratch files
@@ -10,8 +11,8 @@
 */documents.xml
 */pheno_variable_summaries/
 
-# Visit cache extracts are committed so Phase 5 checks (5.3/5.5/5.7)
-# can run offline in fresh clones and CI.
+# There is no visit cache. Checks 5.5 and 5.7 read one and were removed; 5.3 takes its PHT
+# set from the PHV index instead, which is a fact rather than a regex inference.
 
 # HTTP response cache (SQLite)
 .http-cache.sqlite*

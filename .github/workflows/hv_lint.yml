@@ -5,6 +5,7 @@ on:
     paths:
       - 'priority_variables_transform/**'
       - 'hv-lint/**'
+      - '.github/workflows/hv_lint.yml'
   workflow_dispatch:
     inputs:
       bdchm_ref:
@@ -25,6 +26,31 @@ on:
         default: "50"
 
 jobs:
+  # Self-contained unit tests for the linter itself (tmp_path fixtures, no cache, no
+  # network, no spec corpus). ENFORCED: these pin the resolver every phase manager calls
+  # to turn `--cohort` into a cache key, and the visit-label extractor checks 1.8 and 5.1
+  # share. Runs alongside hv-lint rather than after it -- a lint backlog must not stop the
+  # linter's own regressions from being reported.
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # pyyaml is the only third-party import these tests reach: _cohorts is stdlib-only,
+      # and the phase-1/phase-5 modules they exercise import yaml and nothing else. The
+      # lint job's linkml-runtime is not needed here.
+      - name: Install dependencies
+        run: pip install pytest pyyaml
+
+      - name: Run hv-lint unit tests
+        run: python -m pytest -q hv-lint/tests/
+
   hv-lint:
     runs-on: ubuntu-latest
     steps:

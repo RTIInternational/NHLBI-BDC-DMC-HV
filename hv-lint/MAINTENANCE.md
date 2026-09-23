@@ -41,15 +41,15 @@ hv-lint/
   _http.py              # HTTP caching layer (requires requests-cache)
   build_phv_index.py    # Basic PHV-to-PHT index builder
   build_phv_detail_index.py  # Extended PHV detail index builder
-  dbgap-cache/          # ALL intermediate data (.gitignore'd)
-    .gitignore          # Blocks all XML, JSON, SQLite from commits
-    aric/               # Source XML per cohort
+  dbgap-cache/          # Source XML (ignored) + built indexes (committed)
+    .gitignore          # Blocks source XML and the HTTP cache; indexes are committed
+    aric/               # Source XML per staging directory
       variables.xml     # CGI variable index (~5-30 MB)
       pheno_variable_summaries/
         *.data_dict.xml # FTP data dictionaries (~100-400 files per cohort)
-    aric.json.gz        # Compressed PHV-to-PHT index (~50-300 KB)
-    aric_detail.json.gz # Compressed PHV detail index (~100-800 KB)
-    aric_visit.json     # Visit metadata extract (~10-50 KB)
+    phs000280.v8.json.gz        # Compressed PHV-to-PHT index (~50-300 KB)
+    phs000280.v8_detail.json.gz # Compressed PHV detail index (~100-800 KB)
+    manifest.json               # Which release each cache key holds -- committed
     .http-cache.sqlite  # Transparent HTTP response cache
 ```
 
@@ -246,10 +246,27 @@ rather than passing it** -- an unpinnable cache is the case the pin exists to ca
 **ARIC is why this exists.** The cache committed before the rename held 34,155 PHVs and was a
 strict SUPERSET of both `phs000280.v8` (27,987) and `phs000280.v9` (32,388) -- 0 PHVs absent from
 it, every shared PHV on the identical PHT -- so it was a union of releases that no single
-`data_version` describes, while `_manifest-aric.yaml` declared `v8.p2`. Rebuilt at the declared
-v8, Phase 3 surfaces **16 error-level cross-reference findings that the union cache had masked**:
-of the 1,341 PHVs ARIC's specs reference, 14 are outside v8. Measured 2026-09-10; note that v9 is
-missing *more* of them (32), so the specs really are v8-aligned.
+`data_version` describes, while `_manifest-aric.yaml` declared `v8.p2`. A union cache cannot fail
+a cross-reference check: every PHV of every release is in it, so it reports what the specs
+reference rather than what the declared release contains, which is the one thing check 3.1 exists
+to distinguish.
+
+Measured 2026-09-22 against the 100 ARIC spec files, which reference 1,327 distinct PHVs:
+
+| index | PHVs the specs reference that are absent from it |
+|---|---:|
+| `phs000280.v8` -- the declared release | **0** |
+| `phs000280.v9` | **32** |
+
+So the specs are exactly v8-aligned, and linting them against v9 would report 32 mapping errors
+that are not errors. That asymmetry is the whole argument for pinning the release.
+
+*(Claim correction, 2026-09-22: this paragraph said the v8 rebuild "surfaces 16 error-level
+cross-reference findings that the union cache had masked", 14 of them PHVs outside v8, measured
+2026-09-10. That was true when measured and is no longer: those PHVs were corrected on `main`,
+and the merge at `9a500249` brought the fixes onto this branch. ARIC now passes the enforced
+Phase 3 gate at v8 with 26 INFO findings and zero at error level. The 32-PHV v9 figure is
+unchanged, and the structural argument above never depended on the count.)*
 
 ### Rebuild Without Network
 
