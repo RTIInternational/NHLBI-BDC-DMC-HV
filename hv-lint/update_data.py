@@ -55,6 +55,7 @@ import argparse
 import gzip
 import json
 import re
+import shutil
 import sys
 import time
 import xml.etree.ElementTree as ET
@@ -316,6 +317,15 @@ def fetch_ftp_data_dicts(cohort_key: str, study_id: str, data_version: str,
 
     if not targets:
         print(f"  [FTP] No data_dict.xml files found ({len(parser.links)} entries)")
+        # Benign only for a study that genuinely has none. If a SUPERSEDED release is staged,
+        # returning success here leaves it in place for the builders to index and
+        # provenance-stamp as the release we asked for -- the update command reports success
+        # and the contradiction surfaces at lint time, which is the wrong place for it.
+        if staged_release_differs(CACHE_DIR / cohort_key, study_id, data_version):
+            print(f"  [FTP] ...but a superseded release is staged for {cohort_key}. Refusing: "
+                  f"the listing for {study_id}.{data_version} has no dictionaries to replace "
+                  f"it with.", file=sys.stderr)
+            return False
         return True  # Not an error -- some studies have none
 
     print(f"  [FTP] Found {len(targets)} data_dict files")
@@ -431,28 +441,42 @@ def process_cohort(
             print(f"  ERROR: no staged source at {cohort_dir} -- fetch before building",
                   file=sys.stderr)
             return False
-        # BOTH builders must succeed. They are not independent outputs: Phase 3's 3.9-3.16 and
-        # Phase 5's 5.8 read the detail index, and a missing one is an ERROR at lint time by
-        # the guard in 69769543. Accepting either builder's entry meant a valid PHV mapping
-        # could mask a wholly corrupt data-dictionary set -- provenance written, success
-        # returned, and the absence surfacing much later as a cache fault rather than a build
-        # one. Nothing is written unless the pair is complete.
+        # BOTH builders must succeed, and NOTHING is published until both have. They are not
+        # independent outputs: Phase 3's 3.9-3.16 and Phase 5's 5.8 read the detail index, and
+        # a missing one is an ERROR at lint time by the guard in 69769543. Accepting either
+        # builder's entry let a valid PHV mapping mask a wholly corrupt data-dictionary set,
+        # because `variables.xml` alone can carry the PHV->PHT mapping.
+        #
+        # They build into a scratch directory and are moved into place together. Writing
+        # straight into CACHE_DIR meant a failure of the SECOND builder still left the first's
+        # freshly-written artifact behind -- and against an existing manifest entry from an
+        # earlier successful build, that thinner index reads as a valid release-keyed cache.
+        # `Path.replace` is atomic within a filesystem, and the scratch directory is a child of
+        # the destination so that holds.
         entries: dict[str, dict] = {}
         missing: list[str] = []
-        for label, builder in (("PHV index", build_phv_index),
-                               ("detail index", build_phv_detail_index)):
-            entry = builder.build_one(cohort_dir, CACHE_DIR, CACHE_DIR)
-            if entry and entry.get("study"):
-                entries[f"{entry['study']}.{entry['study_version']}"] = entry
+        scratch = CACHE_DIR / f".build-{cohort_key}"
+        shutil.rmtree(scratch, ignore_errors=True)
+        scratch.mkdir(parents=True, exist_ok=True)
+        try:
+            for label, builder in (("PHV index", build_phv_index),
+                                   ("detail index", build_phv_detail_index)):
+                entry = builder.build_one(cohort_dir, scratch, CACHE_DIR)
+                if entry and entry.get("study"):
+                    entries[f"{entry['study']}.{entry['study_version']}"] = entry
+                else:
+                    missing.append(label)
+            if missing:
+                print(f"  ERROR: {cohort_key}: built no {' and no '.join(missing)} -- the data "
+                      f"dictionaries in {cohort_dir} name no single phs######.v#, or parsed to "
+                      f"zero records. Publishing nothing.", file=sys.stderr)
+                ok = False
             else:
-                missing.append(label)
-        if missing:
-            print(f"  ERROR: {cohort_key}: built no {' and no '.join(missing)} -- the data "
-                  f"dictionaries in {cohort_dir} name no single phs######.v#, or parsed to "
-                  f"zero records. Recording NO provenance.", file=sys.stderr)
-            ok = False
-        else:
-            _cohorts.write_manifest_entries(CACHE_DIR, entries)
+                for produced in sorted(scratch.glob("*.json.gz")):
+                    produced.replace(CACHE_DIR / produced.name)
+                _cohorts.write_manifest_entries(CACHE_DIR, entries)
+        finally:
+            shutil.rmtree(scratch, ignore_errors=True)
 
     return ok
 

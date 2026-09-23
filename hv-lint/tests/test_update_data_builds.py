@@ -242,6 +242,61 @@ def test_a_superseded_variables_xml_is_discarded_even_if_the_refetch_fails(tmp_p
     assert not variables.exists(), "a superseded variables.xml must not survive a failed fetch"
 
 
+def test_a_half_built_pair_publishes_neither_artifact(tmp_path, monkeypatch):
+    """Returning False is not enough if the first builder's file is already on disk.
+
+    Against an existing manifest entry from an earlier successful build, a freshly written but
+    THINNER basic index reads as a valid release-keyed cache -- the failure is invisible to
+    every consumer, because the one thing that would have flagged it (the manifest) still
+    describes the older, complete build.
+    """
+    cache = tmp_path / "dbgap-cache"
+    ftp = cache / "half" / "pheno_variable_summaries"
+    ftp.mkdir(parents=True)
+    (ftp / "phs009999.v3.pht0000001.v1.T0.data_dict.xml").write_text(
+        "<data_table><unclosed>", encoding="utf-8")
+    (cache / "half" / "variables.xml").write_text(
+        "<table><tr><td>phv00000001.v1</td><td>n</td><td>d</td>"
+        "<td>pht0000001.v1</td><td>ds</td></tr></table>", encoding="utf-8")
+    # an existing good cache for the same release, as a prior successful build would leave
+    (cache / "phs009999.v3.json.gz").write_bytes(b"prior")
+    monkeypatch.setattr(update_data, "CACHE_DIR", cache)
+
+    assert _build(cohort="half") is False
+    assert (cache / "phs009999.v3.json.gz").read_bytes() == b"prior", \
+        "the prior artifact must not be overwritten by a half-built pair"
+    assert not (cache / "phs009999.v3_detail.json.gz").exists()
+    assert list(cache.glob(".build-*")) == [], "the scratch directory is cleaned up"
+
+
+def test_an_ftp_listing_with_no_dictionaries_refuses_to_leave_a_superseded_release(tmp_path,
+                                                                                    monkeypatch):
+    """The no-targets path returned success before reaching the retire step, so a bump over a
+    cohort that previously had dictionaries kept the old release for the builders to index and
+    provenance-stamp as the release that was asked for."""
+    cache = _stage(tmp_path, "empty_listing", "phs009999", "v3")
+    monkeypatch.setattr(update_data, "CACHE_DIR", cache)
+
+    class _EmptyListing:
+        text = "<html><a href='readme.txt'>readme</a></html>"
+
+        def raise_for_status(self):
+            return None
+
+        def get(self, *a, **k):
+            return self
+
+    stub = type(sys)("_http")
+    stub.get_session = lambda: _EmptyListing()
+    monkeypatch.setitem(sys.modules, "_http", stub)
+
+    # v4 asked for, no dictionaries offered, v3 still staged -> refuse
+    assert update_data.fetch_ftp_data_dicts("empty_listing", "phs009999", "v4.p1") is False
+    # a study that genuinely has none, with nothing staged, stays benign
+    (cache / "nostage" / "pheno_variable_summaries").mkdir(parents=True)
+    assert update_data.fetch_ftp_data_dicts("nostage", "phs009999", "v4.p1") is True
+
+
 def test_the_index_holds_the_phvs_from_the_data_dictionaries(staged):
     """Guards the delegation itself: the old builder read variables.xml, which a staging tree
     fetched for a new cohort may not even have yet."""
