@@ -25,7 +25,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00273700}) + ":FHS NEW OFFSPRING SPOUSE EXAM 1")'
         drug_concept:
-          expr: 'case(({phv00273715} == 1, "ATC:A10"))'
+          expr: 'case(({phv00273715} == 1, "ATC:A10"), ({phv00273715} == 2, "ATC:A10"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -34,6 +34,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
 - class_derivations:
     DrugExposure:
       populated_from: pht005140
@@ -61,7 +62,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275064}) + ":FHS ORIGINAL EXAM 32")'
         drug_concept:
-          expr: 'case(({phv00275073} == 1, "ATC:A10"))'
+          expr: 'case(({phv00275073} == 1, "ATC:A10"), ({phv00275073} == 2, "ATC:A10"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -70,6 +71,7 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
 - class_derivations:
     DrugExposure:
       populated_from: pht000074
@@ -79,7 +81,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00021427}) + ":FHS GENERATION 3 EXAM 1")'
         drug_concept:
-          expr: 'case(({phv00020881} == 1, "ATC:A10"))'
+          expr: 'case(({phv00020881} == 1, "ATC:A10"), ({phv00020881} == 2, "ATC:A10"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -88,3 +90,4 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
