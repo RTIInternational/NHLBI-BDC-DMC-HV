@@ -173,6 +173,75 @@ def test_data_dictionaries_that_do_not_carry_a_release_are_left_alone(tmp_path):
     assert [p.name for p in ftp.glob("*.data_dict.xml")] == ["hand_written.data_dict.xml"]
 
 
+def test_a_failed_fetch_is_not_indexed(tmp_path, monkeypatch):
+    """The builders read whatever is on disk and stamp the release they find, so building over
+    a half-fetched tree records a release it does not completely hold -- provenance it has not
+    earned, indistinguishable at lint time from a complete cache."""
+    cache = _stage(tmp_path, "partial", "phs009999", "v3")
+    monkeypatch.setattr(update_data, "CACHE_DIR", cache)
+    monkeypatch.setattr(update_data, "fetch_cgi_index", lambda *a, **k: True)
+    monkeypatch.setattr(update_data, "fetch_ftp_data_dicts", lambda *a, **k: False)
+
+    result = update_data.process_cohort(
+        "partial", {"study_id": "phs009999", "data_version": "v3.p1"}, fetch=True, build=True
+    )
+    assert result is False
+    assert list(cache.glob("*.json.gz")) == [], "nothing may be written after a failed fetch"
+    assert _cohorts.read_manifest(cache) == {}
+
+
+def test_both_builders_must_succeed_before_provenance_is_recorded(tmp_path, monkeypatch):
+    """A valid PHV mapping must not mask a corrupt data-dictionary set.
+
+    `variables.xml` can carry the PHV->PHT mapping on its own, so the basic index succeeds
+    while the detail index -- which can only come from the dictionaries -- parses to zero
+    records. Writing provenance then claims a complete cache, and the missing detail index
+    surfaces much later as a lint-time ERROR against the cohort rather than a build failure.
+    """
+    cache = tmp_path / "dbgap-cache"
+    ftp = cache / "halfbuilt" / "pheno_variable_summaries"
+    ftp.mkdir(parents=True)
+    # Valid FILENAME (so the release is parseable) over unparseable CONTENT.
+    (ftp / "phs009999.v3.pht0000001.v1.T0.data_dict.xml").write_text(
+        "<data_table><unclosed>", encoding="utf-8")
+    (cache / "halfbuilt" / "variables.xml").write_text(
+        "<table><tr><td>phv00000001.v1</td><td>n</td><td>d</td>"
+        "<td>pht0000001.v1</td><td>ds</td></tr></table>", encoding="utf-8")
+    monkeypatch.setattr(update_data, "CACHE_DIR", cache)
+
+    assert _build(cohort="halfbuilt") is False
+    assert _cohorts.read_manifest(cache) == {}, "no provenance for a half-built pair"
+    assert not (cache / "phs009999.v3_detail.json.gz").exists()
+
+
+def test_a_superseded_variables_xml_is_discarded_even_if_the_refetch_fails(tmp_path,
+                                                                           monkeypatch):
+    """Found by audit, not by review: re-fetching is not enough.
+
+    `variables.xml` carries no release in its name and the PHV index merges it as a supplement.
+    If it is merely marked for re-fetch and the re-fetch fails, the stale copy survives -- and
+    a later `--build-only` run skips fetching entirely, so it never reaches this check and
+    folds a superseded release's mappings into an artifact keyed to the new one. Discarding is
+    the safe direction: a missing supplement costs coverage, a stale one costs correctness.
+    """
+    cache = _stage(tmp_path, "bump", "phs009999", "v3")
+    variables = cache / "bump" / "variables.xml"
+    variables.write_text("<table/>", encoding="utf-8")
+    monkeypatch.setattr(update_data, "CACHE_DIR", cache)
+
+    class _Dead:
+        def get(self, *a, **k):
+            raise RuntimeError("network down")
+
+        cache = type("C", (), {"delete": staticmethod(lambda **k: None)})()
+
+    monkeypatch.setitem(sys.modules, "_http", type(sys)("_http"))
+    sys.modules["_http"].get_session = lambda: _Dead()
+
+    assert update_data.fetch_cgi_index("bump", "phs009999", "v4.p1") is False
+    assert not variables.exists(), "a superseded variables.xml must not survive a failed fetch"
+
+
 def test_the_index_holds_the_phvs_from_the_data_dictionaries(staged):
     """Guards the delegation itself: the old builder read variables.xml, which a staging tree
     fetched for a new cohort may not even have yet."""

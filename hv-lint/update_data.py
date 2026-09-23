@@ -207,7 +207,14 @@ def fetch_cgi_index(cohort_key: str, study_id: str, data_version: str,
     if dest.exists() and not force and staged_release_differs(
         CACHE_DIR / cohort_key, study_id, data_version
     ):
-        print("  [variables.xml] Cached copy is from a superseded release -- re-fetching")
+        # DELETE it, do not merely re-fetch it. If the re-fetch then fails, a stale copy left
+        # on disk still poisons a later `--build-only` run, which skips fetching entirely and
+        # so never reaches this check: the PHV index would merge a superseded release's
+        # mappings into an artifact keyed to the new one. Losing the supplement is the safe
+        # direction -- the builder treats a missing variables.xml as "no supplement" and the
+        # data dictionaries, which carry the release, remain its primary source.
+        print("  [variables.xml] Cached copy is from a superseded release -- discarding it")
+        dest.unlink()
         force = True
 
     if dest.exists() and not force:
@@ -314,7 +321,6 @@ def fetch_ftp_data_dicts(cohort_key: str, study_id: str, data_version: str,
     print(f"  [FTP] Found {len(targets)} data_dict files")
     dest_dir = CACHE_DIR / cohort_key / "pheno_variable_summaries"
     dest_dir.mkdir(parents=True, exist_ok=True)
-    retire_superseded_data_dicts(dest_dir, study_id, data_version)
 
     downloaded = 0
     skipped = 0
@@ -346,7 +352,18 @@ def fetch_ftp_data_dicts(cohort_key: str, study_id: str, data_version: str,
             print(f"    [{i}/{len(targets)}] {downloaded} new, {skipped} cached, {failed} failed")
 
     print(f"  [FTP] Done: {downloaded} downloaded, {skipped} cached, {failed} failed")
-    return failed == 0
+    if failed:
+        # Retire NOTHING on a partial fetch. The new release's filenames differ from the old
+        # one's, so both sets coexist harmlessly until the fetch completes -- whereas retiring
+        # first and then failing destroys the only complete staging tree the cohort has, and
+        # leaves a half-fetched release in its place. `study_from_data_dicts` refuses a
+        # two-release directory, and `process_cohort` refuses to build after a failed fetch,
+        # so the mixed state is reported rather than indexed.
+        print("  [FTP] Fetch incomplete -- keeping the superseded release's data dictionaries",
+              file=sys.stderr)
+        return False
+    retire_superseded_data_dicts(dest_dir, study_id, data_version)
+    return True
 
 
 # ---------------------------------------------------------------------------
@@ -384,6 +401,15 @@ def process_cohort(
                                     force=force, dry_run=dry_run):
             ok = False
 
+    if build and not dry_run and not ok:
+        # A failed fetch must not be indexed. The builders read whatever is on disk and stamp
+        # the release they find into the manifest, so building over a half-fetched tree
+        # produces an index that CLAIMS a release it does not completely hold -- provenance it
+        # has not earned, and indistinguishable at lint time from a complete one.
+        print(f"  ERROR: {cohort_key}: fetch failed -- not building, because an index over a "
+              f"partial tree would record a release it does not hold", file=sys.stderr)
+        return False
+
     if build and not dry_run:
         # Steps 3 and 4 delegate to the release-keyed builders rather than repeating them.
         # This script used to hold its own pair, reading only `variables.xml` and writing
@@ -405,20 +431,28 @@ def process_cohort(
             print(f"  ERROR: no staged source at {cohort_dir} -- fetch before building",
                   file=sys.stderr)
             return False
+        # BOTH builders must succeed. They are not independent outputs: Phase 3's 3.9-3.16 and
+        # Phase 5's 5.8 read the detail index, and a missing one is an ERROR at lint time by
+        # the guard in 69769543. Accepting either builder's entry meant a valid PHV mapping
+        # could mask a wholly corrupt data-dictionary set -- provenance written, success
+        # returned, and the absence surfacing much later as a cache fault rather than a build
+        # one. Nothing is written unless the pair is complete.
         entries: dict[str, dict] = {}
-        for builder in (build_phv_index, build_phv_detail_index):
+        missing: list[str] = []
+        for label, builder in (("PHV index", build_phv_index),
+                               ("detail index", build_phv_detail_index)):
             entry = builder.build_one(cohort_dir, CACHE_DIR, CACHE_DIR)
             if entry and entry.get("study"):
                 entries[f"{entry['study']}.{entry['study_version']}"] = entry
-        if entries:
-            _cohorts.write_manifest_entries(CACHE_DIR, entries)
-        else:
-            # Not a warning to bury: an index carrying no release fails the mandatory check at
-            # lint time, far from here, and reads there as a cache problem rather than a build
-            # one.
-            print(f"  ERROR: {cohort_key}: built no release-keyed index -- the data "
-                  f"dictionaries in {cohort_dir} name no single phs######.v#", file=sys.stderr)
+            else:
+                missing.append(label)
+        if missing:
+            print(f"  ERROR: {cohort_key}: built no {' and no '.join(missing)} -- the data "
+                  f"dictionaries in {cohort_dir} name no single phs######.v#, or parsed to "
+                  f"zero records. Recording NO provenance.", file=sys.stderr)
             ok = False
+        else:
+            _cohorts.write_manifest_entries(CACHE_DIR, entries)
 
     return ok
 
