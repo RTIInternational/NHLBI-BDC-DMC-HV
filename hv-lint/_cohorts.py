@@ -344,7 +344,12 @@ def read_manifest(cache_dir: Path | str) -> dict[str, dict]:
     except (OSError, json.JSONDecodeError):
         return {}
     entries = data.get("entries")
-    return entries if isinstance(entries, dict) else {}
+    if not isinstance(entries, dict):
+        return {}
+    # Each VALUE must be a mapping too, not just the container. Callers do `entry.get(...)`,
+    # so a hand-edited manifest holding a null or a bare string raises AttributeError and
+    # aborts the lint run -- the opposite of the degradation this function promises above.
+    return {key: entry for key, entry in entries.items() if isinstance(entry, dict)}
 
 
 def write_manifest_entries(cache_dir: Path | str, entries: dict[str, dict]) -> Path:

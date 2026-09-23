@@ -1270,6 +1270,24 @@ def main() -> int:
                 f"priority_variables_transform/{cohort}-ingest", 0, "5.3/5.4", "ERROR",
                 f"no --cache-dir supplied, so checks 5.3 and 5.4 DID NOT RUN for {cohort}"))
         else:
+            # The release is checked here for the reason Phase 3 checks it: `cache_key_for`
+            # falls back to a legacy cohort-named key when the declared release file is absent,
+            # and a cache built from a superseded release reports PHVs that exist only in the
+            # newer one as absent -- indistinguishable from a real mapping error. Reported as a
+            # Finding, not an exit code, because Phase 5 reports per cohort.
+            declared = _cohorts.declared_study(cohort, cache_dir=args.cache_dir)
+            if not declared:
+                all_findings.append(Finding(
+                    f"priority_variables_transform/{cohort}-ingest", 0, "5.3/5.4/5.8", "ERROR",
+                    f"{cohort} declares no dbGaP release, so the cache cannot be checked -- add "
+                    f"hv_dataqc/cache_fetcher/manifests/_manifest-{cohort.lower()}.yaml"))
+            else:
+                mismatch = _cohorts.study_mismatch(args.cache_dir, cache_key, declared)
+                if mismatch:
+                    all_findings.append(Finding(
+                        f"priority_variables_transform/{cohort}-ingest", 0, "5.3/5.4/5.8",
+                        "ERROR", f"declared release {declared}: {mismatch}"))
+
             phv_index = load_phv_index(Path(args.cache_dir), cache_key)
             if not phv_index:
                 all_findings.append(Finding(
@@ -1295,9 +1313,22 @@ def main() -> int:
         # 5.7 REMOVED 2026-09-10 -- same reason as 5.5.
 
         # 5.8: Collection interval vs visit case mismatch
-        if args.cache_dir:
+        if not args.cache_dir:
+            all_findings.append(Finding(
+                f"priority_variables_transform/{cohort}-ingest", 0, "5.8", "ERROR",
+                f"no --cache-dir supplied, so check 5.8 DID NOT RUN for {cohort}"))
+        else:
             detail_idx = load_detail_index(Path(args.cache_dir), cache_key)
-            if detail_idx:
+            # An ABSENT detail index is an ERROR, by the same rule stated above the PHV index
+            # guard: a missing file made 5.8 exit clean, which reads as a pass. Only a detail
+            # index that is PRESENT and holds no intervals is a legitimate skip -- that is a
+            # fact about the cohort, not a missing input.
+            if detail_idx is None:
+                all_findings.append(Finding(
+                    f"priority_variables_transform/{cohort}-ingest", 0, "5.8", "ERROR",
+                    f"no detail index for {cohort} (looked for '{cache_key}_detail.json.gz' "
+                    f"in {args.cache_dir}), so check 5.8 DID NOT RUN"))
+            else:
                 # Check if this cohort has any coll_interval data
                 n_ci = sum(1 for v in detail_idx.values() if v.get("coll_interval"))
                 if n_ci > 0:

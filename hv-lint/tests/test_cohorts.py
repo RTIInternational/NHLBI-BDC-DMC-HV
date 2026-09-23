@@ -112,6 +112,24 @@ def test_all_falls_back_to_the_manifest_only_when_no_ingest_directory_exists(tmp
     assert names == ["MESA"]
 
 
+def test_a_malformed_manifest_entry_is_ignored_rather_than_crashing(tmp_path):
+    """`read_manifest` checked only the OUTER container, so an entry that is a null or a bare
+    string reached `entry.get(...)` in `candidate_keys` / `cohorts_to_load` and raised
+    AttributeError -- aborting a lint run that this function's docstring promises to degrade to
+    "provenance unknown" instead. Only the container was type-checked, never the values."""
+    cache = _cache(tmp_path, "mesa", manifest={
+        "mesa": {"cohort": "MESA", "study": "phs000209", "study_version": "v13"},
+        "null_entry": None,
+        "string_entry": "phs000001.v1",
+        "list_entry": ["phs000002.v1"],
+    })
+    assert set(_cohorts.read_manifest(cache)) == {"mesa"}
+    # and every caller that walks the entries survives it
+    assert "mesa" in _cohorts.candidate_keys("MESA", cache)
+    names = [c for c, _ in _cohorts.cohorts_to_load("all", cache, _ingest(tmp_path))]
+    assert names == ["MESA"]
+
+
 # --------------------------------------------------------------------- directory casing
 
 def test_the_cohort_is_canonicalised_to_its_directory_casing(tmp_path):
