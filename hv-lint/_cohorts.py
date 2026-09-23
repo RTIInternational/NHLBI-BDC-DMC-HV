@@ -22,8 +22,9 @@ exist only in the newer release as absent, which is indistinguishable from a rea
 source, so nothing here guesses a version from a filename; a cache with no entry reports
 ``PROVENANCE UNKNOWN`` and fails any pin.
 
-``all`` is derived from ``*-ingest/`` directories (:func:`ingest_cohorts`) unioned with the
-manifest's cohorts -- the same way the CI workflow derives it from a PR's changed paths.
+``all`` is derived from ``*-ingest/`` directories (:func:`ingest_cohorts`) -- the same way the CI
+workflow derives it from a PR's changed paths. A cohort with a cache but no ingest directory is
+NOT in ``all``: it has no specs to check, so it can only contribute a failure.
 """
 
 from __future__ import annotations
@@ -277,19 +278,25 @@ def cohorts_to_load(
 
     A named cohort always yields exactly one pair, so a caller that cannot load it can name the
     cohort and the file it looked for instead of reporting a generic "no indexes found".
-    ``all`` is derived from the ingest directories unioned with the manifest, so a cohort nobody
-    registered is still covered rather than silently skipped.
+
+    ``all`` means **every cohort with an ``<COHORT>-ingest`` directory** -- the specs are what a
+    lint run checks, so a cohort with none contributes no files and can only contribute a
+    failure. The manifest is consulted only when the tree holds no ingest directory at all,
+    which keeps a caller that points at something other than a spec tree from resolving to
+    nothing. Adding manifest cohorts to a tree that HAS ingest directories is what let one cache
+    artifact for an unregistered study (``phs000284.v2``, staged ahead of its ingest directory)
+    abort the whole enforced Phase 3 gate on the mandatory release check, before a single spec
+    file was read.
     """
     token = (cohort or "").strip()
     if token.lower() != "all":
         return [(token, cache_key_for(token, cache_dir))]
-    names: list[str] = []
-    if transform_dir:
-        names += ingest_cohorts(transform_dir)
-    for entry in read_manifest(cache_dir).values():
-        name = str(entry.get("cohort") or "")
-        if name and not any(_squash(name) == _squash(n) for n in names):
-            names.append(name)
+    names: list[str] = list(ingest_cohorts(transform_dir)) if transform_dir else []
+    if not names:
+        for entry in read_manifest(cache_dir).values():
+            name = str(entry.get("cohort") or "")
+            if name and not any(_squash(name) == _squash(n) for n in names):
+                names.append(name)
     return [(n, cache_key_for(n, cache_dir)) for n in sorted(names)]
 
 

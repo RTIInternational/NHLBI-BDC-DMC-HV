@@ -93,10 +93,23 @@ def test_all_is_derived_from_the_ingest_directories(tmp_path):
     assert names == ["CHS", "LTRC"]
 
 
-def test_all_also_covers_a_cohort_present_only_in_the_manifest(tmp_path):
+def test_all_excludes_a_cohort_that_has_a_cache_but_no_ingest_directory(tmp_path):
+    """A cache staged ahead of its ingest directory must not join `all`.
+
+    `phs000284.v2` (CFS) did, and the mandatory release check then aborted the whole enforced
+    Phase 3 gate -- exit 1 with 0 files checked -- because an unregistered cohort declares no
+    release. A cohort with no specs contributes no files, so it can only contribute a failure.
+    """
     cache = _cache(tmp_path, "mesa", manifest={"mesa": {"cohort": "MESA"}})
     names = [c for c, _ in _cohorts.cohorts_to_load("all", cache, _ingest(tmp_path, "CHS"))]
-    assert names == ["CHS", "MESA"]
+    assert names == ["CHS"]
+
+
+def test_all_falls_back_to_the_manifest_only_when_no_ingest_directory_exists(tmp_path):
+    """The fallback keeps a caller pointed at a non-spec tree from resolving to nothing."""
+    cache = _cache(tmp_path, "mesa", manifest={"mesa": {"cohort": "MESA"}})
+    names = [c for c, _ in _cohorts.cohorts_to_load("all", cache, _ingest(tmp_path))]
+    assert names == ["MESA"]
 
 
 # --------------------------------------------------------------------- directory casing
