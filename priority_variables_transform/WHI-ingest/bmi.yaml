@@ -41,6 +41,8 @@
               populated_from: pht006217
               slot_derivations:
                 value_decimal:
-                  populated_from: phv00283344
+                  expr: 'case(({phv00283344} != None, {phv00283344}), (True, 70.0))'
+                operator:
+                  expr: 'case(({phv00283344} == None, "GREATER_THAN"))'
                 unit:
                   value: "kg/m2"
