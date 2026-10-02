@@ -328,6 +328,28 @@
           range: string
 - class_derivations:
     Condition:
+      populated_from: pht006006
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00274193}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00274193}) + ":FHS OMNI 2 EXAM 1")'
+        condition_concept:
+          value: MONDO:0005252
+          range: string
+        condition_status:
+          expr: case(({phv00566017} == 1 or {phv00566018} == 1, 'PRESENT'), ({phv00566017} == 0 or {phv00566018} == 0, 'ABSENT'), (True, None))
+        condition_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
       populated_from: pht006007
       slot_derivations:
         associated_participant:

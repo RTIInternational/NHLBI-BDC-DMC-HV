@@ -25,6 +25,58 @@
           range: string
 - class_derivations:
     Condition:
+      populated_from: pht004813
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00250282}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00250282}) + ":FHS OMNI 1 EXAM 1")'
+        condition_concept:
+          value: HP:0001712
+          range: string
+        condition_status:
+          populated_from: phv00565836
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': UNKNOWN
+        condition_provenance:
+          value: STUDY_RECORD
+          range: string
+        associated_evidence:
+          value: Electrocardiogram
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht004814
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00250718}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00250718}) + ":FHS OMNI 1 EXAM 2")'
+        condition_concept:
+          value: HP:0001712
+          range: string
+        condition_status:
+          populated_from: phv00251031
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': UNKNOWN
+        condition_provenance:
+          value: STUDY_RECORD
+          range: string
+        associated_evidence:
+          value: Electrocardiogram
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
       populated_from: pht004815
       slot_derivations:
         associated_participant:
@@ -122,6 +174,58 @@
             '1': PRESENT
             '2': PRESENT
             '3': PRESENT
+        condition_provenance:
+          value: STUDY_RECORD
+          range: string
+        associated_evidence:
+          value: Electrocardiogram
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht006005
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00273700}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00273700}) + ":FHS NEW OFFSPRING SPOUSE EXAM 1")'
+        condition_concept:
+          value: HP:0001712
+          range: string
+        condition_status:
+          populated_from: phv00274008
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': UNKNOWN
+        condition_provenance:
+          value: STUDY_RECORD
+          range: string
+        associated_evidence:
+          value: Electrocardiogram
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht006006
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00274193}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00274193}) + ":FHS OMNI 2 EXAM 1")'
+        condition_concept:
+          value: HP:0001712
+          range: string
+        condition_status:
+          populated_from: phv00566171
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': UNKNOWN
         condition_provenance:
           value: STUDY_RECORD
           range: string
@@ -1762,6 +1866,32 @@
           range: string
         condition_status:
           populated_from: phv00277037
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': UNKNOWN
+        condition_provenance:
+          value: STUDY_RECORD
+          range: string
+        associated_evidence:
+          value: Electrocardiogram
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht006026
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00277015}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00277015}) + ":" + case(({phv00277016} == ''2'', ''FHS NEW OFFSPRING SPOUSE EXAM 3''), ({phv00277016} == ''3'', ''FHS GENERATION 3 EXAM 3''), ({phv00277016} == ''72'', ''FHS OMNI 2 EXAM 3''), (True, ''FHS UNKNOWN VISIT'')))'
+        condition_concept:
+          value: HP:0001712
+          range: string
+        condition_status:
+          populated_from: phv00520297
           value_mappings:
             '0': ABSENT
             '1': PRESENT
