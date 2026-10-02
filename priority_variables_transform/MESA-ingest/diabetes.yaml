@@ -345,6 +345,37 @@
         #   range: string
 - class_derivations:
     Condition:
+      populated_from: pht003086
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
+        condition_concept:
+          populated_from: phv00174594
+          value_mappings:
+            '0': MONDO:0005015
+            '1': HP:0025691
+            '2': MONDO:0005015
+            '3': MONDO:0005015
+        condition_status:
+          populated_from: phv00174594
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': PRESENT
+            '3': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
+- class_derivations:
+    Condition:
       populated_from: pht003087
       slot_derivations:
         associated_participant:

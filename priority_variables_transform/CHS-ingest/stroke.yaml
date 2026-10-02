@@ -25,57 +25,6 @@
         #   range: string
 - class_derivations:
     Condition:
-      populated_from: pht001450
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00098771}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
-        condition_concept:
-          value: MONDO:0005098
-          range: string
-        condition_status:
-          populated_from: phv00099451
-          value_mappings:
-            '0': ABSENT
-            '1': HISTORICAL
-            '2': UNKNOWN
-        condition_provenance:
-          value: PATIENT_SELF_REPORT
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-        # associated_evidence:
-        #   value: "self-report questionnaire"
-        #   range: string
-- class_derivations:
-    Condition:
-      populated_from: pht001450
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00098771}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
-        condition_concept:
-          value: MONDO:0005098
-          range: string
-        condition_status:
-          populated_from: phv00099461
-          value_mappings:
-            '0': ABSENT
-            '1': HISTORICAL
-        condition_provenance:
-          value: PATIENT_SELF_REPORT
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-        # associated_evidence:
-        #   value: "self-report questionnaire"
-        #   range: string
-- class_derivations:
-    Condition:
       populated_from: pht001451
       slot_derivations:
         associated_participant:
@@ -300,6 +249,56 @@
         #   range: string
 - class_derivations:
     Condition:
+      populated_from: pht001474
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00101324}) + ":CHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00101324}) + ":CHS YEAR 10")'
+        condition_concept:
+          value: MONDO:0005098
+          range: string
+        condition_status:
+          populated_from: phv00101505
+          value_mappings:
+            '0': ABSENT
+            '1': HISTORICAL
+        condition_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001474
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00101324}) + ":CHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00101324}) + ":CHS YEAR 10")'
+        condition_concept:
+          value: MONDO:0005264
+          range: string
+        condition_status:
+          populated_from: phv00101512
+          value_mappings:
+            '0': ABSENT
+            '1': HISTORICAL
+        condition_provenance:
+          value: HEALTH_RECORD
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
+- class_derivations:
+    Condition:
       populated_from: pht001475
       slot_derivations:
         associated_participant:
@@ -360,7 +359,7 @@
           value: MONDO:0005264
           range: string
         condition_status:
-          populated_from: phv00102655
+          populated_from: phv00102658
           value_mappings:
             '0': ABSENT
             '1': HISTORICAL
@@ -632,32 +631,6 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
         condition_concept:
-          value: MONDO:0005098
-          range: string
-        condition_status:
-          populated_from: phv00105876
-          value_mappings:
-            '0': ABSENT
-            '1': HISTORICAL
-            '2': UNKNOWN
-        condition_provenance:
-          value: PATIENT_SELF_REPORT
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-        # associated_evidence:
-        #   value: "self-report questionnaire"
-        #   range: string
-- class_derivations:
-    Condition:
-      populated_from: pht001490
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00105099}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
-        condition_concept:
           value: MONDO:0005264
           range: string
         condition_status:
@@ -666,31 +639,6 @@
             '0': ABSENT
             '1': HISTORICAL
             '2': UNKNOWN
-        condition_provenance:
-          value: PATIENT_SELF_REPORT
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-        # associated_evidence:
-        #   value: "self-report questionnaire"
-        #   range: string
-- class_derivations:
-    Condition:
-      populated_from: pht001490
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00105099}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
-        condition_concept:
-          value: MONDO:0005098
-          range: string
-        condition_status:
-          populated_from: phv00105879
-          value_mappings:
-            '0': ABSENT
-            '1': HISTORICAL
         condition_provenance:
           value: PATIENT_SELF_REPORT
           range: string
@@ -762,7 +710,7 @@
           value: MONDO:0005264
           range: string
         condition_status:
-          populated_from: phv00107024
+          populated_from: phv00107027
           value_mappings:
             '0': ABSENT
             '1': HISTORICAL
@@ -1009,7 +957,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00108303}) + ":CHS YEAR 7")'
         condition_concept:
-          value: MONDO:0005264
+          value: MONDO:0005098
           range: string
         condition_status:
           populated_from: phv00108762

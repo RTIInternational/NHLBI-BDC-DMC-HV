@@ -154,6 +154,33 @@
           range: string
 - class_derivations:
     Condition:
+      populated_from: pht006006
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00274193}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00274193}) + ":FHS OMNI 2 EXAM 1")'
+        condition_concept:
+          value: MONDO:0005002
+          range: string
+        condition_status:
+          populated_from: phv00566295
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          populated_from: phv00566296
+          value_mappings:
+            '0': PATIENT_SELF_REPORT
+            '1': PATIENT_SELF_REPORT_DR_CONFIRMED
+        # associated_evidence:
+        #   value: Respiratory Disease Questionnaire
+        #   range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
       populated_from: pht006007
       slot_derivations:
         associated_participant:
