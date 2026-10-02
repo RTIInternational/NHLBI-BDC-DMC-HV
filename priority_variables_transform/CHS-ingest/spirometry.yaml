@@ -84,9 +84,9 @@
                       populated_from: pht001451
                       slot_derivations:
                         value_decimal:
-                          populated_from: phv00099666
+                          expr: '{phv00099666} / 100'
                         unit:
-                          value: "%"
+                          value: "{ratio}"
                           range: string
           - MeasurementObservation:
               populated_from: pht001451
@@ -150,9 +150,9 @@
                       populated_from: pht001451
                       slot_derivations:
                         value_decimal:
-                          expr: '{phv00099672} * 100'
+                          populated_from: phv00099672
                         unit:
-                          value: "%"
+                          value: "{ratio}"
                           range: string
           - MeasurementObservation:
               populated_from: pht001451
