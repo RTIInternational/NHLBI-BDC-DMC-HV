@@ -989,6 +989,18 @@
         method_type:
           value: stage 1
           range: string
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: PHYSICAL_ACTIVITY
+                relative_timing:
+                  value: CONCURRENT_WITH
         value_quantity:
           class_derivations:
           - Quantity:
