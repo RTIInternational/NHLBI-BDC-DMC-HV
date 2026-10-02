@@ -2128,7 +2128,7 @@
           range: string
         condition_status:
           expr: case(({phv00566280} == 0, 'ABSENT'), ({phv00566281} == 0, 'HISTORICAL'),
-            (True, 'PRESENT'))
+            ({phv00566281} == 1, 'PRESENT'), ({phv00566280} == 1, 'PRESENT'), (True, None))
         condition_provenance:
           populated_from: phv00566282
           value_mappings:
