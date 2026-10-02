@@ -671,6 +671,8 @@
         method_type:
           value: HRV spectral mean
           range: string
+        qualifier:
+          value: AVERAGE
         value_quantity:
           class_derivations:
           - Quantity:
@@ -697,6 +699,8 @@
         method_type:
           value: Average Heart rate during brachial, radial and femoral tonometry
           range: string
+        qualifier:
+          value: AVERAGE
         value_quantity:
           class_derivations:
           - Quantity:
@@ -851,6 +855,8 @@
         method_type:
           value: Average Heart rate during brachial, radial and femoral tonometry
           range: string
+        qualifier:
+          value: AVERAGE
         value_quantity:
           class_derivations:
           - Quantity:
@@ -903,6 +909,8 @@
         method_type:
           value: Average heart rate during brachial, radial and femoral tonometry
           range: string
+        qualifier:
+          value: AVERAGE
         value_quantity:
           class_derivations:
           - Quantity:
@@ -1007,6 +1015,18 @@
         method_type:
           value: stage 2 - peak exercise
           range: string
+        context:
+          class_derivations:
+          - Context:
+              slot_derivations:
+                activity:
+                  class_derivations:
+                  - Activity:
+                      slot_derivations:
+                        activity_type:
+                          value: PHYSICAL_ACTIVITY
+                relative_timing:
+                  value: CONCURRENT_WITH
         value_quantity:
           class_derivations:
           - Quantity:
@@ -1187,6 +1207,8 @@
         method_type:
           value: mitral doppler
           range: string
+        qualifier:
+          value: AVERAGE
         value_quantity:
           class_derivations:
           - Quantity:
@@ -1213,6 +1235,8 @@
         method_type:
           value: average (Mmode_LVandRV_HR_avg)
           range: string
+        qualifier:
+          value: AVERAGE
         value_quantity:
           class_derivations:
           - Quantity:
@@ -1239,6 +1263,8 @@
         method_type:
           value: average (Mmode_LVandRV_HR_avg)
           range: string
+        qualifier:
+          value: AVERAGE
         value_quantity:
           class_derivations:
           - Quantity:
