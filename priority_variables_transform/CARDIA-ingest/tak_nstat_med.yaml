@@ -7,7 +7,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119266}) + ":CARDIA YEAR 10")'
         drug_concept:
-          expr: 'case(({phv00119314} == 2, "RxCUI:7393"))'
+          value: RxCUI:7393
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -25,7 +26,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00120326}) + ":CARDIA YEAR 15")'
         drug_concept:
-          expr: 'case(({phv00120338} == 2, "RxCUI:7393"))'
+          value: RxCUI:7393
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -43,7 +45,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190551}) + ":CARDIA YEAR 20")'
         drug_concept:
-          expr: 'case(({phv00190573} == 1, "ATC:C10A"))'
+          value: ATC:C10A
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string

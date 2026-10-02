@@ -8,7 +8,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119399}) + ":CARDIA YEAR 10")'
           range: string
         drug_concept:
-          expr: case(({phv00119422} == 2, "ATC:C03"))
+          value: ATC:C03
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string

@@ -14,7 +14,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         drug_concept:
-          expr: 'case(({phv00226324} == 1, "ATC:C02"))'
+          value: ATC:C02
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string

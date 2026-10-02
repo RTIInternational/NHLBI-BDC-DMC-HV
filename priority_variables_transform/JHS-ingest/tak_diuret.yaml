@@ -8,7 +8,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
           range: string
         drug_concept:
-          expr: case(({phv00401108} == "Yes", "ATC:C03"))
+          value: ATC:C03
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -27,7 +28,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401273}) + ":JHS Exam 2")'
           range: string
         drug_concept:
-          expr: case(({phv00401300} == "Yes", "ATC:C03"))
+          value: ATC:C03
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -46,69 +48,13 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
           range: string
         drug_concept:
-          expr: case(({phv00401401} == "Yes", "ATC:C03"))
+          value: ATC:C03
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00401401
-          value_mappings:
-            'No': ABSENT
-            'Yes': PRESENT
-- class_derivations:
-    DrugExposure:
-      populated_from: pht008729
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401078}) + ":JHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
-          range: string
-        drug_concept:
-          expr: case(({phv00401102} == "Yes", "ATC:C03"))
-        exposure_provenance:
-          value: PATIENT_SELF_REPORTED_MEDICATION
-          range: string
-        exposure_status:
-          populated_from: phv00401102
-          value_mappings:
-            'No': ABSENT
-            'Yes': PRESENT
-- class_derivations:
-    DrugExposure:
-      populated_from: pht008730
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401273}) + ":JHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401273}) + ":JHS Exam 2")'
-          range: string
-        drug_concept:
-          expr: case(({phv00401294} == "Yes", "ATC:C03"))
-        exposure_provenance:
-          value: PATIENT_SELF_REPORTED_MEDICATION
-          range: string
-        exposure_status:
-          populated_from: phv00401294
-          value_mappings:
-            'No': ABSENT
-            'Yes': PRESENT
-- class_derivations:
-    DrugExposure:
-      populated_from: pht008734
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401565}) + ":JHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401565}) + ":JHS Exam 3")'
-          range: string
-        drug_concept:
-          expr: case(({phv00401574} == "Yes", "ATC:C03"))
-        exposure_provenance:
-          value: PATIENT_SELF_REPORTED_MEDICATION
-          range: string
-        exposure_status:
-          populated_from: phv00401574
           value_mappings:
             'No': ABSENT
             'Yes': PRESENT
