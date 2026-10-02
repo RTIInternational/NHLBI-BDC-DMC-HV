@@ -102,46 +102,6 @@
             '2': HISTORICAL
 - class_derivations:
     DrugExposure:
-      populated_from: pht000024
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00005557}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005557}) + ":FHS ORIGINAL EXAM 22")'
-        drug_concept:
-          value: NDFRT:N0000175557
-          range: string
-        exposure_provenance:
-          value: PATIENT_SELF_REPORTED_MEDICATION
-          range: string
-        exposure_status:
-          populated_from: phv00004958
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '2': HISTORICAL
-- class_derivations:
-    DrugExposure:
-      populated_from: pht000025
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00005558}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005558}) + ":FHS ORIGINAL EXAM 23")'
-        drug_concept:
-          value: NDFRT:N0000175557
-          range: string
-        exposure_provenance:
-          value: PATIENT_SELF_REPORTED_MEDICATION
-          range: string
-        exposure_status:
-          populated_from: phv00005578
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '2': HISTORICAL
-- class_derivations:
-    DrugExposure:
       populated_from: pht000026
       slot_derivations:
         associated_participant:
