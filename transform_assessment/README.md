@@ -1,85 +1,270 @@
-# Pre-harmonized Data QA/QC Report
+# transform_assessment
 
-This directory contains scripts and files for generating pre-harmonized data counts by variable and PHV, filtered to Corey's PHV validation lists.
+Generates Tables S4/S5 for the Data Harmonization supplementary data, sourced
+from the transform specs in `priority_variables_transform/` rather than from the
+curator spreadsheets. Table S1 is the concept-code → publication-label source.
 
-## Files
+## Open questions for the team
 
-- `preharmonized_qaqc_report.py`: Main script to generate the report
-- `preharmonized_qaqc_report.csv`: Generated CSV output (created when script runs)
-- `valid-phvs/`: Directory containing PHV validation lists for each cohort
-- `CLAUDE.md`: Instructions and requirements for the report generation
+Live decisions blocking or shaping this work. Nothing here is settleable without
+the person named.
 
-## Data Sources
+### For the curator — Table S1 gaps (drafted 2026-08-03, still unsent)
 
-### Input Data
-- **Description**: Contains pre-harmonized variable mappings with PHV identifiers, cohort assignments, and observation counts
-- **Sources**: 
-  - [Export_BDCHM_noFHS-noCOPDGene_phv_mappings: Export_BDCHM_noFHS-noCOPDGene_p](https://docs.google.com/spreadsheets/d/1Fg6YFMldjDJWXTjFLJc4eVyXpOWeGoHJyg68i7u0LC4/edit?gid=1528582058#gid=1528582058)
-  - [FHS_VariableProperties](https://docs.google.com/spreadsheets/d/1a1JgdRlhdcPfy7uETJiU7GhdB9cDK4ZbeBIIii8os1Q/edit?gid=1781777648#gid=1781777648)
-  - [COPDGene_FullMatchWithManuals_Join_Dedup_XML_BDC Mapped Variables V1](https://docs.google.com/spreadsheets/d/1bpRKs73p5nQqFoJECrCGFy7GEkxOZ4nP/edit?gid=308728753#gid=308728753)
+Of 127 distinct concept codes across the specs, 121 resolve cleanly. These
+questions cover the rest. They were held for "after the next S4 run" so they
+could cite real numbers; that gate never cleanly arrived, and none of them
+actually depend on it. **Send independently.**
 
+**1. Should LTRC and SPIROMICS be S4 columns?** They have transform specs but no
+columns in the template. Five LTRC-only variables are omitted from the sheet
+entirely as a result — `alpha1_antitrypsin` (emits `OBA:2050075`, a correct and
+permissible code with no S1 row), `asthma_md`, `bronchitis`, `bronchitis_md`,
+`pulmonary_fibrosis`. If those cohorts should be included, the layout needs two
+more columns and these five need S1 rows. If not, this is closed.
 
-### Output Template Reference
-- **Template**: [Data Harmonization Supplementary Data - Table S4](https://docs.google.com/spreadsheets/d/1PDaX266_H0haa0aabMYQ6UNtEKT5-ClMarP0FvNntN8/edit?gid=1605543644#gid=1605543644)
-- **Description**: Template format for the final publication table with merged cells and multiple header lines
+**2. Seven `var_name` spellings drift from S1.** Each is one variable spelled two
+ways; no cohort uses both, and the S1 spelling covers the majority — but the
+cohorts on the left don't join the S1-labeled row.
 
-## Generated Output
+| Spec `var_name` | Cohorts | S1 `var_name` | S1 label |
+|---|---|---|---|
+| `hist_mi` | CHS | `hist_my_inf` | History of myocardial infarction |
+| `hist_heart_failure` | CHS | `hist_hrtfail` | History of heart failure |
+| `hist_hrt_failure` | COPDGene | `hist_hrtfail` | History of heart failure |
+| `hist_heart_disease` | CHS | `hist_hrtdis` | History of heart disease |
+| `hist_coronary_bypass` | CHS | `hist_cor_bypg` | History of coronary artery bypass graft |
+| `history_cvd` | CHS | `hist_cvd` | History of cardiovascular disease |
+| `taking_non_statin_medication` | CHS, MESA | `tak_nstat_med` | Taking non statin medication |
 
-The script generates `preharmonized_qaqc_report.csv` with the following structure:
+**Recommend** renaming the specs to match S1 rather than adding alternate names
+to S1 — S1 is the published artifact and shouldn't carry duplicates. Worth
+settling now, since the spec files are being revised separately. Each pair still
+needs a sanity check that it really is the same concept: no cohort using both
+spellings rules out their being distinct variables, but the semantic match is a
+judgment call.
 
-- **Columns**: `variable`, `ARIC_phv`, `ARIC_n`, `CARDIA_phv`, `CARDIA_n`, `CHS_phv`, `CHS_n`, etc.
-- **PHV columns**: Count of unique PHVs for each variable/cohort combination (after filtering)
-- **N columns**: Sum of observation counts for each variable/cohort combination (after filtering)
+**3. Thirteen spec variables have no S1 row** — missing rows, or deliberately out
+of scope?
 
-## Usage Instructions
+*Conditions:* `chd` (CARDIA, JHS, MESA, SPIROMICS), `chf` (CARDIA, MESA,
+SPIROMICS), `chr_bronchitis` (CARDIA, HCHS, MESA, SPIROMICS, WHI), `emphysema`
+(CARDIA, COPDGene, LTRC, MESA, SPIROMICS), `stroke_isch_atk` (CARDIA, COPDGene),
+`hist_cor_art_dis` (COPDGene), `blood_clots` (COPDGene). Note
+`stroke_isch_atk` and `hist_cor_art_dis` are *not* duplicates of S1's `stroke`
+and `hist_cor_angio` — cohorts that have them use both, against different source
+variables, so they are genuinely separate concepts.
 
-### Running the Script
+*Medication classes:* `tak_adrenergics`, `tak_antihypertensives`,
+`tak_cort_steroid_oral`, `tak_cort_steroid_resp` (COPDGene, plus MESA on the
+oral steroid). S1 has `tak_steroid` but not the oral/respiratory split.
+
+*`med_use`* (FHS) — 82 source variables, looks like a general medication-use
+rollup rather than a single harmonized variable; likely out of scope.
+
+*`Interleukin 18 in blood`* (FHS) — added to S1 in the last review round and
+resolves correctly, but has no S4 template row. Add the row, or confirm it is out
+of scope for S4.
+
+**Not for the curator — ours to fix.** Six structural entries (`participant`,
+`person`, `visit`, `research_study`, `researchstudy`, `demography`) derive
+non-Observation BDCHM classes and were never harmonized variables; they need a
+filter on our side. `research_study` vs `researchstudy` is our own naming
+inconsistency. Education level and the FHS fasting-lipid codes came up in the
+same round but are value-level modeling questions for S6, not S4.
+
+**For the curator — three concept-code questions.** The six spec code
+corrections were approved, but the *reasoning* behind each was never circulated
+and lives only in
+[`history/SPEC_CODE_CORRECTIONS_20260803.md`](history/SPEC_CODE_CORRECTIONS_20260803.md).
+Two of the six were not curator-directed — they came from machine-checking every
+live code against Table S1 — and those are the ones worth a second opinion. The
+doc opens with what to read and what to skip; the three questions are at the
+bottom. Short version: does the `vege_serving` servings-intake reading hold, was
+`cig_smok`'s old code ever intentional, and should FHS's fasting lipids be
+distinct S4 rows or rolled into HDL/Triglycerides?
+
+**For the schema owner — specs and BDCHM enums disagree.** Raised in
+[`history/SPEC_CODE_CORRECTIONS_20260803.md`](history/SPEC_CODE_CORRECTIONS_20260803.md)
+§"Open items"; unresolved:
+
+- `cig_smok` now uses the curator-directed `OMOP:35811013`, but
+  `MeasurementObservationTypeEnum` binds `SMOKING_STATUS` to the old
+  `OMOP:4282779`. One of them has to move. Same shape, less urgent, for
+  `vege_serving` `OMOP:37311566` and Basophils `OMOP:3006315`.
+- `edu_lvl` has four different shapes across six cohorts, and neither candidate
+  concept code is a permissible `observation_type` value today.
+- `alpha1_antitrypsin` (LTRC) is correctly coded but has no Table S1 row.
+- 36 of 127 distinct `observation_type` codes in the live specs are not
+  permissible enum values. Most predate this work; worth a reconciliation pass.
+
+**For ARIC spec owners — which column holds the lymphocyte count?**
+`ARIC-ingest/lympho_ct.yaml` and `ARIC-ingest/whtbld_ct.yaml` populate their
+values from the same dbGaP column, so one of them reads the wrong source
+variable. One question to answer, and a small edit afterwards — the whole thing,
+including what a programmer does once it is decided, is in
+[`OPEN_ARIC_LYMPHO_CT_PHV.md`](OPEN_ARIC_LYMPHO_CT_PHV.md). Suppressed in
+`check_phv_dedup.py`'s `KNOWN_ISSUES` meanwhile, so CI is green.
+
+**For CARDIA spec owners — will the commented-out alcohol expressions come
+back?** Asked 2026-08-04 in Slack and never answered; recorded here because
+Slack questions get lost.
+
+`CARDIA-ingest/alcohol_servings.yaml` has 10 measurement blocks but only **3
+live value phvs**. The other 7 carry summing expressions that were commented out
+within a day of being written (`07e2e819` → `2a93479f` → `1623e1f1`,
+2026-03-16/17). The working read: the 3 live phvs are beer, wine, and liquor
+servings per week, and the disabled expressions summed them into total alcohol
+per week — so the components are the real raw variables and **3 is the honest
+count**, not an undercount against the published S4's 67. This is domain
+inference; the phvs could not be found in dbGaP to confirm.
+
+Two things follow, which is why it is worth answering:
+
+- If those expressions return for ingest, CARDIA's alcohol count changes and the
+  generator will need to read live `expr` sums, which it currently does not.
+- Leaving `slot_derivations:` empty except for comments is a schema error that
+  is today invisible to both the validator and the generator. A validator check
+  for value-less `Quantity` blocks would fire exactly once right now — see
+  [`SPEC_SOURCED_S4_DESIGN.md`](SPEC_SOURCED_S4_DESIGN.md) §"Combined phvs".
+
+## The published Table S4 is not a target
+
+**The generated S4 does not reproduce the published S4, and it is not supposed
+to.** As of 2026-08-12 the published table is a frozen historical artifact.
+
+The old pipeline narrowed its phv set two ways. **Neither is carried forward,
+and neither should be**, per the project lead in Slack: *"those lists of valid
+phv were made a year ago and probably are no longer valid. You also shouldn't go
+by what is in the spreadsheets anymore. We can't keep those up to date."*
+
+| filter | what it was | status |
+|---|---|---|
+| `valid-phvs/{cohort}.tsv` | per-cohort allow lists, one bare phv per line, hand-supplied ~2025 | **retired — stale** |
+| `Transform Comment == "out of scope"` | curator annotation in two live Google Sheets | **retired — unmaintainable** |
+
+The current generator has no equivalent of either, and no path by which a
+per-phv scope decision reaches it. Any phv in a live spec's value slot is
+counted. That is now the intended behavior, not a gap to close.
+
+**Therefore: expect the new numbers to come out higher than published.** The
+retired filters only ever removed phvs, so an increase needs no explanation. A
+*decrease* is worth investigating.
+
+One caveat: a scope channel survives that *is* honored, silently. Curators
+sometimes comment out a block in a spec YAML instead of annotating a sheet, and
+`yaml.safe_load` never sees it — so the generator drops those phvs without
+saying so. `CARDIA-ingest/alcohol_servings.yaml` is the known case. Grep the
+spec for commented-out blocks before treating a low count as a bug.
+
+The cell-by-cell investigation that once chased this gap has been removed, along
+with the comparison scripts and 13 dated exports of the published sheet. See
+[`history/S4_COUNT_INVESTIGATION_REMOVED.md`](history/S4_COUNT_INVESTIGATION_REMOVED.md)
+for what it concluded and how to restore it (tag `pre-s4-doc-cleanup-20260812`).
+
+## What to do next
+
+In priority order. Everything premised on matching the published table is gone.
+
+1. **Rerun S4 on Seven Bridges from current `main`.** Every number quoted in
+   these docs predates the 2026-08-04 HCHS/SOL fix (`24396404`) and should be
+   re-derived before it is trusted. `./hv_dataqc/sb_scripts/run_s4_report.sh`,
+   no args.
+2. **Build the non-measurement extraction — this is the real work.** ~300 spec
+   files are invisible to the generator, producing 51 empty rows of 149, because
+   variable identity is keyed on `observation_type` and Condition /
+   DrugExposure / Procedure / Demography specs don't have one. The extraction
+   rules are settled in
+   [`SPEC_SOURCED_S4_DESIGN.md`](SPEC_SOURCED_S4_DESIGN.md)
+   §"Non-measurement classes" — designed, not built. **Start here.**
+3. **Make the generator report matched-but-empty template rows**, and add the
+   config-reconciliation test described in
+   [`SPEC_SOURCED_S4_DESIGN.md`](SPEC_SOURCED_S4_DESIGN.md) §"Known defects". A
+   row that is silently blank because its class was never parsed took a full
+   session to notice once. With the published table no longer serving as a
+   check, nothing else would catch it.
+4. **Fix the silently-undercounted N** — §"Known defects" defect 1. It publishes
+   a plausible-looking wrong number rather than a blank, which makes it the
+   highest-risk item on this list.
+
+The three defects in §"Known defects" are recorded but unfixed; 2 and 3 there
+affect S5 output today.
+
+### Also queued, lower priority
+
+- **Two config files are frozen snapshots with no refresh step**, and both go
+  stale silently:
+  - **`hv_dataqc/extract_harmonized/config/TableS1.tsv`** — committed once
+    (`93ac3910`, 2026-08-03) as a manual export. Both S4 and S5 resolve every
+    publication label through it, so once the curator edits the source sheet,
+    both tables use stale labels and a newly-added variable cannot resolve at
+    all.
+  - **`config/s4_layout.yaml`** — the cohort columns and the 148 template row
+    labels, transcribed from the S4 template. **If S4's columns or rows change,
+    this file must be updated before running S4 again**, or the generated output
+    will not line up with the template on paste.
+
+  Nothing re-pulls either one — not `run_s4_report.sh`, not `run_s5_report.sh`,
+  not any script here. **Add a refresh step** for both, or at minimum print each
+  file's date at run time so a stale snapshot shows up in the log. This is the
+  same class of problem as the drifted spreadsheets the spec-sourcing work was
+  meant to escape.
+- **Consider moving our S4/S5 code out of the shared `extract_harmonized/`
+  namespace.** `table_s5/` is already a subpackage, which is the right shape.
+  But `label_map.py` sits loose beside `extract_harmonized_summaries.py`, and
+  our branch also added ~142 lines *inside* that shared file (a `label_map`
+  parameter, `bdc_label` population, `_participant_col`, and the
+  `_valid_value_mask` fix for the participants-over-`n_valid` bug). That file
+  and `hv_dataqc_common.py` are shared QC infrastructure with other authors, so
+  our additions are easy to mistake for theirs and vice versa. Worth deciding
+  where the boundary is before more accretes. Note this is organization only —
+  the `extract_harmonized_summaries.py` changes are load-bearing for S5's
+  `bdc_label` and should not simply be moved out.
+
+## What's here
+
+Four things, and that is the whole directory.
+
+- `spec_phv_report.py` — the spec-sourced S4/S5 generator. Design and rationale
+  in [`SPEC_SOURCED_S4_DESIGN.md`](SPEC_SOURCED_S4_DESIGN.md).
+- `config/s4_layout.yaml` — canonical cohort columns and template row order.
+- `spec_code_fixes_20260803.tsv` — the six concept-code corrections, in the form
+  handed to the spec owner.
+- `history/` — completed work kept for its reasoning. None of it is required
+  reading; consult it when something current looks arbitrary.
+  - `S1_LABEL_SOURCE_MIGRATION.md` — the `harmonized_vars.tsv` → Table S1
+    migration.
+  - `SPEC_CODE_CORRECTIONS_20260803.md` — per-code rationale for the six
+    concept-code fixes, and what was deliberately *not* changed.
+  - `S4_COUNT_INVESTIGATION_REMOVED.md` — what the deleted count investigation
+    concluded, and how to restore it if the published table ever needs auditing.
+
+## Running S4
+
+On Seven Bridges (a local run is not a substitute — only 5 cohorts have dbGaP
+caches locally):
+
 ```bash
-uv run python preharmonized_qaqc_report.py
+./hv_dataqc/sb_scripts/run_s4_report.sh      # no args, idempotent
 ```
 
-### Using the Output with the Template
-1. Open the [template spreadsheet](https://docs.google.com/spreadsheets/d/1PDaX266_H0haa0aabMYQ6UNtEKT5-ClMarP0FvNntN8/edit?gid=1605543644#gid=1605543644)
-2. Copy all rows from `preharmonized_qaqc_report.csv` **except the header row**
-3. Paste the data starting at **line 5** of the template (after the merged header section)
-4. The template's merged cells and formatting will automatically apply to create the publication-ready Table S4
+Output lands in `/sbgenomics/workspace/S4-output-files/`.
 
-## Cohort Status
+## S4 and S5 cover different cohorts — say so on delivery
 
-Based on the latest run:
+**S4 has 9 cohort columns. S5 covers 11.** LTRC and SPIROMICS have transform
+specs (19 and 23 files) and appear in S5's `KNOWN_COHORTS`, but they have no S4
+column, so their variables contribute nothing to S4 and are dropped without a
+message. The curator was asked whether they should be added and did not say
+they should, so the current behavior stands.
 
-### Cohorts in Input Data
-- ARIC, CARDIA, CHS, HCHS/SOL, JHS, MESA, WHI
+**When S5 is delivered, tell the curator which cohorts it includes, and that the
+set is not the same as S4's.** The difference is invisible in either artifact —
+S4 simply has no column, and nothing in the output says a cohort was skipped.
+Two tables in one supplement covering different cohort sets is exactly the kind
+of thing that gets noticed after publication.
 
-### Cohorts with PHV Validation Lists
-- CHS, COPDGene, FHS, HCHS/SOL, MESA, WHI
-
-### Missing PHV Validation Lists
-The following cohorts appear in the input data but don't have PHV validation files:
-- **ARIC**: No `valid-phvs/aric-ingest.tsv` file found
-- **CARDIA**: No `valid-phvs/cardia-ingest.tsv` file found  
-- **JHS**: No `valid-phvs/jhs-ingest.tsv` file found
-
-*Note: Data for these cohorts is included without PHV filtering (all PHVs counted) since no validation lists exist.*
-
-### Unused PHV Validation Lists
-The following cohorts have PHV validation files but don't appear in the input data:
-- **COPDGene**: Has `valid-phvs/copdgene-ingest.tsv` but no data rows
-- **FHS**: Has `valid-phvs/fhs-ingest.tsv` but no data rows
-
-## Filtering Logic
-
-For each priority variable and cohort combination:
-1. Find all rows matching the variable name (BDCHM Label column)
-2. Filter to rows for the specific cohort
-3. **If a validation list exists** (`valid-phvs/{cohort}-ingest.tsv`): exclude PHVs not in the list
-4. **If no validation list exists**: include all PHVs for that cohort
-5. Count unique PHVs remaining after filtering
-6. Sum the observation counts (`var_report.variable.total.stats.stat.n`) for remaining rows
-
-## Notes
-
-- The script handles special cohort name mappings (e.g., "HCHS/SOL" → `hchs-ingest.tsv`)
-- Empty cells in the CSV indicate no valid data for that variable/cohort combination
-- PHV counts represent unique PHVs per variable/cohort after validation filtering
-- Observation counts (n) are cumulative across all valid PHVs for each variable/cohort
+There is one loose end worth knowing: because the two lists are maintained
+independently (`config/s4_layout.yaml` vs `run_s5_report.sh:95`), nothing checks
+them against each other or against the ingest dirs on disk. A cohort added to
+the specs appears in neither table until someone edits both by hand.

@@ -7,6 +7,9 @@ report. Runs **outside the enclave** — no participant-level data.
 Re-run as often as needed as HV YAMLs evolve. Only the two JSON summary files
 and the current HV YAML checkout are required.
 
+> Design note: handling multi-PHV / multi-input YAML transforms —
+> [`../docs/EXPECTED_SUMMARY_DESIGN.md`](../docs/EXPECTED_SUMMARY_DESIGN.md).
+
 ---
 
 ## Quick start

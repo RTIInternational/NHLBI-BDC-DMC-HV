@@ -1,0 +1,7 @@
+variable	current_code	current_name	fixed_code	fixed_name	cohorts	occurrences	basis
+cig_smok	OMOP:4282779	Smoking status	OMOP:35811013	Cigarette smoking	ARIC, CARDIA, CHS, COPDGene, FHS, HCHS, JHS, LTRC, MESA, WHI	101	Curator directed: "We need to use 35811013. The trans specs are incorrect." SPIROMICS already correct, unchanged.
+vege_serving	OMOP:4042886	Vegetable	OMOP:37311566	Estimated intake of vegetable servings in 24 hours	ARIC, CARDIA, CHS, HCHS, JHS, WHI	40	Old code is a Substance, not an Observable entity. Matches the established fruit_serving pattern (OMOP:21493059). SPIROMICS already correct, unchanged.
+cd40	OMOP:4209737	CD40 antigen	OBA:2052305	CD40 molecule measurement	MESA	1	Curator directed: "Use the OBA CURIE for CD40. The trans spec is wrong."
+lympho_ct	OBA:VT0000217	White blood cell count	OBA:VT0000717	Lymphocyte count	ARIC	1	Mis-code: VT0000217 is white blood cell count. CARDIA and HCHS already used VT0000717.
+troponin	OMOP:8842	nanogram per milliliter (UCUM unit)	OMOP:4021291	Troponin measurement	FHS	2	OMOP:8842 is a UCUM unit, not a clinical concept.
+carotid_imt	OBA:2050108	levofloxacin 250 MG Oral Tablet	OMOP:4138462	Carotid intima-media thickness	JHS	6	OBA:2050108 is a drug, and the OBA: prefix is wrong (2050108 is an OMOP concept id). OMOP:4138462 is what ARIC/CHS/FHS/MESA use and what Table S1 lists.
