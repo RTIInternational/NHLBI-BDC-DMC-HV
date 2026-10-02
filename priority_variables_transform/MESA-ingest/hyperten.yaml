@@ -109,23 +109,22 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085751}) + ":MESA CLASSIC EXAM 2")'
         age_at_condition_start:
-          expr: case(({phv00085762} == 1, {phv00085763} * 365))
+          expr: case(({phv00085752} == 1, None), ({phv00085752} == -9, None), ({phv00085762} == 1, {phv00085763} * 365))
         condition_concept:
           value: MONDO:0005044
           range: string
         condition_status:
-          populated_from: phv00085762
-          value_mappings:
-            '0': ABSENT
-            '1': HISTORICAL
-            '9': UNKNOWN
-            '-9': UNKNOWN
+          expr: case(({phv00085752} == 1, 'ABSENT'), ({phv00085752} == -9, 'ABSENT'), ({phv00085762} == 0, 'ABSENT'), ({phv00085762} == 1, 'HISTORICAL'), (True, 'UNKNOWN'))
         condition_provenance:
           value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
-          value: ONESELF
-          range: string
+          populated_from: phv00085752
+          value_mappings:
+            '2': NATURAL_MOTHER
+            '3': NATURAL_FATHER
+            '4': NATURAL_SIBLING
+            '5': NATURAL_CHILD
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
