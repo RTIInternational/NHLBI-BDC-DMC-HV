@@ -792,24 +792,6 @@
           value: UNKNOWN
           range: string
 
-# ATRIAL FIBRILLATION DATA -- CARE_AFIB (pht001456)
-- class_derivations:
-    Visit:
-      populated_from: pht001456
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100677}) + ":ATRIAL FIBRILLATION DATA")'
-        name:
-          value: ATRIAL FIBRILLATION DATA
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00100677}) + ":CHS")'
-        visit_provenance:
-          value: STUDY_RECORD
-          range: string
-        visit_category:
-          value: UNKNOWN
-          range: string
-
 # CHS YEAR 5 NEW -- YR5NEW (pht001490)
 - class_derivations:
     Visit:
