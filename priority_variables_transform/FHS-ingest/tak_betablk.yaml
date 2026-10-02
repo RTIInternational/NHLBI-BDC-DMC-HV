@@ -7,7 +7,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002425}) + ":FHS ORIGINAL EXAM 14")'
         drug_concept:
-          expr: case(({phv00002221} == 1, "RxCUI:8787"), ({phv00002221} == 2, "RxCUI:8787"))
+          value: RxCUI:8787
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -26,7 +27,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002668}) + ":FHS ORIGINAL EXAM 15")'
         drug_concept:
-          expr: case(({phv00002441} == 1, "RxCUI:8787"), ({phv00002441} == 2, "RxCUI:8787"))
+          value: RxCUI:8787
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -45,7 +47,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002946}) + ":FHS ORIGINAL EXAM 16")'
         drug_concept:
-          expr: case(({phv00002695} == 4, "RxCUI:8787"), ({phv00002695} == 5, "RxCUI:8787"))
+          value: RxCUI:8787
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -64,7 +67,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008378}) + ":FHS OFFSPRING EXAM 2")'
         drug_concept:
-          expr: case(({phv00007704} == 4, "RxCUI:8787"), ({phv00007704} == 5, "RxCUI:8787"))
+          value: RxCUI:8787
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -128,7 +132,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003261}) + ":FHS ORIGINAL EXAM 17")'
         drug_concept:
-          expr: case(({phv00002955} == 1, "ATC:C07A"), ({phv00002955} == 2, "ATC:C07A"))
+          value: ATC:C07A
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -174,7 +179,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004083}) + ":FHS ORIGINAL EXAM 19")'
         drug_concept:
-          expr: case(({phv00003768} == 1, "ATC:C07A"), ({phv00003768} == 2, "ATC:C07A"))
+          value: ATC:C07A
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -193,7 +199,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004525}) + ":FHS ORIGINAL EXAM 20")'
         drug_concept:
-          expr: case(({phv00004203} == 1, "ATC:C07A"), ({phv00004203} == 2, "ATC:C07A"))
+          value: ATC:C07A
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -212,7 +219,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004939}) + ":FHS ORIGINAL EXAM 21")'
         drug_concept:
-          expr: case(({phv00004598} == 1, "ATC:C07A"), ({phv00004598} == 2, "ATC:C07A"))
+          value: ATC:C07A
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -231,7 +239,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005557}) + ":FHS ORIGINAL EXAM 22")'
         drug_concept:
-          expr: case(({phv00004952} == 1, "ATC:C07A"), ({phv00004952} == 2, "ATC:C07A"))
+          value: ATC:C07A
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -273,7 +282,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005558}) + ":FHS ORIGINAL EXAM 23")'
         drug_concept:
-          expr: case(({phv00005572} == 1, "ATC:C07A"), ({phv00005572} == 2, "ATC:C07A"))
+          value: ATC:C07A
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -316,7 +326,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006031}) + ":FHS ORIGINAL EXAM 24")'
         drug_concept:
-          expr: case(({phv00006124} == 1, "ATC:C07A"), ({phv00006124} == 2, "ATC:C07A"))
+          value: ATC:C07A
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -363,7 +374,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006663}) + ":FHS ORIGINAL EXAM 25")'
         drug_concept:
-          expr: case(({phv00006466} == 1, "ATC:C07A"), ({phv00006466} == 2, "ATC:C07A"))
+          value: ATC:C07A
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -410,7 +422,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007095}) + ":FHS ORIGINAL EXAM 26")'
         drug_concept:
-          expr: case(({phv00006854} == 1, "ATC:C07A"), ({phv00006854} == 2, "ATC:C07A"))
+          value: ATC:C07A
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -453,7 +466,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007534}) + ":FHS ORIGINAL EXAM 27")'
         drug_concept:
-          expr: case(({phv00007291} == 1, "ATC:C07A"), ({phv00007291} == 2, "ATC:C07A"))
+          value: ATC:C07A
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -496,7 +510,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00009127}) + ":FHS OFFSPRING EXAM 4")'
         drug_concept:
-          expr: case(({phv00008784} == 1, "ATC:C07A"), ({phv00008784} == 2, "ATC:C07A"))
+          value: ATC:C07A
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -539,7 +554,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010138}) + ":FHS OFFSPRING EXAM 6")'
         drug_concept:
-          expr: case(({phv00009680} == 1, "ATC:C07A"), ({phv00009680} == 2, "ATC:C07A"))
+          value: ATC:C07A
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -582,7 +598,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010139}) + ":FHS OFFSPRING EXAM 7")'
         drug_concept:
-          expr: case(({phv00010160} == 1, "ATC:C07A"), ({phv00010160} == 2, "ATC:C07A"))
+          value: ATC:C07A
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -661,7 +678,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008742}) + ":FHS OFFSPRING EXAM 3")'
         drug_concept:
-          expr: case(({phv00008387} == 1, "ATC:C07A"), ({phv00008387} == 2, "ATC:C07A"))
+          value: ATC:C07A
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -680,7 +698,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008742}) + ":FHS OFFSPRING EXAM 3")'
         drug_concept:
-          expr: case(({phv00009179} == 1, "ATC:C07A"), ({phv00009179} == 2, "ATC:C07A"))
+          value: ATC:C07A
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
