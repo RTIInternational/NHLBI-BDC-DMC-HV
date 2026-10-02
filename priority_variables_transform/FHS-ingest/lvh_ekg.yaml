@@ -1879,6 +1879,16 @@
         relationship_to_participant:
           value: ONESELF
           range: string
+- class_derivations:
+    Condition:
+      populated_from: pht007777
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00369651}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369651}) + ":FHS ORIGINAL EXAM 20")'
+        condition_concept:
+          value: HP:0001712
           range: string
         condition_status:
           populated_from: phv00369890
