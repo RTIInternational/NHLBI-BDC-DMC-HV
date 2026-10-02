@@ -9,7 +9,8 @@
         age_at_exposure_start:
           expr: case(({phv00083087} == 1, {phv00082999} * 365))
         drug_concept:
-          expr: 'case(({phv00083087} == 1, "VANDF:CV150"))'
+          value: VANDF:CV150
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -29,7 +30,8 @@
         age_at_exposure_start:
           expr: case(({phv00083088} == 1, {phv00082999} * 365))
         drug_concept:
-          expr: 'case(({phv00083088} == 1, "VANDF:CV150"))'
+          value: VANDF:CV150
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -49,7 +51,8 @@
         age_at_exposure_start:
           expr: case(({phv00083088} == 1, {phv00082999} * 365))
         drug_concept:
-          expr: 'case(({phv00083088} == 1, "ATC:C03"))'
+          value: ATC:C03
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -69,7 +72,8 @@
         age_at_exposure_start:
           expr: case(({phv00085332} == 1, {phv00085237} * 365))
         drug_concept:
-          expr: 'case(({phv00085332} == 1, "VANDF:CV150"))'
+          value: VANDF:CV150
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -89,7 +93,8 @@
         age_at_exposure_start:
           expr: case(({phv00085333} == 1, {phv00085237} * 365))
         drug_concept:
-          expr: 'case(({phv00085333} == 1, "VANDF:CV150"))'
+          value: VANDF:CV150
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -109,7 +114,8 @@
         age_at_exposure_start:
           expr: case(({phv00085333} == 1, {phv00085237} * 365))
         drug_concept:
-          expr: 'case(({phv00085333} == 1, "ATC:C03"))'
+          value: ATC:C03
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -127,7 +133,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         drug_concept:
-          expr: 'case(({phv00086019} == 1, "VANDF:CV150"))'
+          value: VANDF:CV150
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -145,7 +152,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         drug_concept:
-          expr: 'case(({phv00086020} == 1, "VANDF:CV150"))'
+          value: VANDF:CV150
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -163,7 +171,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         drug_concept:
-          expr: 'case(({phv00086020} == 1, "ATC:C03"))'
+          value: ATC:C03
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -181,7 +190,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         drug_concept:
-          expr: 'case(({phv00086501} == 1, "VANDF:CV150"))'
+          value: VANDF:CV150
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -199,7 +209,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         drug_concept:
-          expr: 'case(({phv00086502} == 1, "VANDF:CV150"))'
+          value: VANDF:CV150
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -217,7 +228,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         drug_concept:
-          expr: 'case(({phv00086502} == 1, "ATC:C03"))'
+          value: ATC:C03
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -235,7 +247,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         drug_concept:
-          expr: 'case(({phv00086938} == 1, "VANDF:CV150"))'
+          value: VANDF:CV150
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -253,7 +266,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         drug_concept:
-          expr: 'case(({phv00086939} == 1, "ATC:C03"))'
+          value: ATC:C03
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -271,7 +285,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
         drug_concept:
-          expr: 'case(({phv00086939} == 1, "VANDF:CV150"))'
+          value: VANDF:CV150
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -291,7 +306,8 @@
         age_at_exposure_start:
           expr: case(({phv00087308} == 1, {phv00087154} * 365))
         drug_concept:
-          expr: 'case(({phv00087308} == 1, "VANDF:CV150"))'
+          value: VANDF:CV150
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -311,7 +327,8 @@
         age_at_exposure_start:
           expr: case(({phv00087309} == 1, {phv00087154} * 365))
         drug_concept:
-          expr: 'case(({phv00087309} == 1, "VANDF:CV150"))'
+          value: VANDF:CV150
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -331,7 +348,8 @@
         age_at_exposure_start:
           expr: case(({phv00087309} == 1, {phv00087154} * 365))
         drug_concept:
-          expr: 'case(({phv00087309} == 1, "ATC:C03"))'
+          value: ATC:C03
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -349,7 +367,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         drug_concept:
-          expr: 'case(({phv00175333} == 1, "VANDF:CV150"))'
+          value: VANDF:CV150
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -367,7 +386,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         drug_concept:
-          expr: 'case(({phv00175334} == 1, "VANDF:CV150"))'
+          value: VANDF:CV150
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -385,7 +405,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
         drug_concept:
-          expr: 'case(({phv00175334} == 1, "ATC:C03"))'
+          value: ATC:C03
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -403,7 +424,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         drug_concept:
-          expr: 'case(({phv00176756} == 1, "VANDF:CV150"))'
+          value: VANDF:CV150
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -421,7 +443,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         drug_concept:
-          expr: 'case(({phv00176757} == 1, "VANDF:CV150"))'
+          value: VANDF:CV150
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -439,7 +462,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
         drug_concept:
-          expr: 'case(({phv00176757} == 1, "ATC:C03"))'
+          value: ATC:C03
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string

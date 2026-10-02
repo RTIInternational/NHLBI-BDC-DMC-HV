@@ -8,7 +8,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
         drug_concept:
-          expr: case(({phv00206977} == 'Y', "ATC:C07A"))
+          value: ATC:C07A
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -27,7 +28,8 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
         drug_concept:
-          expr: case(({phv00206978} == 'Y', "ATC:C07A"))
+          value: ATC:C07A
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string

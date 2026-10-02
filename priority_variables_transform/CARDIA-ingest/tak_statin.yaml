@@ -7,7 +7,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00115423}) + ":CARDIA YEAR 5")'
         drug_concept:
-          expr: 'case(({phv00115477} == 2, "ATC:C10A"))'
+          value: ATC:C10A
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -26,7 +27,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121257}) + ":CARDIA MEDICAL HISTORY")'
         drug_concept:
-          expr: 'case(({phv00121377} == 1, "ATC:C10A"))'
+          value: ATC:C10A
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -44,7 +46,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121473}) + ":CARDIA MEDICAL HISTORY")'
         drug_concept:
-          expr: 'case(({phv00121596} == 1, "ATC:C10A"))'
+          value: ATC:C10A
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
