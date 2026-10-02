@@ -36,7 +36,7 @@
                    ({phv00250731} == 6, "RxCUI:17767"),
                    ({phv00250731} == 7, "RxCUI:4316"),
                    ({phv00250731} == 10, "RxCUI:7435"),
-                   ({phv00250731} == 12, "ATC:C08"), ({phv00250731} == 0, "ATC:C08"), ({phv00250731} == ''0'', "ATC:C08"), ({phv00250731} == ''.'', "ATC:C08"))'
+                   ({phv00250731} == 4, "ATC:C08"), ({phv00250731} == 5, "ATC:C08"), ({phv00250731} == 8, "ATC:C08"), ({phv00250731} == 9, "ATC:C08"), ({phv00250731} == 11, "ATC:C08"), ({phv00250731} == 12, "ATC:C08"), ({phv00250731} == 0, "ATC:C08"), ({phv00250731} == ''0'', "ATC:C08"), ({phv00250731} == ''.'', "ATC:C08"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -45,6 +45,17 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': PRESENT
+            '3': PRESENT
+            '4': PRESENT
+            '5': PRESENT
+            '6': PRESENT
+            '7': PRESENT
+            '8': PRESENT
+            '9': PRESENT
+            '10': PRESENT
+            '11': PRESENT
+            '12': PRESENT
             '.': UNKNOWN
 - class_derivations:
     DrugExposure:
@@ -66,6 +77,8 @@
             '0': ABSENT
             '1': PRESENT
             '2': HISTORICAL
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000020
@@ -86,6 +99,8 @@
             '0': ABSENT
             '1': PRESENT
             '2': HISTORICAL
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000021
@@ -106,14 +121,16 @@
             '0': ABSENT
             '1': PRESENT
             '2': HISTORICAL
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
-      populated_from: pht000021
+      populated_from: pht000022
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00004083}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00004525}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004083}) + ":FHS ORIGINAL EXAM 19")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004525}) + ":FHS ORIGINAL EXAM 20")'
         drug_concept:
           value: ATC:C08
           range: string
@@ -126,6 +143,8 @@
             '0': ABSENT
             '1': PRESENT
             '2': HISTORICAL
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000023
@@ -146,6 +165,8 @@
             '0': ABSENT
             '1': PRESENT
             '2': HISTORICAL
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000024
@@ -166,6 +187,8 @@
             '0': ABSENT
             '1': PRESENT
             '2': HISTORICAL
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000025
@@ -186,6 +209,8 @@
             '0': ABSENT
             '1': PRESENT
             '2': HISTORICAL
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000026
@@ -206,6 +231,8 @@
             '0': ABSENT
             '1': PRESENT
             '2': HISTORICAL
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000027
@@ -226,6 +253,8 @@
             '0': ABSENT
             '1': PRESENT
             '2': HISTORICAL
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000027
@@ -244,7 +273,7 @@
                   ({phv00006463} == 6, "RxCUI:17767"),
                   ({phv00006463} == 7, "RxCUI:4316"),
                   ({phv00006463} == 10, "RxCUI:7435"),
-                  ({phv00006463} == 12, "ATC:C08"), ({phv00006463} == 0, "ATC:C08"), ({phv00006463} == '0', "ATC:C08"), ({phv00006463} == '.', "ATC:C08"))
+                  ({phv00006463} == 8, "ATC:C08"), ({phv00006463} == 9, "ATC:C08"), ({phv00006463} == 11, "ATC:C08"), ({phv00006463} == 12, "ATC:C08"), ({phv00006463} == 0, "ATC:C08"), ({phv00006463} == '0', "ATC:C08"), ({phv00006463} == '.', "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -253,6 +282,17 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': PRESENT
+            '3': PRESENT
+            '4': PRESENT
+            '5': PRESENT
+            '6': PRESENT
+            '7': PRESENT
+            '8': PRESENT
+            '9': PRESENT
+            '10': PRESENT
+            '11': PRESENT
+            '12': PRESENT
             '.': UNKNOWN
 - class_derivations:
     DrugExposure:
@@ -274,6 +314,8 @@
             '0': ABSENT
             '1': PRESENT
             '2': HISTORICAL
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000028
@@ -293,7 +335,7 @@
                   ({phv00006851} == 7, "RxCUI:4316"),
                   ({phv00006851} == 10, "RxCUI:7435"),
                   ({phv00006851} == 11, "RxCUI:1436"),
-                  ({phv00006851} == 12, "ATC:C08"), ({phv00006851} == 0, "ATC:C08"), ({phv00006851} == '0', "ATC:C08"), ({phv00006851} == '.', "ATC:C08"))
+                  ({phv00006851} == 8, "ATC:C08"), ({phv00006851} == 9, "ATC:C08"), ({phv00006851} == 12, "ATC:C08"), ({phv00006851} == 0, "ATC:C08"), ({phv00006851} == '0', "ATC:C08"), ({phv00006851} == '.', "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -302,6 +344,17 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': PRESENT
+            '3': PRESENT
+            '4': PRESENT
+            '5': PRESENT
+            '6': PRESENT
+            '7': PRESENT
+            '8': PRESENT
+            '9': PRESENT
+            '10': PRESENT
+            '11': PRESENT
+            '12': PRESENT
             '.': UNKNOWN
 - class_derivations:
     DrugExposure:
@@ -323,6 +376,8 @@
             '0': ABSENT
             '1': PRESENT
             '2': HISTORICAL
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000029
@@ -342,7 +397,7 @@
                   ({phv00007288} == 7, "RxCUI:4316"),
                   ({phv00007288} == 10, "RxCUI:7435"),
                   ({phv00007288} == 11, "RxCUI:1436"),
-                  ({phv00007288} == 12, "ATC:C08"), ({phv00007288} == 0, "ATC:C08"), ({phv00007288} == '0', "ATC:C08"), ({phv00007288} == '.', "ATC:C08"))
+                  ({phv00007288} == 8, "ATC:C08"), ({phv00007288} == 9, "ATC:C08"), ({phv00007288} == 12, "ATC:C08"), ({phv00007288} == 0, "ATC:C08"), ({phv00007288} == '0', "ATC:C08"), ({phv00007288} == '.', "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -351,6 +406,17 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': PRESENT
+            '3': PRESENT
+            '4': PRESENT
+            '5': PRESENT
+            '6': PRESENT
+            '7': PRESENT
+            '8': PRESENT
+            '9': PRESENT
+            '10': PRESENT
+            '11': PRESENT
+            '12': PRESENT
             '.': UNKNOWN
 - class_derivations:
     DrugExposure:
@@ -372,6 +438,8 @@
             '0': ABSENT
             '1': PRESENT
             '2': HISTORICAL
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000033
@@ -392,6 +460,8 @@
             '0': ABSENT
             '1': PRESENT
             '2': HISTORICAL
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000034
@@ -412,6 +482,8 @@
             '0': ABSENT
             '1': PRESENT
             '2': HISTORICAL
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000035
@@ -432,6 +504,8 @@
             '0': ABSENT
             '1': PRESENT
             '2': HISTORICAL
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000036
@@ -452,6 +526,8 @@
             '0': ABSENT
             '1': PRESENT
             '2': HISTORICAL
+            '3': UNKNOWN
+            '.': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht000036
@@ -470,7 +546,7 @@
                   ({phv00010157} == 7, "RxCUI:4316"),
                   ({phv00010157} == 10, "RxCUI:7435"),
                   ({phv00010157} == 11, "RxCUI:1436"),
-                  ({phv00010157} == 12, "ATC:C08"), ({phv00010157} == 0, "ATC:C08"), ({phv00010157} == '0', "ATC:C08"), ({phv00010157} == '.', "ATC:C08"))
+                  ({phv00010157} == 8, "ATC:C08"), ({phv00010157} == 9, "ATC:C08"), ({phv00010157} == 12, "ATC:C08"), ({phv00010157} == 0, "ATC:C08"), ({phv00010157} == '0', "ATC:C08"), ({phv00010157} == '.', "ATC:C08"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -479,6 +555,17 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': PRESENT
+            '3': PRESENT
+            '4': PRESENT
+            '5': PRESENT
+            '6': PRESENT
+            '7': PRESENT
+            '8': PRESENT
+            '9': PRESENT
+            '10': PRESENT
+            '11': PRESENT
+            '12': PRESENT
             '.': UNKNOWN
 - class_derivations:
     DrugExposure:
