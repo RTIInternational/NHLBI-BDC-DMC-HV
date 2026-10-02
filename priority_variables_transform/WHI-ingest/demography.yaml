@@ -7,22 +7,22 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078435}) + ":WHI SCREENING")'
         sex:
-          value: OMOP:8532
+          value: FEMALE
         ethnicity:
           populated_from: phv00078450
           value_mappings:
-            '4': OMOP:38003563
-            '5': OMOP:38003564
+            '4': HISPANIC_OR_LATINO
+            '5': NOT_HISPANIC_OR_LATINO
         race:
           populated_from: phv00078450
           value_mappings:
-            '5': OMOP:8527
-            '2': OMOP:8515
-            '3': OMOP:8516
-            '8': OMOP:8552
-            '1': OMOP:8657
+            '5': WHITE
+            '2': ASIAN
+            '3': BLACK_OR_AFRICAN_AMERICAN
+            '8': UNKNOWN
+            '1': AMERICAN_INDIAN_OR_ALASKA_NATIVE
             # Hispanic/Latino -- race unknown, ethnicity captured separately
-            '4': OMOP:8552
+            '4': UNKNOWN
 - class_derivations:
     Demography:
       populated_from: pht001009
@@ -32,15 +32,15 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00079312}) + ":WHI SCREENING")'
         sex:
-          value: OMOP:8532
+          value: FEMALE
         ethnicity:
           populated_from: phv00079316
           value_mappings:
-            '0': OMOP:38003564
-            '1': OMOP:38003563
-            '2': OMOP:38003563
-            '3': OMOP:38003563
-            '4': OMOP:38003563
+            '0': NOT_HISPANIC_OR_LATINO
+            '1': HISPANIC_OR_LATINO
+            '2': HISPANIC_OR_LATINO
+            '3': HISPANIC_OR_LATINO
+            '4': HISPANIC_OR_LATINO
         race:
           expr: >
             case(
@@ -62,22 +62,22 @@
                     case(({phv00079331} == 1, 1), (True, 0)) +
                     0 == 1,
                     case(
-                      ({phv00079317} == 1, "OMOP:8527"),
-                      ({phv00079318} == 1, "OMOP:8516"),
-                      ({phv00079319} == 1, "OMOP:8657"),
-                      ({phv00079320} == 1, "OMOP:8515"),
-                      ({phv00079321} == 1, "OMOP:8515"),
-                      ({phv00079322} == 1, "OMOP:8515"),
-                      ({phv00079323} == 1, "OMOP:8515"),
-                      ({phv00079324} == 1, "OMOP:8515"),
-                      ({phv00079325} == 1, "OMOP:8515"),
-                      ({phv00079326} == 1, "OMOP:8515"),
-                      ({phv00079327} == 1, "OMOP:8557"),
-                      ({phv00079328} == 1, "OMOP:8557"),
-                      ({phv00079329} == 1, "OMOP:8557"),
-                      ({phv00079330} == 1, "OMOP:8557"),
-                      ({phv00079331} == 1, "OMOP:8552")
+                      ({phv00079317} == 1, "WHITE"),
+                      ({phv00079318} == 1, "BLACK_OR_AFRICAN_AMERICAN"),
+                      ({phv00079319} == 1, "AMERICAN_INDIAN_OR_ALASKA_NATIVE"),
+                      ({phv00079320} == 1, "ASIAN"),
+                      ({phv00079321} == 1, "ASIAN"),
+                      ({phv00079322} == 1, "ASIAN"),
+                      ({phv00079323} == 1, "ASIAN"),
+                      ({phv00079324} == 1, "ASIAN"),
+                      ({phv00079325} == 1, "ASIAN"),
+                      ({phv00079326} == 1, "ASIAN"),
+                      ({phv00079327} == 1, "NATIVE_HAWAIIAN_OR_OTHER_PACIFIC_ISLANDER"),
+                      ({phv00079328} == 1, "NATIVE_HAWAIIAN_OR_OTHER_PACIFIC_ISLANDER"),
+                      ({phv00079329} == 1, "NATIVE_HAWAIIAN_OR_OTHER_PACIFIC_ISLANDER"),
+                      ({phv00079330} == 1, "NATIVE_HAWAIIAN_OR_OTHER_PACIFIC_ISLANDER"),
+                      ({phv00079331} == 1, "UNKNOWN")
                     )
                   ),
-                  (True, "OMOP:45880900")
+                  (True, "MORE_THAN_ONE_RACE")
             )

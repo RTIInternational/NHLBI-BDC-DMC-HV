@@ -9,14 +9,14 @@
         sex:
           populated_from: phv00112420
           value_mappings:
-            '2': OMOP:8532
-            '1': OMOP:8507
+            '2': FEMALE
+            '1': MALE
         ethnicity:
           populated_from: phv00112422
           value_mappings:
-            '5': OMOP:38003564
-            '4': OMOP:38003564
-            '3': OMOP:38003563
+            '5': NOT_HISPANIC_OR_LATINO
+            '4': NOT_HISPANIC_OR_LATINO
+            '3': HISPANIC_OR_LATINO
 # Race block uses B2REF (pht001645) — the official CARDIA race reference file
 # sourced from the Exam 2 clinical visit record. Race is a stable baseline
 # characteristic; associated_visit is deliberately anchored to CARDIA YEAR 0
@@ -35,5 +35,5 @@
         race:
           populated_from: phv00115113
           value_mappings:
-            '5': OMOP:8527
-            '4': OMOP:8516
+            '5': WHITE
+            '4': BLACK_OR_AFRICAN_AMERICAN

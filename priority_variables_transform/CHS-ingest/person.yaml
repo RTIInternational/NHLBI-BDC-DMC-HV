@@ -17,7 +17,7 @@
           value: NCBITaxon:9606
           range: string
         vital_status:
-          expr: 'case(({pht001464.phv00100774} == 1, "OMOP:434489"), ({pht001464.phv00100774} == 0, "OMOP:4230556"))'
+          expr: 'case(({pht001464.phv00100774} == 1, "DEAD"), ({pht001464.phv00100774} == 0, "ALIVE"))'
         cause_of_death:
           class_derivations:
           - CauseOfDeath:
