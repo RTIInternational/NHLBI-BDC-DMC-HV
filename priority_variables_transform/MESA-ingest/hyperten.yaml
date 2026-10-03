@@ -124,8 +124,12 @@
           value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
-          value: ONESELF
-          range: string
+          # fhxRel2 (phv00085752): 2=MOTHER, 3=FATHER, 4=SIBLING, 5=CHILD.
+          # SPOUSE (1) and MISSING (-9) fall through to no match -- FamilyRelationshipEnum
+          # has no SPOUSE value, and HV #847 ruled spouse rows must not be recorded.
+          # No matching branch means this slot (required) is unset and the Condition
+          # is not emitted for that row, same convention as CARDIA-ingest/hypert_trt.yaml.
+          expr: case(({phv00085752} == 2, 'NATURAL_MOTHER'), ({phv00085752} == 3, 'NATURAL_FATHER'), ({phv00085752} == 4, 'NATURAL_SIBLING'), ({phv00085752} == 5, 'NATURAL_CHILD'))
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
