@@ -1,0 +1,38 @@
+# Dummy evidence entities for Condition.associated_evidence (#802, solution (c)).
+#
+# Condition.associated_evidence has range: Entity (abstract, cannot be
+# instantiated) and multivalued: true. Per diatomsRcool's ruling on #802
+# (2026-09-01): create one shared placeholder Entity per distinct evidence
+# type, fabricate its required attributes, and have every Condition that
+# cites that evidence type reference the SAME instance by id.
+#
+# Mechanism: every field below is a CONSTANT (expr/value, never
+# populated_from a row field), so this block emits the identical Procedure
+# -- same id, same every other field -- once per row of its anchor table.
+# That anchor table is pht001451 purely so the engine has rows to iterate;
+# it has no bearing on the entity's content. Any Condition block elsewhere
+# references this same entity by independently recomputing the identical
+# uuid5() expression below -- the same no-join, recompute-the-formula
+# pattern already used for associated_participant/associated_visit
+# throughout this repo, not a new cross-file lookup mechanism.
+#
+# Known risk, not fully resolved: this necessarily emits the same Procedure
+# id once per row of the anchor table (thousands of duplicates with
+# identical content), since linkml-map's spec validator (this repo's CI
+# gate, validate_ingest_yamls.py) checks structural well-formedness only
+# and does not execute a transform, so duplicate-instance handling by the
+# downstream dm-bip pipeline was not verified here.
+- class_derivations:
+    Procedure:
+      populated_from: pht001451
+      slot_derivations:
+        id:
+          expr: 'uuid5("https://w3id.org/bdchm/Procedure", "DUMMY-EVIDENCE-Electrocardiogram")'
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", "DUMMY-EVIDENCE-PARTICIPANT")'
+        procedure_concept:
+          value: OMOP:40491312
+        procedure_status:
+          value: UNKNOWN
+        procedure_provenance:
+          value: STUDY_RECORD
