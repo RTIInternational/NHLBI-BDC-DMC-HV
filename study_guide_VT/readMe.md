@@ -23,9 +23,19 @@ One set of files per BDC-HM class, named with the exact BDC-HM class name:
 | `<Class> Variables.tsv` | one row per code: concept name, variable, CURIE, description (several rows per concept are fine) |
 | `<Class> Metadata.tsv` | one row per slot or slot value: how to fill each BDC-HM slot, with examples |
 
-Classes so far: `Condition`, `MeasurementObservation`. Others to follow use the same
-pattern (`DrugExposure`, `Procedure`, `Observation`, `MeasurementObservationSet`,
-`SdohObservation`). There is no `Diagnosis` class in BDC-HM; diagnoses are `Condition`.
+Classes covered: `Condition`, `MeasurementObservation`, `MeasurementObservationSet`,
+`DrugExposure`, `Procedure`, `Observation`, `SdohObservation`, `Demography`, `Person`.
+Every class uses the same pattern. A class whose concepts each have one code may put the
+`CURIE` in its Concepts file and skip the Variables file. There is no `Diagnosis` class in
+BDC-HM; diagnoses are `Condition`.
+
+## Checking the files
+
+`python study_guide_VT/validate_study_guides.py` checks the files mechanically (names match
+across files, no blank key cells, well-formed codes, valid output file names, UCUM-looking
+units, numeric concepts have a unit). It runs automatically on every PR that touches this
+folder and must pass before merge. It does not judge whether content is clinically right --
+that is what review is for.
 
 ## Concept names are the key
 
@@ -50,18 +60,32 @@ The concept name joins the files to each other and to the harmonization pipeline
   sitting vs standing). Use the most specific one the source variable supports.
 - Never enter a code that has not been looked up and confirmed in its source ontology.
 
+- `DrugExposure` codes are ATC classes or RxNorm ingredients (see the open question on
+  which BDC-HM accepts). `Procedure`, `Observation`, `SdohObservation`, `Demography` and
+  `Person` codes or enum values must be valid on BDC-HM `main`.
+- A concept may list a second code that HV production already uses (a "variant"), so
+  existing transform files stay valid. The first code listed is the preferred one.
+
 ## Columns
 
-**Condition Concepts:** `concept`, `CURIE`, `description`, `Example source variable labels`,
-`Example source variable description`, `output file`.
+Concepts files use these columns where they apply (a class with no quantities omits the unit
+columns):
 
-**MeasurementObservation Concepts:** `Concept`, `Concept Description`, `target unit`,
-`other units and conversion`, `output file`, and, for concepts that are easy to confuse,
-`Example source variable labels` and `Example source variable description`.
-
-- `target unit` -- the UCUM unit the harmonized data is delivered in.
+- `Concept` (or `concept`) -- the name, which is the key.
+- `CURIE` -- the code, when the class has no Variables file.
+- `Concept Description` -- what it is, plus "Use when ...; not for ..." rules for concepts that
+  are easy to confuse, and notes where the definition changed over time (for example diabetes
+  or hypertension thresholds).
+- `data type` -- decimal, integer, enum, boolean or string.
+- `target unit` -- the UCUM unit the harmonized data is delivered in. Required for decimal and
+  integer concepts.
 - `other units and conversion` -- filled only where converting to the target depends on the
-  analyte (for example `mmol/L x18.016` for glucose). Blank otherwise.
+  analyte (for example `mmol/L x18.016` for glucose). Blank otherwise. Plain conversions (lb
+  to kg, mg/L to mg/dL) are left to UCUM and never written here.
+- `conversion source` -- the citation for each factor (for example the molar mass with its
+  PubChem ID). A factor without a source is not used.
+- `Members` (MeasurementObservationSet only) -- the MeasurementObservation concept names in
+  the set, `|`-separated, spelled exactly as in the MeasurementObservation files.
 - `output file` -- the transform YAML file the concept is written to: the bare file name,
   lowercase with underscores, no `.yaml` (for example `blood_pressure`). One file per
   concept; several concepts may share a file. It decides where output goes only; it is never
@@ -69,3 +93,15 @@ The concept name joins the files to each other and to the harmonization pipeline
 - Example lists are `|`-separated. Labels and descriptions do not need to line up one to one.
   Example descriptions are copied verbatim from dbGaP, typos included, because they are used
   to match real source text.
+
+Metadata files use `bdchm slot`, `bdchm value enum`, `description`,
+`Example source variable description`: one row per slot, and one row per enum value of that
+slot, each row repeating the slot name.
+
+## Fasting and bronchodilator status
+
+Fasting and bronchodilator status are recorded as Context on the measurement
+(`activity_type` FASTING or BRONCHODILATOR_MEDICATION_USE, with `relative_timing` and
+`time_duration`), including when the concept name itself says fasting or post-bronchodilator.
+No Context means the status is unknown, never "not fasting" or "pre-bronchodilator".
+(Whether the separate "- fasting" and "post bronchodilator" concepts stay is an open question.)
