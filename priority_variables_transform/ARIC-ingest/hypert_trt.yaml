@@ -147,15 +147,16 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00296935}) + ":ARIC EXAM 5")'
           range: string
         drug_concept:
-          expr: 'case(({phv00506313} == 1, "ATC:C02"))'
+          expr: 'case(({phv00506313} == "Y", "ATC:C02"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
           populated_from: phv00506313
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            'Y': PRESENT
+            'N': ABSENT
+            'U': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht012504
