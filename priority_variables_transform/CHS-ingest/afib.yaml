@@ -134,7 +134,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00100677}) + ":CHS")'
         age_at_condition_start:
-          expr: case(({phv00100680} == 1, ({pht001452.phv00100487} * 365) + {phv00100679}))
+          expr: '{pht001452.phv00100487} * 365'
         condition_concept:
           value: MONDO:0004981
           range: string
