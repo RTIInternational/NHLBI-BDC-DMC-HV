@@ -206,9 +206,8 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00170566}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00170566}) + ":WHI CAD")'
-          range: string
+        age_at_condition_start:
+          expr: 'case(({phv00202363} == 1, ({phv00078437} * 365) + {phv00202364}))'
         condition_concept:
           value: MONDO:0005009
           range: string
@@ -256,9 +255,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_condition_start:
           expr: 'case(({phv00193703} == 1, ({phv00078437} * 365) + {phv00193704}))'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
-          range: string
         condition_concept:
           value: MONDO:0005009
           range: string

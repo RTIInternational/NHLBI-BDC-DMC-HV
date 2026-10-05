@@ -23,9 +23,8 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00170566}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00170566}) + ":WHI CAD")'
-          range: string
+        age_at_exposure_start:
+          expr: 'case(({phv00170607} == 1, ({phv00078437} * 365) + {phv00170608}))'
         drug_concept:
           expr: 'case(({phv00170607} == 1, "ATC:C02"))'
         exposure_provenance:
@@ -61,9 +60,8 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193628}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193628}) + ":WHI EXTENSION STUDY 2 MRC")'
-          range: string
+        age_at_exposure_start:
+          expr: 'case(({phv00193667} == 1, ({phv00078437} * 365) + {phv00193668}))'
         drug_concept:
           expr: 'case(({phv00193667} == 1, "ATC:C02"))'
         exposure_provenance:
@@ -80,9 +78,8 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
-          range: string
+        age_at_exposure_start:
+          expr: 'case(({phv00193779} == 1, ({phv00078437} * 365) + {phv00193780}))'
         drug_concept:
           expr: 'case(({phv00193779} == 1, "ATC:C02"))'
         exposure_provenance:
