@@ -19,7 +19,7 @@
                   value: OMOP:4274406
                   range: string
                 method_type:
-                  value: CYCLE 1 LEAD II
+                  value: Electrocardiogram, cycle 1 lead II
                   range: string
                 value_quantity:
                   class_derivations:
@@ -42,7 +42,7 @@
                   value: OBA:1001086
                   range: string
                 method_type:
-                  value: CYCLE 1 LEAD II
+                  value: Electrocardiogram, cycle 1 lead II
                   range: string
                 value_quantity:
                   class_derivations:
@@ -65,7 +65,7 @@
                   value: OMOP:4273023
                   range: string
                 method_type:
-                  value: CYCLE 1 LEAD II
+                  value: Electrocardiogram, cycle 1 lead II
                   range: string
                 value_quantity:
                   class_derivations:
@@ -77,16 +77,6 @@
                         unit:
                           value: ms
                           range: string
-- class_derivations:
-    MeasurementObservationSet:
-      populated_from: pht000299
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00036379}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036379}) + ":" + case(({phv00036348} == ''0'', ''FHS ORIGINAL EXAM 11''), ({phv00036348} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00036348} == ''3'', ''FHS GENERATION 3 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
-        observations:
-          class_derivations:
           - MeasurementObservation:
               populated_from: pht000299
               slot_derivations:
@@ -98,7 +88,7 @@
                   value: OMOP:4274406
                   range: string
                 method_type:
-                  value: CYCLE 2 LEAD II
+                  value: Electrocardiogram, cycle 2 lead II
                   range: string
                 value_quantity:
                   class_derivations:
@@ -121,7 +111,7 @@
                   value: OBA:1001086
                   range: string
                 method_type:
-                  value: CYCLE 2 LEAD II
+                  value: Electrocardiogram, cycle 2 lead II
                   range: string
                 value_quantity:
                   class_derivations:
@@ -144,7 +134,7 @@
                   value: OMOP:4273023
                   range: string
                 method_type:
-                  value: CYCLE 2 LEAD II
+                  value: Electrocardiogram, cycle 2 lead II
                   range: string
                 value_quantity:
                   class_derivations:
@@ -156,16 +146,6 @@
                         unit:
                           value: ms
                           range: string
-- class_derivations:
-    MeasurementObservationSet:
-      populated_from: pht000299
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00036379}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036379}) + ":" + case(({phv00036348} == ''0'', ''FHS ORIGINAL EXAM 11''), ({phv00036348} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00036348} == ''3'', ''FHS GENERATION 3 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
-        observations:
-          class_derivations:
           - MeasurementObservation:
               populated_from: pht000299
               slot_derivations:
@@ -177,7 +157,7 @@
                   value: OMOP:4274406
                   range: string
                 method_type:
-                  value: CYCLE 1 LEAD V2
+                  value: Electrocardiogram, cycle 1 lead V2
                   range: string
                 value_quantity:
                   class_derivations:
@@ -200,7 +180,7 @@
                   value: OBA:1001086
                   range: string
                 method_type:
-                  value: CYCLE 1 LEAD V2
+                  value: Electrocardiogram, cycle 1 lead V2
                   range: string
                 value_quantity:
                   class_derivations:
@@ -223,7 +203,7 @@
                   value: OMOP:4273023
                   range: string
                 method_type:
-                  value: CYCLE 1 LEAD V2
+                  value: Electrocardiogram, cycle 1 lead V2
                   range: string
                 value_quantity:
                   class_derivations:
@@ -235,16 +215,6 @@
                         unit:
                           value: ms
                           range: string
-- class_derivations:
-    MeasurementObservationSet:
-      populated_from: pht000299
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00036379}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036379}) + ":" + case(({phv00036348} == ''0'', ''FHS ORIGINAL EXAM 11''), ({phv00036348} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00036348} == ''3'', ''FHS GENERATION 3 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
-        observations:
-          class_derivations:
           - MeasurementObservation:
               populated_from: pht000299
               slot_derivations:
@@ -256,7 +226,7 @@
                   value: OMOP:4274406
                   range: string
                 method_type:
-                  value: CYCLE 1 LEAD V5
+                  value: Electrocardiogram, cycle 1 lead V5
                   range: string
                 value_quantity:
                   class_derivations:
@@ -279,7 +249,7 @@
                   value: OBA:1001086
                   range: string
                 method_type:
-                  value: CYCLE 1 LEAD V5
+                  value: Electrocardiogram, cycle 1 lead V5
                   range: string
                 value_quantity:
                   class_derivations:
@@ -302,7 +272,7 @@
                   value: OMOP:4273023
                   range: string
                 method_type:
-                  value: CYCLE 1 LEAD V5
+                  value: Electrocardiogram, cycle 1 lead V5
                   range: string
                 value_quantity:
                   class_derivations:
