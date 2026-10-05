@@ -18,6 +18,6 @@
               populated_from: pht004080
               slot_derivations:
                 value_decimal:
-                  populated_from: phv00205943
+                  expr: 'case(({phv00205943} < 9.99, {phv00205943} * 1000), (True, None))'
                 unit:
                   value: "ms"
