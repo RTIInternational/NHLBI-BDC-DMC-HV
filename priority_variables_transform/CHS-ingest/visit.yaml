@@ -684,42 +684,6 @@
           value: TELEHEALTH
           range: string
 
-# CHS SUMMARY -- EVENT_SUMMARY (pht001464)
-- class_derivations:
-    Visit:
-      populated_from: pht001464
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100773}) + ":CHS SUMMARY")'
-        name:
-          value: CHS SUMMARY
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00100773}) + ":CHS")'
-        visit_provenance:
-          value: STUDY_RECORD
-          range: string
-        visit_category:
-          value: UNKNOWN
-          range: string
-
-# CHS EVENTS -- CHS_Event16 (pht001466)
-- class_derivations:
-    Visit:
-      populated_from: pht001466
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100808}) + ":CHS EVENTS")'
-        name:
-          value: CHS EVENTS
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00100808}) + ":CHS")'
-        visit_provenance:
-          value: STUDY_RECORD
-          range: string
-        visit_category:
-          value: UNKNOWN
-          range: string
-
 # CHS CAC -- CHS_CAC (pht001459)
 - class_derivations:
     Visit:
@@ -754,42 +718,6 @@
           range: string
         visit_category:
           value: STUDY_SITE_VISIT
-          range: string
-
-# CHS DDIM -- CARE_DDDIMER (pht001457)
-- class_derivations:
-    Visit:
-      populated_from: pht001457
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100683}) + ":CHS DDIM")'
-        name:
-          value: CHS DDIM
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00100683}) + ":CHS")'
-        visit_provenance:
-          value: STUDY_RECORD
-          range: string
-        visit_category:
-          value: UNKNOWN
-          range: string
-
-# CHS VTE -- CHS_VTE_data (pht005981)
-- class_derivations:
-    Visit:
-      populated_from: pht005981
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00273564}) + ":CHS VTE")'
-        name:
-          value: CHS VTE
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00273564}) + ":CHS")'
-        visit_provenance:
-          value: STUDY_RECORD
-          range: string
-        visit_category:
-          value: UNKNOWN
           range: string
 
 # CHS YEAR 5 NEW -- YR5NEW (pht001490)

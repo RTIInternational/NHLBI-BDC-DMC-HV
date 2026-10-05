@@ -37,11 +37,15 @@
 - class_derivations:
     Procedure:
       populated_from: pht001464
+      joins:
+        pht001452:
+          source_key: phv00100773
+          lookup_key: phv00100285
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00100773}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100773}) + ":CHS SUMMARY")'
+        age_at_procedure:
+          expr: '{pht001452.phv00100487} * 365'
         procedure_concept:
           value: OMOP:4184832
         procedure_status:
@@ -50,7 +54,7 @@
             '1': PRESENT
             '0': ABSENT
         procedure_provenance:
-          value: PATIENT_SELF_REPORT
+          value: PHYSICIAN_ADJUDICATION
           range: string
 - class_derivations:
     Procedure:
