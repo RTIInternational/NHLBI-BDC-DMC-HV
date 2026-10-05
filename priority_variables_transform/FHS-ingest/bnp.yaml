@@ -54,6 +54,27 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00369624
+                unit:
+                  value: pg/mL
+                  range: string
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht007776
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00369587}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00369587}) + ":" + case(({phv00369637} == ''0'', ''FHS ORIGINAL CHF''), ({phv00369637} == ''1'', ''FHS OFFSPRING CHF''), ({phv00369637} == ''2'', ''FHS NEW OFFSPRING SPOUSE CHF''), ({phv00369637} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00369637} == ''7'', ''FHS OMNI 1 CHF''), ({phv00369637} == ''72'', ''FHS OMNI 2 CHF''), (True, ''FHS UNKNOWN VISIT'')))'
+        observation_type:
+          value: OBA:2045303
+          range: string
+        method_type:
+          value: 'blood assay'
+        value_quantity:
+          class_derivations:
+          - Quantity:
+              populated_from: pht007776
+              slot_derivations:
                 value_concept:
                   populated_from: phv00369623
                   value_mappings:
@@ -61,7 +82,10 @@
                     '1': Major (>500 pg/mL)
                     '2': Minor (100-500 pg/mL)
                     '3': Borderline (80-99 pg/mL)
-                    '.': Unknown
+                operator:
+                  expr: 'case(({phv00369623} == 0, "LESS_THAN"), ({phv00369623} == 1, "GREATER_THAN"))'
+                value_decimal:
+                  expr: case(({phv00369623} == 0, 80), ({phv00369623} == 1, 500))
                 unit:
                   value: pg/mL
                   range: string
