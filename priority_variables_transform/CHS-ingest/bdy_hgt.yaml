@@ -54,33 +54,6 @@
                   range: string
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001490
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00105099}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
-        age_at_observation:
-          expr: '{phv00105622} * 365'
-        observation_type:
-          value: OBA:VT0001253
-          range: string
-        body_position:
-          value: "ORTHOSTATIC_BODY_POSITION"
-        method_type:
-          value: "anthropometry"
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht001490
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00105412
-                unit:
-                  value: cm
-                  range: string
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht001491
       slot_derivations:
         associated_participant:
