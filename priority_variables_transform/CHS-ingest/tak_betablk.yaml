@@ -27,8 +27,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
         drug_concept:
-          # Specific drug where BETA11 names one; otherwise (blank, OTHER, unmapped brands) the beta-blocker class, per the #832 ruling.
-          expr: '"ATC:C07A" if {phv00099333} is None else case((str({phv00099333}).strip() in ("i", "I"), "RxCUI:151890"), (str({phv00099333}).strip() in ("t", "T"), "RxCUI:152413"), (str({phv00099333}).strip() in ("l", "L"), "RxCUI:203344"), (str({phv00099333}).strip() in ("c", "C"), "RxCUI:151549"), (True, "ATC:C07A"))'
+          # Named drug only. The ATC:C07A record comes from the BETAIN11 (phv00099332) block, so blank, OTHER and unmapped brands name no drug here.
+          expr: 'None if {phv00099333} is None else case((str({phv00099333}).strip() in ("i", "I"), "RxCUI:151890"), (str({phv00099333}).strip() in ("t", "T"), "RxCUI:152413"), (str({phv00099333}).strip() in ("l", "L"), "RxCUI:203344"), (str({phv00099333}).strip() in ("c", "C"), "RxCUI:151549"))'
           range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION

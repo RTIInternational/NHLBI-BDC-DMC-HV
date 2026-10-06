@@ -1114,8 +1114,8 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003667}) + ":FHS ORIGINAL EXAM 18")'
         drug_concept:
-          # FK101 is free text (drug name). The five names already mapped keep their codes; NONE, U, blank and any other name take the antihypertensive class, per the #832 ruling.
-          expr: '"ATC:C02" if {phv00003349} is None else case((str({phv00003349}).upper().strip(" _.") == "LOZOL", "RxCUI:5764"), (str({phv00003349}).upper().strip(" _.") == "CAPDOPEN", "RxCUI:1998"), (str({phv00003349}).upper().strip(" _.") == "TRANDATE", "RxCUI:152440"), (str({phv00003349}).upper().strip(" _.") == "VISKEN", "RxCUI:8332"), (str({phv00003349}).upper().strip(" _.") == "ESIDRIX", "RxCUI:5487"), (True, "ATC:C02"))'
+          # FK101 is free text (drug name); the five mapped names keep their codes. The ATC:C02 record comes from the FK100 (phv00003348) block, so NONE, U, blank and other names name no drug here.
+          expr: 'None if {phv00003349} is None else case((str({phv00003349}).upper().strip(" _.") == "LOZOL", "RxCUI:5764"), (str({phv00003349}).upper().strip(" _.") == "CAPDOPEN", "RxCUI:1998"), (str({phv00003349}).upper().strip(" _.") == "TRANDATE", "RxCUI:152440"), (str({phv00003349}).upper().strip(" _.") == "VISKEN", "RxCUI:8332"), (str({phv00003349}).upper().strip(" _.") == "ESIDRIX", "RxCUI:5487"))'
           range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION

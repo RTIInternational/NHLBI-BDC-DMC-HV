@@ -29,33 +29,18 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00250718}) + ":FHS OMNI 1 EXAM 2")'
         drug_concept:
-          expr: 'case(
-                   ({phv00250731} == 1, "RxCUI:11170"),
-                   ({phv00250731} == 2, "RxCUI:3443"),
-                   ({phv00250731} == 3, "RxCUI:7417"),
-                   ({phv00250731} == 6, "RxCUI:17767"),
-                   ({phv00250731} == 7, "RxCUI:4316"),
-                   ({phv00250731} == 10, "RxCUI:7435"),
-                   ({phv00250731} == 4, "ATC:C08"), ({phv00250731} == 5, "ATC:C08"), ({phv00250731} == 8, "ATC:C08"), ({phv00250731} == 9, "ATC:C08"), ({phv00250731} == 11, "ATC:C08"), ({phv00250731} == 12, "ATC:C08"), ({phv00250731} == 0, "ATC:C08"), ({phv00250731} == ''0'', "ATC:C08"), ({phv00250731} == ''.'', "ATC:C08"))'
+          # Named drug only. The ATC:C08 record for this exam comes from the phv00250730 (g013) block, so NONE, OTHER, '.' and blank name no drug here.
+          expr: 'case(({phv00250731} == 1, "RxCUI:11170"), ({phv00250731} == 2, "RxCUI:3443"), ({phv00250731} == 3, "RxCUI:7417"), ({phv00250731} == 6, "RxCUI:17767"), ({phv00250731} == 7, "RxCUI:4316"), ({phv00250731} == 10, "RxCUI:7435"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
-          populated_from: phv00250731
+          populated_from: phv00250730
           value_mappings:
             '0': ABSENT
             '1': PRESENT
-            '2': PRESENT
-            '3': PRESENT
-            '4': PRESENT
-            '5': PRESENT
-            '6': PRESENT
-            '7': PRESENT
-            '8': PRESENT
-            '9': PRESENT
-            '10': PRESENT
-            '11': PRESENT
-            '12': PRESENT
+            '2': HISTORICAL
+            '3': UNKNOWN
             '.': UNKNOWN
 - class_derivations:
     DrugExposure:
@@ -264,35 +249,18 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006663}) + ":FHS ORIGINAL EXAM 25")'
         drug_concept:
-          expr: case(
-                  ({phv00006463} == 1, "RxCUI:11170"),
-                  ({phv00006463} == 2, "RxCUI:3443"),
-                  ({phv00006463} == 3, "RxCUI:7417"),
-                  ({phv00006463} == 4, "RxCUI:7396"),
-                  ({phv00006463} == 5, "RxCUI:33910"), 
-                  ({phv00006463} == 6, "RxCUI:17767"),
-                  ({phv00006463} == 7, "RxCUI:4316"),
-                  ({phv00006463} == 10, "RxCUI:7435"),
-                  ({phv00006463} == 8, "ATC:C08"), ({phv00006463} == 9, "ATC:C08"), ({phv00006463} == 11, "ATC:C08"), ({phv00006463} == 12, "ATC:C08"), ({phv00006463} == 0, "ATC:C08"), ({phv00006463} == '0', "ATC:C08"), ({phv00006463} == '.', "ATC:C08"))
+          # Named drug only. The ATC:C08 record for this exam comes from the phv00006462 (FR189) block, so NONE, OTHER, '.' and blank name no drug here.
+          expr: 'case(({phv00006463} == 1, "RxCUI:11170"), ({phv00006463} == 2, "RxCUI:3443"), ({phv00006463} == 3, "RxCUI:7417"), ({phv00006463} == 4, "RxCUI:7396"), ({phv00006463} == 5, "RxCUI:33910"), ({phv00006463} == 6, "RxCUI:17767"), ({phv00006463} == 7, "RxCUI:4316"), ({phv00006463} == 10, "RxCUI:7435"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
-          populated_from: phv00006463
+          populated_from: phv00006462
           value_mappings:
             '0': ABSENT
             '1': PRESENT
-            '2': PRESENT
-            '3': PRESENT
-            '4': PRESENT
-            '5': PRESENT
-            '6': PRESENT
-            '7': PRESENT
-            '8': PRESENT
-            '9': PRESENT
-            '10': PRESENT
-            '11': PRESENT
-            '12': PRESENT
+            '2': HISTORICAL
+            '3': UNKNOWN
             '.': UNKNOWN
 - class_derivations:
     DrugExposure:
@@ -325,36 +293,18 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007095}) + ":FHS ORIGINAL EXAM 26")'
         drug_concept:
-          expr: case(
-                  ({phv00006851} == 1, "RxCUI:11170"),
-                  ({phv00006851} == 2, "RxCUI:3443"),
-                  ({phv00006851} == 3, "RxCUI:7417"),
-                  ({phv00006851} == 4, "RxCUI:7396"),
-                  ({phv00006851} == 5, "RxCUI:33910"),
-                  ({phv00006851} == 6, "RxCUI:17767"),
-                  ({phv00006851} == 7, "RxCUI:4316"),
-                  ({phv00006851} == 10, "RxCUI:7435"),
-                  ({phv00006851} == 11, "RxCUI:1436"),
-                  ({phv00006851} == 8, "ATC:C08"), ({phv00006851} == 9, "ATC:C08"), ({phv00006851} == 12, "ATC:C08"), ({phv00006851} == 0, "ATC:C08"), ({phv00006851} == '0', "ATC:C08"), ({phv00006851} == '.', "ATC:C08"))
+          # Named drug only. The ATC:C08 record for this exam comes from the phv00006850 (FS241) block, so NONE, OTHER, '.' and blank name no drug here.
+          expr: 'case(({phv00006851} == 1, "RxCUI:11170"), ({phv00006851} == 2, "RxCUI:3443"), ({phv00006851} == 3, "RxCUI:7417"), ({phv00006851} == 4, "RxCUI:7396"), ({phv00006851} == 5, "RxCUI:33910"), ({phv00006851} == 6, "RxCUI:17767"), ({phv00006851} == 7, "RxCUI:4316"), ({phv00006851} == 10, "RxCUI:7435"), ({phv00006851} == 11, "RxCUI:1436"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
-          populated_from: phv00006851
+          populated_from: phv00006850
           value_mappings:
             '0': ABSENT
             '1': PRESENT
-            '2': PRESENT
-            '3': PRESENT
-            '4': PRESENT
-            '5': PRESENT
-            '6': PRESENT
-            '7': PRESENT
-            '8': PRESENT
-            '9': PRESENT
-            '10': PRESENT
-            '11': PRESENT
-            '12': PRESENT
+            '2': HISTORICAL
+            '3': UNKNOWN
             '.': UNKNOWN
 - class_derivations:
     DrugExposure:
@@ -387,36 +337,18 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007534}) + ":FHS ORIGINAL EXAM 27")'
         drug_concept:
-          expr: case(
-                  ({phv00007288} == 1, "RxCUI:11170"),
-                  ({phv00007288} == 2, "RxCUI:3443"),
-                  ({phv00007288} == 3, "RxCUI:7417"),
-                  ({phv00007288} == 4, "RxCUI:7396"),
-                  ({phv00007288} == 5, "RxCUI:33910"),
-                  ({phv00007288} == 6, "RxCUI:17767"),
-                  ({phv00007288} == 7, "RxCUI:4316"),
-                  ({phv00007288} == 10, "RxCUI:7435"),
-                  ({phv00007288} == 11, "RxCUI:1436"),
-                  ({phv00007288} == 8, "ATC:C08"), ({phv00007288} == 9, "ATC:C08"), ({phv00007288} == 12, "ATC:C08"), ({phv00007288} == 0, "ATC:C08"), ({phv00007288} == '0', "ATC:C08"), ({phv00007288} == '.', "ATC:C08"))
+          # Named drug only. The ATC:C08 record for this exam comes from the phv00007287 (FT248) block, so NONE, OTHER, '.' and blank name no drug here.
+          expr: 'case(({phv00007288} == 1, "RxCUI:11170"), ({phv00007288} == 2, "RxCUI:3443"), ({phv00007288} == 3, "RxCUI:7417"), ({phv00007288} == 4, "RxCUI:7396"), ({phv00007288} == 5, "RxCUI:33910"), ({phv00007288} == 6, "RxCUI:17767"), ({phv00007288} == 7, "RxCUI:4316"), ({phv00007288} == 10, "RxCUI:7435"), ({phv00007288} == 11, "RxCUI:1436"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
-          populated_from: phv00007288
+          populated_from: phv00007287
           value_mappings:
             '0': ABSENT
             '1': PRESENT
-            '2': PRESENT
-            '3': PRESENT
-            '4': PRESENT
-            '5': PRESENT
-            '6': PRESENT
-            '7': PRESENT
-            '8': PRESENT
-            '9': PRESENT
-            '10': PRESENT
-            '11': PRESENT
-            '12': PRESENT
+            '2': HISTORICAL
+            '3': UNKNOWN
             '.': UNKNOWN
 - class_derivations:
     DrugExposure:
@@ -537,35 +469,18 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010139}) + ":FHS OFFSPRING EXAM 7")'
         drug_concept:
-          expr: case(({phv00010157} == 1, "RxCUI:11170"),
-                  ({phv00010157} == 2, "RxCUI:3443"),
-                  ({phv00010157} == 3, "RxCUI:7417"),
-                  ({phv00010157} == 4, "RxCUI:7396"),
-                  ({phv00010157} == 5, "RxCUI:33910"),
-                  ({phv00010157} == 6, "RxCUI:17767"),
-                  ({phv00010157} == 7, "RxCUI:4316"),
-                  ({phv00010157} == 10, "RxCUI:7435"),
-                  ({phv00010157} == 11, "RxCUI:1436"),
-                  ({phv00010157} == 8, "ATC:C08"), ({phv00010157} == 9, "ATC:C08"), ({phv00010157} == 12, "ATC:C08"), ({phv00010157} == 0, "ATC:C08"), ({phv00010157} == '0', "ATC:C08"), ({phv00010157} == '.', "ATC:C08"))
+          # Named drug only. The ATC:C08 record for this exam comes from the phv00010156 (G013) block, so NONE, OTHER, '.' and blank name no drug here.
+          expr: 'case(({phv00010157} == 1, "RxCUI:11170"), ({phv00010157} == 2, "RxCUI:3443"), ({phv00010157} == 3, "RxCUI:7417"), ({phv00010157} == 4, "RxCUI:7396"), ({phv00010157} == 5, "RxCUI:33910"), ({phv00010157} == 6, "RxCUI:17767"), ({phv00010157} == 7, "RxCUI:4316"), ({phv00010157} == 10, "RxCUI:7435"), ({phv00010157} == 11, "RxCUI:1436"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
-          populated_from: phv00010157
+          populated_from: phv00010156
           value_mappings:
             '0': ABSENT
             '1': PRESENT
-            '2': PRESENT
-            '3': PRESENT
-            '4': PRESENT
-            '5': PRESENT
-            '6': PRESENT
-            '7': PRESENT
-            '8': PRESENT
-            '9': PRESENT
-            '10': PRESENT
-            '11': PRESENT
-            '12': PRESENT
+            '2': HISTORICAL
+            '3': UNKNOWN
             '.': UNKNOWN
 - class_derivations:
     DrugExposure:
