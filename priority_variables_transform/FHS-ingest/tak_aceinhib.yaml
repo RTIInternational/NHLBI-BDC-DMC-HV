@@ -327,24 +327,6 @@
             '.': UNKNOWN
 - class_derivations:
     DrugExposure:
-      populated_from: pht005144
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00255349}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00255349}) + ":FHS GENERATION 3 EXAM 1")'
-        drug_concept:
-          expr: 'case(({phv00255422} == 1, "RxCUI:29046"))'
-        exposure_provenance:
-          value: PATIENT_SELF_REPORTED_MEDICATION
-          range: string
-        exposure_status:
-          populated_from: phv00255422
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-- class_derivations:
-    DrugExposure:
       populated_from: pht000395
       slot_derivations:
         associated_participant:

@@ -117,15 +117,34 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003667}) + ":FHS ORIGINAL EXAM 18")'
         drug_concept:
-          expr: 'case(({phv00003343} == 1, "RxCUI:2599"))'
+          value: RxCUI:2599
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
-          populated_from: phv00003343
+          populated_from: phv00003342
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '2': HISTORICAL
+            '3': UNKNOWN
+            '.': UNKNOWN
+- class_derivations:
+    DrugExposure:
+      populated_from: pht000020
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00003667}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003667}) + ":FHS ORIGINAL EXAM 18")'
+        drug_concept:
+          expr: 'None if {phv00003343} is None or str({phv00003343}).strip() == "" else case((str({phv00003343}).lower().strip() == "none", "RxCUI:2599"), (str({phv00003343}).lower().strip() in ("catapres", "ctapres."), "RxCUI:202941"), (str({phv00003343}).lower().strip() == "0.1mg dd", "RxCUI:2599"), (str({phv00003343}).lower().strip() == "hydrazal", "RxCUI:5470"))'
+        exposure_provenance:
+          value: PATIENT_SELF_REPORTED_MEDICATION
+          range: string
+        exposure_status:
+          expr: 'None if {phv00003343} is None or str({phv00003343}).strip() == "" else case((str({phv00003343}).lower().strip() == "none", "ABSENT"), (str({phv00003343}).lower().strip() == "catapres", "PRESENT"), (str({phv00003343}).lower().strip() == "ctapres.", "PRESENT"), (str({phv00003343}).lower().strip() == "0.1mg dd", "PRESENT"), (str({phv00003343}).lower().strip() == "hydrazal", "PRESENT"))'
 - class_derivations:
     DrugExposure:
       populated_from: pht000021
