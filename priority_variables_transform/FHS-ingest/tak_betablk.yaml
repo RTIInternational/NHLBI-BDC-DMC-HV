@@ -8,7 +8,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002425}) + ":FHS ORIGINAL EXAM 14")'
         drug_concept:
           value: RxCUI:8787
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -28,7 +27,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002668}) + ":FHS ORIGINAL EXAM 15")'
         drug_concept:
           value: RxCUI:8787
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -48,7 +46,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002946}) + ":FHS ORIGINAL EXAM 16")'
         drug_concept:
           value: RxCUI:8787
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -68,7 +65,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008378}) + ":FHS OFFSPRING EXAM 2")'
         drug_concept:
           value: RxCUI:8787
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -88,7 +84,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00276803}) + ":" + case(({phv00276845} == ''0'', ''FHS ORIGINAL CHF''), ({phv00276845} == ''1'', ''FHS OFFSPRING CHF''), ({phv00276845} == ''2'', ''FHS NEW OFFSPRING SPOUSE CHF''), ({phv00276845} == ''3'', ''FHS GENERATION 3 CHF''), ({phv00276845} == ''7'', ''FHS OMNI 1 CHF''), ({phv00276845} == ''72'', ''FHS OMNI 2 CHF''), (True, ''FHS UNKNOWN VISIT'')))'
         drug_concept:
           value: ATC:C07A
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -108,7 +103,6 @@
         drug_concept:
           # Specific drug for codes 1-8 (g018 labels); 0, 9 (Other), '.' and blank take the beta-blocker class, per the #832 ruling.
           expr: 'case(({phv00250735} == 1, "RxCUI:8787"), ({phv00250735} == 2, "RxCUI:10600"), ({phv00250735} == 3, "RxCUI:7226"), ({phv00250735} == 4, "RxCUI:1202"), ({phv00250735} == 5, "RxCUI:6918"), ({phv00250735} == 6, "RxCUI:8332"), ({phv00250735} == 7, "RxCUI:20352"), ({phv00250735} == 8, "RxCUI:6185"), (True, "ATC:C07A"))'
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -130,7 +124,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003261}) + ":FHS ORIGINAL EXAM 17")'
         drug_concept:
           value: ATC:C07A
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -153,7 +146,6 @@
         drug_concept:
           # FK81 is free text (drug name), not a code. Names seen in the var_report map to their ingredient; NONE, UNKNOWN, blank and any other name take the beta-blocker class, per the #832 ruling.
           expr: '"ATC:C07A" if {phv00003329} is None else case((str({phv00003329}).upper().strip(" _.") in ("INDERAL", "PROPANALOL", "PROPRANOLOL"), "RxCUI:8787"), (str({phv00003329}).upper().strip(" _.") == "CORGARD", "RxCUI:7226"), (str({phv00003329}).upper().strip(" _.") == "TIMOPTIC", "RxCUI:10600"), (str({phv00003329}).upper().strip(" _.") == "LOPRESSOR", "RxCUI:6918"), (str({phv00003329}).upper().strip(" _.") in ("TENORMIN", "ATENOLOL"), "RxCUI:1202"), (True, "ATC:C07A"))'
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -175,7 +167,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004083}) + ":FHS ORIGINAL EXAM 19")'
         drug_concept:
           value: ATC:C07A
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -197,7 +188,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004525}) + ":FHS ORIGINAL EXAM 20")'
         drug_concept:
           value: ATC:C07A
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -219,7 +209,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00004939}) + ":FHS ORIGINAL EXAM 21")'
         drug_concept:
           value: ATC:C07A
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -241,7 +230,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005557}) + ":FHS ORIGINAL EXAM 22")'
         drug_concept:
           value: ATC:C07A
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -285,7 +273,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00005558}) + ":FHS ORIGINAL EXAM 23")'
         drug_concept:
           value: ATC:C07A
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -329,7 +316,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006031}) + ":FHS ORIGINAL EXAM 24")'
         drug_concept:
           value: ATC:C07A
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -373,7 +359,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006663}) + ":FHS ORIGINAL EXAM 25")'
         drug_concept:
           value: ATC:C07A
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -417,7 +402,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007095}) + ":FHS ORIGINAL EXAM 26")'
         drug_concept:
           value: ATC:C07A
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -461,7 +445,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007534}) + ":FHS ORIGINAL EXAM 27")'
         drug_concept:
           value: ATC:C07A
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -505,7 +488,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00009127}) + ":FHS OFFSPRING EXAM 4")'
         drug_concept:
           value: ATC:C07A
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -549,7 +531,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010138}) + ":FHS OFFSPRING EXAM 6")'
         drug_concept:
           value: ATC:C07A
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -593,7 +574,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010139}) + ":FHS OFFSPRING EXAM 7")'
         drug_concept:
           value: ATC:C07A
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -637,7 +617,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":" + case(({phv00056607} == 1, ''FHS OFFSPRING SHHS''), ({phv00056607} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 1'')'
         drug_concept:
           value: ATC:C07A
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -656,7 +635,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00056635}) + ":" + case(({phv00056607} == 1, ''FHS OFFSPRING SHHS''), ({phv00056607} == 7, ''FHS OMNI 1 SHHS''), (True, ''FHS UNKNOWN VISIT'')) + '' EXAM 1'')'
         drug_concept:
           value: ATC:C07A
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -675,7 +653,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008742}) + ":FHS OFFSPRING EXAM 3")'
         drug_concept:
           value: ATC:C07A
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -697,7 +674,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00009579}) + ":FHS OFFSPRING EXAM 5")'
         drug_concept:
           value: ATC:C07A
-          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
