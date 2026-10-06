@@ -2127,7 +2127,7 @@
           value: MONDO:0004979
           range: string
         condition_status:
-          expr: case(({phv00566280} == 0, 'ABSENT'), ({phv00566281} == 0, 'HISTORICAL'),
+          expr: case(({phv00566280} == 0, 'ABSENT'), ({phv00566280} == 1 and {phv00566281} == 0, 'HISTORICAL'),
             ({phv00566281} == 1, 'PRESENT'), ({phv00566280} == 1, 'PRESENT'), (True, None))
         condition_provenance:
           populated_from: phv00566282
