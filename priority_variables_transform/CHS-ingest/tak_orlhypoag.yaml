@@ -7,8 +7,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
         drug_concept:
-          value: VANDF:HS502
-          range: string
+          expr: 'case(({phv00099628} == 1, "VANDF:HS502"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -122,8 +121,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
         drug_concept:
-          value: VANDF:HS502
-          range: string
+          expr: 'case(({phv00106487} == 1, "VANDF:HS502"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string

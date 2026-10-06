@@ -334,8 +334,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00255349}) + ":FHS GENERATION 3 EXAM 1")'
         drug_concept:
-          value: RxCUI:29046
-          range: string
+          expr: 'case(({phv00255422} == 1, "RxCUI:29046"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string

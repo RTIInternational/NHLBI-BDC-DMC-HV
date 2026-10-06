@@ -7,8 +7,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
         drug_concept:
-          value: ATC:C03
-          range: string
+          expr: 'case(({phv00099458} == 1, "ATC:C03"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -26,8 +25,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
         drug_concept:
-          value: NDFRT:N0000175419
-          range: string
+          expr: 'case(({phv00099609} == 1, "NDFRT:N0000175419"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -64,8 +62,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
         drug_concept:
-          value: VANDF:CV702
-          range: string
+          expr: 'case(({phv00099618} == 1, "VANDF:CV702"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -83,8 +80,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
         drug_concept:
-          value: ATC:C03
-          range: string
+          expr: 'case(({phv00099654} == 1, "ATC:C03"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -582,8 +578,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
         drug_concept:
-          value: ATC:C03
-          range: string
+          expr: 'case(({phv00105624} == 1, "ATC:C03"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -601,8 +596,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
         drug_concept:
-          value: NDFRT:N0000175419
-          range: string
+          expr: 'case(({phv00106468} == 1, "NDFRT:N0000175419"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -639,8 +633,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
         drug_concept:
-          value: VANDF:CV702
-          range: string
+          expr: 'case(({phv00106477} == 1, "VANDF:CV702"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -658,8 +651,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
         drug_concept:
-          value: ATC:C03
-          range: string
+          expr: 'case(({phv00106513} == 1, "ATC:C03"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string

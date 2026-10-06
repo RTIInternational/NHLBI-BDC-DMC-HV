@@ -58,7 +58,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
         drug_concept:
-          value: VANDF:CV702
+          expr: case(({phv00507372} == 1, "VANDF:CV702"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
         exposure_status:
@@ -94,7 +94,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
         drug_concept:
-          value: VANDF:CV702
+          expr: case(({phv00512216} == 1, "VANDF:CV702"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
         exposure_status:

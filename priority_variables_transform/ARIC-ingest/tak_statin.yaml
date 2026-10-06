@@ -58,7 +58,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
         drug_concept:
-          value: ATC:C10AA
+          expr: case(({phv00507346} == 1, "ATC:C10AA"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
         exposure_status:
@@ -112,7 +112,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
         drug_concept:
-          value: ATC:C10AA
+          expr: case(({phv00512190} == 1, "ATC:C10AA"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
         exposure_status:

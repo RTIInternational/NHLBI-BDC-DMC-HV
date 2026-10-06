@@ -57,8 +57,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
         drug_concept:
-          value: ATC:C07A
-          range: string
+          expr: case(({phv00099455} == 1, "ATC:C07A"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -172,8 +171,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
         drug_concept:
-          value: ATC:C07A
-          range: string
+          expr: case(({phv00105625} == 1, "ATC:C07A"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string

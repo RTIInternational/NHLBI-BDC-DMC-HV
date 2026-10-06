@@ -89,8 +89,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
           range: string
         drug_concept:
-          value: ATC:C09C
-          range: string
+          expr: case(({phv00507368} == 1, "ATC:C09C"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -131,8 +130,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
           range: string
         drug_concept:
-          value: ATC:C09C
-          range: string
+          expr: case(({phv00512212} == 1, "ATC:C09C"))
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string

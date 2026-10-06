@@ -27,8 +27,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121257}) + ":CARDIA MEDICAL HISTORY")'
         drug_concept:
-          value: ATC:C10A
-          range: string
+          expr: 'case(({phv00121377} == 1, "ATC:C10A"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -46,8 +45,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121473}) + ":CARDIA MEDICAL HISTORY")'
         drug_concept:
-          value: ATC:C10A
-          range: string
+          expr: 'case(({phv00121596} == 1, "ATC:C10A"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
