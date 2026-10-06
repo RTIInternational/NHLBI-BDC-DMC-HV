@@ -27,18 +27,9 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00098771}) + ":CHS BASELINE 2")'
         drug_concept:
-          populated_from: phv00099333
+          # Specific drug where BETA11 names one; otherwise (blank, OTHER, unmapped brands) the beta-blocker class, per the #832 ruling.
+          expr: '"ATC:C07A" if {phv00099333} is None else case((str({phv00099333}).strip() in ("i", "I"), "RxCUI:151890"), (str({phv00099333}).strip() in ("t", "T"), "RxCUI:152413"), (str({phv00099333}).strip() in ("l", "L"), "RxCUI:203344"), (str({phv00099333}).strip() in ("c", "C"), "RxCUI:151549"), (True, "ATC:C07A"))'
           range: string
-          value_mappings:
-            o: ATC:C07A
-            O: ATC:C07A
-            i: RxCUI:151890
-            t: RxCUI:152413
-            I: RxCUI:151890
-            T: RxCUI:152413
-            l: RxCUI:203344
-            L: RxCUI:203344
-            c: RxCUI:151549
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string

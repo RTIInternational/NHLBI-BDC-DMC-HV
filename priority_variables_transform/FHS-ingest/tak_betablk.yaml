@@ -106,13 +106,9 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00250718}) + ":FHS OMNI 1 EXAM 2")'
         drug_concept:
-          populated_from: phv00250735
-          value_mappings:
-            '1': "RxCUI:8787"
-            '3': "RxCUI:7226"
-            '4': "RxCUI:1202"
-            '5': "RxCUI:6918"
-            '9': "ATC:C07A"
+          # Specific drug for codes 1-8 (g018 labels); 0, 9 (Other), '.' and blank take the beta-blocker class, per the #832 ruling.
+          expr: 'case(({phv00250735} == 1, "RxCUI:8787"), ({phv00250735} == 2, "RxCUI:10600"), ({phv00250735} == 3, "RxCUI:7226"), ({phv00250735} == 4, "RxCUI:1202"), ({phv00250735} == 5, "RxCUI:6918"), ({phv00250735} == 6, "RxCUI:8332"), ({phv00250735} == 7, "RxCUI:20352"), ({phv00250735} == 8, "RxCUI:6185"), (True, "ATC:C07A"))'
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -155,13 +151,9 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003667}) + ":FHS ORIGINAL EXAM 18")'
         drug_concept:
-          populated_from: phv00003329
-          value_mappings:
-            '1': "RxCUI:8787"
-            '3': "RxCUI:7226"
-            '4': "RxCUI:1202"
-            '5': "RxCUI:6918"
-            '9': "ATC:C07A"
+          # FK81 is free text (drug name), not a code. Names seen in the var_report map to their ingredient; NONE, UNKNOWN, blank and any other name take the beta-blocker class, per the #832 ruling.
+          expr: '"ATC:C07A" if {phv00003329} is None else case((str({phv00003329}).upper().strip(" _.") in ("INDERAL", "PROPANALOL", "PROPRANOLOL"), "RxCUI:8787"), (str({phv00003329}).upper().strip(" _.") == "CORGARD", "RxCUI:7226"), (str({phv00003329}).upper().strip(" _.") == "TIMOPTIC", "RxCUI:10600"), (str({phv00003329}).upper().strip(" _.") == "LOPRESSOR", "RxCUI:6918"), (str({phv00003329}).upper().strip(" _.") in ("TENORMIN", "ATENOLOL"), "RxCUI:1202"), (True, "ATC:C07A"))'
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string

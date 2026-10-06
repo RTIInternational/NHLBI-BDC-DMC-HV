@@ -1114,13 +1114,9 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003667}) + ":FHS ORIGINAL EXAM 18")'
         drug_concept:
-          populated_from: phv00003349
-          value_mappings:
-            'LOZOL': 'RxCUI:5764'
-            'CAPDOPEN': 'RxCUI:1998'
-            'TRANDATE': 'RxCUI:152440'
-            'VISKEN': 'RxCUI:8332'
-            'ESIDRIX': 'RxCUI:5487'
+          # FK101 is free text (drug name). The five names already mapped keep their codes; NONE, U, blank and any other name take the antihypertensive class, per the #832 ruling.
+          expr: '"ATC:C02" if {phv00003349} is None else case((str({phv00003349}).upper().strip(" _.") == "LOZOL", "RxCUI:5764"), (str({phv00003349}).upper().strip(" _.") == "CAPDOPEN", "RxCUI:1998"), (str({phv00003349}).upper().strip(" _.") == "TRANDATE", "RxCUI:152440"), (str({phv00003349}).upper().strip(" _.") == "VISKEN", "RxCUI:8332"), (str({phv00003349}).upper().strip(" _.") == "ESIDRIX", "RxCUI:5487"), (True, "ATC:C02"))'
+          range: string
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
