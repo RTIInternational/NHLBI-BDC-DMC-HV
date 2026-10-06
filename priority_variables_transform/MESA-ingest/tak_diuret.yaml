@@ -70,7 +70,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
         age_at_exposure_start:
-          expr: case(({phv00083117} == 1, {phv00082999} * 365))
+          expr: case(({phv00083125} == 1, {phv00082999} * 365))
         drug_concept:
           value: VANDF:CV702
           range: string
@@ -78,7 +78,7 @@
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
         exposure_status:
-          populated_from: phv00083117
+          populated_from: phv00083125
           value_mappings:
             '0': ABSENT
             '1': PRESENT
