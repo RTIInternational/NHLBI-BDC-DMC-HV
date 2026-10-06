@@ -4,9 +4,9 @@
 #             + FVC predicted (phv00099670) + FEV1 predicted (phv00099671) + FEV1/FVC predicted (phv00099672)
 #             + FVC%pred (phv00099667) + FEV1%pred (phv00099668) + FEV1/FVC%pred (phv00099669)
 # YEAR 6: FVC (phv00107762) + FEV1 (phv00107763)
-#         + FVC predicted (phv00107764) + FEV1%pred (phv00107765; described as % despite PRD18 suffix)
+#         + FVC predicted (phv00107764) + FEV1 predicted (phv00107765; dbGaP label says % but values are litres)
 # YEAR 9: FVC (phv00110364) + FEV1 (phv00110365)
-#         + FVC predicted (phv00110359) + FEV1%pred (phv00110360; described as % despite PRD18 suffix)
+#         + FVC predicted (phv00110359) + FEV1 predicted (phv00110360; dbGaP label says % but values are litres)
 # OMOP codes verified against ARIC spirometry.yaml reference:
 #   OMOP:4176265 = FVC (L)          OMOP:4241837 = FEV1 (L)         OMOP:3011505 = FEV1/FVC ratio (%)
 #   OMOP:3002094 = FVC predicted (L) OMOP:3022891 = FEV1 predicted (L) OMOP:3024594 = FEV1/FVC predicted (%)
@@ -308,7 +308,7 @@
                 associated_participant:
                   expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00107443}) + ":CHS")'
                 observation_type:
-                  value: "OMOP:3011708"
+                  value: "OMOP:3022891"
                   range: string
                 body_position:
                   value: "SITTING_POSITION"
@@ -324,7 +324,7 @@
                         value_decimal:
                           populated_from: phv00107765
                         unit:
-                          value: "%"
+                          value: "L"
                           range: string
 - class_derivations:
     MeasurementObservationSet:
@@ -414,7 +414,7 @@
                 associated_participant:
                   expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00109768}) + ":CHS")'
                 observation_type:
-                  value: "OMOP:3011708"
+                  value: "OMOP:3022891"
                   range: string
                 body_position:
                   value: "SITTING_POSITION"
@@ -430,5 +430,5 @@
                         value_decimal:
                           populated_from: phv00110360
                         unit:
-                          value: "%"
+                          value: "L"
                           range: string
