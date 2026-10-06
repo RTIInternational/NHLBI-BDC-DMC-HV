@@ -13,7 +13,7 @@
           populated_from: phv00001088
           value_mappings:
             '1': PRESENT
-            '0': ABSENT
+            # excluded: '0' = no hospitalization or care since last exam, not absence of disease
         condition_provenance:
           value: PATIENT_SELF_REPORT
           range: string
@@ -114,7 +114,7 @@
           populated_from: phv00001108
           value_mappings:
             '1': PRESENT
-            '0': ABSENT
+            # excluded: '0' = no hospitalization or care since last exam, not absence of disease
         condition_provenance:
           value: PATIENT_SELF_REPORT
           range: string
