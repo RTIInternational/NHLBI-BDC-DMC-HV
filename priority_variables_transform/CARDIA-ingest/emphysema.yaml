@@ -69,7 +69,7 @@
             '1': ABSENT
             '2': PRESENT
             'M': UNKNOWN
-            # excluded: '0' is an undocumented skip code (follow-up not asked when parent = No), meaning not documented in dbGaP (#789)
+            # excluded: '0' -- undocumented in dbGaP (code list is 1=No, 2=Yes); its count only approximately matches the parent 'No' count, so it may be a skip code but cannot be asserted ABSENT
             # excluded: '4', '8', '9' -- undocumented off-dictionary value (not in dbGaP code list, n<=3)
         condition_provenance:
           value: PATIENT_SELF_REPORT
@@ -98,7 +98,7 @@
             '1': ABSENT
             '2': PRESENT
             'M': UNKNOWN
-            # excluded: '0' is an undocumented skip code (follow-up not asked when parent = No), meaning not documented in dbGaP (#789)
+            # excluded: '0' -- undocumented in dbGaP (code list is 1=No, 2=Yes); its count only approximately matches the parent 'No' count, so it may be a skip code but cannot be asserted ABSENT
             # excluded: '3', '4' -- undocumented off-dictionary value (not in dbGaP code list, n<=3)
         condition_provenance:
           value: PATIENT_SELF_REPORT
