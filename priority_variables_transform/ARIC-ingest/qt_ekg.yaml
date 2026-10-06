@@ -18,6 +18,6 @@
               populated_from: pht004080
               slot_derivations:
                 value_decimal:
-                  expr: 'case(({phv00205943} < 9.99, {phv00205943} * 1000), (True, None))'
+                  expr: 'None if {phv00205943} is None or str({phv00205943}) == "" or not (0 < float({phv00205943}) < 9.99) else round(float({phv00205943}) * 1000)'
                 unit:
                   value: "ms"
