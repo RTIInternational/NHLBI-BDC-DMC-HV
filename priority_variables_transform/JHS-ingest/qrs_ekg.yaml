@@ -1,0 +1,50 @@
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht008729
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401078}) + ":JHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401078}) + ":JHS Exam 1")'
+        age_at_observation:
+          expr: "{phv00401085} * 365"
+        observation_type:
+          value: OBA:1001086
+        method_type:
+          value: "Electrocardiogram"
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+        value_quantity:
+          class_derivations:
+          - Quantity:
+              populated_from: pht008729
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00401177
+                unit:
+                  value: "ms"
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht008731
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401370}) + ":JHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401370}) + ":JHS Exam 3")'
+        age_at_observation:
+          expr: "{phv00401379} * 365"
+        observation_type:
+          value: OBA:1001086
+        method_type:
+          value: "Electrocardiogram"
+        body_position:
+          value: "SUPINE_BODY_POSITION"
+        value_quantity:
+          class_derivations:
+          - Quantity:
+              populated_from: pht008731
+              slot_derivations:
+                value_decimal:
+                  populated_from: phv00401442
+                unit:
+                  value: "ms"

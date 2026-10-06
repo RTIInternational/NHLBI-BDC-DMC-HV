@@ -436,26 +436,6 @@
                 observation_type:
                   value: OBA:1001086
                 method_type:
-                  value: Electrocardiogram
-                body_position:
-                  value: SUPINE_BODY_POSITION
-                value_quantity:
-                  class_derivations:
-                  - Quantity:
-                      populated_from: pht008746
-                      slot_derivations:
-                        value_decimal:
-                          populated_from: phv00402081
-                        unit:
-                          value: ms
-          - MeasurementObservation:
-              populated_from: pht008746
-              slot_derivations:
-                associated_participant:
-                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00402039}) + ":JHS")'
-                observation_type:
-                  value: OBA:1001086
-                method_type:
                   value: Electrocardiogram, lead AVL
                 body_position:
                   value: SUPINE_BODY_POSITION
@@ -506,26 +486,6 @@
                       slot_derivations:
                         value_decimal:
                           populated_from: phv00402342
-                        unit:
-                          value: ms
-          - MeasurementObservation:
-              populated_from: pht008746
-              slot_derivations:
-                associated_participant:
-                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00402039}) + ":JHS")'
-                observation_type:
-                  value: OMOP:4273023
-                method_type:
-                  value: Electrocardiogram
-                body_position:
-                  value: SUPINE_BODY_POSITION
-                value_quantity:
-                  class_derivations:
-                  - Quantity:
-                      populated_from: pht008746
-                      slot_derivations:
-                        value_decimal:
-                          populated_from: phv00402085
                         unit:
                           value: ms
 - class_derivations:
@@ -776,45 +736,5 @@
                       slot_derivations:
                         value_decimal:
                           populated_from: phv00402525
-                        unit:
-                          value: ms
-          - MeasurementObservation:
-              populated_from: pht008747
-              slot_derivations:
-                associated_participant:
-                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00402377}) + ":JHS")'
-                observation_type:
-                  value: OBA:1001086
-                method_type:
-                  value: Electrocardiogram
-                body_position:
-                  value: SUPINE_BODY_POSITION
-                value_quantity:
-                  class_derivations:
-                  - Quantity:
-                      populated_from: pht008747
-                      slot_derivations:
-                        value_decimal:
-                          populated_from: phv00402413
-                        unit:
-                          value: ms
-          - MeasurementObservation:
-              populated_from: pht008747
-              slot_derivations:
-                associated_participant:
-                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00402377}) + ":JHS")'
-                observation_type:
-                  value: OMOP:4273023
-                method_type:
-                  value: Electrocardiogram
-                body_position:
-                  value: SUPINE_BODY_POSITION
-                value_quantity:
-                  class_derivations:
-                  - Quantity:
-                      populated_from: pht008747
-                      slot_derivations:
-                        value_decimal:
-                          populated_from: phv00402416
                         unit:
                           value: ms
