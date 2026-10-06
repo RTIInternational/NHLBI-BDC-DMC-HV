@@ -55,7 +55,7 @@
           - Quantity:
               populated_from: pht000016
               slot_derivations:
-                value_concept:
+                value_decimal:
                   populated_from: phv00002422
                   value_mappings:
                     '0': 0
@@ -90,7 +90,7 @@
           - Quantity:
               populated_from: pht000031
               slot_derivations:
-                value_concept:
+                value_decimal:
                   populated_from: phv00007968
                   value_mappings:
                     '10': 100
@@ -126,7 +126,7 @@
           - Quantity:
               populated_from: pht000032
               slot_derivations:
-                value_concept:
+                value_decimal:
                   populated_from: phv00008722
                   value_mappings:
                     '10': 100
@@ -157,7 +157,7 @@
           - Quantity:
               populated_from: pht000017
               slot_derivations:
-                value_concept:
+                value_decimal:
                   populated_from: phv00002662
                   value_mappings:
                     '0': 0
@@ -194,12 +194,10 @@
           - Quantity:
               populated_from: pht002889
               slot_derivations:
-                value_concept:
-                  expr: 'case(
-                           ({phv00172161} > 3.0, {phv00172161}),
-                           ({phv00227069} == 1, None),
-                           (True, {phv00172161})
-                        )'
+                value_decimal:
+                  expr: case(({phv00172161} > 3.0, {phv00172161}), ({phv00172204} == 1, 3.0), (True, {phv00172161}))
+                operator:
+                  expr: 'case(({phv00172204} == 1, "LESS_THAN"))'
                 unit:
                   value: mg/L
                   range: string
@@ -300,12 +298,10 @@
           - Quantity:
               populated_from: pht004363
               slot_derivations:
-                value_concept:
-                  expr: 'case(
-                          ({phv00219547} > 3.0, {phv00219547}),
-                          ({phv00219549} == 1, None),
-                          (True, {phv00219547})
-                        )'
+                value_decimal:
+                  expr: case(({phv00219547} > 3.0, {phv00219547}), ({phv00219549} == 1, 3.0), (True, {phv00219547}))
+                operator:
+                  expr: 'case(({phv00219549} == 1, "LESS_THAN"))'
                 unit:
                   value: mg/L
                   range: string
@@ -340,7 +336,7 @@
           - Quantity:
               populated_from: pht000313
               slot_derivations:
-                value_concept:
+                value_decimal:
                   populated_from: phv00036493
                 unit:
                   value: mg/L
@@ -348,7 +344,7 @@
         range_low:
           class_derivations:
           - Quantity:
-              populated_from: pht004363
+              populated_from: pht000313
               slot_derivations:
                 value_decimal:
                   value: '3.0'
