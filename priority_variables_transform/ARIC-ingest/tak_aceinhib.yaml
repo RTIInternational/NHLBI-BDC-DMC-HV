@@ -7,7 +7,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         drug_concept:
-          expr: case(({phv00206919} == 'Y', "ATC:C09A"))
+          value: ATC:C09A
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
         exposure_status:
@@ -24,7 +24,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
         drug_concept:
-          expr: case(({phv00206920} == 'Y', "ATC:C09A"))
+          value: ATC:C09A
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
         exposure_status:
@@ -41,25 +41,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
         drug_concept:
-          expr: case(({phv00507366} == 1, "ATC:C09A"))
-        exposure_provenance:
-          value: PATIENT_SELF_REPORTED_MEDICATION
-        exposure_status:
-          populated_from: phv00507366
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            T: UNKNOWN
-- class_derivations:
-    DrugExposure:
-      populated_from: pht012504
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00507300}) + ":ARIC")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00507300}) + ":ARIC EXAM 7")'
-        drug_concept:
-          expr: case(({phv00507367} == 1, "ATC:C09A"))
+          value: ATC:C09A
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
         exposure_status:
@@ -77,25 +59,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
         drug_concept:
-          expr: case(({phv00512210} == 1, "ATC:C09A"))
-        exposure_provenance:
-          value: PATIENT_SELF_REPORTED_MEDICATION
-        exposure_status:
-          populated_from: phv00512210
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            T: UNKNOWN
-- class_derivations:
-    DrugExposure:
-      populated_from: pht012814
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00512039}) + ":ARIC")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512039}) + ":ARIC EXAM 5")'
-        drug_concept:
-          expr: case(({phv00512211} == 1, "ATC:C09A"))
+          value: ATC:C09A
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
         exposure_status:
@@ -113,7 +77,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
         drug_concept:
-          expr: case(({phv00512275} == 1, "ATC:C09A"))
+          value: ATC:C09A
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
         exposure_status:
@@ -131,7 +95,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00512222}) + ":ARIC EXAM 6")'
         drug_concept:
-          expr: case(({phv00512276} == 1, "ATC:C09A"))
+          value: ATC:C09A
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
         exposure_status:

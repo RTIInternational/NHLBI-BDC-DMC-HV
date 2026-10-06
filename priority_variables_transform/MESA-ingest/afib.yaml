@@ -51,6 +51,31 @@
           range: string
 - class_derivations:
     Condition:
+      populated_from: pht001116
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
+        condition_concept:
+          value: MONDO:0004981
+          range: string
+        condition_status:
+          populated_from: phv00084553
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: STUDY_RECORD
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        associated_evidence:
+          value: "Electrocardiogram"
+          range: string
+- class_derivations:
+    Condition:
       populated_from: pht001121
       slot_derivations:
         associated_participant:

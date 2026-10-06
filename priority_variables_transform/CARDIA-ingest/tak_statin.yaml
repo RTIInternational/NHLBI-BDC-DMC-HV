@@ -7,7 +7,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00115423}) + ":CARDIA YEAR 5")'
         drug_concept:
-          expr: 'case(({phv00115477} == 2, "ATC:C10A"))'
+          value: ATC:C10A
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -18,42 +18,6 @@
             '2': PRESENT
             '8': UNKNOWN
             'M': UNKNOWN
-- class_derivations:
-    DrugExposure:
-      populated_from: pht001869
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121257}) + ":CARDIA")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121257}) + ":CARDIA MEDICAL HISTORY")'
-        drug_concept:
-          expr: 'case(({phv00121377} == 1, "ATC:C10A"))'
-        exposure_provenance:
-          value: PATIENT_SELF_REPORTED_MEDICATION
-          range: string
-        exposure_status:
-          populated_from: phv00121377
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-- class_derivations:
-    DrugExposure:
-      populated_from: pht001871
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00121473}) + ":CARDIA")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00121473}) + ":CARDIA MEDICAL HISTORY")'
-        drug_concept:
-          expr: 'case(({phv00121596} == 1, "ATC:C10A"))'
-        exposure_provenance:
-          value: PATIENT_SELF_REPORTED_MEDICATION
-          range: string
-        exposure_status:
-          populated_from: phv00121596
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht001659
