@@ -316,7 +316,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008378}) + ":FHS OFFSPRING EXAM 2")'
         drug_concept:
-          expr: 'case(({phv00007718} == 1, "MeSH:D007328"))'
+          expr: 'case(({phv00007718} == 1, "MeSH:D007328"), ({phv00007718} == 2, "MeSH:D007328"), ({phv00007718} == 3, "MeSH:D007328"))'
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
