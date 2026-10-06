@@ -20,11 +20,15 @@
 - class_derivations:
     DrugExposure:
       populated_from: pht002769
+      joins:
+        pht000998:
+          source_key: phv00170566
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00170566}) + ":WHI")'
         age_at_exposure_start:
-          expr: 'case(({phv00170607} == 1, ({phv00078437} * 365) + {phv00170608}))'
+          expr: 'case(({phv00170607} == 1, ({pht000998.phv00078437} * 365) + {phv00170608}))'
         drug_concept:
           expr: 'case(({phv00170607} == 1, "ATC:C02"))'
         exposure_provenance:
@@ -57,11 +61,15 @@
 - class_derivations:
     DrugExposure:
       populated_from: pht003413
+      joins:
+        pht000998:
+          source_key: phv00193628
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193628}) + ":WHI")'
         age_at_exposure_start:
-          expr: 'case(({phv00193667} == 1, ({phv00078437} * 365) + {phv00193668}))'
+          expr: 'case(({phv00193667} == 1, ({pht000998.phv00078437} * 365) + {phv00193668}))'
         drug_concept:
           expr: 'case(({phv00193667} == 1, "ATC:C02"))'
         exposure_provenance:
@@ -75,11 +83,15 @@
 - class_derivations:
     DrugExposure:
       populated_from: pht003414
+      joins:
+        pht000998:
+          source_key: phv00193686
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_exposure_start:
-          expr: 'case(({phv00193779} == 1, ({phv00078437} * 365) + {phv00193780}))'
+          expr: 'case(({phv00193779} == 1, ({pht000998.phv00078437} * 365) + {phv00193780}))'
         drug_concept:
           expr: 'case(({phv00193779} == 1, "ATC:C02"))'
         exposure_provenance:
