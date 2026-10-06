@@ -260,7 +260,7 @@ Detect YAML keys with illegal internal spaces (e.g., `populated from:` instead o
 Detect a slot derivation (at any nesting depth) that sets both `expr` and `value_mappings`. linkml-map evaluates `expr` before `populated_from` and applies `value_mappings` only on the `populated_from` path, so the mappings are silently ignored and the expr's raw result is emitted (#701: CARDIA Year 15 income emitted raw codes 1-11).
 
 - **Fix**: replace the expr with `populated_from` when the mappings carry the meaning; delete the dead mappings when the expr already returns final values
-- **Severity**: ERROR -- mappings silently ignored
+- **Severity**: CRITICAL -- mappings silently ignored (same class as 1.10)
 
 ---
 

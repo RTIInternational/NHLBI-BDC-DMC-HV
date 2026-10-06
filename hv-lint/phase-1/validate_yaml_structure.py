@@ -273,7 +273,7 @@ def check_expr_with_value_mappings(block: dict, block_idx: int, rel_path: str) -
                     continue
                 if slot_def.get("expr") is not None and slot_def.get("value_mappings"):
                     findings.append(Finding(
-                        rel_path, block_idx, "1.11", "ERROR",
+                        rel_path, block_idx, "1.11", "CRITICAL",
                         f"expr and value_mappings both set on {prefix}{class_name}.{slot_name} -- "
                         f"linkml-map evaluates the expr and silently ignores the mappings"
                     ))
