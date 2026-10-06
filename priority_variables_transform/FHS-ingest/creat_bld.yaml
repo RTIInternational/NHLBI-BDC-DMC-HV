@@ -1,30 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht000016
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00002425}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002425}) + ":FHS ORIGINAL EXAM 14")'
-        age_at_observation:
-          expr: '{pht003099.phv00177956} * 365'
-        observation_type:
-          value: OBA:2050096
-          range: string
-        method_type:
-          value: 'blood assay'
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht000016
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00002416
-                unit:
-                  value: mg/dL
-                  range: string
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht000146
       slot_derivations:
         associated_participant:
@@ -71,31 +46,6 @@
                 unit:
                   value: mg/dL
                   range: string 
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000017
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00002668}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002668}) + ":FHS ORIGINAL EXAM 15")'
-        age_at_observation:
-          expr: '{pht003099.phv00177958} * 365'
-        observation_type:
-          value: OBA:2050096
-          range: string
-        method_type:
-          value: 'blood assay'
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht000017
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00002654
-                unit:
-                  value: mg/dL
-                  range: string
 - class_derivations:
     MeasurementObservation:
       populated_from: pht000026
@@ -323,56 +273,6 @@
                   range: string
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht002234
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00159494}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00159494}) + ":FHS OFFSPRING EXAM 5")'
-        age_at_observation:
-          expr: '{pht003099.phv00177938} * 365'  
-        observation_type:
-          value: OBA:2050096
-          range: string
-        method_type:
-          value: 'metabolite profiling'
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht002234
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00161767
-                unit:
-                  value: mg/dL
-                  range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht002566
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00166779}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00166779}) + ":FHS OFFSPRING EXAM 5")'
-        age_at_observation:
-          expr: '{pht003099.phv00177938} * 365' 
-        observation_type:
-          value: OBA:2050096
-          range: string
-        method_type:
-          value: 'metabolite profiling'
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht002566
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00166800
-                unit:
-                  value: mg/dL
-                  range: string
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht002889
       slot_derivations:
         associated_participant:
@@ -393,31 +293,6 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00172175
-                unit:
-                  value: mg/dL
-                  range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht002895
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00172304}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00172304}) + ":FHS OFFSPRING EXAM 5")'
-        age_at_observation:
-          expr: '{pht003099.phv00177938} * 365' 
-        observation_type:
-          value: OBA:2050096
-          range: string
-        method_type:
-          value: 'metabolite profiling'
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht002895
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00172326
                 unit:
                   value: mg/dL
                   range: string
