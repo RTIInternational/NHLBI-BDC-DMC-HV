@@ -21,50 +21,6 @@
             '1': PRESENT
 - class_derivations:
     DrugExposure:
-      populated_from: pht001111
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00082638}) + ":MESA")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00082638}) + ":MESA AIR EXAM")'
-        age_at_exposure_start:
-          expr: case(({phv00083302} == 1, {phv00083008} * 365))
-        drug_concept:
-          value: VANDF:HS500
-          range: string
-        exposure_provenance:
-          value: PATIENT_SELF_REPORTED_MEDICATION
-          range: string
-        exposure_status:
-          populated_from: phv00083302
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '9': UNKNOWN
-- class_derivations:
-    DrugExposure:
-      populated_from: pht001116
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00084441}) + ":MESA")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00084441}) + ":MESA CLASSIC EXAM 1")'
-        age_at_exposure_start:
-          expr: case(({phv00084979} == 1, {phv00085244} * 365))
-        drug_concept:
-          value: VANDF:HS500
-          range: string
-        exposure_provenance:
-          value: PATIENT_SELF_REPORTED_MEDICATION
-          range: string
-        exposure_status:
-          populated_from: phv00084979
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '9': UNKNOWN
-- class_derivations:
-    DrugExposure:
       populated_from: pht001116
       slot_derivations:
         associated_participant:
@@ -93,26 +49,6 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
         drug_concept:
-          value: VANDF:HS500
-          range: string
-        exposure_provenance:
-          value: PATIENT_SELF_REPORTED_MEDICATION
-          range: string
-        exposure_status:
-          populated_from: phv00085926
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '9': UNKNOWN
-- class_derivations:
-    DrugExposure:
-      populated_from: pht001118
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00085772}) + ":MESA")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00085772}) + ":MESA CLASSIC EXAM 2")'
-        drug_concept:
           value: VANDF:HS502
           range: string
         exposure_provenance:
@@ -132,26 +68,6 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
         drug_concept:
-          value: VANDF:HS500
-          range: string
-        exposure_provenance:
-          value: PATIENT_SELF_REPORTED_MEDICATION
-          range: string
-        exposure_status:
-          populated_from: phv00086409
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '9': UNKNOWN
-- class_derivations:
-    DrugExposure:
-      populated_from: pht001119
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086258}) + ":MESA")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086258}) + ":MESA CLASSIC EXAM 3")'
-        drug_concept:
           value: VANDF:HS502
           range: string
         exposure_provenance:
@@ -162,26 +78,6 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
-- class_derivations:
-    DrugExposure:
-      populated_from: pht001120
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00086726}) + ":MESA")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00086726}) + ":MESA CLASSIC EXAM 4")'
-        drug_concept:
-          value: VANDF:HS500
-          range: string
-        exposure_provenance:
-          value: PATIENT_SELF_REPORTED_MEDICATION
-          range: string
-        exposure_status:
-          populated_from: phv00086841
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '9': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht001120
@@ -243,26 +139,6 @@
             '1': PRESENT
 - class_derivations:
     DrugExposure:
-      populated_from: pht003086
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00174584}) + ":MESA")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00174584}) + ":MESA AIR EXAM 5")'
-        drug_concept:
-          value: VANDF:HS500
-          range: string
-        exposure_provenance:
-          value: PATIENT_SELF_REPORTED_MEDICATION
-          range: string
-        exposure_status:
-          populated_from: phv00175455
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '9': UNKNOWN
-- class_derivations:
-    DrugExposure:
       populated_from: pht003091
       slot_derivations:
         associated_participant:
@@ -280,23 +156,3 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
-- class_derivations:
-    DrugExposure:
-      populated_from: pht003091
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00176007}) + ":MESA")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00176007}) + ":MESA CLASSIC EXAM 5")'
-        drug_concept:
-          value: VANDF:HS500
-          range: string
-        exposure_provenance:
-          value: PATIENT_SELF_REPORTED_MEDICATION
-          range: string
-        exposure_status:
-          populated_from: phv00176889
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-            '9': UNKNOWN
