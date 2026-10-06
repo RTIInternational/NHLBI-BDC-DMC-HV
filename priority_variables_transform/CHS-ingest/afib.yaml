@@ -50,31 +50,6 @@
         #   range: string
 - class_derivations:
     Condition:
-      populated_from: pht001451
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00099663}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00099663}) + ":CHS BASELINE 2")'
-        condition_concept:
-          value: MONDO:0004981
-          range: string
-        condition_status:
-          populated_from: phv00100069
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: STUDY_RECORD
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-        associated_evidence:
-          value: "Electrocardiogram"
-          range: string
-- class_derivations:
-    Condition:
       populated_from: pht001452
       slot_derivations:
         associated_participant:
@@ -762,31 +737,6 @@
         # associated_evidence:
         #   value: "self-report questionnaire"
         #   range: string
-- class_derivations:
-    Condition:
-      populated_from: pht001490
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00105099}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
-        condition_concept:
-          value: MONDO:0004981
-          range: string
-        condition_status:
-          populated_from: phv00106361
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: STUDY_RECORD
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
 - class_derivations:
     Condition:
       populated_from: pht001490
