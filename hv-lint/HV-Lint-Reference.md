@@ -71,7 +71,7 @@ Indexes are committed to this repo (~4 MB total) so CI and contributors can run 
 | `hv-lint/update_data.py` | -- | Fetch + build all indexes and visit cache (single entry point) |
 | `hv-lint/.yamllint` | 1 | yamllint configuration |
 | `hv-lint/phase-1/run_phase1.py` | 1 | Phase 1 manager -- orchestrates all sub-components |
-| `hv-lint/phase-1/validate_yaml_structure.py` | 1 | Structural checks (1.1-1.5, 1.7, 1.9, 1.10) |
+| `hv-lint/phase-1/validate_yaml_structure.py` | 1 | Structural checks (1.1-1.5, 1.7, 1.9, 1.10, 1.11) |
 | `hv-lint/phase-1/run_yamllint.py` | 1 | yamllint wrapper |
 | `hv-lint/phase-1/check_quoting_rules.py` | 1 | Issue #387 quoting rule checker |
 | `hv-lint/phase-1/check_cross_block_consistency.py` | 1 | Cross-block slot consistency (1.6) |
@@ -194,7 +194,7 @@ The `HCHS` directory name maps to `hchs_sol` in the dbGaP cache (via `COHORT_TO_
 
 ## Phase 1: YAML Structural & Formatting
 
-**Scripts**: `hv-lint/phase-1/validate_yaml_structure.py` (checks 1.1-1.5, 1.7, 1.9, 1.10), `hv-lint/phase-1/run_yamllint.py`, `hv-lint/phase-1/check_quoting_rules.py`, `hv-lint/phase-1/check_cross_block_consistency.py` (1.6), `hv-lint/phase-1/check_cross_file_pht_consistency.py` (1.8)
+**Scripts**: `hv-lint/phase-1/validate_yaml_structure.py` (checks 1.1-1.5, 1.7, 1.9, 1.10, 1.11), `hv-lint/phase-1/run_yamllint.py`, `hv-lint/phase-1/check_quoting_rules.py`, `hv-lint/phase-1/check_cross_block_consistency.py` (1.6), `hv-lint/phase-1/check_cross_file_pht_consistency.py` (1.8)
 **Dependencies**: PyYAML
 **No schema or external data required** -- YAML files only.
 
@@ -254,6 +254,13 @@ Detect YAML keys with illegal internal spaces (e.g., `populated from:` instead o
 
 - **Patterns**: `populated from`, `slot derivations`, `class derivations`, `value mappings`, `object derivations`, `unit conversion`, `source unit`
 - **Severity**: CRITICAL -- key is silently ignored, data loss
+
+### 1.11 expr + value_mappings on One Slot
+
+Detect a slot derivation (at any nesting depth) that sets both `expr` and `value_mappings`. linkml-map evaluates `expr` before `populated_from` and applies `value_mappings` only on the `populated_from` path, so the mappings are silently ignored and the expr's raw result is emitted (#701: CARDIA Year 15 income emitted raw codes 1-11).
+
+- **Fix**: replace the expr with `populated_from` when the mappings carry the meaning; delete the dead mappings when the expr already returns final values
+- **Severity**: ERROR -- mappings silently ignored
 
 ---
 
