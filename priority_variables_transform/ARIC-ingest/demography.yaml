@@ -148,7 +148,6 @@
           populated_from: phv00511017
           value_mappings:
             C: OMOP:8527
-            # excluded: 'N' Otherwise -- non-white with no race given, so no race value can be asserted (#789)
 - class_derivations:
     Demography:
       populated_from: pht006468
@@ -472,7 +471,6 @@
           value_mappings:
             F: OMOP:8532
             M: OMOP:8507
-            # excluded: 'O' (n=27) -- not in dbGaP code list (F/M), meaning unknown
 - class_derivations:
     Demography:
       populated_from: pht009464
@@ -525,7 +523,6 @@
           value_mappings:
             F: OMOP:8532
             M: OMOP:8507
-            # excluded: '3' -- undocumented off-dictionary value (not in dbGaP code list, n<=3)
 - class_derivations:
     Demography:
       populated_from: pht004126

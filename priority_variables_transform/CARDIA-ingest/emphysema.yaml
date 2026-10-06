@@ -6,7 +6,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190551}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190551}) + ":CARDIA YEAR 20")'
-        # excluded: age_at_condition_start -- pht003298 (HeartGO) has no onset-age variable; phv00190622 is age at serum creatinine
         condition_concept:
           value: MONDO:0004849
         condition_status:
@@ -41,7 +40,6 @@
             '1': ABSENT
             '2': PRESENT
             'M': UNKNOWN
-            # excluded: '0', '3', '4', '9' -- undocumented off-dictionary value (not in dbGaP code list, n<=3)
         condition_provenance:
           value: PATIENT_SELF_REPORT
           range: string
@@ -69,8 +67,6 @@
             '1': ABSENT
             '2': PRESENT
             'M': UNKNOWN
-            # excluded: '0' -- undocumented in dbGaP (code list is 1=No, 2=Yes); its count only approximately matches the parent 'No' count, so it may be a skip code but cannot be asserted ABSENT
-            # excluded: '4', '8', '9' -- undocumented off-dictionary value (not in dbGaP code list, n<=3)
         condition_provenance:
           value: PATIENT_SELF_REPORT
           range: string
@@ -98,8 +94,6 @@
             '1': ABSENT
             '2': PRESENT
             'M': UNKNOWN
-            # excluded: '0' -- undocumented in dbGaP (code list is 1=No, 2=Yes); its count only approximately matches the parent 'No' count, so it may be a skip code but cannot be asserted ABSENT
-            # excluded: '3', '4' -- undocumented off-dictionary value (not in dbGaP code list, n<=3)
         condition_provenance:
           value: PATIENT_SELF_REPORT
           range: string
