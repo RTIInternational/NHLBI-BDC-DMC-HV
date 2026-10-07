@@ -1690,10 +1690,6 @@
           value: MONDO:0004979
           range: string
         condition_status:
-          populated_from: phv00072488
-          value_mappings:
-            '0': ABSENT
-            '1': HISTORICAL
           expr: case(({phv00072488} == 0, 'ABSENT'), ({phv00072489} == 0, 'HISTORICAL'),
             (True, 'PRESENT'))
         condition_provenance:
@@ -2155,7 +2151,7 @@
           populated_from: phv00274870
           value_mappings:
             '0': ABSENT
-            '1': ABSENT
+            '1': PRESENT
         condition_provenance:
           value: WORKING_DIAGNOSIS
           range: string
@@ -2180,7 +2176,7 @@
           populated_from: phv00275228
           value_mappings:
             '0': ABSENT
-            '1': ABSENT
+            '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
           value: WORKING_DIAGNOSIS
@@ -2206,7 +2202,7 @@
           populated_from: phv00276870
           value_mappings:
             '0': ABSENT
-            '1': ABSENT
+            '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT

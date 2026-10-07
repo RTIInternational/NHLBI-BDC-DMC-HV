@@ -6,8 +6,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190551}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190551}) + ":CARDIA YEAR 20")'
-        age_at_condition_start:
-          expr: "None if str({phv00190622}) == 'M' else float({phv00190622}) * 365"
         condition_concept:
           value: MONDO:0004849
         condition_status:
@@ -33,7 +31,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113261}) + ":CARDIA YEAR 0")'
         age_at_condition_start:
-          expr: "None if str({phv00113387}) == 'M' else float({phv00113387}) * 365"
+          expr: "None if str({phv00113380}) != '2' else (None if str({phv00113383}) == 'M' else float({phv00113383}) * 365)"
         condition_concept:
           value: MONDO:0004849
         condition_status:
@@ -41,6 +39,7 @@
           value_mappings:
             '1': ABSENT
             '2': PRESENT
+            'M': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
           range: string
@@ -59,7 +58,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113261}) + ":CARDIA YEAR 0")'
         age_at_condition_start:
-          expr: "None if str({phv00113387}) == 'M' else float({phv00113387}) * 365"
+          expr: "None if str({phv00113380}) != '2' else (None if str({phv00113383}) == 'M' else float({phv00113383}) * 365)"
         condition_concept:
           value: MONDO:0004849
         condition_status:
@@ -67,6 +66,7 @@
           value_mappings:
             '1': ABSENT
             '2': PRESENT
+            'M': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
           range: string
@@ -85,7 +85,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113261}) + ":CARDIA YEAR 0")'
         age_at_condition_start:
-          expr: "None if str({phv00113387}) == 'M' else float({phv00113387}) * 365"
+          expr: "None if str({phv00113380}) != '2' else (None if str({phv00113383}) == 'M' else float({phv00113383}) * 365)"
         condition_concept:
           value: MONDO:0004849
         condition_status:
@@ -93,6 +93,7 @@
           value_mappings:
             '1': ABSENT
             '2': PRESENT
+            'M': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
           range: string
@@ -118,6 +119,7 @@
             '1': ABSENT
             '2': PRESENT
             '8': ABSENT
+            'M': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
           range: string
@@ -161,7 +163,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119801}) + ":CARDIA YEAR 15")'
         age_at_condition_start:
-          expr: "None if str({phv00119967}) == 'M' else float({phv00119967}) * 365"
+          expr: "None if str({phv00119922}) == 'M' else float({phv00119922}) * 365"
         condition_concept:
           value: MONDO:0004849
         condition_status:
@@ -188,7 +190,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119801}) + ":CARDIA YEAR 15")'
         age_at_condition_start:
-          expr: "None if str({phv00119967}) == 'M' else float({phv00119967}) * 365"
+          expr: "None if str({phv00119922}) == 'M' else float({phv00119922}) * 365"
         condition_concept:
           value: MONDO:0004849
         condition_status:
