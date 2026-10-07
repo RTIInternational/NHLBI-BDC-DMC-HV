@@ -8,7 +8,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078506}) + ":WHI SCREENING")'
           range: string
         drug_concept:
-          expr: 'case(({phv00078559} == 1, "ATC:C02"))'
+          value: ATC:C02
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -30,7 +30,7 @@
         age_at_exposure_start:
           expr: 'case(({phv00170607} == 1, ({pht000998.phv00078437} * 365) + {phv00170608}))'
         drug_concept:
-          expr: 'case(({phv00170607} == 1, "ATC:C02"))'
+          value: ATC:C02
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -49,7 +49,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00170648}) + ":WHI SCREENING")'
           range: string
         drug_concept:
-          expr: 'case(({phv00170689} == 1, "ATC:C02"))'
+          value: ATC:C02
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -71,7 +71,7 @@
         age_at_exposure_start:
           expr: 'case(({phv00193667} == 1, ({pht000998.phv00078437} * 365) + {phv00193668}))'
         drug_concept:
-          expr: 'case(({phv00193667} == 1, "ATC:C02"))'
+          value: ATC:C02
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -93,7 +93,7 @@
         age_at_exposure_start:
           expr: 'case(({phv00193779} == 1, ({pht000998.phv00078437} * 365) + {phv00193780}))'
         drug_concept:
-          expr: 'case(({phv00193779} == 1, "ATC:C02"))'
+          value: ATC:C02
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string

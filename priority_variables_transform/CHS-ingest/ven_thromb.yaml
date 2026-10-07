@@ -334,6 +334,32 @@
         #   range: string
 - class_derivations:
     Condition:
+      populated_from: pht001483
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00103522}) + ":CHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00103522}) + ":CHS YEAR 15")'
+        condition_concept:
+          value: HP:0002625
+          range: string
+        condition_status:
+          populated_from: phv00103534
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT
+            '3': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
+- class_derivations:
+    Condition:
       populated_from: pht001484
       slot_derivations:
         associated_participant:
@@ -503,6 +529,7 @@
             '1': ABSENT
             '2': PRESENT
             '3': PRESENT
+            '0': ABSENT
         condition_provenance:
           value: PATIENT_SELF_REPORT
           range: string

@@ -8,7 +8,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078435}) + ":WHI SCREENING")'
           range: string
         drug_concept:
-          expr: 'case(({phv00078469} == 1, "MeSH:D007328"))'
+          value: MeSH:D007328
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -30,7 +30,7 @@
         age_at_exposure_start:
           expr: 'case(({phv00170601} == 1, ({pht000998.phv00078437} * 365) + {phv00170602}))'
         drug_concept:
-          expr: 'case(({phv00170601} == 1, "MeSH:D007328"))'
+          value: MeSH:D007328
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -49,7 +49,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00170648}) + ":WHI SCREENING")'
           range: string
         drug_concept:
-          expr: 'case(({phv00170683} == 1, "MeSH:D007328"))'
+          value: MeSH:D007328
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -71,7 +71,7 @@
         age_at_exposure_start:
           expr: 'case(({phv00193671} == 1, ({pht000998.phv00078437} * 365) + {phv00193672}))'
         drug_concept:
-          expr: 'case(({phv00193671} == 1, "MeSH:D007328"))'
+          value: MeSH:D007328
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -93,7 +93,7 @@
         age_at_exposure_start:
           expr: 'case(({phv00193783} == 1, ({pht000998.phv00078437} * 365) + {phv00193784}))'
         drug_concept:
-          expr: 'case(({phv00193783} == 1, "MeSH:D007328"))'
+          value: MeSH:D007328
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
