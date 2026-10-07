@@ -1,30 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001451
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00099663}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00099663}) + ":CHS BASELINE 2")'
-        observation_type:
-          value: OBA:1001086
-          range: string
-        body_position:
-          value: "SUPINE_BODY_POSITION"
-        method_type:
-          value: "Electrocardiogram"
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht001451
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00100061
-                unit:
-                  value: ms
-                  range: string
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht001452
       slot_derivations:
         associated_participant:
@@ -145,31 +120,6 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00104986
-                unit:
-                  value: ms
-                  range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001490
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00105099}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
-        observation_type:
-          value: OBA:1001086
-          range: string
-        body_position:
-          value: "SUPINE_BODY_POSITION"
-        method_type:
-          value: "Electrocardiogram"
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht001490
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00106353
                 unit:
                   value: ms
                   range: string

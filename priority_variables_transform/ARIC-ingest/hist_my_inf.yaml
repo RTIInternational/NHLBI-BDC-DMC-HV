@@ -349,9 +349,10 @@
           range: string
         condition_status:
           populated_from: phv00204841
+          # dbGaP labels this variable 0=Yes, 1=No; the label is inverted (#869): ECGMI04/ECGMI51 code 1=Yes with similar small counts, and '0' covers ~97% of participants
           value_mappings:
-            '0': HISTORICAL
-            '1': ABSENT
+            '0': ABSENT
+            '1': HISTORICAL
             T: UNKNOWN
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
@@ -899,9 +900,10 @@
           range: string
         condition_status:
           populated_from: phv00511964
+          # dbGaP labels this variable 0=Yes, 1=No; the label is inverted (#869): ECGMI04/ECGMI51 code 1=Yes with similar small counts, and '0' covers ~97% of participants
           value_mappings:
-            '1': ABSENT
-            '0': HISTORICAL
+            '1': HISTORICAL
+            '0': ABSENT
             M: UNKNOWN
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION

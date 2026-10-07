@@ -2,12 +2,9 @@
     Person:
       populated_from: pht003099
       joins:
-        pht002075:
+        pht003317:
           source_key: phv00177926
-          lookup_key: phv00146738
-        pht000094:
-          source_key: phv00177926
-          lookup_key: phv00030516
+          lookup_key: phv00190826
       slot_derivations:
         id:
           expr: 'uuid5("https://w3id.org/bdchm/Person", str({dbGaP_Subject_ID}))'
@@ -16,45 +13,8 @@
         species:
           value: NCBITaxon:9606
         vital_status:
-          expr: 'case(({pht002075.phv00146741} is not None, "OMOP:434489"))'
+          expr: 'case(({pht003317.phv00190831} is not None, "OMOP:434489"))'
         age_at_death:
-          expr: 'case(({pht002075.phv00146741} is not None, {pht002075.phv00146741} * 365))'
-        cause_of_death:
-          class_derivations:
-          - CauseOfDeath:
-              populated_from: pht003099
-              joins:
-                pht000094:
-                  source_key: phv00177926
-                  lookup_key: phv00030516
-              slot_derivations:
-                cause:
-                  # pht000094.phv00030515 = icd_sys (ICD version: 8 or 9)
-                  # pht000094.phv00030512 = icdecod1 (main/underlying cause of death)
-                  expr: 'case(({pht000094.phv00030515} == 9 and {pht000094.phv00030512} is not None, "ICD9CM:" + str({pht000094.phv00030512})), ({pht000094.phv00030515} == 8 and {pht000094.phv00030512} is not None, "ICD8CM:" + str({pht000094.phv00030512})))'
-                order:
-                  value: 1
-          - CauseOfDeath:
-              populated_from: pht003099
-              joins:
-                pht000094:
-                  source_key: phv00177926
-                  lookup_key: phv00030516
-              slot_derivations:
-                cause:
-                  # pht000094.phv00030513 = icdecod2 (secondary cause of death)
-                  expr: 'case(({pht000094.phv00030515} == 9 and {pht000094.phv00030513} is not None, "ICD9CM:" + str({pht000094.phv00030513})), ({pht000094.phv00030515} == 8 and {pht000094.phv00030513} is not None, "ICD8CM:" + str({pht000094.phv00030513})))'
-                order:
-                  value: 2
-          - CauseOfDeath:
-              populated_from: pht003099
-              joins:
-                pht000094:
-                  source_key: phv00177926
-                  lookup_key: phv00030516
-              slot_derivations:
-                cause:
-                  # pht000094.phv00030514 = icdecod3 (tertiary cause of death)
-                  expr: 'case(({pht000094.phv00030515} == 9 and {pht000094.phv00030514} is not None, "ICD9CM:" + str({pht000094.phv00030514})), ({pht000094.phv00030515} == 8 and {pht000094.phv00030514} is not None, "ICD8CM:" + str({pht000094.phv00030514})))'
-                order:
-                  value: 3
+          expr: 'case(({pht003317.phv00190831} is not None, ({phv00177930} * 365) + {pht003317.phv00190831}))'
+        # excluded: cause_of_death - pht000094 (UCOD phv00021941, COD1-COD9 phv00021942-phv00021950) carries
+        # no ICD-revision variable, so the ICD8/ICD9 prefix the codes need cannot be derived (see #594, #255).
