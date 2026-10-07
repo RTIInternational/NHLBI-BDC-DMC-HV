@@ -5,6 +5,7 @@ Orchestrates the Phase 3 sub-components in sequence:
   1. dbGaP cross-reference    (validate_dbgap_crossref.py)  -- checks 3.1-3.5
   2. Semantic validation       (validate_semantic.py)        -- checks 3.9, 3.10, 3.12-3.16
   3. Value semantic alignment  (check_value_semantic.py)     -- check 3.11
+  4. Status-slot semantics    (check_status_semantic.py)    -- checks 3.17, 3.18
 
 Each sub-component runs independently and reports its own findings.
 The manager collects exit codes and reports a consolidated summary.
@@ -43,6 +44,12 @@ COMPONENTS = {
     "value-semantic": {
         "script": SCRIPT_DIR / "check_value_semantic.py",
         "label": "Value Semantic Alignment (3.11)",
+        "cohort_flag": "--cohort",
+        "extra_args": [],
+    },
+    "status-semantic": {
+        "script": SCRIPT_DIR / "check_status_semantic.py",
+        "label": "Status-Slot Semantics (3.17, 3.18)",
         "cohort_flag": "--cohort",
         "extra_args": [],
     },

@@ -164,11 +164,13 @@ jobs:
             2>&1 | tee gate-phase2-output.txt
           exit "${PIPESTATUS[0]}"
 
-      # Cross-reference (3.1-3.5) + value-semantic (3.11), enforced across all
-      # cohorts. FHS person.yaml is suppressed via KNOWN_ISSUES in
-      # validate_dbgap_crossref.py (real mapping error, tracked in #594);
-      # everything else is enforced. Semantic (3.9-3.16) stays advisory.
-      - name: "Gate: dbGaP cross-reference 3.1-3.5 + value-semantic 3.11 (enforced)"
+      # Cross-reference (3.1-3.5) + value-semantic (3.11) + status-semantic
+      # (3.17-3.18), enforced across all cohorts. FHS person.yaml is suppressed
+      # via KNOWN_ISSUES in validate_dbgap_crossref.py (real mapping error,
+      # tracked in #594); 3.17/3.18 hits on main are listed in KNOWN_ISSUES in
+      # check_status_semantic.py; everything else is enforced. Semantic
+      # (3.9-3.16) stays advisory.
+      - name: "Gate: dbGaP cross-reference 3.1-3.5 + value-semantic 3.11, 3.17-3.18 (enforced)"
         id: gate_phase3
         if: always()
         run: |
