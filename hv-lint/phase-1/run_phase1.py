@@ -64,6 +64,13 @@ COMPONENTS = {
         "extra_args": [],
         "supports_fail_on": True,
     },
+    "cross-file-dup": {
+        "script": SCRIPT_DIR / "check_cross_file_duplicates.py",
+        "label": "Cross-File Identical Blocks (1.12)",
+        "cohort_flag": "--cohort",
+        "extra_args": [],
+        "supports_fail_on": True,
+    },
 }
 
 

@@ -1,4 +1,14 @@
-"""Check for PHVs mapped as measured values in multiple harmonized variables."""
+"""Check for PHVs mapped as measured values in multiple harmonized variables.
+
+DrugExposure is deliberately not checked here. This check flags a PHV mapped
+to more than one distinct concept, and for medications that is often by
+design: spironolactone is both a diuretic and an aldosterone blocker, and a
+drug-class block can sit beside a drug-name block for the same question
+(45 such PHVs on main, 2026-10-07). It also cannot see the real medication
+defect, the same block in two files with the SAME concept (44 FHS pairs).
+HV-Lint rule 1.12 (hv-lint/phase-1/check_cross_file_duplicates.py) covers
+that for every class, DrugExposure included.
+"""
 
 import sys
 from collections import defaultdict
