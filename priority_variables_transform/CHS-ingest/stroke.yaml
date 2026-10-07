@@ -127,11 +127,15 @@
 - class_derivations:
     Condition:
       populated_from: pht001464
+      joins:
+        pht001452:
+          source_key: phv00100773
+          lookup_key: phv00100285
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00100773}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100773}) + ":CHS SUMMARY")'
+        age_at_condition_start:
+          expr: 'case(({phv00100792} == 1, ({pht001452.phv00100487} * 365) + {phv00100793}))'
         condition_concept:
           value: MONDO:0005098
           range: string
@@ -141,7 +145,7 @@
             '0': ABSENT
             '1': HISTORICAL
         condition_provenance:
-          value: PATIENT_SELF_REPORT
+          value: PHYSICIAN_ADJUDICATION
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -152,11 +156,15 @@
 - class_derivations:
     Condition:
       populated_from: pht001466
+      joins:
+        pht001452:
+          source_key: phv00100808
+          lookup_key: phv00100285
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00100808}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100808}) + ":CHS EVENTS")'
+        age_at_condition_start:
+          expr: '{pht001452.phv00100487} * 365'
         condition_concept:
           value: MONDO:0005098
           range: string
@@ -164,8 +172,9 @@
           populated_from: phv00100815
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
-            '2': UNKNOWN
+            '1': PRESENT
+            '2': PRESENT
+            '3': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
           range: string
@@ -178,18 +187,21 @@
 - class_derivations:
     Condition:
       populated_from: pht001466
+      joins:
+        pht001452:
+          source_key: phv00100808
+          lookup_key: phv00100285
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00100808}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100808}) + ":CHS EVENTS")'
+        age_at_condition_start:
+          expr: 'case(({phv00100824} == 3, ({pht001452.phv00100487} * 365) + {phv00100825}))'
         condition_concept:
-          expr: case(({phv00100830} == 1, "HP:0002140"), (True, "MONDO:0013792"))
+          expr: 'case(({phv00100824} == 3 and {phv00100830} == 1, "HP:0002140"), ({phv00100824} == 3 and {phv00100830} == 0, "MONDO:0013792"), ({phv00100824} == 3, "MONDO:0005098"))'
         condition_status:
-          value: HISTORICAL
-          range: string
+          expr: 'case(({phv00100824} == 3, "PRESENT"))'
         condition_provenance:
-          value: PATIENT_SELF_REPORT
+          value: PHYSICIAN_ADJUDICATION
           range: string
         relationship_to_participant:
           value: ONESELF
