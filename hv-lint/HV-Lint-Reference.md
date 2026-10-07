@@ -43,7 +43,8 @@ HV-Lint is organized into four phases with increasing data requirements:
 Phases 3 and 5 use **compressed JSON indexes** (committed in `hv-lint/dbgap-cache/`) instead of raw XML:
 
 1. **Basic index** (`<cohort>.json.gz`) -- maps each base PHV to base PHT (~425 KB total). Used by rules 3.1-3.5.
-2. **Extended detail index** (`<cohort>_detail.json.gz`) -- adds variable name, type, unit, description, coded values, and collection interval (`coll_interval`). Used by rules 3.9-3.16 and 5.8.
+2. **Extended detail index** (`<cohort>_detail.json.gz`) -- adds variable name, type, unit, description, coded values, and collection interval (`coll_interval`). Used by rules 3.9-3.18 and 5.8.
+3. **Value-count index** (`<cohort>_stats.json.gz`) -- for each coded variable, the var_report non-null count `n` and the count of each observed code (dbGaP's published aggregate summaries; no participant data). Used by rules 3.17b and 3.18. Built by `hv-lint/build_phv_stats_index.py` from the `*.var_report.xml` files of the pinned release (~1 MB for all cohorts); `update_data.py` does not fetch var_reports yet.
 
 Indexes are committed to this repo (~4 MB total) so CI and contributors can run lint without fetching from NCBI. To rebuild: `python hv-lint/update_data.py --build-only`.
 
@@ -76,6 +77,7 @@ Indexes are committed to this repo (~4 MB total) so CI and contributors can run 
 | `hv-lint/phase-1/check_quoting_rules.py` | 1 | Issue #387 quoting rule checker |
 | `hv-lint/phase-1/check_cross_block_consistency.py` | 1 | Cross-block slot consistency (1.6) |
 | `hv-lint/phase-1/check_cross_file_pht_consistency.py` | 1 | Cross-file PHT visit label consistency (1.8) |
+| `hv-lint/phase-1/check_cross_file_duplicates.py` | 1 | Cross-file identical blocks (1.12) |
 | `hv-lint/phase-2/run_phase2.py` | 2 | Phase 2 manager -- orchestrates model conformance and PHV dedup |
 | `hv-lint/phase-2/validate_model_conformance.py` | 2 | BDC-HM model conformance checks (2.1-2.7, 2.5b, 2.10-2.11) |
 | `hv-lint/phase-2/check_phv_dedup.py` | 2 | PHV deduplication check (2.8) |
@@ -83,6 +85,9 @@ Indexes are committed to this repo (~4 MB total) so CI and contributors can run 
 | `hv-lint/phase-3/validate_dbgap_crossref.py` | 3 | dbGaP cross-reference checks (3.1-3.5) |
 | `hv-lint/phase-3/validate_semantic.py` | 3 | Semantic validation (3.9, 3.10, 3.12-3.16) |
 | `hv-lint/phase-3/check_value_semantic.py` | 3 | Value-mapping label/OMOP semantic check (3.11) |
+| `hv-lint/phase-3/check_status_semantic.py` | 3 | Status-slot polarity and follow-up checks (3.17, 3.18) |
+| `hv-lint/build_phv_stats_index.py` | -- | Builds compressed value-count indexes from var_report files |
+| `hv-lint/tests/` | -- | Unit tests (`python -m pytest hv-lint/tests/`) |
 | `hv-lint/build_phv_index.py` | -- | Builds compressed PHV-to-PHT indexes from bulk HTML cache |
 | `hv-lint/build_phv_detail_index.py` | -- | Builds extended PHV detail indexes from FTP data_dict.xml files |
 | `hv-lint/phase-5/run_phase5.py` | 5 | Phase 5 manager -- orchestrates visit structure validation |
@@ -194,7 +199,7 @@ The `HCHS` directory name maps to `hchs_sol` in the dbGaP cache (via `COHORT_TO_
 
 ## Phase 1: YAML Structural & Formatting
 
-**Scripts**: `hv-lint/phase-1/validate_yaml_structure.py` (checks 1.1-1.5, 1.7, 1.9, 1.10, 1.11), `hv-lint/phase-1/run_yamllint.py`, `hv-lint/phase-1/check_quoting_rules.py`, `hv-lint/phase-1/check_cross_block_consistency.py` (1.6), `hv-lint/phase-1/check_cross_file_pht_consistency.py` (1.8)
+**Scripts**: `hv-lint/phase-1/validate_yaml_structure.py` (checks 1.1-1.5, 1.7, 1.9, 1.10, 1.11), `hv-lint/phase-1/run_yamllint.py`, `hv-lint/phase-1/check_quoting_rules.py`, `hv-lint/phase-1/check_cross_block_consistency.py` (1.6), `hv-lint/phase-1/check_cross_file_pht_consistency.py` (1.8), `hv-lint/phase-1/check_cross_file_duplicates.py` (1.12)
 **Dependencies**: PyYAML
 **No schema or external data required** -- YAML files only.
 
@@ -261,6 +266,16 @@ Detect a slot derivation (at any nesting depth) that sets both `expr` and `value
 
 - **Fix**: replace the expr with `populated_from` when the mappings carry the meaning; delete the dead mappings when the expr already returns final values
 - **Severity**: CRITICAL -- mappings silently ignored (same class as 1.10)
+
+### 1.12 Cross-File Identical Blocks
+
+Detect blocks in different files of the same cohort that emit the same record: identical on class, `populated_from` table, source (the status / value slot's `populated_from` or `expr`), concept (`drug_concept`, `condition_concept`, `procedure_concept` or `observation_type`), `associated_visit`, and the status / value slot's `value_mappings`. Covers every class, DrugExposure included (#879; 13 identical DrugExposure pairs were removed by hand in #833).
+
+- **Not compared**: provenance, evidence, age and other context slots -- two blocks that differ only there still emit the same fact twice. The finding names the slots that differ, or says the blocks are identical apart from `range:` annotations.
+- **Classes without a status / value slot** (Visit, Person, Demography, ...): compared on the whole block body, so only exact copies match.
+- **Within one file**: left to 1.2.
+- **Known issues**: `KNOWN_ISSUES` in the script, keyed `"<file_a>|<file_b>|<source phv>"` (cohort-relative paths, sorted). A listed group is reported at INFO with its reason. Seeded with every hit on main (2026-10-07): the 44 FHS `med_use.yaml` / `tak_*` / `hypert_trt.yaml` pairs (#785 decision 1), the 6 Condition pairs listed in #872, and 7 further Condition pairs this rule found.
+- **Severity**: ERROR
 
 ---
 
@@ -349,6 +364,7 @@ Validates that values assigned to enum-typed slots are members of the BDCHM-defi
 Flag any PHV accession that is mapped as a measured value in more than one harmonized variable block within the same cohort.
 
 - **Severity**: WARNING
+- **DrugExposure is not covered** (here or in the root `check_phv_dedup.py`): a medication PHV mapped to two different concepts is often deliberate (spironolactone as diuretic and aldosterone blocker; a class block beside a drug-name block -- 45 such PHVs on main, 2026-10-07), and the real medication defect, the same block in two files with the same concept, is invisible to a distinct-concept check. Rule 1.12 covers it.
 
 ### 2.10 Unconditional age_at_condition_start on Binary Conditions
 
@@ -366,9 +382,9 @@ Flag Condition blocks where `condition_status.value_mappings` maps PRESENT or HI
 
 ## Phase 3: dbGaP Structure & Cross-Reference
 
-**Scripts**: `hv-lint/phase-3/validate_dbgap_crossref.py` (checks 3.1-3.5), `hv-lint/phase-3/validate_semantic.py` (checks 3.9, 3.10, 3.12-3.16), `hv-lint/phase-3/check_value_semantic.py` (3.11)
+**Scripts**: `hv-lint/phase-3/validate_dbgap_crossref.py` (checks 3.1-3.5), `hv-lint/phase-3/validate_semantic.py` (checks 3.9, 3.10, 3.12-3.16), `hv-lint/phase-3/check_value_semantic.py` (3.11), `hv-lint/phase-3/check_status_semantic.py` (3.17, 3.18)
 **Dependencies**: PyYAML, gzip, json
-**Data required**: YAML files + compressed indexes from `--cache-dir` (basic index for 3.1-3.5; extended detail index for 3.9-3.16)
+**Data required**: YAML files + compressed indexes from `--cache-dir` (basic index for 3.1-3.5; extended detail index for 3.9-3.18; value-count index for 3.17b and 3.18)
 
 ### 3.1 PHV/PHT Accession Format Validation
 
@@ -461,6 +477,30 @@ Validates that Quantity class blocks containing `value_decimal` or `value_intege
 
 - **Checks**: Both top-level `class_derivations` and nested `object_derivations`
 - **Severity**: WARNING
+
+### 3.17 Status Polarity
+
+Validates that a status slot (`condition_status`, `exposure_status`, `procedure_status`, or any other `*_status` slot read with `populated_from` + `value_mappings`) does not map a code to the opposite of what dbGaP says it means.
+
+- **3.17a (labels)**: a code whose dbGaP label clearly means no / never / none / not taking maps to PRESENT or HISTORICAL; or a clearly affirmative label ("Yes", "Yes, now", "Taking", "Present", "Positive") maps to ABSENT.
+  - Conservative label parsing: hedged or missing-like labels are never judged ("Yes, not now", "Yes, doubtful", "Don't know", "Not sure", "No answer", "Not applicable", anything with "but"); a time-limited negative ("Not present now, formerly definite", "No longer") is not judged either, because HISTORICAL may carry it.
+  - A negative label on a conditional follow-up (3.18) is not reported: "No" to "hospitalized for MI?" mapped PRESENT is right, the person had the MI.
+- **3.17b (unlabelled 1/2 flags)**: the variable has no code labels, its var_report shows codes 1 and 2 but never 0, and it is mapped `'0': ABSENT, '1': PRESENT`. `'0'` never fires and the "No" of a 1 = No / 2 = Yes flag is emitted PRESENT (CARDIA endpoint flags, fixed in 72d11db1). Needs the value-count index.
+- **Cannot see**: dbGaP labels that are themselves inverted (ARIC ECGMI32/41, COMPLQ01). Those fire on a correct mapping and are listed in `KNOWN_ISSUES` with the evidence; report them in `transform_assessment/dbgap_errors_to_report.md`.
+- **Known issues**: `KNOWN_ISSUES` in `check_status_semantic.py`, keyed `"<cohort>-ingest/<file>.yaml:<phv>:<check>"`; a listed finding is reported at INFO.
+- **Severity**: ERROR (enforced in the Phase 3 gate)
+
+### 3.18 Conditional Follow-up Mapped to ABSENT
+
+Validates that a `condition_status` does not map `'0'` (or a "No" code) to ABSENT when the variable is a follow-up asked only of people who reported the condition -- "Hospitalized for MI?" after "New MI? Yes". Its "No" means "had it, not hospitalized"; ABSENT records "no MI" for people who had one (CHS MIHOSP/ANHOSP/CHHOSP/STHOSP/TIHOSP, fixed in 5bdff784).
+
+- **Sibling**: an earlier coded yes/no variable in the same table naming the same condition (fixed vocabulary: MI, angina, stroke, TIA, heart failure, COPD, emphysema, bronchitis, asthma, diabetes, hypertension, AF, PAD, VTE, LVH, CHD, cancer, kidney disease), not itself worded as a follow-up, not about a relative, not a "form present" flag, and not from another exam of the same table.
+- **Signal (a), counts**: the variable's var_report n is between 0.5x and 1.1x the sibling's "yes" count, the sibling is answered "yes" by at most half its respondents, and that "yes" count is at least 5 (MIHOSP59 n = 38, NEWMI59 yes = 38).
+- **Signal (b), wording**: "hospitalized", "hospital for", "treated in", "seen by", "how old", "under medical care", "emergency room".
+- **Rule**: flag on (a); (b) plus a sibling is used only when the cohort has no value-count index. When counts exist they decide, so an interval question asked of everyone ("since your last exam, were you hospitalized for heart failure?") is not flagged.
+- **Not checked**: drug and procedure status (a "taking meds for diabetes?" follow-up asks about the drug itself, so its "No" is a true ABSENT), and confirmation / adjudication follow-ups ("CONFIRMED: ATRIAL FIBRILLATION"), whose "No" re-decides the condition.
+- **Known issues**: as 3.17.
+- **Severity**: ERROR when (a) and (b) both hold; WARNING otherwise. The finding names the sibling and both counts.
 
 ---
 
