@@ -1,0 +1,168 @@
+#!/usr/bin/env python3
+"""Build compressed PHV value-count indexes from dbGaP var_report files.
+
+Parses every ``*.var_report.xml`` for a cohort and writes
+``<cohort>_stats.json.gz`` with, for each coded variable, the number of
+non-null values and the count of each observed code:
+
+    {"phv00101487": {"n": 38, "c": {"1": 37, "0": 1}}, ...}
+
+These are dbGaP's published aggregate summaries (the "Variable Report"
+tables on the study pages). No participant-level data is read or stored.
+
+The index powers the HV-Lint rules that need observed values rather than
+dictionary text: 3.17b (an unlabelled 1/2-coded flag mapped with 0/1 keys)
+and 3.18 (a conditional follow-up question mapped to ABSENT).
+
+Only the consent-group total is used (variable ids without a ``.cN``
+suffix). Only variables with ``<enum>`` counts are kept: continuous
+variables are not needed by any rule and would triple the file size.
+
+Usage:
+    # From the hv-lint cache (fetched by update_data.py):
+    python hv-lint/build_phv_stats_index.py --cohort chs
+
+    # From any directory holding the pinned study's var_report files:
+    python hv-lint/build_phv_stats_index.py --cohort chs \\
+        --source-dir /path/to/phs000287.v7.p1/pheno_variable_summaries
+
+``update_data.py`` fetches only the data dictionaries, so the var_report
+files come from any staging of the pinned release (the hv_dataqc cache
+fetcher's ``--include-var-reports``, or the AI repo's ``data/dbgap/``).
+Pass ``--study-prefix`` so files from another release in the same
+directory are ignored. ``--cohort`` is the cache key the detail index uses;
+the output is named ``<key>_stats.json.gz`` next to ``<key>_detail.json.gz``.
+"""
+
+from __future__ import annotations
+
+import argparse
+import gzip
+import json
+import sys
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
+HVLINT_DIR = Path(__file__).resolve().parent
+CACHE_DIR = HVLINT_DIR / "dbgap-cache"
+
+
+def parse_var_report(path: Path) -> dict[str, dict]:
+    """Parse one ``*.var_report.xml`` and return ``{base_phv: {"n", "c"}}``.
+
+    ``c`` maps each observed code to its count. An ``<enum>`` with a ``code``
+    attribute is a coded value whose text is the label; one without a
+    ``code`` attribute is an uncoded integer value whose text is the value
+    itself (CARDIA endpoint flags are published this way), so the text is
+    used as the key.
+    """
+    try:
+        root = ET.parse(path).getroot()
+    except ET.ParseError as exc:
+        print(f"  WARN: XML parse error in {path.name}: {exc}", file=sys.stderr)
+        return {}
+
+    records: dict[str, dict] = {}
+    for var in root.iter("variable"):
+        var_id = var.get("id", "")
+        # Consent-group rows repeat the variable as phvNNN.vN.pN.cN.
+        if ".c" in var_id:
+            continue
+        base_phv = var_id.split(".")[0]
+        if not base_phv.startswith("phv"):
+            continue
+        stats = var.find("total/stats")
+        if stats is None:
+            continue
+        enums = stats.findall("enum")
+        if not enums:
+            continue
+        stat = stats.find("stat")
+        try:
+            n = int(stat.get("n", "0")) if stat is not None else 0
+        except ValueError:
+            n = 0
+        counts: dict[str, int] = {}
+        for e in enums:
+            key = e.get("code")
+            if key is None:
+                key = (e.text or "").strip()
+            try:
+                counts[key] = counts.get(key, 0) + int(e.get("count", "0"))
+            except ValueError:
+                continue
+        records[base_phv] = {"n": n, "c": counts}
+    return records
+
+
+def build_stats_index(
+    cohort_key: str,
+    source_dir: Path,
+    output_dir: Path,
+    *,
+    study_prefix: str | None = None,
+) -> int:
+    """Build ``<cohort_key>_stats.json.gz`` from ``source_dir``. Returns PHV count.
+
+    ``study_prefix`` (e.g. ``"phs000287.v7."``) restricts the build to files
+    from the pinned study version, so a directory that also holds another
+    study's or version's reports cannot leak into the index.
+    """
+    files = sorted(source_dir.glob("*.var_report.xml"))
+    if study_prefix:
+        files = [f for f in files if f.name.startswith(study_prefix)]
+    if not files:
+        print(f"  [stats] No var_report.xml files for {cohort_key} in {source_dir} -- skipping")
+        return 0
+
+    index: dict[str, dict] = {}
+    for f in files:
+        index.update(parse_var_report(f))
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    gz_path = output_dir / f"{cohort_key}_stats.json.gz"
+    json_bytes = json.dumps(
+        dict(sorted(index.items())), separators=(",", ":"), ensure_ascii=True
+    ).encode("utf-8")
+    # mtime=0 keeps the gzip header stable, so a rebuild from the same
+    # files produces a byte-identical index and no spurious git diff.
+    with gz_path.open("wb") as raw, gzip.GzipFile(
+        fileobj=raw, mode="wb", mtime=0
+    ) as gz:
+        gz.write(json_bytes)
+
+    print(
+        f"  [stats] {cohort_key:12s}: {len(index):>7,} coded PHVs, "
+        f"{len(files):>4} files -> {gz_path.stat().st_size:>9,} bytes"
+    )
+    return len(index)
+
+
+def main() -> int:
+    p = argparse.ArgumentParser(
+        description="Build PHV value-count indexes from dbGaP var_report files"
+    )
+    p.add_argument("--cohort", required=True,
+                   help="Cache key of the matching detail index (the stem before "
+                        "_detail.json.gz) -- names the output file")
+    p.add_argument("--source-dir", default=None,
+                   help="Directory of *.var_report.xml (default: "
+                        "hv-lint/dbgap-cache/<cohort>/pheno_variable_summaries)")
+    p.add_argument("--study-prefix", default=None,
+                   help="Only read files whose name starts with this, e.g. phs000287.v7.")
+    p.add_argument("--output-dir", default=str(CACHE_DIR),
+                   help="Output directory (default: hv-lint/dbgap-cache)")
+    args = p.parse_args()
+
+    source = (Path(args.source_dir) if args.source_dir
+              else CACHE_DIR / args.cohort / "pheno_variable_summaries")
+    if not source.is_dir():
+        print(f"ERROR: source directory not found: {source}", file=sys.stderr)
+        return 1
+    n = build_stats_index(args.cohort, source, Path(args.output_dir),
+                          study_prefix=args.study_prefix)
+    return 0 if n else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
