@@ -1,130 +1,806 @@
 - class_derivations:
-    MeasurementObservation:
+    MeasurementObservationSet:
       populated_from: pht000299
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00036379}) + ":FHS")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036379}) + ":" + case(({phv00036348} == ''0'', ''FHS ORIGINAL EXAM 11''), ({phv00036348} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00036348} == ''3'', ''FHS GENERATION 3 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
-        age_at_observation:
-          expr: 'case(({phv00036348} == ''0'', {pht003099.phv00177950} * 365), ({phv00036348} == ''1'', {pht003099.phv00177930} * 365), ({phv00036348} == ''3'', {pht003099.phv00177930} * 365))'
-        observation_type:
-          value: OMOP:4273023
-          range: string
-        method_type:
-          value: CYCLE 1 LEAD II
-          range: string
-        value_quantity:
+        observations:
           class_derivations:
-          - Quantity:
+          - MeasurementObservation:
               populated_from: pht000299
               slot_derivations:
-                value_decimal:
-                  populated_from: phv00036353
-                unit:
-                  value: ms
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00036379}) + ":FHS")'
+                age_at_observation:
+                  expr: 'case(({phv00036348} == ''0'', {pht003099.phv00177950} * 365), ({phv00036348} == ''1'', {pht003099.phv00177930} * 365), ({phv00036348} == ''3'', {pht003099.phv00177930} * 365))'
+                observation_type:
+                  value: OMOP:4274406
                   range: string
+                method_type:
+                  value: Electrocardiogram, cycle 1 lead II
+                  range: string
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000299
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00036357
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000299
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00036379}) + ":FHS")'
+                age_at_observation:
+                  expr: 'case(({phv00036348} == ''0'', {pht003099.phv00177950} * 365), ({phv00036348} == ''1'', {pht003099.phv00177930} * 365), ({phv00036348} == ''3'', {pht003099.phv00177930} * 365))'
+                observation_type:
+                  value: OBA:1001086
+                  range: string
+                method_type:
+                  value: Electrocardiogram, cycle 1 lead II
+                  range: string
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000299
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00036361
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000299
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00036379}) + ":FHS")'
+                age_at_observation:
+                  expr: 'case(({phv00036348} == ''0'', {pht003099.phv00177950} * 365), ({phv00036348} == ''1'', {pht003099.phv00177930} * 365), ({phv00036348} == ''3'', {pht003099.phv00177930} * 365))'
+                observation_type:
+                  value: OMOP:4273023
+                  range: string
+                method_type:
+                  value: Electrocardiogram, cycle 1 lead II
+                  range: string
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000299
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00036353
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000299
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00036379}) + ":FHS")'
+                age_at_observation:
+                  expr: 'case(({phv00036348} == ''0'', {pht003099.phv00177950} * 365), ({phv00036348} == ''1'', {pht003099.phv00177930} * 365), ({phv00036348} == ''3'', {pht003099.phv00177930} * 365))'
+                observation_type:
+                  value: OMOP:4274406
+                  range: string
+                method_type:
+                  value: Electrocardiogram, cycle 2 lead II
+                  range: string
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000299
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00036358
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000299
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00036379}) + ":FHS")'
+                age_at_observation:
+                  expr: 'case(({phv00036348} == ''0'', {pht003099.phv00177950} * 365), ({phv00036348} == ''1'', {pht003099.phv00177930} * 365), ({phv00036348} == ''3'', {pht003099.phv00177930} * 365))'
+                observation_type:
+                  value: OBA:1001086
+                  range: string
+                method_type:
+                  value: Electrocardiogram, cycle 2 lead II
+                  range: string
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000299
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00036362
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000299
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00036379}) + ":FHS")'
+                age_at_observation:
+                  expr: 'case(({phv00036348} == ''0'', {pht003099.phv00177950} * 365), ({phv00036348} == ''1'', {pht003099.phv00177930} * 365), ({phv00036348} == ''3'', {pht003099.phv00177930} * 365))'
+                observation_type:
+                  value: OMOP:4273023
+                  range: string
+                method_type:
+                  value: Electrocardiogram, cycle 2 lead II
+                  range: string
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000299
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00036354
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000299
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00036379}) + ":FHS")'
+                age_at_observation:
+                  expr: 'case(({phv00036348} == ''0'', {pht003099.phv00177950} * 365), ({phv00036348} == ''1'', {pht003099.phv00177930} * 365), ({phv00036348} == ''3'', {pht003099.phv00177930} * 365))'
+                observation_type:
+                  value: OMOP:4274406
+                  range: string
+                method_type:
+                  value: Electrocardiogram, cycle 1 lead V2
+                  range: string
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000299
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00036359
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000299
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00036379}) + ":FHS")'
+                age_at_observation:
+                  expr: 'case(({phv00036348} == ''0'', {pht003099.phv00177950} * 365), ({phv00036348} == ''1'', {pht003099.phv00177930} * 365), ({phv00036348} == ''3'', {pht003099.phv00177930} * 365))'
+                observation_type:
+                  value: OBA:1001086
+                  range: string
+                method_type:
+                  value: Electrocardiogram, cycle 1 lead V2
+                  range: string
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000299
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00036363
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000299
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00036379}) + ":FHS")'
+                age_at_observation:
+                  expr: 'case(({phv00036348} == ''0'', {pht003099.phv00177950} * 365), ({phv00036348} == ''1'', {pht003099.phv00177930} * 365), ({phv00036348} == ''3'', {pht003099.phv00177930} * 365))'
+                observation_type:
+                  value: OMOP:4273023
+                  range: string
+                method_type:
+                  value: Electrocardiogram, cycle 1 lead V2
+                  range: string
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000299
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00036355
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000299
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00036379}) + ":FHS")'
+                age_at_observation:
+                  expr: 'case(({phv00036348} == ''0'', {pht003099.phv00177950} * 365), ({phv00036348} == ''1'', {pht003099.phv00177930} * 365), ({phv00036348} == ''3'', {pht003099.phv00177930} * 365))'
+                observation_type:
+                  value: OMOP:4274406
+                  range: string
+                method_type:
+                  value: Electrocardiogram, cycle 1 lead V5
+                  range: string
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000299
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00036360
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000299
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00036379}) + ":FHS")'
+                age_at_observation:
+                  expr: 'case(({phv00036348} == ''0'', {pht003099.phv00177950} * 365), ({phv00036348} == ''1'', {pht003099.phv00177930} * 365), ({phv00036348} == ''3'', {pht003099.phv00177930} * 365))'
+                observation_type:
+                  value: OBA:1001086
+                  range: string
+                method_type:
+                  value: Electrocardiogram, cycle 1 lead V5
+                  range: string
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000299
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00036364
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000299
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00036379}) + ":FHS")'
+                age_at_observation:
+                  expr: 'case(({phv00036348} == ''0'', {pht003099.phv00177950} * 365), ({phv00036348} == ''1'', {pht003099.phv00177930} * 365), ({phv00036348} == ''3'', {pht003099.phv00177930} * 365))'
+                observation_type:
+                  value: OMOP:4273023
+                  range: string
+                method_type:
+                  value: Electrocardiogram, cycle 1 lead V5
+                  range: string
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000299
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00036356
+                        unit:
+                          value: ms
+                          range: string
 - class_derivations:
-    MeasurementObservation:
-      populated_from: pht000299
+    MeasurementObservationSet:
+      populated_from: pht000014
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00036379}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00002020}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036379}) + ":" + case(({phv00036348} == ''0'', ''FHS ORIGINAL EXAM 11''), ({phv00036348} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00036348} == ''3'', ''FHS GENERATION 3 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
-        age_at_observation:
-          expr: 'case(({phv00036348} == ''0'', {pht003099.phv00177950} * 365), ({phv00036348} == ''1'', {pht003099.phv00177930} * 365), ({phv00036348} == ''3'', {pht003099.phv00177930} * 365))'
-        observation_type:
-          value: OMOP:4273023
-          range: string
-        method_type:
-          value: CYCLE 2 LEAD II
-          range: string
-        value_quantity:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002020}) + ":FHS ORIGINAL EXAM 12")'
+        observations:
           class_derivations:
-          - Quantity:
-              populated_from: pht000299
+          - MeasurementObservation:
+              populated_from: pht000014
               slot_derivations:
-                value_decimal:
-                  populated_from: phv00036354
-                unit:
-                  value: ms
-                  range: string
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00002020}) + ":FHS")'
+                age_at_observation:
+                  expr: '{pht003099.phv00177952} * 365'
+                observation_type:
+                  value: OBA:1001086
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000014
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00001978} * 10'
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000014
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00002020}) + ":FHS")'
+                age_at_observation:
+                  expr: '{pht003099.phv00177952} * 365'
+                observation_type:
+                  value: OMOP:4273023
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000014
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00001979} * 10'
+                        unit:
+                          value: ms
+                          range: string
 - class_derivations:
-    MeasurementObservation:
-      populated_from: pht000299
+    MeasurementObservationSet:
+      populated_from: pht000015
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00036379}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00002204}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036379}) + ":" + case(({phv00036348} == ''0'', ''FHS ORIGINAL EXAM 11''), ({phv00036348} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00036348} == ''3'', ''FHS GENERATION 3 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
-        age_at_observation:
-          expr: 'case(({phv00036348} == ''0'', {pht003099.phv00177950} * 365), ({phv00036348} == ''1'', {pht003099.phv00177930} * 365), ({phv00036348} == ''3'', {pht003099.phv00177930} * 365))'
-        observation_type:
-          value: OMOP:4273023
-          range: string
-        method_type:
-          value: CYCLE 1 LEAD V2
-          range: string
-        value_quantity:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002204}) + ":FHS ORIGINAL EXAM 13")'
+        observations:
           class_derivations:
-          - Quantity:
-              populated_from: pht000299
+          - MeasurementObservation:
+              populated_from: pht000015
               slot_derivations:
-                value_decimal:
-                  populated_from: phv00036363
-                unit:
-                  value: ms
-                  range: string
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00002204}) + ":FHS")'
+                age_at_observation:
+                  expr: '{pht003099.phv00177954} * 365'
+                observation_type:
+                  value: OBA:1001086
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000015
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00002158} * 10'
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000015
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00002204}) + ":FHS")'
+                age_at_observation:
+                  expr: '{pht003099.phv00177954} * 365'
+                observation_type:
+                  value: OMOP:4273023
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000015
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00002159} * 10'
+                        unit:
+                          value: ms
+                          range: string
 - class_derivations:
-    MeasurementObservation:
-      populated_from: pht000299
+    MeasurementObservationSet:
+      populated_from: pht000016
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00036379}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00002425}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036379}) + ":" + case(({phv00036348} == ''0'', ''FHS ORIGINAL EXAM 11''), ({phv00036348} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00036348} == ''3'', ''FHS GENERATION 3 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
-        age_at_observation:
-          expr: 'case(({phv00036348} == ''0'', {pht003099.phv00177950} * 365), ({phv00036348} == ''1'', {pht003099.phv00177930} * 365), ({phv00036348} == ''3'', {pht003099.phv00177930} * 365))'
-        observation_type:
-          value: OMOP:4273023
-          range: string
-        method_type:
-          value: CYCLE 1 LEAD V2
-          range: string
-        value_quantity:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002425}) + ":FHS ORIGINAL EXAM 14")'
+        observations:
           class_derivations:
-          - Quantity:
-              populated_from: pht000299
+          - MeasurementObservation:
+              populated_from: pht000016
               slot_derivations:
-                value_decimal:
-                  populated_from: phv00036355
-                unit:
-                  value: ms
-                  range: string
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00002425}) + ":FHS")'
+                age_at_observation:
+                  expr: '{pht003099.phv00177956} * 365'
+                observation_type:
+                  value: OBA:1001086
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000016
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00002353} * 10'
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000016
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00002425}) + ":FHS")'
+                age_at_observation:
+                  expr: '{pht003099.phv00177956} * 365'
+                observation_type:
+                  value: OMOP:4273023
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000016
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00002354} * 10'
+                        unit:
+                          value: ms
+                          range: string
 - class_derivations:
-    MeasurementObservation:
-      populated_from: pht000299
+    MeasurementObservationSet:
+      populated_from: pht000017
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00036379}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00002668}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00036379}) + ":" + case(({phv00036348} == ''0'', ''FHS ORIGINAL EXAM 11''), ({phv00036348} == ''1'', ''FHS OFFSPRING EXAM 1''), ({phv00036348} == ''3'', ''FHS GENERATION 3 EXAM 1''), (True, ''FHS UNKNOWN VISIT'')))'
-        age_at_observation:
-          expr: 'case(({phv00036348} == ''0'', {pht003099.phv00177950} * 365), ({phv00036348} == ''1'', {pht003099.phv00177930} * 365), ({phv00036348} == ''3'', {pht003099.phv00177930} * 365))'
-        observation_type:
-          value: OMOP:4273023
-          range: string
-        method_type:
-          value: CYCLE 1 LEAD V5
-          range: string
-        value_quantity:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00002668}) + ":FHS ORIGINAL EXAM 15")'
+        observations:
           class_derivations:
-          - Quantity:
-              populated_from: pht000299
+          - MeasurementObservation:
+              populated_from: pht000017
               slot_derivations:
-                value_decimal:
-                  populated_from: phv00036356
-                unit:
-                  value: ms
-                  range: string
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00002668}) + ":FHS")'
+                age_at_observation:
+                  expr: '{pht003099.phv00177958} * 365'
+                observation_type:
+                  value: OBA:1001086
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000017
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00002593} * 10'
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000017
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00002668}) + ":FHS")'
+                age_at_observation:
+                  expr: '{pht003099.phv00177958} * 365'
+                observation_type:
+                  value: OMOP:4273023
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000017
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00002594} * 10'
+                        unit:
+                          value: ms
+                          range: string
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht000019
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00003261}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003261}) + ":FHS ORIGINAL EXAM 17")'
+        observations:
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht000019
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00003261}) + ":FHS")'
+                age_at_observation:
+                  expr: '{pht003099.phv00177962} * 365'
+                observation_type:
+                  value: OBA:1001086
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000019
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00003180} * 10'
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000019
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00003261}) + ":FHS")'
+                age_at_observation:
+                  expr: '{pht003099.phv00177962} * 365'
+                observation_type:
+                  value: OMOP:4273023
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000019
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00003181} * 10'
+                        unit:
+                          value: ms
+                          range: string
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht000020
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00003667}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00003667}) + ":FHS ORIGINAL EXAM 18")'
+        observations:
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht000020
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00003667}) + ":FHS")'
+                age_at_observation:
+                  expr: '{pht003099.phv00177964} * 365'
+                observation_type:
+                  value: OBA:1001086
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000020
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00003595} * 10'
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000020
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00003667}) + ":FHS")'
+                age_at_observation:
+                  expr: '{pht003099.phv00177964} * 365'
+                observation_type:
+                  value: OMOP:4273023
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000020
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00003596} * 10'
+                        unit:
+                          value: ms
+                          range: string
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht000030
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00007675}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00007675}) + ":FHS OFFSPRING EXAM 1")'
+        observations:
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht000030
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00007675}) + ":FHS")'
+                age_at_observation:
+                  expr: '{pht003099.phv00177930} * 365'
+                observation_type:
+                  value: OBA:1001086
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000030
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00007649} * 10'
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000030
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00007675}) + ":FHS")'
+                age_at_observation:
+                  expr: '{pht003099.phv00177930} * 365'
+                observation_type:
+                  value: OMOP:4273023
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000030
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00007650} * 10'
+                        unit:
+                          value: ms
+                          range: string
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht000031
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008378}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008378}) + ":FHS OFFSPRING EXAM 2")'
+        observations:
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht000031
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008378}) + ":FHS")'
+                age_at_observation:
+                  expr: '{pht003099.phv00177932} * 365'
+                observation_type:
+                  value: OBA:1001086
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000031
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00007889} * 10'
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000031
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008378}) + ":FHS")'
+                age_at_observation:
+                  expr: '{pht003099.phv00177932} * 365'
+                observation_type:
+                  value: OMOP:4273023
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000031
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00007890} * 10'
+                        unit:
+                          value: ms
+                          range: string
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht000032
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008742}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008742}) + ":FHS OFFSPRING EXAM 3")'
+        observations:
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht000032
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008742}) + ":FHS")'
+                age_at_observation:
+                  expr: '{pht003099.phv00177934} * 365'
+                observation_type:
+                  value: OBA:1001086
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000032
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00008635} * 10'
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000032
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008742}) + ":FHS")'
+                age_at_observation:
+                  expr: '{pht003099.phv00177934} * 365'
+                observation_type:
+                  value: OMOP:4273023
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000032
+                      slot_derivations:
+                        value_decimal:
+                          expr: '{phv00008636} * 10'
+                        unit:
+                          value: ms
+                          range: string
+- class_derivations:
+    MeasurementObservationSet:
+      populated_from: pht000149
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00023253}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00023253}) + ":" + case(({phv00023254} == ''2'', ''FHS OFFSPRING EXAM 2''), ({phv00023254} == ''16'', ''FHS ORIGINAL EXAM 16''), ({phv00023254} == ''17'', ''FHS ORIGINAL EXAM 17''), ({phv00023254} == ''18'', ''FHS ORIGINAL EXAM 18''), (True, ''FHS UNKNOWN VISIT'')))'
+        observations:
+          class_derivations:
+          - MeasurementObservation:
+              populated_from: pht000149
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00023253}) + ":FHS")'
+                age_at_observation:
+                  expr: 'case(({phv00023254} == 2, {pht003099.phv00177932} * 365), ({phv00023254} == 16, {pht003099.phv00177960} * 365), ({phv00023254} == 17, {pht003099.phv00177962} * 365), ({phv00023254} == 18, {pht003099.phv00177964} * 365))'
+                observation_type:
+                  value: OBA:1001086
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000149
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00023257
+                        unit:
+                          value: ms
+                          range: string
+          - MeasurementObservation:
+              populated_from: pht000149
+              slot_derivations:
+                associated_participant:
+                  expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00023253}) + ":FHS")'
+                age_at_observation:
+                  expr: 'case(({phv00023254} == 2, {pht003099.phv00177932} * 365), ({phv00023254} == 16, {pht003099.phv00177960} * 365), ({phv00023254} == 17, {pht003099.phv00177962} * 365), ({phv00023254} == 18, {pht003099.phv00177964} * 365))'
+                observation_type:
+                  value: OMOP:4273023
+                method_type:
+                  value: Electrocardiogram
+                value_quantity:
+                  class_derivations:
+                  - Quantity:
+                      populated_from: pht000149
+                      slot_derivations:
+                        value_decimal:
+                          populated_from: phv00023258
+                        unit:
+                          value: ms
+                          range: string
