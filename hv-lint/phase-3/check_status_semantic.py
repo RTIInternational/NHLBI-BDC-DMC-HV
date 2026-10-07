@@ -365,21 +365,34 @@ def cohort_cache_pairs(cohort: str, cache_dir: Path) -> list[tuple[str, str]]:
     return _cohorts.cohorts_to_load(cohort, cache_dir, find_transform_dir())
 
 
-def load_stats_index(cache_dir: Path, cache_key: str) -> dict[str, PhvStats] | None:
-    """Load ``<cache_key>_stats.json.gz`` (build_phv_stats_index.py), or None.
+def load_stats_index(
+    cache_dir: Path, cache_key: str, cohort: str = "",
+) -> dict[str, PhvStats] | None:
+    """Load the value-count index (build_phv_stats_index.py), or None.
 
-    The only reader of the value-count index; the file sits next to the
-    detail index and is named by the same cache key.
+    The one reader of ``<key>_stats.json.gz``. ``<cache_key>`` is tried first,
+    the same stem as the detail index. When hv-lint has ``_cohorts`` (PR #831,
+    which names caches by release), its ``candidate_keys`` are tried next, so
+    an index still named by cohort (``chs_stats``) is found until it is renamed
+    to the release (``phs000287.v7_stats``).
     """
-    gz_path = Path(cache_dir) / f"{cache_key}_stats.json.gz"
-    if not gz_path.exists():
-        return None
-    with gzip.open(gz_path, "rt", encoding="utf-8") as f:
-        raw = json.load(f)
-    return {
-        phv: PhvStats(n=int(rec.get("n", 0)), counts=dict(rec.get("c") or {}))
-        for phv, rec in raw.items()
-    }
+    stems = [cache_key]
+    if cohort:
+        try:
+            import _cohorts  # noqa: PLC0415
+            stems += _cohorts.candidate_keys(cohort, cache_dir)
+        except ImportError:
+            pass
+    for stem in dict.fromkeys(stems):
+        gz_path = Path(cache_dir) / f"{stem}_stats.json.gz"
+        if gz_path.exists():
+            with gzip.open(gz_path, "rt", encoding="utf-8") as f:
+                raw = json.load(f)
+            return {
+                phv: PhvStats(n=int(rec.get("n", 0)), counts=dict(rec.get("c") or {}))
+                for phv, rec in raw.items()
+            }
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -702,13 +715,17 @@ def main() -> int:
             indexes[cohort_name] = load_detail_index(cache_dir, cache_key)
         except FileNotFoundError:
             continue
-        stats_by_cohort[cohort_name] = load_stats_index(cache_dir, cache_key)
+        stats_by_cohort[cohort_name] = load_stats_index(cache_dir, cache_key, cohort_name)
         st = stats_by_cohort[cohort_name]
         print(
             f"  Loaded {cohort_name}: {len(indexes[cohort_name].records):,} PHVs, "
             + (f"{len(st):,} with var_report counts" if st is not None
                else "no var_report counts (3.17b off, 3.18 label signal only)")
         )
+        if st is None:
+            print(f"WARNING: no {cache_key}_stats.json.gz for {cohort_name}: 3.17b does not "
+                  f"run and 3.18 uses wording only. Build it with "
+                  f"hv-lint/build_phv_stats_index.py.", file=sys.stderr)
 
     if not indexes:
         print("ERROR: No detail indexes found.", file=sys.stderr)

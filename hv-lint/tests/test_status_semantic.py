@@ -234,3 +234,27 @@ def test_known_issues_keys_are_well_formed():
         path, phv, check = key.split(":")
         assert path.endswith(".yaml") and "-ingest/" in path
         assert css.PHV_RE.fullmatch(phv) and check in {"3.17", "3.18"}
+
+
+# --- value-count index loading ---------------------------------------------------
+
+def _write_stats(path, data):
+    import gzip
+    import json
+    with gzip.open(path, "wt", encoding="utf-8") as fh:
+        json.dump(data, fh)
+
+
+def test_load_stats_index_by_cache_key(tmp_path):
+    _write_stats(tmp_path / "chs_stats.json.gz", {"phv00101487": {"n": 38, "c": {"1": 37}}})
+    st = css.load_stats_index(tmp_path, "chs")
+    assert st["phv00101487"].n == 38 and st["phv00101487"].counts == {"1": 37}
+    assert css.load_stats_index(tmp_path, "aric") is None
+
+
+def test_load_stats_index_falls_back_to_cohort_candidate_keys(tmp_path, monkeypatch):
+    """After #831 the cache key is a release; a cohort-named index is still found."""
+    _write_stats(tmp_path / "chs_stats.json.gz", {"phv00101487": {"n": 38, "c": {}}})
+    fake = SimpleNamespace(candidate_keys=lambda cohort, cache_dir: ["phs000287.v7", "chs"])
+    monkeypatch.setitem(sys.modules, "_cohorts", fake)
+    assert css.load_stats_index(tmp_path, "phs000287.v7", "CHS")["phv00101487"].n == 38
