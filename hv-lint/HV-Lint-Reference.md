@@ -177,7 +177,7 @@ Two commands rewrite the files. Both run only under `run_all.py` and refuse a `-
 - `HVLINT_PRUNE=1 python hv-lint/run_all.py --cohort all` removes ONLY entries and baseline rows that match nothing, and never adds one. Every stale-entry and fixed-WARNING message prints it. After a PR that fixes known issues, this one command is the whole bookkeeping.
 - `HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all` rewrites the WARNING baseline from the run, so it can add rows as well as drop them: accepting a new WARNING is a reviewed diff of `warning_baseline.json`, one line per finding.
 
-A `--file` run checks only that file's entries and rows. On main (731984f5 + #831 + #885) the file holds 717 entries -- 5.11 383 (#882), 3.5 127 (#500, #882, #883, #884, #872), 1.12 57 (#785, #881), 2.12 49 (#883), 2.4 31 (#884), 3.16 30 (#884), 3.9 11, 3.10 7 (#883), 3.18 6 and 3.17 5 (#881, #869), 1.2 4, 3.15 4 (#226), 2.7 3 (#883) -- and every phase passes. Removing any one entry fails CI on exactly that finding.
+A `--file` run checks only that file's entries and rows. On main (731984f5 + #831 + #885) the file holds 724 entries -- 5.11 383 (#882), 3.5 127 (#500, #882, #883, #884, #872), 1.12 57 (#872, #881), 2.12 49 (#883), 2.4 31 (#884), 3.16 30 (#884), 3.9 11, 3.10 7 (#883), 5.2 7 (#872, FHS cig_smok fallback), 3.18 6 and 3.17 5 (#881, #869), 1.2 4, 3.15 4 (#226), 2.7 3 (#883); 713 defect, 5 dbgap-error, 4 pending (CARDIA A12CB* / A12EM* '0', #873 Q19), 2 false-positive -- and every phase passes. Every `defect` and `pending` entry cites an open issue. Removing any one entry fails CI on exactly that finding.
 
 ### A8: Duplicate Detection Identity
 
@@ -292,7 +292,7 @@ Detect blocks in different files of the same cohort that emit the same record: i
 - **Not compared**: provenance, evidence, age and other context slots -- two blocks that differ only there still emit the same fact twice. The finding names the slots that differ, or says the blocks are identical apart from `range:` annotations.
 - **Classes without a status / value slot** (Visit, Person, Demography, ...): compared on the whole block body, so only exact copies match.
 - **Within one file**: left to 1.2.
-- **Known issues**: `hv-lint/known_issues.yaml` (assumption A7): the 44 FHS `med_use.yaml` / `tak_*` / `hypert_trt.yaml` pairs (#785 decision 1) and the 13 Condition pairs of #881 section 2.
+- **Known issues**: `hv-lint/known_issues.yaml` (assumption A7): the 44 FHS `med_use.yaml` / `tak_*` / `hypert_trt.yaml` pairs (#872; which copy stays is #873, "#785 decision 1") and the 13 Condition pairs of #881 section 2.
 - **Severity**: ERROR
 
 ### 1.13 populated_from and expr on One Slot
