@@ -152,8 +152,11 @@ def block_identity(block) -> str:
     """A block's identity from its content: ``Class@pht:phvs``.
 
     The phvs are those its slots read, minus ``id`` / ``associated_*`` / ``age_*``. A Visit block
-    is identified by the labels its ``id`` emits instead. A block with neither is identified by
-    a digest of its whole body.
+    is identified by the labels its ``id`` emits instead. A block with neither (ResearchStudy) is
+    identified by its class, table and literal ``name`` (``ResearchStudy@pht003099:name~FHS``),
+    or by its class and table alone (``:-``) when it has no name; ``file_identities`` numbers
+    blocks that still collide. Not by its body: adding a slot (a principal_investigator) must not
+    re-key the block's other findings.
     """
     cds = block.get("class_derivations") if isinstance(block, dict) else None
     if not isinstance(cds, dict) or not cds:
@@ -173,9 +176,18 @@ def block_identity(block) -> str:
         _value_phvs(cds, phvs)
         items = sorted(phvs)
     if not items:
-        body = json.dumps(cds, sort_keys=True, default=str)
-        items = ["body~" + hashlib.sha1(body.encode("utf-8")).hexdigest()[:8]]
+        items = [_literal_name(cds)]
     return f"{classes}@{pht}:{_short(items)}"
+
+
+def _literal_name(cds: dict) -> str:
+    """``name~<value>`` of the first class's literal ``name`` slot, or ``-``."""
+    for d in cds.values():
+        slots = d.get("slot_derivations") if isinstance(d, dict) else None
+        name = slots.get("name") if isinstance(slots, dict) else None
+        if isinstance(name, dict) and isinstance(name.get("value"), str):
+            return "name~" + " ".join(name["value"].split())
+    return "-"
 
 
 def file_identities(blocks: list) -> list[str]:

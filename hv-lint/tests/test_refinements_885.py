@@ -214,3 +214,42 @@ def test_319_ignores_who_and_when_slots_and_unknown_variables():
     assert _empty_source(block, nonnull) == []
     nonnull["phv00000001"] = 3
     assert _empty_source(block, nonnull) == []
+
+
+# -- Known-issue identity of a block that reads no phv -----------------------------------------
+
+def _no_phv_block(name: str | None) -> dict:
+    slots = {
+        "observation_type": {"value": "OMOP:3004249"},
+        "value_quantity": {"class_derivations": [{"Quantity": {"slot_derivations": {
+            "value_decimal": {"value": 5}}}}]},
+    }
+    if name:
+        slots["name"] = {"value": name}
+    return {"class_derivations": {"MeasurementObservation": {
+        "populated_from": "pht004715", "slot_derivations": slots}}}
+
+
+def test_a_block_with_no_phv_keeps_its_entry_when_a_slot_is_added_through_main(tmp_path):
+    """Keyed on class, table and name, not a body digest: adding a slot is not a new finding."""
+    t = E.Tree(tmp_path, "HCHS")
+    b = _no_phv_block("Study A")
+    t.write("x.yaml", [b])
+    first = E.phase3(t, "validate_semantic.py")
+    assert first.returncode == 1 and "[3.16]" in first.stdout, first.stdout[-1500:]
+    lines = t.list_as_known(first, 884)
+    assert len(lines) == 1 and "MeasurementObservation@pht004715:name~Study A" in lines[0]
+    assert E.phase3(t, "validate_semantic.py").returncode == 0
+    b["class_derivations"]["MeasurementObservation"]["slot_derivations"]["unit_note"] = {
+        "value": "added"}
+    t.write("x.yaml", [b])
+    res = E.phase3(t, "validate_semantic.py")
+    assert res.returncode == 0, res.stdout[-1500:]
+
+
+def test_blocks_with_no_phv_and_no_name_are_numbered():
+    import _known_issues as K
+    assert K.file_identities([_no_phv_block(None), _no_phv_block(None)]) == [
+        "MeasurementObservation@pht004715:-", "MeasurementObservation@pht004715:-#2"]
+    assert K.block_identity(_no_phv_block("  Study\n B ")) == (
+        "MeasurementObservation@pht004715:name~Study B")
