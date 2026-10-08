@@ -4,6 +4,7 @@ ratchet, and the prune / update modes.
 Run: python -m pytest hv-lint/tests/test_known_issues.py
 """
 
+import os
 import re
 import sys
 from dataclasses import dataclass
@@ -324,3 +325,14 @@ def test_committed_entries_and_rows_are_written_in_normal_form(committed):
         for rows in by_cohort.values():
             for r in rows:
                 assert normal(r.split(" | ", 2)[2]), r
+
+
+def test_a_test_sees_neither_the_committed_files_nor_a_mode():
+    """Review round 2 B F3: tests/conftest.py isolates every test, so `HVLINT_PRUNE=1
+    HVLINT_RUN_ALL=1 pytest` cannot rewrite the committed files and no test passes on their
+    content without asking for it (the `committed` fixture above)."""
+    assert K.known_issues_path() != K.KNOWN_ISSUES_FILE
+    assert K.baseline_path() != K.BASELINE_FILE
+    assert K.load_entries() == [] and K.load_baseline() == {}
+    for name in (K.PRUNE_ENV, K.UPDATE_ENV, K.RUN_ALL_ENV):
+        assert name not in os.environ

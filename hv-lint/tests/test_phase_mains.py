@@ -79,8 +79,13 @@ def _make_tree(root: Path, *, manifest: object = "ok") -> Path:
     index = {"phv00000001": PHT, "phv00000002": PHT}
     with gzip.open(cache / f"{KEY}.json.gz", "wt", encoding="utf-8") as f:
         json.dump(index, f)
+    # A collection interval on the visit seed lets 5.8 run, so the tree raises no 5.8 "did not
+    # run" WARNING: these tests must pass on their own tree, not on a row in the committed
+    # warning_baseline.json (tests/conftest.py gives every test an empty one).
+    detail = {phv: {"pht": pht} for phv, pht in index.items()}
+    detail["phv00000001"]["coll_interval"] = "Collected in: P1"
     with gzip.open(cache / f"{KEY}_detail.json.gz", "wt", encoding="utf-8") as f:
-        json.dump({phv: {"pht": pht} for phv, pht in index.items()}, f)
+        json.dump(detail, f)
     # The value-count index 3.9 / 3.15 and 5.12 read; validate_semantic refuses to run without it.
     with gzip.open(cache / f"{KEY}_stats.json.gz", "wt", encoding="utf-8") as f:
         json.dump({}, f)
