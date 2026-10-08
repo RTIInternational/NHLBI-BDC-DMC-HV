@@ -572,6 +572,19 @@ def ingest_cohorts(transform_dir: Path | str) -> list[str]:
     )
 
 
+def stats_rebuild_command(cache_key: str, tables: bool = False) -> str:
+    """The command that rebuilds ``<cache_key>_stats.json.gz`` (or ``_tables`` with ``tables``).
+
+    ``--source-dir`` is required in practice: the hv-lint cache holds no var_report or data_dict
+    files, so the builder's default source directory does not exist. Every refusal that names
+    the builder prints this, so none names a command that cannot run.
+    """
+    kind = "data_dict" if tables else "var_report"
+    flag = " --tables" if tables else ""
+    return (f"python hv-lint/build_phv_stats_index.py{flag} --cohort {cache_key} "
+            f"--source-dir <dir of the release's *.{kind}.xml> --study-prefix {cache_key}.")
+
+
 def load_table_names(cache_dir: Path | str, cache_key: str) -> dict[str, dict[str, str]]:
     """``{pht: {"name", "description"}}`` from ``<cache_key>_tables.json.gz``; ``{}`` when absent.
 

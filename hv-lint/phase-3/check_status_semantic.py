@@ -357,7 +357,9 @@ def load_stats_index(cache_dir: Path, cache_key: str) -> dict[str, PhvStats] | N
     The one reader of ``<cache_key>_stats.json.gz``: the same release-keyed stem as the
     detail index (``phs000287.v7_stats.json.gz`` beside ``phs000287.v7_detail.json.gz``).
     Only coded variables (an entry with ``c``) are returned: a variable missing from it has no
-    coded values in its var_report. ``load_nonnull_counts`` reads every variable's n.
+    coded values in its var_report. An entry with no ``n`` (no ``<stat>``) gets n = 0, which
+    every follow-up signal reads as "no count", never as evidence. ``load_nonnull_counts``
+    reads every variable's n.
     """
     raw = _read_stats(cache_dir, cache_key)
     if raw is None:
@@ -379,7 +381,7 @@ def load_nonnull_counts(cache_dir: Path, cache_key: str) -> dict[str, int] | Non
     raw = _read_stats(cache_dir, cache_key)
     if raw is None or all("c" in rec for rec in raw.values()):
         return None
-    return {phv: int(rec.get("n", 0)) for phv, rec in raw.items()}
+    return {phv: int(rec["n"]) for phv, rec in raw.items() if "n" in rec}
 
 
 def _read_stats(cache_dir: Path, cache_key: str) -> dict | None:
@@ -781,7 +783,7 @@ def main() -> int:
             # that passes is a skipped check, so this fails rather than warns.
             print(f"ERROR: no {cache_key}_stats.json.gz for {cohort_name} in {cache_dir}: "
                   f"3.17b and the 3.18 count signal cannot run. Build it with "
-                  f"hv-lint/build_phv_stats_index.py --cohort {cache_key}.", file=sys.stderr)
+                  f"{_cohorts.stats_rebuild_command(cache_key)}", file=sys.stderr)
             missing_index.append(cohort_name)
             continue
         print(f"  Loaded {cohort_name}: {len(indexes[cohort_name].records):,} PHVs, "

@@ -1329,7 +1329,7 @@ def main() -> int:
             if nonnull is None and "3.19" in enabled_checks:
                 print(f"ERROR: {cache_key}_stats.json.gz for {cohort_name} has no n for uncoded "
                       f"variables: 3.19 cannot run. Rebuild it with "
-                      f"hv-lint/build_phv_stats_index.py --cohort {cache_key}.", file=sys.stderr)
+                      f"{_cohorts.stats_rebuild_command(cache_key)}", file=sys.stderr)
                 return 1
             nonnull_by_cohort[cohort_name] = nonnull or {}
             release_by_cohort[cohort_name] = cache_key

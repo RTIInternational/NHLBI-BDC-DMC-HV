@@ -21,15 +21,13 @@ uncoded variables too.
 Only the consent-group total is used (variable ids without a ``.cN``
 suffix). ``c`` is present only for variables with ``<enum>`` counts; a reader
 that wants the coded variables keys on it (``load_stats_index``). A variable
-whose report has no ``<stat>`` has no entry: its n is unknown, not 0.
+whose report has no ``<stat>`` has no ``n`` (an uncoded one has no entry): its n is
+unknown, not 0.
 
-Usage:
-    # From the hv-lint cache (fetched by update_data.py):
-    python hv-lint/build_phv_stats_index.py --cohort chs
-
-    # From any directory holding the pinned study's var_report files:
-    python hv-lint/build_phv_stats_index.py --cohort chs \\
-        --source-dir /path/to/phs000287.v7.p1/pheno_variable_summaries
+Usage (the hv-lint cache holds no var_report files, so name the directory that does):
+    python hv-lint/build_phv_stats_index.py --cohort phs000287.v7 \\
+        --source-dir /path/to/phs000287.v7.p1/pheno_variable_summaries \\
+        --study-prefix phs000287.v7.
 
 ``update_data.py`` fetches only the data dictionaries, so the var_report
 files come from any staging of the pinned release (the hv_dataqc cache
@@ -91,10 +89,12 @@ def parse_var_report(path: Path) -> dict[str, dict]:
             except ValueError:
                 pass
             continue
-        try:
-            n = int(stat.get("n", "0")) if stat is not None else 0
-        except ValueError:
-            n = 0
+        n: int | None = None
+        if stat is not None:
+            try:
+                n = int(stat.get("n", ""))
+            except ValueError:
+                n = None
         counts: dict[str, int] = {}
         for e in enums:
             key = e.get("code")
@@ -104,7 +104,9 @@ def parse_var_report(path: Path) -> dict[str, dict]:
                 counts[key] = counts.get(key, 0) + int(e.get("count", "0"))
             except ValueError:
                 continue
-        records[base_phv] = {"n": n, "c": counts}
+        # No <stat>: the n is unknown, so the entry has none (never 0, which 3.19 reads as
+        # empty), exactly as an uncoded variable with no <stat> has no entry.
+        records[base_phv] = {"c": counts} if n is None else {"n": n, "c": counts}
     return records
 
 

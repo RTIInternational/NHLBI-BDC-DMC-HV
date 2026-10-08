@@ -363,6 +363,11 @@ def parse_args() -> argparse.Namespace:
         choices=["critical", "error", "high", "warning", "info"],
         help="Minimum severity to cause non-zero exit (default: error)"
     )
+    p.add_argument(
+        "--cache-dir", default=str(Path(__file__).resolve().parent.parent / "dbgap-cache"),
+        help="Directory holding the table-name and detail indexes 1.8 / 1.14 read "
+             "(default: hv-lint/dbgap-cache)"
+    )
     return p.parse_args()
 
 
@@ -402,7 +407,7 @@ def main() -> int:
                 _extract_visit_refs(block, idx, rel_path)
             )
 
-    cache_dir = Path(__file__).resolve().parent.parent / "dbgap-cache"
+    cache_dir = Path(args.cache_dir)
     table_names: dict[str, dict[str, str]] = {}
     details: dict = {}
     for name, key in _cohorts.cohorts_to_load(args.cohort, cache_dir, base_dir):
@@ -419,7 +424,7 @@ def main() -> int:
                     return 1
             elif not _cohorts.load_table_names(cache_dir, key):
                 print(f"ERROR: no {key}_tables.json.gz for {name}: 1.14 DID NOT RUN for it. "
-                      f"Build it with hv-lint/build_phv_stats_index.py --tables --cohort {key}.",
+                      f"Build it with {_cohorts.stats_rebuild_command(key, tables=True)}",
                       file=sys.stderr)
                 return 1
     findings = check_cross_file_pht_consistency(all_refs, table_names)

@@ -442,6 +442,44 @@ def test_prune_and_update_together_are_refused_before_anything_is_written(tmp_pa
 
 # -- Review round 5: guards no test reached, each through the real main() -----------------------
 
+def _cache_without(t: E.Tree, sub: str, *names: str) -> Path:
+    """A copy of the committed cache with ``names`` removed. The tree gets the cohort manifests,
+    which name the release a cache outside hv-lint/ is keyed by."""
+    import shutil
+    manifests = t.root / "hv_dataqc" / "cache_fetcher" / "manifests"
+    if not manifests.is_dir():
+        shutil.copytree(HVLINT.parent / "hv_dataqc" / "cache_fetcher" / "manifests", manifests)
+    cache = t.tmp / sub
+    shutil.copytree(E.CACHE, cache)
+    for n in names:
+        (cache / n).unlink()
+    return cache
+
+
+def test_114_refuses_to_run_without_the_aric_detail_index_through_main(tmp_path):
+    """Review 5 A S2: with the refusal removed, 1.14 judged ARIC against no metadata and passed."""
+    t = E.Tree(tmp_path, "ARIC")
+    t.write("afib.yaml", [_relabel(E.fixture_block("aric_afib_atrfib31.yaml"),
+                                   "ARIC EXAM 3", "ARIC EXAM 2")])
+    full = t.run(P1, "--cohort", "ARIC", "--cache-dir", str(_cache_without(t, "a")))
+    assert full.returncode == 1 and "[1.14]" in full.stdout, full.stdout[-1500:]
+    cache = _cache_without(t, "b", "phs000280.v8_detail.json.gz")
+    res = t.run(P1, "--cohort", "ARIC", "--cache-dir", str(cache))
+    assert res.returncode == 1 and "1.14 DID NOT RUN" in res.stderr, res.stderr[-800:]
+    assert "[1.14]" not in res.stdout
+
+
+def test_114_refuses_to_run_without_the_mesa_tables_index_through_main(tmp_path):
+    """The MESA arm reads table names; without them it would judge nothing and pass."""
+    t = E.Tree(tmp_path, "MESA")
+    t.write("hdl.yaml", [_labelled_mesa("MESA CLASSIC EXAM 1")])
+    cache = _cache_without(t, "c", "phs000209.v13_tables.json.gz")
+    res = t.run(P1, "--cohort", "MESA", "--cache-dir", str(cache))
+    assert res.returncode == 1 and "1.14 DID NOT RUN" in res.stderr, res.stderr[-800:]
+    # The remedy it names is runnable: the cache holds no data_dict files to default to.
+    assert "--tables --cohort phs000209.v13 --source-dir" in res.stderr
+
+
 def _spirometry_obs(b: dict) -> list:
     sd = b["class_derivations"]["MeasurementObservationSet"]["slot_derivations"]
     return sd["observations"]["class_derivations"]

@@ -56,3 +56,23 @@ def test_build_respects_study_prefix_and_is_reproducible(tmp_path):
         assert "phv09999999" not in json.load(fh)
     bsi.build_stats_index("chs", src, out, study_prefix="phs000287.v7.")
     assert (out / "chs_stats.json.gz").read_bytes() == first
+
+
+def test_a_coded_variable_with_no_stat_has_no_n_and_is_not_empty(tmp_path):
+    """Review 5 A N1 / B N3: no <stat> means n unknown. n = 0 would read as empty in 3.19."""
+    import gzip as _gz
+    sys.path.insert(0, str(HVLINT / "phase-3"))
+    import check_status_semantic as css
+    xml = VAR_REPORT.replace(
+        "</data_table>",
+        '<variable id="phv00100001.v1.p1" var_name="NOSTAT"><total><stats>\n'
+        '  <enum code="1" count="3">YES</enum>\n</stats></total></variable>\n</data_table>')
+    f = tmp_path / "phs000287.v7.pht001474.v1.p1.YR10.var_report.xml"
+    f.write_text(xml, encoding="utf-8")
+    recs = bsi.parse_var_report(f)
+    assert recs["phv00100001"] == {"c": {"1": 3}}
+    with _gz.open(tmp_path / "k_stats.json.gz", "wt", encoding="utf-8") as fh:
+        json.dump(recs, fh)
+    nonnull = css.load_nonnull_counts(tmp_path, "k")
+    assert "phv00100001" not in nonnull and nonnull["phv00101324"] == 5531
+    assert css.load_stats_index(tmp_path, "k")["phv00100001"].counts == {"1": 3}
