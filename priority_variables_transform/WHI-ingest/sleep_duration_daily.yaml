@@ -13,7 +13,7 @@
         method_type:
           value: "questionnaire"
         # Encoded answer, not hours: codes 2-5 are single hours (6-9). Codes 1 "5 or less"
-        # and 6 "10 or more" are open-ended and left unmapped (#873); no unit without a value.
+        # and 6 "10 or more" are bounds: 5 and 10 with operator <= and >=; no unit without a value.
         value_quantity:
           class_derivations:
           - Quantity:
@@ -22,12 +22,16 @@
                 value_decimal:
                   populated_from: phv00283093
                   value_mappings:
+                    '1': 5
                     '2': 6
                     '3': 7
                     '4': 8
                     '5': 9
+                    '6': 10
+                operator:
+                  expr: "case((str({phv00283093}) == '1', 'LESS_THAN_OR_EQUAL_TO'), (str({phv00283093}) == '6', 'GREATER_THAN_OR_EQUAL_TO'))"
                 unit:
-                  expr: "case((str({phv00283093}) in ['2', '3', '4', '5'], 'h'))"
+                  expr: "case((str({phv00283093}) in ['1', '2', '3', '4', '5', '6'], 'h'))"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001006
@@ -43,7 +47,7 @@
         method_type:
           value: "questionnaire"
         # Encoded answer, not hours: codes 2-5 are single hours (6-9). Codes 1 "5 or less"
-        # and 6 "10 or more" are open-ended and left unmapped (#873); no unit without a value.
+        # and 6 "10 or more" are bounds: 5 and 10 with operator <= and >=; no unit without a value.
         value_quantity:
           class_derivations:
           - Quantity:
@@ -52,12 +56,16 @@
                 value_decimal:
                   populated_from: phv00079193
                   value_mappings:
+                    '1': 5
                     '2': 6
                     '3': 7
                     '4': 8
                     '5': 9
+                    '6': 10
+                operator:
+                  expr: "case((str({phv00079193}) == '1', 'LESS_THAN_OR_EQUAL_TO'), (str({phv00079193}) == '6', 'GREATER_THAN_OR_EQUAL_TO'))"
                 unit:
-                  expr: "case((str({phv00079193}) in ['2', '3', '4', '5'], 'h'))"
+                  expr: "case((str({phv00079193}) in ['1', '2', '3', '4', '5', '6'], 'h'))"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001005
@@ -73,7 +81,7 @@
         method_type:
           value: "questionnaire"
         # Encoded answer, not hours: codes 2-5 are single hours (6-9). Codes 1 "5 or less"
-        # and 6 "10 or more" are open-ended and left unmapped (#873); no unit without a value.
+        # and 6 "10 or more" are bounds: 5 and 10 with operator <= and >=; no unit without a value.
         value_quantity:
           class_derivations:
           - Quantity:
@@ -82,9 +90,13 @@
                 value_decimal:
                   populated_from: phv00079041
                   value_mappings:
+                    '1': 5
                     '2': 6
                     '3': 7
                     '4': 8
                     '5': 9
+                    '6': 10
+                operator:
+                  expr: "case((str({phv00079041}) == '1', 'LESS_THAN_OR_EQUAL_TO'), (str({phv00079041}) == '6', 'GREATER_THAN_OR_EQUAL_TO'))"
                 unit:
-                  expr: "case((str({phv00079041}) in ['2', '3', '4', '5'], 'h'))"
+                  expr: "case((str({phv00079041}) in ['1', '2', '3', '4', '5', '6'], 'h'))"
