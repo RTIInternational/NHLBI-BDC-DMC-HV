@@ -85,8 +85,11 @@ HIGH_IMPACT_SLOTS = {
 LOST_SHARE_ERROR = 0.5
 LOST_SHARE_WARNING = 0.1
 
-# Severity codes that mean "no severity": leaving them unmapped is correct.
-_NO_SEVERITY_RE = re.compile(r"^\s*(none|no\b|no copd|normal)", re.IGNORECASE)
+# Severity codes that mean "no severity": leaving them unmapped is correct. A presence answer
+# ("Present", "Yes") carries no grade either: the condition's status records presence, so the
+# severity slot leaves it null (WHI TTELVH '5' "Present" beside Mild / Moderate / Severe).
+_NO_SEVERITY_RE = re.compile(r"^\s*(none|no\b|no copd|normal|present\b|yes\b|positive\b)",
+                             re.IGNORECASE)
 
 # The two slots that commonly read one PHV between them; a code mapped by the sibling is used.
 _SIBLING_SLOTS = {"race": "ethnicity", "ethnicity": "race"}

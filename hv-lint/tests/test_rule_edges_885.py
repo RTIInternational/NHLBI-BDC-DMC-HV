@@ -116,3 +116,17 @@ def test_27_every_assignment_form_reports_at_error():
                  {"expr": "case(({phv00000001} == '1', 'YES'), (True, 'ABSENT'))"}):
         f = vmc.check_enum_membership(slot, "Condition", "condition_status", pvs, 0, "x.yaml", "")
         assert [(x.check, x.severity) for x in f] == [("2.7", "ERROR")], slot
+
+
+def test_39_presence_answer_on_a_severity_slot_is_not_a_lost_grade():
+    """WHI TTELVH (lvh_ekg b1): '5' "Present" has no grade; #883a deleting its bare None
+    raised a 3.9 WARNING that 2.12's own advice caused (review round 1 B 9a)."""
+    block = {"class_derivations": {"Condition": {"populated_from": PHT, "slot_derivations": {
+        "condition_severity": {"populated_from": PHV, "value_mappings": {
+            "1": "OMOP:4116992", "2": "OMOP:3272197", "3": "OMOP:4087703"}}}}}}
+    codes = {"1": "Mild", "2": "Moderate", "3": "Severe", "4": "None", "5": "Present",
+             "6": "Not Recorded"}
+    f = _39(block, {"6": 1118, "4": 894, "1": 806, "5": 412, "2": 297, "3": 81}, codes)
+    assert [s for s, code in f if code in ("4", "5")] == []
+    assert ("WARNING", "5") in _39(_status_block({"0": "ABSENT"}),
+                                   {"0": 100, "5": 50}, {"0": "No", "5": "Present"})

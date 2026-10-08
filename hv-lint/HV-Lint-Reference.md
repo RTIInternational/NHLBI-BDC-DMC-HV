@@ -394,7 +394,7 @@ Flag any PHV accession that is mapped as a measured value in more than one harmo
 
 ### 2.12 Bare None as a value_mappings Target
 
-`'0': None` in a `value_mappings`, in any slot at any depth. YAML reads `None` as the string "None", and linkml-map writes that string into the record (`"value_enum": "None"`, `"condition_severity": "None"`). Map the code to the value it means; delete the entry only when the code means missing, since an unmapped code emits null (#736, #883 item 9). Deleting a code that carries meaning is a real loss, and 3.9 then reports it -- WHI lvh_ekg b1 `'5'` "Present", 412 of 3,608 rows, is the case. Rule 2.7 skips these targets so one defect is reported once.
+`'0': None` in a `value_mappings`, in any slot at any depth. YAML reads `None` as the string "None", and linkml-map writes that string into the record (`"value_enum": "None"`, `"condition_severity": "None"`). Map the code to the value it means; delete the entry only when the code means missing, since an unmapped code emits null (#736, #883 item 9). Deleting a code that carries meaning is a real loss, and 3.9 then reports it; on a severity slot, a none / normal / present answer carries no grade and is not reported (WHI lvh_ekg b1 TTELVH `'4'` "None", `'5'` "Present"). Rule 2.7 skips these targets so one defect is reported once.
 
 - **Severity**: ERROR
 
@@ -446,8 +446,8 @@ A BARE `{phv}` or bare `populated_from` whose table is not the block's class tab
 Flags values the source holds that `value_mappings` drops (silent data loss), at every depth (nested `Quantity.value_concept` included).
 
 - **Reference set**: the var_report's OBSERVED values (`<release>_stats.json.gz`). A declared code no row carries loses nothing. A value written as its label (JHS) counts as mapped when the label is a key. Without var_report counts the declared codes are used, capped at WARNING; with neither, INFO "could not be validated".
-- **Not reported**: the negative answer of a conditional follow-up (`check_status_semantic.detect_followup`; 3.18 rejects mapping it to ABSENT), a code the race/ethnicity sibling slot maps from the same PHV, a severity code labelled none/no.
-- **Severity by rows lost** (share of observed rows the dropped value carries): ERROR from 50% on a high-impact slot (`race`, `sex`, `annotated_sex`, `ethnicity`, `condition_status`, `exposure_status`, `procedure_status`, `value_enum`), WARNING from 10%, INFO below. Skip labels (unknown, refused, missing, ...) are INFO.
+- **Not reported**: the negative answer of a conditional follow-up (`check_status_semantic.detect_followup`; 3.18 rejects mapping it to ABSENT), a code the race/ethnicity sibling slot maps from the same PHV, a severity code labelled none / no / normal or present / yes / positive (no grade; the status records presence).
+- **Severity by rows lost** (share of observed rows the dropped value carries): ERROR from 50% on a high-impact slot (`race`, `sex`, `annotated_sex`, `ethnicity`, `condition_status`, `exposure_status`, `procedure_status`, `value_enum`), WARNING from 10%, INFO below. When no single code reaches the tier the slot's total loss reaches (three codes of 20% each), the largest dropped code is raised to it and says so. Skip labels (unknown, refused, missing, ...) are INFO.
 
 ### 3.10 PHV Data Type vs Slot Role Compatibility
 
