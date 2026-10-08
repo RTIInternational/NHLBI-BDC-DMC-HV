@@ -229,6 +229,23 @@ def test_file_run_scopes_entries_and_refuses_an_update(tmp_path):
     assert not t.baseline.exists() or json.loads(t.baseline.read_text())["warnings"] == {}
 
 
+def test_12_swapping_a_same_file_duplicate_pair_keeps_its_entry(tmp_path):
+    """Review round 3 A M2: 1.2 reported the pair on whichever block came second, so swapping
+    two blocks that differ (CHS diabetes b5/b6: provenance, and b6 also reads phv00101793)
+    re-keyed the finding and left its entry stale."""
+    t = E.Tree(tmp_path, "CHS")
+    b5, b6 = E.fixture_block("chs_diabetes_b5.yaml"), E.fixture_block("chs_diabetes_b6.yaml")
+    t.write("diabetes.yaml", [b5, b6])
+    script = "phase-1/validate_yaml_structure.py"
+    first = t.run(script, "--cohort", "CHS")
+    assert first.returncode == 1 and "[1.2]" in first.stdout, first.stdout[-2000:]
+    assert len(t.list_as_known(first, 872)) == 1
+    assert t.run(script, "--cohort", "CHS").returncode == 0
+    t.write("diabetes.yaml", [b6, b5])
+    swapped = t.run(script, "--cohort", "CHS")
+    assert swapped.returncode == 0, swapped.stdout[-2000:]
+
+
 def _labelled(phv: str, label: str) -> dict:
     seed = "phv00084441"
     return {"class_derivations": {"MeasurementObservation": {

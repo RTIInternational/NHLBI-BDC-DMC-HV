@@ -231,7 +231,7 @@ Validate all `expr` fields for syntactic correctness.
 
 ### 1.2 Duplicate Block Detection
 
-Detect two blocks in one file that emit the same records, using rule 1.12's identity (assumption A8). The message names the context slots in which the two copies differ, or says they are byte-identical.
+Detect two blocks in one file that emit the same records, using rule 1.12's identity (assumption A8). The message names the context slots in which the two copies differ, or says they are byte-identical. A group of duplicates is reported on every member except the one with the smallest known-issue block identity, so swapping the blocks of a pair keeps its fingerprint.
 
 - **Catches**: Copy-paste duplicates, blocks that would produce identical output records. Blood-pressure replicates and per-drug blocks that read different source variables are not duplicates.
 - **Severity**: ERROR

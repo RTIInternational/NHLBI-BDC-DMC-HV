@@ -305,23 +305,36 @@ def check_duplicates(blocks: list[dict], rel_path: str) -> list[Finding]:
     what every blood-pressure replicate and per-drug block on main does. Context slots
     (provenance, ages) are not part of the identity: a pair that differs only there still emits
     the same status for the same person twice, so it is reported and the differing slots named.
+
+    Each group of duplicates is anchored on the member with the smallest known-issue block
+    identity, and every other member is reported against it. File order must not pick the
+    reported block: swapping two blocks that differ would re-key the finding and leave its
+    known-issue entry stale.
     """
     findings: list[Finding] = []
-    seen: dict[tuple, int] = {}
+    groups: dict[tuple, list[int]] = {}
     for idx, block in enumerate(blocks):
         for _cls, identity in xfd.block_identities(block):
-            if identity not in seen:
-                seen[identity] = idx
+            members = groups.setdefault(identity, [])
+            if idx not in members:
+                members.append(idx)
+    ki_ids = _known_issues.file_identities(blocks)
+    for identity, members in groups.items():
+        if len(members) < 2:
+            continue
+        anchor = min(members, key=lambda i: ki_ids[i])
+        for idx in members:
+            if idx == anchor:
                 continue
-            first_idx = seen[identity]
-            diff = xfd._context_diff(blocks[first_idx], block)
+            diff = xfd._context_diff(blocks[anchor], blocks[idx])
             detail = f"; differs only in {', '.join(diff)}" if diff else "; byte-identical"
             src = identity[2] if len(identity) > 3 else "whole body"
             findings.append(Finding(
                 rel_path, idx, "1.2", "ERROR",
                 f"Duplicate block: {identity[0]} on {identity[1] or 'no table'} reading "
-                f"{str(src)[:80]} emits the same records as block {first_idx}{detail}",
+                f"{str(src)[:80]} emits the same records as block {anchor}{detail}",
             ))
+    findings.sort(key=lambda f: f.block)
     return findings
 
 
