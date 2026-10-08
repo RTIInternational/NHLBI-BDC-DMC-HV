@@ -1,28 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht000990
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00077450}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00077450}) + ":WHI YEAR 3")'
-        # age_at_observation:
-          # expr: "{nan} * 365"
-        observation_type:
-          value: OBA:2040171
-        method_type:
-          value: "questionnaire"
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht000990
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00077490
-                unit:
-                  value: "h"
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht006214
       slot_derivations:
         associated_participant:
@@ -35,6 +12,8 @@
           value: OBA:2040171
         method_type:
           value: "questionnaire"
+        # Encoded answer, not hours: codes 2-5 are single hours (6-9). Codes 1 "5 or less"
+        # and 6 "10 or more" are open-ended and left unmapped (#873); no unit without a value.
         value_quantity:
           class_derivations:
           - Quantity:
@@ -42,54 +21,13 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00283093
+                  value_mappings:
+                    '2': 6
+                    '3': 7
+                    '4': 8
+                    '5': 9
                 unit:
-                  value: "h"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht000993
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00077907}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00077907}) + ":WHI YEAR 6")'
-        # age_at_observation:
-          # expr: "{nan} * 365"
-        observation_type:
-          value: OBA:2040171
-        method_type:
-          value: "questionnaire"
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht000993
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00077943
-                unit:
-                  value: "h"
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001010
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00079332}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00079332}) + ":WHI SCREENING")'
-        # age_at_observation:
-          # expr: "{nan} * 365"
-        observation_type:
-          value: OBA:2040171
-        method_type:
-          value: "questionnaire"
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht001010
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00079391
-                unit:
-                  value: "h"
+                  expr: "case((str({phv00283093}) in ['2', '3', '4', '5'], 'h'))"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001006
@@ -104,6 +42,8 @@
           value: OBA:2040171
         method_type:
           value: "questionnaire"
+        # Encoded answer, not hours: codes 2-5 are single hours (6-9). Codes 1 "5 or less"
+        # and 6 "10 or more" are open-ended and left unmapped (#873); no unit without a value.
         value_quantity:
           class_derivations:
           - Quantity:
@@ -111,8 +51,13 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00079193
+                  value_mappings:
+                    '2': 6
+                    '3': 7
+                    '4': 8
+                    '5': 9
                 unit:
-                  value: "h"
+                  expr: "case((str({phv00079193}) in ['2', '3', '4', '5'], 'h'))"
 - class_derivations:
     MeasurementObservation:
       populated_from: pht001005
@@ -127,6 +72,8 @@
           value: OBA:2040171
         method_type:
           value: "questionnaire"
+        # Encoded answer, not hours: codes 2-5 are single hours (6-9). Codes 1 "5 or less"
+        # and 6 "10 or more" are open-ended and left unmapped (#873); no unit without a value.
         value_quantity:
           class_derivations:
           - Quantity:
@@ -134,5 +81,10 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00079041
+                  value_mappings:
+                    '2': 6
+                    '3': 7
+                    '4': 8
+                    '5': 9
                 unit:
-                  value: "h"
+                  expr: "case((str({phv00079041}) in ['2', '3', '4', '5'], 'h'))"
