@@ -381,7 +381,7 @@ def test_prune_refuses_when_a_partial_fix_leaves_a_new_warning(tmp_path):
     '72'). The old entry matches nothing, but the defect is still there under a new message:
     pruning it first would delete the entry and leave the run red on a line nobody re-adds."""
     t = _real_subset(tmp_path, "FHS", ["visit.yaml", "cig_smok.yaml"])
-    args = _run_all(t, "phase2", "phase3")
+    args = _run_all(t, "phase1", "phase2", "phase3")   # Phase 1 needs yamllint; CI tests lack it
     ki, bl = _start_clean(t, args)
     blocks = yaml.safe_load((t.dir / "cig_smok.yaml").read_text(encoding="utf-8"))
     v = blocks[36]["class_derivations"]["MeasurementObservation"]["slot_derivations"][
