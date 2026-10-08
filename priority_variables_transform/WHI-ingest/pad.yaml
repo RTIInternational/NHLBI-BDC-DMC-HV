@@ -34,7 +34,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00192476}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00192510} == 1, ({pht000998.phv00078437} * 365) + {phv00192511}))'
+          expr: 'case(({phv00192510} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00192511}))'
         condition_concept:
           value: MONDO:0005386
           range: string
@@ -162,7 +162,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00193190} == 1, ({pht000998.phv00078437} * 365) + {phv00193191}))'
+          expr: 'case(({phv00193190} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193191}))'
         condition_concept:
           value: MONDO:0005386
           range: string
@@ -190,7 +190,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00193719} == 1, ({pht000998.phv00078437} * 365) + {phv00193720}))'
+          expr: 'case(({phv00193719} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193720}))'
         condition_concept:
           value: MONDO:0005386
           range: string
@@ -218,7 +218,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00193721} == 1, ({pht000998.phv00078437} * 365) + {phv00193722}))'
+          expr: 'case(({phv00193721} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193722}))'
         condition_concept:
           value: MONDO:0005386
           range: string
@@ -246,7 +246,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283451}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00283704} == 1, ({pht000998.phv00078437} * 365) + {phv00283452}))'
+          expr: 'case(({phv00283704} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
           range: string

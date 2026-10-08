@@ -9,7 +9,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00193160} == 1, ({pht000998.phv00078437} * 365) + {phv00193161}))'
+          expr: 'case(({phv00193160} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193161}))'
         condition_concept:
           value: OMOP:4102124
           range: string
@@ -37,7 +37,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00193715} == 1, ({pht000998.phv00078437} * 365) + {phv00193716}))'
+          expr: 'case(({phv00193715} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193716}))'
         condition_concept:
           value: OMOP:4102124
           range: string
@@ -65,7 +65,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00193717} == 1, ({pht000998.phv00078437} * 365) + {phv00193718}))'
+          expr: 'case(({phv00193717} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193718}))'
         condition_concept:
           value: OMOP:4102124
           range: string
@@ -93,7 +93,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283451}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00283698} == 1, ({pht000998.phv00078437} * 365) + {phv00283452}))'
+          expr: 'case(({phv00283698} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
           range: string

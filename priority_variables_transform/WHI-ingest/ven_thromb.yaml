@@ -47,7 +47,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00170566}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00170567} == 1, ({pht000998.phv00078437} * 365) + {phv00170568}))'
+          expr: 'case(({phv00170567} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00170568}))'
         condition_concept:
           value: HP:0002625
         condition_status:
@@ -70,7 +70,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00170566}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00170569} == 1, ({pht000998.phv00078437} * 365) + {phv00170570}))'
+          expr: 'case(({phv00170569} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00170570}))'
         condition_concept:
           value: MONDO:0005279
         condition_status:
@@ -131,7 +131,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00192476}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00192501} == 1, ({pht000998.phv00078437} * 365) + {phv00192502}))'
+          expr: 'case(({phv00192501} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00192502}))'
         condition_concept:
           value: HP:0002625
         condition_status:
@@ -156,7 +156,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00193178} == 1, ({pht000998.phv00078437} * 365) + {phv00193179}))'
+          expr: 'case(({phv00193178} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193179}))'
         condition_concept:
           value: HP:0002625
         condition_status:
@@ -395,7 +395,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00202394} == 1, ({pht000998.phv00078437} * 365) + {phv00202395}))'
+          expr: 'case(({phv00202394} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00202395}))'
         condition_concept:
           value: HP:0002625
         condition_status:
@@ -420,7 +420,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00193691} == 1, ({pht000998.phv00078437} * 365) + {phv00193692}))'
+          expr: 'case(({phv00193691} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193692}))'
         condition_concept:
           value: MONDO:0005279
         condition_status:
@@ -445,7 +445,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00193693} == 1, ({pht000998.phv00078437} * 365) + {phv00193694}))'
+          expr: 'case(({phv00193693} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193694}))'
         condition_concept:
           value: MONDO:0005279
         condition_status:
@@ -470,7 +470,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00193695} == 1, ({pht000998.phv00078437} * 365) + {phv00193696}))'
+          expr: 'case(({phv00193695} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193696}))'
         condition_concept:
           value: MONDO:0005399
         condition_status:
@@ -495,7 +495,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00193697} == 1, ({pht000998.phv00078437} * 365) + {phv00193698}))'
+          expr: 'case(({phv00193697} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193698}))'
         condition_concept:
           value: MONDO:0005399
         condition_status:
@@ -520,7 +520,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283451}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00283512} == 1, ({pht000998.phv00078437} * 365) + {phv00283452}))'
+          expr: 'case(({phv00283512} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
         condition_concept:
@@ -547,7 +547,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283451}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00283701} == 1, ({pht000998.phv00078437} * 365) + {phv00283452}))'
+          expr: 'case(({phv00283701} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
         condition_concept:
@@ -574,7 +574,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283451}) + ":WHI")'
         age_at_condition_start:
-          expr: 'case(({phv00283703} == 1, ({pht000998.phv00078437} * 365) + {phv00283452}))'
+          expr: 'case(({phv00283703} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00283452}))'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00283451}) + ":WHI UNC HEART FAILURE DETAILS")'
         condition_concept:

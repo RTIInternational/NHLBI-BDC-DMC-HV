@@ -26,7 +26,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
         age_at_procedure:
-          expr: 'case(({phv00193199} == 1, ({pht000998.phv00078437} * 365) + {phv00193200}))'
+          expr: 'case(({phv00193199} == 1, ({pht000998.phv00078437} * 365 - {pht000998.phv00078436}) + {phv00193200}))'
         procedure_concept:
           expr: case(({phv00193199} == 1, "OMOP:4184832"))
         procedure_provenance:
