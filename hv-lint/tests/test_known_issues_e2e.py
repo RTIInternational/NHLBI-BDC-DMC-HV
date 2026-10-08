@@ -250,6 +250,26 @@ def test_18_copy_paste_label_fails_phase1_through_main(tmp_path):
     assert res.returncode == 1 and "likely a copy-paste visit label" in res.stdout
 
 
+def test_18_copy_paste_label_on_a_four_block_table_fails_phase1_through_main(tmp_path):
+    """Review round 2 A M1: MESA pht001205 has 4 single-label blocks, all 'MESA AORTIC CT EXAM 4'.
+    cac_volume b42 relabelled 'MESA CLASSIC EXAM 4' (a mintable label, so 5.2 is silent) faces
+    3 agreeing blocks; main's 1.8 flagged it and so must this one."""
+    t = E.Tree(tmp_path, "MESA")
+    vol = [E.fixture_block(f"mesa_cac_volume_b{i}.yaml") for i in (42, 43)]
+    t.write("cac_score.yaml", [E.fixture_block(f"mesa_cac_score_b{i}.yaml") for i in (55, 56)])
+    t.write("cac_volume.yaml", vol)
+    script = "phase-1/check_cross_file_pht_consistency.py"
+    assert t.run(script, "--cohort", "MESA").returncode == 0
+    visit = vol[0]["class_derivations"]["MeasurementObservation"]["slot_derivations"][
+        "associated_visit"]
+    visit["expr"] = visit["expr"].replace("MESA AORTIC CT EXAM 4", "MESA CLASSIC EXAM 4")
+    t.write("cac_volume.yaml", vol)
+    res = t.run(script, "--cohort", "MESA")
+    assert res.returncode == 1 and "[1.8]" in res.stdout and "pht001205" in res.stdout, \
+        res.stdout[-2000:]
+    assert "'MESA AORTIC CT EXAM 4'" in res.stdout and "likely a copy-paste" in res.stdout
+
+
 def test_512_unparsed_id_expression_fails_ci_through_main(tmp_path):
     """An id expression the parser cannot read is a ratcheted WARNING, not a silent skip."""
     t = _fhs_tree(tmp_path)

@@ -187,10 +187,12 @@ def _fmt(labels) -> str:
 # A single-label block disagreeing with a strong majority of its table's single-label blocks is
 # an ERROR. Warrant (all cohorts, 2026-10-08): of 5,573 single-label blocks on 566 tables, the
 # largest share of "other" blocks agreeing on a different label that any block faces is 28%
-# (ARIC pht012853, a wide multi-exam table), so 5 and 80% leave a wide margin, give 0 findings,
-# and arm the rule on 163 tables (4,409 blocks; 10 and 90% arm 103). Lower them only with a new
-# census of that maximum share.
-MAJORITY_MIN_BLOCKS = 5
+# (ARIC pht012853, a wide multi-exam table). The 80% share carries the margin: at 80% the rule
+# gives 0 findings at every block minimum from 1 to 5, so the minimum only decides how small a
+# single-exam table it guards -- 2 arms 277 tables (4,858 blocks), 5 armed only 163 (4,409) and
+# left MESA pht001205's 4 blocks unguarded. Keep 2 (a 1-1 split is no majority); lower the share
+# only with a new census of that maximum.
+MAJORITY_MIN_BLOCKS = 2
 MAJORITY_MIN_SHARE = 0.8
 
 
