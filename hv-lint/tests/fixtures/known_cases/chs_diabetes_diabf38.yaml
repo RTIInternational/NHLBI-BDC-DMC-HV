@@ -1,0 +1,24 @@
+# chs_diabetes_diabf38: block 22 of CHS-ingest/diabetes.yaml at the #885 branch tip after main c0307803, a fixed test case for #885.
+class_derivations:
+  Condition:
+    populated_from: pht001488
+    slot_derivations:
+      associated_participant:
+        expr: uuid5("https://w3id.org/bdchm/Participant", str({phv00103781}) + ":CHS")
+      associated_visit:
+        expr: uuid5("https://w3id.org/bdchm/Visit", str({phv00103781}) + ":CHS YEAR
+          3")
+      condition_concept:
+        value: MONDO:0005015
+        range: string
+      condition_status:
+        populated_from: phv00104230
+        value_mappings:
+          '0': ABSENT
+          '1': PRESENT
+      condition_provenance:
+        value: PATIENT_SELF_REPORT
+        range: string
+      relationship_to_participant:
+        value: ONESELF
+        range: string

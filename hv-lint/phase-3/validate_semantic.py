@@ -387,7 +387,7 @@ def check_value_mappings_completeness(
             rows = universe.get(code, 0)
             if code in sibling:
                 continue
-            if followup is not None and _css.classify_label(label, code) == "negative":
+            if followup is not None and _css.negative_answer(code, label):
                 continue
             if slot_name.endswith("_severity") and _NO_SEVERITY_RE.match(label or code):
                 continue

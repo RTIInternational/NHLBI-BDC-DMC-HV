@@ -128,6 +128,17 @@ def classify_label(label: str, code: str = "") -> str | None:
     return None
 
 
+def negative_answer(code: str, label: str | None) -> bool:
+    """A "No" answer: a negative label, or with no label at all the code 'N' or '0'.
+
+    A variable dbGaP publishes without code labels (ARIC IFIA06A, observed N / Y / U) still
+    answers "No" with 'N'.
+    """
+    if label:
+        return classify_label(label, code) == "negative"
+    return str(code).strip().upper() in {"N", "0"}
+
+
 # --- Follow-up detection (3.18) --------------------------------------------
 
 # Phrases that mark a question asked about an event the participant already
@@ -218,6 +229,19 @@ SIBLING_MAX_YES_SHARE = 0.5
 # Below this many "yes" answers a ratio match is noise (FHS fy591 n=1 vs a
 # sibling with yes=2 matched before this floor).
 FOLLOWUP_MIN_COUNT = 5
+# Signal (c), a gate question that names no condition ("FOLLOW A SPECIAL
+# DIET", "HOSPITALIZED IN PAST FOUR WEEKS") opening a branch of per-condition
+# items ("FOR DIABETES", "HOSPITALIZED FOR HEART ATTACK"). With no shared
+# condition to pair them, the count alone decides, so its band is narrower
+# than signal (a)'s: CHS DIABF38 n=792 vs DIETF38 yes=921 (0.86), DIABO38
+# 116 vs OFFDIT38 137 (0.85), DIABF58 124 vs DIETF58 127, ARIC IFIA06A 355
+# vs IFIA05 360. The measurement behind the bound is in #885.
+GATE_N_RATIO_MIN = 0.8
+# A branch item names the reason for the gate's "yes": "FOR DIABETES" (a
+# special diet's reason), "HOSPITALIZED FOR HEART ATTACK". A question that
+# merely follows a gate ("did your mother ever have a stroke?" after "is
+# your mother's history known?") is not one: its "No" is a real ABSENT.
+GATE_ITEM_RE = re.compile(r"(?:^|\.\s+)for\b", re.IGNORECASE)
 
 # A confirmation or adjudication follow-up ("CONFIRMED: ATRIAL
 # FIBRILLATION", "ASTHMA CONFIRMED BY MD") re-decides the condition, so its
@@ -263,10 +287,16 @@ class FollowUp:
     n: int | None
     count_signal: bool
     phrase_signal: bool
+    gate: bool = False
 
     def evidence(self) -> str:
         parts = []
-        if self.count_signal:
+        if self.gate:
+            parts.append(
+                f"n={self.n} vs gate question {self.sibling_name} ({self.sibling_phv}) "
+                f"yes={self.sibling_yes}"
+            )
+        elif self.count_signal:
             parts.append(
                 f"n={self.n} vs {self.sibling_name} ({self.sibling_phv}) "
                 f"yes={self.sibling_yes}"
@@ -420,7 +450,13 @@ def detect_followup(
           is answered "yes" by at most SIBLING_MAX_YES_SHARE of its
           respondents (count signal), or
       (b) its description has follow-up wording and a sibling exists, and
-          the cohort has no value-count index.
+          the cohort has no value-count index, or
+      (c) it is worded as an item of a branch ("FOR DIABETES", follow-up
+          wording) and the gate that opens the branch -- the nearest earlier
+          coded variable asked of more people, naming no condition ("follow a
+          special diet?", "hospitalized in the past four weeks?") -- has a
+          "yes" count within [GATE_N_RATIO_MIN, FOLLOWUP_N_RATIO_MAX] of its
+          n (_detect_gate). Used only when (a) finds no sibling.
 
     When the cohort has counts they decide: follow-up wording on a question
     asked of everyone ("since your last exam, were you hospitalized for
@@ -477,7 +513,53 @@ def detect_followup(
         )
         if best is None or (cand.count_signal and not best.count_signal):
             best = cand
+    # A same-condition sibling outranks a gate, so a variable both match keeps the evidence (and
+    # the known-issue fingerprint) it had before gates were recognised.
+    if (best is None or not best.count_signal) and own is not None:
+        gate = _detect_gate(phv, detail, own, detail_idx, stats, phrase)
+        if gate is not None:
+            return gate
     return best
+
+
+def _detect_gate(phv: str, detail, own: PhvStats, detail_idx: DetailIndex,
+                 stats: dict[str, PhvStats], phrase: bool) -> FollowUp | None:
+    """Signal (c): the nearest earlier coded variable that opens the branch ``phv`` sits in.
+
+    ``phv`` must read as an item of a branch (GATE_ITEM_RE, or follow-up wording). Walking back
+    from it, every coded variable passed must be asked of about as few people (n at most
+    FOLLOWUP_N_RATIO_MAX x ``phv``'s n); the first one that is not is the candidate gate.
+    It must name no condition, carry an affirmative code, be answered "yes" by at most
+    SIBLING_MAX_YES_SHARE of its respondents and at least FOLLOWUP_MIN_COUNT times, and its
+    "yes" count must be within [GATE_N_RATIO_MIN, FOLLOWUP_N_RATIO_MAX] of ``phv``'s n. A
+    coincidental count far up the table (CHS DIABF38 n=792 vs HAPPEN05 yes=988) is never
+    reached, because the walk stops at the first variable asked of more people.
+    """
+    if not (phrase or GATE_ITEM_RE.search(detail.description)):
+        return None
+    earlier = sorted((p for p in detail_idx.by_pht.get(detail.pht, []) if p < phv),
+                     reverse=True)
+    for sib_phv in earlier:
+        sib_stats = stats.get(sib_phv)
+        if sib_stats is None or sib_stats.n <= 0:
+            continue
+        if sib_stats.n <= FOLLOWUP_N_RATIO_MAX * own.n:
+            continue  # another item of the same branch, asked of about as many people
+        sib = detail_idx.records[sib_phv]
+        if not sib.codes or condition_terms(sib.description) or _ADMIN_RE.search(sib.description):
+            return None
+        if not any(classify_label(lbl, c) == "affirmative" for c, lbl in sib.codes.items()):
+            return None
+        sib_yes = _yes_count(sib, sib_stats)
+        if not (sib_yes >= FOLLOWUP_MIN_COUNT
+                and sib_yes <= SIBLING_MAX_YES_SHARE * sib_stats.n
+                and GATE_N_RATIO_MIN * sib_yes <= own.n <= FOLLOWUP_N_RATIO_MAX * sib_yes):
+            return None
+        return FollowUp(
+            sibling_phv=sib_phv, sibling_name=sib.name, sibling_yes=sib_yes, n=own.n,
+            count_signal=True, phrase_signal=phrase, gate=True,
+        )
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -570,7 +652,7 @@ def check_followup_absent(
         absent_codes = [
             c for c, t in vm.items()
             if t in NEGATIVE_STATUS
-            and (c == "0" or classify_label(codes.get(c, ""), c) == "negative")
+            and (c == "0" or negative_answer(c, codes.get(c)))
         ]
         if not absent_codes:
             continue
