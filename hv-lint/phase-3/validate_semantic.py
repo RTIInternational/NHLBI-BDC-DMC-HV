@@ -87,8 +87,9 @@ LOST_SHARE_WARNING = 0.1
 
 # Severity codes that mean "no severity": leaving them unmapped is correct. A presence answer
 # ("Present", "Yes") carries no grade either: the condition's status records presence, so the
-# severity slot leaves it null (WHI TTELVH '5' "Present" beside Mild / Moderate / Severe).
-_NO_SEVERITY_RE = re.compile(r"^\s*(none|no\b|no copd|normal|present\b|yes\b|positive\b)",
+# severity slot leaves it null (WHI TTELVH '5' "Present" beside Mild / Moderate / Severe). A
+# presence answer must be the whole label: "Yes, severe" or "Positive, 2+" carries a grade.
+_NO_SEVERITY_RE = re.compile(r"^\s*(none|no\b|no copd|normal|(present|yes|positive)\s*$)",
                              re.IGNORECASE)
 
 # The two slots that commonly read one PHV between them; a code mapped by the sibling is used.

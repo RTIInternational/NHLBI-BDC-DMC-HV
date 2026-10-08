@@ -354,7 +354,13 @@ def _real_subset(tmp_path, cohort: str, names: list[str]):
     for name in names:
         shutil.copy(HVLINT.parent / "priority_variables_transform" / f"{cohort}-ingest" / name,
                     t.dir / name)
-    shutil.copy(HVLINT / "known_issues.yaml", t.ki)
+    # Entries for this cohort's other files would be stale here (a file not in the tree is a
+    # deleted one), so only the copied files' entries are kept.
+    keep = {f"file: {cohort}-ingest/{name}," for name in names}
+    lines = (HVLINT / "known_issues.yaml").read_text(encoding="utf-8").splitlines()
+    t.ki.write_text("".join(x + "\n" for x in lines
+                            if f"file: {cohort}-ingest/" not in x or any(k in x for k in keep)),
+                    encoding="utf-8")
     return t
 
 
@@ -403,3 +409,17 @@ def test_prune_refuses_when_a_cohort_did_not_run(tmp_path):
     assert res.returncode == 1 and "refusing to prune" in res.stdout, res.stdout[-3000:]
     assert t.ki.read_text(encoding="utf-8") == ki
     assert t.baseline.read_text(encoding="utf-8") == bl
+
+
+def test_unevaluable_fallback_reach_fails_ci_through_main(tmp_path):
+    """Review round 2 B F4: a fallback label with no Visit block whose reach cannot be evaluated
+    (here a `>` test the evaluator does not read) is a 5.2 WARNING, never a silent skip."""
+    t = E.Tree(tmp_path, "FHS")
+    t.write("visit.yaml", [E.visit_block("pht012916", "phv00525296", "FHS OFFSPRING EXAM 5")])
+    b = E.fixture_block("fhs_cig_smok_b36.yaml")
+    v = b["class_derivations"]["MeasurementObservation"]["slot_derivations"]["associated_visit"]
+    v["expr"] = v["expr"].replace("{phv00525297} == '7'", "{phv00525297} > '6'")
+    t.write("cig_smok.yaml", [b])
+    res = E.phase5(t)
+    assert res.returncode == 1 and "new WARNING [5.2]" in res.stdout, res.stdout[-2000:]
+    assert "whether observed codes reach it cannot be evaluated" in res.stdout

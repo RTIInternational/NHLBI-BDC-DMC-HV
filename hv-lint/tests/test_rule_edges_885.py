@@ -130,3 +130,27 @@ def test_39_presence_answer_on_a_severity_slot_is_not_a_lost_grade():
     assert [s for s, code in f if code in ("4", "5")] == []
     assert ("WARNING", "5") in _39(_status_block({"0": "ABSENT"}),
                                    {"0": 100, "5": 50}, {"0": "No", "5": "Present"})
+
+
+# -- 2.10's guard when the codes cannot be evaluated (review round 2 B F4) ----------------------
+
+def test_210_unevaluable_guard_falls_back_to_the_structural_form():
+    import _expr
+    phv, age = "phv00000001", "{phv00000002} * 365"
+    for expr in (f"None if {{{phv}}} > 1 else {age}", f"{age} if {{{phv}}} > 1 else None"):
+        assert _expr.guarded_by(expr, phv, absent_codes=("0",), present_codes=("1",)) is True
+    # a test on another variable is not this status's guard, evaluable or not
+    assert _expr.guarded_by(f"None if {{phv00000009}} > 1 else {age}", phv, ("0",), ("1",)) is False
+    # evaluable and reversed: None on PRESENT
+    assert _expr.guarded_by(f"None if {{{phv}}} == 1 else {age}", phv, ("0",), ("1",)) is False
+
+
+# -- the presence exemption reads the whole label (review round 2 B F5) ------------------------
+
+def test_39_a_graded_label_that_starts_with_yes_is_still_a_lost_grade():
+    block = {"class_derivations": {"Condition": {"populated_from": PHT, "slot_derivations": {
+        "condition_severity": {"populated_from": PHV, "value_mappings": {
+            "1": "OMOP:4116992"}}}}}}
+    codes = {"1": "Mild", "5": "Yes, severe", "6": "Positive, 2+", "7": "Present"}
+    f = _39(block, {"1": 100, "5": 50, "6": 50, "7": 50}, codes)
+    assert sorted(code for _, code in f) == ["5", "6"]

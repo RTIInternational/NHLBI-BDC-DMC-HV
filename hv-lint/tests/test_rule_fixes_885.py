@@ -159,20 +159,19 @@ def test_18_copy_paste_label_against_a_strong_majority_is_an_error():
 
 
 def test_18_majority_thresholds_hold_at_their_edges():
-    n, share = c18.MAJORITY_MIN_BLOCKS, c18.MAJORITY_MIN_SHARE
-    few = [_single("E1", i) for i in range(n - 1)] + [_single("E2", 99)]
-    assert c18.check_cross_file_pht_consistency(few) == []          # n - 1 agree: too few
-
-    def lone(m):  # n blocks agree, m blocks each carry their own label
-        refs = [_single("E1", i) for i in range(n)] + [_single(f"X{j}", 50 + j) for j in range(m)]
+    """Literal expectations, so a change to either constant fails here, not just a change to the
+    rule (review round 2 B F4: 2 other blocks agreeing, at least 80% of the others)."""
+    def n_findings(labels):
+        refs = [_single(lab, i) for i, lab in enumerate(labels)]
         return len(c18.check_cross_file_pht_consistency(refs))
 
-    m = 1
-    while n / (n + m) >= share:     # the most lone blocks that still each face >= share
-        m += 1
-    assert lone(m) == m and lone(m + 1) == 0
-    multi = [_single(f"EXAM {i % 5}", i) for i in range(40)]      # a multi-exam table
-    assert c18.check_cross_file_pht_consistency(multi) == []
+    assert n_findings(["E1", "E2"]) == 0                       # 1-1: no majority
+    assert n_findings(["E1", "E1", "E2"]) == 1                 # 2 agree, 100%
+    assert n_findings(["E1"] * 4 + ["X0", "X1"]) == 2          # each lone block faces 4/5 = 80%
+    assert n_findings(["E1"] * 4 + ["X0", "X1", "X2"]) == 0    # 4/6 = 67%
+    assert n_findings(["E1"] * 8 + ["X0", "X1"]) == 2          # 8/9 = 89%
+    multi = [f"EXAM {i % 5}" for i in range(40)]               # a multi-exam table
+    assert n_findings(multi) == 0
 
 
 def test_18_majority_ignores_case_blocks_and_other_tables():

@@ -157,13 +157,13 @@ Every phase fails CI on ERROR (`.github/workflows/hv_lint.yml`). A known finding
 Each entry also carries the `issue` that tracks it and a `status`:
 
 - `defect` -- real; the fix is tracked in the issue;
-- `dbgap-error` -- the mapping is right and the dbGaP label or dictionary is wrong (ARIC ECGMI32/41, COMPLQ01);
+- `dbgap-error` -- the mapping is right and the dbGaP label or dictionary is wrong (ARIC ECGMI32/41);
 - `false-positive` -- the rule is wrong here; `note` says why;
 - `pending` -- a curator decision is open in the issue; nothing is decided yet.
 
 A matching finding is reported at INFO with `[known issue #N, status]` appended. An ERROR with no entry prints the exact line to add. What keeps the list honest, each an ERROR:
 
-- **stale entry** (`KI`): an entry for a rule the component ran, on a file it scanned (or a cohort it ran in full, for a cohort-level entry), that matches nothing -- the issue is fixed;
+- **stale entry** (`KI`): an entry for a rule the component ran, on a file it scanned (or a cohort it ran in full, for a cohort-level entry), that matches nothing -- the issue is fixed. An entry or baseline row for a file of a covered cohort that no longer exists (deleted or renamed) is in scope too, so it is reported fixed and pruned rather than kept forever;
 - **new WARNING** (`RATCHET`): a WARNING fingerprint that `hv-lint/warning_baseline.json` does not list. The ratchet compares fingerprints, so fixing one WARNING and adding another of the same rule fails;
 - **fixed WARNING** (`RATCHET`): a baseline fingerprint, in scope, that no finding has.
 
@@ -448,7 +448,7 @@ A BARE `{phv}` or bare `populated_from` whose table is not the block's class tab
 Flags values the source holds that `value_mappings` drops (silent data loss), at every depth (nested `Quantity.value_concept` included).
 
 - **Reference set**: the var_report's OBSERVED values (`<release>_stats.json.gz`). A declared code no row carries loses nothing. A value written as its label (JHS) counts as mapped when the label is a key. Without var_report counts the declared codes are used, capped at WARNING; with neither, INFO "could not be validated".
-- **Not reported**: the negative answer of a conditional follow-up (`check_status_semantic.detect_followup`; 3.18 rejects mapping it to ABSENT), a code the race/ethnicity sibling slot maps from the same PHV, a severity code labelled none / no / normal or present / yes / positive (no grade; the status records presence).
+- **Not reported**: the negative answer of a conditional follow-up (`check_status_semantic.detect_followup`; 3.18 rejects mapping it to ABSENT), a code the race/ethnicity sibling slot maps from the same PHV, a severity code labelled none / no / normal, or whose whole label is present / yes / positive (no grade; the status records presence; "Yes, severe" is still reported).
 - **Severity by rows lost** (share of observed rows the dropped value carries): ERROR from 50% on a high-impact slot (`race`, `sex`, `annotated_sex`, `ethnicity`, `condition_status`, `exposure_status`, `procedure_status`, `value_enum`), WARNING from 10%, INFO below. When no single code reaches the tier the slot's total loss reaches (three codes of 20% each), the largest dropped code is raised to it and says so. Skip labels (unknown, refused, missing, ...) are INFO.
 
 ### 3.10 PHV Data Type vs Slot Role Compatibility

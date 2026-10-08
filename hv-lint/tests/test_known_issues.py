@@ -370,3 +370,32 @@ def test_a_test_sees_neither_the_committed_files_nor_a_mode():
     assert K.load_entries() == [] and K.load_baseline() == {}
     for name in (K.PRUNE_ENV, K.UPDATE_ENV, K.RUN_ALL_ENV):
         assert name not in os.environ
+
+
+# -- a deleted or renamed file (review round 2 B F6) --------------------------------------------
+
+def test_every_baseline_row_points_at_a_file_that_exists(committed):
+    if not TREE.is_dir():
+        pytest.skip("no spec tree")
+    rows = [t for by_c in K.load_baseline().values() for ts in by_c.values() for t in ts]
+    missing = sorted({t.split(" | ", 1)[0] for t in rows} - {
+        t.split(" | ", 1)[0] for t in rows if (TREE / t.split(" | ", 1)[0]).exists()})
+    assert missing == []
+
+
+def test_a_deleted_files_row_and_entry_are_fixed_and_pruned(tree, monkeypatch):
+    """A file deleted or renamed is never scanned again; its rows and entries must still go."""
+    gone = tree["other"].parent / "gone.yaml"
+    gone.write_text(tree["other"].read_text(encoding="utf-8"), encoding="utf-8")
+    w, e = _at(gone, 0, "5.11", "WARNING", "w"), _at(gone, 0)
+    _baseline(w)
+    _list(tree, e)
+    gone.unlink()
+    extra = _run([], tree)
+    assert sorted(x.check for x in extra if x.severity == "ERROR") == ["KI", "RATCHET"]
+    monkeypatch.setenv("HVLINT_RUN_ALL", "1")
+    _run([], tree, mode="prune")
+    assert K.load_entries() == [] and K.load_baseline().get("5.11", {}).get("FHS", []) == []
+    # a --file run still leaves another file's rows alone
+    _baseline(_at(tree["other"], 0, "5.11", "WARNING", "w"))
+    assert _run([], tree, scanned=[tree["afib"]], partial=True) == []

@@ -458,13 +458,21 @@ def finalize(
     keys = fingerprints(findings, _Identities(scanned_abs))
     cohorts = {cohort_of(r) for r in scanned}
     cohorts |= {cohort_of(k.file) for k in keys.values() if k.file.endswith("/")}
+    # The transform directory the scanned files sit in: a file of a covered cohort that is no
+    # longer there (deleted or renamed) is never scanned again, so its entries and rows are in
+    # scope as fixed rather than kept forever.
+    roots = {Path(str(p)[: -len(rel)]) for rel, p in scanned_abs.items()
+             if str(p).replace("\\", "/").endswith(rel)}
 
     def in_scope(rule: str, rel: str) -> bool:
         if rule not in checks:
             return False
         if rel.endswith("/"):
             return not partial and cohort_of(rel) in cohorts
-        return rel in scanned
+        if rel in scanned:
+            return True
+        return (not partial and cohort_of(rel) in cohorts and bool(roots)
+                and not any((root / rel).exists() for root in roots))
 
     # Known issues: exact fingerprint match.
     entries = load_entries() if entries is None else entries
