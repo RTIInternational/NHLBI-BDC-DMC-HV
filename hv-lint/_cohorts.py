@@ -443,7 +443,7 @@ def study_mismatch(cache_dir: Path | str, cache_key: str, expect: str) -> str | 
         return None
     entry = manifest_entry(cache_dir, cache_key)
     if not entry:
-        return (f"cache '{cache_key}' has no recorded study provenance, so --expect-study "
+        return (f"cache '{cache_key}' has no recorded study provenance, so release "
                 f"{want} cannot be verified; rebuild it with build_phv_index.py")
     got_study = str(entry.get("study") or "")
     got_full = f"{got_study}.{entry.get('study_version') or ''}".rstrip(".")

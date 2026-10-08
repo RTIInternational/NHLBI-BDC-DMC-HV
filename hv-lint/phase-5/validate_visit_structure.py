@@ -1307,7 +1307,8 @@ def main() -> int:
         if not args.cache_dir:
             all_findings.append(Finding(
                 f"priority_variables_transform/{cohort}-ingest", 0, "5.3/5.4", "ERROR",
-                f"no --cache-dir supplied, so checks 5.3 and 5.4 DID NOT RUN for {cohort}"))
+                f"no --cache-dir supplied, so check 5.3 and the PHV-index half of 5.4 DID NOT "
+                f"RUN for {cohort} (5.4's structural checks still ran)"))
             unrun_check = True
         else:
             # The release is checked here for the reason Phase 3 checks it: `cache_key_for`
@@ -1348,7 +1349,8 @@ def main() -> int:
                 all_findings.append(Finding(
                     f"priority_variables_transform/{cohort}-ingest", 0, "5.3/5.4", "ERROR",
                     f"no PHV index for {cohort} (looked for '{cache_key}.json.gz' in "
-                    f"{args.cache_dir}), so checks 5.3 and 5.4 DID NOT RUN"))
+                    f"{args.cache_dir}), so check 5.3 and the PHV-index half of 5.4 DID NOT "
+                    f"RUN (5.4's structural checks still ran)"))
                 unrun_check = True
 
         # 5.3: Visit <-> PHT consistency, against the authoritative PHV index

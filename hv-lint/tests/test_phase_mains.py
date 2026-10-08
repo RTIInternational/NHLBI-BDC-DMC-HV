@@ -169,6 +169,8 @@ def test_phase_5_release_check_fails_the_run_at_fail_on_critical(
     assert rc == 1, out
     assert expect in out
     assert "DID NOT RUN" in out
+    # The expectation here is the DECLARED release; the user never passed --expect-study.
+    assert "--expect-study" not in out
 
 
 def test_phase_5_without_cache_dir_fails_at_fail_on_critical(tmp_path, monkeypatch, capsys):
@@ -177,6 +179,9 @@ def test_phase_5_without_cache_dir_fails_at_fail_on_critical(tmp_path, monkeypat
     out = capsys.readouterr().out
     assert rc == 1, out
     assert "no --cache-dir supplied" in out
+    # 5.4's structural half (age slots, `* 365`) reads no cache and still runs, so the message
+    # must not claim all of 5.4 was skipped.
+    assert "check 5.3 and the PHV-index half of 5.4 DID NOT RUN" in out
 
 
 @pytest.mark.parametrize("missing, expect", [
