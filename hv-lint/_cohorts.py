@@ -237,6 +237,16 @@ def declared_study(
     return None
 
 
+def declaration_file(cohort: str) -> str:
+    """The repo-relative path of the fetch manifest that declares ``cohort``'s release.
+
+    For a remediation message only. It applies :data:`ALIASES` exactly as :func:`declared_study`
+    does when it looks the file up, so HCHS points at ``_manifest-hchs_sol.yaml`` -- the file that
+    exists -- not at a ``_manifest-hchs.yaml`` nobody should create.
+    """
+    stem = ALIASES.get(cohort.upper(), cohort.lower())
+    return "/".join((*_FETCH_MANIFESTS, f"_manifest-{stem}.yaml"))
+
 def cache_key_for(
     cohort: str, cache_dir: Path | str | None = None, hv_root: Path | str | None = None
 ) -> str:

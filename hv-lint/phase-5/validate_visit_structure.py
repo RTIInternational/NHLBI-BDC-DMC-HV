@@ -1299,7 +1299,7 @@ def main() -> int:
                 all_findings.append(Finding(
                     f"priority_variables_transform/{cohort}-ingest", 0, "5.3/5.4/5.8", "ERROR",
                     f"{cohort} declares no dbGaP release, so the cache cannot be checked -- add "
-                    f"hv_dataqc/cache_fetcher/manifests/_manifest-{cohort.lower()}.yaml"))
+                    f"{_cohorts.declaration_file(cohort)}"))
             else:
                 mismatch = _cohorts.study_mismatch(args.cache_dir, cache_key, declared)
                 if mismatch:
@@ -1436,9 +1436,9 @@ def main() -> int:
         # downgrade the mandatory release check to advisory is not a mandatory check.
         # `--fail-on critical` did exactly that, and the run then reported PASSED having
         # skipped 5.3/5.4/5.8 for the cohort whose cache was the wrong release.
-        print("\nFAILED: the mandatory dbGaP release check did not pass for at least one "
-              "cohort, so checks 5.3/5.4/5.8 DID NOT RUN there. This is not weighed against "
-              "--fail-on.")
+        print("\nFAILED: for at least one cohort the mandatory dbGaP release check did not "
+              "pass or a required cache input was missing, so checks 5.3/5.4/5.8 DID NOT RUN "
+              "there (see the ERROR findings above). This is not weighed against --fail-on.")
         return 1
     else:
         if all_findings:

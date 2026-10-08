@@ -403,3 +403,25 @@ def test_two_releases_of_one_study_are_never_disambiguated_by_sort_order(tmp_pat
     assert _cohorts.cache_key_for("LTRC", cache, root) == "phs001662.v4"
     # with NO declaration, the ambiguous cohort match is refused rather than guessed
     assert "phs001662.v2" not in _cohorts.candidate_keys("LTRC", cache, tmp_path / "nowhere")
+
+
+# -- the declaration path a remediation message names --------------------------
+
+
+def test_declaration_file_applies_the_hchs_alias():
+    """Phase 5 told HCHS to add `_manifest-hchs.yaml`; the declaration is `_manifest-hchs_sol.yaml`."""
+    assert _cohorts.declaration_file("HCHS") == \
+        "hv_dataqc/cache_fetcher/manifests/_manifest-hchs_sol.yaml"
+    assert _cohorts.declaration_file("ARIC") == \
+        "hv_dataqc/cache_fetcher/manifests/_manifest-aric.yaml"
+
+
+def test_declaration_file_exists_for_every_shipped_ingest_cohort():
+    """Against this repo: the named file is the one `declared_study` actually reads."""
+    hv_root = Path(__file__).resolve().parents[2]
+    transform = hv_root / "priority_variables_transform"
+    if not (hv_root / "hv_dataqc").is_dir() or not transform.is_dir():
+        pytest.skip("not run inside an HV checkout")
+    for cohort in _cohorts.ingest_cohorts(transform):
+        assert (hv_root / _cohorts.declaration_file(cohort)).is_file(), cohort
+        assert _cohorts.declared_study(cohort, hv_root=hv_root), cohort
