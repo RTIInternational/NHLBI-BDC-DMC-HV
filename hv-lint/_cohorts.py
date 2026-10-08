@@ -247,6 +247,7 @@ def declaration_file(cohort: str) -> str:
     stem = ALIASES.get(cohort.upper(), cohort.lower())
     return "/".join((*_FETCH_MANIFESTS, f"_manifest-{stem}.yaml"))
 
+
 def cache_key_for(
     cohort: str, cache_dir: Path | str | None = None, hv_root: Path | str | None = None
 ) -> str:
