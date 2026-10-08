@@ -376,6 +376,7 @@ def check_value_mappings_completeness(
             followup = _css.detect_followup(pf, followup_idx, stats)
         sibling = _sibling_mapped(block, site, pf)
         total = sum(universe.values()) or 0
+        observed_drops: list[Finding] = []
 
         for code in missing:
             label = _label(code)
@@ -404,7 +405,7 @@ def check_value_mappings_completeness(
                     sev = "WARNING"
                 else:
                     sev = "INFO"
-                findings.append(Finding(
+                observed_drops.append(Finding(
                     rel_path, block_idx, "3.9", sev,
                     f"{where} drops observed value {what}: {rows:,} of {total:,} rows "
                     f"({share:.0%}) emit no value -- possible data loss",
@@ -415,7 +416,36 @@ def check_value_mappings_completeness(
                     f"{where} omits declared code {what}; no var_report counts, so whether any "
                     f"row carries it is unknown",
                 ))
+        findings.extend(_escalate_by_slot(observed_drops, universe, total, slot_name))
     return findings
+
+
+_RANK = {"INFO": 0, "WARNING": 1, "ERROR": 2}
+_DROP_RE = re.compile(r"drops observed value '([^']*)'")
+
+
+def _escalate_by_slot(drops: list[Finding], universe: dict, total: int,
+                      slot_name: str) -> list[Finding]:
+    """3.9 severity also follows the rows the SLOT loses over all its reported codes.
+
+    When no single code reaches the tier the slot's total does (three codes of 20% each on a
+    high-impact slot), the largest dropped code is raised to that tier and says so. Only the
+    largest one: raising every 1-row code with it would bury the finding that matters.
+    """
+    if not drops or not total:
+        return drops
+    rows = [universe.get(_DROP_RE.search(f.message).group(1), 0) for f in drops]
+    lost = sum(rows)
+    share = lost / total
+    tier = ("ERROR" if share >= LOST_SHARE_ERROR and slot_name in HIGH_IMPACT_SLOTS
+            else "WARNING" if share >= LOST_SHARE_WARNING else "INFO")
+    if max(_RANK[f.severity] for f in drops) >= _RANK[tier]:
+        return drops
+    top = max(zip(rows, (f.message for f in drops), drops), key=lambda x: (x[0], x[1]))[2]
+    top.severity = tier
+    top.message += (f"; with the slot's other dropped codes, {lost:,} of {total:,} rows "
+                    f"({share:.0%}) are lost")
+    return drops
 
 
 # ---------------------------------------------------------------------------
