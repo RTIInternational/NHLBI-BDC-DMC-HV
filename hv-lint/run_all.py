@@ -10,6 +10,8 @@ Usage:
     python hv-lint/run_all.py --cohort ARIC --skip phase2
     python hv-lint/run_all.py --cohort FHS --fail-on warning
     python hv-lint/run_all.py --cohort WHI --no-report
+    HVLINT_PRUNE=1 python hv-lint/run_all.py --cohort all            # drop fixed known issues
+    HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all  # accept WARNING changes
 """
 
 from __future__ import annotations
@@ -153,6 +155,10 @@ def main() -> int:
 
     # Default cache-dir
     cache_dir = args.cache_dir or str(SCRIPT_DIR / "dbgap-cache")
+
+    # The known-issue prune and baseline update modes run only under this flag: a phase or a
+    # component started on its own may cover part of a cohort (hv-lint/_known_issues.py).
+    os.environ["HVLINT_RUN_ALL"] = "1"
 
     # Propagate --hv-root
     if args.hv_root:

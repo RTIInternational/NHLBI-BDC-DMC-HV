@@ -684,7 +684,8 @@ def main() -> int:
     # -----------------------------------------------------------------------
     # Known issues, stale entries and the WARNING ratchet (hv-lint/_known_issues.py).
     all_findings.extend(_known_issues.finalize(
-        all_findings, checks={"1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.7", "1.9", "1.10", "1.11", "1.13"}, scanned_files=yaml_files, make_finding=Finding))
+        all_findings, checks={"1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.7", "1.9", "1.10", "1.11", "1.13"}, scanned_files=yaml_files, make_finding=Finding,
+        partial=bool(args.file)))
 
     fail_rank = SEVERITY_RANK[args.fail_on.upper()]
 

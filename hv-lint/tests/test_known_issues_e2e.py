@@ -1,0 +1,185 @@
+"""Each enforced component's real main(), through its own checks= set and the known-issue step.
+
+A known case is listed, passes, fails when its entry is removed, survives a block inserted above
+it, goes stale when fixed, and is pruned by one command (#885 part 4).
+
+Run: python -m pytest hv-lint/tests/test_known_issues_e2e.py
+"""
+
+import copy
+import json
+import sys
+from pathlib import Path
+
+HVLINT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(HVLINT / "tests"))
+sys.path.insert(0, str(HVLINT))
+import _e2e as E  # noqa: E402
+import _known_issues as K  # noqa: E402
+
+FHS_VISIT = E.visit_block("pht000012", "phv00001559", "FHS ORIGINAL EXAM 10")
+
+
+def _fhs_tree(tmp_path):
+    t = E.Tree(tmp_path, "FHS")
+    t.write("visit.yaml", [FHS_VISIT])
+    t.write("afib.yaml", [E.fixture_block("fhs_afib_b0.yaml")])
+    return t
+
+
+def _clean_block():
+    """afib b0 seeded from shareid and reading its own table: no 5.11 / 3.5 finding."""
+    b = copy.deepcopy(E.fixture_block("fhs_afib_b0.yaml"))
+    slots = b["class_derivations"]["Condition"]["slot_derivations"]
+    for s in ("associated_participant", "associated_visit"):
+        slots[s]["expr"] = slots[s]["expr"].replace("phv00001558", "phv00001559")
+    slots["condition_status"]["populated_from"] = "phv00001560"
+    return b
+
+
+def test_phase5_known_issue_lifecycle(tmp_path):
+    t = _fhs_tree(tmp_path)
+    first = E.phase5(t)
+    assert first.returncode == 1 and "[5.11]" in first.stdout
+    lines = t.list_as_known(first, 882)
+    assert len(lines) == 1 and '"5.11"' in lines[0]
+    assert E.phase5(t, mode="update").returncode == 0          # record the WARNING baseline
+
+    listed = E.phase5(t)
+    assert listed.returncode == 0, listed.stdout
+    assert "known issue #882, defect" in listed.stdout
+
+    t.ki.write_text("", encoding="utf-8")                        # entry removed -> that ERROR
+    assert E.phase5(t).returncode == 1
+    t.ki.write_text(lines[0] + "\n", encoding="utf-8")
+
+    t.write("afib.yaml", [_clean_block(), E.fixture_block("fhs_afib_b0.yaml")])
+    shifted = E.phase5(t)                                       # block 0 -> 1: still listed
+    assert shifted.returncode == 0, shifted.stdout
+
+    t.write("afib.yaml", [_clean_block()])                      # the defect is fixed
+    fixed = E.phase5(t)
+    assert fixed.returncode == 1 and "stale known-issue entry" in fixed.stdout
+    assert K.PRUNE_CMD in fixed.stdout
+
+    assert E.phase5(t, mode="prune").returncode == 0
+    assert K.load_entries(t.ki) == []
+    assert E.phase5(t).returncode == 0
+
+
+def test_phase5_prune_refuses_outside_run_all(tmp_path):
+    t = _fhs_tree(tmp_path)
+    t.list_as_known(E.phase5(t), 882)
+    t.write("afib.yaml", [_clean_block()])
+    before = t.ki.read_text(encoding="utf-8")
+    res = E.phase5(t, mode="prune", run_all=False)
+    assert res.returncode == 1 and "refusing to prune" in res.stdout
+    assert t.ki.read_text(encoding="utf-8") == before
+
+
+def test_phase5_missing_visit_yaml_fails(tmp_path):
+    t = E.Tree(tmp_path, "MESA")
+    t.write("potassium.yaml", [E.fixture_block("mesa_potassium_b0.yaml")])
+    res = E.phase5(t)
+    assert res.returncode == 1 and "No visit.yaml found for cohort MESA" in res.stdout
+
+
+def test_phase5_new_warning_fails_even_when_another_is_fixed(tmp_path):
+    """Fix one 5.2 WARNING and add another: the WARNING count is unchanged, CI still fails."""
+    t = _fhs_tree(tmp_path)
+    a, b = _clean_block(), _clean_block()
+    for blk, label in ((a, "FHS OFFSPRING EXAM 6-7"), (b, "FHS ORIGINAL EXAM 10")):
+        v = blk["class_derivations"]["Condition"]["slot_derivations"]["associated_visit"]
+        v["expr"] = v["expr"].replace("FHS ORIGINAL EXAM 10", label)
+    b["class_derivations"]["Condition"]["slot_derivations"]["condition_status"][
+        "populated_from"] = "phv00001561"
+    t.write("afib.yaml", [a, b])
+    assert E.phase5(t, mode="update").returncode == 0
+    assert "[5.2]" in E.phase5(t).stdout and E.phase5(t).returncode == 0
+    for blk, old, new in ((a, "EXAM 6-7", "EXAM 10"), (b, "ORIGINAL EXAM 10", "ORIGNAL EXAM 10")):
+        v = blk["class_derivations"]["Condition"]["slot_derivations"]["associated_visit"]
+        v["expr"] = v["expr"].replace(old, new)
+    t.write("afib.yaml", [a, b])
+    res = E.phase5(t)
+    assert res.returncode == 1
+    assert "new WARNING [5.2]" in res.stdout and "is fixed" in res.stdout
+
+
+def _phase3_cycle(tmp_path, cohort, fixture, script, rule, fixed_block):
+    t = E.Tree(tmp_path, cohort)
+    t.write("x.yaml", [E.fixture_block(fixture)])
+    first = E.phase3(t, script)
+    assert first.returncode == 1 and f"[{rule}]" in first.stdout, first.stdout
+    t.list_as_known(first, 885)
+    assert E.phase3(t, script, mode="update").returncode == 0
+    assert E.phase3(t, script).returncode == 0
+    t.write("x.yaml", [fixed_block])
+    stale = E.phase3(t, script)
+    assert stale.returncode == 1 and "stale known-issue entry" in stale.stdout, stale.stdout
+    assert E.phase3(t, script, mode="prune").returncode == 0
+    assert K.load_entries(t.ki) == []
+
+
+def test_crossref_35_is_enforced_through_main(tmp_path):
+    b = E.fixture_block("mesa_potassium_b0.yaml")
+    fixed = copy.deepcopy(b)
+    del fixed["class_derivations"]["MeasurementObservation"]["slot_derivations"][
+        "age_at_observation"]
+    _phase3_cycle(tmp_path, "MESA", "mesa_potassium_b0.yaml", "validate_dbgap_crossref.py",
+                  "3.5", fixed)
+
+
+def test_semantic_315_is_enforced_through_main(tmp_path):
+    b = E.fixture_block("jhs_fam_stroke_b4.yaml")
+    fixed = copy.deepcopy(b)
+    vm = fixed["class_derivations"]["Condition"]["slot_derivations"]["condition_status"][
+        "value_mappings"]
+    vm["Don't Know"] = vm.pop("Don't know")
+    _phase3_cycle(tmp_path, "JHS", "jhs_fam_stroke_b4.yaml", "validate_semantic.py", "3.15",
+                  fixed)
+
+
+def test_status_semantic_317_is_enforced_through_main(tmp_path):
+    b = E.fixture_block("aric_carotid_plaque_b3.yaml")
+    fixed = copy.deepcopy(b)
+    fixed["class_derivations"]["Condition"]["slot_derivations"]["condition_status"][
+        "value_mappings"] = {"0": "PRESENT", "1": "ABSENT"}
+    _phase3_cycle(tmp_path, "ARIC", "aric_carotid_plaque_b3.yaml", "check_status_semantic.py",
+                  "3.17", fixed)
+
+
+def _cache_without_stats(tmp_path) -> Path:
+    cache = tmp_path / "cache"
+    cache.mkdir()
+    for f in E.CACHE.iterdir():
+        if f.is_file() and not f.name.endswith("_stats.json.gz"):
+            (cache / f.name).write_bytes(f.read_bytes())
+    return cache
+
+
+def test_missing_stats_index_fails_both_status_components(tmp_path):
+    t = E.Tree(tmp_path, "ARIC")
+    t.write("x.yaml", [E.fixture_block("aric_carotid_plaque_b3.yaml")])
+    cache = _cache_without_stats(tmp_path)
+    for script in ("check_status_semantic.py", "validate_semantic.py"):
+        res = t.run(f"phase-3/{script}", "--cohort", "ARIC", "--cache-dir", str(cache),
+                    "--fail-on", "error")
+        assert res.returncode != 0, (script, res.stdout[-800:])
+
+
+def test_file_run_scopes_entries_and_refuses_an_update(tmp_path):
+    """A --file run checks one file: other files' entries are not stale, and no rewrite runs."""
+    t = E.Tree(tmp_path, "FHS")
+    dup = E.fixture_block("fhs_afib_b0.yaml")
+    t.write("a.yaml", [dup, dup])                                # 1.2: same block twice
+    t.write("b.yaml", [_clean_block()])
+    script = "phase-1/validate_yaml_structure.py"
+    first = t.run(script, "--cohort", "FHS")
+    assert first.returncode == 1 and "[1.2]" in first.stdout
+    t.list_as_known(first, 872)
+    assert t.run(script, "--cohort", "FHS").returncode == 0
+    b_only = t.run(script, "--file", str(t.dir / "b.yaml"))
+    assert b_only.returncode == 0, b_only.stdout
+    refused = t.run(script, "--file", str(t.dir / "b.yaml"), mode="update")
+    assert refused.returncode == 1 and "refusing to update on a --file run" in refused.stdout
+    assert not t.baseline.exists() or json.loads(t.baseline.read_text())["warnings"] == {}

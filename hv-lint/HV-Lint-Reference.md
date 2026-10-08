@@ -151,19 +151,33 @@ linkml-map 0.5.3 (run with dm-bip's own schema step and map call) reaches anothe
 
 ### A7: Known Issues Are Written Down, One Entry per Finding
 
-Every phase fails CI on ERROR (`.github/workflows/hv_lint.yml`). A known finding is not skipped and not downgraded by its rule: it is listed in `hv-lint/known_issues.yaml`, one entry per finding, read by `hv-lint/_known_issues.py` in every component. Each entry carries `rule`, `file` (cohort-relative), `block`, optionally `match` (a substring of the message, when one block has several findings of one rule), the `issue` that tracks it and a `status`:
+Every phase fails CI on ERROR (`.github/workflows/hv_lint.yml`). A known finding is not skipped and not downgraded by its rule: it is listed in `hv-lint/known_issues.yaml`, one entry per finding, read by `hv-lint/_known_issues.py` in every component. An entry names its finding by **fingerprint**, never by a count or a block's position:
+
+- `rule`; `file` (cohort-relative, or `<C>-ingest/` for a finding about a whole cohort, such as a missing visit.yaml or a check that did not run);
+- `block`: the block's content identity, `Class@pht:phvs` (the phvs its slots read, minus `id`, `associated_*` and `age_*`; a Visit block's `id` labels). Inserting or deleting another block leaves it unchanged, and so does fixing a participant seed. Two identical blocks in one file get `#2`, `#3`;
+- `message`: the finding's message with unquoted numbers (row counts, block numbers, shares) replaced by `#`. Quoted codes and labels stay, so two reasons are two findings.
+
+Each entry also carries the `issue` that tracks it and a `status`:
 
 - `defect` -- real; the fix is tracked in the issue;
 - `dbgap-error` -- the mapping is right and the dbGaP label or dictionary is wrong (ARIC ECGMI32/41, COMPLQ01);
-- `false-positive` -- the rule is wrong here; `note` says why.
+- `false-positive` -- the rule is wrong here; `note` says why;
+- `pending` -- a curator decision is open in the issue; nothing is decided yet.
 
-A matching finding is reported at INFO with `[known issue #N, status]` appended. Three checks keep the list honest, each an ERROR:
+A matching finding is reported at INFO with `[known issue #N, status]` appended. An ERROR with no entry prints the exact line to add. What keeps the list honest, each an ERROR:
 
-- **stale entry** (`KI`): an entry for a rule the component ran, in a cohort it scanned, that matches nothing -- the issue was fixed (or the block moved), so the entry is deleted or updated in the same PR;
-- **ambiguous entry** (`KI`): an entry that matches more than one finding, so a new finding can never hide behind an old entry;
-- **WARNING ratchet** (`RATCHET`): the number of WARNING findings per rule and cohort must equal `hv-lint/warning_baseline.json`. A rise fails; so does a fall, until the baseline is lowered with `HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all`, so the floor only descends.
+- **stale entry** (`KI`): an entry for a rule the component ran, on a file it scanned (or a cohort it ran in full, for a cohort-level entry), that matches nothing -- the issue is fixed;
+- **new WARNING** (`RATCHET`): a WARNING fingerprint that `hv-lint/warning_baseline.json` does not list. The ratchet compares fingerprints, so fixing one WARNING and adding another of the same rule fails;
+- **fixed WARNING** (`RATCHET`): a baseline fingerprint, in scope, that no finding has.
 
-Entries cover ERROR findings only; WARNINGs are the ratchet's. On main (731984f5 + #831 + #885) the file holds 717 entries -- 5.11 383 (#882), 3.5 127 (#500, #882, #883, #884, #872), 1.12 57 (#785, #881), 2.12 49 (#883), 2.4 31 (#884), 3.16 30 (#884), 3.9 11, 3.10 7 (#883), 3.18 6 and 3.17 5 (#881, #869), 1.2 4, 3.15 4 (#226), 2.7 3 (#883) -- and every phase passes. Removing any one entry fails CI on exactly that finding.
+Fingerprints are unique per run (two findings with one fingerprint get ` (#2)`), so an entry matches at most one finding; a duplicate entry is rejected when the file is read.
+
+Two commands rewrite the files. Both run only under `run_all.py` and refuse a `--file` run, so a partial run never rewrites rows it did not see:
+
+- `HVLINT_PRUNE=1 python hv-lint/run_all.py --cohort all` removes ONLY entries and baseline rows that match nothing, and never adds one. Every stale-entry and fixed-WARNING message prints it. After a PR that fixes known issues, this one command is the whole bookkeeping.
+- `HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all` rewrites the WARNING baseline from the run, so it can add rows as well as drop them: accepting a new WARNING is a reviewed diff of `warning_baseline.json`, one line per finding.
+
+A `--file` run checks only that file's entries and rows. On main (731984f5 + #831 + #885) the file holds 717 entries -- 5.11 383 (#882), 3.5 127 (#500, #882, #883, #884, #872), 1.12 57 (#785, #881), 2.12 49 (#883), 2.4 31 (#884), 3.16 30 (#884), 3.9 11, 3.10 7 (#883), 3.18 6 and 3.17 5 (#881, #869), 1.2 4, 3.15 4 (#226), 2.7 3 (#883) -- and every phase passes. Removing any one entry fails CI on exactly that finding.
 
 ### A8: Duplicate Detection Identity
 

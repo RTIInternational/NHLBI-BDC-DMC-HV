@@ -132,6 +132,24 @@ See [MAINTENANCE.md](MAINTENANCE.md) for full documentation on version bumps, ne
 
 ---
 
+## Known Issues and the WARNING Baseline
+
+CI fails on every ERROR that `hv-lint/known_issues.yaml` does not list, on a listed entry that no
+longer matches, and on any change to the WARNING fingerprints in `hv-lint/warning_baseline.json`
+(HV-Lint-Reference A7).
+
+```bash
+# Your PR fixed listed defects or WARNINGs: remove exactly those entries and rows (never adds)
+HVLINT_PRUNE=1 python hv-lint/run_all.py --cohort all
+
+# Your PR changes WARNINGs on purpose: rewrite the baseline, then review its diff
+HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all
+```
+
+An unlisted ERROR prints the `known_issues.yaml` line that would list it; fill in `issue` and
+`status` only when the defect is tracked in an issue. Both commands refuse a `--file` run and a
+component run on its own.
+
 ## Expected Warnings (Not Errors)
 
 ### Phase 2: Frozen key-set warning

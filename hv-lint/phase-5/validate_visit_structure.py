@@ -1110,12 +1110,13 @@ def check_5_11_participant_seed(
       (a) a seed whose dbGaP name is not a participant ID (``idtype``, ``IDTYPE``, ...);
       (b) a visit seed set that differs from the participant seed set at the same level (the
           participant is inherited from the enclosing class when a nested one has none);
-      (c) an unqualified seed in another table than the block's top-level ``populated_from``:
-          a bare reference to another table is None in linkml-map, so participant and visit are
-          emitted empty.
+      (c) an unqualified seed in no enclosing table (the class's ``populated_from`` and those of
+          the classes around it, as 3.5 reads reachability): a bare reference to another table
+          is None in linkml-map, so participant and visit are emitted empty.
 
     Name-based on purpose: shareid and idtype are adjacent accessions in FHS tables but the
-    distance varies by table, so a distance rule would be wrong. One ERROR per block.
+    distance varies by table, so a distance rule would be wrong. One ERROR per reason, so a
+    second defect in a block that is already a known issue is a finding of its own.
     """
     findings: list[Finding] = []
 
@@ -1138,7 +1139,7 @@ def check_5_11_participant_seed(
                 continue
             reasons: list[str] = []
 
-            def level(cls_name, cls_def, top_pht, inherited):
+            def level(cls_name, cls_def, tables, inherited):
                 slots = cls_def.get("slot_derivations")
                 if not isinstance(slots, dict):
                     return
@@ -1153,9 +1154,9 @@ def check_5_11_participant_seed(
                         continue
                     if name.casefold() not in PARTICIPANT_ID_NAMES:
                         reasons.append(f"seed {label} is not a participant ID")
-                    if pht and not seed.table and top_pht and pht != top_pht:
-                        reasons.append(f"seed {label} is in another table than {top_pht} "
-                                       f"and has no join, so it is None")
+                    if pht and not seed.table and tables and pht not in tables:
+                        reasons.append(f"seed {label} is in another table than "
+                                       f"{', '.join(tables)} and has no join, so it is None")
                 if visit and part and {s.phv for s in visit} != {s.phv for s in part}:
                     reasons.append(
                         f"visit seed {sorted({s.phv for s in visit})} differs from participant "
@@ -1164,15 +1165,17 @@ def check_5_11_participant_seed(
                     if isinstance(slot_def, dict):
                         for ncls, ndef in iter_nested_class_derivs(slot_def):
                             if isinstance(ndef, dict):
-                                level(ncls, ndef, top_pht, part)
+                                npht = ndef.get("populated_from")
+                                level(ncls, ndef, tables + ((npht,) if npht else ()), part)
 
             for cls_name, cls_def in cds.items():
                 if isinstance(cls_def, dict):
-                    level(cls_name, cls_def, cls_def.get("populated_from"), [])
-            if reasons:
+                    top = cls_def.get("populated_from")
+                    level(cls_name, cls_def, (top,) if top else (), [])
+            for reason in dict.fromkeys(reasons):
                 findings.append(Finding(
                     file=rel, block=idx, check="5.11", severity="ERROR",
-                    message="participant / visit id seed: " + "; ".join(dict.fromkeys(reasons)),
+                    message=f"participant / visit id seed: {reason}",
                 ))
     return findings
 
@@ -1256,8 +1259,8 @@ def main() -> int:
                 file=f"priority_variables_transform/{cohort}-ingest/",
                 block=-1,
                 check="5.0",
-                severity="WARNING",
-                message=f"No visit.yaml found for cohort {cohort}",
+                severity="ERROR",
+                message=f"No visit.yaml found for cohort {cohort}: Phase 5 DID NOT RUN for it",
             ))
             cohorts_skipped.append(cohort)
             continue

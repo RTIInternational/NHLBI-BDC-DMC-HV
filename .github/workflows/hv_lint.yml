@@ -108,9 +108,10 @@ jobs:
 
       # Every phase is ENFORCED: a finding at or above --fail-on (ERROR on pull requests) fails
       # the job. Main stays green through hv-lint/known_issues.yaml -- one entry per known
-      # finding, each naming its issue and status -- not through advisory steps. An entry that
-      # no longer matches fails too (rule KI), and so does a change in the number of WARNING
-      # findings per rule and cohort against hv-lint/warning_baseline.json (rule RATCHET).
+      # finding, keyed by fingerprint and naming its issue and status -- not through advisory
+      # steps. An entry that no longer matches fails too (rule KI), and so does any WARNING
+      # fingerprint added to or gone from hv-lint/warning_baseline.json (rule RATCHET). After a
+      # fix: HVLINT_PRUNE=1 python hv-lint/run_all.py --cohort all.
       # Each step runs `if: always()` so one failing phase still reports the others, and
       # `exit "${PIPESTATUS[0]}"` keeps tee from masking the exit code.
       - name: "Phase 1: YAML structural & formatting checks"

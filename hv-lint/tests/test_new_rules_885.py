@@ -75,7 +75,9 @@ def test_511_visit_seed_must_equal_participant_seed(tmp_path):
     seed = part["expr"].split("{")[1].split("}")[0]
     part["expr"] = part["expr"].replace(seed, "phv00001363")
     f = _511(tmp_path, b)
-    assert len(f) == 1 and "differs from participant seed" in f[0].message
+    # One finding per reason: phv00001363 is not a participant ID, and the seeds differ.
+    assert len(f) == 2 and all(x.check == "5.11" for x in f)
+    assert sum("differs from participant seed" in x.message for x in f) == 1
 
 
 # -- 2.12 bare None ------------------------------------------------------------------------------
