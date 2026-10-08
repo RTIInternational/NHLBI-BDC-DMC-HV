@@ -153,3 +153,23 @@ def test_113_populated_from_and_expr():
                           "expr": "None if str({phv00118957}) == 'M' else float({phv00118957})"}}}}}
     f = vys.check_expr_with_value_mappings(block, 0, "x.yaml")
     assert [(x.check, x.severity) for x in f] == [("1.13", "INFO")]
+
+
+def _nested(nested_pht):
+    """A MeasurementObservationSet on pht000012 whose nested observation is seeded from
+    pht000011's shareid (phv00001363)."""
+    seed = 'uuid5("https://w3id.org/bdchm/Participant", str({phv00001363}) + ":FHS")'
+    inner = {"slot_derivations": {"associated_participant": {"expr": seed}}}
+    if nested_pht:
+        inner["populated_from"] = nested_pht
+    return {"class_derivations": {"MeasurementObservationSet": {
+        "populated_from": "pht000012", "slot_derivations": {
+            "associated_participant": {"expr": seed.replace("phv00001363", "phv00001559")},
+            "observations": {"class_derivations": [{"MeasurementObservation": inner}]}}}}}
+
+
+def test_511_nested_class_reads_its_own_table_as_35_does(tmp_path):
+    """Review round 1 B 9d: a nested populated_from makes that table reachable for the seed."""
+    assert _511(tmp_path, _nested("pht000011")) == []
+    f = _511(tmp_path / "b", _nested(None))
+    assert len(f) == 1 and "another table than pht000012" in f[0].message
