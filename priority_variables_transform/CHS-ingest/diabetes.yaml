@@ -562,31 +562,6 @@
         #   range: string
 - class_derivations:
     Condition:
-      populated_from: pht001488
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00103781}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00103781}) + ":CHS YEAR 3")'
-        condition_concept:
-          value: MONDO:0005015
-          range: string
-        condition_status:
-          populated_from: phv00104260
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: PATIENT_SELF_REPORT
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-        # associated_evidence:
-        #   value: "self-report questionnaire"
-        #   range: string
-- class_derivations:
-    Condition:
       populated_from: pht001489
       slot_derivations:
         associated_participant:
