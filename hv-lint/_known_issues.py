@@ -133,6 +133,14 @@ def _value_phvs(node, out: set[str]) -> None:
         out.update(_PHV_RE.findall(node))
 
 
+def value_phvs(node) -> set[str]:
+    """The phvs ``node`` (a block's class_derivations, or one nested class) reads, minus the
+    ``id`` / ``associated_*`` / ``age_*`` slots: what the record measures, not whose or when."""
+    out: set[str] = set()
+    _value_phvs(node, out)
+    return out
+
+
 def _short(items: list[str]) -> str:
     if len(items) <= 3:
         return ",".join(items)

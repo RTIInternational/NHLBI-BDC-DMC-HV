@@ -22,6 +22,8 @@ Checks:
           dbGaP coded values (typo, cross-cohort copy-paste, version drift)
     3.16  Quantity missing unit -- a measured value (value_decimal / value_integer) with no
           unit, at any depth (ERROR; UNITLESS_OBSERVATION_TYPES is the allowlist)
+    3.19  Empty source -- a block, or a nested class, whose every source variable has no value
+          at the pinned release (var_report n = 0; ERROR)
 
 Usage:
     python hv-lint/phase-3/validate_semantic.py --cache-dir hv-lint/dbgap-cache
@@ -1093,13 +1095,89 @@ def check_quantity_missing_unit(
 
 
 # ---------------------------------------------------------------------------
+# Check 3.19: every source variable empty
+# ---------------------------------------------------------------------------
+
+
+def check_empty_source(
+    block: dict, block_idx: int, rel_path: str,
+    nonnull: dict[str, int], detail_idx: DetailIndex, release: str,
+) -> list[Finding]:
+    """Check 3.19: a block, or a nested class inside one, whose source variables ALL have no
+    value at the cohort's pinned release (var_report n = 0) -- ERROR.
+
+    Source variables are the phvs the class reads minus ``id`` / ``associated_*`` / ``age_*``
+    (``_known_issues.value_phvs``, the block identity's own definition): a record with only a
+    participant, a visit and an age carries nothing. Such a block emits one empty record per
+    row. A whole block is reported once; otherwise each empty nested class (a Set's
+    observation reading an empty column) is reported on its own. A phv with no var_report
+    entry has an unknown n and keeps its class from being reported.
+    """
+    class_derivs = block.get("class_derivations")
+    if not isinstance(class_derivs, dict):
+        return []
+
+    def empty(node) -> list[str] | None:
+        phvs = sorted(_known_issues.value_phvs(node))
+        if not phvs or any(nonnull.get(p, -1) != 0 for p in phvs):
+            return None
+        return phvs
+
+    def named(phvs: list[str]) -> str:
+        return ", ".join(
+            f"{p} ({detail_idx.records[p].name})" if p in detail_idx.records else p
+            for p in phvs)
+
+    whole = empty(class_derivs)
+    if whole:
+        return [Finding(
+            rel_path, block_idx, "3.19", "ERROR",
+            f"Every source variable of this block has no value at {release} "
+            f"(var_report n = 0): {named(whole)} -- each row emits a record with no value. "
+            f"Remove the block, or repoint it to a variable that has data",
+        )]
+
+    findings: list[Finding] = []
+
+    def visit(cls_name: str, cls_def: dict, where: str) -> None:
+        slots = cls_def.get("slot_derivations")
+        if not isinstance(slots, dict):
+            return
+        for slot_name, slot_def in slots.items():
+            if not isinstance(slot_def, dict):
+                continue
+            for ncls, ndef in iter_nested_class_derivs(slot_def):
+                if not isinstance(ndef, dict):
+                    continue
+                path = f"{where}{cls_name}.{slot_name}>{ncls}"
+                phvs = empty(ndef)
+                if phvs is None:
+                    visit(ncls, ndef, f"{where}{cls_name}.{slot_name}>")
+                    continue
+                ot = (ndef.get("slot_derivations") or {}).get("observation_type")
+                ot_text = (f" (observation_type {ot['value']})"
+                           if isinstance(ot, dict) and isinstance(ot.get("value"), str) else "")
+                findings.append(Finding(
+                    rel_path, block_idx, "3.19", "ERROR",
+                    f"Every source variable of nested {path}{ot_text} has no value at "
+                    f"{release} (var_report n = 0): {named(phvs)} -- each row emits it with no "
+                    f"value. Remove it, or repoint it to a variable that has data",
+                ))
+
+    for cls_name, cls_def in class_derivs.items():
+        if isinstance(cls_def, dict):
+            visit(cls_name, cls_def, "")
+    return findings
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(
-        description="HV-Lint Phase 3: Semantic validation (3.9, 3.10, 3.12-3.16)"
+        description="HV-Lint Phase 3: Semantic validation (3.9, 3.10, 3.12-3.16, 3.19)"
     )
     p.add_argument(
         "--cache-dir", required=True,
@@ -1122,7 +1200,7 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument(
         "--check", nargs="*", default=None,
-        choices=["3.9", "3.10", "3.12", "3.13", "3.14", "3.15", "3.16"],
+        choices=["3.9", "3.10", "3.12", "3.13", "3.14", "3.15", "3.16", "3.19"],
         help="Run only specific checks (default: all)"
     )
     args = p.parse_args()
@@ -1138,7 +1216,8 @@ def main() -> int:
     args.cohort = _cohorts.canonical_cohort(args.cohort, find_transform_dir())
     in_ci = os.environ.get("GITHUB_ACTIONS") == "true"
     cache_dir = Path(args.cache_dir)
-    enabled_checks = set(args.check) if args.check else {"3.9", "3.10", "3.12", "3.13", "3.14", "3.15", "3.16"}
+    enabled_checks = set(args.check) if args.check else {
+        "3.9", "3.10", "3.12", "3.13", "3.14", "3.15", "3.16", "3.19"}
 
     if not cache_dir.is_dir():
         print(f"ERROR: Cache directory not found: {cache_dir}", file=sys.stderr)
@@ -1148,6 +1227,8 @@ def main() -> int:
     # Load detail indexes
     indexes: dict[str, DetailIndex] = {}
     stats_by_cohort: dict[str, dict | None] = {}
+    nonnull_by_cohort: dict[str, dict[str, int]] = {}
+    release_by_cohort: dict[str, str] = {}
     pairs = _cohorts.cohorts_to_load(args.cohort, cache_dir, find_transform_dir())
     missing: list[tuple[str, str]] = []
     for cohort_name, cache_key in pairs:
@@ -1185,6 +1266,15 @@ def main() -> int:
                 print(f"ERROR: study version check ({source} {expected}): {mismatch}",
                       file=sys.stderr)
                 return 1
+            # After the release check: the n it reads must be the pinned release's.
+            nonnull = _css.load_nonnull_counts(cache_dir, cache_key)
+            if nonnull is None and "3.19" in enabled_checks:
+                print(f"ERROR: {cache_key}_stats.json.gz for {cohort_name} has no n for uncoded "
+                      f"variables: 3.19 cannot run. Rebuild it with "
+                      f"hv-lint/build_phv_stats_index.py --cohort {cache_key}.", file=sys.stderr)
+                return 1
+            nonnull_by_cohort[cohort_name] = nonnull or {}
+            release_by_cohort[cohort_name] = cache_key
         except FileNotFoundError:
             missing.append((cohort_name, cache_key))
 
@@ -1294,6 +1384,10 @@ def main() -> int:
                         block, idx, rel_path,
                     )
                 )
+            if "3.19" in enabled_checks:
+                all_findings.extend(check_empty_source(
+                    block, idx, rel_path, nonnull_by_cohort[cohort], detail_idx,
+                    release_by_cohort[cohort]))
 
     # Report
     # Known issues, stale entries and the WARNING ratchet (hv-lint/_known_issues.py).

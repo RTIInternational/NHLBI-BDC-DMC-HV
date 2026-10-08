@@ -3,7 +3,7 @@
 
 Orchestrates the Phase 3 sub-components in sequence:
   1. dbGaP cross-reference    (validate_dbgap_crossref.py)  -- checks 3.1-3.5
-  2. Semantic validation       (validate_semantic.py)        -- checks 3.9, 3.10, 3.12-3.16
+  2. Semantic validation       (validate_semantic.py)        -- checks 3.9, 3.10, 3.12-3.16, 3.19
   3. Value semantic alignment  (check_value_semantic.py)     -- check 3.11
   4. Status-slot semantics    (check_status_semantic.py)    -- checks 3.17, 3.18
 
@@ -37,7 +37,7 @@ COMPONENTS = {
     },
     "semantic": {
         "script": SCRIPT_DIR / "validate_semantic.py",
-        "label": "Semantic Validation (3.9, 3.10, 3.12-3.16)",
+        "label": "Semantic Validation (3.9, 3.10, 3.12-3.16, 3.19)",
         "cohort_flag": "--cohort",
         "extra_args": [],
     },

@@ -86,9 +86,10 @@ def _make_tree(root: Path, *, manifest: object = "ok") -> Path:
     detail["phv00000001"]["coll_interval"] = "Collected in: P1"
     with gzip.open(cache / f"{KEY}_detail.json.gz", "wt", encoding="utf-8") as f:
         json.dump(detail, f)
-    # The value-count index 3.9 / 3.15 and 5.12 read; validate_semantic refuses to run without it.
+    # The value-count index 3.9 / 3.15, 3.19 and 5.12 read; validate_semantic refuses to run
+    # without it, or when it has no n for uncoded variables (3.19).
     with gzip.open(cache / f"{KEY}_stats.json.gz", "wt", encoding="utf-8") as f:
-        json.dump({}, f)
+        json.dump({phv: {"n": 1} for phv in index}, f)
     if manifest == "ok":
         entries: object = {KEY: {"cohort": "HCHS", "study": STUDY, "study_version": VERSION}}
     else:

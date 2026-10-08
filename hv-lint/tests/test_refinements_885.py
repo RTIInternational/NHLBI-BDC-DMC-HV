@@ -2,6 +2,7 @@
 
 - 3.18 / 3.9: a follow-up whose gate question names no condition (CHS DIABF38 under DIETF38
   "follow a special diet?", ARIC IFIA06A under IFIA05 "hospitalized in the past four weeks?").
+- 3.19: a block, or a nested class, whose every source variable has no value (var_report n = 0).
 
 Run: python -m pytest hv-lint/tests/test_refinements_885.py
 """
@@ -10,11 +11,14 @@ import copy
 import sys
 from pathlib import Path
 
+import yaml
+
 HVLINT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(HVLINT / "tests"))
 sys.path.insert(0, str(HVLINT / "phase-3"))
 import _e2e as E  # noqa: E402
 import check_status_semantic as css  # noqa: E402
+import validate_semantic as vs  # noqa: E402
 
 
 def _status(block: dict) -> dict:
@@ -131,3 +135,82 @@ def test_negative_answer_reads_an_unlabelled_n_or_0():
     assert css.negative_answer("N", None) and css.negative_answer("0", "")
     assert not css.negative_answer("Y", None) and not css.negative_answer("U", None)
     assert css.negative_answer("1", "No") and not css.negative_answer("N", "Yes")
+
+
+# -- 3.19: every source variable empty ---------------------------------------------------------
+
+def test_319_block_reading_only_an_empty_variable_fails_through_main(tmp_path):
+    """CARDIA hist_cor_bypg b0 reads Y01BAPAS, n = 0 at phs000285.v3; repointed, it passes."""
+    t = E.Tree(tmp_path, "CARDIA")
+    b = E.fixture_block("cardia_hist_cor_bypg_b0.yaml")
+    t.write("hist_cor_bypg.yaml", [b])
+    res = E.phase3(t, "validate_semantic.py")
+    assert res.returncode == 1, res.stdout[-1500:]
+    lines = t.suggested(res)
+    assert len(lines) == 1 and '"3.19"' in lines[0] and "phv00121381 (Y01BAPAS)" in lines[0]
+    # Y01STENT (phv00121382, same table) has data: the block is no longer empty.
+    fixed = yaml.safe_load(yaml.safe_dump(b).replace("phv00121381", "phv00121382"))
+    t.write("hist_cor_bypg.yaml", [fixed])
+    assert "[3.19]" not in E.phase3(t, "validate_semantic.py").stdout
+
+
+def test_319_reports_each_empty_nested_observation_through_main(tmp_path):
+    """MESA spirometry b0: pfvca4 / pfev1a4 are n = 0; the Set's other observations have data."""
+    t = E.Tree(tmp_path, "MESA")
+    b = E.fixture_block("mesa_spirometry_b0.yaml")
+    t.write("spirometry.yaml", [b])
+    res = E.phase3(t, "validate_semantic.py")
+    assert res.returncode == 1, res.stdout[-1500:]
+    lines = [x for x in t.suggested(res) if '"3.19"' in x]
+    assert len(lines) == 2
+    assert any("OMOP:3002094" in x and "pfvca4" in x for x in lines)
+    assert any("OMOP:3022891" in x and "pfev1a4" in x for x in lines)
+    assert not any("of this block" in x for x in lines)
+    obs = b["class_derivations"]["MeasurementObservationSet"]["slot_derivations"]["observations"]
+    obs["class_derivations"] = [
+        o for o in obs["class_derivations"]
+        if o["MeasurementObservation"]["slot_derivations"]["observation_type"]["value"]
+        not in ("OMOP:3002094", "OMOP:3022891")]
+    t.write("spirometry.yaml", [b])
+    assert "[3.19]" not in E.phase3(t, "validate_semantic.py").stdout
+
+
+def test_319_needs_n_for_uncoded_variables(tmp_path):
+    """A coded-only value-count index cannot tell empty from unreported: the run fails."""
+    import gzip
+    import json
+    import shutil
+    t = E.Tree(tmp_path, "CARDIA")
+    t.write("hist_cor_bypg.yaml", [E.fixture_block("cardia_hist_cor_bypg_b0.yaml")])
+    manifests = HVLINT.parent / "hv_dataqc" / "cache_fetcher" / "manifests"
+    shutil.copytree(manifests, t.root / "hv_dataqc" / "cache_fetcher" / "manifests")
+    cache = t.root / "hv-lint" / "cache"
+    shutil.copytree(E.CACHE, cache)
+    stats = cache / "phs000285.v3_stats.json.gz"
+    with gzip.open(stats, "rt", encoding="utf-8") as fh:
+        raw = json.load(fh)
+    with gzip.open(stats, "wt", encoding="utf-8") as fh:
+        json.dump({k: v for k, v in raw.items() if "c" in v}, fh)
+    res = t.run("phase-3/validate_semantic.py", "--cohort", "CARDIA", "--cache-dir", str(cache),
+                "--fail-on", "error")
+    assert res.returncode == 1 and "3.19 cannot run" in res.stderr, res.stderr[-800:]
+
+
+def _empty_source(block, nonnull):
+    detail = vs.DetailIndex()
+    return [f.message for f in vs.check_empty_source(block, 0, "X-ingest/x.yaml", nonnull,
+                                                      detail, "phs000001.v1")]
+
+
+def test_319_ignores_who_and_when_slots_and_unknown_variables():
+    block = {"class_derivations": {"Condition": {"populated_from": PHT, "slot_derivations": {
+        "associated_participant": {"expr": "str({phv00000009})"},
+        "age_at_condition_start": {"expr": "{phv00000008} * 365"},
+        "condition_status": {"populated_from": "phv00000001", "value_mappings": {"1": "PRESENT"}},
+    }}}}
+    nonnull = {"phv00000001": 0, "phv00000008": 500, "phv00000009": 500}
+    assert len(_empty_source(block, nonnull)) == 1
+    del nonnull["phv00000001"]          # no var_report: n unknown, not 0
+    assert _empty_source(block, nonnull) == []
+    nonnull["phv00000001"] = 3
+    assert _empty_source(block, nonnull) == []

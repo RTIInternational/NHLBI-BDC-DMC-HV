@@ -2,21 +2,26 @@
 """Build compressed PHV value-count indexes from dbGaP var_report files.
 
 Parses every ``*.var_report.xml`` for a cohort and writes
-``<cache key>_stats.json.gz`` with, for each coded variable, the number of
-non-null values and the count of each observed code:
+``<cache key>_stats.json.gz`` with, for every variable, the number of
+non-null values, and for each coded variable also the count of each observed
+code:
 
-    {"phv00101487": {"n": 38, "c": {"1": 37, "0": 1}}, ...}
+    {"phv00101487": {"n": 38, "c": {"1": 37, "0": 1}},
+     "phv00104203": {"n": 112}, ...}
 
 These are dbGaP's published aggregate summaries (the "Variable Report"
 tables on the study pages). No participant-level data is read or stored.
 
 The index powers the HV-Lint rules that need observed values rather than
 dictionary text: 3.17b (an unlabelled 1/2-coded flag mapped with 0/1 keys)
-and 3.18 (a conditional follow-up question mapped to ABSENT).
+and 3.18 (a conditional follow-up question mapped to ABSENT), and 3.19 (a
+block whose source variables have no value at all), which needs ``n`` for
+uncoded variables too.
 
 Only the consent-group total is used (variable ids without a ``.cN``
-suffix). Only variables with ``<enum>`` counts are kept: continuous
-variables are not needed by any rule and would triple the file size.
+suffix). ``c`` is present only for variables with ``<enum>`` counts; a reader
+that wants the coded variables keys on it (``load_stats_index``). A variable
+whose report has no ``<stat>`` has no entry: its n is unknown, not 0.
 
 Usage:
     # From the hv-lint cache (fetched by update_data.py):
@@ -50,7 +55,7 @@ CACHE_DIR = HVLINT_DIR / "dbgap-cache"
 
 
 def parse_var_report(path: Path) -> dict[str, dict]:
-    """Parse one ``*.var_report.xml`` and return ``{base_phv: {"n", "c"}}``.
+    """Parse one ``*.var_report.xml`` and return ``{base_phv: {"n"[, "c"]}}``.
 
     ``c`` maps each observed code to its count. An ``<enum>`` with a ``code``
     attribute is a coded value whose text is the label; one without a
@@ -77,9 +82,15 @@ def parse_var_report(path: Path) -> dict[str, dict]:
         if stats is None:
             continue
         enums = stats.findall("enum")
-        if not enums:
-            continue
         stat = stats.find("stat")
+        if not enums:
+            if stat is None:
+                continue
+            try:
+                records[base_phv] = {"n": int(stat.get("n", ""))}
+            except ValueError:
+                pass
+            continue
         try:
             n = int(stat.get("n", "0")) if stat is not None else 0
         except ValueError:
@@ -133,8 +144,9 @@ def build_stats_index(
     ) as gz:
         gz.write(json_bytes)
 
+    coded = sum(1 for rec in index.values() if "c" in rec)
     print(
-        f"  [stats] {cohort_key:12s}: {len(index):>7,} coded PHVs, "
+        f"  [stats] {cohort_key:12s}: {len(index):>7,} PHVs ({coded:,} coded), "
         f"{len(files):>4} files -> {gz_path.stat().st_size:>9,} bytes"
     )
     return len(index)

@@ -34,10 +34,12 @@ def test_parse_var_report(tmp_path):
     f = tmp_path / "phs000287.v7.pht001474.v1.p1.YR10.var_report.xml"
     f.write_text(VAR_REPORT, encoding="utf-8")
     recs = bsi.parse_var_report(f)
-    # consent-group row (.c1) ignored; uncoded enum keyed by its text; no-enum var skipped
+    # consent-group row (.c1) ignored; uncoded enum keyed by its text; a variable with no enum
+    # keeps its n (rule 3.19) and no "c"
     assert recs == {
         "phv00101487": {"n": 38, "c": {"1": 37, "0": 1}},
         "phv00121263": {"n": 146, "c": {"1": 132, "2": 14}},
+        "phv00101324": {"n": 5531},
     }
 
 
@@ -48,7 +50,7 @@ def test_build_respects_study_prefix_and_is_reproducible(tmp_path):
     (src / "phs000226.v7.pht003218.v2.p1.Other.var_report.xml").write_text(
         VAR_REPORT.replace("phv00101487", "phv09999999"), encoding="utf-8")
     out = tmp_path / "out"
-    assert bsi.build_stats_index("chs", src, out, study_prefix="phs000287.v7.") == 2
+    assert bsi.build_stats_index("chs", src, out, study_prefix="phs000287.v7.") == 3
     first = (out / "chs_stats.json.gz").read_bytes()
     with gzip.open(out / "chs_stats.json.gz", "rt", encoding="utf-8") as fh:
         assert "phv09999999" not in json.load(fh)

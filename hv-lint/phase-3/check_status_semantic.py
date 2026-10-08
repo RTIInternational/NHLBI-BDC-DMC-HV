@@ -351,16 +351,38 @@ def load_stats_index(cache_dir: Path, cache_key: str) -> dict[str, PhvStats] | N
 
     The one reader of ``<cache_key>_stats.json.gz``: the same release-keyed stem as the
     detail index (``phs000287.v7_stats.json.gz`` beside ``phs000287.v7_detail.json.gz``).
+    Only coded variables (an entry with ``c``) are returned: a variable missing from it has no
+    coded values in its var_report. ``load_nonnull_counts`` reads every variable's n.
     """
+    raw = _read_stats(cache_dir, cache_key)
+    if raw is None:
+        return None
+    return {
+        phv: PhvStats(n=int(rec.get("n", 0)), counts=dict(rec["c"] or {}))
+        for phv, rec in raw.items() if "c" in rec
+    }
+
+
+def load_nonnull_counts(cache_dir: Path, cache_key: str) -> dict[str, int] | None:
+    """``{phv: non-null n}`` for every variable the release's var_reports describe.
+
+    None when the index is absent, or when it holds coded variables only (built before n was
+    kept for every variable): every release has uncoded variables (at least its subject id),
+    so such an index cannot tell an empty variable from an unreported one. A variable missing
+    from the result has no var_report; its n is unknown, not 0.
+    """
+    raw = _read_stats(cache_dir, cache_key)
+    if raw is None or all("c" in rec for rec in raw.values()):
+        return None
+    return {phv: int(rec.get("n", 0)) for phv, rec in raw.items()}
+
+
+def _read_stats(cache_dir: Path, cache_key: str) -> dict | None:
     gz_path = Path(cache_dir) / f"{cache_key}_stats.json.gz"
     if not gz_path.exists():
         return None
     with gzip.open(gz_path, "rt", encoding="utf-8") as f:
-        raw = json.load(f)
-    return {
-        phv: PhvStats(n=int(rec.get("n", 0)), counts=dict(rec.get("c") or {}))
-        for phv, rec in raw.items()
-    }
+        return json.load(f)
 
 
 # ---------------------------------------------------------------------------

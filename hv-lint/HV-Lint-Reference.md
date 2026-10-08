@@ -44,7 +44,7 @@ Phases 3 and 5 use **compressed JSON indexes** (committed in `hv-lint/dbgap-cach
 
 1. **Basic index** (`<phs######>.<v#>.json.gz`, e.g. `phs000280.v8.json.gz`) -- maps each base PHV to base PHT. Used by rules 3.1-3.5 and by Phase 5 checks 5.3 and 5.4.
 2. **Extended detail index** (`<phs######>.<v#>_detail.json.gz`) -- adds variable name, type, unit, description, coded values, and collection interval (`coll_interval`). Used by rules 3.9-3.18 and 5.8.
-3. **Value-count index** (`<release>_stats.json.gz`, e.g. `phs000287.v7_stats.json.gz`) -- for each coded variable, the var_report non-null count `n` and the count of each observed code (dbGaP's published aggregate summaries; no participant data). Used by rules 3.9, 3.15, 3.17, 3.18, 5.2 and 5.12. Built by `hv-lint/build_phv_stats_index.py` from the `*.var_report.xml` files of the pinned release (~1 MB for all cohorts); `update_data.py` does not fetch var_reports yet.
+3. **Value-count index** (`<release>_stats.json.gz`, e.g. `phs000287.v7_stats.json.gz`) -- for every variable the var_report non-null count `n`, and for each coded variable the count of each observed code (`c`) (dbGaP's published aggregate summaries; no participant data). Used by rules 3.9, 3.15, 3.17, 3.18, 3.19, 5.2 and 5.12. Built by `hv-lint/build_phv_stats_index.py` from the `*.var_report.xml` files of the pinned release (~1.4 MB for all cohorts); a variable whose table has no var_report has no entry, so its n is unknown, not 0; `update_data.py` does not fetch var_reports yet.
 4. **`manifest.json`** -- one entry per release key: cohort, study, study version, PHV and PHT counts, source directory and build date. The two builders write it; it is the only record of which release a file holds. Per-release counts live there, not in this document.
 
 **Which release is linted** is the cohort's *declared* release: `current_version` in `hv_dataqc/cache_fetcher/manifests/_manifest-<cohort>.yaml`. Phases 3 and 5 compare it with the cache's manifest entry before reading the index, and the run fails, **regardless of `--fail-on`**, when:
@@ -85,7 +85,7 @@ Indexes are committed to this repo (4.66 MB as committed: 0.51 MB basic, 4.15 MB
 | `hv-lint/phase-2/check_phv_dedup.py` | 2 | PHV deduplication check (2.8) |
 | `hv-lint/phase-3/run_phase3.py` | 3 | Phase 3 manager -- orchestrates all dbGaP cross-reference and semantic checks |
 | `hv-lint/phase-3/validate_dbgap_crossref.py` | 3 | dbGaP cross-reference checks (3.1-3.5) |
-| `hv-lint/phase-3/validate_semantic.py` | 3 | Semantic validation (3.9, 3.10, 3.12-3.16) |
+| `hv-lint/phase-3/validate_semantic.py` | 3 | Semantic validation (3.9, 3.10, 3.12-3.16, 3.19) |
 | `hv-lint/phase-3/check_value_semantic.py` | 3 | Value-mapping label/OMOP semantic check (3.11) |
 | `hv-lint/phase-3/check_status_semantic.py` | 3 | Status-slot polarity and follow-up checks (3.17, 3.18) |
 | `hv-lint/build_phv_stats_index.py` | -- | Builds compressed value-count indexes from var_report files; `--tables` builds the table-name index (`<release>_tables.json.gz`, FHS only, rule 1.8) |
@@ -412,9 +412,9 @@ Removed. As written it recommended mapping a follow-up question's "No" to ABSENT
 
 ## Phase 3: dbGaP Structure & Cross-Reference
 
-**Scripts**: `hv-lint/phase-3/validate_dbgap_crossref.py` (checks 3.1-3.5), `hv-lint/phase-3/validate_semantic.py` (checks 3.9, 3.10, 3.12-3.16), `hv-lint/phase-3/check_value_semantic.py` (3.11), `hv-lint/phase-3/check_status_semantic.py` (3.17, 3.18)
+**Scripts**: `hv-lint/phase-3/validate_dbgap_crossref.py` (checks 3.1-3.5), `hv-lint/phase-3/validate_semantic.py` (checks 3.9, 3.10, 3.12-3.16, 3.19), `hv-lint/phase-3/check_value_semantic.py` (3.11), `hv-lint/phase-3/check_status_semantic.py` (3.17, 3.18)
 **Dependencies**: PyYAML, gzip, json
-**Data required**: YAML files + compressed indexes from `--cache-dir` (basic index for 3.1-3.5; extended detail index for 3.9-3.18; value-count index for 3.17b and 3.18)
+**Data required**: YAML files + compressed indexes from `--cache-dir` (basic index for 3.1-3.5; extended detail index for 3.9-3.18; value-count index for 3.9, 3.15, 3.17b, 3.18 and 3.19)
 
 ### 3.1 PHV/PHT Accession Format Validation
 
@@ -506,6 +506,17 @@ A measured value -- a Quantity with `value_decimal` or `value_integer` -- must h
 
 - **Checks**: every depth (a Quantity inside a MeasurementObservation inside a Set included)
 - **Allowlist**: `UNITLESS_OBSERVATION_TYPES` in `validate_semantic.py`, for a genuinely dimensionless observation_type; empty today. A dimensionless value can instead carry the UCUM unit `1`.
+- **Severity**: ERROR
+
+### 3.19 Empty Source Variable
+
+A block, or a nested class inside one, whose source variables ALL have no value at the cohort's pinned release (var_report `n` = 0) emits one record per row with nothing in it: a Condition with no status, a MeasurementObservation whose Quantity has only a unit.
+
+- **Source variables**: the phvs the class reads, minus `id`, `associated_*` and `age_*` (`_known_issues.value_phvs`, the block identity's own definition); a participant, a visit and an age are not a value.
+- **Granularity**: a whole block is reported once. Otherwise each empty nested class is reported on its own (MESA spirometry b0 / b2: the predicted-FVC and predicted-FEV1 observations, while the Set's measured values have data).
+- **Unknown is not empty**: a phv with no var_report entry (its table has no var_report; 15 of 6,307 blocks with value phvs on main, all CARDIA) keeps its class from being reported.
+- **Data**: needs `n` for uncoded variables in the value-count index; an index holding coded variables only fails the run ("3.19 cannot run").
+- **Measured** on main c0307803: 33 findings, all n = 0 at the pinned release -- the 27 blocks and 4 nested observations #884 sections 7 and 8 list, and ARIC creat_bld b6 / b22 (CELB15J1 / CELB15I1, n = 0 at v8, n = 1 at v9; `pending` under #884). Nothing else.
 - **Severity**: ERROR
 
 ### 3.17 Status Polarity
