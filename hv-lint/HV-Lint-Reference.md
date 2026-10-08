@@ -213,8 +213,8 @@ Inline comments -- trailing `# ...` appended to active YAML code lines -- must b
 
 Detect slots present in one `class_derivation` block but missing from another block of the same BDCHM class within the same YAML file.
 
-- **Excluded slots**: `id`, `associated_participant`, `associated_visit` (legitimately vary between blocks)
-- **Severity**: WARNING
+- **Excluded slots**: `id`, `associated_participant`, `associated_visit` (legitimately vary between blocks), and the descriptor / provenance slots `associated_evidence`, `method_type`, `range_high`
+- **Severity**: INFO (no compared slot is required; 260 of 286 findings on main were legitimate differences)
 
 ### 1.7 Semantic Duplicate DrugExposure Blocks
 
@@ -305,7 +305,7 @@ Validate that each BDCHM class block includes its required and recommended conte
 - **Source of truth**: BDCHM schema `required` and `recommended` annotations per class -- not a hardcoded list
 - **Severity**: ERROR for a missing required slot; INFO for recommended. A required slot that is present but written as a `case()` with no `(True, ...)` arm is a WARNING: it is null on every row no arm matches (Procedure blocks whose ABSENT rows carry no `procedure_concept`).
 - **`id` is not checked per block**: it is required on every class, but linkml-map 0.5.3 does not generate it (only Person, Participant and Visit derive one). One note per run; the decision is with the HM / dm-bip owners (#873).
-- **Extension**: Advisory `age_at_observation` check on MeasurementObservation blocks (INFO severity -- the slot is optional in bdchm but its absence is a completeness gap)
+- The advisory `age_at_observation` INFO on MeasurementObservation is removed (#885): the slot is optional, every one of its 1,003 findings set `associated_visit`, and 64% of those visits carry an age.
 
 ### 2.5 Object Derivation Structure Validation
 
@@ -573,7 +573,7 @@ Validate that Visit block PHTs are recognized dbGaP accessions and exist in the 
 Validate that `age_at_visit_start` and `age_at_visit_end` expressions are present and structurally sound.
 
 - **Checks**: Age slot presence, PHV validity (if `--cache-dir` provided), unit conversion (`* 365` for years-to-days)
-- **Severity**: WARNING for missing age slots; ERROR for invalid PHVs; INFO for missing `* 365`
+- **Severity**: INFO for missing age slots (age is optional on BDC-HM Visit); ERROR for invalid PHVs; INFO for missing `* 365`
 
 ### 5.5 Multi-Visit Table Coverage
 

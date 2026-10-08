@@ -10,7 +10,6 @@ Checks:
     2.3  BDCHM class name validation
     2.4  Required/recommended slot enforcement (schema-driven); a required slot written as a
          case() with no (True, ...) arm is a WARNING (present but null on unmatched rows)
-         ext: Advisory age_at_observation on MeasurementObservation
     2.5  Object derivation structure validation
     2.5b Nested class range validation (class must match slot's schema range)
     2.6  CURIE format validation
@@ -765,18 +764,6 @@ def validate_class_derivations(
                         f"{path_prefix}{class_name} missing recommended slot "
                         f"'{rec_slot}'"
                     ))
-
-        # -- Check 2.4 ext: Advisory age_at_observation on MeasurementObservation --
-        # age_at_observation is optional (not required or recommended in
-        # bdchm schema) but its absence is a completeness gap worth noting.
-        if (class_name == "MeasurementObservation"
-                and not path_prefix
-                and "age_at_observation" not in present_slots):
-            findings.append(Finding(
-                rel_path, block_idx, "2.4", "INFO",
-                f"{path_prefix}{class_name} missing age_at_observation "
-                f"(optional but recommended for completeness)"
-            ))
 
         # -- Check 2.10: Unconditional age_at_condition_start on binary Condition --
         if class_name == "Condition" and not path_prefix:

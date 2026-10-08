@@ -8,7 +8,9 @@ that the original block had.
 
 Checks:
     1.6  Cross-block slot consistency -- slots in the union but absent
-         from a block are flagged as WARNING.
+         from a block are reported at INFO: no slot it compares is required, and most
+         differences are legitimate (a sub-question without a severity, a sibling without
+         a method_type).
 
 Usage:
     python hv-lint/phase-1/check_cross_block_consistency.py
@@ -35,6 +37,10 @@ EXCLUDED_SLOTS = {
     "id",
     "associated_participant",
     "associated_visit",
+    # descriptor / provenance slots that legitimately differ between sibling blocks
+    "associated_evidence",
+    "method_type",
+    "range_high",
 }
 
 SEVERITY_RANK = {"CRITICAL": 5, "ERROR": 4, "HIGH": 3, "WARNING": 2, "INFO": 1}
@@ -156,7 +162,7 @@ def check_cross_block_consistency(
                         file=rel_path,
                         block=block_idx,
                         check="1.6",
-                        severity="WARNING",
+                        severity="INFO",
                         message=(
                             f"{cls_name} block {block_idx} ({pht_label}) "
                             f"missing slot '{slot}' -- present in block(s) "

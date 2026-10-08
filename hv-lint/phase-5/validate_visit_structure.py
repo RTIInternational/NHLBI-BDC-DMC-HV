@@ -640,8 +640,9 @@ def check_5_4_age_formula(
                 file=registry.file_path,
                 block=vb.block_index,
                 check="5.4",
-                severity="WARNING",
-                message=f"Visit '{label}' has no age_at_visit_start or age_at_visit_end",
+                severity="INFO",
+                message=f"Visit '{label}' has no age_at_visit_start or age_at_visit_end "
+                        f"(age is optional on Visit)",
             ))
             continue
 
