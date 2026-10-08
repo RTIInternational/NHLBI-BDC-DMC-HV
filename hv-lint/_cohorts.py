@@ -517,6 +517,27 @@ def study_mismatch(cache_dir: Path | str, cache_key: str, expect: str) -> str | 
     return None
 
 
+def release_check_error(cohort: str, cache_dir: Path | str, cache_key: str,
+                        expect_study: str | None = None) -> str | None:
+    """The Phase 3 release check's ERROR line for one cohort's cache, or ``None`` when it passes.
+
+    ``expect_study`` overrides the cohort's declaration; a cohort that declares nothing fails,
+    because linting against whichever cache is present is how a superseded release goes unseen.
+    """
+    expected = expect_study or declared_study(cohort, cache_dir=cache_dir)
+    if not expected:
+        return (f"ERROR: cohort '{cohort}' declares no dbGaP release, so the cache cannot be "
+                f"checked. Add hv_dataqc/cache_fetcher/manifests/_manifest-<cohort>.yaml with "
+                f"current_version.study_id and data_version. (--expect-study phs######.v# "
+                f"overrides it for a one-off Phase 3 run on one named --cohort; Phase 5 has no "
+                f"override and still fails.)")
+    mismatch = study_mismatch(cache_dir, cache_key, expected)
+    if mismatch:
+        source = "--expect-study" if expect_study else "declared release"
+        return f"ERROR: study version check ({source} {expected}): {mismatch}"
+    return None
+
+
 def discover_cache_keys(cache_dir: Path | str) -> list[str]:
     """Every cache key present in ``cache_dir``, from the ``*.json.gz`` files themselves.
 

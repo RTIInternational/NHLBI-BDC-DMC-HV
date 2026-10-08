@@ -325,6 +325,7 @@ _EXPECT_ENTRY_POINTS = {
     "validate_dbgap_crossref": ("phase-3", []),
     "validate_semantic": ("phase-3", []),
     "check_value_semantic": ("phase-3", []),
+    "check_status_semantic": ("phase-3", []),
 }
 
 
@@ -382,7 +383,8 @@ def test_phase_3_undeclared_cohort_says_where_the_override_applies(tmp_path, mon
 # checked no file. Each validator canonicalises `--cohort` against the tree, and a NAMED cohort
 # with no YAML is a failure, not a pass.
 
-_PHASE3_VALIDATORS = ["validate_dbgap_crossref", "validate_semantic", "check_value_semantic"]
+_PHASE3_VALIDATORS = ["validate_dbgap_crossref", "validate_semantic", "check_value_semantic",
+                      "check_status_semantic"]
 
 
 def _run_phase3_validator(monkeypatch, module: str, root: Path, cache: Path, cohort: str) -> int:
@@ -443,3 +445,35 @@ def test_phase_5_reads_a_padded_all_as_all(tmp_path, monkeypatch, capsys, token)
     out = capsys.readouterr().out
     assert rc == 0, out
     assert "1 cohort(s) processed, 0 skipped" in out
+
+
+@pytest.mark.parametrize("module", _PHASE3_VALIDATORS)
+@pytest.mark.parametrize("case, expect", [
+    ("wrong-release", f"built from {STUDY}.v2"),
+    ("no-manifest", "no recorded study provenance"),
+    ("undeclared", "declares no dbGaP release"),
+    ("expect-study", f"--expect-study {STUDY}.v3"),
+])
+def test_phase_3_validators_each_run_the_release_check(tmp_path, monkeypatch, capsys, module,
+                                                       case, expect):
+    """Review round 2 B F2: every Phase 3 component checks the release it reads, so a component
+    run directly cannot pass on a superseded cache because a sibling would have caught it."""
+    entries = {"wrong-release": {KEY: {"cohort": "HCHS", "study": STUDY, "study_version": "v2"}},
+               "no-manifest": None}.get(case, "ok")
+    cache = _make_tree(tmp_path, manifest=entries)
+    if case == "undeclared":
+        (tmp_path / "hv_dataqc" / "cache_fetcher" / "manifests" /
+         "_manifest-hchs_sol.yaml").unlink()
+    import importlib
+    monkeypatch.setenv("HV_ROOT", str(tmp_path))
+    monkeypatch.syspath_prepend(str(_HV_LINT / "phase-3"))
+    mod = importlib.import_module(module)
+    argv = [f"{module}.py", "--cache-dir", str(cache), "--cohort", "HCHS", "--fail-on",
+            "critical"]
+    if case == "expect-study":
+        argv += ["--expect-study", f"{STUDY}.v3"]
+    monkeypatch.setattr(sys, "argv", argv)
+    rc = mod.main()
+    captured = capsys.readouterr()
+    assert rc == 1, captured.out + captured.err
+    assert expect in captured.err

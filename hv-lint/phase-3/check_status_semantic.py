@@ -47,6 +47,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
+import _cohorts  # noqa: E402
 import _known_issues  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -312,7 +313,6 @@ def load_detail_index(cache_dir: Path, cache_key: str) -> DetailIndex:
 
 def cohort_cache_pairs(cohort: str, cache_dir: Path) -> list[tuple[str, str]]:
     """``[(cohort_name, cache_key)]`` from the resolver every phase uses."""
-    import _cohorts  # noqa: PLC0415
     return _cohorts.cohorts_to_load(cohort, cache_dir, find_transform_dir())
 
 
@@ -617,15 +617,23 @@ def parse_args() -> argparse.Namespace:
         choices=["critical", "error", "high", "warning", "info"],
         help="Minimum severity for non-zero exit (default: error)"
     )
-    # Accepted so a phase manager that forwards --expect-study to every
-    # component can run this one; the release check itself belongs to 3.11's
-    # component, which loads the same detail index.
-    p.add_argument("--expect-study", default=None, help=argparse.SUPPRESS)
-    return p.parse_args()
+    p.add_argument(
+        "--expect-study", default=None,
+        help="OVERRIDE the release the cohort declares (phs000287 or phs000287.v7) for one "
+             "named --cohort. The release check always runs; without this flag the expectation "
+             "comes from the cohort's _manifest-<cohort>.yaml."
+    )
+    args = p.parse_args()
+    _cohorts.reject_expect_study_for_all(p, args)
+    return args
 
 
 def main() -> int:
     args = parse_args()
+    # The file scan matches `<cohort>-ingest`, so an alias or a padded `all` must name the
+    # DIRECTORY here, as `cohorts_to_load` already names the cache; otherwise the run loads the
+    # cache and scans no file.
+    args.cohort = _cohorts.canonical_cohort(args.cohort, find_transform_dir())
     in_ci = os.environ.get("GITHUB_ACTIONS") == "true"
     cache_dir = Path(args.cache_dir)
 
@@ -647,6 +655,13 @@ def main() -> int:
                   f"3.17 / 3.18 DID NOT RUN for it.", file=sys.stderr)
             missing_index.append(cohort_name)
             continue
+        # The release this component reads is checked here too, so run alone it cannot pass on a
+        # superseded cache that only a sibling component would have caught.
+        release_error = _cohorts.release_check_error(cohort_name, cache_dir, cache_key,
+                                                     args.expect_study)
+        if release_error:
+            print(release_error, file=sys.stderr)
+            return 1
         stats_by_cohort[cohort_name] = load_stats_index(cache_dir, cache_key)
         st = stats_by_cohort[cohort_name]
         if st is None:
@@ -672,7 +687,9 @@ def main() -> int:
     yaml_files = find_yaml_files(base_dir, args.cohort)
     if not yaml_files:
         print(f"No YAML files found under {base_dir}")
-        return 0
+        # A named cohort with nothing to scan was not checked; only `all` over an empty tree
+        # has nothing to fail.
+        return 1 if args.cohort.lower() != "all" else 0
 
     print(f"Found {len(yaml_files)} YAML files to validate")
 
