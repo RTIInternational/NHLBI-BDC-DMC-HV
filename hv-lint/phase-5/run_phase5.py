@@ -96,7 +96,7 @@ def run_component(
 
 def main() -> int:
     args = parse_args()
-    # Stripped as `_cohorts.cohorts_to_load` strips, so ` all` means the same to every phase.
+    # Stripped as `_cohorts.canonical_cohort` strips, so ` all` is `all` to Phases 3 and 5 alike.
     args.cohort = args.cohort.strip()
     skip_set = set(args.skip)
 

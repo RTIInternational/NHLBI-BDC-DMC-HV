@@ -181,6 +181,23 @@ def test_an_unstaged_cohort_passes_through_canonicalisation_unchanged(tmp_path):
     assert _cohorts.canonical_cohort("NEWSTUDY", _ingest(tmp_path, "CHS")) == "NEWSTUDY"
 
 
+def test_canonicalisation_strips_the_token_on_every_path(tmp_path, monkeypatch):
+    """Every caller compares the result with `all` or joins it onto `-ingest`, so a padded token
+    comes back stripped whether it matched a directory, fell through, or found no tree."""
+    transform = _ingest(tmp_path, "COPDGene", "CHS")
+    assert _cohorts.canonical_cohort(" copdgene ", transform) == "COPDGene"
+    assert _cohorts.canonical_cohort(" all", transform) == "all"
+    assert _cohorts.canonical_cohort("ALL ", transform) == "ALL"
+    assert _cohorts.canonical_cohort(" NEWSTUDY ", transform) == "NEWSTUDY"
+
+    import _paths
+
+    def _no_tree():
+        raise FileNotFoundError("no transform tree")
+    monkeypatch.setattr(_paths, "find_transform_dir", _no_tree)
+    assert _cohorts.canonical_cohort(" all ") == "all"
+
+
 # --------------------------------------------------------------------- cohort identity from
 # the source directory name, and its accession-only blind spot
 

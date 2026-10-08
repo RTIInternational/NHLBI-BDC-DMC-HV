@@ -413,6 +413,21 @@ def test_phase_3_validators_fail_a_named_cohort_with_no_yaml(tmp_path, monkeypat
     assert "No YAML files found" in captured.out
 
 
+@pytest.mark.parametrize("module", _PHASE3_VALIDATORS)
+@pytest.mark.parametrize("token", [" all", "all ", " ALL "])
+def test_phase_3_validators_read_a_padded_all_as_all(tmp_path, monkeypatch, capsys, module,
+                                                     token):
+    """A padded `all` loads every cache (`cohorts_to_load` strips), so the file scan must strip
+    too: otherwise it filters on `" all-ingest"`, finds nothing, and the "all" branch of the
+    no-YAML return passes a run that checked no file."""
+    cache = _make_tree(tmp_path)
+    rc = _run_phase3_validator(monkeypatch, module, tmp_path, cache, token)
+    captured = capsys.readouterr()
+    assert rc == 0, captured.out + captured.err
+    assert "Found 1 YAML files to validate" in captured.out
+    assert "No YAML files found" not in captured.out
+
+
 @pytest.mark.parametrize("token", [" all", "ALL "])
 def test_phase_5_reads_a_padded_all_as_all(tmp_path, monkeypatch, capsys, token):
     """`cohorts_to_load` and the --expect-study guard strip before comparing with `all`; Phase 5

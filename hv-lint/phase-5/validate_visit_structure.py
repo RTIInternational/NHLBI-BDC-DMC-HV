@@ -1193,7 +1193,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    # Stripped as `_cohorts.cohorts_to_load` strips, so ` all` means the same to every phase.
+    # Stripped as `_cohorts.canonical_cohort` strips, so ` all` is `all` to Phases 3 and 5 alike.
     args.cohort = args.cohort.strip()
     in_ci = os.environ.get("GITHUB_ACTIONS") == "true"
 

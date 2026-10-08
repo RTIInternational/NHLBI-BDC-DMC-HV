@@ -269,9 +269,12 @@ def cache_key_for(
 def canonical_cohort(cohort: str, transform_dir: Path | str | None = None) -> str:
     """``copdgene`` / ``COPDGENE`` -> ``COPDGene`` -- the casing the ingest DIRECTORY uses.
 
-    Falls back to the token unchanged when no directory matches, so an as-yet-unstaged cohort is
-    passed through rather than rejected.
+    Falls back to the stripped token when no directory matches, so an as-yet-unstaged cohort is
+    passed through rather than rejected. The result is stripped on every path: callers compare it
+    with ``all`` and join it onto ``-ingest``, and ``cohorts_to_load`` already strips, so a padded
+    `` all`` left unstripped here loads every cache and then scans no file.
     """
+    cohort = cohort.strip()
     if transform_dir is None:
         try:
             from _paths import find_transform_dir
