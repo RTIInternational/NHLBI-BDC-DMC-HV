@@ -1134,9 +1134,9 @@ def main() -> int:
     if missing:
         for cohort_name, cache_key in missing:
             print(
-                f"ERROR: no dbGaP index for cohort '{cohort_name}' -- looked for "
-                f"'{cache_key}.json.gz' in {cache_dir}. Build it with build_phv_index.py "
-                f"and build_phv_detail_index.py (--source-cache <dbgap staging dir>).",
+                f"ERROR: no dbGaP detail index for cohort '{cohort_name}' -- looked for "
+                f"'{cache_key}_detail.json.gz' in {cache_dir}. Build it with "
+                f"build_phv_detail_index.py --source-cache <dbgap staging dir>.",
                 file=sys.stderr,
             )
         return 1

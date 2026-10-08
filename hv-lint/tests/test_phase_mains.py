@@ -269,3 +269,30 @@ def test_phase_3_release_check_fails_the_run_at_fail_on_critical(
     err = capsys.readouterr().err
     assert rc == 1, err
     assert expect in err
+
+
+# -- Phase 3: validate_semantic.main() names the file it could not find -------
+
+
+def _run_semantic(monkeypatch, root: Path, *argv: str) -> int:
+    sys.path.insert(0, str(_HV_LINT / "phase-3"))
+    try:
+        import validate_semantic as semantic
+    finally:
+        sys.path.remove(str(_HV_LINT / "phase-3"))
+    monkeypatch.setenv("HV_ROOT", str(root))
+    monkeypatch.setattr(sys, "argv", ["validate_semantic.py", *argv])
+    return semantic.main()
+
+
+def test_phase_3_semantic_names_the_missing_detail_index(tmp_path, monkeypatch, capsys):
+    """It reads only the detail index, so the message must name that file -- naming the basic
+    index sends the reader to a file that exists."""
+    cache = _make_tree(tmp_path)
+    (cache / f"{KEY}_detail.json.gz").unlink()
+    rc = _run_semantic(monkeypatch, tmp_path, "--cache-dir", str(cache), "--cohort", "HCHS",
+                       "--fail-on", "critical")
+    err = capsys.readouterr().err
+    assert rc == 1, err
+    assert f"'{KEY}_detail.json.gz'" in err
+    assert f"'{KEY}.json.gz'" not in err
