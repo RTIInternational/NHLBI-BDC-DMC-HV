@@ -508,10 +508,18 @@ def _start_clean(t, run):
 def test_prune_refuses_when_a_partial_fix_leaves_a_new_warning(tmp_path):
     """One more idtype arm on FHS cig_smok b36 narrows its 5.2 finding ('2', '3', '72' -> '2',
     '72'). The old entry matches nothing, but the defect is still there under a new message:
-    pruning it first would delete the entry and leave the run red on a line nobody re-adds."""
+    pruning it first would delete the entry and leave the run red on a line nobody re-adds.
+    b36 is the frozen fixture block, not the live one: the live block gates every arm to a
+    cohort that has the exam (#888), so it raises no 5.2 to narrow."""
     t = _real_subset(tmp_path, "FHS", ["visit.yaml", "cig_smok.yaml"])
+    blocks = yaml.safe_load((t.dir / "cig_smok.yaml").read_text(encoding="utf-8"))
+    blocks[36] = E.fixture_block("fhs_cig_smok_b36.yaml")
+    t.write("cig_smok.yaml", blocks)
     run = _runner(t)
     ki, bl = _start_clean(t, run)
+    assert ("phv00525302 | MeasurementObservation.associated_visit fallback label 'FHS UNKNOWN "
+            "VISIT' has no Visit block, and observed codes reach it: phv00525297 '2' (# rows), "
+            "'3' (# rows), '72' (# rows)") in bl, bl[-2000:]
     blocks = yaml.safe_load((t.dir / "cig_smok.yaml").read_text(encoding="utf-8"))
     v = blocks[36]["class_derivations"]["MeasurementObservation"]["slot_derivations"][
         "associated_visit"]
