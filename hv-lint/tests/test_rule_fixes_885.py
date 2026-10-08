@@ -308,3 +308,65 @@ def test_52_fhs_visit_registry_reads_composed_labels():
         "uuid5(\"https://w3id.org/bdchm/Visit\", str({phv00177926}) + \":\" + "
         "case(({phv00177928} == 1, 'FHS OFFSPRING'), (True, 'FHS UNKNOWN VISIT')) + ' EXAM 2')")
     assert dyn and labels == {"FHS OFFSPRING EXAM 2"}
+
+
+# -- fallback reach and unparsed id expressions (review round 1 B 5, B 6) ------------------------
+
+IDTYPE_COUNTS = {"phv00525297": {"1": 2000, "2": 101, "3": 4036, "7": 300, "72": 404}}
+
+
+def test_fallback_reach_counts_the_codes_no_arm_covers():
+    expr = case("fhs_cig_smok_b36")["class_derivations"]["MeasurementObservation"][
+        "slot_derivations"]["associated_visit"]["expr"]
+    phv, reach = _visit_ids.fallback_reach(expr, IDTYPE_COUNTS.get)
+    assert phv == "phv00525297"
+    assert reach == {"FHS UNKNOWN VISIT": {"2": 101, "3": 4036, "72": 404}}
+
+
+def test_fallback_behind_an_outer_guard_is_not_reached():
+    """FHS visit.yaml: case((idtype in [0, 1, 7], case(... (True, 'UNKNOWN')))): never fires."""
+    expr = ('uuid5("V", str({phv00000001}) + ":" + case(({phv00525297} in [1, 7], '
+            "case(({phv00525297} == 1, 'FHS OFFSPRING'), ({phv00525297} == 7, 'FHS OMNI 1'), "
+            "(True, 'FHS UNKNOWN VISIT'))), (True, None)) + ' EXAM 5')")
+    assert _visit_ids.fallback_reach(expr, IDTYPE_COUNTS.get) == ("phv00525297", {})
+
+
+def test_fallback_reach_on_two_variables_cannot_be_evaluated():
+    expr = ("case(({phv00525297} == '1', 'A'), ({phv00000009} == '2', 'B'), (True, 'C'))")
+    with pytest.raises(_visit_ids.Unparsed):
+        _visit_ids.fallback_reach(expr, IDTYPE_COUNTS.get)
+
+
+def _p5(tmp_path, blocks, labels):
+    d = tmp_path / "priority_variables_transform" / "FHS-ingest"
+    d.mkdir(parents=True, exist_ok=True)
+    f = d / "x.yaml"
+    f.write_text(yaml.safe_dump(blocks), encoding="utf-8")
+    reg = vvs.VisitRegistry("FHS", "FHS-ingest/visit.yaml", [], set(), set(labels), True)
+    return vvs.check_5_12_id_coverage([f], tmp_path, reg, IDTYPE_COUNTS.get)
+
+
+def test_52_reached_fallback_with_no_visit_block_is_a_warning(tmp_path):
+    b = case("fhs_cig_smok_b36")
+    f = _p5(tmp_path, [b], {"FHS OFFSPRING EXAM 5", "FHS OMNI 1 EXAM 5"})
+    assert checks(f) == [("5.2", "WARNING")]
+    assert "'2' (101 rows), '3' (4,036 rows), '72' (404 rows)" in f[0].message
+    assert _p5(tmp_path / "b", [b], {"FHS OFFSPRING EXAM 5", "FHS UNKNOWN VISIT"}) == []
+
+
+def test_52_binary_else_label_is_not_silently_dropped(tmp_path):
+    """case((x == '1', 'VISIT 1'), (True, 'VISIT 2')): VISIT 2 is a real choice."""
+    b = case("fhs_cig_smok_b36")
+    slots = b["class_derivations"]["MeasurementObservation"]["slot_derivations"]
+    slots["associated_visit"]["expr"] = (
+        "uuid5(\"https://w3id.org/bdchm/Visit\", str({phv00525296}) + \":\" + "
+        "case(({phv00525297} == '1', 'VISIT 1'), (True, 'VISIT 2')))")
+    assert checks(_p5(tmp_path, [b], {"VISIT 1"})) == [("5.2", "WARNING")]
+
+
+def test_512_unparseable_id_expression_is_a_warning_not_a_skip(tmp_path):
+    b = case("fhs_cig_smok_b36")
+    slots = b["class_derivations"]["MeasurementObservation"]["slot_derivations"]
+    slots["associated_visit"]["expr"] = "':A' if {phv00525297} == 1 else ':B'"
+    f = _p5(tmp_path, [b], {"FHS OFFSPRING EXAM 5"})
+    assert checks(f) == [("5.12", "WARNING")] and "did not check it" in f[0].message

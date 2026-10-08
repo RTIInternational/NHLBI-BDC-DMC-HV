@@ -225,3 +225,23 @@ def test_18_copy_paste_label_fails_phase1_through_main(tmp_path):
     t.write("hdl.yaml", good[:5] + [_labelled("phv00084975", "MESA CLASSIC EXAM 2")])
     res = t.run(script, "--cohort", "MESA")
     assert res.returncode == 1 and "likely a copy-paste visit label" in res.stdout
+
+
+def test_512_unparsed_id_expression_fails_ci_through_main(tmp_path):
+    """An id expression the parser cannot read is a ratcheted WARNING, not a silent skip."""
+    t = _fhs_tree(tmp_path)
+    b = _clean_block()
+    b["class_derivations"]["Condition"]["slot_derivations"]["associated_visit"]["expr"] = (
+        "':A' if {phv00001559} == 1 else ':B'")
+    t.write("afib.yaml", [b])
+    res = E.phase5(t)
+    assert res.returncode == 1 and "new WARNING [5.12]" in res.stdout, res.stdout[-2000:]
+
+
+def test_reached_fallback_fails_ci_through_main(tmp_path):
+    t = E.Tree(tmp_path, "FHS")
+    t.write("visit.yaml", [E.visit_block("pht012916", "phv00525296", "FHS OFFSPRING EXAM 5")])
+    t.write("cig_smok.yaml", [E.fixture_block("fhs_cig_smok_b36.yaml")])
+    res = E.phase5(t)
+    assert res.returncode == 1 and "fallback label 'FHS UNKNOWN VISIT' has no Visit block" in \
+        res.stdout

@@ -568,13 +568,13 @@ Two visit ID strategies are supported:
 
 ### Visit Label Extraction from Expressions
 
-Expressions are parsed with `ast` by the shared enumerator `hv-lint/_visit_ids.py` (also used by 1.8 and 5.11), not by regex. Every value an `id` / `associated_visit` expression can emit is enumerated: case() arms, `+` concatenation (so FHS visit.yaml's `case(...) + ' EXAM 7'` inside a uuid5 seed composes), and the uuid5 seed's `str({phv})` placeholders. Comparison operands are never labels. A `(True, ...)` arm of a case() that has other non-None arms is a fallback and is dropped.
+Expressions are parsed with `ast` by the shared enumerator `hv-lint/_visit_ids.py` (also used by 1.8 and 5.11), not by regex. Every value an `id` / `associated_visit` expression can emit is enumerated: case() arms, `+` concatenation (so FHS visit.yaml's `case(...) + ' EXAM 7'` inside a uuid5 seed composes), and the uuid5 seed's `str({phv})` placeholders. Comparison operands are never labels. A `(True, ...)` arm of a case() that has other non-None arms is a fallback: 1.8 and 5.1 do not compare it (it is not a visit the table holds), and 5.2 checks it against the observed codes (below). An expression the enumerator cannot parse is reported as 5.12, never skipped silently.
 
 ### 5.0 Missing visit.yaml
 
-Flag cohorts that have an ingest directory but no `visit.yaml` file.
+Flag cohorts that have an ingest directory but no `visit.yaml` file: Phase 5 did not run for that cohort.
 
-- **Severity**: WARNING
+- **Severity**: ERROR (a cohort-level finding, `<C>-ingest/ | cohort`; it can be listed as a known issue)
 
 ### 5.1 Visit ID Uniqueness
 
@@ -582,7 +582,7 @@ Within a cohort's `visit.yaml`, no two Visit blocks should produce the same visi
 
 - **Static IDs**: Exact string comparison
 - **Dynamic IDs**: Uniqueness check on extracted labels (uuid5 is deterministic); fallback labels are not compared
-- **Severity**: ERROR when two blocks of the SAME table emit one label; WARNING "Visit id emitted by N tables" (listing their age expressions) when the blocks read different tables -- a multi-table visit by design whose duplicate Visit rows can disagree on age
+- **Severity**: ERROR when two blocks of the SAME table emit one label (naming that table's first block); WARNING "Visit id emitted by N tables" (listing the distinct tables and their age expressions) on the first block of each further table -- a multi-table visit by design whose duplicate Visit rows can disagree on age. A label group that mixes both gets both, pair by pair.
 
 ### 5.2 Visit ID Referential Integrity
 
@@ -590,8 +590,9 @@ Every `associated_visit` value or case() target in measurement/condition files m
 
 - **Static references**: Must exactly match a Visit ID
 - **Dynamic references**: Each extracted label must appear in the visit registry's label set
-- **Fallback labels**: Labels containing "UNKNOWN", "DEFAULT", "OTHER" are flagged as INFO
-- **Severity**: ERROR for static mismatches; WARNING for dynamic label mismatches; INFO for fallback labels
+- **Fallback arms** (`(True, 'FHS UNKNOWN VISIT')`): a fallback label no Visit block defines is evaluated against the var_report value counts of the variable the case() switches on. WARNING when observed codes reach it, naming the codes and rows (FHS cig_smok b35-b41: idtype 2 / 3 / 72, 101 + 4,036 + 404 rows, link to a Visit that does not exist), and WARNING when the reach cannot be evaluated (conditions on two variables, a non-literal comparison, no counts). A fallback no observed code reaches is not reported (FHS visit.yaml's, behind `idtype in [0, 1, 7]`).
+- **Non-fallback labels** containing "UNKNOWN", "DEFAULT", "OTHER" are flagged as INFO
+- **Severity**: ERROR for static mismatches; WARNING for dynamic label mismatches and reached fallbacks; INFO for named catch-all labels
 
 ### 5.3 Visit/PHT Consistency
 
@@ -665,11 +666,17 @@ The variable that seeds a participant or visit uuid5 must be the table's partici
 
 - (a) the seed's dbGaP name is not a participant ID (`shareid`, `SUBJECT_ID`, `SUBJID`, `Individual_ID`, `sidno`, `New_SUBJID`, `GENEVA_ID`, `dbGaP_Subject_ID`). FHS `IDTYPE` / `idtype` is the cohort code (0/1/2/3/7/72), so every row of the block collapses onto one fake participant per code (#882);
 - (b) the visit seed differs from the participant seed at the same level (a nested class inherits the participant of its parent);
-- (c) an unqualified seed is in another table than the block's top-level `populated_from`: a bare reference to another table is None, so participant and visit are emitted empty (FHS bdy_hgt b42).
+- (c) an unqualified seed is in no enclosing table -- the class's `populated_from` or that of a class around it, as 3.5 reads reachability: a bare reference to another table is None, so participant and visit are emitted empty (FHS bdy_hgt b42).
 
-Name-based on purpose: shareid and idtype are adjacent accessions in FHS tables, but the distance varies by table. One finding per block. Main: 383 blocks, all FHS (255 IDTYPE, 127 idtype, 1 other-table shareid).
+Name-based on purpose: shareid and idtype are adjacent accessions in FHS tables, but the distance varies by table. One finding per reason, so a second defect in a block already listed as a known issue is its own finding. Main: 383 blocks, all FHS (255 IDTYPE, 127 idtype, 1 other-table shareid).
 
 - **Severity**: ERROR
+
+### 5.12 Id Expression Coverage
+
+An `id`, `associated_visit` or `associated_participant` expression the shared enumerator cannot parse (a ternary, `str(...).strip()`, a namespace held in a variable) yields no labels and no seeds, so 1.8, 5.1, 5.2 and 5.11 did not check it. Reported, so the gap is ratcheted rather than invisible. 0 on all cohorts today.
+
+- **Severity**: WARNING
 
 ---
 

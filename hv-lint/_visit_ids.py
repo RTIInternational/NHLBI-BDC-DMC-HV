@@ -14,7 +14,9 @@ CARDIA's ``'HBP'``) are conditions, never values, so they can never be read as l
 defect a regex over quoted strings cannot avoid.
 
 A ``(True, ...)`` arm of a case() that has other non-None arms is a FALLBACK (``FHS UNKNOWN
-VISIT``): it fires only on a code no arm covers, so rules that compare labels drop it.
+VISIT``): it fires only on a code no arm covers, so rules that compare labels (1.8, 5.1) drop it.
+:func:`fallback_reach` evaluates the expression per observed code, so 5.2 can report a fallback
+that real rows reach when no Visit block defines it.
 """
 
 from __future__ import annotations
@@ -179,3 +181,114 @@ def slot_ids(slot_def) -> list[IdValue]:
 def labels(values, include_fallback: bool = False) -> set[str]:
     """The visit labels of ``values``; fallback arms are dropped unless asked for."""
     return {v.label for v in values if v.label and (include_fallback or not v.fallback)}
+
+
+# -- Which observed codes reach a fallback arm ------------------------------------------------
+
+def _switch_names(tree, names) -> set[str]:
+    """The ``{phv}`` names compared inside case() conditions."""
+    out: set[str] = set()
+    for call in ast.walk(tree):
+        if isinstance(call, ast.Call) and getattr(call.func, "id", None) == "case":
+            for arm in call.args:
+                if isinstance(arm, ast.Tuple) and len(arm.elts) == 2:
+                    for n in ast.walk(arm.elts[0]):
+                        if isinstance(n, ast.Name) and n.id in names:
+                            out.add(n.id)
+    return out
+
+
+def _const_values(node) -> list[str]:
+    if isinstance(node, ast.Constant):
+        return [str(node.value)]
+    if isinstance(node, (ast.List, ast.Tuple, ast.Set)) and all(
+            isinstance(e, ast.Constant) for e in node.elts):
+        return [str(e.value) for e in node.elts]
+    raise Unparsed("comparison with a non-literal")
+
+
+def _cond(node, var: str, code: str) -> bool:
+    if isinstance(node, ast.Constant) and isinstance(node.value, bool):
+        return node.value
+    if isinstance(node, ast.BoolOp):
+        vals = [_cond(v, var, code) for v in node.values]
+        return all(vals) if isinstance(node.op, ast.And) else any(vals)
+    if isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.Not):
+        return not _cond(node.operand, var, code)
+    if isinstance(node, ast.Compare) and len(node.ops) == 1 and isinstance(node.left, ast.Name) \
+            and node.left.id == var:
+        op, vals = node.ops[0], _const_values(node.comparators[0])
+        if isinstance(op, (ast.Eq, ast.In)):
+            return code in vals
+        if isinstance(op, (ast.NotEq, ast.NotIn)):
+            return code not in vals
+    raise Unparsed("condition " + ast.dump(node)[:60])
+
+
+def _at(node, names, var: str, code: str):
+    """The one value ``node`` emits when ``var`` holds ``code``, as ``(value, fallback)``."""
+    if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "case":
+        arms = [(t.elts[0], t.elts[1]) for t in node.args
+                if isinstance(t, ast.Tuple) and len(t.elts) == 2]
+        if len(arms) != len(node.args):
+            raise Unparsed("case() arm")
+        has_other = any(not (isinstance(c, ast.Constant) and c.value is True)
+                        and any(v is not None for v, _ in _ev(val, names)) for c, val in arms)
+        for c, val in arms:
+            if _cond(c, var, code):
+                v, f = _at(val, names, var, code)
+                return v, f or (isinstance(c, ast.Constant) and c.value is True and has_other)
+        return None, False
+    if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Add):
+        (lv, lf), (rv, rf) = _at(node.left, names, var, code), _at(node.right, names, var, code)
+        if lv is None or rv is None:
+            return None, lf or rf
+        if lv[0] != "STR" or rv[0] != "STR":
+            raise Unparsed("concatenation with a uuid5 value")
+        return ("STR", _merge(lv[1] + rv[1])), lf or rf
+    if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id in (
+            "str", "uuid5"):
+        if node.func.id == "str" and len(node.args) == 1:
+            return _at(node.args[0], names, var, code)
+        if node.func.id == "uuid5" and len(node.args) == 2:
+            v, f = _at(node.args[1], names, var, code)
+            if v is None:
+                return None, f
+            return ("UUID", ast.literal_eval(node.args[0]), v[1] if v[0] == "STR" else ()), f
+    ((v, f),) = _ev(node, names)  # a leaf: a constant, a {phv}, None
+    return v, f
+
+
+def fallback_reach(expr: str, counts_for) -> tuple[str | None, dict[str, dict[str, int]]]:
+    """The observed codes that reach each fallback label of ``expr``.
+
+    ``counts_for(phv)`` returns ``{code: rows}`` from the var_report value counts, or None.
+    Returns ``(switch phv, {fallback label: {code: rows}})``; an expression with no fallback arm
+    gives ``(None, {})``. Raises :class:`Unparsed` when the reach cannot be evaluated: the
+    conditions test more than one variable, use a form other than ``==`` / ``!=`` / ``in`` /
+    ``not in`` against literals (with ``and`` / ``or`` / ``not``), or the switch variable has no
+    counts. Codes compare as text, as the var_report records them.
+    """
+    if not any(v.fallback for v in enumerate_ids(expr)):
+        return None, {}
+    src, names = _encode(expr)
+    tree = ast.parse(src.strip(), mode="eval")
+    switch = _switch_names(tree, names)
+    if len(switch) != 1:
+        raise Unparsed(f"conditions test {len(switch)} variables")
+    (var,) = switch
+    phv = names[var].phv
+    counts = counts_for(phv)
+    if not counts:
+        raise Unparsed(f"no value counts for {phv}")
+    out: dict[str, dict[str, int]] = {}
+    for code, n in sorted(counts.items()):
+        if not int(n):
+            continue
+        v, fb = _at(tree.body, names, var, str(code))
+        if v is None or not fb:
+            continue
+        iv = IdValue(v[1], v[2]) if v[0] == "UUID" else IdValue(None, v[1])
+        if iv.label:
+            out.setdefault(iv.label, {})[str(code)] = int(n)
+    return phv, out

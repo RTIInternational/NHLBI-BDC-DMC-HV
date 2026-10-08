@@ -17,6 +17,9 @@ Checks:
   5.10 Visit uuid5 Namespace -- uuid5 must use canonical bdchm namespace URL
   5.11 Participant / visit seed -- the variable that seeds a participant or visit id must be
        the table's participant ID, the same one for both, and in the block's own table
+  5.12 Id expression coverage -- an id / associated_visit / associated_participant expression
+       the shared enumerator cannot parse was not checked by 1.8, 5.1, 5.2 or 5.11: WARNING.
+       (5.2 also reports a fallback label with no Visit block that observed codes reach.)
 
 Checks 5.5 (Multi-Visit Table Coverage) and 5.7 (Visit PHT/Label Alignment) were REMOVED on
 2026-09-10. Both rested entirely on a visit cache produced by regex-matching dbGaP variable
@@ -59,6 +62,9 @@ import _cohorts  # noqa: E402
 import _known_issues  # noqa: E402
 import _visit_ids  # noqa: E402
 from _derivations import iter_nested_class_derivs  # noqa: E402
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "phase-3"))
+import check_status_semantic as _css  # noqa: E402  (the one reader of the value-count index)
 
 import yaml
 
@@ -472,7 +478,8 @@ def check_5_1_uniqueness(registry: VisitRegistry) -> list[Finding]:
     records with one id. Blocks of DIFFERENT tables emitting one label is a multi-table visit by
     design (ARIC's exam tables, CHS annual and phone contacts), reported as a WARNING that names
     the tables and their age expressions, because the duplicate Visit rows can disagree on age.
-    Fallback labels never fire on observed codes and are not compared.
+    Fallback labels are not compared: a (True, ...) arm is not a visit the table holds. Where
+    observed codes do reach one that no Visit block defines, 5.2 reports it (check_5_12_id_coverage).
     """
     findings: list[Finding] = []
 
@@ -575,6 +582,87 @@ def check_5_2_referential_integrity(
                         ),
                     ))
 
+    return findings
+
+
+_ID_SLOTS = ("id", "associated_visit", "associated_participant")
+
+
+def _id_exprs(block: dict):
+    """``(class name, slot, expr)`` for every id-like slot at any depth of a block."""
+    def walk(cls_name, cls_def):
+        slots = cls_def.get("slot_derivations")
+        if not isinstance(slots, dict):
+            return
+        for slot in _ID_SLOTS:
+            sd = slots.get(slot)
+            if isinstance(sd, dict) and sd.get("expr") not in (None, ""):
+                yield cls_name, slot, str(sd["expr"])
+        for sd in slots.values():
+            if isinstance(sd, dict):
+                for ncls, ndef in iter_nested_class_derivs(sd):
+                    if isinstance(ndef, dict):
+                        yield from walk(ncls, ndef)
+
+    cds = block.get("class_derivations") if isinstance(block, dict) else None
+    if isinstance(cds, dict):
+        for cls_name, cls_def in cds.items():
+            if isinstance(cls_def, dict):
+                yield from walk(cls_name, cls_def)
+
+
+def _fmt_codes(phv: str, codes: dict[str, int]) -> str:
+    return f"{phv} " + ", ".join(f"'{c}' ({n:,} rows)" for c, n in sorted(codes.items()))
+
+
+def check_5_12_id_coverage(
+    yaml_files: list[Path], hv_root: Path, registry: VisitRegistry, counts_for,
+) -> list[Finding]:
+    """5.12, and 5.2 for fallback labels: what the label rules could not, or did not, check.
+
+    * 5.12 WARNING: an id-like expression the enumerator cannot parse yields no labels and no
+      seeds, so 1.8, 5.1, 5.2 and 5.11 skip it; a skip is reported, not silent.
+    * 5.2 WARNING: an ``associated_visit`` fallback arm (``(True, 'FHS UNKNOWN VISIT')``) whose
+      label no Visit block defines, when the table's observed codes reach it -- those rows link
+      to a Visit that does not exist -- or when the reach cannot be evaluated. A fallback that
+      no observed code reaches is not reported. ``counts_for(phv)`` gives ``{code: rows}``.
+    """
+    findings: list[Finding] = []
+    for yf in yaml_files:
+        rel = yf.relative_to(hv_root).as_posix()
+        for idx, block in enumerate(parse_yaml_safe(yf) or []):
+            for cls_name, slot, expr in _id_exprs(block):
+                try:
+                    values = _visit_ids.enumerate_ids(expr)
+                except _visit_ids.Unparsed as exc:
+                    findings.append(Finding(
+                        file=rel, block=idx, check="5.12", severity="WARNING",
+                        message=(f"{cls_name}.{slot} expression cannot be parsed ({exc}), so "
+                                 f"1.8, 5.1, 5.2 and 5.11 did not check it")))
+                    continue
+                if slot != "associated_visit" or cls_name == "Visit":
+                    continue
+                missing = {v.label for v in values
+                           if v.fallback and v.label and v.label not in registry.all_labels}
+                if not missing:
+                    continue
+                try:
+                    phv, reach = _visit_ids.fallback_reach(expr, counts_for)
+                except _visit_ids.Unparsed as exc:
+                    for label in sorted(missing):
+                        findings.append(Finding(
+                            file=rel, block=idx, check="5.2", severity="WARNING",
+                            message=(f"{cls_name}.associated_visit fallback label '{label}' has "
+                                     f"no Visit block, and whether observed codes reach it "
+                                     f"cannot be evaluated ({exc})")))
+                    continue
+                for label in sorted(missing & set(reach)):
+                    findings.append(Finding(
+                        file=rel, block=idx, check="5.2", severity="WARNING",
+                        message=(f"{cls_name}.associated_visit fallback label '{label}' has no "
+                                 f"Visit block, and observed codes reach it: "
+                                 f"{_fmt_codes(phv, reach[label])} -- those rows link to a "
+                                 f"Visit that does not exist")))
     return findings
 
 
@@ -1314,6 +1402,14 @@ def main() -> int:
         all_findings.extend(check_5_2_referential_integrity(registry, cohort_refs))
 
         cache_key = _cohorts.cache_key_for(cohort, args.cache_dir or "")
+
+        # 5.12 (and 5.2 for fallback labels): id expressions the label rules could not check.
+        stats = (_css.load_stats_index(Path(args.cache_dir), cache_key)
+                 if args.cache_dir else None) or {}
+        all_findings.extend(check_5_12_id_coverage(
+            yaml_files, hv_root, registry,
+            lambda phv: stats[phv].counts if phv in stats else None))
+
         phv_index = None
         mismatch = None
         release_ok = True
@@ -1442,7 +1538,7 @@ def main() -> int:
     # Known issues, stale entries and the WARNING ratchet (hv-lint/_known_issues.py).
     all_findings.extend(_known_issues.finalize(
         all_findings,
-        checks={"5.0", "5.1", "5.2", "5.3", "5.4", "5.6", "5.8", "5.9", "5.10", "5.11"},
+        checks={"5.0", "5.1", "5.2", "5.3", "5.4", "5.6", "5.8", "5.9", "5.10", "5.11", "5.12"},
         scanned_files=scanned_files, make_finding=Finding))
 
     # -- Print findings grouped by file --
