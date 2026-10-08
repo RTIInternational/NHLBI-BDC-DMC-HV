@@ -1206,7 +1206,11 @@ def main() -> int:
             if f.is_dir() and f.name.endswith("-ingest")
         ))
     else:
-        cohort_dirs = [args.cohort]
+        # Canonicalised through the same `_cohorts` resolver the Phase 3 validators use, because
+        # this validator is also run directly: `HCHS-SOL` must name `HCHS-ingest`, and
+        # `copdgene` must name `COPDGene-ingest` on a case-sensitive filesystem.
+        cohort_dirs = [_cohorts.canonical_cohort(args.cohort, base_dir)]
+    named = args.cohort.lower() != "all"
 
     all_findings: list[Finding] = []
     # Any check that COULD NOT RUN fails the run on its own, independent of `--fail-on`.
@@ -1221,6 +1225,23 @@ def main() -> int:
     for cohort in cohort_dirs:
         ingest_dir = base_dir / f"{cohort}-ingest"
         visit_file = ingest_dir / "visit.yaml"
+
+        # A cohort NAMED on the command line with no ingest directory was never checked, so it
+        # fails the run like any other unrun check; a WARNING skip here exits PASSED having read
+        # nothing. `all` is derived from the directories, so it cannot reach this branch.
+        if named and not ingest_dir.is_dir():
+            all_findings.append(Finding(
+                file=f"priority_variables_transform/{cohort}-ingest/",
+                block=-1,
+                check="5.0",
+                severity="ERROR",
+                message=(f"No ingest directory for cohort '{args.cohort}' (looked for "
+                         f"priority_variables_transform/{cohort}-ingest/), so Phase 5 DID NOT "
+                         f"RUN for it"),
+            ))
+            cohorts_skipped.append(cohort)
+            unrun_check = True
+            continue
 
         if not visit_file.exists():
             all_findings.append(Finding(
@@ -1436,9 +1457,10 @@ def main() -> int:
         # downgrade the mandatory release check to advisory is not a mandatory check.
         # `--fail-on critical` did exactly that, and the run then reported PASSED having
         # skipped 5.3/5.4/5.8 for the cohort whose cache was the wrong release.
-        print("\nFAILED: for at least one cohort the mandatory dbGaP release check did not "
-              "pass or a required cache input was missing, so checks 5.3/5.4/5.8 DID NOT RUN "
-              "there (see the ERROR findings above). This is not weighed against --fail-on.")
+        print("\nFAILED: at least one check DID NOT RUN -- a named cohort has no ingest "
+              "directory, the mandatory dbGaP release check did not pass, or a required cache "
+              "input was missing (see the ERROR findings above). This is not weighed against "
+              "--fail-on.")
         return 1
     else:
         if all_findings:
