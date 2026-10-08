@@ -124,7 +124,9 @@ def test_phase_5_fails_on_an_unknown_cohort(tmp_path, monkeypatch, capsys, fail_
 def test_run_phase5_fails_on_an_unknown_cohort(tmp_path, monkeypatch, capsys):
     """The manager is the path CI takes; it runs the validator as a subprocess."""
     cache = _make_tree(tmp_path)
-    monkeypatch.delenv("HV_ROOT", raising=False)
+    # setenv registers an undo, so the HV_ROOT that run_phase5.main() assigns is removed at
+    # teardown; delenv on an unset variable records nothing and the tmp tree leaks onward.
+    monkeypatch.setenv("HV_ROOT", str(tmp_path))
     monkeypatch.setattr(sys, "argv", [
         "run_phase5.py", "--hv-root", str(tmp_path), "--cohort", "NOPE",
         "--cache-dir", str(cache), "--fail-on", "critical",
