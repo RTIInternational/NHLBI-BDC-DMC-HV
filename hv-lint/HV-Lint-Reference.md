@@ -174,7 +174,7 @@ Two commands rewrite the files. Both run only under `run_all.py` and refuse a `-
 - `HVLINT_PRUNE=1 python hv-lint/run_all.py --cohort all` removes ONLY entries and baseline rows that match nothing, and never adds one. Every stale-entry and fixed-WARNING message prints it. After a PR that fixes known issues, this one command is the whole bookkeeping.
 - `HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all` rewrites the WARNING baseline from the run, so it can add rows as well as drop them: accepting a new WARNING is a reviewed diff of `warning_baseline.json`, one line per finding.
 
-A `--file` run checks only that file's entries and rows. On main (731984f5 + #831 + #885) the file holds 724 entries -- 5.11 383 (#882), 3.5 127 (#500, #882, #883, #884, #872), 1.12 57 (#872, #881), 2.12 49 (#883), 2.4 31 (#884), 3.16 30 (#884), 3.9 11, 3.10 7 (#883), 5.2 7 (#872, FHS cig_smok fallback), 3.18 6 and 3.17 5 (#881, #869), 1.2 4, 3.15 4 (#226), 2.7 3 (#883); 713 defect, 5 dbgap-error, 4 pending (CARDIA A12CB* / A12EM* '0', #873 Q19), 2 false-positive -- and every phase passes. Every `defect` and `pending` entry cites an open issue. Removing any one entry fails CI on exactly that finding.
+A `--file` run checks only that file's entries and rows. On main (731984f5 + #882 + #831 + #885) the file holds 340 entries -- 3.5 125 (#500, #883, #884, #872), 1.12 57 (#872, #881), 2.12 49 (#883), 2.4 31 (#884), 3.16 30 (#884), 3.9 11, 3.10 7 (#883), 5.2 7 (#872, FHS cig_smok fallback), 3.18 6 and 3.17 5 (#881, #869), 1.2 4, 3.15 4 (#226), 2.7 3 (#883), 5.11 1 (#882, FHS afib b0); 329 defect, 5 dbgap-error, 4 pending (CARDIA A12CB* / A12EM* '0', #873 Q19), 2 false-positive -- and every phase passes. Every `defect` and `pending` entry cites an open issue. Removing any one entry fails CI on exactly that finding.
 
 ### A8: Duplicate Detection Identity
 
@@ -657,7 +657,7 @@ The variable that seeds a participant or visit uuid5 must be the table's partici
 - (b) the visit seed differs from the participant seed at the same level (a nested class inherits the participant of its parent);
 - (c) an unqualified seed is in no enclosing table -- the class's `populated_from` or that of a class around it, as 3.5 reads reachability: a bare reference to another table is None, so participant and visit are emitted empty (FHS bdy_hgt b42).
 
-Name-based on purpose: shareid and idtype are adjacent accessions in FHS tables, but the distance varies by table. One finding per reason, so a second defect in a block already listed as a known issue is its own finding. Main: 383 blocks, all FHS (255 IDTYPE, 127 idtype, 1 other-table shareid).
+Name-based on purpose: shareid and idtype are adjacent accessions in FHS tables, but the distance varies by table. One finding per reason, so a second defect in a block already listed as a known issue is its own finding. Main before #882: 383 blocks, all FHS (255 IDTYPE, 127 idtype, 1 other-table shareid); after #882: 1, FHS afib b0 (IDTYPE phv00001558, held for #883 item 11).
 
 - **Severity**: ERROR
 
