@@ -474,8 +474,17 @@ def _scan_nested_visit_refs(
 
 def repr_age(expr: str) -> str:
     """An age expression quoted for a finding message: the known-issue fingerprint masks
-    unquoted numbers, and a multiplier (`* 365` vs `* 12`) is the part that must not be masked."""
-    return expr if expr == "no age" else f"'{expr}'"
+    unquoted numbers, and a multiplier (`* 365` vs `* 12`) is the part that must not be masked.
+
+    The quote must not occur inside the expression, or it ends the quoted run early and the
+    numbers after it are masked (CARDIA YEAR 20: `... == 'M' else float(...) * 365`). An
+    expression holding a single quote is wrapped in double quotes, with any double quote inside
+    it shown as a single quote."""
+    if expr == "no age":
+        return expr
+    if "'" not in expr:
+        return f"'{expr}'"
+    return '"' + expr.replace('"', "'") + '"'
 
 def check_5_1_uniqueness(registry: VisitRegistry) -> list[Finding]:
     """5.1: one Visit id per (participant, label).

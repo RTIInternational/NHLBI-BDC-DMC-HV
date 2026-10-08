@@ -152,7 +152,7 @@ Every phase fails CI on ERROR (`.github/workflows/hv_lint.yml`). A known finding
 
 - `rule`; `file` (cohort-relative, or `<C>-ingest/` for a finding about a whole cohort, such as a missing visit.yaml or a check that did not run);
 - `block`: the block's content identity, `Class@pht:phvs` (the phvs its slots read, minus `id`, `associated_*` and `age_*`; a Visit block's `id` labels). Inserting or deleting another block leaves it unchanged, and so does fixing a participant seed. Two identical blocks in one file get `#2`, `#3`;
-- `message`: the finding's message with unquoted numbers (row counts, block numbers, shares) replaced by `#`. Quoted codes, labels and expressions stay, so two reasons are two findings (5.1 quotes its age expressions, so `* 365` and `* 12` differ). A single quote opens or closes a quoted run only beside a non-word character, so an apostrophe never pairs with a real quote.
+- `message`: the finding's message with unquoted numbers (row counts, block numbers, shares) replaced by `#`. Quoted codes, labels and expressions stay, so two reasons are two findings (5.1 quotes its age expressions, in double quotes when an expression holds a single quote, so `* 365` and `* 12` differ). A single quote opens or closes a quoted run only beside a non-word character, so an apostrophe never pairs with a real quote.
 
 Each entry also carries the `issue` that tracks it and a `status`:
 

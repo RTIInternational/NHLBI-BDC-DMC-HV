@@ -13,13 +13,16 @@ import shutil
 import sys
 from pathlib import Path
 
+import pytest
 import yaml
 
 HVLINT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(HVLINT / "tests"))
 sys.path.insert(0, str(HVLINT))
+sys.path.insert(0, str(HVLINT / "phase-5"))
 import _e2e as E  # noqa: E402
 import _known_issues as K  # noqa: E402
+import validate_visit_structure as V  # noqa: E402
 
 FHS_VISIT = E.visit_block("pht000012", "phv00001559", "FHS ORIGINAL EXAM 10")
 
@@ -300,11 +303,27 @@ def _set_age(block: dict, mult: str) -> dict:
     return b
 
 
-def test_51_a_changed_age_multiplier_changes_the_fingerprint(tmp_path):
+def _cardia_y20(pht: str, seed: str, age: str | None) -> dict:
+    b = E.visit_block(pht, seed, "CARDIA YEAR 20", cohort="CARDIA")
+    if age:
+        expr = f"None if str({{{age}}}) == 'M' else float({{{age}}}) * 365"
+        b["class_derivations"]["Visit"]["slot_derivations"].update(
+            age_at_visit_start={"expr": expr}, age_at_visit_end={"expr": expr})
+    return b
+
+
+@pytest.mark.parametrize("cohort", ["CHS", "CARDIA"])
+def test_51_a_changed_age_multiplier_changes_the_fingerprint(tmp_path, cohort):
     """Review round 2 A D1: 5.1's message names the age expressions; with them unquoted the
-    multiplier was masked, so `* 365` -> `* 12` kept the baselined fingerprint and passed."""
-    t = E.Tree(tmp_path, "CHS")
-    b1, b2 = E.fixture_block("chs_visit_b1.yaml"), E.fixture_block("chs_visit_b2.yaml")
+    multiplier was masked, so `* 365` -> `* 12` kept the baselined fingerprint and passed.
+    CARDIA (review round 3 B F1): YEAR 20's expression holds a quoted 'M', which closed a
+    single-quoted run early and masked the multiplier after it."""
+    t = E.Tree(tmp_path, cohort)
+    if cohort == "CHS":
+        b1, b2 = E.fixture_block("chs_visit_b1.yaml"), E.fixture_block("chs_visit_b2.yaml")
+    else:
+        b1 = _cardia_y20("pht003298", "phv00190551", None)
+        b2 = _cardia_y20("pht001999", "phv00129484", "phv00129493")
     t.write("visit.yaml", [b1, b2])
     assert E.phase5(t, mode="update").returncode == 0          # record the 5.1 WARNING
     assert "5.1" in t.baseline.read_text(encoding="utf-8")
@@ -313,6 +332,17 @@ def test_51_a_changed_age_multiplier_changes_the_fingerprint(tmp_path):
     res = E.phase5(t)
     assert res.returncode == 1 and "new WARNING [5.1]" in res.stdout, res.stdout[-2000:]
     assert "* 12" in res.stdout
+
+
+def test_51_no_age_expression_in_a_message_has_a_masked_multiplier():
+    """Every quoting repr_age can produce keeps the expression's numbers in the fingerprint."""
+    for expr in ("{phv00098799} * 365",
+                 "None if str({phv00129493}) == 'M' else float({phv00129493}) * 365",
+                 'case(({phv00297378} == "Y", {phv00297379} * 365))',
+                 "case(({a} == \"Y\", 1), ({b} == 'N', {c} * 365))"):
+        key = K.message_key(f"Visit id 'X 1' emitted by 2 tables; age expressions: "
+                            f"{V.repr_age(expr)}; no age")
+        assert "* 365" in key, (expr, key)
 
 
 def _phase_block(labels: list[str]) -> dict:
