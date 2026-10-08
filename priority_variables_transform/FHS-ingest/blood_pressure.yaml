@@ -3346,7 +3346,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00423868}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":FHS OFFSPRING EXAM 6")'
+          expr: 'case(({phv00423869} == ''1'' or {phv00423869} == ''7'', uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING''), (True, ''FHS OMNI 1'')) + '' EXAM 6'')), (True, None))'
         observations:
           class_derivations:
           - MeasurementObservation:
@@ -3404,7 +3404,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00423868}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":FHS OFFSPRING EXAM 7")'
+          expr: 'case(({phv00423869} == ''1'' or {phv00423869} == ''7'', uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING''), (True, ''FHS OMNI 1'')) + '' EXAM 7'')), (True, None))'
         observations:
           class_derivations:
           - MeasurementObservation:
@@ -3462,7 +3462,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00423868}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":FHS OFFSPRING EXAM 8")'
+          expr: 'case(({phv00423869} == ''1'' or {phv00423869} == ''7'', uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING''), (True, ''FHS OMNI 1'')) + '' EXAM 8'')), (True, None))'
         observations:
           class_derivations:
           - MeasurementObservation:
@@ -3520,7 +3520,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00423868}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":FHS OFFSPRING EXAM 9")'
+          expr: 'case(({phv00423869} == ''1'' or {phv00423869} == ''7'', uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING''), (True, ''FHS OMNI 1'')) + '' EXAM 9'')), (True, None))'
         observations:
           class_derivations:
           - MeasurementObservation:
@@ -3578,7 +3578,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00423868}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":FHS OFFSPRING EXAM 10")'
+          expr: 'case(({phv00423869} == ''1'' or {phv00423869} == ''7'', uuid5("https://w3id.org/bdchm/Visit", str({phv00423868}) + ":" + case(({phv00423869} == ''1'', ''FHS OFFSPRING''), (True, ''FHS OMNI 1'')) + '' EXAM 10'')), (True, None))'
         observations:
           class_derivations:
           - MeasurementObservation:
