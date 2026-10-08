@@ -12,6 +12,7 @@ Usage:
 """
 
 import argparse
+import importlib.util
 import re
 import subprocess
 import sys
@@ -170,6 +171,13 @@ def main():
 
     if not YAMLLINT_CONFIG.is_file():
         print(f"ERROR: yamllint config not found at {YAMLLINT_CONFIG}", file=sys.stderr)
+        sys.exit(2)
+
+    # A linter that did not run must not print a clean summary: the summary parses yamllint's
+    # output, and "No module named yamllint" has no parsable lines, so it read as 0 findings.
+    if importlib.util.find_spec("yamllint") is None:
+        print("ERROR: yamllint is not installed in this Python, so the yamllint component DID "
+              "NOT RUN. Install it (pip install yamllint).", file=sys.stderr)
         sys.exit(2)
 
     # Determine targets

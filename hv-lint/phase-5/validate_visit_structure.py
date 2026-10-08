@@ -1408,7 +1408,13 @@ def main() -> int:
                         )
                     )
                 else:
-                    print(f"  INFO: No coll_interval data for {cohort} -- skipping 5.8")
+                    # A skip that prints nothing reads as "no mismatch": say it in the findings,
+                    # so a 5.8 pass is not taken for coverage this cohort does not have.
+                    all_findings.append(Finding(
+                        f"priority_variables_transform/{cohort}-ingest", 0, "5.8", "WARNING",
+                        f"5.8 did not run for {cohort}: its detail index has no coll_interval "
+                        f"(collection interval) for any variable, so collection-interval "
+                        f"mismatches are not checked here"))
 
         # 5.9: Visit uuid5 format compliance
         all_findings.extend(check_5_9_uuid5_format(registry, cohort_refs))

@@ -604,7 +604,7 @@ Validates that data PHVs used in transform blocks are actually collected at all 
 
 - **Logic**: Extracts phase tokens from case expressions, loads PHV `coll_interval` from detail index, flags uncovered phases
 - **Severity**: CRITICAL for Condition class (null -> false ABSENT); ERROR for Measurement/Observation/DrugExposure (null -> NaN)
-- **Availability**: COPDGene 95% coverage; FHS 42% (free-text, gracefully skipped); all others 0% (check skipped)
+- **Availability**: COPDGene 95% coverage; FHS 42% (free-text, gracefully skipped); ARIC and CHS a few variables; CARDIA, HCHS, JHS, LTRC, MESA, SPIROMICS and WHI none. For those seven the skip is a WARNING finding ("5.8 did not run for <cohort>"), so a 5.8 pass is not read as coverage. Until a proxy exists (dataset naming, var_report presence per visit), #782 addendum B option 3 stands: a one-time manual audit of their multi-visit Condition blocks.
 - **Phase-alias expansion**: Sub-phases expanded from parents (e.g., COPDGene P3B treated as sub-visit of P3)
 - **Relationship to Rule 3.13**: Rule 5.8 is the broad cross-file check (all classes); Rule 3.13 is the targeted Condition-only check.
 
