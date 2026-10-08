@@ -1257,14 +1257,18 @@ def main() -> int:
         # Build visit registry
         registry = build_visit_registry(visit_file, hv_root)
         if registry is None:
+            # None of 5.1-5.10 can run without a registry, so this is an unrun check at any
+            # `--fail-on`, under `all` as well as for a named cohort.
             all_findings.append(Finding(
                 file=visit_file.relative_to(hv_root).as_posix(),
                 block=-1,
                 check="5.0",
                 severity="ERROR",
-                message=f"Could not parse visit.yaml or no Visit blocks for {cohort}",
+                message=(f"Could not parse visit.yaml or no Visit blocks for {cohort}, so "
+                         f"Phase 5 DID NOT RUN for it"),
             ))
             cohorts_skipped.append(cohort)
+            unrun_check = True
             continue
 
         # Scan all non-visit YAML files
@@ -1460,9 +1464,9 @@ def main() -> int:
         # `--fail-on critical` did exactly that, and the run then reported PASSED having
         # skipped 5.3/5.4/5.8 for the cohort whose cache was the wrong release.
         print("\nFAILED: at least one check DID NOT RUN -- a named cohort has no ingest "
-              "directory, the mandatory dbGaP release check did not pass, or a required cache "
-              "input was missing (see the ERROR findings above). This is not weighed against "
-              "--fail-on.")
+              "directory, a visit.yaml could not be parsed or has no Visit blocks, the "
+              "mandatory dbGaP release check did not pass, or a required cache input was "
+              "missing (see the ERROR findings above). This is not weighed against --fail-on.")
         return 1
     else:
         if all_findings:

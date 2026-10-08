@@ -133,14 +133,34 @@ def test_run_phase5_fails_on_an_unknown_cohort(tmp_path, monkeypatch, capsys):
 
 
 def test_a_cohort_without_visit_yaml_under_all_is_still_a_warning(tmp_path, monkeypatch, capsys):
-    """Scope guard: only a NAMED cohort with no ingest directory is an unrun check. Under `all`
-    the cohorts come from the directories, and a directory with no visit.yaml stays 5.0 WARNING."""
+    """Scope guard: under `all` the cohorts come from the directories, and a directory with no
+    visit.yaml stays a 5.0 WARNING."""
     cache = _make_tree(tmp_path)
     (tmp_path / "priority_variables_transform" / "EXTRA-ingest").mkdir()
-    rc = _run_vvs(monkeypatch, tmp_path, "--cohort", "all", "--cache-dir", str(cache))
+    rc = _run_vvs(monkeypatch, tmp_path, "--cohort", "all", "--cache-dir", str(cache),
+                  "--fail-on", "critical")
     out = capsys.readouterr().out
     assert rc == 0, out
     assert "No visit.yaml found for cohort EXTRA" in out
+
+
+@pytest.mark.parametrize("content", [
+    "- foo: [unclosed\n",
+    "",
+    "- class_derivations:\n    Person:\n      populated_from: pht000001\n",
+], ids=["unparseable", "empty", "no-visit-blocks"])
+@pytest.mark.parametrize("cohort", ["HCHS", "all"])
+def test_a_visit_yaml_that_yields_no_registry_fails_at_fail_on_critical(
+        tmp_path, monkeypatch, capsys, content, cohort):
+    cache = _make_tree(tmp_path)
+    (tmp_path / "priority_variables_transform" / "HCHS-ingest" / "visit.yaml").write_text(
+        content, encoding="utf-8")
+    rc = _run_vvs(monkeypatch, tmp_path, "--cohort", cohort, "--cache-dir", str(cache),
+                  "--fail-on", "critical")
+    out = capsys.readouterr().out
+    assert rc == 1, out
+    assert "Could not parse visit.yaml or no Visit blocks for HCHS" in out
+    assert "PASSED" not in out
 
 
 # -- Phase 5: the mandatory release check and missing inputs ------------------
