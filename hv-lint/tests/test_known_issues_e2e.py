@@ -8,6 +8,7 @@ Run: python -m pytest hv-lint/tests/test_known_issues_e2e.py
 
 import copy
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -81,7 +82,22 @@ def test_phase5_missing_visit_yaml_fails(tmp_path):
     t = E.Tree(tmp_path, "MESA")
     t.write("potassium.yaml", [E.fixture_block("mesa_potassium_b0.yaml")])
     res = E.phase5(t)
-    assert res.returncode == 1 and "No visit.yaml found for cohort MESA" in res.stdout
+    assert res.returncode == 1
+    assert re.search(r"ERROR .*\[5\.0\] No visit.yaml found for cohort MESA", res.stdout)
+
+
+def test_run_all_is_the_one_prune_command(tmp_path):
+    """The command the stale-entry message prints works end to end (run_all sets the flag)."""
+    t = _fhs_tree(tmp_path)
+    t.list_as_known(E.phase5(t), 882)
+    assert E.phase5(t, mode="update").returncode == 0
+    t.write("afib.yaml", [_clean_block()])
+    args = ("run_all.py", "--cohort", "FHS", "--skip", "phase1", "phase2", "phase3",
+            "--no-report", "--cache-dir", str(E.CACHE))
+    assert t.run(*args).returncode == 1
+    pruned = t.run(*args, mode="prune", run_all=False)
+    assert pruned.returncode == 0, pruned.stdout[-1500:]
+    assert K.load_entries(t.ki) == [] and t.run(*args).returncode == 0
 
 
 def test_phase5_new_warning_fails_even_when_another_is_fixed(tmp_path):

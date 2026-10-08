@@ -171,6 +171,15 @@ def test_entry_out_of_scope_is_not_stale(tree):
     assert _run([], tree, checks=("3.5",)) == []                # rule not run
 
 
+def test_cohort_level_entry_is_out_of_scope_in_a_partial_run(tree):
+    f = F("priority_variables_transform/FHS-ingest", -1, "5.8", "ERROR", "did not run")
+    tree["ki"].write_text(K.entry_line(K.Key("5.8", "FHS-ingest/", "cohort", "did not run"),
+                                       872, "defect") + "\n", encoding="utf-8")
+    assert _run([f], tree, checks=("5.8",)) == [] and f.severity == "INFO"
+    assert _run([], tree, checks=("5.8",), partial=True) == []
+    assert [x.check for x in _run([], tree, checks=("5.8",))] == ["KI"]
+
+
 def test_duplicate_entry_is_rejected(tree):
     f = _at(tree["afib"], 0)
     _list(tree, f, f)
