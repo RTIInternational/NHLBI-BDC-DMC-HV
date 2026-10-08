@@ -484,25 +484,30 @@ def check_5_1_uniqueness(registry: VisitRegistry) -> list[Finding]:
         for label, vbs in sorted(by_label.items()):
             if len(vbs) < 2:
                 continue
-            phts = [vb.pht for vb in vbs]
-            same_table = len(set(phts)) < len(phts)
-            first = vbs[0]
-            for vb in vbs[1:]:
-                if same_table and phts.count(vb.pht) > 1:
+            # Each pair is classified on its own: a later block of a table already seen is the
+            # same-table ERROR (naming that table's first block); the first block of each further
+            # table is the multi-table WARNING.
+            first_of: dict = {}
+            for vb in vbs:
+                if vb.pht in first_of:
                     findings.append(Finding(
                         file=registry.file_path, block=vb.block_index, check="5.1",
                         severity="ERROR",
                         message=(f"Duplicate visit label '{label}' -- also in block "
-                                 f"{first.block_index}, from the same table {vb.pht}"),
+                                 f"{first_of[vb.pht].block_index}, from the same table {vb.pht}"),
                     ))
-                elif not same_table:
-                    ages = sorted({vb2.age_start_expr or "no age" for vb2 in vbs})
+                else:
+                    first_of[vb.pht] = vb
+            tables = list(first_of.values())
+            if len(tables) > 1:
+                ages = sorted({vb2.age_start_expr or "no age" for vb2 in tables})
+                for vb in tables[1:]:
                     findings.append(Finding(
                         file=registry.file_path, block=vb.block_index, check="5.1",
                         severity="WARNING",
-                        message=(f"Visit id '{label}' emitted by {len(vbs)} tables "
-                                 f"({', '.join(str(p) for p in phts)}); first in block "
-                                 f"{first.block_index}; age expressions: {'; '.join(ages)}"),
+                        message=(f"Visit id '{label}' emitted by {len(tables)} tables "
+                                 f"({', '.join(str(x.pht) for x in tables)}); first in block "
+                                 f"{tables[0].block_index}; age expressions: {'; '.join(ages)}"),
                     ))
     else:
         # Static IDs -- check exact ID uniqueness

@@ -286,6 +286,23 @@ def test_51_multi_table_visit_is_a_warning_same_table_an_error():
     assert checks(same) == [("5.1", "ERROR")]
 
 
+def _51(*tables):
+    f = vvs.check_5_1_uniqueness(_reg(*(_vb(i, p, {"E1"}) for i, p in enumerate(tables))))
+    return [(x.block, x.severity, x.message) for x in f]
+
+
+def test_51_mixed_group_classifies_each_pair():
+    """Review round 1 B 1: [A, A, B] lost B's WARNING; [A, B, B] made block 1 an ERROR."""
+    aab = _51("A", "A", "B")
+    assert [(b, s) for b, s, _ in aab] == [(1, "ERROR"), (2, "WARNING")]
+    assert "also in block 0, from the same table A" in aab[0][2]
+    assert "emitted by 2 tables (A, B); first in block 0" in aab[1][2]
+    abb = _51("A", "B", "B")
+    assert sorted((b, s) for b, s, _ in abb) == [(1, "WARNING"), (2, "ERROR")]
+    assert "also in block 1, from the same table B" in [m for b, _, m in abb if b == 2][0]
+    assert [(b, s) for b, s, _ in _51("A", "B")] == [(1, "WARNING")]
+
+
 def test_52_fhs_visit_registry_reads_composed_labels():
     labels, dyn = vvs.extract_visit_labels_from_expr(
         "uuid5(\"https://w3id.org/bdchm/Visit\", str({phv00177926}) + \":\" + "
