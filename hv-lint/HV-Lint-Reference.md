@@ -44,7 +44,7 @@ Phases 3 and 5 use **compressed JSON indexes** (committed in `hv-lint/dbgap-cach
 
 1. **Basic index** (`<cohort>.json.gz`) -- maps each base PHV to base PHT (~425 KB total). Used by rules 3.1-3.5.
 2. **Extended detail index** (`<cohort>_detail.json.gz`) -- adds variable name, type, unit, description, coded values, and collection interval (`coll_interval`). Used by rules 3.9-3.18 and 5.8.
-3. **Value-count index** (`<cohort>_stats.json.gz`) -- for each coded variable, the var_report non-null count `n` and the count of each observed code (dbGaP's published aggregate summaries; no participant data). Used by rules 3.17b and 3.18. Built by `hv-lint/build_phv_stats_index.py` from the `*.var_report.xml` files of the pinned release (~1 MB for all cohorts); `update_data.py` does not fetch var_reports yet.
+3. **Value-count index** (`<release>_stats.json.gz`, e.g. `phs000287.v7_stats.json.gz`) -- for each coded variable, the var_report non-null count `n` and the count of each observed code (dbGaP's published aggregate summaries; no participant data). Used by rules 3.17b and 3.18. Built by `hv-lint/build_phv_stats_index.py` from the `*.var_report.xml` files of the pinned release (~1 MB for all cohorts); `update_data.py` does not fetch var_reports yet.
 
 Indexes are committed to this repo (~4 MB total) so CI and contributors can run lint without fetching from NCBI. To rebuild: `python hv-lint/update_data.py --build-only`.
 

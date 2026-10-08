@@ -246,15 +246,18 @@ def _write_stats(path, data):
 
 
 def test_load_stats_index_by_cache_key(tmp_path):
-    _write_stats(tmp_path / "chs_stats.json.gz", {"phv00101487": {"n": 38, "c": {"1": 37}}})
-    st = css.load_stats_index(tmp_path, "chs")
+    _write_stats(tmp_path / "phs000287.v7_stats.json.gz",
+                 {"phv00101487": {"n": 38, "c": {"1": 37}}})
+    st = css.load_stats_index(tmp_path, "phs000287.v7")
     assert st["phv00101487"].n == 38 and st["phv00101487"].counts == {"1": 37}
-    assert css.load_stats_index(tmp_path, "aric") is None
+    assert css.load_stats_index(tmp_path, "phs000280.v8") is None
 
 
-def test_load_stats_index_falls_back_to_cohort_candidate_keys(tmp_path, monkeypatch):
-    """After #831 the cache key is a release; a cohort-named index is still found."""
-    _write_stats(tmp_path / "chs_stats.json.gz", {"phv00101487": {"n": 38, "c": {}}})
-    fake = SimpleNamespace(candidate_keys=lambda cohort, cache_dir: ["phs000287.v7", "chs"])
-    monkeypatch.setitem(sys.modules, "_cohorts", fake)
-    assert css.load_stats_index(tmp_path, "phs000287.v7", "CHS")["phv00101487"].n == 38
+def test_every_committed_detail_index_has_a_stats_index():
+    """The count index is named like the detail index, so each release resolves both."""
+    cache = HVLINT / "dbgap-cache"
+    import _cohorts
+    from _paths import find_transform_dir
+    for cohort, key in _cohorts.cohorts_to_load("all", cache, find_transform_dir()):
+        assert (cache / f"{key}_detail.json.gz").is_file(), cohort
+        assert (cache / f"{key}_stats.json.gz").is_file(), (cohort, key)

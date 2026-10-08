@@ -2,7 +2,7 @@
 """Build compressed PHV value-count indexes from dbGaP var_report files.
 
 Parses every ``*.var_report.xml`` for a cohort and writes
-``<cohort>_stats.json.gz`` with, for each coded variable, the number of
+``<cache key>_stats.json.gz`` with, for each coded variable, the number of
 non-null values and the count of each observed code:
 
     {"phv00101487": {"n": 38, "c": {"1": 37, "0": 1}}, ...}
@@ -30,8 +30,9 @@ Usage:
 files come from any staging of the pinned release (the hv_dataqc cache
 fetcher's ``--include-var-reports``, or the AI repo's ``data/dbgap/``).
 Pass ``--study-prefix`` so files from another release in the same
-directory are ignored. ``--cohort`` is the cache key the detail index uses;
-the output is named ``<key>_stats.json.gz`` next to ``<key>_detail.json.gz``.
+directory are ignored. ``--cohort`` is the cache key the detail index uses,
+which is the study release (``phs000287.v7``); the output is named
+``<key>_stats.json.gz`` next to ``<key>_detail.json.gz``.
 """
 
 from __future__ import annotations

@@ -349,50 +349,26 @@ def load_detail_index(cache_dir: Path, cache_key: str) -> DetailIndex:
 
 
 def cohort_cache_pairs(cohort: str, cache_dir: Path) -> list[tuple[str, str]]:
-    """``[(cohort_name, cache_key)]`` from the same resolver the other Phase 3 checks use.
-
-    Uses ``_cohorts.cohorts_to_load`` where hv-lint has it, otherwise the
-    cohort map check_value_semantic.py (3.11) already carries. No cohort list
-    lives in this module.
-    """
-    try:
-        import _cohorts  # noqa: PLC0415
-    except ImportError:
-        known = getattr(_cvs, "COHORT_TO_CACHE_KEY", {})
-        if cohort.lower() == "all":
-            return list(known.items())
-        return [(k, v) for k, v in known.items() if k.upper() == cohort.upper()]
+    """``[(cohort_name, cache_key)]`` from the resolver every phase uses."""
+    import _cohorts  # noqa: PLC0415
     return _cohorts.cohorts_to_load(cohort, cache_dir, find_transform_dir())
 
 
-def load_stats_index(
-    cache_dir: Path, cache_key: str, cohort: str = "",
-) -> dict[str, PhvStats] | None:
-    """Load the value-count index (build_phv_stats_index.py), or None.
+def load_stats_index(cache_dir: Path, cache_key: str) -> dict[str, PhvStats] | None:
+    """Load the value-count index (build_phv_stats_index.py), or None when it is absent.
 
-    The one reader of ``<key>_stats.json.gz``. ``<cache_key>`` is tried first,
-    the same stem as the detail index. When hv-lint has ``_cohorts`` (PR #831,
-    which names caches by release), its ``candidate_keys`` are tried next, so
-    an index still named by cohort (``chs_stats``) is found until it is renamed
-    to the release (``phs000287.v7_stats``).
+    The one reader of ``<cache_key>_stats.json.gz``: the same release-keyed stem as the
+    detail index (``phs000287.v7_stats.json.gz`` beside ``phs000287.v7_detail.json.gz``).
     """
-    stems = [cache_key]
-    if cohort:
-        try:
-            import _cohorts  # noqa: PLC0415
-            stems += _cohorts.candidate_keys(cohort, cache_dir)
-        except ImportError:
-            pass
-    for stem in dict.fromkeys(stems):
-        gz_path = Path(cache_dir) / f"{stem}_stats.json.gz"
-        if gz_path.exists():
-            with gzip.open(gz_path, "rt", encoding="utf-8") as f:
-                raw = json.load(f)
-            return {
-                phv: PhvStats(n=int(rec.get("n", 0)), counts=dict(rec.get("c") or {}))
-                for phv, rec in raw.items()
-            }
-    return None
+    gz_path = Path(cache_dir) / f"{cache_key}_stats.json.gz"
+    if not gz_path.exists():
+        return None
+    with gzip.open(gz_path, "rt", encoding="utf-8") as f:
+        raw = json.load(f)
+    return {
+        phv: PhvStats(n=int(rec.get("n", 0)), counts=dict(rec.get("c") or {}))
+        for phv, rec in raw.items()
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -710,22 +686,27 @@ def main() -> int:
 
     indexes: dict[str, DetailIndex] = {}
     stats_by_cohort: dict[str, dict[str, PhvStats] | None] = {}
+    missing_stats: list[str] = []
     for cohort_name, cache_key in cohort_cache_pairs(args.cohort, cache_dir):
         try:
             indexes[cohort_name] = load_detail_index(cache_dir, cache_key)
         except FileNotFoundError:
             continue
-        stats_by_cohort[cohort_name] = load_stats_index(cache_dir, cache_key, cohort_name)
+        stats_by_cohort[cohort_name] = load_stats_index(cache_dir, cache_key)
         st = stats_by_cohort[cohort_name]
-        print(
-            f"  Loaded {cohort_name}: {len(indexes[cohort_name].records):,} PHVs, "
-            + (f"{len(st):,} with var_report counts" if st is not None
-               else "no var_report counts (3.17b off, 3.18 label signal only)")
-        )
         if st is None:
-            print(f"WARNING: no {cache_key}_stats.json.gz for {cohort_name}: 3.17b does not "
-                  f"run and 3.18 uses wording only. Build it with "
-                  f"hv-lint/build_phv_stats_index.py.", file=sys.stderr)
+            # Without counts 3.17b cannot run and 3.18 loses its count signal; a weakened rule
+            # that passes is a skipped check, so this fails rather than warns.
+            print(f"ERROR: no {cache_key}_stats.json.gz for {cohort_name} in {cache_dir}: "
+                  f"3.17b and the 3.18 count signal cannot run. Build it with "
+                  f"hv-lint/build_phv_stats_index.py --cohort {cache_key}.", file=sys.stderr)
+            missing_stats.append(cohort_name)
+            continue
+        print(f"  Loaded {cohort_name}: {len(indexes[cohort_name].records):,} PHVs, "
+              f"{len(st):,} with var_report counts")
+
+    if missing_stats:
+        return 1
 
     if not indexes:
         print("ERROR: No detail indexes found.", file=sys.stderr)

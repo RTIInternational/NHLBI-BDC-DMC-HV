@@ -446,13 +446,17 @@ def study_mismatch(cache_dir: Path | str, cache_key: str, expect: str) -> str | 
 def discover_cache_keys(cache_dir: Path | str) -> list[str]:
     """Every cache key present in ``cache_dir``, from the ``*.json.gz`` files themselves.
 
-    Detail indexes (``<key>_detail.json.gz``) are folded onto their base key, so a cohort with
-    both files appears once.
+    Detail and value-count indexes (``<key>_detail.json.gz``, ``<key>_stats.json.gz``) are
+    folded onto their base key, so a release with all three files appears once.
     """
     keys: set[str] = set()
     for path in Path(cache_dir).glob("*.json.gz"):
         stem = path.name[: -len(".json.gz")]
-        keys.add(stem[: -len("_detail")] if stem.endswith("_detail") else stem)
+        for suffix in ("_detail", "_stats"):
+            if stem.endswith(suffix):
+                stem = stem[: -len(suffix)]
+                break
+        keys.add(stem)
     return sorted(keys)
 
 
