@@ -358,3 +358,45 @@ def test_phase_3_undeclared_cohort_says_where_the_override_applies(tmp_path, mon
     assert rc == 1, err
     assert "declares no dbGaP release" in err
     assert "Phase 5 has no override" in err
+
+
+# -- Phase 3 run directly: an alias names the cohort's DIRECTORY, not just its cache ----------
+# `cohorts_to_load` resolves `hchs_sol` to the HCHS cache, so the release check passes; the file
+# scan then matched the raw token against `hchs_sol-ingest`, found nothing, and exited 0 having
+# checked no file. Each validator canonicalises `--cohort` against the tree, and a NAMED cohort
+# with no YAML is a failure, not a pass.
+
+_PHASE3_VALIDATORS = ["validate_dbgap_crossref", "validate_semantic", "check_value_semantic"]
+
+
+def _run_phase3_validator(monkeypatch, module: str, root: Path, cache: Path, cohort: str) -> int:
+    import importlib
+    monkeypatch.setenv("HV_ROOT", str(root))
+    monkeypatch.syspath_prepend(str(_HV_LINT / "phase-3"))
+    mod = importlib.import_module(module)
+    monkeypatch.setattr(sys, "argv", [f"{module}.py", "--cache-dir", str(cache),
+                                      "--cohort", cohort, "--fail-on", "critical"])
+    return mod.main()
+
+
+@pytest.mark.parametrize("module", _PHASE3_VALIDATORS)
+@pytest.mark.parametrize("token", ["hchs_sol", "HCHS-SOL", "hchs"])
+def test_phase_3_validators_scan_the_aliased_cohorts_files(tmp_path, monkeypatch, capsys,
+                                                           module, token):
+    cache = _make_tree(tmp_path)
+    rc = _run_phase3_validator(monkeypatch, module, tmp_path, cache, token)
+    captured = capsys.readouterr()
+    assert rc == 0, captured.out + captured.err
+    assert "Found 1 YAML files to validate" in captured.out
+    assert "No YAML files found" not in captured.out
+
+
+@pytest.mark.parametrize("module", _PHASE3_VALIDATORS)
+def test_phase_3_validators_fail_a_named_cohort_with_no_yaml(tmp_path, monkeypatch, capsys,
+                                                             module):
+    cache = _make_tree(tmp_path)
+    (tmp_path / "priority_variables_transform" / "HCHS-ingest" / "visit.yaml").unlink()
+    rc = _run_phase3_validator(monkeypatch, module, tmp_path, cache, "HCHS")
+    captured = capsys.readouterr()
+    assert rc == 1, captured.out + captured.err
+    assert "No YAML files found" in captured.out

@@ -561,6 +561,10 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+    # The file scan matches `<cohort>-ingest`, so an alias (`hchs_sol`, `HCHS-SOL`) must name
+    # the DIRECTORY here, as it already names the cache in `cohorts_to_load`; otherwise the
+    # release check passes and the scan finds no file.
+    args.cohort = _cohorts.canonical_cohort(args.cohort, find_transform_dir())
     in_ci = os.environ.get("GITHUB_ACTIONS") == "true"
     cache_dir = Path(args.cache_dir)
 

@@ -389,6 +389,10 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+    # The file scan matches `<cohort>-ingest`, so an alias (`hchs_sol`, `HCHS-SOL`) must name
+    # the DIRECTORY here, as it already names the cache in `cohorts_to_load`; otherwise the
+    # release check passes and the scan finds no file.
+    args.cohort = _cohorts.canonical_cohort(args.cohort, find_transform_dir())
     in_ci = os.environ.get("GITHUB_ACTIONS") == "true"
     cache_dir = Path(args.cache_dir)
 
@@ -459,7 +463,9 @@ def main() -> int:
     yaml_files = find_yaml_files(base_dir, args.cohort)
     if not yaml_files:
         print(f"No YAML files found under {base_dir}")
-        return 0
+        # A named cohort with nothing to scan was not checked; only `all` over an empty tree
+        # has nothing to fail.
+        return 1 if args.cohort.strip().lower() != "all" else 0
 
     print(f"Found {len(yaml_files)} YAML files to validate")
 
