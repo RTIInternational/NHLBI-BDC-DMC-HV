@@ -586,7 +586,7 @@ def main() -> int:
         try:
             with file_path.open(encoding="utf-8") as f:
                 data = yaml.safe_load(f)
-        except (OSError, yaml.YAMLError) as exc:
+        except (OSError, UnicodeDecodeError, yaml.YAMLError) as exc:
             all_findings.append(Finding(
                 check="3.0", severity="ERROR",
                 file=rel_path, block=0,

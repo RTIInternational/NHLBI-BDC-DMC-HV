@@ -101,7 +101,8 @@ def test_run_all_is_the_one_prune_command(tmp_path):
     run = _runner(t, {"phase1": 0, "phase2": 0, "phase3": 0})   # the fixture has a 3.5
     assert run().returncode == 1
     pruned = run("prune")
-    assert pruned.returncode == 0 and "Prune applied: 1 known-issue entry" in pruned.stdout,         pruned.stdout[-1500:]
+    assert pruned.returncode == 0 and "Prune applied: 1 known-issue entry" in pruned.stdout, \
+        pruned.stdout[-1500:]
     assert K.load_entries(t.ki) == [] and run().returncode == 0
 
 
@@ -561,8 +562,8 @@ def test_phase5_reports_an_unparseable_spec_as_unrun(tmp_path, fail_on):
 def test_prune_refuses_an_unparseable_spec(tmp_path, how):
     """Review round 3 A M3, as reported (`skip`): FHS cig_smok.yaml unparseable, then
     `HVLINT_PRUNE=1 run_all.py --cohort FHS --skip phase1 phase2 phase3` pruned its 7 entries.
-    `every-phase` runs Phase 3 and Phase 5 for real (1 and 2 stubbed as passing), so Phase 5's
-    own 5.0 is what refuses it."""
+    `every-phase` runs Phase 5 for real with Phases 1-3 stubbed as passing, so Phase 5's own
+    5.0 is what refuses it."""
     t = _real_subset(tmp_path, "FHS", ["visit.yaml", "cig_smok.yaml"])
     if how == "skip":
         args = _run_all(t, "phase1", "phase2", "phase3")

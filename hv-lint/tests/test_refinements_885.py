@@ -353,3 +353,83 @@ def test_114_judges_only_a_numbered_label_against_its_own_bracketed_visit():
         [_ref(m, "MESA LUNG CT EXAM 2"), _ref(m, "MESA LUNG CT EXAM 3"), _ref(m, "MESA LUNG CT")],
         names, {})]
     assert len(msgs) == 1 and "'MESA LUNG CT EXAM 2'" in msgs[0]
+
+
+# -- Review round 4 deferred items ---------------------------------------------------------------
+
+def _visit_case(pht: str, seed: str, case: str) -> dict:
+    b = E.visit_block(pht, seed, "X")
+    b["class_derivations"]["Visit"]["slot_derivations"]["id"] = {
+        "expr": f'uuid5("https://w3id.org/bdchm/Visit", str({{{seed}}}) + ":" + {case})'}
+    return b
+
+
+def test_51_same_table_error_keeps_its_entry_when_blocks_with_different_label_sets_swap(tmp_path):
+    """Review 4 A D1 / B D2: the ERROR moved to the other block, whose identity lists two labels."""
+    t = E.Tree(tmp_path, "FHS")
+    a = _visit_case("pht000012", "phv00001559",
+                    "case(({phv00001560} == '1', 'FHS ORIGINAL EXAM 10'), "
+                    "({phv00001560} == '2', 'FHS ORIGINAL EXAM 11'))")
+    b = E.visit_block("pht000012", "phv00001559", "FHS ORIGINAL EXAM 10")
+    t.write("visit.yaml", [a, b])
+    first = E.phase5(t)
+    assert first.returncode == 1 and "[5.1]" in first.stdout, first.stdout[-1500:]
+    lines = t.list_as_known(first, 885)
+    # The anchor is the smallest identity (the one-label block); the ERROR is on the other.
+    assert len(lines) == 1
+    assert 'block: "Visit@pht000012:FHS ORIGINAL EXAM 10,FHS ORIGINAL EXAM 11"' in lines[0]
+    assert E.phase5(t).returncode == 0
+    t.write("visit.yaml", [b, a])
+    res = E.phase5(t)
+    assert res.returncode == 0, res.stdout[-2000:]
+
+
+def test_a_spec_that_is_not_utf8_is_a_finding_not_a_crash_through_main(tmp_path):
+    """Review 4 A D3: invalid UTF-8 crashed Phase 5 with a traceback from yaml_parse_error."""
+    t = E.Tree(tmp_path, "FHS")
+    t.write("visit.yaml", [E.visit_block("pht000012", "phv00001559", "FHS ORIGINAL EXAM 10")])
+    bad = t.write("afib.yaml", [E.fixture_block("fhs_afib_b0.yaml")])
+    bad.write_bytes(bad.read_bytes() + b"\xff\xfe\n")
+    res = E.phase5(t)
+    assert res.returncode == 1 and "Traceback" not in res.stderr, res.stderr[-1500:]
+    assert "[5.0] Could not parse afib.yaml" in res.stdout, res.stdout[-1500:]
+    for script in ("validate_dbgap_crossref.py", "validate_semantic.py",
+                   "check_status_semantic.py", "check_value_semantic.py"):
+        r = E.phase3(t, script)
+        assert "Traceback" not in r.stderr, (script, r.stderr[-1500:])
+    r = E.phase3(t, "validate_dbgap_crossref.py")
+    assert r.returncode == 1 and "Cannot parse YAML" in r.stdout
+    for script in ("check_cross_file_pht_consistency.py", "check_cross_file_duplicates.py",
+                   "check_cross_block_consistency.py", "validate_yaml_structure.py"):
+        r = t.run(f"phase-1/{script}", "--cohort", "FHS")
+        assert "Traceback" not in r.stderr, (script, r.stderr[-1500:])
+    r = t.run("phase-1/validate_yaml_structure.py", "--cohort", "FHS")
+    assert r.returncode == 1 and "Failed to parse YAML" in r.stdout
+    r = t.run("phase-2/check_phv_dedup.py", "--cohort", "FHS")
+    assert r.returncode != 0 and "Traceback" not in r.stderr, r.stderr[-1500:]
+
+
+def test_prune_and_update_together_are_refused_before_anything_is_written(tmp_path):
+    """Review 4 A D2: with both set, update wrote the baseline and the summary said "nothing
+    written". run_all refuses before any phase; a component refuses in the known-issue step."""
+    t = E.Tree(tmp_path, "FHS")
+    t.write("visit.yaml", [E.visit_block("pht000012", "phv00001559", "FHS ORIGINAL EXAM 10")])
+    t.baseline.write_text('{"warnings": {}}', encoding="utf-8")
+    before = (t.ki.read_bytes(), t.baseline.read_bytes())
+    env_both = {"HVLINT_PRUNE": "1", "HVLINT_UPDATE_BASELINE": "1"}
+    import os
+    import subprocess
+    env = {k: v for k, v in os.environ.items() if not k.startswith("HVLINT_")}
+    env.update(env_both, HV_ROOT=str(t.root), HVLINT_KNOWN_ISSUES=str(t.ki),
+               HVLINT_WARNING_BASELINE=str(t.baseline), PYTHONIOENCODING="utf-8")
+    res = subprocess.run([sys.executable, str(HVLINT / "run_all.py"), "--cohort", "FHS",
+                          "--no-report", "--cache-dir", str(E.CACHE)], cwd=t.root, env=env,
+                         capture_output=True, text=True, encoding="utf-8")
+    assert res.returncode == 2 and "both HVLINT_PRUNE=1 and HVLINT_UPDATE_BASELINE=1" in res.stderr
+    assert "Phase 1" not in res.stdout
+    env["HVLINT_RUN_ALL"] = "1"
+    comp = subprocess.run([sys.executable, str(HVLINT / "phase-5/validate_visit_structure.py"),
+                           "--cohort", "FHS", "--cache-dir", str(E.CACHE)], cwd=t.root, env=env,
+                          capture_output=True, text=True, encoding="utf-8")
+    assert comp.returncode == 1 and "refusing to run with both" in comp.stdout, comp.stdout[-1500:]
+    assert (t.ki.read_bytes(), t.baseline.read_bytes()) == before

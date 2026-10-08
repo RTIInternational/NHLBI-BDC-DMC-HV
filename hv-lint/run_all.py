@@ -161,6 +161,12 @@ def main() -> int:
     # Default cache-dir
     cache_dir = args.cache_dir or str(SCRIPT_DIR / "dbgap-cache")
 
+    # Both rewriting modes at once: update writes the baseline directly while prune stages, so
+    # one of them would report "nothing written" over a write. Refuse before any phase runs.
+    if _known_issues.both_modes_set():
+        print(f"ERROR: {_known_issues.BOTH_MODES_MESSAGE}", file=sys.stderr)
+        return 2
+
     # The known-issue prune and baseline update modes run only under this flag: a phase or a
     # component started on its own may cover part of a cohort (hv-lint/_known_issues.py).
     os.environ["HVLINT_RUN_ALL"] = "1"

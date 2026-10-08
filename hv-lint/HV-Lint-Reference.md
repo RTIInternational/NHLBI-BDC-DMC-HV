@@ -172,7 +172,7 @@ Fingerprints are unique per run (two findings with one fingerprint get ` (#2)`),
 Two commands rewrite the files. Both run only under `run_all.py` and refuse a `--file` run, so a partial run never rewrites rows it did not see:
 
 - `HVLINT_PRUNE=1 python hv-lint/run_all.py --cohort all` removes ONLY entries and baseline rows that match nothing, and never adds one. Every stale-entry and fixed-WARNING message prints it. After a PR that fixes known issues, this one command is the whole bookkeeping. It writes only from a clean run: each component stages what it would remove, and `run_all.py` writes nothing when any phase failed or was skipped (`--skip`), or any component's run has an ERROR not in `known_issues.yaml` (a check that did not run is one) or a new WARNING. A partial fix that changes a finding's message, or a cohort whose checks did not run, would otherwise read as fixed; add the new entry or baseline row first, then prune.
-- `HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all` rewrites the WARNING baseline from the run, so it can add rows as well as drop them: accepting a new WARNING is a reviewed diff of `warning_baseline.json`, one line per finding.
+- `HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all` rewrites the WARNING baseline from the run, so it can add rows as well as drop them: accepting a new WARNING is a reviewed diff of `warning_baseline.json`, one line per finding. With both variables set, run_all.py exits 2 before any phase runs and writes nothing (a component run under it reports a KI ERROR instead).
 
 A `--file` run checks only that file's entries and rows. On main (731984f5 + #882 + #831 + #885) the file holds 340 entries -- 3.5 125 (#500, #883, #884, #872), 1.12 57 (#872, #881), 2.12 49 (#883), 2.4 31 (#884), 3.16 30 (#884), 3.9 11, 3.10 7 (#883), 5.2 7 (#872, FHS cig_smok fallback), 3.18 6 and 3.17 5 (#881, #869, #873), 1.2 4, 3.15 4 (#226), 2.7 3 (#883), 5.11 1 (#882, FHS afib b0); 329 defect, 4 dbgap-error, 5 pending (CARDIA A12CB* / A12EM* '0', #873 Q19; ARIC COMPLQ01's inverted-looking labels, #873), 2 false-positive -- and every phase passes. Every `defect` and `pending` entry cites an open issue. Removing any one entry fails CI on exactly that finding.
 
@@ -600,7 +600,7 @@ Expressions are parsed with `ast` by the shared enumerator `hv-lint/_visit_ids.p
 
 Flag cohorts that have an ingest directory but no `visit.yaml` file: none of 5.1-5.12 ran for that cohort. That is an ERROR that fails the run regardless of `--fail-on`, whether the cohort was named with `--cohort` or found under `--cohort all` (CI lints `all`, so a deleted `visit.yaml` fails CI). So is a named cohort with no ingest directory, a `visit.yaml` that cannot be parsed or has no Visit blocks, and any other spec of the cohort that cannot be parsed (`Could not parse <file>`, on that file), under any `--cohort`.
 
-- **Severity**: ERROR, a cohort-level finding (`<C>-ingest/ | cohort`) that fails the run as an unrun check
+- **Severity**: ERROR that fails the run as an unrun check: a cohort-level finding (`<C>-ingest/ | cohort`) for a missing or unusable `visit.yaml` or a missing ingest directory; on the file itself for a spec that cannot be parsed (including one that is not valid UTF-8)
 
 ### 5.1 Visit ID Uniqueness
 
@@ -608,7 +608,7 @@ Within a cohort's `visit.yaml`, no two Visit blocks should produce the same visi
 
 - **Static IDs**: Exact string comparison
 - **Dynamic IDs**: Uniqueness check on extracted labels (uuid5 is deterministic); fallback labels are not compared
-- **Severity**: ERROR when two blocks of the SAME table emit one label (naming that table's first block); WARNING "Visit id emitted by N tables" (listing the distinct tables and their age expressions) on the first block of each further table -- a multi-table visit by design whose duplicate Visit rows can disagree on age. A label group that mixes both gets both, pair by pair.
+- **Severity**: ERROR when two blocks of the SAME table emit one label, reported on every block of the table but its anchor (the block with the smallest known-issue identity, as 1.2 anchors a duplicate group), so reordering `visit.yaml` keeps the entry even when the blocks emit different label sets; WARNING "Visit id emitted by N tables" (listing the distinct tables, in pht order, and their age expressions) on the anchor of each further table -- a multi-table visit by design whose duplicate Visit rows can disagree on age. A label group that mixes both gets both, pair by pair.
 
 ### 5.2 Visit ID Referential Integrity
 

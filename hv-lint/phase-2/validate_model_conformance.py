@@ -900,7 +900,7 @@ def main() -> int:
         try:
             with file_path.open(encoding="utf-8") as f:
                 data = yaml.safe_load(f)
-        except (OSError, yaml.YAMLError) as e:
+        except (OSError, UnicodeDecodeError, yaml.YAMLError) as e:
             all_findings.append(Finding(
                 rel_path, 0, "2.0", "ERROR", f"Failed to parse YAML: {e}"
             ))

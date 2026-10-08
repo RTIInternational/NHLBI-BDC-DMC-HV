@@ -74,6 +74,17 @@ STAGE_ENV = "HVLINT_PRUNE_STAGE"
 PRUNE_CMD = "HVLINT_PRUNE=1 python hv-lint/run_all.py --cohort all"
 UPDATE_CMD = "HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all"
 
+BOTH_MODES_MESSAGE = (
+    f"refusing to run with both {PRUNE_ENV}=1 and {UPDATE_ENV}=1: the update would write the "
+    f"baseline while the prune reports on the same run. Unset one; run {UPDATE_CMD} or "
+    f"{PRUNE_CMD} on its own")
+
+
+def both_modes_set() -> bool:
+    """Prune and baseline update both requested: neither may write."""
+    return os.environ.get(PRUNE_ENV) == "1" and os.environ.get(UPDATE_ENV) == "1"
+
+
 _COHORT_PATH_RE = re.compile(r"(?:^|/)([^/]+-ingest)(?:/(.*))?$")
 
 
@@ -230,7 +241,7 @@ class _Identities:
             if p is not None:
                 try:
                     data = yaml.load(Path(p).read_text(encoding="utf-8"), Loader=_Loader)
-                except (OSError, yaml.YAMLError):
+                except (OSError, UnicodeDecodeError, yaml.YAMLError):
                     data = None
                 if data is not None:
                     self._cache[rel] = file_identities(data if isinstance(data, list) else [data])
@@ -456,11 +467,15 @@ def finalize(
     :data:`PRUNE_ENV` / :data:`UPDATE_ENV`.
     """
     checks = {str(c) for c in checks}
-    if mode is None:
-        mode = ("update" if os.environ.get(UPDATE_ENV) == "1"
-                else "prune" if os.environ.get(PRUNE_ENV) == "1" else "check")
     extra: list = []
     meta = "hv-lint/known_issues.yaml"
+    if mode is None:
+        if both_modes_set():
+            extra.append(make_finding(meta, -1, "KI", "ERROR", BOTH_MODES_MESSAGE))
+            mode = "check"
+        else:
+            mode = ("update" if os.environ.get(UPDATE_ENV) == "1"
+                    else "prune" if os.environ.get(PRUNE_ENV) == "1" else "check")
     if mode != "check" and (partial or os.environ.get(RUN_ALL_ENV) != "1"):
         why = "a --file run" if partial else "a run not started by run_all.py"
         extra.append(make_finding(

@@ -139,6 +139,7 @@ class VisitBlock:
     age_phvs: set[str]            # PHVs referenced in age expressions
     all_phvs: set[str]            # PHVs referenced in ANY expression in this block
     has_participant: bool
+    identity: str = ""            # known-issue block identity (_known_issues.file_identities)
 
 
 @dataclass
@@ -230,7 +231,7 @@ def yaml_parse_error(file_path: Path) -> str | None:
     try:
         with file_path.open(encoding="utf-8") as f:
             yaml.safe_load(f)
-    except (OSError, yaml.YAMLError) as e:
+    except (OSError, UnicodeDecodeError, yaml.YAMLError) as e:
         return str(e).strip().splitlines()[0] if str(e).strip() else type(e).__name__
     return None
 
@@ -240,7 +241,7 @@ def parse_yaml_safe(file_path: Path) -> list[dict] | None:
     try:
         with file_path.open(encoding="utf-8") as f:
             data = yaml.safe_load(f)
-    except (OSError, yaml.YAMLError):
+    except (OSError, UnicodeDecodeError, yaml.YAMLError):
         return None
     if data is None:
         return None
@@ -262,6 +263,7 @@ def build_visit_registry(visit_file: Path, hv_root: Path) -> VisitRegistry | Non
     static_ids: set[str] = set()
     all_labels: set[str] = set()
     uses_dynamic = False
+    identities = _known_issues.file_identities(blocks_data)
 
     for idx, block in enumerate(blocks_data):
         if not isinstance(block, dict):
@@ -350,6 +352,7 @@ def build_visit_registry(visit_file: Path, hv_root: Path) -> VisitRegistry | Non
             age_phvs=age_phvs,
             all_phvs=all_block_phvs,
             has_participant=has_participant,
+            identity=identities[idx],
         ))
 
     if not visit_blocks:
@@ -516,20 +519,27 @@ def check_5_1_uniqueness(registry: VisitRegistry) -> list[Finding]:
         for label, vbs in sorted(by_label.items()):
             if len(vbs) < 2:
                 continue
-            # Each pair is classified on its own: a later block of a table already seen is the
-            # same-table ERROR (naming that table's first block); the first block of each further
-            # table is the multi-table WARNING.
-            first_of: dict = {}
+            # Each table's anchor is its block with the smallest known-issue identity, not its
+            # first in file order (as 1.2 anchors a duplicate group): the same-table ERROR is
+            # reported on every other block of the table, and the anchor carries any
+            # multi-table WARNING, so reordering visit.yaml re-keys neither, even when the two
+            # blocks emit different label sets and so have different identities.
+            by_pht: dict = {}
             for vb in vbs:
-                if vb.pht in first_of:
+                by_pht.setdefault(vb.pht, []).append(vb)
+            first_of: dict = {}
+            for pht, members in by_pht.items():
+                anchor = min(members, key=lambda v: v.identity)
+                first_of[pht] = anchor
+                for vb in members:
+                    if vb is anchor:
+                        continue
                     findings.append(Finding(
                         file=registry.file_path, block=vb.block_index, check="5.1",
                         severity="ERROR",
                         message=(f"Duplicate visit label '{label}' -- also in block "
-                                 f"{first_of[vb.pht].block_index}, from the same table {vb.pht}"),
+                                 f"{anchor.block_index}, from the same table {pht}"),
                     ))
-                else:
-                    first_of[vb.pht] = vb
             # Sorted by table, not file order: reordering Visit blocks must not move the WARNING
             # to another block or reorder the message, which would re-key its baseline row.
             tables = sorted(first_of.values(), key=lambda v: str(v.pht))
