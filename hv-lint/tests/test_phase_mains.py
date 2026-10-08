@@ -411,3 +411,15 @@ def test_phase_3_validators_fail_a_named_cohort_with_no_yaml(tmp_path, monkeypat
     captured = capsys.readouterr()
     assert rc == 1, captured.out + captured.err
     assert "No YAML files found" in captured.out
+
+
+@pytest.mark.parametrize("token", [" all", "ALL "])
+def test_phase_5_reads_a_padded_all_as_all(tmp_path, monkeypatch, capsys, token):
+    """`cohorts_to_load` and the --expect-study guard strip before comparing with `all`; Phase 5
+    must agree, or the same token is every cohort to Phase 3 and an unknown cohort to Phase 5."""
+    cache = _make_tree(tmp_path)
+    rc = _run_vvs(monkeypatch, tmp_path, "--cohort", token, "--cache-dir", str(cache),
+                  "--fail-on", "critical")
+    out = capsys.readouterr().out
+    assert rc == 0, out
+    assert "1 cohort(s) processed, 0 skipped" in out

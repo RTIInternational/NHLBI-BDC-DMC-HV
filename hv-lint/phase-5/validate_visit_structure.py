@@ -1193,6 +1193,8 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+    # Stripped as `_cohorts.cohorts_to_load` strips, so ` all` means the same to every phase.
+    args.cohort = args.cohort.strip()
     in_ci = os.environ.get("GITHUB_ACTIONS") == "true"
 
     base_dir = find_transform_dir()

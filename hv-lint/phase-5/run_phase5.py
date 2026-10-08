@@ -96,6 +96,8 @@ def run_component(
 
 def main() -> int:
     args = parse_args()
+    # Stripped as `_cohorts.cohorts_to_load` strips, so ` all` means the same to every phase.
+    args.cohort = args.cohort.strip()
     skip_set = set(args.skip)
 
     # Propagate --hv-root to child processes via environment variable
