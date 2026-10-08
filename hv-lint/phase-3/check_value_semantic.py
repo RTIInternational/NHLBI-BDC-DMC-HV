@@ -11,7 +11,8 @@ Requires:
     (if absent, uses an embedded lookup of ~100 common HV concepts)
 
 Check:
-    3.11  value_mappings label <-> OMOP concept semantic alignment
+    3.11  value_mappings label <-> OMOP concept semantic alignment (ERROR). Walks every slot at
+          every depth; skips ``*_status`` slots, whose polarity is rule 3.17's.
 
 Usage:
     python hv-lint/phase-3/check_value_semantic.py --cache-dir hv-lint/dbgap-cache
@@ -35,6 +36,7 @@ import yaml
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
 import _cohorts  # noqa: E402
+from _derivations import walk_slot_derivations  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -46,7 +48,7 @@ PHV_RE = re.compile(r"phv\d{8}")
 OMOP_RE = re.compile(r"OMOP:(\d+)")
 
 # Contradictory keyword pairs: if source label contains A and target
-# concept name contains B (or vice versa), flag as HIGH.
+# concept name contains B (or vice versa), flag as ERROR.
 CONTRADICTORY_PAIRS: list[tuple[set[str], set[str]]] = [
     ({"current"}, {"past", "former", "never", "ex-"}),
     ({"past", "former", "ex-"}, {"current", "every day", "some days"}),
@@ -88,7 +90,7 @@ EMBEDDED_CONCEPT_NAMES: dict[int, str] = {
     8516: "Black or African American",
     8515: "Asian",
     8557: "Native Hawaiian or Other Pacific Islander",
-    8567: "American Indian or Alaska Native",
+    8657: "American Indian or Alaska Native",
     8552: "Unknown",
     # Ethnicity (Athena-verified 2026-03-31: 38003563=Hispanic, 38003564=Not Hispanic)
     38003563: "Hispanic or Latino",
@@ -119,7 +121,7 @@ EMBEDDED_CONCEPT_NAMES: dict[int, str] = {
     4329847: "Myocardial infarction",
     321318: "Heart failure",
     # Other common
-    4282779: "COPD",
+    4282779: "Cigarette smoking tobacco",
     4195665: "Asthma",
     40481531: "Peripheral arterial disease",
     321052: "Peripheral vascular disease",
@@ -286,70 +288,61 @@ def check_value_semantic_alignment(
 ) -> list[Finding]:
     """Check 3.11: Flag value_mappings where source label contradicts target."""
     findings: list[Finding] = []
-    class_derivs = block.get("class_derivations")
-    if not isinstance(class_derivs, dict):
-        return findings
-
-    for cls_name, cls_def in class_derivs.items():
-        if not isinstance(cls_def, dict):
+    for site in walk_slot_derivations(block):
+        cls_name, slot_name, slot_def = site.class_name, site.slot_name, site.slot_def
+        # Status polarity (yes/no -> PRESENT/ABSENT) belongs to 3.17, which reads the enum
+        # targets and the observed counts; this rule covers OMOP-valued slots only.
+        if slot_name.endswith("_status"):
             continue
-        slot_derivs = cls_def.get("slot_derivations")
-        if not isinstance(slot_derivs, dict):
+        vm = slot_def.get("value_mappings")
+        if not isinstance(vm, dict) or not vm:
             continue
 
-        for slot_name, slot_def in slot_derivs.items():
-            if not isinstance(slot_def, dict):
+        # Get source PHV to look up code labels
+        pf = slot_def.get("populated_from")
+        if not isinstance(pf, str) or not PHV_RE.fullmatch(pf):
+            continue
+
+        detail = detail_idx.records.get(pf)
+        if not detail or not detail.codes:
+            continue
+
+        for source_key, target_val in vm.items():
+            source_key_str = str(source_key)
+            source_label = detail.codes.get(source_key_str, "")
+            if not source_label:
                 continue
 
-            vm = slot_def.get("value_mappings")
-            if not isinstance(vm, dict) or not vm:
+            # Extract OMOP concept ID from target (e.g., "OMOP:45883458")
+            if not isinstance(target_val, str):
+                continue
+            omop_match = OMOP_RE.search(target_val)
+            if not omop_match:
                 continue
 
-            # Get source PHV to look up code labels
-            pf = slot_def.get("populated_from")
-            if not isinstance(pf, str) or not PHV_RE.fullmatch(pf):
+            concept_id = int(omop_match.group(1))
+            concept_name = omop_lookup.get(concept_id)
+            if not concept_name:
                 continue
 
-            detail = detail_idx.records.get(pf)
-            if not detail or not detail.codes:
-                continue
-
-            for source_key, target_val in vm.items():
-                source_key_str = str(source_key)
-                source_label = detail.codes.get(source_key_str, "")
-                if not source_label:
-                    continue
-
-                # Extract OMOP concept ID from target (e.g., "OMOP:45883458")
-                if not isinstance(target_val, str):
-                    continue
-                omop_match = OMOP_RE.search(target_val)
-                if not omop_match:
-                    continue
-
-                concept_id = int(omop_match.group(1))
-                concept_name = omop_lookup.get(concept_id)
-                if not concept_name:
-                    continue
-
-                contradictions = _find_contradictions(source_label, concept_name)
-                if contradictions:
-                    pairs_str = ", ".join(
-                        f"'{s}' vs '{t}'" for s, t in contradictions
-                    )
-                    findings.append(Finding(
-                        file=rel_path,
-                        block=block_idx,
-                        check="3.11",
-                        severity="HIGH",
-                        message=(
-                            f"value_mappings on {cls_name}.{slot_name}: "
-                            f"code '{source_key_str}' "
-                            f"(\"{source_label}\") -> "
-                            f"{target_val} (\"{concept_name}\") -- "
-                            f"contradictory keywords: {pairs_str}"
-                        ),
-                    ))
+            contradictions = _find_contradictions(source_label, concept_name)
+            if contradictions:
+                pairs_str = ", ".join(
+                    f"'{s}' vs '{t}'" for s, t in contradictions
+                )
+                findings.append(Finding(
+                    file=rel_path,
+                    block=block_idx,
+                    check="3.11",
+                    severity="ERROR",
+                    message=(
+                        f"value_mappings on {cls_name}.{slot_name}: "
+                        f"code '{source_key_str}' "
+                        f"(\"{source_label}\") -> "
+                        f"{target_val} (\"{concept_name}\") -- "
+                        f"contradictory keywords: {pairs_str}"
+                    ),
+                ))
 
     return findings
 

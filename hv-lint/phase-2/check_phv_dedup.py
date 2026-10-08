@@ -258,8 +258,15 @@ def main() -> int:
                 first_file = hits[0][1]
                 first_block = hits[0][2]
                 all_findings.append(Finding(
-                    first_file, first_block, "2.8", "WARNING", msg
+                    first_file, first_block, "2.8", "ERROR", msg
                 ))
+
+    # A file that does not parse was not checked; that is a failure, not a pass.
+    for rel_path, err in parse_errors:
+        first_line = err.strip().splitlines()[0] if err.strip() else err
+        all_findings.append(Finding(
+            rel_path, -1, "2.8", "ERROR", f"YAML parse error, file not checked: {first_line}"
+        ))
 
     # -----------------------------------------------------------------------
     # Report
@@ -277,7 +284,7 @@ def main() -> int:
     print(f"Unique PHVs:    {total_phvs}")
 
     if parse_errors:
-        print(f"Parse errors:   {len(parse_errors)}")
+        print(f"Parse errors:   {len(parse_errors)} (each reported as an ERROR below)")
 
     parts = []
     for sev in ("CRITICAL", "ERROR", "HIGH", "WARNING", "INFO"):

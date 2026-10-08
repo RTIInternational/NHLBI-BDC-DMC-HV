@@ -363,7 +363,8 @@ Validates that values assigned to enum-typed slots are members of the BDCHM-defi
 
 Flag any PHV accession that is mapped as a measured value in more than one harmonized variable block within the same cohort.
 
-- **Severity**: WARNING
+- **Severity**: ERROR. A YAML file that does not parse is also an ERROR (the file was not checked). The root `check_phv_dedup.py` (`validate_ingest_yamls.yml`) fails on the same two cases; its `KNOWN_ISSUES` is empty, and an entry that no longer matches a duplicate fails it.
+- **Coverage**: raw measured values (Quantity `value_*` with a bare `populated_from`, top level or inside a MeasurementObservationSet). A Condition counts only when `condition_status` has `populated_from` and no `value_mappings`, so in practice Conditions are not covered.
 - **DrugExposure is not covered** (here or in the root `check_phv_dedup.py`): a medication PHV mapped to two different concepts is often deliberate (spironolactone as diuretic and aldosterone blocker; a class block beside a drug-name block -- 45 such PHVs on main, 2026-10-07), and the real medication defect, the same block in two files with the same concept, is invisible to a distinct-concept check. Rule 1.12 covers it.
 
 ### 2.10 Unconditional age_at_condition_start on Binary Conditions
@@ -440,7 +441,8 @@ Validates that the dbGaP data type of a source PHV is compatible with the target
 Validates that the source label from dbGaP semantically matches the target OMOP concept. Catches copy-paste swaps where target concept IDs are assigned to the wrong source code.
 
 - **Data**: Extended detail index + OMOP concept lookup (embedded ~43 common concepts; auto-upgrades to full Athena CSV if available)
-- **Severity**: HIGH
+- **Scope**: every `value_mappings` slot at any depth (nested `Quantity.value_concept` included) whose target is an `OMOP:` CURIE, except `*_status` slots: status polarity is rule 3.17's.
+- **Severity**: ERROR (it was HIGH, which ranks below ERROR, so the enforced `--fail-on error` gate could never fail on it)
 
 ### 3.12 PHV Description vs Concept Domain
 
