@@ -645,12 +645,14 @@ def _two_label_block(pht: str, seed: str, value_phv: str, labels: tuple[str, str
 
 def test_18_overlap_names_the_smallest_identity_not_the_first_file_through_main(tmp_path):
     """b.yaml's block has the smaller identity, so the WARNING names it whatever sorts first;
-    a new file sorting before it with the same labels does not re-key the row."""
+    a new file sorting before it with the same labels does not re-key the row. d.yaml sorts
+    after b.yaml with a larger identity, so naming the last block scanned also fails."""
     t = E.Tree(tmp_path, "COPDGene")
     p12, p23 = ("COPDGene P1", "COPDGene P2"), ("COPDGene P2", "COPDGene P3")
     t.write("a.yaml", [_two_label_block("pht002239", "phv00568800", "phv00568909", p12)])
     t.write("b.yaml", [_two_label_block("pht002239", "phv00568800", "phv00568901", p12)])
     t.write("c.yaml", [_two_label_block("pht002239", "phv00568800", "phv00568902", p23)])
+    t.write("d.yaml", [_two_label_block("pht002239", "phv00568800", "phv00568908", p12)])
     first = t.run(P1, "--cohort", "COPDGene", mode="update")
     assert "in b.yaml block" in first.stdout, first.stdout[-1500:]
     t.write("0.yaml", [_two_label_block("pht002239", "phv00568800", "phv00568905", p12)])
