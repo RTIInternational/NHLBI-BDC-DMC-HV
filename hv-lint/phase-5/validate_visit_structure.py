@@ -96,7 +96,7 @@ SUFFIX_AFTER_PAREN_SQ_RE = re.compile(r"\)\s*\+\s*'([^']*)'")
 # the SUFFIX, not a label. Matching it would return ' EXAM 4' as a label and leave the prefixes
 # unsuffixed, so every FHS exam 4-10 id reads as a duplicate bare cohort label (5.1) and every
 # reference as an unknown visit (5.2). The inner case() results are read by the patterns above.
-CASE_RESULT_UUID5_RE = re.compile(r""",\s*uuid5\((?:(?!case\().)*?\+\s*['"]:?([^'"]+)['"]\s*\)""")
+CASE_RESULT_UUID5_RE = re.compile(r""",\s*uuid5\((?:(?!case\s*\().)*?\+\s*['"]:?([^'"]+)['"]\s*\)""")
 
 # Matches any quoted string (double or single)
 QUOTED_DQ_RE = re.compile(r'"([^"]+)"')

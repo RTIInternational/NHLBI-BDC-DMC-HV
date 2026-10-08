@@ -188,6 +188,15 @@ def test_check_1_8_reads_fhs_conditional_id_as_suffixed_labels():
     assert c18._extract_labels_from_expr(FHS_EXAM4_ID) == _FHS_EXAM4_LABELS
 
 
+def test_fhs_conditional_id_with_a_space_before_the_inner_case_paren():
+    """`case (` is still a case() call -- CASE_USAGE_RE accepts `\\bcase\\s*\\(` -- so the seed's
+    trailing ' EXAM 4' is still a suffix, in both parser copies."""
+    inner = FHS_EXAM4_ID.index("case(", 1)
+    spaced = FHS_EXAM4_ID[:inner] + "case (" + FHS_EXAM4_ID[inner + len("case("):]
+    assert vvs.extract_visit_labels_from_expr(spaced)[0] == _FHS_EXAM4_LABELS
+    assert c18._extract_labels_from_expr(spaced) == _FHS_EXAM4_LABELS
+
+
 def test_fhs_conditional_id_and_name_yield_the_same_labels():
     """A visit block's id and name describe one visit, so they must parse to the same labels."""
     id_labels, _ = vvs.extract_visit_labels_from_expr(FHS_EXAM4_ID)
