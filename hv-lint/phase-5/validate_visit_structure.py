@@ -15,6 +15,8 @@ Checks:
   5.8  Collection Interval Mismatch -- data PHV coll_interval vs visit case
   5.9  Visit uuid5 Format Compliance -- visit IDs must use uuid5 expressions
   5.10 Visit uuid5 Namespace -- uuid5 must use canonical bdchm namespace URL
+  5.11 Participant / visit seed -- the variable that seeds a participant or visit id must be
+       the table's participant ID, the same one for both, and in the block's own table
 
 Checks 5.5 (Multi-Visit Table Coverage) and 5.7 (Visit PHT/Label Alignment) were REMOVED on
 2026-09-10. Both rested entirely on a visit cache produced by regex-matching dbGaP variable
@@ -1078,6 +1080,101 @@ def check_5_10_uuid5_namespace(
     return findings
 
 
+#: dbGaP names of a participant-ID variable. A seed named anything else (FHS ``idtype``, the
+#: cohort code 0/1/2/3/7/72) collapses every row of a block onto one fake participant per value.
+PARTICIPANT_ID_NAMES = frozenset(n.casefold() for n in (
+    "shareid", "SUBJECT_ID", "SUBJID", "Individual_ID", "sidno", "New_SUBJID", "GENEVA_ID",
+    "dbGaP_Subject_ID",
+))
+
+
+def _seeds(slot_def) -> list[_visit_ids.Seed]:
+    out: list[_visit_ids.Seed] = []
+    for v in _visit_ids.slot_ids(slot_def):
+        if v.namespace is not None or not v.label:
+            out.extend(v.seeds)
+    return list(dict.fromkeys(out))
+
+
+def check_5_11_participant_seed(
+    yaml_files: list[Path], hv_root: Path, detail_idx: dict[str, dict],
+) -> list[Finding]:
+    """5.11: the seed of every participant / visit id is the table's participant ID.
+
+    For each Visit ``id``, ``associated_visit`` and ``associated_participant`` at any depth, the
+    ``str({phv})`` seeds are read by the shared enumerator and checked BY NAME against the detail
+    index:
+
+      (a) a seed whose dbGaP name is not a participant ID (``idtype``, ``IDTYPE``, ...);
+      (b) a visit seed set that differs from the participant seed set at the same level (the
+          participant is inherited from the enclosing class when a nested one has none);
+      (c) an unqualified seed in another table than the block's top-level ``populated_from``:
+          a bare reference to another table is None in linkml-map, so participant and visit are
+          emitted empty.
+
+    Name-based on purpose: shareid and idtype are adjacent accessions in FHS tables but the
+    distance varies by table, so a distance rule would be wrong. One ERROR per block.
+    """
+    findings: list[Finding] = []
+
+    def name_of(seed: _visit_ids.Seed) -> tuple[str | None, str | None]:
+        if not seed.phv.startswith("phv"):
+            return seed.phv, None        # a bare column name such as {dbGaP_Subject_ID}
+        rec = detail_idx.get(seed.phv)
+        if not rec:
+            return None, None
+        return rec.get("name"), rec.get("pht")
+
+    for yf in yaml_files:
+        rel = yf.relative_to(hv_root).as_posix()
+        blocks = parse_yaml_safe(yf) or []
+        for idx, block in enumerate(blocks):
+            if not isinstance(block, dict):
+                continue
+            cds = block.get("class_derivations")
+            if not isinstance(cds, dict):
+                continue
+            reasons: list[str] = []
+
+            def level(cls_name, cls_def, top_pht, inherited):
+                slots = cls_def.get("slot_derivations")
+                if not isinstance(slots, dict):
+                    return
+                visit = _seeds(slots.get("id") if cls_name == "Visit"
+                               else slots.get("associated_visit"))
+                own_part = _seeds(slots.get("associated_participant"))
+                part = own_part or inherited
+                for seed in visit + own_part:
+                    name, pht = name_of(seed)
+                    label = f"{{{seed.phv}}}" + (f" ({name}, {pht})" if pht else "")
+                    if name is None:
+                        continue
+                    if name.casefold() not in PARTICIPANT_ID_NAMES:
+                        reasons.append(f"seed {label} is not a participant ID")
+                    if pht and not seed.table and top_pht and pht != top_pht:
+                        reasons.append(f"seed {label} is in another table than {top_pht} "
+                                       f"and has no join, so it is None")
+                if visit and part and {s.phv for s in visit} != {s.phv for s in part}:
+                    reasons.append(
+                        f"visit seed {sorted({s.phv for s in visit})} differs from participant "
+                        f"seed {sorted({s.phv for s in part})}")
+                for slot_def in slots.values():
+                    if isinstance(slot_def, dict):
+                        for ncls, ndef in iter_nested_class_derivs(slot_def):
+                            if isinstance(ndef, dict):
+                                level(ncls, ndef, top_pht, part)
+
+            for cls_name, cls_def in cds.items():
+                if isinstance(cls_def, dict):
+                    level(cls_name, cls_def, cls_def.get("populated_from"), [])
+            if reasons:
+                findings.append(Finding(
+                    file=rel, block=idx, check="5.11", severity="ERROR",
+                    message="participant / visit id seed: " + "; ".join(dict.fromkeys(reasons)),
+                ))
+    return findings
+
+
 # -- Index loading ------------------------------------------------------------
 
 def load_phv_index(cache_dir: Path, cache_key: str) -> dict[str, str] | None:
@@ -1292,11 +1389,15 @@ def main() -> int:
             # fact about the cohort, not a missing input.
             if detail_idx is None:
                 all_findings.append(Finding(
-                    f"priority_variables_transform/{cohort}-ingest", 0, "5.8", "ERROR",
+                    f"priority_variables_transform/{cohort}-ingest", 0, "5.8/5.11", "ERROR",
                     f"no detail index for {cohort} (looked for '{cache_key}_detail.json.gz' "
-                    f"in {args.cache_dir}), so check 5.8 DID NOT RUN"))
+                    f"in {args.cache_dir}), so checks 5.8 and 5.11 DID NOT RUN"))
                 unrun_check = True
             else:
+                # 5.11: participant / visit seeds, by dbGaP variable name
+                all_findings.extend(
+                    check_5_11_participant_seed(yaml_files, hv_root, detail_idx)
+                )
                 # Check if this cohort has any coll_interval data
                 n_ci = sum(1 for v in detail_idx.values() if v.get("coll_interval"))
                 if n_ci > 0:

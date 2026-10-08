@@ -262,6 +262,12 @@ Detect blocks in different files of the same cohort that emit the same record: i
 - **Known issues**: `KNOWN_ISSUES` in the script, keyed `"<file_a>|<file_b>|<source phv>"` (cohort-relative paths, sorted). A listed group is reported at INFO with its reason. Seeded with every hit on main (2026-10-07): the 44 FHS `med_use.yaml` / `tak_*` / `hypert_trt.yaml` pairs (#785 decision 1), the 6 Condition pairs listed in #872, and 7 further Condition pairs this rule found.
 - **Severity**: ERROR
 
+### 1.13 populated_from and expr on One Slot
+
+A slot that sets both `populated_from` and `expr`. linkml-map 0.5.3 evaluates `expr` first (`object_transformer.py:481-483`), so the `populated_from` is dead and reads as the source. Main has 10, all CARDIA `Quantity.value_decimal` (albumin_urine b0-b1, bdy_hgt b0-b3, creat_urin b2, insulin_blood b0-b2), all behaving as intended.
+
+- **Severity**: INFO
+
 ---
 
 ## Phase 2: BDC-HM Model Conformance
@@ -353,6 +359,12 @@ Flag any PHV accession that is mapped as a measured value in more than one harmo
 - **Coverage**: raw measured values (Quantity `value_*` with a bare `populated_from`, top level or inside a MeasurementObservationSet). A Condition counts only when `condition_status` has `populated_from` and no `value_mappings`, so in practice Conditions are not covered.
 - **DrugExposure is not covered** (here or in the root `check_phv_dedup.py`): a medication PHV mapped to two different concepts is often deliberate (spironolactone as diuretic and aldosterone blocker; a class block beside a drug-name block -- 45 such PHVs on main, 2026-10-07), and the real medication defect, the same block in two files with the same concept, is invisible to a distinct-concept check. Rule 1.12 covers it.
 
+### 2.12 Bare None as a value_mappings Target
+
+`'0': None` in a `value_mappings`, in any slot at any depth. YAML reads `None` as the string "None", and linkml-map writes that string into the record (`"value_enum": "None"`, `"condition_severity": "None"`). Delete the entry: an unmapped code already emits null (#736, #883 item 9). Rule 2.7 skips these targets so one defect is reported once.
+
+- **Severity**: ERROR
+
 ### 2.10 Unconditional age_at_condition_start on Binary Conditions
 
 Flag Condition blocks where `age_at_condition_start` is populated unconditionally but `condition_status` maps both PRESENT and ABSENT rows. ABSENT rows would incorrectly receive an age value. An age written `None if <test on the block's own status variable> else ...` is guarded.
@@ -408,6 +420,8 @@ Flags values the source holds that `value_mappings` drops (silent data loss), at
 
 Validates that the dbGaP data type of a source PHV is compatible with the target slot's usage role. Catches adjacent-variable errors where a continuous variable is used where a categorical indicator was needed. Walks every slot at every depth: every `value_decimal` / `value_integer` on main is nested in a Quantity.
 
+- **Enum slots** (`condition_status`, `exposure_status`, `procedure_status`, `sex`, `annotated_sex`, `race`, `ethnicity`, `vital_status`): a bare `populated_from` with no `value_mappings` writes the variable's raw values into the enum, whatever its dbGaP type (ARIC carotid_plaque b0 wrote V1AGE01, an age, into `condition_status`; #879 item 6).
+- **Numeric slots** (`value_decimal`, `value_integer`): a variable of type `encoded value` with 2 or more category codes emits the code as a measurement (WHI sleep_duration_daily b0-b5: code 4, "8-9 hours", becomes 4 h). An `encoded` type with no code list is a plain number and is not flagged.
 - **Severity**: ERROR
 
 ### 3.11 value_mappings Label/OMOP Concept Semantic Alignment
@@ -453,10 +467,11 @@ Against the var_report's observed values, at every depth:
 
 ### 3.16 Quantity Missing Unit
 
-Validates that Quantity class blocks containing `value_decimal` or `value_integer` also have a sibling `unit` slot. A Quantity without a unit is semantically incomplete.
+A measured value -- a Quantity with `value_decimal` or `value_integer` -- must have a `unit`. Its value cannot be interpreted without one, and a block that converts the value (`* 38.67`) without stating the unit is a silent scale error.
 
-- **Checks**: Both top-level `class_derivations` and nested `object_derivations`
-- **Severity**: WARNING
+- **Checks**: every depth (a Quantity inside a MeasurementObservation inside a Set included)
+- **Allowlist**: `UNITLESS_OBSERVATION_TYPES` in `validate_semantic.py`, for a genuinely dimensionless observation_type; empty today. A dimensionless value can instead carry the UCUM unit `1`.
+- **Severity**: ERROR
 
 ### 3.17 Status Polarity
 
@@ -610,6 +625,18 @@ Validates that all `uuid5()` expressions use the canonical bdchm namespace URL `
   - **5.10a (visit.yaml)**: Namespace URL in Visit block uuid5 expressions
   - **5.10b (entity files)**: Namespace URL in `associated_visit` uuid5 expressions
 - **Severity**: CRITICAL
+
+### 5.11 Participant / Visit Seed
+
+The variable that seeds a participant or visit uuid5 must be the table's participant ID. For every Visit `id`, `associated_visit` and `associated_participant` at any depth, the `str({phv})` seeds are read by the shared enumerator and checked BY NAME against the detail index:
+
+- (a) the seed's dbGaP name is not a participant ID (`shareid`, `SUBJECT_ID`, `SUBJID`, `Individual_ID`, `sidno`, `New_SUBJID`, `GENEVA_ID`, `dbGaP_Subject_ID`). FHS `IDTYPE` / `idtype` is the cohort code (0/1/2/3/7/72), so every row of the block collapses onto one fake participant per code (#882);
+- (b) the visit seed differs from the participant seed at the same level (a nested class inherits the participant of its parent);
+- (c) an unqualified seed is in another table than the block's top-level `populated_from`: a bare reference to another table is None, so participant and visit are emitted empty (FHS bdy_hgt b42).
+
+Name-based on purpose: shareid and idtype are adjacent accessions in FHS tables, but the distance varies by table. One finding per block. Main: 383 blocks, all FHS (255 IDTYPE, 127 idtype, 1 other-table shareid).
+
+- **Severity**: ERROR
 
 ---
 

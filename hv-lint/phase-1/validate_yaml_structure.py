@@ -14,6 +14,7 @@ Checks:
     1.9  Common typo detection (known misspellings in slot names and values)
     1.10 Space-in-key detection (illegal spaces in YAML key names)
     1.11 expr + value_mappings on one slot (linkml-map evaluates expr and ignores the mappings)
+    1.13 populated_from + expr on one slot (INFO: the populated_from is dead)
 
 Usage:
     python hv-lint/phase-1/validate_yaml_structure.py
@@ -274,6 +275,14 @@ def check_expr_with_value_mappings(block: dict, block_idx: int, rel_path: str) -
                         rel_path, block_idx, "1.11", "CRITICAL",
                         f"expr and value_mappings both set on {prefix}{class_name}.{slot_name} -- "
                         f"linkml-map evaluates the expr and silently ignores the mappings"
+                    ))
+                elif slot_def.get("expr") is not None and slot_def.get("populated_from"):
+                    # 1.13: harmless today (expr wins, object_transformer.py:481-483), but the
+                    # populated_from is dead and reads as the source.
+                    findings.append(Finding(
+                        rel_path, block_idx, "1.13", "INFO",
+                        f"populated_from and expr both set on {prefix}{class_name}.{slot_name} -- "
+                        f"linkml-map evaluates the expr and ignores populated_from"
                     ))
                 for nested_name, nested_spec in iter_nested_class_derivs(slot_def):
                     if isinstance(nested_spec, dict):

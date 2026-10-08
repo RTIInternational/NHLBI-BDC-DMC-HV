@@ -19,6 +19,8 @@ Checks:
          case() arm results, read from the parse tree -- all ERROR)
     2.10 Unconditional age_at_condition_start on binary Condition blocks (an age written
          ``None if <own status test> else ...`` is guarded)
+    2.12 Bare ``None`` as a value_mappings target, in any slot at any depth (linkml-map
+         writes the string "None")
 
     2.11 is not checked: an observed code a block drops is rule 3.9's.
 
@@ -465,7 +467,9 @@ def check_enum_membership(
     vm = slot_def.get("value_mappings")
     if isinstance(vm, dict):
         for source_key, target_val in vm.items():
-            if not isinstance(target_val, str):
+            # A bare None is rule 2.12's, which sees every slot; reporting it here too would
+            # count one defect twice.
+            if not isinstance(target_val, str) or target_val == "None":
                 continue
             if target_val not in valid_pvs:
                 findings.append(Finding(
@@ -593,6 +597,19 @@ def validate_class_derivations(
                 findings.extend(check_curies_in_expr(
                     expr, class_name, slot_name, block_idx, rel_path
                 ))
+
+            # -- Check 2.12: bare None as a value_mappings target --
+            vm = slot_def.get("value_mappings")
+            if isinstance(vm, dict):
+                for src_key, target in vm.items():
+                    if target == "None":
+                        findings.append(Finding(
+                            rel_path, block_idx, "2.12", "ERROR",
+                            f"value_mappings '{src_key}' -> None on "
+                            f"{path_prefix}{class_name}.{slot_name}: linkml-map writes the "
+                            f"string 'None'; delete the entry (an unmapped code already emits "
+                            f"null)"
+                        ))
 
             # -- Check 2.7: Enum / value set membership --
             valid_pvs = ctx.slot_enum_values.get(
