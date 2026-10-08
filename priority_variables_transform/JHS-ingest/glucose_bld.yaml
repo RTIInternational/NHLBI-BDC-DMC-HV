@@ -5,7 +5,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401725}) + ":JHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401725}) + ":JHS Exam 1")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401725}) + ":JHS Exam 3")'
         # age_at_observation:
           # expr: "{nan} * 365"
         observation_type:
@@ -19,9 +19,6 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00401733
-                  unit_conversion:
-                    source_unit: "mg/L"
-                    target_unit: "mg/dL"
                 unit:
                   value: "mg/dL"
                   range: string
@@ -46,9 +43,6 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00401716
-                  unit_conversion:
-                    source_unit: "mg/L"
-                    target_unit: "mg/dL"
                 unit:
                   value: "mg/dL"
                   range: string

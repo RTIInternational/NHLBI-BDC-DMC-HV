@@ -237,29 +237,6 @@
           value: UNKNOWN
           range: string
 
-# Block 10: WHI EXTENSION
-# Source: ext_rel2 (pht003395) -- Extension study data
-- class_derivations:
-    Visit:
-      populated_from: pht003395
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00192296}) + ":WHI EXTENSION")'
-        name:
-          value: WHI EXTENSION
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00192296}) + ":WHI")'
-        age_at_visit_start:
-          expr: '({phv00078437} * 365) + {phv00192298}'
-        age_at_visit_end:
-          expr: '({phv00078437} * 365) + {phv00192298}'
-        visit_provenance:
-          value: STUDY_RECORD
-          range: string
-        visit_category:
-          value: UNKNOWN
-          range: string
-
 # ------------------------------------------
 # GAP-FILL: Visit-years with no dedicated form
 # These are canonical Visit definitions sourced from
@@ -592,44 +569,6 @@
 # where a DAYS variable is available; otherwise omitted.
 # ------------------------------------------
 
-# WHI CAD
-# Source: pht003402
-- class_derivations:
-    Visit:
-      populated_from: pht003402
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00192476}) + ":WHI CAD")'
-        name:
-          value: WHI CAD
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00192476}) + ":WHI")'
-        visit_provenance:
-          value: STUDY_RECORD
-          range: string
-        visit_category:
-          value: UNKNOWN
-          range: string
-
-# WHI CAD 121
-# Source: pht003405
-- class_derivations:
-    Visit:
-      populated_from: pht003405
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00192992}) + ":WHI CAD 121")'
-        name:
-          value: WHI CAD 121
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00192992}) + ":WHI")'
-        visit_provenance:
-          value: STUDY_RECORD
-          range: string
-        visit_category:
-          value: UNKNOWN
-          range: string
-
 # WHI CAD MED
 # Source: pht006212
 - class_derivations:
@@ -649,44 +588,6 @@
           value: STUDY_SITE_VISIT
           range: string
 
-# WHI DVTPE
-# Source: pht003410
-- class_derivations:
-    Visit:
-      populated_from: pht003410
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193552}) + ":WHI DVTPE")'
-        name:
-          value: WHI DVTPE
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193552}) + ":WHI")'
-        visit_provenance:
-          value: STUDY_RECORD
-          range: string
-        visit_category:
-          value: UNKNOWN
-          range: string
-
-# WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP
-# Source: pht003406
-- class_derivations:
-    Visit:
-      populated_from: pht003406
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193046}) + ":WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP")'
-        name:
-          value: WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193046}) + ":WHI")'
-        visit_provenance:
-          value: STUDY_RECORD
-          range: string
-        visit_category:
-          value: UNKNOWN
-          range: string
-
 # WHI EXT 156
 # Source: pht006215
 - class_derivations:
@@ -699,44 +600,6 @@
           value: WHI EXT 156
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00283183}) + ":WHI")'
-        visit_provenance:
-          value: STUDY_RECORD
-          range: string
-        visit_category:
-          value: UNKNOWN
-          range: string
-
-# WHI EXTENSION STUDY 2 MRC
-# Source: pht003413
-- class_derivations:
-    Visit:
-      populated_from: pht003413
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193628}) + ":WHI EXTENSION STUDY 2 MRC")'
-        name:
-          value: WHI EXTENSION STUDY 2 MRC
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193628}) + ":WHI")'
-        visit_provenance:
-          value: STUDY_RECORD
-          range: string
-        visit_category:
-          value: UNKNOWN
-          range: string
-
-# WHI EXTENSION STUDY 2 SRC
-# Source: pht003414
-- class_derivations:
-    Visit:
-      populated_from: pht003414
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
-        name:
-          value: WHI EXTENSION STUDY 2 SRC
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         visit_provenance:
           value: STUDY_RECORD
           range: string
@@ -818,63 +681,6 @@
           range: string
         visit_category:
           value: STUDY_SITE_VISIT
-          range: string
-
-# WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED
-# Source: pht003407
-- class_derivations:
-    Visit:
-      populated_from: pht003407
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193141}) + ":WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED")'
-        name:
-          value: WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
-        visit_provenance:
-          value: STUDY_RECORD
-          range: string
-        visit_category:
-          value: UNKNOWN
-          range: string
-
-# WHI SCAD
-# Source: pht003415
-- class_derivations:
-    Visit:
-      populated_from: pht003415
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193798}) + ":WHI SCAD")'
-        name:
-          value: WHI SCAD
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193798}) + ":WHI")'
-        visit_provenance:
-          value: STUDY_RECORD
-          range: string
-        visit_category:
-          value: UNKNOWN
-          range: string
-
-# WHI SCAD 4
-# Source: pht003416
-- class_derivations:
-    Visit:
-      populated_from: pht003416
-      slot_derivations:
-        id:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193819}) + ":WHI SCAD 4")'
-        name:
-          value: WHI SCAD 4
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193819}) + ":WHI")'
-        visit_provenance:
-          value: STUDY_RECORD
-          range: string
-        visit_category:
-          value: UNKNOWN
           range: string
 
 # WHI UNC HEART FAILURE DETAILS
