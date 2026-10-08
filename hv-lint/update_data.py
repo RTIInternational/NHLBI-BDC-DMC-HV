@@ -54,13 +54,10 @@ Requirements:
 from __future__ import annotations
 
 import argparse
-import gzip
-import json
 import re
 import shutil
 import sys
 import time
-import xml.etree.ElementTree as ET
 from html.parser import HTMLParser
 from pathlib import Path
 
