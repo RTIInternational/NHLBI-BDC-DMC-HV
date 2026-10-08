@@ -328,3 +328,35 @@ def test_the_index_holds_the_phvs_from_the_data_dictionaries(staged):
     with gzip.open(staged / "phs009999.v3.json.gz", "rt", encoding="utf-8") as f:
         mapping = json.load(f)
     assert mapping == {"phv00000000": "pht0000001", "phv00000001": "pht0010001"}
+
+
+# -- an unreadable manifest.json is refused, never merged into {} ------------------------------
+# `read_manifest` degrades an unreadable file to {} on purpose -- right for a lint run, wrong for
+# a writer, which would then replace every other release's provenance with this one entry.
+
+UNREADABLE = ["{not json", "[]", '{"manifest_version": 1, "entries": []}']
+
+
+@pytest.mark.parametrize("content", UNREADABLE, ids=["truncated", "list", "entries-list"])
+def test_update_data_refuses_to_merge_into_an_unreadable_manifest(staged, content):
+    manifest = staged / _cohorts.MANIFEST_NAME
+    manifest.write_text(content, encoding="utf-8")
+    assert _build() is False
+    assert manifest.read_text(encoding="utf-8") == content, "the manifest must be left as found"
+    assert list(staged.glob("*.json.gz")) == [], "and no index is published without provenance"
+
+
+@pytest.mark.parametrize("module", ["build_phv_index", "build_phv_detail_index"])
+def test_the_standalone_builders_refuse_an_unreadable_manifest(tmp_path, monkeypatch, capsys,
+                                                               module):
+    import importlib
+    builder = importlib.import_module(module)
+    source = _stage(tmp_path, "newcohort", "phs009999", "v3")
+    out = tmp_path / "out"
+    out.mkdir()
+    (out / _cohorts.MANIFEST_NAME).write_text("{not json", encoding="utf-8")
+    monkeypatch.setattr(sys, "argv", [f"{module}.py", "--source-cache", str(source),
+                                      "--output-dir", str(out)])
+    assert builder.main() == 1
+    assert "manifest.json" in capsys.readouterr().err
+    assert (out / _cohorts.MANIFEST_NAME).read_text(encoding="utf-8") == "{not json"

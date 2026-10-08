@@ -413,9 +413,15 @@ def process_cohort(
                       f"zero records. Publishing nothing.", file=sys.stderr)
                 ok = False
             else:
+                # Checked BEFORE publishing: an index published next to a manifest that then
+                # refuses the write would have no recorded release.
+                _cohorts.read_manifest_for_update(CACHE_DIR)
                 for produced in sorted(scratch.glob("*.json.gz")):
                     produced.replace(CACHE_DIR / produced.name)
                 _cohorts.write_manifest_entries(CACHE_DIR, entries)
+        except _cohorts.ManifestUnreadable as exc:
+            print(f"  ERROR: {cohort_key}: {exc} Publishing nothing.", file=sys.stderr)
+            ok = False
         finally:
             shutil.rmtree(scratch, ignore_errors=True)
 

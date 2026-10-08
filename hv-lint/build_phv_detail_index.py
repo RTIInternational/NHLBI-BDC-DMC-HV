@@ -267,7 +267,11 @@ def main() -> int:
 
     print(f"\nTotal: {total_phvs:,} PHVs indexed with detail metadata")
     if manifest:
-        mpath = _cohorts.write_manifest_entries(output, manifest)
+        try:
+            mpath = _cohorts.write_manifest_entries(output, manifest)
+        except _cohorts.ManifestUnreadable as exc:
+            print(f"ERROR: {exc}", file=sys.stderr)
+            return 1
         print()
         print(f"Provenance recorded for {len(manifest)} cohort(s) -> {mpath.name}")
     return 0

@@ -358,8 +358,8 @@ def test_a_legacy_cohort_named_cache_still_resolves(tmp_path):
 
 
 def test_manifest_entries_merge_field_wise(tmp_path):
-    """Three builders contribute different fields for one key; an entry-wise replace would
-    make whichever ran last erase the others' counts."""
+    """A field one writer sets and a later writer does not must survive; an entry-wise replace
+    would make whichever ran last erase it."""
     cache = _cache(tmp_path, "phs001662.v4")
     _cohorts.write_manifest_entries(cache, {"phs001662.v4": {"cohort": "LTRC", "phvs": 1577}})
     _cohorts.write_manifest_entries(cache, {"phs001662.v4": {"visit_tables": 27}})
@@ -425,3 +425,30 @@ def test_declaration_file_exists_for_every_shipped_ingest_cohort():
     for cohort in _cohorts.ingest_cohorts(transform):
         assert (hv_root / _cohorts.declaration_file(cohort)).is_file(), cohort
         assert _cohorts.declared_study(cohort, hv_root=hv_root), cohort
+
+
+def test_writing_refuses_an_unreadable_manifest(tmp_path):
+    """A reader degrades an unreadable manifest to {}; a writer that did the same would replace
+    every other release's provenance with the entries it was given."""
+    cache = _cache(tmp_path, "chs")
+    (cache / _cohorts.MANIFEST_NAME).write_text("{not json", encoding="utf-8")
+    with pytest.raises(_cohorts.ManifestUnreadable, match="manifest.json"):
+        _cohorts.write_manifest_entries(cache, {"ltrc": {"cohort": "LTRC"}})
+    assert (cache / _cohorts.MANIFEST_NAME).read_text(encoding="utf-8") == "{not json"
+
+
+def test_an_interrupted_manifest_write_leaves_the_old_manifest_intact(tmp_path, monkeypatch):
+    cache = _cache(tmp_path, "chs", manifest={"chs": {"cohort": "CHS", "study": "phs000287"}})
+    before = (cache / _cohorts.MANIFEST_NAME).read_bytes()
+
+    def dump_then_die(obj, f, **kw):
+        f.write('{"manifest_version": 1, "entr')
+        raise OSError("disk full")
+
+    monkeypatch.setattr(_cohorts.json, "dump", dump_then_die)
+    with pytest.raises(OSError):
+        _cohorts.write_manifest_entries(cache, {"ltrc": {"cohort": "LTRC"}})
+    monkeypatch.undo()
+    assert (cache / _cohorts.MANIFEST_NAME).read_bytes() == before
+    assert sorted(p.name for p in cache.iterdir() if "manifest" in p.name) == [
+        _cohorts.MANIFEST_NAME], "no temp file is left behind"
