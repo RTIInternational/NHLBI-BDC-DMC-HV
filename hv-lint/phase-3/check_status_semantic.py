@@ -128,14 +128,19 @@ def classify_label(label: str, code: str = "") -> str | None:
     return None
 
 
-def negative_answer(code: str, label: str | None) -> bool:
-    """A "No" answer: a negative label, or with no label at all the code 'N' or '0'.
+def negative_answer(code: str, codes: dict | None) -> bool:
+    """A "No" answer: ``code``'s label in the variable's ``codes`` is negative, or the variable has
+    no code labels at all and the code is 'N' or '0'.
 
     A variable dbGaP publishes without code labels (ARIC IFIA06A, observed N / Y / U) still
-    answers "No" with 'N'.
+    answers "No" with 'N'. An unlabelled code of a LABELLED variable means nothing yet: its
+    meaning is a curator question (CARDIA A12CB* observed '0', #873 Q19), not a "No".
     """
+    label = (codes or {}).get(code)
     if label:
         return classify_label(label, code) == "negative"
+    if codes:
+        return False
     return str(code).strip().upper() in {"N", "0"}
 
 
@@ -674,7 +679,7 @@ def check_followup_absent(
         absent_codes = [
             c for c, t in vm.items()
             if t in NEGATIVE_STATUS
-            and (c == "0" or negative_answer(c, codes.get(c)))
+            and (c == "0" or negative_answer(c, codes))
         ]
         if not absent_codes:
             continue
@@ -683,7 +688,10 @@ def check_followup_absent(
         fu = detect_followup(phv, detail_idx, stats)
         if fu is None:
             continue
-        severity = "ERROR" if (fu.count_signal and fu.phrase_signal) else "WARNING"
+        # A gate match is a count match on the item that opens the branch, which the item's own
+        # wording ("FOR DIABETES") confirms: as strong as count + phrase.
+        severity = ("ERROR" if fu.gate or (fu.count_signal and fu.phrase_signal)
+                    else "WARNING")
         code_list = ", ".join(
             f"'{c}'" + (f" (\"{codes[c]}\")" if c in codes else "")
             for c in absent_codes

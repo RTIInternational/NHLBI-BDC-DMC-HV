@@ -30,14 +30,17 @@ def _status(block: dict) -> dict:
 
 # -- 3.18 / 3.9: gate questions ----------------------------------------------------------------
 
-def test_318_gated_follow_up_mapped_absent_is_reported_through_main(tmp_path):
-    """DIABF38 '0' ("special diet not for diabetes") -> ABSENT is a new 3.18 WARNING."""
+def test_318_gated_follow_up_mapped_absent_is_an_error_through_main(tmp_path):
+    """DIABF38 '0' ("special diet not for diabetes") -> ABSENT is an unlisted 3.18 ERROR: a gate
+    match is as strong as count + wording, so a baseline update cannot absorb it."""
     t = E.Tree(tmp_path, "CHS")
     t.write("diabetes.yaml", [E.fixture_block("chs_diabetes_diabf38.yaml")])
     res = E.phase3(t, "check_status_semantic.py")
     assert res.returncode == 1, res.stdout[-1500:]
-    assert "new WARNING [3.18]" in res.stdout
-    assert "gate question DIETF38 (phv00104227)" in res.stdout
+    assert "new WARNING" not in res.stdout
+    lines = t.suggested(res)
+    assert len(lines) == 1 and '"3.18"' in lines[0]
+    assert "gate question DIETF38 (phv00104227)" in lines[0]
 
 
 def test_318_unlabelled_n_of_a_gated_follow_up_is_an_error_through_main(tmp_path):
@@ -58,8 +61,7 @@ def test_39_dropping_the_no_of_a_gated_follow_up_passes_through_main(tmp_path):
     t.write("diabetes.yaml", [b])
     res = E.phase3(t, "validate_semantic.py")
     assert res.returncode == 0, res.stdout[-1500:]
-    assert "[3.9]" not in res.stdout.split("drops observed value '0'")[0] or \
-        "drops observed value '0'" not in res.stdout
+    assert "drops observed value '0'" not in res.stdout
 
     t2 = E.Tree(tmp_path / "aric", "ARIC")
     a = copy.deepcopy(E.fixture_block("aric_hist_my_inf_ifia06a.yaml"))
@@ -134,10 +136,13 @@ def test_gate_ratio_band():
     assert css.detect_followup("phv00000004", idx, st) is None
 
 
-def test_negative_answer_reads_an_unlabelled_n_or_0():
-    assert css.negative_answer("N", None) and css.negative_answer("0", "")
+def test_negative_answer_reads_an_unlabelled_n_or_0_only_when_the_variable_has_no_labels():
+    assert css.negative_answer("N", None) and css.negative_answer("0", {})
     assert not css.negative_answer("Y", None) and not css.negative_answer("U", None)
-    assert css.negative_answer("1", "No") and not css.negative_answer("N", "Yes")
+    assert css.negative_answer("1", {"1": "No"}) and not css.negative_answer("N", {"N": "Yes"})
+    # A labelled variable's unlabelled code means nothing yet (CARDIA A12CB* '0', #873 Q19).
+    assert not css.negative_answer("0", {"1": "Yes", "2": "No"})
+    assert not css.negative_answer("N", {"Y": "Yes"})
 
 
 # -- 3.19: every source variable empty ---------------------------------------------------------
@@ -529,3 +534,56 @@ def test_319_reports_an_empty_top_level_class_beside_a_filled_one():
     assert len(msgs) == 1 and "of class Condition" in msgs[0], msgs
     assert _empty_source(block, {"phv00000001": 3, "phv00000002": 40}) == []
 
+
+def _whi_mi_block(status_phv: str, vm: dict) -> dict:
+    return {"class_derivations": {"Condition": {"populated_from": "pht003406", "slot_derivations": {
+        "associated_participant": {
+            "expr": 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193046}) + ":WHI")'},
+        "condition_concept": {"value": "MONDO:0005068"},
+        "condition_status": {"populated_from": status_phv, "value_mappings": vm},
+        "relationship_to_participant": {"value": "ONESELF"},
+    }}}}
+
+
+def test_318_gate_answered_yes_fewer_than_five_times_is_not_evidence_through_main(tmp_path):
+    """Review 5 A S2, FOLLOWUP_MIN_COUNT in _detect_gate: WHI MICABGENZ ("For MI-CABG, enzyme
+    levels at least 5X uln", n = 4) under MIPROCCABG (yes = 4) is in the gate band; 4 "yes"
+    answers are noise, so its '0' -> ABSENT is not reported."""
+    t = E.Tree(tmp_path, "WHI")
+    t.write("my_inf.yaml", [_whi_mi_block("phv00193082", {"0": "ABSENT", "1": "PRESENT"})])
+    res = E.phase3(t, "check_status_semantic.py")
+    assert res.returncode == 0, res.stdout[-1500:]
+    assert "[3.18]" not in res.stdout
+
+
+def test_318_a_for_far_from_the_start_is_not_a_branch_item_through_main(tmp_path):
+    """Review 5 A S2, the GATE_ITEM_RE anchor: JHS ANGINAMEDSAFU ("Did you take any medication
+    for chest pain or angina in the past two weeks?") is asked of everyone; its count happens
+    to sit in the band of ASPIRINMEDSAFU's "yes". Its "No" -> ABSENT is not a 3.18 finding."""
+    t = E.Tree(tmp_path, "JHS")
+    t.write("angina.yaml", [{"class_derivations": {"Condition": {
+        "populated_from": "pht008725", "slot_derivations": {
+            "associated_participant": {
+                "expr": 'uuid5("https://w3id.org/bdchm/Participant", str({phv00400849}) + ":JHS")'},
+            "condition_concept": {"value": "HP:0001681"},
+            "condition_status": {"populated_from": "phv00400897",
+                                 "value_mappings": {"1": "PRESENT", "2": "ABSENT"}},
+            "relationship_to_participant": {"value": "ONESELF"},
+        }}}}])
+    res = E.phase3(t, "check_status_semantic.py")
+    assert res.returncode == 0, res.stdout[-1500:]
+    assert "[3.18]" not in res.stdout
+
+
+def test_318_a_same_condition_sibling_outranks_a_gate_through_main(tmp_path):
+    """Review 5 A S2, the precedence of signal (a) over (c): CHS DIABO38 ("FOR DIABETES", off a
+    diet) matches both DIABET37 (same condition, counts) and the gate OFFDIT38. The finding keeps
+    the sibling's evidence, and with it the fingerprint it had before gates were recognised."""
+    t = E.Tree(tmp_path, "CHS")
+    b = copy.deepcopy(E.fixture_block("chs_diabetes_diabf38.yaml"))
+    _status(b)["populated_from"] = "phv00104260"
+    t.write("diabetes.yaml", [b])
+    res = E.phase3(t, "check_status_semantic.py")
+    assert res.returncode == 1, res.stdout[-1500:]
+    assert "DIABO38" in res.stdout and "vs DIABET37 (phv00104107) yes=" in res.stdout
+    assert "gate question" not in res.stdout
