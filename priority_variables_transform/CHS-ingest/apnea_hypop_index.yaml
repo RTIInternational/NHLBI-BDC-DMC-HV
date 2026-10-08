@@ -63,48 +63,6 @@
               populated_from: pht003699
               slot_derivations:
                 value_decimal:
-                  populated_from: phv00197745
-                unit:
-                  value: /h
-                  range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht003700
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00198805}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00198805}) + ":CHS PSG 2")'
-        observation_type:
-          value: OMOP:37396400
-          range: string
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht003700
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00200047
-                unit:
-                  value: /h
-                  range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht003699
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00197394}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00197394}) + ":CHS PSG 1")'
-        observation_type:
-          value: OMOP:37396400
-          range: string
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht003699
-              slot_derivations:
-                value_decimal:
                   populated_from: phv00197725
                 unit:
                   value: /h
