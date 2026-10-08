@@ -425,6 +425,9 @@ def test_declaration_file_exists_for_every_shipped_ingest_cohort():
     for cohort in _cohorts.ingest_cohorts(transform):
         assert (hv_root / _cohorts.declaration_file(cohort)).is_file(), cohort
         assert _cohorts.declared_study(cohort, hv_root=hv_root), cohort
+        # `--cohort all` reports a missing visit.yaml only as a 5.0 WARNING; that is safe because
+        # every shipped cohort has one, and this holds it.
+        assert (transform / f"{cohort}-ingest" / "visit.yaml").is_file(), cohort
 
 
 def test_writing_refuses_an_unreadable_manifest(tmp_path):

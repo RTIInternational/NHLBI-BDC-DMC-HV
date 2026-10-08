@@ -334,10 +334,12 @@ def test_the_index_holds_the_phvs_from_the_data_dictionaries(staged):
 # `read_manifest` degrades an unreadable file to {} on purpose -- right for a lint run, wrong for
 # a writer, which would then replace every other release's provenance with this one entry.
 
-UNREADABLE = ["{not json", "[]", '{"manifest_version": 1, "entries": []}']
+UNREADABLE = ["{not json", "[]", '{"manifest_version": 1, "entries": []}',
+              '{"manifest_version": 1, "entries": {"phs000287.v7": 1}}']
 
 
-@pytest.mark.parametrize("content", UNREADABLE, ids=["truncated", "list", "entries-list"])
+@pytest.mark.parametrize("content", UNREADABLE,
+                         ids=["truncated", "list", "entries-list", "non-object-entry"])
 def test_update_data_refuses_to_merge_into_an_unreadable_manifest(staged, content):
     manifest = staged / _cohorts.MANIFEST_NAME
     manifest.write_text(content, encoding="utf-8")

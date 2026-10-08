@@ -46,6 +46,17 @@ VISIT_YAML = f"""\
 """
 
 
+@pytest.fixture(autouse=True)
+def _hv_root_does_not_leak():
+    """The managers assign HV_ROOT in-process. Autouse fixtures are set up before `monkeypatch`,
+    so this check runs after its undo: a test that lets the tmp tree escape fails here, not in
+    whichever later test reads the real specs from the wrong root."""
+    import os
+    before = os.environ.get("HV_ROOT")
+    yield
+    assert os.environ.get("HV_ROOT") == before, "HV_ROOT leaked out of the test"
+
+
 def _make_tree(root: Path, *, manifest: object = "ok") -> Path:
     """An HV root with one cohort (``HCHS``) and its cache; returns the cache directory.
 
