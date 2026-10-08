@@ -37,8 +37,9 @@ jobs:
   # has a _manifest-<cohort>.yaml), so a spec PR that adds a cohort without a declaration or
   # changes FHS visit ids fails this job. ENFORCED: these pin the resolver every phase
   # manager calls to turn `--cohort` into a cache key, the visit-label extractor checks 1.8
-  # and 5.1 share, and the fail-closed exits of the phase mains. Runs alongside hv-lint rather than after it -- a lint backlog must not stop the
-  # linter's own regressions from being reported.
+  # and 5.1 share, and the fail-closed exits of the phase mains. Runs alongside hv-lint
+  # rather than after it -- a lint backlog must not stop the linter's own regressions from
+  # being reported.
   unit-tests:
     runs-on: ubuntu-latest
     steps:
@@ -91,12 +92,12 @@ jobs:
           # cannot map stays distinct, which widens the run to `all` rather than narrowing it.
           # With no spec change, CHANGED stays empty and the run is `all`, as before.
           DECLS=""
+          CANON='import sys; sys.path.insert(0, "hv-lint"); import _cohorts;'
+          CANON="$CANON print(_cohorts.canonical_cohort(sys.argv[1]))"
           if [ -n "$SPECS" ]; then
             DECLS=$(git diff --name-only "$BASE" HEAD -- hv_dataqc/cache_fetcher/manifests/ \
               | sed -n 's|.*/_manifest-\(.*\)\.yaml$|\1|p' \
-              | while read -r name; do
-                  python -c 'import sys; sys.path.insert(0, "hv-lint"); import _cohorts; print(_cohorts.canonical_cohort(sys.argv[1]))' "$name"
-                done)
+              | while read -r name; do python -c "$CANON" "$name"; done)
           fi
           CHANGED=$(printf '%s\n%s\n' "$SPECS" "$DECLS" \
             | { grep -v '^$' || true; } \

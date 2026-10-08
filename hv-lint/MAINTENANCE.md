@@ -262,7 +262,11 @@ unnoticed:
 | cache records no release | **hard failure** -- an unpinnable cache cannot be checked |
 | cohort declares no release | **hard failure** -- add `_manifest-<cohort>.yaml` (`--expect-study` gets Phase 3 past it, but Phase 5 has no override) |
 
-`--expect-study phs000280.v9` overrides the declaration for a one-off (a migration dry-run, say).
+`--expect-study` replaces the declared release as the EXPECTATION for a one-off run: for a cohort
+that declares no release yet, or to assert which release the declared cache must be
+(`--cohort ARIC --expect-study phs000280.v8` passes). It does not change which cache loads, so it
+cannot reach a non-declared release: `--cohort ARIC --expect-study phs000280.v9` loads v8 and
+fails, as above.
 It pins one release, so it needs one named `--cohort`; every entry point that accepts it refuses
 it with `--cohort all` (exit 2). It applies to Phase 3 only (`run_all.py` forwards it nowhere else).
 A bare accession (`phs000280`) accepts any version of that study.
