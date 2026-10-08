@@ -361,3 +361,33 @@ def test_the_standalone_builders_refuse_an_unreadable_manifest(tmp_path, monkeyp
     assert "manifest.json" in capsys.readouterr().err
     assert (out / _cohorts.MANIFEST_NAME).read_text(encoding="utf-8") == "{not json"
     assert list(out.glob("*.json.gz")) == [], "no index is published without provenance"
+
+
+def test_a_manifest_write_that_fails_is_reported_and_the_next_cohort_still_runs(
+        tmp_path, monkeypatch, capsys):
+    """On Windows `os.replace` onto a file another process holds open raises PermissionError.
+    It must fail THAT cohort with a message, not end the run with a traceback that skips the
+    rest."""
+    import os
+    cache = _stage(tmp_path, "first", "phs009998", "v1")
+    _stage(tmp_path, "second", "phs009999", "v3")
+    monkeypatch.setattr(update_data, "CACHE_DIR", cache)
+    monkeypatch.setattr(update_data, "load_cohorts", lambda: {
+        "first": {"study_id": "phs009998", "data_version": "v1.p1"},
+        "second": {"study_id": "phs009999", "data_version": "v3.p1"},
+    })
+    real_replace = os.replace
+
+    def held_open(src, dst, *a, **kw):
+        if Path(dst).name == _cohorts.MANIFEST_NAME:
+            raise PermissionError(13, "The process cannot access the file", str(dst))
+        return real_replace(src, dst, *a, **kw)
+
+    monkeypatch.setattr(os, "replace", held_open)
+    monkeypatch.setattr(sys, "argv", ["update_data.py", "--build-only"])
+    assert update_data.main() == 1
+    err = capsys.readouterr().err
+    for cohort in ("first", "second"):
+        assert f"ERROR: {cohort}: could not write {_cohorts.MANIFEST_NAME}" in err
+    assert not (cache / _cohorts.MANIFEST_NAME).exists()
+    assert list(cache.glob(".*.tmp")) == [], "the temp manifest is cleaned up"

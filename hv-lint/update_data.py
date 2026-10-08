@@ -415,7 +415,19 @@ def process_cohort(
                 _cohorts.read_manifest_for_update(CACHE_DIR)
                 for produced in sorted(scratch.glob("*.json.gz")):
                     produced.replace(CACHE_DIR / produced.name)
-                _cohorts.write_manifest_entries(CACHE_DIR, entries)
+                try:
+                    _cohorts.write_manifest_entries(CACHE_DIR, entries)
+                except OSError as exc:
+                    # On Windows os.replace fails while any reader holds manifest.json open. The
+                    # pair is already published, so say so: it has no recorded release until a
+                    # rerun writes the entry. Failing this cohort, not the process, lets the
+                    # remaining cohorts run.
+                    print(f"  ERROR: {cohort_key}: could not write {_cohorts.MANIFEST_NAME} "
+                          f"({exc}). The index pair for {', '.join(sorted(entries))} is in "
+                          f"place but its release is NOT recorded; close whatever holds the "
+                          f"manifest open and rerun with --build-only --cohort {cohort_key}.",
+                          file=sys.stderr)
+                    ok = False
         except _cohorts.ManifestUnreadable as exc:
             print(f"  ERROR: {cohort_key}: {exc} Publishing nothing.", file=sys.stderr)
             ok = False
