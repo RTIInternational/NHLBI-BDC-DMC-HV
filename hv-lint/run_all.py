@@ -233,7 +233,12 @@ def main() -> int:
         n_entries = n_rows = 0
         if failed:
             refusals.append(f"{len(failed)} phase(s) failed ({', '.join(failed)})")
-        else:
+        # A skipped phase proved nothing fixed, and a phase that ran can read a defect it
+        # cannot parse as absent, which only the skipped phase would have reported.
+        skipped = [n for n in PHASES if n in args.skip]
+        if skipped:
+            refusals.append(f"{len(skipped)} phase(s) skipped ({', '.join(skipped)})")
+        if not refusals:
             n_entries, n_rows, refusals = _known_issues.apply_staged_prune(stage)
         stage.unlink(missing_ok=True)
         if refusals:

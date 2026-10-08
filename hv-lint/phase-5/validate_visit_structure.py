@@ -225,6 +225,16 @@ def detect_cohort(file_path: Path) -> str:
     return "UNKNOWN"
 
 
+def yaml_parse_error(file_path: Path) -> str | None:
+    """The first line of the reason ``file_path`` cannot be read as YAML, or None if it can."""
+    try:
+        with file_path.open(encoding="utf-8") as f:
+            yaml.safe_load(f)
+    except (OSError, yaml.YAMLError) as e:
+        return str(e).strip().splitlines()[0] if str(e).strip() else type(e).__name__
+    return None
+
+
 def parse_yaml_safe(file_path: Path) -> list[dict] | None:
     """Parse a YAML file and return its block list, or None on error."""
     try:
@@ -1426,6 +1436,19 @@ def main() -> int:
         scanned_files.extend(yaml_files)
         non_visit_files = [f for f in yaml_files if f.name != "visit.yaml"]
 
+        # A spec Phase 5 cannot parse reads as empty to every check below, so its findings
+        # vanish and a prune would remove their entries: it is an unrun check, at any --fail-on.
+        for yf in non_visit_files:
+            error = yaml_parse_error(yf)
+            if error:
+                all_findings.append(Finding(
+                    file=yf.relative_to(hv_root).as_posix(), block=-1, check="5.0",
+                    severity="ERROR",
+                    message=(f"Could not parse {yf.name} ({error}), so Phase 5 DID NOT RUN on "
+                             f"it"),
+                ))
+                unrun_check = True
+
         cohort_refs: list[VisitReference] = []
         cohort_blocks: list[TransformBlock] = []
         for yf in non_visit_files:
@@ -1640,7 +1663,7 @@ def main() -> int:
         # skipped 5.3/5.4/5.8 for the cohort whose cache was the wrong release.
         print("\nFAILED: at least one check DID NOT RUN -- a named cohort has no ingest "
               "directory, a cohort has no visit.yaml, a visit.yaml could not be parsed or has "
-              "no Visit blocks, the mandatory dbGaP release check did not pass, or a required cache "
+              "no Visit blocks, another spec could not be parsed, the mandatory dbGaP release check did not pass, or a required cache "
               "input was missing (see the ERROR findings above). This is not weighed against "
               "--fail-on.")
         return 1

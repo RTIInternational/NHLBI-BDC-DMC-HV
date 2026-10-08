@@ -98,12 +98,27 @@ def test_run_all_is_the_one_prune_command(tmp_path):
     t.list_as_known(E.phase5(t), 882)
     assert E.phase5(t, mode="update").returncode == 0
     t.write("afib.yaml", [_clean_block()])
-    args = ("run_all.py", "--cohort", "FHS", "--skip", "phase1", "phase2", "phase3",
-            "--no-report", "--cache-dir", str(E.CACHE))
-    assert t.run(*args).returncode == 1
-    pruned = t.run(*args, mode="prune", run_all=False)
-    assert pruned.returncode == 0, pruned.stdout[-1500:]
-    assert K.load_entries(t.ki) == [] and t.run(*args).returncode == 0
+    run = _runner(t, {"phase1": 0, "phase2": 0, "phase3": 0})   # the fixture has a 3.5
+    assert run().returncode == 1
+    pruned = run("prune")
+    assert pruned.returncode == 0 and "Prune applied: 1 known-issue entry" in pruned.stdout,         pruned.stdout[-1500:]
+    assert K.load_entries(t.ki) == [] and run().returncode == 0
+
+
+def test_prune_refuses_a_run_with_a_skipped_phase(tmp_path):
+    """Review round 3 A M3: a skipped phase proved nothing fixed, so a prune from that run
+    refuses, even when the phases that did run are clean."""
+    t = _fhs_tree(tmp_path)
+    t.list_as_known(E.phase5(t), 882)
+    assert E.phase5(t, mode="update").returncode == 0
+    t.write("afib.yaml", [_clean_block()])
+    before = t.ki.read_text(encoding="utf-8"), t.baseline.read_text(encoding="utf-8")
+    args = _run_all(t, "phase1", "phase2", "phase3")
+    res = t.run(*args, mode="prune", run_all=False)
+    assert res.returncode == 1, res.stdout[-1500:]
+    assert "Prune REFUSED" in res.stdout and "skipped (phase1, phase2, phase3)" in res.stdout
+    assert "phase(s) failed" not in res.stdout                  # the skip alone refused it
+    assert (t.ki.read_text(encoding="utf-8"), t.baseline.read_text(encoding="utf-8")) == before
 
 
 def test_phase5_new_warning_fails_even_when_another_is_fixed(tmp_path):
@@ -435,9 +450,15 @@ def _run_all(t, *skip: str):
             "--cache-dir", str(E.CACHE))
 
 
-def _start_clean(t, args):
-    assert t.run(*args, mode="update", run_all=False).returncode == 0
-    clean = t.run(*args)
+def _runner(t, stubs: dict[str, int] | None = None):
+    """run_all.py over every phase, Phases 1 and 2 stubbed (E.run_all_stubbed)."""
+    stubs = {"phase1": 0, "phase2": 0} if stubs is None else stubs
+    return lambda mode=None: E.run_all_stubbed(t, stubs, mode=mode)
+
+
+def _start_clean(t, run):
+    assert run("update").returncode == 0
+    clean = run()
     assert clean.returncode == 0, clean.stdout[-2000:]
     return t.ki.read_text(encoding="utf-8"), t.baseline.read_text(encoding="utf-8")
 
@@ -447,8 +468,8 @@ def test_prune_refuses_when_a_partial_fix_leaves_a_new_warning(tmp_path):
     '72'). The old entry matches nothing, but the defect is still there under a new message:
     pruning it first would delete the entry and leave the run red on a line nobody re-adds."""
     t = _real_subset(tmp_path, "FHS", ["visit.yaml", "cig_smok.yaml"])
-    args = _run_all(t, "phase1", "phase2", "phase3")   # Phase 1 needs yamllint; CI tests lack it
-    ki, bl = _start_clean(t, args)
+    run = _runner(t)
+    ki, bl = _start_clean(t, run)
     blocks = yaml.safe_load((t.dir / "cig_smok.yaml").read_text(encoding="utf-8"))
     v = blocks[36]["class_derivations"]["MeasurementObservation"]["slot_derivations"][
         "associated_visit"]
@@ -456,7 +477,7 @@ def test_prune_refuses_when_a_partial_fix_leaves_a_new_warning(tmp_path):
         "(True, 'FHS UNKNOWN VISIT')",
         "({phv00525297} == '3', 'FHS OFFSPRING EXAM 5'), (True, 'FHS UNKNOWN VISIT')")
     t.write("cig_smok.yaml", blocks)
-    res = t.run(*args, mode="prune", run_all=False)
+    res = run("prune")
     assert res.returncode == 1 and "refusing to prune" in res.stdout, res.stdout[-3000:]
     assert "new WARNING [5.2]" in res.stdout
     assert t.ki.read_text(encoding="utf-8") == ki
@@ -467,12 +488,52 @@ def test_prune_refuses_when_a_cohort_did_not_run(tmp_path):
     """MESA's visit.yaml deleted: 5.0 fails the run, and 5.8's cohort-level row (MESA's detail
     index has no coll_interval) must survive the prune, not be read as fixed."""
     t = _real_subset(tmp_path, "MESA", ["visit.yaml", "hdl.yaml"])
-    args = _run_all(t, "phase1", "phase2", "phase3")
-    ki, bl = _start_clean(t, args)
+    run = _runner(t)
+    ki, bl = _start_clean(t, run)
     assert "MESA-ingest/ | cohort" in bl
     (t.dir / "visit.yaml").unlink()
-    res = t.run(*args, mode="prune", run_all=False)
+    res = run("prune")
     assert res.returncode == 1 and "refusing to prune" in res.stdout, res.stdout[-3000:]
+    assert t.ki.read_text(encoding="utf-8") == ki
+    assert t.baseline.read_text(encoding="utf-8") == bl
+
+
+def _break(t, name: str) -> None:
+    with open(t.dir / name, "a", encoding="utf-8") as fh:
+        fh.write("x: [unclosed\n")
+
+
+@pytest.mark.parametrize("fail_on", ["error", "critical"])
+def test_phase5_reports_an_unparseable_spec_as_unrun(tmp_path, fail_on):
+    """Review round 3 A M3: Phase 5 read an unparseable spec as empty and reported nothing, so
+    its 5.2 findings vanished and a Phase 5-only prune removed their entries."""
+    t = _real_subset(tmp_path, "FHS", ["visit.yaml", "cig_smok.yaml"])
+    _break(t, "cig_smok.yaml")
+    res = t.run("phase-5/validate_visit_structure.py", "--cohort", "FHS", "--cache-dir",
+                str(E.CACHE), "--fail-on", fail_on)
+    assert res.returncode == 1, res.stdout[-2000:]
+    assert re.search(r"ERROR .*\[5\.0\] Could not parse cig_smok\.yaml", res.stdout), \
+        res.stdout[-2000:]
+
+
+@pytest.mark.parametrize("how", ["skip", "every-phase"])
+def test_prune_refuses_an_unparseable_spec(tmp_path, how):
+    """Review round 3 A M3, as reported (`skip`): FHS cig_smok.yaml unparseable, then
+    `HVLINT_PRUNE=1 run_all.py --cohort FHS --skip phase1 phase2 phase3` pruned its 7 entries.
+    `every-phase` runs Phase 3 and Phase 5 for real (1 and 2 stubbed as passing), so Phase 5's
+    own 5.0 is what refuses it."""
+    t = _real_subset(tmp_path, "FHS", ["visit.yaml", "cig_smok.yaml"])
+    if how == "skip":
+        args = _run_all(t, "phase1", "phase2", "phase3")
+        run = lambda mode=None: t.run(*args, mode=mode, run_all=False)  # noqa: E731
+    else:
+        run = _runner(t, {"phase1": 0, "phase2": 0, "phase3": 0})
+    ki, bl = _start_clean(t, run)
+    assert "cig_smok.yaml" in ki
+    _break(t, "cig_smok.yaml")
+    res = run("prune")
+    assert res.returncode == 1 and "Prune REFUSED" in res.stdout, res.stdout[-3000:]
+    assert "[5.0] Could not parse cig_smok.yaml" in res.stdout
     assert t.ki.read_text(encoding="utf-8") == ki
     assert t.baseline.read_text(encoding="utf-8") == bl
 

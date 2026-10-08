@@ -148,7 +148,8 @@ HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all
 
 An unlisted ERROR prints the `known_issues.yaml` line that would list it; fill in `issue` and
 `status` only when the defect is tracked in an issue. Both commands refuse a `--file` run and a
-component run on its own.
+component run on its own. The prune also refuses a run with `--skip`: it writes only from a run of
+every phase.
 
 ## Expected Warnings (Not Errors)
 

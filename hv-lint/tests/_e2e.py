@@ -86,3 +86,32 @@ def phase5(tree: Tree, **kw) -> subprocess.CompletedProcess:
 def phase3(tree: Tree, script: str, **kw) -> subprocess.CompletedProcess:
     return tree.run(f"phase-3/{script}", "--cohort", tree.cohort, "--cache-dir", str(CACHE),
                     "--fail-on", "error", **kw)
+
+
+_DRIVER = """import sys
+from pathlib import Path
+sys.path.insert(0, {hvlint!r})
+import run_all
+for name, rc in {stubs!r}.items():
+    stub = Path({tmp!r}) / f"stub_{{name}}.py"
+    stub.write_text(f"print('stub {{name}}: exit {{rc}}')\\nraise SystemExit({{rc}})\\n",
+                    encoding="utf-8")
+    run_all.PHASES[name]["script"] = stub
+sys.exit(run_all.main())
+"""
+
+
+def run_all_stubbed(tree: Tree, stubs: dict[str, int], *args: str,
+                    mode: str | None = None) -> subprocess.CompletedProcess:
+    """``run_all.py --cohort <cohort>`` with every phase run, the ``stubs`` phases replaced by a
+    script that exits with the given code.
+
+    Phases 1 and 2 need yamllint and a network fetch of the BDC-HM schema, which the unit-test
+    job does not have. A stub keeps run_all's own logic -- no phase skipped, the per-phase
+    exit codes, the staged prune -- on the path under test; ``--skip`` would not (a prune
+    refuses a run with a skipped phase)."""
+    driver = tree.tmp / "run_all_driver.py"
+    driver.write_text(_DRIVER.format(hvlint=str(HVLINT), stubs=stubs, tmp=str(tree.tmp)),
+                      encoding="utf-8")
+    return tree.run(str(driver), "--cohort", tree.cohort, "--no-report", "--cache-dir",
+                    str(CACHE), *args, mode=mode, run_all=False)
