@@ -87,7 +87,8 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument(
         "--bdchm-ref", default=None,
-        help="Git ref for BDCHM schema in Phase 2 (default: main)"
+        help="Git ref for BDCHM schema in Phase 2 (default: the pinned BDCHM_REF in "
+             "phase-2/validate_model_conformance.py)"
     )
     p.add_argument(
         "--bdchm-schema", default=None,

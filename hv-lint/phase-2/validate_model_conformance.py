@@ -61,6 +61,14 @@ TRANSFORM_DIR = find_transform_dir()
 # Constants
 # ---------------------------------------------------------------------------
 
+# The BDC-HM schema every Phase 2 run checks against, pinned to one commit of
+# RTIInternational/NHLBI-BDC-DMC-HM: Phase 2 is enforced and its WARNINGs are ratcheted, so a live
+# `main` would let an upstream schema commit fail every HV PR. 3fe055ed (2026-09-25) is the HM
+# main the #885 census ran on. To bump it: change this value in an HV PR, run
+# `HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all`, and review the
+# known_issues.yaml / warning_baseline.json changes in that PR. `--bdchm-ref` overrides it per run.
+BDCHM_REF = "3fe055edaa6f456e6322fa3d573c32f397546dff"
+
 BDCHM_URL_TEMPLATE = (
     "https://raw.githubusercontent.com/RTIInternational/"
     "NHLBI-BDC-DMC-HM/{ref}/src/bdchm/schema/bdchm.yaml"
@@ -811,8 +819,8 @@ def parse_args() -> argparse.Namespace:
         description="HV-Lint Phase 2: BDC-HM model conformance checks"
     )
     p.add_argument(
-        "--bdchm-ref", default="main",
-        help="Git ref (branch/tag/SHA) for BDCHM schema (default: main)"
+        "--bdchm-ref", default=BDCHM_REF,
+        help=f"Git ref (branch/tag/SHA) for BDCHM schema (default: the pinned {BDCHM_REF[:8]})"
     )
     p.add_argument(
         "--bdchm-schema", default=None,

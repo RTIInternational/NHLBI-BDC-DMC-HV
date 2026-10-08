@@ -105,7 +105,7 @@ Indexes are committed to this repo (~4 MB total) so CI and contributors can run 
 
 ### A1: BDCHM Schema Is Fetched at Runtime
 
-Phase 2 loads the BDCHM schema directly from GitHub via URL at validation time, parameterized by `--bdchm-ref` (default: `main`). This ensures the validator always checks against the latest (or any pinned) schema version without requiring the schema to be committed alongside the YAML files.
+Phase 2 loads the BDCHM schema directly from GitHub via URL at validation time, at the commit pinned in `BDCHM_REF` (`hv-lint/phase-2/validate_model_conformance.py`, HM `3fe055ed`, 2026-09-25); `--bdchm-ref` overrides it for one run. Phase 2 is enforced and its WARNINGs are ratcheted, so the ref is pinned: a live `main` would let an upstream schema commit fail every HV PR. To bump it, change `BDCHM_REF` in an HV PR, run `HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all`, and review the known-issue and baseline changes in the same PR.
 
 - **Implication**: CI requires network access to `raw.githubusercontent.com`
 - **Override**: `--bdchm-schema /path/to/local/bdchm.yaml` for offline/locked validation
@@ -687,7 +687,7 @@ python hv-lint/phase-1/run_phase1.py \
 **Phase 2:**
 ```bash
 python hv-lint/phase-2/run_phase2.py \
-  --bdchm-ref main \
+  --bdchm-ref <ref> \
   --cohort ARIC \
   --fail-on error
 ```

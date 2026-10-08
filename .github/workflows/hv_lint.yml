@@ -14,9 +14,9 @@ on:
   workflow_dispatch:
     inputs:
       bdchm_ref:
-        description: "BDCHM schema git ref (branch/tag/SHA)"
+        description: "BDCHM schema git ref (branch/tag/SHA); empty = the pinned BDCHM_REF"
         required: false
-        default: "main"
+        default: ""
       cohort:
         description: "Cohort to validate (ARIC, CHS, etc.) or 'all'"
         required: false
@@ -99,11 +99,11 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "cohort=${{ github.event.inputs.cohort || 'all' }}" >> "$GITHUB_OUTPUT"
             echo "fail_on=${{ github.event.inputs.fail_on || 'error' }}" >> "$GITHUB_OUTPUT"
-            echo "bdchm_ref=${{ github.event.inputs.bdchm_ref || 'main' }}" >> "$GITHUB_OUTPUT"
+            echo "bdchm_ref=${{ github.event.inputs.bdchm_ref }}" >> "$GITHUB_OUTPUT"
           else
             echo "cohort=${{ steps.detect.outputs.cohort || 'all' }}" >> "$GITHUB_OUTPUT"
             echo "fail_on=error" >> "$GITHUB_OUTPUT"
-            echo "bdchm_ref=main" >> "$GITHUB_OUTPUT"
+            echo "bdchm_ref=" >> "$GITHUB_OUTPUT"
           fi
 
       # Every phase is ENFORCED: a finding at or above --fail-on (ERROR on pull requests) fails
@@ -127,8 +127,11 @@ jobs:
         id: phase2
         if: always()
         run: |
+          # The schema ref is pinned in phase-2/validate_model_conformance.py (BDCHM_REF);
+          # a manual run may override it.
+          BDCHM_REF="${{ steps.config.outputs.bdchm_ref }}"
           python hv-lint/phase-2/run_phase2.py \
-            --bdchm-ref "${{ steps.config.outputs.bdchm_ref }}" \
+            ${BDCHM_REF:+--bdchm-ref "$BDCHM_REF"} \
             --cohort "${{ steps.config.outputs.cohort }}" \
             --fail-on "${{ steps.config.outputs.fail_on }}" \
             2>&1 | tee phase2-output.txt

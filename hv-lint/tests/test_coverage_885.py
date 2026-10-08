@@ -24,3 +24,17 @@ def test_missing_yamllint_fails_instead_of_printing_a_clean_summary(monkeypatch)
     with pytest.raises(SystemExit) as exc:
         run_yamllint.main()
     assert exc.value.code == 2
+
+
+def test_phase2_schema_ref_is_pinned_to_one_commit():
+    """Review round 1 B 2: an enforced, ratcheted Phase 2 must not follow BDC-HM main live."""
+    import re
+    src = (HVLINT / "phase-2" / "validate_model_conformance.py").read_text(encoding="utf-8")
+    pin = re.search(r'^BDCHM_REF = "([0-9a-f]{40})"$', src, re.M)
+    assert pin, "BDCHM_REF must be a full commit SHA"
+    assert 'default=BDCHM_REF' in src
+    manager = (HVLINT / "phase-2" / "run_phase2.py").read_text(encoding="utf-8")
+    assert '"--bdchm-ref", default=None' in manager
+    workflow = (HVLINT.parent / ".github" / "workflows" / "hv_lint.yml").read_text(encoding="utf-8")
+    assert "bdchm_ref=main" not in workflow and "bdchm_ref || 'main'" not in workflow
+    assert '${BDCHM_REF:+--bdchm-ref "$BDCHM_REF"}' in workflow
