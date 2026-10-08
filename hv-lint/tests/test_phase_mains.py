@@ -141,3 +141,90 @@ def test_a_cohort_without_visit_yaml_under_all_is_still_a_warning(tmp_path, monk
     out = capsys.readouterr().out
     assert rc == 0, out
     assert "No visit.yaml found for cohort EXTRA" in out
+
+
+# -- Phase 5: the mandatory release check and missing inputs ------------------
+# Each of these leaves 5.3/5.4/5.8 unrun. At `--fail-on critical` none of the ERROR findings is
+# blocking, so a 1 here can only come from the `unrun_check` exit, which is the path that is
+# meant to be independent of the threshold.
+
+
+def _phase5_critical(monkeypatch, root: Path, cache: Path | None) -> int:
+    argv = ["--cohort", "HCHS", "--fail-on", "critical"]
+    if cache is not None:
+        argv += ["--cache-dir", str(cache)]
+    return _run_vvs(monkeypatch, root, *argv)
+
+
+@pytest.mark.parametrize("entries, expect", [
+    ({KEY: {"cohort": "HCHS", "study": STUDY, "study_version": "v2"}}, f"built from {STUDY}.v2"),
+    ([], "no recorded study provenance"),
+    (None, "no recorded study provenance"),
+], ids=["wrong-release", "manifest-empty-list", "no-manifest"])
+def test_phase_5_release_check_fails_the_run_at_fail_on_critical(
+        tmp_path, monkeypatch, capsys, entries, expect):
+    cache = _make_tree(tmp_path, manifest=entries)
+    rc = _phase5_critical(monkeypatch, tmp_path, cache)
+    out = capsys.readouterr().out
+    assert rc == 1, out
+    assert expect in out
+    assert "DID NOT RUN" in out
+
+
+def test_phase_5_without_cache_dir_fails_at_fail_on_critical(tmp_path, monkeypatch, capsys):
+    _make_tree(tmp_path)
+    rc = _phase5_critical(monkeypatch, tmp_path, None)
+    out = capsys.readouterr().out
+    assert rc == 1, out
+    assert "no --cache-dir supplied" in out
+
+
+@pytest.mark.parametrize("missing, expect", [
+    (f"{KEY}.json.gz", "no PHV index for HCHS"),
+    (f"{KEY}_detail.json.gz", "no detail index for HCHS"),
+], ids=["basic-index", "detail-index"])
+def test_phase_5_missing_index_fails_at_fail_on_critical(
+        tmp_path, monkeypatch, capsys, missing, expect):
+    cache = _make_tree(tmp_path)
+    (cache / missing).unlink()
+    rc = _phase5_critical(monkeypatch, tmp_path, cache)
+    out = capsys.readouterr().out
+    assert rc == 1, out
+    assert expect in out
+
+
+# -- Phase 3: the same release check, through validate_dbgap_crossref.main() --
+
+
+def _run_crossref(monkeypatch, root: Path, cache: Path) -> int:
+    sys.path.insert(0, str(_HV_LINT / "phase-3"))
+    try:
+        import validate_dbgap_crossref as crossref
+    finally:
+        sys.path.remove(str(_HV_LINT / "phase-3"))
+    monkeypatch.setenv("HV_ROOT", str(root))
+    monkeypatch.setattr(sys, "argv", [
+        "validate_dbgap_crossref.py", "--cache-dir", str(cache), "--cohort", "HCHS",
+        "--fail-on", "critical",
+    ])
+    return crossref.main()
+
+
+def test_phase_3_fixture_tree_passes(tmp_path, monkeypatch, capsys):
+    cache = _make_tree(tmp_path)
+    rc = _run_crossref(monkeypatch, tmp_path, cache)
+    captured = capsys.readouterr()
+    assert rc == 0, captured.out + captured.err
+
+
+@pytest.mark.parametrize("entries, expect", [
+    ({KEY: {"cohort": "HCHS", "study": STUDY, "study_version": "v2"}}, f"built from {STUDY}.v2"),
+    (None, "no recorded study provenance"),
+], ids=["wrong-release", "no-manifest"])
+def test_phase_3_release_check_fails_the_run_at_fail_on_critical(
+        tmp_path, monkeypatch, capsys, entries, expect):
+    cache = _make_tree(tmp_path, manifest=entries)
+    rc = _run_crossref(monkeypatch, tmp_path, cache)
+    err = capsys.readouterr().err
+    assert rc == 1, err
+    assert expect in err
