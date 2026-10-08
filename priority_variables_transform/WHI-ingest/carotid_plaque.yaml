@@ -6,9 +6,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
         age_at_condition_start:
           expr: 'case(({phv00193160} == 1, ({phv00078437} * 365) + {phv00193161}))'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193141}) + ":WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED")'
-          range: string
         condition_concept:
           value: OMOP:4102124
           range: string
@@ -33,9 +30,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_condition_start:
           expr: 'case(({phv00193715} == 1, ({phv00078437} * 365) + {phv00193716}))'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
-          range: string
         condition_concept:
           value: OMOP:4102124
           range: string
@@ -60,9 +54,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_condition_start:
           expr: 'case(({phv00193717} == 1, ({phv00078437} * 365) + {phv00193718}))'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
-          range: string
         condition_concept:
           value: OMOP:4102124
           range: string
@@ -96,6 +87,7 @@
         condition_status:
           populated_from: phv00283698
           value_mappings:
+            '0': ABSENT
             '1': PRESENT
         condition_provenance:
           value: HEALTH_RECORD

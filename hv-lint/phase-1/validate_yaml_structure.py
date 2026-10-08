@@ -13,6 +13,7 @@ Checks:
     1.7  Semantic duplicate DrugExposure blocks (same source PHV, different vocab codes)
     1.9  Common typo detection (known misspellings in slot names and values)
     1.10 Space-in-key detection (illegal spaces in YAML key names)
+    1.11 expr + value_mappings on one slot (linkml-map evaluates expr and ignores the mappings)
 
 Usage:
     python hv-lint/phase-1/validate_yaml_structure.py
@@ -227,6 +228,51 @@ def walk_expressions(block: dict, block_idx: int, rel_path: str) -> list[Finding
                     ))
                 # Recurse into nested class derivations (list-based or legacy
                 # object_derivations)
+                for nested_name, nested_spec in iter_nested_class_derivs(slot_def):
+                    if isinstance(nested_spec, dict):
+                        _recurse(
+                            {nested_name: nested_spec},
+                            f"{prefix}{class_name}.{slot_name}."
+                        )
+
+    _recurse(class_derivs)
+    return findings
+
+
+# ---------------------------------------------------------------------------
+# Check 1.11: expr + value_mappings on the same slot
+# ---------------------------------------------------------------------------
+
+def check_expr_with_value_mappings(block: dict, block_idx: int, rel_path: str) -> list[Finding]:
+    """Check 1.11: Flag a slot derivation that sets both ``expr`` and ``value_mappings``.
+
+    linkml-map evaluates ``expr`` before ``populated_from`` and applies
+    ``value_mappings`` only on the ``populated_from`` path, so the mappings are
+    silently ignored and the expr's raw result is emitted (#701). Fix by
+    dropping the expr in favour of ``populated_from``, or by dropping the dead
+    mappings when the expr already returns final values.
+    """
+    findings: list[Finding] = []
+    class_derivs = block.get("class_derivations")
+    if not isinstance(class_derivs, dict):
+        return findings
+
+    def _recurse(class_derivs: dict, prefix: str = "") -> None:
+        for class_name, class_def in class_derivs.items():
+            if not isinstance(class_def, dict):
+                continue
+            slot_derivs = class_def.get("slot_derivations")
+            if not isinstance(slot_derivs, dict):
+                continue
+            for slot_name, slot_def in slot_derivs.items():
+                if not isinstance(slot_def, dict):
+                    continue
+                if slot_def.get("expr") is not None and slot_def.get("value_mappings"):
+                    findings.append(Finding(
+                        rel_path, block_idx, "1.11", "CRITICAL",
+                        f"expr and value_mappings both set on {prefix}{class_name}.{slot_name} -- "
+                        f"linkml-map evaluates the expr and silently ignores the mappings"
+                    ))
                 for nested_name, nested_spec in iter_nested_class_derivs(slot_def):
                     if isinstance(nested_spec, dict):
                         _recurse(
@@ -797,6 +843,9 @@ def main() -> int:
 
             # 1.1: Expression syntax
             all_findings.extend(walk_expressions(block, idx, rel_path))
+
+            # 1.11: expr + value_mappings on one slot
+            all_findings.extend(check_expr_with_value_mappings(block, idx, rel_path))
 
         # 1.2: Duplicate blocks within file
         all_findings.extend(check_duplicates(blocks, rel_path))
