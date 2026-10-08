@@ -84,6 +84,12 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           BASE=${{ github.event.pull_request.base.sha }}
+          # A change to HV-Lint itself (a rule, known_issues.yaml, warning_baseline.json) or to
+          # this workflow can change the result for every cohort, and the known-issue and
+          # ratchet state spans all of them, so such a PR lints `all` whatever specs it touches.
+          # A diff that fails widens to `all` too, as the spec diff below already does.
+          TOOLING=$(git diff --name-only "$BASE" HEAD -- hv-lint/ .github/workflows/hv_lint.yml) \
+            || TOOLING="(git diff failed)"
           # Cohorts whose ingest directory changed.
           SPECS=$(git diff --name-only "$BASE" HEAD -- priority_variables_transform/ \
             | { grep -- '-ingest/' || true; } \
@@ -107,7 +113,7 @@ jobs:
             | sort -u \
             | tr '\n' ',' \
             | sed 's/,$//')
-          if [ -z "$CHANGED" ]; then
+          if [ -n "$TOOLING" ] || [ -z "$CHANGED" ]; then
             echo "cohort=all" >> "$GITHUB_OUTPUT"
           elif [ "$(echo "$CHANGED" | tr ',' '\n' | wc -l)" -gt 1 ]; then
             echo "cohort=all" >> "$GITHUB_OUTPUT"

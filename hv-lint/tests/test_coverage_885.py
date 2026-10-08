@@ -4,10 +4,14 @@ Run: python -m pytest hv-lint/tests/test_coverage_885.py
 """
 
 import importlib.util
+import os
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
 import pytest
+import yaml
 
 HVLINT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(HVLINT / "phase-1"))
@@ -38,3 +42,60 @@ def test_phase2_schema_ref_is_pinned_to_one_commit():
     workflow = (HVLINT.parent / ".github" / "workflows" / "hv_lint.yml").read_text(encoding="utf-8")
     assert "bdchm_ref=main" not in workflow and "bdchm_ref || 'main'" not in workflow
     assert '${BDCHM_REF:+--bdchm-ref "$BDCHM_REF"}' in workflow
+
+
+# -- the workflow's Detect step ------------------------------------------------------------------
+
+_FAKE_GIT = r'''
+git() {  # git diff --name-only BASE HEAD -- <pathspec>...: the changed files under each pathspec
+  local seen=0 p f
+  for p in "$@"; do
+    if [ "$seen" = 1 ]; then
+      for f in $CHANGED_FILES; do case "$f" in "$p"*) echo "$f";; esac; done
+    fi
+    if [ "$p" = "--" ]; then seen=1; fi
+  done
+  return 0
+}
+'''
+
+
+def _detect(tmp_path, changed: list[str]) -> str:
+    """Run the workflow's own Detect step under `bash -e`, as Actions does, on a fake diff."""
+    bash = shutil.which("bash")
+    if not bash:
+        pytest.skip("bash is not on PATH")
+    wf = yaml.safe_load((HVLINT.parent / ".github" / "workflows" / "hv_lint.yml").read_text(
+        encoding="utf-8"))
+    step = next(s for j in wf["jobs"].values() for s in j["steps"] if s.get("id") == "detect")
+    script = tmp_path / "detect.sh"
+    script.write_text(_FAKE_GIT + step["run"].replace(
+        "${{ github.event.pull_request.base.sha }}", "base"), encoding="utf-8", newline="\n")
+    out = tmp_path / "github_output"
+    out.write_text("", encoding="utf-8")
+    env = dict(os.environ, GITHUB_OUTPUT=str(out), CHANGED_FILES=" ".join(changed),
+               PATH=os.path.dirname(sys.executable) + os.pathsep + os.environ.get("PATH", ""))
+    res = subprocess.run([bash, "-e", str(script)], cwd=HVLINT.parent, env=env,
+                         capture_output=True, text=True)
+    assert res.returncode == 0, res.stderr
+    return out.read_text(encoding="utf-8").strip()
+
+
+@pytest.mark.parametrize("tooling", ["hv-lint/phase-3/validate_semantic.py",
+                                     "hv-lint/known_issues.yaml",
+                                     "hv-lint/warning_baseline.json",
+                                     ".github/workflows/hv_lint.yml"])
+def test_detect_lints_all_when_hv_lint_itself_changed(tmp_path, tooling):
+    """Review round 2 B F1: a rule change shipped beside one cohort's specs was linted for that
+    cohort only, so its new ERRORs and the other cohorts' stale entries were never evaluated."""
+    spec = "priority_variables_transform/MESA-ingest/hdl.yaml"
+    assert _detect(tmp_path, [spec]) == "cohort=MESA"
+    assert _detect(tmp_path, [spec, tooling]) == "cohort=all"
+
+
+def test_detect_keeps_the_manifest_widening(tmp_path):
+    spec = "priority_variables_transform/ARIC-ingest/hdl.yaml"
+    manifests = "hv_dataqc/cache_fetcher/manifests/"
+    assert _detect(tmp_path, [spec, manifests + "_manifest-mesa.yaml"]) == "cohort=all"
+    assert _detect(tmp_path, [spec, manifests + "_manifest-aric.yaml"]) == "cohort=ARIC"
+    assert _detect(tmp_path, [spec, ".github/workflows/other.yml"]) == "cohort=ARIC"
