@@ -1078,7 +1078,9 @@ def parse_args() -> argparse.Namespace:
         choices=["3.9", "3.10", "3.12", "3.13", "3.14", "3.15", "3.16"],
         help="Run only specific checks (default: all)"
     )
-    return p.parse_args()
+    args = p.parse_args()
+    _cohorts.reject_expect_study_for_all(p, args)
+    return args
 
 
 def main() -> int:
@@ -1113,8 +1115,9 @@ def main() -> int:
                 print(
                     f"ERROR: cohort '{cohort_name}' declares no dbGaP release, so the cache "
                     f"cannot be checked. Add hv_dataqc/cache_fetcher/manifests/"
-                    f"_manifest-<cohort>.yaml with current_version.study_id and data_version, "
-                    f"or pass --expect-study phs######.v#.",
+                    f"_manifest-<cohort>.yaml with current_version.study_id and data_version. "
+                    f"(--expect-study phs######.v# overrides it for a one-off Phase 3 run on "
+                    f"one named --cohort; Phase 5 has no override and still fails.)",
                     file=sys.stderr,
                 )
                 return 1

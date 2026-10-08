@@ -99,7 +99,9 @@ def parse_args() -> argparse.Namespace:
         "--report-dir", default=None,
         help="Directory for report files (default: hv-lint/reports/)"
     )
-    return p.parse_args()
+    args = p.parse_args()
+    _cohorts.reject_expect_study_for_all(p, args)
+    return args
 
 
 def run_phase(phase_name: str, args: argparse.Namespace, cache_dir: str) -> tuple[int, str]:

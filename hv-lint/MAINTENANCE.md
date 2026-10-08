@@ -262,9 +262,11 @@ unnoticed:
 | cache release == declared release | passes, and prints `[phs000280.v8, built ...]` |
 | cache release != declared release | **hard failure**, naming both |
 | cache records no release | **hard failure** -- an unpinnable cache cannot be checked |
-| cohort declares no release | **hard failure** -- add `_manifest-<cohort>.yaml` or pass `--expect-study` |
+| cohort declares no release | **hard failure** -- add `_manifest-<cohort>.yaml` (`--expect-study` gets Phase 3 past it, but Phase 5 has no override) |
 
 `--expect-study phs000280.v9` overrides the declaration for a one-off (a migration dry-run, say).
+It pins one release, so it needs one named `--cohort`; every entry point that accepts it refuses
+it with `--cohort all` (exit 2). It applies to Phase 3 only (`run_all.py` forwards it nowhere else).
 A bare accession (`phs000280`) accepts any version of that study.
 
 ### Cache provenance -- which dbGaP version am I linting against?

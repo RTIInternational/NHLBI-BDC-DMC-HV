@@ -475,6 +475,23 @@ def study_label(cache_dir: Path | str, cache_key: str) -> str:
     return f"{study}.{version}" + (f", built {built}" if built else "")
 
 
+EXPECT_STUDY_NEEDS_ONE_COHORT = (
+    "--expect-study needs one named --cohort: it pins ONE release, and under --cohort all it "
+    "would be compared with every cohort's cache. Name the cohort it is for (e.g. --cohort ARIC "
+    "--expect-study phs000280.v9)."
+)
+
+
+def reject_expect_study_for_all(parser, args) -> None:
+    """``parser.error`` (exit 2) when ``--expect-study`` is combined with ``--cohort all``.
+
+    Every entry point that accepts ``--expect-study`` calls this right after parsing, so the
+    combination is refused before any cache is read.
+    """
+    if getattr(args, "expect_study", None) and str(args.cohort).strip().lower() == "all":
+        parser.error(EXPECT_STUDY_NEEDS_ONE_COHORT)
+
+
 def study_mismatch(cache_dir: Path | str, cache_key: str, expect: str) -> str | None:
     """A message when the cache's recorded study does not match ``expect``, else ``None``.
 

@@ -296,3 +296,65 @@ def test_phase_3_semantic_names_the_missing_detail_index(tmp_path, monkeypatch, 
     assert rc == 1, err
     assert f"'{KEY}_detail.json.gz'" in err
     assert f"'{KEY}.json.gz'" not in err
+
+
+# -- --expect-study pins ONE release, so it needs ONE named cohort -------------
+# Under `--cohort all` the single pin is compared with every cohort's cache: it either fails on
+# the first cohort of another study or, in a one-study tree, quietly passes as if it were the
+# declaration. Every entry point that accepts the flag refuses the combination up front.
+
+_EXPECT_ENTRY_POINTS = {
+    "run_all": ("", ["--skip", "phase1", "phase2", "phase5", "--no-report"]),
+    "run_phase3": ("phase-3", []),
+    "validate_dbgap_crossref": ("phase-3", []),
+    "validate_semantic": ("phase-3", []),
+    "check_value_semantic": ("phase-3", []),
+}
+
+
+@pytest.mark.parametrize("module", sorted(_EXPECT_ENTRY_POINTS))
+@pytest.mark.parametrize("cohort", [None, "all", "ALL"], ids=["default", "all", "ALL"])
+def test_expect_study_with_cohort_all_is_rejected_up_front(
+        tmp_path, monkeypatch, capsys, module, cohort):
+    import importlib
+    subdir, extra = _EXPECT_ENTRY_POINTS[module]
+    cache = _make_tree(tmp_path)
+    monkeypatch.setenv("HV_ROOT", str(tmp_path))
+    monkeypatch.syspath_prepend(str(_HV_LINT / subdir) if subdir else str(_HV_LINT))
+    mod = importlib.import_module(module)
+    argv = [f"{module}.py", "--cache-dir", str(cache), "--expect-study", KEY, *extra]
+    if cohort is not None:
+        argv += ["--cohort", cohort]
+    monkeypatch.setattr(sys, "argv", argv)
+    with pytest.raises(SystemExit) as exc:
+        mod.main()
+    assert exc.value.code == 2
+    assert "--expect-study needs one named --cohort" in capsys.readouterr().err
+
+
+def test_expect_study_with_one_named_cohort_still_works(tmp_path, monkeypatch, capsys):
+    """Control: the guard rejects only the `all` combination."""
+    cache = _make_tree(tmp_path)
+    sys.path.insert(0, str(_HV_LINT / "phase-3"))
+    try:
+        import validate_dbgap_crossref as crossref
+    finally:
+        sys.path.remove(str(_HV_LINT / "phase-3"))
+    monkeypatch.setenv("HV_ROOT", str(tmp_path))
+    monkeypatch.setattr(sys, "argv", [
+        "validate_dbgap_crossref.py", "--cache-dir", str(cache), "--cohort", "HCHS",
+        "--expect-study", KEY, "--fail-on", "critical",
+    ])
+    captured = capsys.readouterr()
+    assert crossref.main() == 0, captured.out + captured.err
+
+
+def test_phase_3_undeclared_cohort_says_where_the_override_applies(tmp_path, monkeypatch, capsys):
+    """The remedy must not send the reader to a flag Phase 5 does not have."""
+    cache = _make_tree(tmp_path)
+    (tmp_path / "hv_dataqc" / "cache_fetcher" / "manifests" / "_manifest-hchs_sol.yaml").unlink()
+    rc = _run_crossref(monkeypatch, tmp_path, cache)
+    err = capsys.readouterr().err
+    assert rc == 1, err
+    assert "declares no dbGaP release" in err
+    assert "Phase 5 has no override" in err
