@@ -181,6 +181,23 @@ def test_an_unstaged_cohort_passes_through_canonicalisation_unchanged(tmp_path):
     assert _cohorts.canonical_cohort("NEWSTUDY", _ingest(tmp_path, "CHS")) == "NEWSTUDY"
 
 
+def test_canonicalisation_strips_the_token_on_every_path(tmp_path, monkeypatch):
+    """Every caller compares the result with `all` or joins it onto `-ingest`, so a padded token
+    comes back stripped whether it matched a directory, fell through, or found no tree."""
+    transform = _ingest(tmp_path, "COPDGene", "CHS")
+    assert _cohorts.canonical_cohort(" copdgene ", transform) == "COPDGene"
+    assert _cohorts.canonical_cohort(" all", transform) == "all"
+    assert _cohorts.canonical_cohort("ALL ", transform) == "ALL"
+    assert _cohorts.canonical_cohort(" NEWSTUDY ", transform) == "NEWSTUDY"
+
+    import _paths
+
+    def _no_tree():
+        raise FileNotFoundError("no transform tree")
+    monkeypatch.setattr(_paths, "find_transform_dir", _no_tree)
+    assert _cohorts.canonical_cohort(" all ") == "all"
+
+
 # --------------------------------------------------------------------- cohort identity from
 # the source directory name, and its accession-only blind spot
 
@@ -358,8 +375,8 @@ def test_a_legacy_cohort_named_cache_still_resolves(tmp_path):
 
 
 def test_manifest_entries_merge_field_wise(tmp_path):
-    """Three builders contribute different fields for one key; an entry-wise replace would
-    make whichever ran last erase the others' counts."""
+    """A field one writer sets and a later writer does not must survive; an entry-wise replace
+    would make whichever ran last erase it."""
     cache = _cache(tmp_path, "phs001662.v4")
     _cohorts.write_manifest_entries(cache, {"phs001662.v4": {"cohort": "LTRC", "phvs": 1577}})
     _cohorts.write_manifest_entries(cache, {"phs001662.v4": {"visit_tables": 27}})
@@ -403,3 +420,55 @@ def test_two_releases_of_one_study_are_never_disambiguated_by_sort_order(tmp_pat
     assert _cohorts.cache_key_for("LTRC", cache, root) == "phs001662.v4"
     # with NO declaration, the ambiguous cohort match is refused rather than guessed
     assert "phs001662.v2" not in _cohorts.candidate_keys("LTRC", cache, tmp_path / "nowhere")
+
+
+# -- the declaration path a remediation message names --------------------------
+
+
+def test_declaration_file_applies_the_hchs_alias():
+    """Phase 5 told HCHS to add `_manifest-hchs.yaml`; the declaration is `_manifest-hchs_sol.yaml`."""
+    assert _cohorts.declaration_file("HCHS") == \
+        "hv_dataqc/cache_fetcher/manifests/_manifest-hchs_sol.yaml"
+    assert _cohorts.declaration_file("ARIC") == \
+        "hv_dataqc/cache_fetcher/manifests/_manifest-aric.yaml"
+
+
+def test_declaration_file_exists_for_every_shipped_ingest_cohort():
+    """Against this repo: the named file is the one `declared_study` actually reads."""
+    hv_root = Path(__file__).resolve().parents[2]
+    transform = hv_root / "priority_variables_transform"
+    if not (hv_root / "hv_dataqc").is_dir() or not transform.is_dir():
+        pytest.skip("not run inside an HV checkout")
+    for cohort in _cohorts.ingest_cohorts(transform):
+        assert (hv_root / _cohorts.declaration_file(cohort)).is_file(), cohort
+        assert _cohorts.declared_study(cohort, hv_root=hv_root), cohort
+        # A missing visit.yaml fails Phase 5 under `--cohort all` too; this check fails the
+        # unit-test job as well, before any lint runs.
+        assert (transform / f"{cohort}-ingest" / "visit.yaml").is_file(), cohort
+
+
+def test_writing_refuses_an_unreadable_manifest(tmp_path):
+    """A reader degrades an unreadable manifest to {}; a writer that did the same would replace
+    every other release's provenance with the entries it was given."""
+    cache = _cache(tmp_path, "chs")
+    (cache / _cohorts.MANIFEST_NAME).write_text("{not json", encoding="utf-8")
+    with pytest.raises(_cohorts.ManifestUnreadable, match="manifest.json"):
+        _cohorts.write_manifest_entries(cache, {"ltrc": {"cohort": "LTRC"}})
+    assert (cache / _cohorts.MANIFEST_NAME).read_text(encoding="utf-8") == "{not json"
+
+
+def test_an_interrupted_manifest_write_leaves_the_old_manifest_intact(tmp_path, monkeypatch):
+    cache = _cache(tmp_path, "chs", manifest={"chs": {"cohort": "CHS", "study": "phs000287"}})
+    before = (cache / _cohorts.MANIFEST_NAME).read_bytes()
+
+    def dump_then_die(obj, f, **kw):
+        f.write('{"manifest_version": 1, "entr')
+        raise OSError("disk full")
+
+    monkeypatch.setattr(_cohorts.json, "dump", dump_then_die)
+    with pytest.raises(OSError):
+        _cohorts.write_manifest_entries(cache, {"ltrc": {"cohort": "LTRC"}})
+    monkeypatch.undo()
+    assert (cache / _cohorts.MANIFEST_NAME).read_bytes() == before
+    assert sorted(p.name for p in cache.iterdir() if "manifest" in p.name) == [
+        _cohorts.MANIFEST_NAME], "no temp file is left behind"

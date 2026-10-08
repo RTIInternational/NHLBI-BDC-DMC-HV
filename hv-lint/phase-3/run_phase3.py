@@ -88,7 +88,9 @@ def parse_args() -> argparse.Namespace:
         "--hv-root",
         help="Path to an HV repo clone (overrides auto-detection)"
     )
-    return p.parse_args()
+    args = p.parse_args()
+    _cohorts.reject_expect_study_for_all(p, args)
+    return args
 
 
 def run_component(name: str, cohort: str, fail_on: str,

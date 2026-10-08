@@ -31,11 +31,18 @@ on:
         default: "50"
 
 jobs:
-  # Unit tests for the linter itself (tmp_path fixtures, the committed cache, known-case
-  # fixtures; no network). ENFORCED: they pin the cohort resolver, the shared visit-id
-  # enumerator, each rule on its known cases, and known_issues.yaml's schema (every entry
-  # names an issue). Runs alongside hv-lint rather than after it -- a lint failure must not
-  # stop the linter's own regressions from being reported.
+  # Unit tests for the linter itself: tmp_path fixtures, the committed cache, known-case
+  # fixtures, no network. Some tests read the shipped specs: COPDGene bdy_hgt.yaml and FHS
+  # visit.yaml (test_visit_label_extraction.py), every *-ingest/ cohort has a
+  # _manifest-<cohort>.yaml and a visit.yaml (test_cohorts.py), every id expression parses
+  # (test_rule_fixes_885.py), and every known_issues.yaml entry names a file that exists
+  # (test_known_issues.py). So a spec PR that adds a cohort without a declaration or a
+  # visit.yaml, changes FHS visit ids, writes an id expression the enumerator cannot read, or
+  # deletes a file a known issue names fails this job. ENFORCED: these pin the resolver every
+  # phase manager calls to turn `--cohort` into a cache key, the shared visit-id enumerator,
+  # each rule on its known cases, known_issues.yaml's schema (every entry names an issue), and
+  # the fail-closed exits of the phase mains. Runs alongside hv-lint rather than after it -- a
+  # lint failure must not stop the linter's own regressions from being reported.
   unit-tests:
     runs-on: ubuntu-latest
     steps:
@@ -48,8 +55,8 @@ jobs:
           python-version: "3.12"
 
       # pyyaml is the only third-party import these tests reach: _cohorts is stdlib-only,
-      # and the phase-1/phase-5 modules they exercise import yaml and nothing else. The
-      # lint job's linkml-runtime is not needed here.
+      # and the phase-1, phase-3 and phase-5 modules they exercise import yaml and nothing
+      # else. The lint job's linkml-runtime is not needed here.
       - name: Install dependencies
         run: pip install pytest pyyaml
 
@@ -76,11 +83,27 @@ jobs:
         id: detect
         if: github.event_name == 'pull_request'
         run: |
-          # Find which cohort directories have changes
-          CHANGED=$(git diff --name-only ${{ github.event.pull_request.base.sha }} HEAD \
-            -- priority_variables_transform/ \
+          BASE=${{ github.event.pull_request.base.sha }}
+          # Cohorts whose ingest directory changed.
+          SPECS=$(git diff --name-only "$BASE" HEAD -- priority_variables_transform/ \
             | { grep -- '-ingest/' || true; } \
-            | sed 's|priority_variables_transform/\([^/]*\)-ingest/.*|\1|' \
+            | sed 's|priority_variables_transform/\([^/]*\)-ingest/.*|\1|')
+          # A changed `_manifest-<cohort>.yaml` changes that cohort's declared release, so in a
+          # PR that also edits specs it counts as a change to that cohort: editing ARIC specs
+          # and bumping MESA's release must not lint ARIC only. `_cohorts.canonical_cohort`
+          # maps the declaration name to its ingest directory (hchs_sol -> HCHS); a name it
+          # cannot map stays distinct, which widens the run to `all` rather than narrowing it.
+          # With no spec change, CHANGED stays empty and the run is `all`, as before.
+          DECLS=""
+          CANON='import sys; sys.path.insert(0, "hv-lint"); import _cohorts;'
+          CANON="$CANON print(_cohorts.canonical_cohort(sys.argv[1]))"
+          if [ -n "$SPECS" ]; then
+            DECLS=$(git diff --name-only "$BASE" HEAD -- hv_dataqc/cache_fetcher/manifests/ \
+              | sed -n 's|.*/_manifest-\(.*\)\.yaml$|\1|p' \
+              | while read -r name; do python -c "$CANON" "$name"; done)
+          fi
+          CHANGED=$(printf '%s\n%s\n' "$SPECS" "$DECLS" \
+            | { grep -v '^$' || true; } \
             | sort -u \
             | tr '\n' ',' \
             | sed 's/,$//')

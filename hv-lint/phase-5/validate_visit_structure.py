@@ -1310,13 +1310,15 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument(
         "--cache-dir", default=None,
-        help="Directory with per-cohort .json.gz PHV indexes (check 5.4)",
+        help="Directory with the release-keyed PHV and detail indexes (checks 5.3, 5.4, 5.8)",
     )
     return p.parse_args()
 
 
 def main() -> int:
     args = parse_args()
+    # Stripped as `_cohorts.canonical_cohort` strips, so ` all` is `all` to Phases 3 and 5 alike.
+    args.cohort = args.cohort.strip()
     in_ci = os.environ.get("GITHUB_ACTIONS") == "true"
 
     base_dir = find_transform_dir()
@@ -1330,7 +1332,11 @@ def main() -> int:
             if f.is_dir() and f.name.endswith("-ingest")
         ))
     else:
-        cohort_dirs = [args.cohort]
+        # Canonicalised through the same `_cohorts` resolver the Phase 3 validators use, because
+        # this validator is also run directly: `HCHS-SOL` must name `HCHS-ingest`, and
+        # `copdgene` must name `COPDGene-ingest` on a case-sensitive filesystem.
+        cohort_dirs = [_cohorts.canonical_cohort(args.cohort, base_dir)]
+    named = args.cohort.lower() != "all"
 
     all_findings: list[Finding] = []
     # Any check that COULD NOT RUN fails the run on its own, independent of `--fail-on`.
@@ -1347,28 +1353,54 @@ def main() -> int:
         ingest_dir = base_dir / f"{cohort}-ingest"
         visit_file = ingest_dir / "visit.yaml"
 
+        # A cohort NAMED on the command line with no ingest directory was never checked, so it
+        # fails the run like any other unrun check; a WARNING skip here exits PASSED having read
+        # nothing. `all` is derived from the directories, so it cannot reach this branch.
+        if named and not ingest_dir.is_dir():
+            all_findings.append(Finding(
+                file=f"priority_variables_transform/{cohort}-ingest/",
+                block=-1,
+                check="5.0",
+                severity="ERROR",
+                message=(f"No ingest directory for cohort '{args.cohort}' (looked for "
+                         f"priority_variables_transform/{cohort}-ingest/), so Phase 5 DID NOT "
+                         f"RUN for it"),
+            ))
+            cohorts_skipped.append(cohort)
+            unrun_check = True
+            continue
+
+        # An ingest directory without visit.yaml means none of 5.1-5.12 ran for that cohort, so
+        # it is an unrun check whether the cohort was named or found under `all`: CI lints
+        # `--cohort all`, and a deleted visit.yaml must fail it at any `--fail-on`.
         if not visit_file.exists():
             all_findings.append(Finding(
                 file=f"priority_variables_transform/{cohort}-ingest/",
                 block=-1,
                 check="5.0",
                 severity="ERROR",
-                message=f"No visit.yaml found for cohort {cohort}: Phase 5 DID NOT RUN for it",
+                message=(f"No visit.yaml found for cohort {cohort}, so Phase 5 DID NOT "
+                         f"RUN for it"),
             ))
+            unrun_check = True
             cohorts_skipped.append(cohort)
             continue
 
         # Build visit registry
         registry = build_visit_registry(visit_file, hv_root)
         if registry is None:
+            # None of 5.1-5.10 can run without a registry, so this is an unrun check at any
+            # `--fail-on`, under `all` as well as for a named cohort.
             all_findings.append(Finding(
                 file=visit_file.relative_to(hv_root).as_posix(),
                 block=-1,
                 check="5.0",
                 severity="ERROR",
-                message=f"Could not parse visit.yaml or no Visit blocks for {cohort}",
+                message=(f"Could not parse visit.yaml or no Visit blocks for {cohort}, so "
+                         f"Phase 5 DID NOT RUN for it"),
             ))
             cohorts_skipped.append(cohort)
+            unrun_check = True
             continue
 
         # Scan all non-visit YAML files
@@ -1420,7 +1452,8 @@ def main() -> int:
         if not args.cache_dir:
             all_findings.append(Finding(
                 f"priority_variables_transform/{cohort}-ingest", 0, "5.3/5.4", "ERROR",
-                f"no --cache-dir supplied, so checks 5.3 and 5.4 DID NOT RUN for {cohort}"))
+                f"no --cache-dir supplied, so check 5.3 and the PHV-index half of 5.4 DID NOT "
+                f"RUN for {cohort} (5.4's structural checks still ran)"))
             unrun_check = True
         else:
             # The release is checked here for the reason Phase 3 checks it: `cache_key_for`
@@ -1433,7 +1466,7 @@ def main() -> int:
                 all_findings.append(Finding(
                     f"priority_variables_transform/{cohort}-ingest", 0, "5.3/5.4/5.8", "ERROR",
                     f"{cohort} declares no dbGaP release, so the cache cannot be checked -- add "
-                    f"hv_dataqc/cache_fetcher/manifests/_manifest-{cohort.lower()}.yaml"))
+                    f"{_cohorts.declaration_file(cohort)}"))
             else:
                 mismatch = _cohorts.study_mismatch(args.cache_dir, cache_key, declared)
                 if mismatch:
@@ -1461,7 +1494,8 @@ def main() -> int:
                 all_findings.append(Finding(
                     f"priority_variables_transform/{cohort}-ingest", 0, "5.3/5.4", "ERROR",
                     f"no PHV index for {cohort} (looked for '{cache_key}.json.gz' in "
-                    f"{args.cache_dir}), so checks 5.3 and 5.4 DID NOT RUN"))
+                    f"{args.cache_dir}), so check 5.3 and the PHV-index half of 5.4 DID NOT "
+                    f"RUN (5.4's structural checks still ran)"))
                 unrun_check = True
 
         # 5.3: Visit <-> PHT consistency, against the authoritative PHV index
@@ -1586,8 +1620,10 @@ def main() -> int:
         # downgrade the mandatory release check to advisory is not a mandatory check.
         # `--fail-on critical` did exactly that, and the run then reported PASSED having
         # skipped 5.3/5.4/5.8 for the cohort whose cache was the wrong release.
-        print("\nFAILED: the mandatory dbGaP release check did not pass for at least one "
-              "cohort, so checks 5.3/5.4/5.8 DID NOT RUN there. This is not weighed against "
+        print("\nFAILED: at least one check DID NOT RUN -- a named cohort has no ingest "
+              "directory, a cohort has no visit.yaml, a visit.yaml could not be parsed or has "
+              "no Visit blocks, the mandatory dbGaP release check did not pass, or a required cache "
+              "input was missing (see the ERROR findings above). This is not weighed against "
               "--fail-on.")
         return 1
     else:

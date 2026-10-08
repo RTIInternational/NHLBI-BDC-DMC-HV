@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import datetime as _dt
 import json
+import os
 import re
 from pathlib import Path
 
@@ -237,6 +238,17 @@ def declared_study(
     return None
 
 
+def declaration_file(cohort: str) -> str:
+    """The repo-relative path of the fetch manifest that declares ``cohort``'s release.
+
+    For a remediation message only. It applies :data:`ALIASES` exactly as :func:`declared_study`
+    does when it looks the file up, so HCHS points at ``_manifest-hchs_sol.yaml`` -- the file that
+    exists -- not at a ``_manifest-hchs.yaml`` nobody should create.
+    """
+    stem = ALIASES.get(cohort.upper(), cohort.lower())
+    return "/".join((*_FETCH_MANIFESTS, f"_manifest-{stem}.yaml"))
+
+
 def cache_key_for(
     cohort: str, cache_dir: Path | str | None = None, hv_root: Path | str | None = None
 ) -> str:
@@ -257,9 +269,12 @@ def cache_key_for(
 def canonical_cohort(cohort: str, transform_dir: Path | str | None = None) -> str:
     """``copdgene`` / ``COPDGENE`` -> ``COPDGene`` -- the casing the ingest DIRECTORY uses.
 
-    Falls back to the token unchanged when no directory matches, so an as-yet-unstaged cohort is
-    passed through rather than rejected.
+    Falls back to the stripped token when no directory matches, so an as-yet-unstaged cohort is
+    passed through rather than rejected. The result is stripped on every path: callers compare it
+    with ``all`` and join it onto ``-ingest``, and ``cohorts_to_load`` already strips, so a padded
+    `` all`` left unstripped here loads every cache and then scans no file.
     """
+    cohort = cohort.strip()
     if transform_dir is None:
         try:
             from _paths import find_transform_dir
@@ -373,17 +388,52 @@ def read_manifest(cache_dir: Path | str) -> dict[str, dict]:
     return {key: entry for key, entry in entries.items() if isinstance(entry, dict)}
 
 
-def write_manifest_entries(cache_dir: Path | str, entries: dict[str, dict]) -> Path:
-    """Merge ``entries`` into the manifest and write it, returning the path.
+class ManifestUnreadable(RuntimeError):
+    """``manifest.json`` exists but is not a manifest, so it cannot be merged into safely."""
 
-    Merges rather than replaces so building one cohort's index does not erase the provenance of
-    the others -- the builders are routinely run over a source cache holding a subset.
+
+def read_manifest_for_update(cache_dir: Path | str) -> dict[str, dict]:
+    """The manifest's ``entries`` for a WRITER: ``{}`` only when the file is absent.
+
+    :func:`read_manifest` degrades an unreadable file to ``{}`` for readers; a writer that did
+    the same would replace every other release's provenance with the entries it was given.
+    Raises :class:`ManifestUnreadable` instead, naming the file.
     """
     path = manifest_path(cache_dir)
-    merged = read_manifest(cache_dir)
-    # Field-wise, not entry-wise: `build_phv_index.py`, `build_phv_detail_index.py` and
-    # `build_visit_index.py` each contribute different fields for the SAME key, and a whole-entry
-    # replace would make whichever ran last erase the others' counts.
+    if not path.exists():
+        return {}
+    remedy = (f"Refusing to merge into {path}: merging into an empty manifest would drop every "
+              f"other release's provenance. Restore the file (it is committed in the HV repo), "
+              f"or move it aside and rebuild every cohort's index.")
+    try:
+        with path.open(encoding="utf-8") as f:
+            data = json.load(f)
+    except (OSError, ValueError) as exc:
+        raise ManifestUnreadable(f"{path.name} is unreadable ({exc}). {remedy}") from exc
+    entries = data.get("entries") if isinstance(data, dict) else None
+    if not isinstance(entries, dict):
+        raise ManifestUnreadable(
+            f"{path.name} is not a manifest (expected an object with an 'entries' object). "
+            f"{remedy}")
+    bad = sorted(str(key) for key, entry in entries.items() if not isinstance(entry, dict))
+    if bad:
+        raise ManifestUnreadable(
+            f"{path.name} has non-object entries for {', '.join(bad)}. {remedy}")
+    return dict(entries)
+
+
+def write_manifest_entries(cache_dir: Path | str, entries: dict[str, dict]) -> Path:
+    """Merge ``entries`` into the manifest and write it atomically, returning the path.
+
+    Merges rather than replaces so building one cohort's index does not erase the provenance of
+    the others -- the builders are routinely run over a source cache holding a subset. Raises
+    :class:`ManifestUnreadable`, leaving the file untouched, when the existing manifest cannot be
+    read.
+    """
+    path = manifest_path(cache_dir)
+    merged = read_manifest_for_update(cache_dir)
+    # Field-wise, not entry-wise: `build_phv_index.py` and `build_phv_detail_index.py` write the
+    # same fields today, but a field one writer sets and the next does not must survive.
     for key, entry in entries.items():
         combined = dict(merged.get(key) or {})
         combined.update(entry)
@@ -394,9 +444,16 @@ def write_manifest_entries(cache_dir: Path | str, entries: dict[str, dict]) -> P
         "entries": dict(sorted(merged.items())),
     }
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as f:
-        json.dump(payload, f, indent=2, sort_keys=False)
-        f.write("\n")
+    # Temp file in the same directory + os.replace: an interrupted write leaves the old manifest,
+    # never a truncated one that every later writer would then refuse.
+    tmp = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+    try:
+        with tmp.open("w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2, sort_keys=False)
+            f.write("\n")
+        os.replace(tmp, path)
+    finally:
+        tmp.unlink(missing_ok=True)
     return path
 
 
@@ -421,6 +478,23 @@ def study_label(cache_dir: Path | str, cache_key: str) -> str:
     return f"{study}.{version}" + (f", built {built}" if built else "")
 
 
+EXPECT_STUDY_NEEDS_ONE_COHORT = (
+    "--expect-study needs one named --cohort: it pins ONE release, and under --cohort all it "
+    "would be compared with every cohort's cache. Name the cohort it is for (e.g. --cohort ARIC "
+    "--expect-study phs000280.v8)."
+)
+
+
+def reject_expect_study_for_all(parser, args) -> None:
+    """``parser.error`` (exit 2) when ``--expect-study`` is combined with ``--cohort all``.
+
+    Every entry point that accepts ``--expect-study`` calls this right after parsing, so the
+    combination is refused before any cache is read.
+    """
+    if getattr(args, "expect_study", None) and str(args.cohort).strip().lower() == "all":
+        parser.error(EXPECT_STUDY_NEEDS_ONE_COHORT)
+
+
 def study_mismatch(cache_dir: Path | str, cache_key: str, expect: str) -> str | None:
     """A message when the cache's recorded study does not match ``expect``, else ``None``.
 
@@ -433,7 +507,7 @@ def study_mismatch(cache_dir: Path | str, cache_key: str, expect: str) -> str | 
         return None
     entry = manifest_entry(cache_dir, cache_key)
     if not entry:
-        return (f"cache '{cache_key}' has no recorded study provenance, so --expect-study "
+        return (f"cache '{cache_key}' has no recorded study provenance, so release "
                 f"{want} cannot be verified; rebuild it with build_phv_index.py")
     got_study = str(entry.get("study") or "")
     got_full = f"{got_study}.{entry.get('study_version') or ''}".rstrip(".")

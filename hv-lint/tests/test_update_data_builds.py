@@ -328,3 +328,125 @@ def test_the_index_holds_the_phvs_from_the_data_dictionaries(staged):
     with gzip.open(staged / "phs009999.v3.json.gz", "rt", encoding="utf-8") as f:
         mapping = json.load(f)
     assert mapping == {"phv00000000": "pht0000001", "phv00000001": "pht0010001"}
+
+
+# -- an unreadable manifest.json is refused, never merged into {} ------------------------------
+# `read_manifest` degrades an unreadable file to {} on purpose -- right for a lint run, wrong for
+# a writer, which would then replace every other release's provenance with this one entry.
+
+UNREADABLE = ["{not json", "[]", '{"manifest_version": 1, "entries": []}',
+              '{"manifest_version": 1, "entries": {"phs000287.v7": 1}}']
+
+
+@pytest.mark.parametrize("content", UNREADABLE,
+                         ids=["truncated", "list", "entries-list", "non-object-entry"])
+def test_update_data_refuses_to_merge_into_an_unreadable_manifest(staged, content):
+    manifest = staged / _cohorts.MANIFEST_NAME
+    manifest.write_text(content, encoding="utf-8")
+    assert _build() is False
+    assert manifest.read_text(encoding="utf-8") == content, "the manifest must be left as found"
+    assert list(staged.glob("*.json.gz")) == [], "and no index is published without provenance"
+
+
+@pytest.mark.parametrize("module", ["build_phv_index", "build_phv_detail_index"])
+def test_the_standalone_builders_refuse_an_unreadable_manifest(tmp_path, monkeypatch, capsys,
+                                                               module):
+    import importlib
+    builder = importlib.import_module(module)
+    source = _stage(tmp_path, "newcohort", "phs009999", "v3")
+    out = tmp_path / "out"
+    out.mkdir()
+    (out / _cohorts.MANIFEST_NAME).write_text("{not json", encoding="utf-8")
+    monkeypatch.setattr(sys, "argv", [f"{module}.py", "--source-cache", str(source),
+                                      "--output-dir", str(out)])
+    assert builder.main() == 1
+    assert "manifest.json" in capsys.readouterr().err
+    assert (out / _cohorts.MANIFEST_NAME).read_text(encoding="utf-8") == "{not json"
+    assert list(out.glob("*.json.gz")) == [], "no index is published without provenance"
+
+
+def test_a_manifest_write_that_fails_is_reported_and_the_next_cohort_still_runs(
+        tmp_path, monkeypatch, capsys):
+    """On Windows `os.replace` onto a file another process holds open raises PermissionError.
+    It must fail THAT cohort with a message, not end the run with a traceback that skips the
+    rest."""
+    import os
+    cache = _stage(tmp_path, "first", "phs009998", "v1")
+    _stage(tmp_path, "second", "phs009999", "v3")
+    monkeypatch.setattr(update_data, "CACHE_DIR", cache)
+    monkeypatch.setattr(update_data, "load_cohorts", lambda: {
+        "first": {"study_id": "phs009998", "data_version": "v1.p1"},
+        "second": {"study_id": "phs009999", "data_version": "v3.p1"},
+    })
+    real_replace = os.replace
+
+    def held_open(src, dst, *a, **kw):
+        if Path(dst).name == _cohorts.MANIFEST_NAME:
+            raise PermissionError(13, "The process cannot access the file", str(dst))
+        return real_replace(src, dst, *a, **kw)
+
+    monkeypatch.setattr(os, "replace", held_open)
+    monkeypatch.setattr(sys, "argv", ["update_data.py", "--build-only"])
+    assert update_data.main() == 1
+    err = capsys.readouterr().err
+    for cohort in ("first", "second"):
+        assert f"ERROR: {cohort}: could not write {_cohorts.MANIFEST_NAME}" in err
+    assert not (cache / _cohorts.MANIFEST_NAME).exists()
+    assert list(cache.glob(".*.tmp")) == [], "the temp manifest is cleaned up"
+
+
+@pytest.mark.parametrize("locked, state", [
+    ("phs009998.v1_detail.json.gz",
+     "Replaced phs009998.v1.json.gz; NOT replaced phs009998.v1_detail.json.gz"),
+    ("phs009998.v1.json.gz", "Replaced nothing; phs009998.v1.json.gz, "
+                             "phs009998.v1_detail.json.gz and any earlier copies are unchanged"),
+], ids=["detail-locked", "base-locked"])
+def test_an_index_publish_that_fails_is_reported_and_the_next_cohort_still_runs(
+        tmp_path, monkeypatch, capsys, locked, state):
+    """The same Windows lock on an INDEX file: the pair is moved one file at a time, so a lock
+    on the second leaves the first replaced. That cohort fails with a message naming which file
+    was replaced and which was not, its manifest entry is not written, and the run goes on."""
+    import os
+    cache = _stage(tmp_path, "first", "phs009998", "v1")
+    _stage(tmp_path, "second", "phs009999", "v3")
+    monkeypatch.setattr(update_data, "CACHE_DIR", cache)
+    monkeypatch.setattr(update_data, "load_cohorts", lambda: {
+        "first": {"study_id": "phs009998", "data_version": "v1.p1"},
+        "second": {"study_id": "phs009999", "data_version": "v3.p1"},
+    })
+    real_replace = os.replace
+
+    def held_open(src, dst, *a, **kw):
+        if Path(dst).name == locked:
+            raise PermissionError(13, "The process cannot access the file", str(dst))
+        return real_replace(src, dst, *a, **kw)
+
+    monkeypatch.setattr(os, "replace", held_open)
+    monkeypatch.setattr(sys, "argv", ["update_data.py", "--build-only"])
+    assert update_data.main() == 1
+    err = capsys.readouterr().err
+    assert f"ERROR: first: could not replace {locked}" in err
+    assert state in err
+    assert "Publishing nothing" not in err
+    published = sorted(p.name for p in cache.glob("phs009998.*.json.gz"))
+    assert published == (["phs009998.v1.json.gz"] if "detail" in locked else [])
+    entries = json.loads((cache / _cohorts.MANIFEST_NAME).read_text(encoding="utf-8"))["entries"]
+    assert "phs009998.v1" not in entries, "a half-published pair records no release"
+    assert "phs009999.v3" in entries, "the next cohort still runs"
+    assert (cache / "phs009999.v3_detail.json.gz").exists()
+
+
+def test_a_manifest_refusal_after_publishing_does_not_claim_nothing_was_published(
+        staged, monkeypatch, capsys):
+    """`write_manifest_entries` re-reads the manifest, so it can refuse after the pair is in
+    place. The message must say the pair was published, not "Publishing nothing"."""
+    def refuse(cache_dir, entries):
+        raise _cohorts.ManifestUnreadable("manifest.json is unreadable (changed underfoot).")
+
+    monkeypatch.setattr(_cohorts, "write_manifest_entries", refuse)
+    assert _build() is False
+    err = capsys.readouterr().err
+    assert "Publishing nothing" not in err
+    assert "release is NOT recorded" in err
+    assert sorted(p.name for p in staged.glob("*.json.gz")) == [
+        "phs009999.v3.json.gz", "phs009999.v3_detail.json.gz"]

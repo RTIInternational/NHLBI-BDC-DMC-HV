@@ -54,13 +54,10 @@ Requirements:
 from __future__ import annotations
 
 import argparse
-import gzip
-import json
 import re
 import shutil
 import sys
 import time
-import xml.etree.ElementTree as ET
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -396,6 +393,7 @@ def process_cohort(
         # the destination so that holds.
         entries: dict[str, dict] = {}
         missing: list[str] = []
+        published: list[str] = []
         scratch = CACHE_DIR / f".build-{cohort_key}"
         shutil.rmtree(scratch, ignore_errors=True)
         scratch.mkdir(parents=True, exist_ok=True)
@@ -413,13 +411,62 @@ def process_cohort(
                       f"zero records. Publishing nothing.", file=sys.stderr)
                 ok = False
             else:
-                for produced in sorted(scratch.glob("*.json.gz")):
-                    produced.replace(CACHE_DIR / produced.name)
-                _cohorts.write_manifest_entries(CACHE_DIR, entries)
+                # Checked BEFORE publishing: an index published next to a manifest that then
+                # refuses the write would have no recorded release.
+                _cohorts.read_manifest_for_update(CACHE_DIR)
+                pending = sorted(p.name for p in scratch.glob("*.json.gz"))
+                try:
+                    for name in pending:
+                        (scratch / name).replace(CACHE_DIR / name)
+                        published.append(name)
+                except OSError as exc:
+                    # On Windows os.replace fails while any reader holds the destination open.
+                    # The pair moves one file at a time, so name what was replaced and what was
+                    # not, and write no manifest entry: a half-replaced pair must not be
+                    # recorded as a release. The unmoved file is discarded with the scratch dir.
+                    left = [n for n in pending if n not in published]
+                    print(f"  ERROR: {cohort_key}: could not replace {left[0]} ({exc}). "
+                          f"{_publish_state(published, left)} {_cohorts.MANIFEST_NAME} was NOT "
+                          f"updated for {', '.join(sorted(entries))}; close whatever holds the "
+                          f"file open and rerun with --build-only --cohort {cohort_key}.",
+                          file=sys.stderr)
+                    return False
+                try:
+                    _cohorts.write_manifest_entries(CACHE_DIR, entries)
+                except OSError as exc:
+                    # On Windows os.replace fails while any reader holds manifest.json open. The
+                    # pair is already published, so say so: it has no recorded release until a
+                    # rerun writes the entry. Failing this cohort, not the process, lets the
+                    # remaining cohorts run.
+                    print(f"  ERROR: {cohort_key}: could not write {_cohorts.MANIFEST_NAME} "
+                          f"({exc}). The index pair for {', '.join(sorted(entries))} is in "
+                          f"place but its release is NOT recorded; close whatever holds the "
+                          f"manifest open and rerun with --build-only --cohort {cohort_key}.",
+                          file=sys.stderr)
+                    ok = False
+        except _cohorts.ManifestUnreadable as exc:
+            # `write_manifest_entries` re-reads the manifest, so the refusal can come AFTER the
+            # pair is in place; "Publishing nothing" is true only when nothing was moved.
+            if published:
+                print(f"  ERROR: {cohort_key}: {exc} The index pair ({', '.join(published)}) "
+                      f"is in place but its release is NOT recorded; repair the manifest and "
+                      f"rerun with --build-only --cohort {cohort_key}.", file=sys.stderr)
+            else:
+                print(f"  ERROR: {cohort_key}: {exc} Publishing nothing.", file=sys.stderr)
+            ok = False
         finally:
             shutil.rmtree(scratch, ignore_errors=True)
 
     return ok
+
+
+def _publish_state(published: list[str], left: list[str]) -> str:
+    """What a failed publish left in the cache directory, for the error message."""
+    if not published:
+        return f"Replaced nothing; {', '.join(left)} and any earlier copies are unchanged."
+    return (f"Replaced {', '.join(published)}; NOT replaced {', '.join(left)}, so the pair on "
+            f"disk mixes this build with whatever earlier copy of {left[0]} exists, and any "
+            f"manifest entry is still the earlier build's.")
 
 
 def print_summary() -> None:

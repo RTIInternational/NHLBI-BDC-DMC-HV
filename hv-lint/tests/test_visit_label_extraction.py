@@ -1,8 +1,9 @@
 """Regression tests for the visit-label extractor used by checks 1.8 and 5.1.
 
 Both checks compare the visit labels attached to one PHT across files, and both get those labels
-from a regex extractor -- phase 1 keeps its own copy, replicated from phase 5's, because the phases
-are independent modules.
+from the one shared parser, ``hv-lint/_visit_ids.py`` (an ``ast`` enumerator that replaced the two
+regex copies phase 1 and phase 5 each kept). The defect below was in those regex copies; the
+tests pin that the shared parser does not repeat it.
 
 **The defect.** The extractor looked for a case() branch whose result is a bare quoted string::
 
@@ -31,9 +32,11 @@ import sys
 from pathlib import Path
 
 _HV_LINT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(_HV_LINT))
 sys.path.insert(0, str(_HV_LINT / "phase-1"))
 sys.path.insert(0, str(_HV_LINT / "phase-5"))
 
+import _visit_ids  # noqa: E402
 import check_cross_file_pht_consistency as c18  # noqa: E402
 import validate_visit_structure as vvs  # noqa: E402
 
@@ -139,7 +142,7 @@ def test_copdgene_shipped_spec_parses_to_its_four_real_labels():
 
     import pytest
 
-    spec = _HV_LINT.parent / "priority_variables_transform" / "copdgene-ingest" / "bdy_hgt.yaml"
+    spec = _HV_LINT.parent / "priority_variables_transform" / "COPDGene-ingest" / "bdy_hgt.yaml"
     if not spec.exists():
         pytest.skip(f"{spec} not present in this checkout")
 
@@ -149,3 +152,118 @@ def test_copdgene_shipped_spec_parses_to_its_four_real_labels():
 
     labels = c18._extract_labels_from_expr(" ".join(match.group(1).split()))
     assert labels == {"COPDGene P1", "COPDGene P2", "COPDGene P3", "COPDGene P3B"}
+
+
+# -- FHS's conditional visit ids ---------------------------------------------
+#
+# FHS's visit.yaml writes exams 4-10 as a label-in-case uuid5 nested inside a conditional
+# branch, because not every FHS cohort attended those exams. The trailing literal of the uuid5
+# seed is then a SUFFIX (' EXAM 4'), not a label. The two strings below are verbatim from
+# FHS-ingest/visit.yaml (exam 4's id and name), as the YAML loader returns them.
+
+FHS_EXAM4_ID = (
+    "case(({phv00177928} in [0, 1, 3, 7, 72], uuid5(\"https://w3id.org/bdchm/Visit\", "
+    "str({phv00177926}) + \":\" + case(({phv00177928} == 0, 'FHS ORIGINAL'), "
+    "({phv00177928} == 1, 'FHS OFFSPRING'), ({phv00177928} == 3, 'FHS GENERATION 3'), "
+    "({phv00177928} == 7, 'FHS OMNI 1'), ({phv00177928} == 72, 'FHS OMNI 2'), "
+    "(True, 'FHS UNKNOWN VISIT')) + ' EXAM 4')), (True, None))"
+)
+FHS_EXAM4_NAME = (
+    "case(({phv00177928} in [0, 1, 3, 7, 72], case(({phv00177928} == 0, 'FHS ORIGINAL'), "
+    "({phv00177928} == 1, 'FHS OFFSPRING'), ({phv00177928} == 3, 'FHS GENERATION 3'), "
+    "({phv00177928} == 7, 'FHS OMNI 1'), ({phv00177928} == 72, 'FHS OMNI 2'), "
+    "(True, 'FHS UNKNOWN VISIT')) + ' EXAM 4'), (True, None))"
+)
+# The inner case()'s `(True, 'FHS UNKNOWN VISIT')` arm is a fallback (a True arm beside other
+# non-None arms). 1.8 and 5.1 do not compare fallback labels -- a catch-all is not an exam the
+# table holds -- and 5.2 checks a fallback against the observed codes instead, so the label set
+# here holds the five cohort labels and not 'FHS UNKNOWN VISIT EXAM 4'.
+_FHS_EXAM4_LABELS = {
+    "FHS ORIGINAL EXAM 4", "FHS OFFSPRING EXAM 4", "FHS GENERATION 3 EXAM 4",
+    "FHS OMNI 1 EXAM 4", "FHS OMNI 2 EXAM 4",
+}
+_FHS_EXAM4_FALLBACK = "FHS UNKNOWN VISIT EXAM 4"
+
+
+def test_check_5_1_reads_fhs_conditional_id_as_suffixed_labels():
+    """The regression: the suffix was captured as a label, leaving bare 'FHS OFFSPRING'."""
+    labels, is_dynamic = vvs.extract_visit_labels_from_expr(FHS_EXAM4_ID)
+    assert labels == _FHS_EXAM4_LABELS
+    assert is_dynamic is True
+    # The fallback is still enumerated, suffixed like the other arms, and marked as a fallback.
+    values = _visit_ids.enumerate_ids(FHS_EXAM4_ID)
+    assert _visit_ids.labels(values, include_fallback=True) == (
+        _FHS_EXAM4_LABELS | {_FHS_EXAM4_FALLBACK})
+
+
+def test_check_1_8_reads_fhs_conditional_id_as_suffixed_labels():
+    assert c18._extract_labels_from_expr(FHS_EXAM4_ID) == _FHS_EXAM4_LABELS
+
+
+def test_fhs_conditional_id_with_a_space_before_the_inner_case_paren():
+    """`case (` is still a case() call -- CASE_USAGE_RE accepts `\\bcase\\s*\\(` -- so the seed's
+    trailing ' EXAM 4' is still a suffix, in both parser copies."""
+    inner = FHS_EXAM4_ID.index("case(", 1)
+    spaced = FHS_EXAM4_ID[:inner] + "case (" + FHS_EXAM4_ID[inner + len("case("):]
+    assert vvs.extract_visit_labels_from_expr(spaced)[0] == _FHS_EXAM4_LABELS
+    assert c18._extract_labels_from_expr(spaced) == _FHS_EXAM4_LABELS
+    assert _FHS_EXAM4_FALLBACK in _visit_ids.labels(
+        _visit_ids.enumerate_ids(spaced), include_fallback=True)
+
+
+def test_fhs_conditional_id_and_name_yield_the_same_labels():
+    """A visit block's id and name describe one visit, so they must parse to the same labels."""
+    id_labels, _ = vvs.extract_visit_labels_from_expr(FHS_EXAM4_ID)
+    name_labels, _ = vvs.extract_visit_labels_from_expr(FHS_EXAM4_NAME)
+    assert id_labels == name_labels
+
+
+def test_fhs_associated_visit_label_in_case_form_is_unchanged():
+    """FHS entity files' multi-cohort shape: full labels inside the case, no suffix. The
+    `(True, 'FHS UNKNOWN VISIT')` arm is a fallback, so neither 1.8 nor 5.1 compares it."""
+    expr = (
+        "uuid5(\"https://w3id.org/bdchm/Visit\", str({phv00177926}) + \":\" + "
+        "case(({phv00177928} == '2', 'FHS NEW OFFSPRING SPOUSE EXAM 2'), "
+        "({phv00177928} == '3', 'FHS GENERATION 3 EXAM 2'), "
+        "({phv00177928} == '72', 'FHS OMNI 2 EXAM 2'), (True, 'FHS UNKNOWN VISIT')))"
+    )
+    labels, _ = vvs.extract_visit_labels_from_expr(expr)
+    assert labels == {
+        "FHS NEW OFFSPRING SPOUSE EXAM 2", "FHS GENERATION 3 EXAM 2", "FHS OMNI 2 EXAM 2",
+    }
+    assert c18._extract_labels_from_expr(expr) == labels
+    assert _visit_ids.labels(_visit_ids.enumerate_ids(expr), include_fallback=True) == (
+        labels | {"FHS UNKNOWN VISIT"})
+
+
+def test_every_fhs_visit_block_id_parses_to_its_name_labels():
+    """Against the shipped file: every Visit block in FHS-ingest/visit.yaml, id vs name.
+
+    Skips if the ingest tree is absent, so the suite still runs in a checkout without it.
+    """
+    import pytest
+    import yaml
+
+    spec = _HV_LINT.parent / "priority_variables_transform" / "FHS-ingest" / "visit.yaml"
+    if not spec.exists():
+        pytest.skip(f"{spec} not present in this checkout")
+
+    blocks = []
+    for doc in yaml.safe_load_all(spec.read_text(encoding="utf-8")):
+        blocks.extend(doc if isinstance(doc, list) else [doc] if doc else [])
+    checked = 0
+    for block in blocks:
+        cds = block.get("class_derivations") or {}
+        for cd in cds if isinstance(cds, list) else [cds]:
+            for cls, body in cd.items():
+                slots = (body or {}).get("slot_derivations", {}) or {}
+                id_expr = (slots.get("id") or {}).get("expr")
+                name_expr = (slots.get("name") or {}).get("expr")
+                if cls != "Visit" or not id_expr or not name_expr:
+                    continue
+                id_labels, _ = vvs.extract_visit_labels_from_expr(str(id_expr))
+                name_labels, _ = vvs.extract_visit_labels_from_expr(str(name_expr))
+                assert id_labels == name_labels, (id_expr, name_expr)
+                assert c18._extract_labels_from_expr(str(id_expr)) == id_labels
+                checked += 1
+    assert checked >= 10, f"only {checked} Visit blocks with id+name exprs -- shape changed"

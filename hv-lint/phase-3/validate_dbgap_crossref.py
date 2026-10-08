@@ -491,11 +491,17 @@ def parse_args() -> argparse.Namespace:
         "--summary-limit", type=int, default=50,
         help="Max findings to include in the Markdown summary (default: 50)"
     )
-    return p.parse_args()
+    args = p.parse_args()
+    _cohorts.reject_expect_study_for_all(p, args)
+    return args
 
 
 def main() -> int:
     args = parse_args()
+    # The file scan matches `<cohort>-ingest`, so an alias (`hchs_sol`, `HCHS-SOL`) must name
+    # the DIRECTORY here, as it already names the cache in `cohorts_to_load`; otherwise the
+    # release check passes and the scan finds no file.
+    args.cohort = _cohorts.canonical_cohort(args.cohort, find_transform_dir())
     in_ci = os.environ.get("GITHUB_ACTIONS") == "true"
     cache_dir = Path(args.cache_dir)
 
@@ -525,8 +531,9 @@ def main() -> int:
                 print(
                     f"ERROR: cohort '{cohort_name}' declares no dbGaP release, so the cache "
                     f"cannot be checked. Add hv_dataqc/cache_fetcher/manifests/"
-                    f"_manifest-<cohort>.yaml with current_version.study_id and data_version, "
-                    f"or pass --expect-study phs######.v#.",
+                    f"_manifest-<cohort>.yaml with current_version.study_id and data_version. "
+                    f"(--expect-study phs######.v# overrides it for a one-off Phase 3 run on "
+                    f"one named --cohort; Phase 5 has no override and still fails.)",
                     file=sys.stderr,
                 )
                 return 1

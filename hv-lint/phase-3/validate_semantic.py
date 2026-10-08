@@ -1124,11 +1124,17 @@ def parse_args() -> argparse.Namespace:
         choices=["3.9", "3.10", "3.12", "3.13", "3.14", "3.15", "3.16"],
         help="Run only specific checks (default: all)"
     )
-    return p.parse_args()
+    args = p.parse_args()
+    _cohorts.reject_expect_study_for_all(p, args)
+    return args
 
 
 def main() -> int:
     args = parse_args()
+    # The file scan matches `<cohort>-ingest`, so an alias (`hchs_sol`, `HCHS-SOL`) must name
+    # the DIRECTORY here, as it already names the cache in `cohorts_to_load`; otherwise the
+    # release check passes and the scan finds no file.
+    args.cohort = _cohorts.canonical_cohort(args.cohort, find_transform_dir())
     in_ci = os.environ.get("GITHUB_ACTIONS") == "true"
     cache_dir = Path(args.cache_dir)
     enabled_checks = set(args.check) if args.check else {"3.9", "3.10", "3.12", "3.13", "3.14", "3.15", "3.16"}
@@ -1166,8 +1172,9 @@ def main() -> int:
                 print(
                     f"ERROR: cohort '{cohort_name}' declares no dbGaP release, so the cache "
                     f"cannot be checked. Add hv_dataqc/cache_fetcher/manifests/"
-                    f"_manifest-<cohort>.yaml with current_version.study_id and data_version, "
-                    f"or pass --expect-study phs######.v#.",
+                    f"_manifest-<cohort>.yaml with current_version.study_id and data_version. "
+                    f"(--expect-study phs######.v# overrides it for a one-off Phase 3 run on "
+                    f"one named --cohort; Phase 5 has no override and still fails.)",
                     file=sys.stderr,
                 )
                 return 1
@@ -1187,9 +1194,9 @@ def main() -> int:
     if missing:
         for cohort_name, cache_key in missing:
             print(
-                f"ERROR: no dbGaP index for cohort '{cohort_name}' -- looked for "
-                f"'{cache_key}.json.gz' in {cache_dir}. Build it with build_phv_index.py "
-                f"and build_phv_detail_index.py (--source-cache <dbgap staging dir>).",
+                f"ERROR: no dbGaP detail index for cohort '{cohort_name}' -- looked for "
+                f"'{cache_key}_detail.json.gz' in {cache_dir}. Build it with "
+                f"build_phv_detail_index.py --source-cache <dbgap staging dir>.",
                 file=sys.stderr,
             )
         return 1
@@ -1200,7 +1207,9 @@ def main() -> int:
     yaml_files = find_yaml_files(base_dir, args.cohort)
     if not yaml_files:
         print(f"No YAML files found under {base_dir}")
-        return 0
+        # A named cohort with nothing to scan was not checked; only `all` over an empty tree
+        # has nothing to fail.
+        return 1 if args.cohort.strip().lower() != "all" else 0
 
     print(f"Found {len(yaml_files)} YAML files to validate")
     print(f"Enabled checks: {', '.join(sorted(enabled_checks))}")

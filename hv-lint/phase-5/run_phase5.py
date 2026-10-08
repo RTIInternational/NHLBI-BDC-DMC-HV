@@ -53,7 +53,7 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument(
         "--cache-dir", default=None,
-        help="Directory with per-cohort .json.gz PHV indexes (check 5.4)",
+        help="Directory with the release-keyed PHV and detail indexes (checks 5.3, 5.4, 5.8)",
     )
     p.add_argument(
         "--hv-root",
@@ -96,6 +96,8 @@ def run_component(
 
 def main() -> int:
     args = parse_args()
+    # Stripped as `_cohorts.canonical_cohort` strips, so ` all` is `all` to Phases 3 and 5 alike.
+    args.cohort = args.cohort.strip()
     skip_set = set(args.skip)
 
     # Propagate --hv-root to child processes via environment variable
