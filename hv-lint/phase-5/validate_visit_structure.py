@@ -471,6 +471,12 @@ def _scan_nested_visit_refs(
 
 # -- Checks -------------------------------------------------------------------
 
+
+def repr_age(expr: str) -> str:
+    """An age expression quoted for a finding message: the known-issue fingerprint masks
+    unquoted numbers, and a multiplier (`* 365` vs `* 12`) is the part that must not be masked."""
+    return expr if expr == "no age" else f"'{expr}'"
+
 def check_5_1_uniqueness(registry: VisitRegistry) -> list[Finding]:
     """5.1: one Visit id per (participant, label).
 
@@ -514,7 +520,8 @@ def check_5_1_uniqueness(registry: VisitRegistry) -> list[Finding]:
                         severity="WARNING",
                         message=(f"Visit id '{label}' emitted by {len(tables)} tables "
                                  f"({', '.join(str(x.pht) for x in tables)}); first in block "
-                                 f"{tables[0].block_index}; age expressions: {'; '.join(ages)}"),
+                                 f"{tables[0].block_index}; age expressions: "
+                                 f"{'; '.join(repr_age(a) for a in ages)}"),
                     ))
     else:
         # Static IDs -- check exact ID uniqueness

@@ -288,3 +288,56 @@ def test_reached_fallback_fails_ci_through_main(tmp_path):
     res = E.phase5(t)
     assert res.returncode == 1 and "fallback label 'FHS UNKNOWN VISIT' has no Visit block" in \
         res.stdout
+
+
+def _set_age(block: dict, mult: str) -> dict:
+    b = copy.deepcopy(block)
+    slots = b["class_derivations"]["Visit"]["slot_derivations"]
+    for s in ("age_at_visit_start", "age_at_visit_end"):
+        slots[s]["expr"] = slots[s]["expr"].replace("* 365", f"* {mult}")
+    return b
+
+
+def test_51_a_changed_age_multiplier_changes_the_fingerprint(tmp_path):
+    """Review round 2 A D1: 5.1's message names the age expressions; with them unquoted the
+    multiplier was masked, so `* 365` -> `* 12` kept the baselined fingerprint and passed."""
+    t = E.Tree(tmp_path, "CHS")
+    b1, b2 = E.fixture_block("chs_visit_b1.yaml"), E.fixture_block("chs_visit_b2.yaml")
+    t.write("visit.yaml", [b1, b2])
+    assert E.phase5(t, mode="update").returncode == 0          # record the 5.1 WARNING
+    assert "5.1" in t.baseline.read_text(encoding="utf-8")
+    assert E.phase5(t).returncode == 0
+    t.write("visit.yaml", [b1, _set_age(b2, "12")])
+    res = E.phase5(t)
+    assert res.returncode == 1 and "new WARNING [5.1]" in res.stdout, res.stdout[-2000:]
+    assert "* 12" in res.stdout
+
+
+def _phase_block(labels: list[str]) -> dict:
+    b = copy.deepcopy(E.fixture_block("copdgene_asthma_b0.yaml"))
+    slots = b["class_derivations"]["Condition"]["slot_derivations"]
+    arms = ", ".join(f"({{phv00568798}} == '{i}', uuid5('https://w3id.org/bdchm/Visit', "
+                     f"str({{phv00159568}}) + ':{lab}'))" for i, lab in enumerate(labels))
+    slots["associated_visit"]["expr"] = f"case({arms}, (True, None))"
+    return b
+
+
+def test_18_overlap_label_change_changes_the_fingerprint(tmp_path):
+    """Review round 2 A D2: the apostrophe in "block's" paired with the first label's opening
+    quote, so the labels after it were read as unquoted and their exam numbers masked."""
+    t = E.Tree(tmp_path, "COPDGene")
+    a = _phase_block(["FHS OMNI 1 EXAM 1", "FHS OMNI 1 EXAM 2"])
+    t.write("a.yaml", [a])
+    t.write("b.yaml", [_phase_block(["FHS OMNI 1 EXAM 2", "FHS OMNI 1 EXAM 3"])])
+    script = "phase-1/check_cross_file_pht_consistency.py"
+    assert t.run(script, "--cohort", "COPDGene", mode="update").returncode == 0
+    assert t.run(script, "--cohort", "COPDGene").returncode == 0
+    t.write("b.yaml", [_phase_block(["FHS OMNI 1 EXAM 2", "FHS OMNI 1 EXAM 4"])])
+    res = t.run(script, "--cohort", "COPDGene")
+    assert res.returncode == 1 and "new WARNING [1.8]" in res.stdout, res.stdout[-2000:]
+
+
+def test_quoted_text_keeps_its_numbers_beside_an_apostrophe():
+    key = K.message_key("pht1: this block's labels {'FHS OMNI 1 EXAM 4'} in 3 files")
+    assert "'FHS OMNI 1 EXAM 4'" in key and "in # files" in key
+    assert K.message_key("label 'Don't know 2' seen 5 times") == "label 'Don't know 2' seen # times"

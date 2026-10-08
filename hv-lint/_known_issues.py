@@ -98,7 +98,10 @@ def cohort_of(rel: str | None) -> str | None:
 
 # -- fingerprints --------------------------------------------------------------------------
 
-_QUOTED_RE = re.compile(r"('[^']*'|\"[^\"]*\")")
+# A single quote opens a quoted run only after a non-word character and closes one only before
+# a non-word character, so an apostrophe ("block's", 'Don't know') cannot pair with a real quote
+# and leave the labels after it unquoted, which would mask their numbers.
+_QUOTED_RE = re.compile(r"((?<!\w)'(?:[^']|(?<=\w)'(?=\w))*'(?!\w)|\"[^\"]*\")")
 # A number glued to a word, a dot or a colon is part of a name (phv00012345, OMOP:4041720).
 _NUMBER_RE = re.compile(r"(?<![\w.:])\d[\d,]*(?:\.\d+)?%?")
 _PHV_RE = re.compile(r"phv\d{8}")

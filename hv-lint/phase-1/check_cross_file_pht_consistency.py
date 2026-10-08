@@ -268,7 +268,7 @@ def check_cross_file_pht_consistency(
                         if ref.labels == b_set:
                             findings.append(Finding(
                                 ref.file, ref.block_index, "1.8", "WARNING",
-                                f"{pht}: this block's visit labels {_fmt(b_set)} overlap "
+                                f"{pht}: this block has visit labels {_fmt(b_set)}, which overlap "
                                 f"{_fmt(a_set)} in {other.file.rsplit('/', 1)[-1]} block "
                                 f"{other.block_index}, and neither contains the other -- check "
                                 f"which visits the table holds",
