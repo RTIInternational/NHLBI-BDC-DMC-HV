@@ -399,3 +399,15 @@ def test_a_deleted_files_row_and_entry_are_fixed_and_pruned(tree, monkeypatch):
     # a --file run still leaves another file's rows alone
     _baseline(_at(tree["other"], 0, "5.11", "WARNING", "w"))
     assert _run([], tree, scanned=[tree["afib"]], partial=True) == []
+
+
+def test_a_file_run_leaves_a_deleted_files_row_and_entry_alone(tree):
+    """Review round 3 B D1: a --file run (partial) scanned one file, so it cannot tell a deleted
+    file from one it did not look at; the deleted file's entry and row stay in place."""
+    gone = tree["other"].parent / "gone.yaml"
+    gone.write_text(tree["other"].read_text(encoding="utf-8"), encoding="utf-8")
+    _baseline(_at(gone, 0, "5.11", "WARNING", "w"))
+    _list(tree, _at(gone, 0))
+    gone.unlink()
+    assert _run([], tree, scanned=[tree["afib"]], partial=True) == []
+    assert _run([], tree, scanned=[tree["afib"]]) != []      # the same run, not partial

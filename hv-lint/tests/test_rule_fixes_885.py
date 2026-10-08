@@ -169,6 +169,7 @@ def test_18_majority_thresholds_hold_at_their_edges():
     assert n_findings(["E1", "E1", "E2"]) == 1                 # 2 agree, 100%
     assert n_findings(["E1"] * 4 + ["X0", "X1"]) == 2          # each lone block faces 4/5 = 80%
     assert n_findings(["E1"] * 4 + ["X0", "X1", "X2"]) == 0    # 4/6 = 67%
+    assert n_findings(["E1"] * 3 + ["X0", "X1"]) == 0          # each lone block faces 3/4 = 75%
     assert n_findings(["E1"] * 8 + ["X0", "X1"]) == 2          # 8/9 = 89%
     multi = [f"EXAM {i % 5}" for i in range(40)]               # a multi-exam table
     assert n_findings(multi) == 0

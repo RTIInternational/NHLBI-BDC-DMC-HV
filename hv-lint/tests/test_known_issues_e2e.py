@@ -105,6 +105,47 @@ def test_run_all_is_the_one_prune_command(tmp_path):
     assert K.load_entries(t.ki) == [] and run().returncode == 0
 
 
+def _fixed_afib_tree(tmp_path):
+    """FHS afib b0's 5.11 ERRORs listed, then fixed: a prune would remove the entries."""
+    t = _fhs_tree(tmp_path)
+    t.list_as_known(E.phase5(t), 882)
+    assert E.phase5(t, mode="update").returncode == 0
+    t.write("afib.yaml", [_clean_block()])
+    return t
+
+
+def _files(t):
+    return t.ki.read_text(encoding="utf-8"), t.baseline.read_text(encoding="utf-8")
+
+
+def test_prune_refuses_when_a_phase_fails_outside_the_known_issue_step(tmp_path):
+    """Review round 3 B D1: the "phase(s) failed" refusal alone. Phase 1 fails as yamllint or a
+    crash would (no finding, nothing staged); Phase 5 passes and stages a clean prune. Only
+    run_all's own check of the phase exit codes stands between that stage and a write."""
+    t = _fixed_afib_tree(tmp_path)
+    before = _files(t)
+    res = E.run_all_stubbed(t, {"phase1": 1, "phase2": 0, "phase3": 0}, mode="prune")
+    assert res.returncode == 1, res.stdout[-1500:]
+    assert "Prune REFUSED, nothing written: 1 phase(s) failed (phase1)" in res.stdout
+    assert "refusing to prune" not in res.stdout              # no component refused
+    assert _files(t) == before
+
+
+def test_prune_refuses_a_staged_refusal_when_every_phase_passes(tmp_path):
+    """Review round 3 B D1: apply_staged_prune's refusal alone. At --fail-on critical an
+    unlisted ERROR does not fail Phase 5, so every phase passes; the component's staged refusal
+    is what keeps the fixed entries from being removed while another ERROR is unlisted."""
+    t = _fixed_afib_tree(tmp_path)
+    t.write("afib2.yaml", [E.fixture_block("fhs_afib_b0.yaml")])     # a new, unlisted 5.11
+    before = _files(t)
+    res = E.run_all_stubbed(t, {"phase1": 0, "phase2": 0, "phase3": 0}, "--fail-on",
+                            "critical", mode="prune")
+    assert "All phases passed." in res.stdout, res.stdout[-1500:]
+    assert res.returncode == 1 and "Prune REFUSED, nothing written" in res.stdout
+    assert "refusing to prune" in res.stdout
+    assert _files(t) == before
+
+
 def test_prune_refuses_a_run_with_a_skipped_phase(tmp_path):
     """Review round 3 A M3: a skipped phase proved nothing fixed, so a prune from that run
     refuses, even when the phases that did run are clean."""

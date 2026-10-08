@@ -49,6 +49,9 @@ def test_phase2_schema_ref_is_pinned_to_one_commit():
 _FAKE_GIT = r'''
 git() {  # git diff --name-only BASE HEAD -- <pathspec>...: the changed files under each pathspec
   local seen=0 p f
+  for p in "$@"; do  # a diff naming $FAIL_PATHSPEC fails, as git does on an unknown base
+    if [ -n "$FAIL_PATHSPEC" ] && [ "$p" = "$FAIL_PATHSPEC" ]; then return 128; fi
+  done
   for p in "$@"; do
     if [ "$seen" = 1 ]; then
       for f in $CHANGED_FILES; do case "$f" in "$p"*) echo "$f";; esac; done
@@ -60,7 +63,7 @@ git() {  # git diff --name-only BASE HEAD -- <pathspec>...: the changed files un
 '''
 
 
-def _detect(tmp_path, changed: list[str]) -> str:
+def _detect(tmp_path, changed: list[str], fail_pathspec: str = "") -> str:
     """Run the workflow's own Detect step under `bash -e`, as Actions does, on a fake diff."""
     bash = shutil.which("bash")
     if not bash:
@@ -74,6 +77,7 @@ def _detect(tmp_path, changed: list[str]) -> str:
     out = tmp_path / "github_output"
     out.write_text("", encoding="utf-8")
     env = dict(os.environ, GITHUB_OUTPUT=str(out), CHANGED_FILES=" ".join(changed),
+               FAIL_PATHSPEC=fail_pathspec,
                PATH=os.path.dirname(sys.executable) + os.pathsep + os.environ.get("PATH", ""))
     res = subprocess.run([bash, "-e", str(script)], cwd=HVLINT.parent, env=env,
                          capture_output=True, text=True)
@@ -91,6 +95,14 @@ def test_detect_lints_all_when_hv_lint_itself_changed(tmp_path, tooling):
     spec = "priority_variables_transform/MESA-ingest/hdl.yaml"
     assert _detect(tmp_path, [spec]) == "cohort=MESA"
     assert _detect(tmp_path, [spec, tooling]) == "cohort=all"
+
+
+def test_detect_lints_all_when_the_tooling_diff_fails(tmp_path):
+    """Review round 3 B D2: a failed hv-lint/ diff must widen to `all`, not read as "no tooling
+    change" and narrow the run to the one cohort whose specs changed."""
+    spec = "priority_variables_transform/MESA-ingest/hdl.yaml"
+    assert _detect(tmp_path, [spec]) == "cohort=MESA"
+    assert _detect(tmp_path, [spec], fail_pathspec="hv-lint/") == "cohort=all"
 
 
 def test_detect_keeps_the_manifest_widening(tmp_path):
