@@ -21,6 +21,7 @@ import io
 import os
 import subprocess
 import sys
+import tempfile
 from datetime import datetime
 from pathlib import Path
 
@@ -29,6 +30,7 @@ REPORTS_DIR = SCRIPT_DIR / "reports"
 
 sys.path.insert(0, str(SCRIPT_DIR))
 import _cohorts  # noqa: E402
+import _known_issues  # noqa: E402
 
 PHASES = {
     "phase1": {
@@ -162,6 +164,13 @@ def main() -> int:
     # The known-issue prune and baseline update modes run only under this flag: a phase or a
     # component started on its own may cover part of a cohort (hv-lint/_known_issues.py).
     os.environ["HVLINT_RUN_ALL"] = "1"
+    # A prune is staged by the components and written here, only when every phase ran clean.
+    stage: Path | None = None
+    if os.environ.get(_known_issues.PRUNE_ENV) == "1":
+        fd, name = tempfile.mkstemp(prefix="hvlint-prune-", suffix=".jsonl")
+        os.close(fd)
+        stage = Path(name)
+        os.environ[_known_issues.STAGE_ENV] = str(stage)
 
     # Propagate --hv-root
     if args.hv_root:
@@ -217,6 +226,25 @@ def main() -> int:
         summary.write(f"\n{len(failed)} phase(s) failed.\n")
     else:
         summary.write("\nAll phases passed.\n")
+
+    if stage is not None:
+        os.environ.pop(_known_issues.STAGE_ENV, None)
+        refusals: list[str] = []
+        n_entries = n_rows = 0
+        if failed:
+            refusals.append(f"{len(failed)} phase(s) failed ({', '.join(failed)})")
+        else:
+            n_entries, n_rows, refusals = _known_issues.apply_staged_prune(stage)
+        stage.unlink(missing_ok=True)
+        if refusals:
+            summary.write("\nPrune REFUSED, nothing written: " + "; ".join(dict.fromkeys(refusals))
+                          + ". A prune removes only what a run where every phase passes proves "
+                          "fixed.\n")
+            failed = failed or ["prune"]
+        else:
+            summary.write(f"\nPrune applied: {n_entries} known-issue entr"
+                          f"{'y' if n_entries == 1 else 'ies'} and {n_rows} baseline row(s) "
+                          f"removed.\n")
 
     summary_text = summary.getvalue()
     print(summary_text, end="")

@@ -233,25 +233,59 @@ def test_baseline_rows_of_unscanned_files_are_out_of_scope(tree):
 
 # -- prune and update ---------------------------------------------------------------------
 
-def test_prune_removes_only_stale_entries_and_rows_and_never_adds(tree, monkeypatch):
+def _prune_tree(tree, monkeypatch):
     keep, gone = _at(tree["afib"], 0), _at(tree["afib"], 1)
     header = "# head\n\n# FHS-ingest/afib.yaml\n"
     tree["ki"].write_text(header + K.entry_line(_key(keep), 882, "defect") + "\n"
                           + K.entry_line(_key(gone), 882, "defect") + "\n", encoding="utf-8")
-    keep_key = _key(keep)
     w_keep = _at(tree["afib"], 2, "5.11", "WARNING", "keep")
     _baseline(w_keep, _at(tree["other"], 0, "5.11", "WARNING", "gone"))
     monkeypatch.setenv("HVLINT_RUN_ALL", "1")
-    new = _at(tree["afib"], 2, msg="a new unlisted error")
-    new_w = _at(tree["afib"], 1, "5.11", "WARNING", "a new warning")
-    extra = _run([keep, w_keep, new, new_w], tree, mode="prune")
-    assert keep.severity == "INFO" and new.severity == "ERROR"
+    return keep, w_keep, header
+
+
+def test_prune_removes_only_stale_entries_and_rows_and_never_adds(tree, monkeypatch):
+    keep, w_keep, header = _prune_tree(tree, monkeypatch)
+    keep_key = _key(keep)
+    extra = _run([keep, w_keep], tree, mode="prune")
+    assert keep.severity == "INFO"
     assert len([x for x in extra if "pruned" in x.message and x.severity == "INFO"]) == 2
-    assert [x.check for x in extra if x.severity == "ERROR"] == ["RATCHET"]   # new_w: not added
+    assert [x for x in extra if x.severity == "ERROR"] == []
     assert [e.key for e in K.load_entries()] == [keep_key]
     assert tree["ki"].read_text(encoding="utf-8").startswith(header)
     rows = K.load_baseline()["5.11"]["FHS"]
     assert len(rows) == 1 and rows[0].endswith("| keep")
+
+
+@pytest.mark.parametrize("extra_finding", ["error", "warning"])
+def test_prune_refuses_beside_an_unlisted_error_or_a_new_warning(tree, monkeypatch,
+                                                                extra_finding):
+    """Review round 2 A D3: with either in the run, a stale entry may be a defect still present
+    under a new message, so nothing is written and the run says why."""
+    keep, w_keep, _ = _prune_tree(tree, monkeypatch)
+    ki, bl = tree["ki"].read_text(encoding="utf-8"), tree["bl"].read_text(encoding="utf-8")
+    other = (_at(tree["afib"], 2, msg="a new unlisted error") if extra_finding == "error"
+             else _at(tree["afib"], 1, "5.11", "WARNING", "a new warning"))
+    extra = _run([keep, w_keep, other], tree, mode="prune")
+    refusal = [x for x in extra if x.check == "KI" and "refusing to prune" in x.message]
+    assert len(refusal) == 1 and refusal[0].severity == "ERROR"
+    assert not [x for x in extra if "pruned" in x.message]
+    assert len([x for x in extra if "stale known-issue entry" in x.message]) == 1
+    assert tree["ki"].read_text(encoding="utf-8") == ki
+    assert tree["bl"].read_text(encoding="utf-8") == bl
+
+
+def test_prune_under_run_all_is_staged_not_written(tree, monkeypatch, tmp_path):
+    keep, w_keep, _ = _prune_tree(tree, monkeypatch)
+    keep_key = _key(keep)
+    ki = tree["ki"].read_text(encoding="utf-8")
+    stage = tmp_path / "stage.jsonl"
+    monkeypatch.setenv(K.STAGE_ENV, str(stage))
+    extra = _run([keep, w_keep], tree, mode="prune")
+    assert len([x for x in extra if "staged for prune" in x.message]) == 2
+    assert tree["ki"].read_text(encoding="utf-8") == ki
+    assert K.apply_staged_prune(stage) == (1, 1, [])
+    assert [e.key for e in K.load_entries()] == [keep_key]
 
 
 @pytest.mark.parametrize("mode,run_all,partial", [

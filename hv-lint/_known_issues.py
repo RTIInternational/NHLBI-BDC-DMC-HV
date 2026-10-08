@@ -51,7 +51,7 @@ import hashlib
 import json
 import os
 import re
-from dataclasses import dataclass
+from dataclasses import astuple, dataclass
 from pathlib import Path
 from typing import Callable, Iterable
 
@@ -68,6 +68,9 @@ STATUSES = ("defect", "dbgap-error", "false-positive", "pending")
 RUN_ALL_ENV = "HVLINT_RUN_ALL"
 PRUNE_ENV = "HVLINT_PRUNE"
 UPDATE_ENV = "HVLINT_UPDATE_BASELINE"
+# run_all.py points STAGE_ENV at a file: in prune mode each component appends what it would
+# remove (or why it refuses) there, and run_all.py writes nothing unless every phase was clean.
+STAGE_ENV = "HVLINT_PRUNE_STAGE"
 PRUNE_CMD = "HVLINT_PRUNE=1 python hv-lint/run_all.py --cohort all"
 UPDATE_CMD = "HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all"
 
@@ -358,6 +361,58 @@ def write_baseline(rows: dict[str, dict[str, list[str]]], path: Path | str | Non
     p.write_text(json.dumps(out, indent=1) + "\n", encoding="utf-8")
 
 
+# -- prune: staged by each component, written by run_all.py ------------------------------
+
+def _stage(record: dict) -> bool:
+    """Append ``record`` to run_all.py's prune stage; False when no stage is set."""
+    stage = os.environ.get(STAGE_ENV)
+    if not stage:
+        return False
+    with open(stage, "a", encoding="utf-8") as fh:
+        fh.write(json.dumps(record) + "\n")
+    return True
+
+
+def _prune_or_stage(stale: list[Entry], gone: list[tuple[str, str, str]],
+                    base: dict[str, dict[str, list[str]]]) -> bool:
+    """Stage the removals for run_all.py (True), or, with no stage, write them now (False)."""
+    record = {"entries": [list(astuple(e.key)) for e in stale],
+              "rows": [list(g) for g in gone]}
+    if _stage(record):
+        return True
+    if stale:
+        prune_entries(stale)
+    if gone:
+        drop = set(gone)
+        write_baseline({r: {c: [t for t in v if (r, c, t) not in drop] for c, v in by_c.items()}
+                        for r, by_c in base.items()})
+    return False
+
+
+def apply_staged_prune(stage: Path | str) -> tuple[int, int, list[str]]:
+    """Apply a stage file: ``(entries removed, rows removed, refusals)``.
+
+    Any refusal in the stage means nothing is written; the caller also refuses when a phase
+    failed, so a prune lands only from a run where every component ran clean.
+    """
+    p = Path(stage)
+    records = ([json.loads(x) for x in p.read_text(encoding="utf-8").splitlines() if x.strip()]
+               if p.is_file() else [])
+    refusals = [r["blocked"] for r in records if "blocked" in r]
+    if refusals:
+        return 0, 0, refusals
+    keys = {Key(*k) for r in records for k in r.get("entries", [])}
+    rows = {tuple(g) for r in records for g in r.get("rows", [])}
+    stale = [e for e in load_entries() if e.key in keys]
+    if stale:
+        prune_entries(stale)
+    if rows:
+        base = load_baseline()
+        write_baseline({r: {c: [t for t in v if (r, c, t) not in rows] for c, v in by_c.items()}
+                        for r, by_c in base.items()})
+    return len(stale), len(rows), []
+
+
 # -- the one entry point ---------------------------------------------------------------------
 
 def finalize(
@@ -425,18 +480,6 @@ def finalize(
         f.message = (f"{f.message} [known issue #{e.issue}, {e.status}"
                      + (f": {e.note}" if e.note else "") + "]")
     stale = [e for e in entries if e.key not in matched and in_scope(e.rule, e.file)]
-    if mode == "prune" and stale:
-        prune_entries(stale)
-        for e in stale:
-            extra.append(make_finding(meta, -1, "KI", "INFO",
-                                      f"pruned stale known-issue entry {e.describe()} (#{e.issue})"))
-    else:
-        for e in stale:
-            extra.append(make_finding(
-                meta, -1, "KI", "ERROR",
-                f"stale known-issue entry {e.describe()} (#{e.issue}): it matches no finding any "
-                f"more, so the issue is fixed here. Remove it (and every other fixed entry or "
-                f"WARNING row) with: {PRUNE_CMD}"))
 
     # WARNING ratchet: exact fingerprint sets per rule and cohort.
     current: dict[str, dict[str, set[str]]] = {}
@@ -455,6 +498,42 @@ def finalize(
                   if row_in_scope(r, t) and t not in current.get(r, {}).get(c, set()))
     new = sorted((r, c, t) for r, by_c in current.items() for c, rows in by_c.items()
                  for t in rows if t not in set(base.get(r, {}).get(c, [])))
+    unlisted = sorted((keys[id(f)] for f in findings
+                       if f.severity in ("ERROR", "CRITICAL") and id(f) in keys),
+                      key=lambda k: (k.file, k.block, k.rule, k.message))
+
+    # A prune removes only what a CLEAN run proves fixed. With an unlisted ERROR (a check that
+    # did not run is one) or a new WARNING in the run, an entry that matches nothing may be a
+    # defect still present under a new message, or a row whose check never ran: removing it
+    # first leaves the run red on a line nobody re-adds.
+    if mode == "prune" and (unlisted or new):
+        why = "; ".join(x for x in (
+            f"{len(unlisted)} ERROR finding(s) not in {meta}" if unlisted else "",
+            f"{len(new)} new WARNING(s)" if new else "") if x)
+        msg = (f"refusing to prune: this run has {why}. Fix or list those first (each prints the "
+               f"line to add), then prune; nothing was removed")
+        extra.append(make_finding(meta, -1, "KI", "ERROR", msg))
+        _stage({"blocked": msg})
+        mode = "check"
+
+    if mode == "prune" and (stale or gone):
+        staged = _prune_or_stage(stale, gone, base)
+        verb = "staged for prune" if staged else "pruned"
+        for e in stale:
+            extra.append(make_finding(meta, -1, "KI", "INFO",
+                                      f"{verb}: stale known-issue entry {e.describe()} "
+                                      f"(#{e.issue})"))
+        for r, c, t in gone:
+            extra.append(make_finding("hv-lint/warning_baseline.json", -1, "RATCHET", "INFO",
+                                      f"{verb}: fixed WARNING [{r}] {t}"))
+    elif mode != "prune":
+        for e in stale:
+            extra.append(make_finding(
+                meta, -1, "KI", "ERROR",
+                f"stale known-issue entry {e.describe()} (#{e.issue}): it matches no finding any "
+                f"more, so the issue is fixed here. Remove it (and every other fixed entry or "
+                f"WARNING row) with: {PRUNE_CMD}"))
+
     if mode == "update":
         rows = {r: {c: [t for t in v if not row_in_scope(r, t)] for c, v in by_c.items()}
                 for r, by_c in base.items()}
@@ -468,23 +547,13 @@ def finalize(
                 "hv-lint/warning_baseline.json", -1, "RATCHET", "ERROR",
                 f"new WARNING [{r}] in {c}: {t}. Fix it; or, if it is accepted, add it to the "
                 f"baseline in this PR ({UPDATE_CMD}) and say why"))
-        if mode == "prune" and gone:
-            drop = set(gone)
-            write_baseline({r: {c: [t for t in v if (r, c, t) not in drop]
-                                for c, v in by_c.items()} for r, by_c in base.items()})
-            for r, c, t in gone:
-                extra.append(make_finding("hv-lint/warning_baseline.json", -1, "RATCHET", "INFO",
-                                          f"pruned fixed WARNING [{r}] {t}"))
-        else:
+        if mode != "prune":
             for r, c, t in gone:
                 extra.append(make_finding(
                     "hv-lint/warning_baseline.json", -1, "RATCHET", "ERROR",
                     f"WARNING [{r}] in {c} is fixed: {t}. Remove it from the baseline (and every "
                     f"other fixed row or entry) with: {PRUNE_CMD}"))
 
-    unlisted = sorted((keys[id(f)] for f in findings
-                       if f.severity in ("ERROR", "CRITICAL") and id(f) in keys),
-                      key=lambda k: (k.file, k.block, k.rule, k.message))
     if unlisted:
         print(f"\n{len(unlisted)} ERROR finding(s) not in {meta}. Fix them; or, when one is "
               f"tracked in an issue, add its line (set issue and status):")

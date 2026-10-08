@@ -13,6 +13,8 @@ import shutil
 import sys
 from pathlib import Path
 
+import yaml
+
 HVLINT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(HVLINT / "tests"))
 sys.path.insert(0, str(HVLINT))
@@ -341,3 +343,63 @@ def test_quoted_text_keeps_its_numbers_beside_an_apostrophe():
     key = K.message_key("pht1: this block's labels {'FHS OMNI 1 EXAM 4'} in 3 files")
     assert "'FHS OMNI 1 EXAM 4'" in key and "in # files" in key
     assert K.message_key("label 'Don't know 2' seen 5 times") == "label 'Don't know 2' seen # times"
+
+
+# -- a prune writes only after a clean run (review round 2 A D3) --------------------------------
+
+def _real_subset(tmp_path, cohort: str, names: list[str]):
+    """Real spec files of one cohort, the committed known issues, and a baseline recorded on
+    exactly this subset, so the run starts clean."""
+    t = E.Tree(tmp_path, cohort)
+    for name in names:
+        shutil.copy(HVLINT.parent / "priority_variables_transform" / f"{cohort}-ingest" / name,
+                    t.dir / name)
+    shutil.copy(HVLINT / "known_issues.yaml", t.ki)
+    return t
+
+
+def _run_all(t, *skip: str):
+    return ("run_all.py", "--cohort", t.cohort, "--skip", *skip, "--no-report",
+            "--cache-dir", str(E.CACHE))
+
+
+def _start_clean(t, args):
+    assert t.run(*args, mode="update", run_all=False).returncode == 0
+    clean = t.run(*args)
+    assert clean.returncode == 0, clean.stdout[-2000:]
+    return t.ki.read_text(encoding="utf-8"), t.baseline.read_text(encoding="utf-8")
+
+
+def test_prune_refuses_when_a_partial_fix_leaves_a_new_warning(tmp_path):
+    """One more idtype arm on FHS cig_smok b36 narrows its 5.2 finding ('2', '3', '72' -> '2',
+    '72'). The old entry matches nothing, but the defect is still there under a new message:
+    pruning it first would delete the entry and leave the run red on a line nobody re-adds."""
+    t = _real_subset(tmp_path, "FHS", ["visit.yaml", "cig_smok.yaml"])
+    args = _run_all(t, "phase2", "phase3")
+    ki, bl = _start_clean(t, args)
+    blocks = yaml.safe_load((t.dir / "cig_smok.yaml").read_text(encoding="utf-8"))
+    v = blocks[36]["class_derivations"]["MeasurementObservation"]["slot_derivations"][
+        "associated_visit"]
+    v["expr"] = v["expr"].replace(
+        "(True, 'FHS UNKNOWN VISIT')",
+        "({phv00525297} == '3', 'FHS OFFSPRING EXAM 5'), (True, 'FHS UNKNOWN VISIT')")
+    t.write("cig_smok.yaml", blocks)
+    res = t.run(*args, mode="prune", run_all=False)
+    assert res.returncode == 1 and "refusing to prune" in res.stdout, res.stdout[-3000:]
+    assert "new WARNING [5.2]" in res.stdout
+    assert t.ki.read_text(encoding="utf-8") == ki
+    assert t.baseline.read_text(encoding="utf-8") == bl
+
+
+def test_prune_refuses_when_a_cohort_did_not_run(tmp_path):
+    """MESA's visit.yaml deleted: 5.0 fails the run, and 5.8's cohort-level row (MESA's detail
+    index has no coll_interval) must survive the prune, not be read as fixed."""
+    t = _real_subset(tmp_path, "MESA", ["visit.yaml", "hdl.yaml"])
+    args = _run_all(t, "phase1", "phase2", "phase3")
+    ki, bl = _start_clean(t, args)
+    assert "MESA-ingest/ | cohort" in bl
+    (t.dir / "visit.yaml").unlink()
+    res = t.run(*args, mode="prune", run_all=False)
+    assert res.returncode == 1 and "refusing to prune" in res.stdout, res.stdout[-3000:]
+    assert t.ki.read_text(encoding="utf-8") == ki
+    assert t.baseline.read_text(encoding="utf-8") == bl
