@@ -576,8 +576,8 @@ def load_table_names(cache_dir: Path | str, cache_key: str) -> dict[str, dict[st
     """``{pht: {"name", "description"}}`` from ``<cache_key>_tables.json.gz``; ``{}`` when absent.
 
     Built by ``build_phv_stats_index.py --tables`` from the release's data dictionaries (the
-    short name in each filename and the table's own description). Only FHS's index is committed:
-    rule 1.8 reads it for FHS's ``ex<cohort>_<exam>s`` names.
+    short name in each filename and the table's own description). FHS's and MESA's are
+    committed: rule 1.8 reads FHS's ``ex<cohort>_<exam>s`` names, rule 1.14 MESA's ``ExamN``.
     """
     import gzip  # noqa: PLC0415
 

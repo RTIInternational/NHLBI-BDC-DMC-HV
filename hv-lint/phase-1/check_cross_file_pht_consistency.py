@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""HV-Lint Phase 1: Cross-file PHT visit label consistency (Rule 1.8).
+"""HV-Lint Phase 1: Cross-file PHT visit label consistency (Rules 1.8, 1.14).
 
 Every data block names the visit(s) its rows belong to. Blocks that read the same dbGaP table
 should agree on them. The unit of comparison is a block's label SET: a block whose
@@ -20,6 +20,11 @@ Checks:
            least MAJORITY_MIN_SHARE of them (a copy-paste label on a single-exam table).
          - WARNING: two blocks of one table carry label sets that overlap while neither contains
            the other.
+    1.14 Visit label vs dbGaP exam (ERROR): a block with exactly one label names a different exam
+         than its own dbGaP metadata does (VISIT_EVIDENCE): an ARIC value variable whose
+         description's bracketed source says "Visit N" under a label other than ARIC EXAM N; a
+         MESA table whose name says "ExamN" under a "MESA ... EXAM M" label. Catches the
+         single-block table that 1.8's majority arm cannot (ARIC ATRFIB41 labelled EXAM 3).
 
 Usage:
     python hv-lint/phase-1/check_cross_file_pht_consistency.py
@@ -39,10 +44,12 @@ from pathlib import Path
 import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "phase-3"))
 from _paths import find_transform_dir  # noqa: E402
 import _known_issues  # noqa: E402
 import _cohorts  # noqa: E402
 import _visit_ids  # noqa: E402
+import check_value_semantic as _cvs  # noqa: E402  (the shared detail-index loader)
 
 TRANSFORM_DIR = find_transform_dir()
 
@@ -139,6 +146,72 @@ class PhtVisitRef:
     file: str
     block_index: int
     bdchm_class: str
+    value_phvs: frozenset[str] = frozenset()
+
+
+# Rule 1.14: where a cohort's dbGaP metadata names a block's exam, and how its labels spell it.
+# "description": the bracketed source of a value variable's description ("[Atrial Fibrillation.
+# ATRFIB41. Visit 4]", "[TIA/Stroke Form, Cohort Visit 4]"); a number elsewhere in the text
+# ("since visit 1") is not the variable's own visit. "table": the table's dbGaP short name
+# ("MESA_Exam4Main", "MESA_AncilMesaLungExam3CT").
+VISIT_EVIDENCE: dict[str, tuple[str, re.Pattern, re.Pattern]] = {
+    "ARIC": ("description", re.compile(r"\[[^\]]*?\bvisit\s*(\d+)\b[^\]]*\]", re.I),
+             re.compile(r"^ARIC EXAM (\d+)$")),
+    "MESA": ("table", re.compile(r"exam(\d+)", re.I), re.compile(r"^MESA (?:.+ )?EXAM (\d+)$")),
+}
+
+
+def _cohort_of(rel_path: str) -> str:
+    for part in rel_path.split("/"):
+        if part.endswith("-ingest"):
+            return part[: -len("-ingest")]
+    return ""
+
+
+def check_visit_vs_dbgap(
+    all_refs: list[PhtVisitRef],
+    table_names: dict[str, dict[str, str]],
+    details: dict,
+) -> list[Finding]:
+    """Check 1.14: a single-label block whose own dbGaP metadata names a different exam.
+
+    Every exam number the evidence names must differ from the label's for a finding, so a
+    derived variable citing two visits under either one is not reported. A block whose label
+    has no exam number (MESA LUNG CT, ARIC CHEM 2), or whose metadata names none, is not judged.
+    """
+    findings: list[Finding] = []
+    for ref in all_refs:
+        rule = VISIT_EVIDENCE.get(_cohort_of(ref.file))
+        if rule is None or len(ref.labels) != 1:
+            continue
+        kind, evidence_re, label_re = rule
+        (label,) = ref.labels
+        m = label_re.match(label)
+        if not m:
+            continue
+        if kind == "table":
+            name = (table_names.get(ref.pht) or {}).get("name", "")
+            named = set(evidence_re.findall(name))
+            source = f"its table {ref.pht} ({name})"
+        else:
+            named = set()
+            cited = []
+            for phv in sorted(ref.value_phvs):
+                rec = details.get(phv)
+                found = set(evidence_re.findall(rec.description or "")) if rec else set()
+                if found:
+                    named |= found
+                    cited.append(f"{phv} ({rec.name})")
+            source = "the dbGaP description of " + ", ".join(cited)
+        named = {str(int(x)) for x in named}
+        if named and m.group(1) not in named:
+            word = "Exam" if kind == "table" else "Visit"
+            findings.append(Finding(
+                ref.file, ref.block_index, "1.14", "ERROR",
+                f"{ref.pht}: this {ref.bdchm_class} block labels its rows '{label}', but "
+                f"{source} names {word} {', '.join(sorted(named, key=int))} -- wrong visit label",
+            ))
+    return findings
 
 
 def find_yaml_files(base_dir: Path, cohort: str) -> list[Path]:
@@ -176,7 +249,8 @@ def _extract_visit_refs(
         visit = slot_derivs.get("associated_visit")
         labels = frozenset(_visit_ids.labels(_visit_ids.slot_ids(visit)))
         if labels:
-            refs.append(PhtVisitRef(pht, labels, rel_path, block_idx, cls_name))
+            refs.append(PhtVisitRef(pht, labels, rel_path, block_idx, cls_name,
+                                    frozenset(_known_issues.value_phvs(cls_def))))
     return refs
 
 
@@ -330,14 +404,31 @@ def main() -> int:
 
     cache_dir = Path(__file__).resolve().parent.parent / "dbgap-cache"
     table_names: dict[str, dict[str, str]] = {}
-    for _name, key in _cohorts.cohorts_to_load(args.cohort, cache_dir, base_dir):
+    details: dict = {}
+    for name, key in _cohorts.cohorts_to_load(args.cohort, cache_dir, base_dir):
         table_names.update(_cohorts.load_table_names(cache_dir, key))
+        if name in VISIT_EVIDENCE:
+            # 1.14 reads the pinned release's metadata; a missing index is a skipped check.
+            kind = VISIT_EVIDENCE[name][0]
+            if kind == "description":
+                try:
+                    details.update(_cvs.load_detail_index(cache_dir, key).records)
+                except FileNotFoundError:
+                    print(f"ERROR: no {key}_detail.json.gz for {name}: 1.14 DID NOT RUN for it.",
+                          file=sys.stderr)
+                    return 1
+            elif not _cohorts.load_table_names(cache_dir, key):
+                print(f"ERROR: no {key}_tables.json.gz for {name}: 1.14 DID NOT RUN for it. "
+                      f"Build it with hv-lint/build_phv_stats_index.py --tables --cohort {key}.",
+                      file=sys.stderr)
+                return 1
     findings = check_cross_file_pht_consistency(all_refs, table_names)
+    findings.extend(check_visit_vs_dbgap(all_refs, table_names, details))
 
     # -- Report --------------------------------------------------------
     # Known issues, stale entries and the WARNING ratchet (hv-lint/_known_issues.py).
     findings.extend(_known_issues.finalize(
-        findings, checks={"1.8"}, scanned_files=yaml_files, make_finding=Finding))
+        findings, checks={"1.8", "1.14"}, scanned_files=yaml_files, make_finding=Finding))
 
     fail_rank = SEVERITY_RANK[args.fail_on.upper()]
 

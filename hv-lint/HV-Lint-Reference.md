@@ -78,7 +78,7 @@ Indexes are committed to this repo (4.66 MB as committed: 0.51 MB basic, 4.15 MB
 | `hv-lint/phase-1/run_yamllint.py` | 1 | yamllint wrapper |
 | `hv-lint/phase-1/check_quoting_rules.py` | 1 | Issue #387 quoting rule checker |
 | `hv-lint/phase-1/check_cross_block_consistency.py` | 1 | Cross-block slot consistency (1.6) |
-| `hv-lint/phase-1/check_cross_file_pht_consistency.py` | 1 | Cross-file PHT visit label consistency (1.8) |
+| `hv-lint/phase-1/check_cross_file_pht_consistency.py` | 1 | Cross-file PHT visit label consistency (1.8); visit label vs dbGaP exam (1.14) |
 | `hv-lint/phase-1/check_cross_file_duplicates.py` | 1 | Cross-file identical blocks (1.12) |
 | `hv-lint/phase-2/run_phase2.py` | 2 | Phase 2 manager -- orchestrates model conformance and PHV dedup |
 | `hv-lint/phase-2/validate_model_conformance.py` | 2 | BDC-HM model conformance checks (2.1-2.7, 2.5b, 2.10, 2.12) |
@@ -88,7 +88,7 @@ Indexes are committed to this repo (4.66 MB as committed: 0.51 MB basic, 4.15 MB
 | `hv-lint/phase-3/validate_semantic.py` | 3 | Semantic validation (3.9, 3.10, 3.12-3.16, 3.19) |
 | `hv-lint/phase-3/check_value_semantic.py` | 3 | Value-mapping label/OMOP semantic check (3.11) |
 | `hv-lint/phase-3/check_status_semantic.py` | 3 | Status-slot polarity and follow-up checks (3.17, 3.18) |
-| `hv-lint/build_phv_stats_index.py` | -- | Builds compressed value-count indexes from var_report files; `--tables` builds the table-name index (`<release>_tables.json.gz`, FHS only, rule 1.8) |
+| `hv-lint/build_phv_stats_index.py` | -- | Builds compressed value-count indexes from var_report files; `--tables` builds the table-name index (`<release>_tables.json.gz`, FHS for rule 1.8 and MESA for rule 1.14) |
 | `hv-lint/build_phv_index.py` | -- | Builds release-keyed PHV-to-PHT indexes from FTP data_dict.xml files |
 | `hv-lint/build_phv_detail_index.py` | -- | Builds extended PHV detail indexes from FTP data_dict.xml files |
 | `hv-lint/phase-5/run_phase5.py` | 5 | Phase 5 manager -- orchestrates visit structure validation |
@@ -218,7 +218,7 @@ Scripts detect which cohort a file belongs to by extracting the directory name b
 
 ## Phase 1: YAML Structural & Formatting
 
-**Scripts**: `hv-lint/phase-1/validate_yaml_structure.py` (checks 1.1-1.5, 1.7, 1.9, 1.10, 1.11), `hv-lint/phase-1/run_yamllint.py`, `hv-lint/phase-1/check_quoting_rules.py`, `hv-lint/phase-1/check_cross_block_consistency.py` (1.6), `hv-lint/phase-1/check_cross_file_pht_consistency.py` (1.8), `hv-lint/phase-1/check_cross_file_duplicates.py` (1.12)
+**Scripts**: `hv-lint/phase-1/validate_yaml_structure.py` (checks 1.1-1.5, 1.7, 1.9, 1.10, 1.11), `hv-lint/phase-1/run_yamllint.py`, `hv-lint/phase-1/check_quoting_rules.py`, `hv-lint/phase-1/check_cross_block_consistency.py` (1.6), `hv-lint/phase-1/check_cross_file_pht_consistency.py` (1.8, 1.14), `hv-lint/phase-1/check_cross_file_duplicates.py` (1.12)
 **Dependencies**: PyYAML
 **No schema or external data required** -- YAML files only.
 
@@ -302,6 +302,17 @@ Detect blocks in different files of the same cohort that emit the same record: i
 A slot that sets both `populated_from` and `expr`. linkml-map 0.5.3 evaluates `expr` first (`object_transformer.py:481-483`), so the `populated_from` is dead and reads as the source. Main has 10, all CARDIA `Quantity.value_decimal` (albumin_urine b0-b1, bdy_hgt b0-b3, creat_urin b2, insulin_blood b0-b2), all behaving as intended.
 
 - **Severity**: INFO
+
+### 1.14 Visit Label vs dbGaP Exam
+
+A block with exactly one visit label whose own dbGaP metadata names a different exam. 1.8's majority arm needs at least two other blocks on the table, so a table with one block (ARIC ATRFIB31, ATRFIB41, TIAD04, TIAE04) is caught only here.
+
+- **ARIC**: the bracketed source of a value variable's description (`[Atrial Fibrillation. ATRFIB41. Visit 4]`, `[TIA/Stroke Form, Cohort Visit 4]`) against an `ARIC EXAM N` label. A number outside the brackets ("since visit 1") is not the variable's visit.
+- **MESA**: the table's dbGaP short name (`MESA_Exam4Main`, `MESA_AncilMesaLungExam3CT`, from `phs000209.v13_tables.json.gz`) against a `MESA ... EXAM N` label.
+- **Not judged**: a label with no exam number (`ARIC CHEM 2`, `MESA LUNG CT`), metadata naming none, a block with several labels. A block whose value variables name several visits passes under any of them.
+- **Measured**: on main c0307803 it judges 673 of ARIC's 977 and 554 of MESA's 853 single-label blocks and reports 3, the ARIC labels confirmed wrong in review (afib ATRFIB41 `EXAM 3`, stroke TIAD04 and TIAE04 `EXAM 1`; listed under #872, fixed by #888). On #888's tree it reports none.
+- **Data**: a missing detail index (ARIC) or table-name index (MESA) fails the run.
+- **Severity**: ERROR
 
 ---
 

@@ -180,7 +180,8 @@ def build_tables_index(
     The short name is the segment dbGaP puts in every data-dictionary filename
     (``phs000007.v35.pht000009.v2.ex0_7s.data_dict.xml`` -> ``ex0_7s``) and the table's own
     ``<description>`` ("Clinic Exam, Original Cohort Exams 1 - 7"). FHS encodes the cohort and
-    exam in the name, which is what rule 1.8 checks a single-label block's visit against.
+    exam in the name, which is what rule 1.8 checks a single-label block's visit against; MESA
+    names the exam ("MESA_Exam4Main"), which is what rule 1.14 checks.
     """
     files = sorted(source_dir.glob("*.data_dict.xml"))
     if study_prefix:

@@ -3,6 +3,8 @@
 - 3.18 / 3.9: a follow-up whose gate question names no condition (CHS DIABF38 under DIETF38
   "follow a special diet?", ARIC IFIA06A under IFIA05 "hospitalized in the past four weeks?").
 - 3.19: a block, or a nested class, whose every source variable has no value (var_report n = 0).
+- The known-issue identity of a block that reads no phv (ResearchStudy).
+- 1.14: a single-label block whose own dbGaP metadata names a different exam.
 
 Run: python -m pytest hv-lint/tests/test_refinements_885.py
 """
@@ -16,6 +18,7 @@ import yaml
 HVLINT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(HVLINT / "tests"))
 sys.path.insert(0, str(HVLINT / "phase-3"))
+sys.path.insert(0, str(HVLINT / "phase-1"))
 import _e2e as E  # noqa: E402
 import check_status_semantic as css  # noqa: E402
 import validate_semantic as vs  # noqa: E402
@@ -253,3 +256,100 @@ def test_blocks_with_no_phv_and_no_name_are_numbered():
         "MeasurementObservation@pht004715:-", "MeasurementObservation@pht004715:-#2"]
     assert K.block_identity(_no_phv_block("  Study\n B ")) == (
         "MeasurementObservation@pht004715:name~Study B")
+
+
+# -- 1.14: a single-label block's visit vs its own dbGaP metadata -----------------------------
+
+P1 = "phase-1/check_cross_file_pht_consistency.py"
+
+
+def _relabel(block: dict, old: str, new: str) -> dict:
+    b = copy.deepcopy(block)
+    visit = next(iter(b["class_derivations"].values()))["slot_derivations"]["associated_visit"]
+    assert f":{old}" in visit["expr"]
+    visit["expr"] = visit["expr"].replace(f":{old}", f":{new}")
+    return b
+
+
+def test_114_aric_single_block_table_relabelled_fails_through_main(tmp_path):
+    """Review round 3 A M4: ATRFIB31 pht004039 ("Visit 3") relabelled EXAM 3 -> EXAM 2 passed
+    every phase; 1.8's majority arm needs two other blocks of the table."""
+    t = E.Tree(tmp_path, "ARIC")
+    b = E.fixture_block("aric_afib_atrfib31.yaml")
+    t.write("afib.yaml", [b])
+    assert t.run(P1, "--cohort", "ARIC").returncode == 0
+    t.write("afib.yaml", [_relabel(b, "ARIC EXAM 3", "ARIC EXAM 2")])
+    res = t.run(P1, "--cohort", "ARIC")
+    assert res.returncode == 1, res.stdout[-1500:]
+    lines = t.list_as_known(res, 872)
+    assert len(lines) == 1 and '"1.14"' in lines[0] and "'ARIC EXAM 2'" in lines[0]
+    assert t.run(P1, "--cohort", "ARIC").returncode == 0
+    # Fixed: the listed entry is stale and fails until it is pruned.
+    t.write("afib.yaml", [b])
+    stale = t.run(P1, "--cohort", "ARIC")
+    assert stale.returncode == 1 and "stale known-issue entry [1.14]" in stale.stdout
+
+
+def test_114_mesa_table_named_for_another_exam_fails_through_main(tmp_path):
+    """MESA pht001116 is MESA_Exam1Main: a block labelled EXAM 3 is wrong, EXAM 1 is right."""
+    t = E.Tree(tmp_path, "MESA")
+    t.write("hdl.yaml", [_labelled_mesa("MESA CLASSIC EXAM 1")])
+    assert t.run(P1, "--cohort", "MESA").returncode == 0
+    t.write("hdl.yaml", [_labelled_mesa("MESA CLASSIC EXAM 3")])
+    res = t.run(P1, "--cohort", "MESA")
+    assert res.returncode == 1 and "[1.14]" in res.stdout and "MESA_Exam1Main" in res.stdout, \
+        res.stdout[-1500:]
+
+
+def _labelled_mesa(label: str) -> dict:
+    seed = "phv00084441"
+    return {"class_derivations": {"MeasurementObservation": {
+        "populated_from": "pht001116", "slot_derivations": {
+            "associated_participant": {
+                "expr": f'uuid5("https://w3id.org/bdchm/Participant", str({{{seed}}}) + ":MESA")'},
+            "associated_visit": {
+                "expr": f'uuid5("https://w3id.org/bdchm/Visit", str({{{seed}}}) + ":{label}")'},
+            "observation_type": {"value": "OMOP:4041720"},
+            "value_quantity": {"class_derivations": [{"Quantity": {"slot_derivations": {
+                "value_decimal": {"populated_from": "phv00084970"}, "unit": {"value": "mg/dL"}}}}]},
+        }}}}
+
+
+def _ref(file: str, label: str, phvs=(), pht="pht000001"):
+    import check_cross_file_pht_consistency as C
+    return C.PhtVisitRef(pht, frozenset([label]), file, 0, "Condition", frozenset(phvs))
+
+
+def test_114_judges_only_a_numbered_label_against_its_own_bracketed_visit():
+    import check_cross_file_pht_consistency as C
+    rec = css._cvs.PhvDetail
+    details = {
+        "phv00000001": rec("A", "pht000001", "", None, "Q1 [Form X. Visit 4]", None),
+        "phv00000002": rec("B", "pht000001", "", None, "Since visit 1, any? [Form X, Visit 2]",
+                           None),
+        "phv00000003": rec("C", "pht000001", "", None, "Prevalent at visit 1 [Derived, visit 4]",
+                           None),
+    }
+    f = "priority_variables_transform/ARIC-ingest/x.yaml"
+    run = lambda *refs: [x.message for x in C.check_visit_vs_dbgap(list(refs), {}, details)]  # noqa: E731
+    assert len(run(_ref(f, "ARIC EXAM 3", ["phv00000001"]))) == 1
+    assert run(_ref(f, "ARIC EXAM 4", ["phv00000001"])) == []
+    # A number outside the bracketed source is not the variable's visit.
+    assert run(_ref(f, "ARIC EXAM 2", ["phv00000002"])) == []
+    assert len(run(_ref(f, "ARIC EXAM 1", ["phv00000002"]))) == 1
+    assert run(_ref(f, "ARIC EXAM 4", ["phv00000003"])) == []
+    # Two value variables from two visits: either label is one of them.
+    assert run(_ref(f, "ARIC EXAM 2", ["phv00000001", "phv00000002"])) == []
+    assert run(_ref(f, "ARIC EXAM 4", ["phv00000001", "phv00000002"])) == []
+    # A label with no exam number, or a block with several labels, is not judged.
+    assert run(_ref(f, "ARIC CHEM 2", ["phv00000001"])) == []
+    two = C.PhtVisitRef("pht000001", frozenset(["ARIC EXAM 3", "ARIC EXAM 5"]), f, 0,
+                        "Condition", frozenset(["phv00000001"]))
+    assert run(two) == []
+    # MESA reads the table name; a label with no exam number is not judged.
+    m = "priority_variables_transform/MESA-ingest/x.yaml"
+    names = {"pht000001": {"name": "MESA_AncilMesaLungExam3CT"}}
+    msgs = [x.message for x in C.check_visit_vs_dbgap(
+        [_ref(m, "MESA LUNG CT EXAM 2"), _ref(m, "MESA LUNG CT EXAM 3"), _ref(m, "MESA LUNG CT")],
+        names, {})]
+    assert len(msgs) == 1 and "'MESA LUNG CT EXAM 2'" in msgs[0]

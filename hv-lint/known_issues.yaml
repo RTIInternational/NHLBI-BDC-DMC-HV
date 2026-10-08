@@ -7,6 +7,8 @@
 # status: defect (fix tracked in the issue) | dbgap-error (mapping right, dbGaP wrong)
 #         | false-positive (rule wrong here; note says why) | pending (curator decision open)
 
+# ARIC-ingest/afib.yaml
+- {rule: "1.14", file: ARIC-ingest/afib.yaml, block: "Condition@pht004040:phv00203312", message: "pht004040: this Condition block labels its rows 'ARIC EXAM 3', but the dbGaP description of phv00203312 (af) names Visit # -- wrong visit label", issue: 872, status: defect, note: "dbGaP table and variables say another visit (ARIC visit-label review, posted to #872)"}
 # ARIC-ingest/bdy_hgt.yaml
 - {rule: "3.19", file: ARIC-ingest/bdy_hgt.yaml, block: "MeasurementObservation@pht006419:phv00294838", message: "Every source variable of this block has no value at phs000280.v8 (var_report n = #): phv00294838 (ANT3) -- each row emits a record with no value. Remove the block, or repoint it to a variable that has data", issue: 884, status: defect, note: "all-empty source variable (section 7)"}
 # ARIC-ingest/carotid_plaque.yaml
@@ -71,6 +73,9 @@
 # ARIC-ingest/researchstudy.yaml
 - {rule: "2.4", file: ARIC-ingest/researchstudy.yaml, block: "ResearchStudy@pht001440:name~Atherosclerosis Risk in Communities (ARIC)", message: "ResearchStudy missing required slot 'program'", issue: 884, status: defect, note: "ResearchStudy program / principal_investigator (section 11)"}
 - {rule: "2.4", file: ARIC-ingest/researchstudy.yaml, block: "ResearchStudy@pht001440:name~Atherosclerosis Risk in Communities (ARIC)", message: "ResearchStudy missing required slot 'principal_investigator'", issue: 884, status: defect, note: "ResearchStudy program / principal_investigator (section 11)"}
+# ARIC-ingest/stroke.yaml
+- {rule: "1.14", file: ARIC-ingest/stroke.yaml, block: "Condition@pht004203:phv00210786", message: "pht004203: this Condition block labels its rows 'ARIC EXAM 1', but the dbGaP description of phv00210786 (TIAD1) names Visit # -- wrong visit label", issue: 872, status: defect, note: "dbGaP table and variables say another visit (ARIC visit-label review, posted to #872)"}
+- {rule: "1.14", file: ARIC-ingest/stroke.yaml, block: "Condition@pht004204:phv00210840", message: "pht004204: this Condition block labels its rows 'ARIC EXAM 1', but the dbGaP description of phv00210840 (TIAE1) names Visit # -- wrong visit label", issue: 872, status: defect, note: "dbGaP table and variables say another visit (ARIC visit-label review, posted to #872)"}
 # ARIC-ingest/tot_chol_bld.yaml
 - {rule: "3.16", file: ARIC-ingest/tot_chol_bld.yaml, block: "MeasurementObservation@pht012813:phv00511986", message: "Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit (observation_type OBA:VT0000180) -- the measured value cannot be interpreted. Add the unit, or '1' for a dimensionless value", issue: 884, status: defect, note: "measured value without a unit (section 5)"}
 - {rule: "3.16", file: ARIC-ingest/tot_chol_bld.yaml, block: "MeasurementObservation@pht004063:phv00204735", message: "Quantity (in MeasurementObservation.value_quantity) has value_decimal but no unit (observation_type OBA:VT0000180) -- the measured value cannot be interpreted. Add the unit, or '1' for a dimensionless value", issue: 884, status: defect, note: "measured value without a unit (section 5)"}
