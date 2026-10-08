@@ -31,11 +31,11 @@ on:
         default: "50"
 
 jobs:
-  # Self-contained unit tests for the linter itself (tmp_path fixtures, no cache, no
-  # network, no spec corpus). ENFORCED: these pin the resolver every phase manager calls
-  # to turn `--cohort` into a cache key, and the visit-label extractor checks 1.8 and 5.1
-  # share. Runs alongside hv-lint rather than after it -- a lint backlog must not stop the
-  # linter's own regressions from being reported.
+  # Unit tests for the linter itself (tmp_path fixtures, the committed cache, known-case
+  # fixtures; no network). ENFORCED: they pin the cohort resolver, the shared visit-id
+  # enumerator, each rule on its known cases, and known_issues.yaml's schema (every entry
+  # names an issue). Runs alongside hv-lint rather than after it -- a lint failure must not
+  # stop the linter's own regressions from being reported.
   unit-tests:
     runs-on: ubuntu-latest
     steps:
@@ -106,20 +106,23 @@ jobs:
             echo "bdchm_ref=main" >> "$GITHUB_OUTPUT"
           fi
 
-      # Phases 1/2/5 and the Phase 3 semantic checks are ADVISORY: they run and
-      # publish findings but do not fail the job (existing backlogs). Enforcement
-      # is handled by the dedicated "Gate:" steps below. `exit 0` keeps these
-      # advisory regardless of pipefail behavior.
-      - name: "Phase 1: YAML structural & formatting checks (advisory)"
+      # Every phase is ENFORCED: a finding at or above --fail-on (ERROR on pull requests) fails
+      # the job. Main stays green through hv-lint/known_issues.yaml -- one entry per known
+      # finding, each naming its issue and status -- not through advisory steps. An entry that
+      # no longer matches fails too (rule KI), and so does a change in the number of WARNING
+      # findings per rule and cohort against hv-lint/warning_baseline.json (rule RATCHET).
+      # Each step runs `if: always()` so one failing phase still reports the others, and
+      # `exit "${PIPESTATUS[0]}"` keeps tee from masking the exit code.
+      - name: "Phase 1: YAML structural & formatting checks"
         id: phase1
         run: |
           python hv-lint/phase-1/run_phase1.py \
             --cohort "${{ steps.config.outputs.cohort }}" \
             --fail-on "${{ steps.config.outputs.fail_on }}" \
             2>&1 | tee phase1-output.txt
-          exit 0
+          exit "${PIPESTATUS[0]}"
 
-      - name: "Phase 2: BDC-HM model conformance checks (advisory)"
+      - name: "Phase 2: BDC-HM model conformance + PHV deduplication 2.8"
         id: phase2
         if: always()
         run: |
@@ -128,9 +131,9 @@ jobs:
             --cohort "${{ steps.config.outputs.cohort }}" \
             --fail-on "${{ steps.config.outputs.fail_on }}" \
             2>&1 | tee phase2-output.txt
-          exit 0
+          exit "${PIPESTATUS[0]}"
 
-      - name: "Phase 3: dbGaP cross-reference + semantic checks (advisory)"
+      - name: "Phase 3: dbGaP cross-reference + semantic + status checks"
         id: phase3
         if: always()
         run: |
@@ -138,9 +141,9 @@ jobs:
             --cohort "${{ steps.config.outputs.cohort }}" \
             --fail-on "${{ steps.config.outputs.fail_on }}" \
             2>&1 | tee phase3-output.txt
-          exit 0
+          exit "${PIPESTATUS[0]}"
 
-      - name: "Phase 5: Visit structure validation (advisory)"
+      - name: "Phase 5: Visit structure validation"
         id: phase5
         if: always()
         run: |
@@ -148,37 +151,6 @@ jobs:
             --cohort "${{ steps.config.outputs.cohort }}" \
             --fail-on "${{ steps.config.outputs.fail_on }}" \
             2>&1 | tee phase5-output.txt
-          exit 0
-
-      # ENFORCED gates: checks green across all cohorts. A failure here fails
-      # the PR. 2.8 reports a PHV mapped to two concepts, and a YAML that does
-      # not parse, at ERROR. `exit ${PIPESTATUS[0]}` propagates the script's exit code past
-      # the `tee` pipe (otherwise tee masks it).
-      - name: "Gate: PHV deduplication 2.8 (enforced)"
-        id: gate_phase2
-        if: always()
-        run: |
-          python hv-lint/phase-2/run_phase2.py \
-            --cohort "${{ steps.config.outputs.cohort }}" \
-            --fail-on "${{ steps.config.outputs.fail_on }}" \
-            --skip conformance \
-            2>&1 | tee gate-phase2-output.txt
-          exit "${PIPESTATUS[0]}"
-
-      # Cross-reference (3.1-3.5) + value-semantic (3.11) + status-semantic
-      # (3.17-3.18), enforced across all cohorts. 3.11 reports at ERROR, so
-      # --fail-on error can fail on it. 3.17/3.18 hits on main are listed in
-      # KNOWN_ISSUES in check_status_semantic.py. Semantic (3.9-3.16) stays
-      # advisory.
-      - name: "Gate: dbGaP cross-reference 3.1-3.5 + value-semantic 3.11, 3.17-3.18 (enforced)"
-        id: gate_phase3
-        if: always()
-        run: |
-          python hv-lint/phase-3/run_phase3.py \
-            --cohort "${{ steps.config.outputs.cohort }}" \
-            --fail-on "${{ steps.config.outputs.fail_on }}" \
-            --skip semantic \
-            2>&1 | tee gate-phase3-output.txt
           exit "${PIPESTATUS[0]}"
 
       - name: Publish step summary

@@ -56,6 +56,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
 import _cohorts  # noqa: E402
+import _known_issues  # noqa: E402
 import _visit_ids  # noqa: E402
 from _derivations import iter_nested_class_derivs  # noqa: E402
 
@@ -1244,6 +1245,7 @@ def main() -> int:
     unrun_check = False
     cohorts_processed = 0
     cohorts_skipped: list[str] = []
+    scanned_files: list[Path] = []
 
     for cohort in cohort_dirs:
         ingest_dir = base_dir / f"{cohort}-ingest"
@@ -1275,6 +1277,7 @@ def main() -> int:
 
         # Scan all non-visit YAML files
         yaml_files = find_yaml_files(base_dir, cohort)
+        scanned_files.extend(yaml_files)
         non_visit_files = [f for f in yaml_files if f.name != "visit.yaml"]
 
         cohort_refs: list[VisitReference] = []
@@ -1427,6 +1430,12 @@ def main() -> int:
         )
 
         cohorts_processed += 1
+
+    # Known issues, stale entries and the WARNING ratchet (hv-lint/_known_issues.py).
+    all_findings.extend(_known_issues.finalize(
+        all_findings,
+        checks={"5.0", "5.1", "5.2", "5.3", "5.4", "5.6", "5.8", "5.9", "5.10", "5.11"},
+        scanned_files=scanned_files, make_finding=Finding))
 
     # -- Print findings grouped by file --
     findings_by_file: dict[str, list[Finding]] = {}

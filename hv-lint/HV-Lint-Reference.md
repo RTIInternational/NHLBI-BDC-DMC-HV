@@ -68,30 +68,36 @@ Indexes are committed to this repo (~4 MB total) so CI and contributors can run 
 |------|-------|---------|
 | `hv-lint/_paths.py` | -- | Shared path resolution (supports `HV_ROOT` env var and `--hv-root` override) |
 | `hv-lint/_http.py` | -- | Self-contained HTTP caching layer for data fetching |
+| `hv-lint/_known_issues.py` | all | Known issues, stale-entry check and WARNING ratchet, called by every component (A7) |
+| `hv-lint/known_issues.yaml` | all | One entry per known ERROR finding, each with its issue and status (A7) |
+| `hv-lint/warning_baseline.json` | all | WARNING count per rule and cohort, ratcheted (A7) |
+| `hv-lint/_visit_ids.py` | 1, 5 | ast enumerator of id / associated_visit / associated_participant values (1.8, 5.1, 5.2, 5.11) |
+| `hv-lint/_expr.py` | 2 | ast readers for `expr` strings (2.4, 2.7, 2.10) |
+| `hv-lint/_derivations.py` | all | Nested class-derivation parsing and the every-depth slot walker |
 | `hv_dataqc/cache_fetcher/manifests/_manifest-<cohort>.yaml` | -- | Cohort version pins (study IDs, data versions) — single source of truth shared with hv_dataqc |
 | `hv-lint/update_data.py` | -- | Fetch + build all indexes and visit cache (single entry point) |
 | `hv-lint/.yamllint` | 1 | yamllint configuration |
 | `hv-lint/phase-1/run_phase1.py` | 1 | Phase 1 manager -- orchestrates all sub-components |
-| `hv-lint/phase-1/validate_yaml_structure.py` | 1 | Structural checks (1.1-1.5, 1.7, 1.9, 1.10, 1.11) |
+| `hv-lint/phase-1/validate_yaml_structure.py` | 1 | Structural checks (1.1-1.5, 1.7, 1.9, 1.10, 1.11, 1.13) |
 | `hv-lint/phase-1/run_yamllint.py` | 1 | yamllint wrapper |
 | `hv-lint/phase-1/check_quoting_rules.py` | 1 | Issue #387 quoting rule checker |
 | `hv-lint/phase-1/check_cross_block_consistency.py` | 1 | Cross-block slot consistency (1.6) |
 | `hv-lint/phase-1/check_cross_file_pht_consistency.py` | 1 | Cross-file PHT visit label consistency (1.8) |
 | `hv-lint/phase-1/check_cross_file_duplicates.py` | 1 | Cross-file identical blocks (1.12) |
 | `hv-lint/phase-2/run_phase2.py` | 2 | Phase 2 manager -- orchestrates model conformance and PHV dedup |
-| `hv-lint/phase-2/validate_model_conformance.py` | 2 | BDC-HM model conformance checks (2.1-2.7, 2.5b, 2.10-2.11) |
+| `hv-lint/phase-2/validate_model_conformance.py` | 2 | BDC-HM model conformance checks (2.1-2.7, 2.5b, 2.10, 2.12) |
 | `hv-lint/phase-2/check_phv_dedup.py` | 2 | PHV deduplication check (2.8) |
 | `hv-lint/phase-3/run_phase3.py` | 3 | Phase 3 manager -- orchestrates all dbGaP cross-reference and semantic checks |
 | `hv-lint/phase-3/validate_dbgap_crossref.py` | 3 | dbGaP cross-reference checks (3.1-3.5) |
 | `hv-lint/phase-3/validate_semantic.py` | 3 | Semantic validation (3.9, 3.10, 3.12-3.16) |
 | `hv-lint/phase-3/check_value_semantic.py` | 3 | Value-mapping label/OMOP semantic check (3.11) |
 | `hv-lint/phase-3/check_status_semantic.py` | 3 | Status-slot polarity and follow-up checks (3.17, 3.18) |
-| `hv-lint/build_phv_stats_index.py` | -- | Builds compressed value-count indexes from var_report files |
+| `hv-lint/build_phv_stats_index.py` | -- | Builds compressed value-count indexes from var_report files; `--tables` builds the table-name index (`<release>_tables.json.gz`, FHS only, rule 1.8) |
 | `hv-lint/tests/` | -- | Unit tests (`python -m pytest hv-lint/tests/`) |
 | `hv-lint/build_phv_index.py` | -- | Builds compressed PHV-to-PHT indexes from bulk HTML cache |
 | `hv-lint/build_phv_detail_index.py` | -- | Builds extended PHV detail indexes from FTP data_dict.xml files |
 | `hv-lint/phase-5/run_phase5.py` | 5 | Phase 5 manager -- orchestrates visit structure validation |
-| `hv-lint/phase-5/validate_visit_structure.py` | 5 | Visit structure checks (5.0-5.10) |
+| `hv-lint/phase-5/validate_visit_structure.py` | 5 | Visit structure checks (5.0-5.11) |
 
 ---
 
@@ -143,9 +149,21 @@ The dbGaP variable list pages (`GetListOfAllObjects.cgi`) return HTML tables. Th
 
 linkml-map 0.5.3 (run with dm-bip's own schema step and map call) reaches another table's column only through a join: a declared `joins` entry, a dotted `{pht.phv}` reference, or a nested derivation whose `populated_from` names that table (the last two are joins it synthesizes on `dbGaP_Subject_ID`). A BARE `{phv}` from another table is not a slot of the row: the value is None on every row, with one pre-flight log line. So no slot is "expected" to read another table bare -- not the linkage slots, not the age slots (rule 3.5).
 
-### A7: Known Issues Are Skipped Entirely
+### A7: Known Issues Are Written Down, One Entry per Finding
 
-The `KNOWN_ISSUES` dict in each phase script allows specific files to be excluded from validation. Each phase manages its own skip list independently.
+Every phase fails CI on ERROR (`.github/workflows/hv_lint.yml`). A known finding is not skipped and not downgraded by its rule: it is listed in `hv-lint/known_issues.yaml`, one entry per finding, read by `hv-lint/_known_issues.py` in every component. Each entry carries `rule`, `file` (cohort-relative), `block`, optionally `match` (a substring of the message, when one block has several findings of one rule), the `issue` that tracks it and a `status`:
+
+- `defect` -- real; the fix is tracked in the issue;
+- `dbgap-error` -- the mapping is right and the dbGaP label or dictionary is wrong (ARIC ECGMI32/41, COMPLQ01);
+- `false-positive` -- the rule is wrong here; `note` says why.
+
+A matching finding is reported at INFO with `[known issue #N, status]` appended. Three checks keep the list honest, each an ERROR:
+
+- **stale entry** (`KI`): an entry for a rule the component ran, in a cohort it scanned, that matches nothing -- the issue was fixed (or the block moved), so the entry is deleted or updated in the same PR;
+- **ambiguous entry** (`KI`): an entry that matches more than one finding, so a new finding can never hide behind an old entry;
+- **WARNING ratchet** (`RATCHET`): the number of WARNING findings per rule and cohort must equal `hv-lint/warning_baseline.json`. A rise fails; so does a fall, until the baseline is lowered with `HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all`, so the floor only descends.
+
+Entries cover ERROR findings only; WARNINGs are the ratchet's. On main (731984f5 + #831 + #885) the file holds 717 entries -- 5.11 383 (#882), 3.5 127 (#500, #882, #883, #884, #872), 1.12 57 (#785, #881), 2.12 49 (#883), 2.4 31 (#884), 3.16 30 (#884), 3.9 11, 3.10 7 (#883), 3.18 6 and 3.17 5 (#881, #869), 1.2 4, 3.15 4 (#226), 2.7 3 (#883) -- and every phase passes. Removing any one entry fails CI on exactly that finding.
 
 ### A8: Duplicate Detection Identity
 
@@ -165,7 +183,7 @@ where the source and mappings come from `condition_status` / `exposure_status` /
 | `WARNING` | Suspicious, needs human review | Does not fail |
 | `INFO` | Advisory, expected patterns | Does not fail |
 
-The `--fail-on` flag controls the threshold. Use `--fail-on error` for production; `--fail-on critical` during initial triage.
+The `--fail-on` flag controls the threshold. CI runs every phase at `--fail-on error`; known findings are listed in `hv-lint/known_issues.yaml` (A7), and the WARNING count per rule and cohort is ratcheted against `hv-lint/warning_baseline.json`.
 
 ### A10: CURIE Validation Does Not Check Ontology Existence
 
@@ -259,7 +277,7 @@ Detect blocks in different files of the same cohort that emit the same record: i
 - **Not compared**: provenance, evidence, age and other context slots -- two blocks that differ only there still emit the same fact twice. The finding names the slots that differ, or says the blocks are identical apart from `range:` annotations.
 - **Classes without a status / value slot** (Visit, Person, Demography, ...): compared on the whole block body, so only exact copies match.
 - **Within one file**: left to 1.2.
-- **Known issues**: `KNOWN_ISSUES` in the script, keyed `"<file_a>|<file_b>|<source phv>"` (cohort-relative paths, sorted). A listed group is reported at INFO with its reason. Seeded with every hit on main (2026-10-07): the 44 FHS `med_use.yaml` / `tak_*` / `hypert_trt.yaml` pairs (#785 decision 1), the 6 Condition pairs listed in #872, and 7 further Condition pairs this rule found.
+- **Known issues**: `hv-lint/known_issues.yaml` (assumption A7): the 44 FHS `med_use.yaml` / `tak_*` / `hypert_trt.yaml` pairs (#785 decision 1) and the 13 Condition pairs of #881 section 2.
 - **Severity**: ERROR
 
 ### 1.13 populated_from and expr on One Slot
@@ -481,8 +499,8 @@ Validates that a status slot (`condition_status`, `exposure_status`, `procedure_
   - Conservative label parsing: hedged or missing-like labels are never judged ("Yes, not now", "Yes, doubtful", "Don't know", "Not sure", "No answer", "Not applicable", anything with "but"); a time-limited negative ("Not present now, formerly definite", "No longer") is not judged either, because HISTORICAL may carry it.
   - A negative label on a conditional follow-up (3.18) is not reported: "No" to "hospitalized for MI?" mapped PRESENT is right, the person had the MI.
 - **3.17b (unlabelled 1/2 flags)**: the variable has no code labels, its var_report shows codes 1 and 2 but never 0, and it is mapped `'0': ABSENT, '1': PRESENT`. `'0'` never fires and the "No" of a 1 = No / 2 = Yes flag is emitted PRESENT (CARDIA endpoint flags, fixed in 72d11db1). Needs the value-count index.
-- **Cannot see**: dbGaP labels that are themselves inverted (ARIC ECGMI32/41, COMPLQ01). Those fire on a correct mapping and are listed in `KNOWN_ISSUES` with the evidence; report them in `transform_assessment/dbgap_errors_to_report.md`.
-- **Known issues**: `KNOWN_ISSUES` in `check_status_semantic.py`, keyed `"<cohort>-ingest/<file>.yaml:<phv>:<check>"`; a listed finding is reported at INFO.
+- **Cannot see**: dbGaP labels that are themselves inverted (ARIC ECGMI32/41, COMPLQ01). Those fire on a correct mapping and are listed in `hv-lint/known_issues.yaml` as `dbgap-error` (#869, #881); report them in `transform_assessment/dbgap_errors_to_report.md`.
+- **Known issues**: `hv-lint/known_issues.yaml` (assumption A7).
 - **Severity**: ERROR (enforced in the Phase 3 gate)
 
 ### 3.18 Conditional Follow-up Mapped to ABSENT

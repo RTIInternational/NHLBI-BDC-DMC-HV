@@ -220,22 +220,6 @@ def test_negative_label_on_followup_is_not_a_polarity_error():
     assert css.check_status_polarity(block, 0, "x.yaml", _index(YR10), _stats(YR10_STATS)) == []
 
 
-# --- known issues --------------------------------------------------------------
-
-def test_known_issue_is_downgraded_to_info():
-    f = css.Finding("priority_variables_transform/CHS-ingest/hist_mi.yaml", 0, "3.18",
-                    "ERROR", "... phv00101487 (MIHOSP59 ...")
-    css.apply_known_issues([f], {"CHS-ingest/hist_mi.yaml:phv00101487:3.18": "tracked"})
-    assert f.severity == "INFO" and "known issue: tracked" in f.message
-
-
-def test_known_issues_keys_are_well_formed():
-    for key in css.KNOWN_ISSUES:
-        path, phv, check = key.split(":")
-        assert path.endswith(".yaml") and "-ingest/" in path
-        assert css.PHV_RE.fullmatch(phv) and check in {"3.17", "3.18"}
-
-
 # --- value-count index loading ---------------------------------------------------
 
 def _write_stats(path, data):

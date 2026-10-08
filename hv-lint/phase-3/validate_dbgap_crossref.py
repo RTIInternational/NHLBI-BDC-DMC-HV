@@ -41,6 +41,7 @@ from pathlib import Path
 # Path resolution -- works in both control center and HV repo
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
+import _known_issues  # noqa: E402
 import _cohorts  # noqa: E402
 from _derivations import iter_nested_class_derivs, walk_slot_derivations  # noqa: E402
 
@@ -52,10 +53,6 @@ import yaml
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
-
-# Files to skip entirely. Each entry suppresses cross-reference checks for one
-# file while a tracked data issue is resolved -- remove the entry once fixed.
-KNOWN_ISSUES: dict[str, str] = {}
 
 SEVERITY_RANK = {"CRITICAL": 5, "ERROR": 4, "HIGH": 3, "WARNING": 2, "INFO": 1}
 
@@ -574,9 +571,6 @@ def main() -> int:
     for file_path in yaml_files:
         rel_path = file_path.relative_to(hv_root).as_posix()
 
-        if rel_path in KNOWN_ISSUES:
-            continue
-
         cohort = detect_cohort(file_path)
         if cohort not in indexes:
             skipped_no_index.append(rel_path)
@@ -620,6 +614,10 @@ def main() -> int:
                 file=skipped_file, block=0,
                 message="No dbGaP index available for cohort -- file not validated",
             ))
+
+    # Known issues, stale entries and the WARNING ratchet (hv-lint/_known_issues.py).
+    all_findings.extend(_known_issues.finalize(
+        all_findings, checks={"3.0", "3.1", "3.2", "3.3", "3.4", "3.5"}, scanned_files=yaml_files, make_finding=Finding))
 
     fail_rank = SEVERITY_RANK[args.fail_on.upper()]
 

@@ -28,12 +28,12 @@ def drug(phv="phv00002223", concept="ATC:C03", visit=VISIT, mappings=None, prove
                                                     "slot_derivations": slots}}}
 
 
-def run(blocks_by_file, known=None):
+def run(blocks_by_file):
     refs = []
     for path, blocks in blocks_by_file.items():
         for i, b in enumerate(blocks):
             refs.append((xfd.BlockRef(path, i), b))
-    return xfd.find_cross_file_duplicates({"FHS-ingest": refs}, known=known or {})
+    return xfd.find_cross_file_duplicates({"FHS-ingest": refs})
 
 
 def test_identical_drug_blocks_in_two_files_are_flagged():
@@ -86,15 +86,4 @@ def test_class_without_status_matches_only_on_whole_body():
     assert run({"FHS-ingest/a.yaml": [visit], "FHS-ingest/b.yaml": [other]}) == []
 
 
-def test_known_issue_is_reported_at_info():
-    key = "FHS-ingest/hypert_trt.yaml|FHS-ingest/tak_diuret.yaml|phv00002223"
-    f = run({"FHS-ingest/hypert_trt.yaml": [drug()], "FHS-ingest/tak_diuret.yaml": [drug()]},
-            known={key: "tracked in #785"})
-    assert f[0].severity == "INFO" and "tracked in #785" in f[0].message
-
-
-def test_known_issues_keys_are_well_formed():
-    for key in xfd.KNOWN_ISSUES:
-        a, b, phv = key.split("|")
-        assert a < b and a.split("/")[0] == b.split("/")[0]
-        assert xfd.PHV_RE.fullmatch(phv)
+# Known issues are hv-lint/known_issues.yaml's (tests/test_known_issues.py), not this module's.

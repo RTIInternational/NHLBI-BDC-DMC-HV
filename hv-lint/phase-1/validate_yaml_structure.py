@@ -40,6 +40,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
+import _known_issues  # noqa: E402
 from _derivations import iter_nested_class_derivs  # noqa: E402
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import check_cross_file_duplicates as xfd  # noqa: E402  (rule 1.12 owns block identity)
@@ -108,10 +109,6 @@ KNOWN_TYPOS: dict[str, str] = {
 # Matches YAML keys with internal spaces (e.g., "populated from:" instead of
 # "populated_from:"). These silently create wrong keys that the pipeline ignores.
 _SPACE_IN_KEY_RE = re.compile(r"^\s+(populated from|slot derivations|class derivations|value mappings|object derivations|unit conversion|source unit)\s*:", re.IGNORECASE)
-
-# Files to skip entirely (known issues).
-# Cleared 2026-03-15: starting fresh to re-confirm known issues.
-KNOWN_ISSUES: dict[str, str] = {}
 
 # Severity ranking for --fail-on filtering
 SEVERITY_RANK = {"CRITICAL": 5, "ERROR": 4, "HIGH": 3, "WARNING": 2, "INFO": 1}
@@ -626,16 +623,9 @@ def main() -> int:
     all_findings: list[Finding] = []
     files_checked = 0
     blocks_checked = 0
-    skipped = []
 
     for file_path in yaml_files:
         rel_path = file_path.as_posix()
-
-        # Skip known issues
-        if any(rel_path.endswith(k) or k in rel_path for k in KNOWN_ISSUES):
-            skip_key = next((k for k in KNOWN_ISSUES if k in rel_path), rel_path)
-            skipped.append((rel_path, KNOWN_ISSUES.get(skip_key, "known issue")))
-            continue
 
         # -- Check 1.3: Inline comments (line-level, before YAML parse) --
         all_findings.extend(check_inline_comments(file_path, rel_path))
@@ -692,6 +682,10 @@ def main() -> int:
     # -----------------------------------------------------------------------
     # Report
     # -----------------------------------------------------------------------
+    # Known issues, stale entries and the WARNING ratchet (hv-lint/_known_issues.py).
+    all_findings.extend(_known_issues.finalize(
+        all_findings, checks={"1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.7", "1.9", "1.10", "1.11", "1.13"}, scanned_files=yaml_files, make_finding=Finding))
+
     fail_rank = SEVERITY_RANK[args.fail_on.upper()]
 
     counts: dict[str, int] = {}
@@ -707,8 +701,6 @@ def main() -> int:
     print(f"{'='*70}")
     print(f"Files checked:  {files_checked}")
     print(f"Blocks checked: {blocks_checked}")
-    if skipped:
-        print(f"Files skipped:  {len(skipped)} (known issues)")
 
     parts = []
     for sev in ("CRITICAL", "ERROR", "HIGH", "WARNING", "INFO"):

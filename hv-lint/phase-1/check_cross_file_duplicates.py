@@ -42,6 +42,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
+import _known_issues  # noqa: E402
 from _derivations import iter_nested_class_derivs  # noqa: E402
 
 SEVERITY_RANK = {"CRITICAL": 5, "ERROR": 4, "HIGH": 3, "WARNING": 2, "INFO": 1}
@@ -56,74 +57,6 @@ CLASS_SLOTS: dict[str, tuple[str, str]] = {
 }
 OBSERVATION_CLASSES = {"MeasurementObservation", "Observation", "SdohObservation"}
 
-# Known cross-file duplicates. Key: "<file_a>|<file_b>|<source phv>" with
-# the two cohort-relative paths sorted; value: reason. A listed group is
-# reported at INFO instead of ERROR. Remove an entry once one copy is gone.
-# Seeded 2026-10-07 with every 1.12 hit on main.
-_MED_USE = ("FHS medication mapped in med_use.yaml and in a tak_*/hypert_trt file; "
-            "dedup waits on #785 decision 1")
-_COND_872 = "identical Condition block in two files, listed in #872"
-_COND_NEW = ("same Condition record in two files, found by 1.12; the copies differ at most "
-             "in provenance/evidence, so one is wrong as well as redundant (#879 follow-up)")
-KNOWN_ISSUES: dict[str, str] = {
-    "ARIC-ingest/angina.yaml|ARIC-ingest/hist_cvd.yaml|phv00203904": _COND_872,
-    "ARIC-ingest/hist_cvd.yaml|ARIC-ingest/hist_hrtdis.yaml|phv00204706": _COND_NEW,
-    "ARIC-ingest/hist_cvd.yaml|ARIC-ingest/hist_hrtdis.yaml|phv00204833": _COND_NEW,
-    "ARIC-ingest/hist_cvd.yaml|ARIC-ingest/hist_hrtdis.yaml|phv00204911": _COND_NEW,
-    "ARIC-ingest/hist_cvd.yaml|ARIC-ingest/hist_hrtdis.yaml|phv00206801": _COND_872,
-    "ARIC-ingest/hist_cvd.yaml|ARIC-ingest/hist_hrtdis.yaml|phv00206802": _COND_872,
-    "ARIC-ingest/hist_cvd.yaml|ARIC-ingest/hist_hrtdis.yaml|phv00512028": _COND_872,
-    "CARDIA-ingest/chf.yaml|CARDIA-ingest/hist_hrtfail.yaml|phv00113052": _COND_NEW,
-    "CARDIA-ingest/chf.yaml|CARDIA-ingest/hist_hrtfail.yaml|phv00121462": _COND_NEW,
-    "FHS-ingest/hypert_trt.yaml|FHS-ingest/med_use.yaml|phv00004966": _MED_USE,
-    "FHS-ingest/hypert_trt.yaml|FHS-ingest/med_use.yaml|phv00005586": _MED_USE,
-    "FHS-ingest/hypert_trt.yaml|FHS-ingest/med_use.yaml|phv00006138": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_aceinhib.yaml|phv00004964": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_aceinhib.yaml|phv00005584": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_aceinhib.yaml|phv00006136": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_alphablk.yaml|phv00004963": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_calchanblk.yaml|phv00004951": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_calchanblk.yaml|phv00005571": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_calchanblk.yaml|phv00006122": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_cenactag.yaml|phv00004961": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_cenactag.yaml|phv00004962": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_diuret.yaml|phv00004955": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_diuret.yaml|phv00004957": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_diuret.yaml|phv00004958": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_diuret.yaml|phv00005575": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_diuret.yaml|phv00005577": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_diuret.yaml|phv00005578": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_diuret.yaml|phv00006129": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_diuret.yaml|phv00006130": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_insulin.yaml|phv00004981": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_insulin.yaml|phv00005601": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_insulin.yaml|phv00006152": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_nstat_med.yaml|phv00004972": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_nstat_med.yaml|phv00004973": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_nstat_med.yaml|phv00004974": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_nstat_med.yaml|phv00004976": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_nstat_med.yaml|phv00005592": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_nstat_med.yaml|phv00005593": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_nstat_med.yaml|phv00005594": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_nstat_med.yaml|phv00005596": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_nstat_med.yaml|phv00006143": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_nstat_med.yaml|phv00006144": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_nstat_med.yaml|phv00006145": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_nstat_med.yaml|phv00006147": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_orlhypoag.yaml|phv00004983": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_orlhypoag.yaml|phv00005603": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_orlhypoag.yaml|phv00006154": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_statin.yaml|phv00004975": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_statin.yaml|phv00005595": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_statin.yaml|phv00006146": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_vasodil.yaml|phv00004965": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_vasodil.yaml|phv00005585": _MED_USE,
-    "FHS-ingest/med_use.yaml|FHS-ingest/tak_vasodil.yaml|phv00006137": _MED_USE,
-    "MESA-ingest/chf.yaml|MESA-ingest/hist_hrtfail.yaml|phv00087140": _COND_872,
-    "MESA-ingest/cvd.yaml|MESA-ingest/hist_cvd.yaml|phv00087892": _COND_872,
-    "WHI-ingest/hist_cvd.yaml|WHI-ingest/hist_hrtdis.yaml|phv00283530": _COND_NEW,
-    "WHI-ingest/hist_cvd.yaml|WHI-ingest/ven_thromb.yaml|phv00283512": _COND_NEW,
-}
 
 
 @dataclass
@@ -251,7 +184,6 @@ def _context_diff(a: dict, b: dict) -> list[str]:
 
 def find_cross_file_duplicates(
     cohort_blocks: dict[str, list[tuple[BlockRef, dict]]],
-    known: dict[str, str] | None = None,
 ) -> list[Finding]:
     """Group identical blocks per cohort; flag groups that span two or more files.
 
@@ -259,7 +191,6 @@ def find_cross_file_duplicates(
     cohort-relative path. One finding is emitted per extra file in a group,
     on that file, naming the first file as the other copy.
     """
-    known = known if known is not None else KNOWN_ISSUES
     findings: list[Finding] = []
     for cohort in sorted(cohort_blocks):
         groups: dict[tuple, list[BlockRef]] = defaultdict(list)
@@ -284,9 +215,6 @@ def find_cross_file_duplicates(
                 if other == first.file:
                     continue
                 ref = min((r for r in refs if r.file == other), key=lambda r: r.block)
-                phvs = PHV_RE.findall(source)
-                key = "|".join(sorted((first.file, other))) + f"|{phvs[0] if phvs else source}"
-                reason = known.get(key)
                 differs = _context_diff(by_ref[first], by_ref[ref])
                 how = (f"differs only in {', '.join(differs)}" if differs
                        else "identical apart from `range:` annotations")
@@ -294,12 +222,11 @@ def find_cross_file_duplicates(
                     file=f"priority_variables_transform/{other}",
                     block=ref.block,
                     check="1.12",
-                    severity="INFO" if reason else "ERROR",
+                    severity="ERROR",
                     message=(
                         f"Identical to {first.file} block {first.block}: {desc} -- "
                         f"same table, source, concept, visit and status mapping "
                         f"({how}), so each record is emitted twice"
-                        + (f" (known issue: {reason})" if reason else "")
                     ),
                 ))
     return findings
@@ -367,6 +294,10 @@ def main() -> int:
                 cohort_blocks[cohort].append((BlockRef(rel, idx), block))
 
     findings = find_cross_file_duplicates(cohort_blocks)
+
+    # Known issues, stale entries and the WARNING ratchet (hv-lint/_known_issues.py).
+    findings.extend(_known_issues.finalize(
+        findings, checks={"1.12"}, scanned_files=yaml_files, make_finding=Finding))
 
     fail_rank = SEVERITY_RANK[args.fail_on.upper()]
     counts: dict[str, int] = {}

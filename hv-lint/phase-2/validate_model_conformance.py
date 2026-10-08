@@ -50,6 +50,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
+import _known_issues  # noqa: E402
 from _derivations import classify_derivation_item  # noqa: E402
 import _expr  # noqa: E402
 
@@ -928,6 +929,10 @@ def main() -> int:
     # -----------------------------------------------------------------------
     # Report
     # -----------------------------------------------------------------------
+    # Known issues, stale entries and the WARNING ratchet (hv-lint/_known_issues.py).
+    all_findings.extend(_known_issues.finalize(
+        all_findings, checks={"2.1", "2.2", "2.3", "2.4", "2.5", "2.5b", "2.6", "2.7", "2.10", "2.12"}, scanned_files=yaml_files, make_finding=Finding))
+
     fail_rank = SEVERITY_RANK[args.fail_on.upper()]
 
     counts: dict[str, int] = {}

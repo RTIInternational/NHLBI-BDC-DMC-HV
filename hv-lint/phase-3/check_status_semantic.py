@@ -47,6 +47,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
+import _known_issues  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import check_value_semantic as _cvs  # noqa: E402
@@ -60,45 +61,6 @@ PHV_RE = re.compile(r"phv\d{8}")
 
 POSITIVE_STATUS = {"PRESENT", "HISTORICAL"}
 NEGATIVE_STATUS = {"ABSENT"}
-
-# Known issues: a finding whose "<cohort>-ingest/<file>.yaml:<phv>:<check>"
-# key is listed here is reported at INFO with the reason instead of its own
-# severity, so a tracked defect stays visible without failing the gate.
-# Remove an entry once the YAML is fixed.
-KNOWN_ISSUES: dict[str, str] = {
-    # 3.17: the dbGaP labels are inverted, so the label check fires on a
-    # mapping that is right. Report the labels (transform_assessment/
-    # dbgap_errors_to_report.md); keep these until dbGaP corrects them.
-    "ARIC-ingest/hist_my_inf.yaml:phv00204841:3.17":
-        "ECGMI32 dbGaP labels inverted (0 = Yes / 1 = No); mapping follows the counts (#869)",
-    "ARIC-ingest/hist_my_inf.yaml:phv00511964:3.17":
-        "ECGMI41 dbGaP labels inverted (0 = Yes / 1 = No); mapping follows the counts (#869)",
-    "ARIC-ingest/carotid_plaque.yaml:phv00204778:3.17":
-        "COMPLQ01 dbGaP labels inverted (0 = Plaque / 1 = No plaque): code 0 = 12,818 matches "
-        "COMPS01 'No plaque or shadow' = 12,804; mapping follows the counts",
-    # 3.18: conditional follow-ups whose "No" is mapped ABSENT on main
-    # (found by this rule, 2026-10-07). Remove each entry when the '0'/'N'
-    # key is dropped or remapped.
-    "ARIC-ingest/hist_hrtfail.yaml:phv00294721:3.18": "AFUcomp8f_L, #879 follow-up",
-    "ARIC-ingest/hist_my_inf.yaml:phv00203787:3.18": "CORA15B, #879 follow-up",
-    "ARIC-ingest/hist_my_inf.yaml:phv00204307:3.18": "IFIA15, #879 follow-up",
-    "ARIC-ingest/stroke.yaml:phv00203795:3.18": "CORA21B, #879 follow-up",
-    "ARIC-ingest/stroke.yaml:phv00203985:3.18": "HRAA40, #879 follow-up",
-    "ARIC-ingest/stroke.yaml:phv00204311:3.18": "IFIA19A, #879 follow-up",
-    "ARIC-ingest/stroke.yaml:phv00204347:3.18": "IFIA19, #879 follow-up",
-    "CARDIA-ingest/asthma.yaml:phv00114601:3.18": "B12ASSTL, #879 follow-up",
-    "CARDIA-ingest/asthma.yaml:phv00117047:3.18": "D08ASTYR, #879 follow-up",
-    "CARDIA-ingest/asthma.yaml:phv00118521:3.18": "E08ASTYR, #879 follow-up",
-    "CARDIA-ingest/asthma.yaml:phv00119905:3.18": "F08ASTYR, #879 follow-up",
-    "CHS-ingest/angina.yaml:phv00108760:3.18": "ANEMRG59, left by #855 (5bdff784)",
-    "CHS-ingest/diabetes.yaml:phv00104260:3.18":
-        "DIABO38 is a reason for going off a special diet, not diabetes status, #879 follow-up",
-    "CHS-ingest/diabetes.yaml:phv00106145:3.18":
-        "DIABF58 is a reason for following a special diet, not diabetes status, #879 follow-up",
-    "CHS-ingest/stroke.yaml:phv00099712:3.18": "HSSTK22, #879 follow-up",
-    "CHS-ingest/stroke.yaml:phv00105471:3.18": "HSSTK22, #879 follow-up",
-    "CHS-ingest/stroke.yaml:phv00108763:3.18": "TIEMRG59, left by #855 (5bdff784)",
-}
 
 # --- Label classification (3.17a, 3.18) ------------------------------------
 #
@@ -633,19 +595,6 @@ def check_followup_absent(
     return findings
 
 
-def apply_known_issues(findings: list[Finding], known: dict[str, str]) -> None:
-    """Downgrade findings listed in ``known`` to INFO, in place."""
-    for f in findings:
-        phvs = PHV_RE.findall(f.message)
-        if not phvs:
-            continue
-        short = f.file.replace("priority_variables_transform/", "")
-        key = f"{short}:{phvs[0]}:{f.check}"
-        if key in known:
-            f.severity = "INFO"
-            f.message = f"{f.message} (known issue: {known[key]})"
-
-
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
@@ -749,9 +698,11 @@ def main() -> int:
             all_findings.extend(check_followup_absent(
                 block, idx, rel_path, indexes[cohort], stats_by_cohort[cohort]))
 
-    apply_known_issues(all_findings, KNOWN_ISSUES)
-
     # Report
+    # Known issues, stale entries and the WARNING ratchet (hv-lint/_known_issues.py).
+    all_findings.extend(_known_issues.finalize(
+        all_findings, checks={"3.17", "3.18"}, scanned_files=yaml_files, make_finding=Finding))
+
     fail_rank = SEVERITY_RANK[args.fail_on.upper()]
     counts: dict[str, int] = {}
     for f in all_findings:

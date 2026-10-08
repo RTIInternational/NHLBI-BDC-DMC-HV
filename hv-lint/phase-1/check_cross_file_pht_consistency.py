@@ -37,6 +37,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
+import _known_issues  # noqa: E402
 import _cohorts  # noqa: E402
 import _visit_ids  # noqa: E402
 
@@ -289,6 +290,10 @@ def main() -> int:
     findings = check_cross_file_pht_consistency(all_refs, table_names)
 
     # -- Report --------------------------------------------------------
+    # Known issues, stale entries and the WARNING ratchet (hv-lint/_known_issues.py).
+    findings.extend(_known_issues.finalize(
+        findings, checks={"1.8"}, scanned_files=yaml_files, make_finding=Finding))
+
     fail_rank = SEVERITY_RANK[args.fail_on.upper()]
 
     # Count distinct PHTs checked
