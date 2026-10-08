@@ -1095,23 +1095,56 @@ def check_quantity_missing_unit(
 
 
 # ---------------------------------------------------------------------------
-# Check 3.19: every source variable empty
+# Check 3.19: every source variable empty, or no value slot at all
 # ---------------------------------------------------------------------------
+
+
+#: Classes whose record exists to carry a value. One with no value slot emits an empty record per
+#: row. Not Person, Visit, ResearchStudy, Condition, DrugExposure...: their record is itself the
+#: datum, so they have no value_* slot to miss.
+VALUE_CLASSES = frozenset({
+    "MeasurementObservation", "MeasurementObservationSet", "Observation", "SdohObservation",
+    "Quantity",
+})
+
+
+def _is_value_slot(slot_name: str) -> bool:
+    return slot_name.startswith("value_") or slot_name == "observations"
+
+
+def _has_value(cls_def: dict) -> bool:
+    """True when a value slot (``value_*``, a Set's ``observations``) reads a source variable or a
+    literal, directly or through a nested class that does."""
+    slots = cls_def.get("slot_derivations")
+    if not isinstance(slots, dict):
+        return False
+    for slot_name, slot_def in slots.items():
+        if not _is_value_slot(slot_name) or not isinstance(slot_def, dict):
+            continue
+        if any(slot_def.get(k) is not None for k in ("populated_from", "expr", "value")):
+            return True
+        if any(isinstance(ndef, dict) and _has_value(ndef)
+               for _, ndef in iter_nested_class_derivs(slot_def)):
+            return True
+    return False
 
 
 def check_empty_source(
     block: dict, block_idx: int, rel_path: str,
     nonnull: dict[str, int], detail_idx: DetailIndex, release: str,
 ) -> list[Finding]:
-    """Check 3.19: a block, or a nested class inside one, whose source variables ALL have no
-    value at the cohort's pinned release (var_report n = 0) -- ERROR.
+    """Check 3.19: a record that carries no value -- ERROR. Two arms:
 
-    Source variables are the phvs the class reads minus ``id`` / ``associated_*`` / ``age_*``
-    (``_known_issues.value_phvs``, the block identity's own definition): a record with only a
-    participant, a visit and an age carries nothing. Such a block emits one empty record per
-    row. A whole block is reported once; otherwise each empty nested class (a Set's
-    observation reading an empty column) is reported on its own. A phv with no var_report
-    entry has an unknown n and keeps its class from being reported.
+    * **Empty source.** A block, a top-level class of a multi-class block, or a nested class
+      whose source variables ALL have no value at the cohort's pinned release (var_report
+      n = 0). Source variables are the phvs the class reads minus ``id`` / ``associated_*`` /
+      ``age_*`` (``_known_issues.value_phvs``, the block identity's own definition): a record
+      with only a participant, a visit and an age carries nothing. A whole block is reported
+      once; otherwise each empty class is reported on its own, at any depth. A phv with no
+      var_report entry has an unknown n and keeps its class from being reported.
+    * **No value slot.** A VALUE_CLASSES class, top-level or nested, none of whose value slots
+      reads a source variable or a literal (``_has_value``). It reads no phv to judge, so the
+      first arm cannot see it. The outermost such class is reported; its nested classes are not.
     """
     class_derivs = block.get("class_derivations")
     if not isinstance(class_derivs, dict):
@@ -1139,6 +1172,18 @@ def check_empty_source(
 
     findings: list[Finding] = []
 
+    def no_value(cls_name: str, cls_def: dict, path: str) -> bool:
+        if cls_name not in VALUE_CLASSES or _has_value(cls_def):
+            return False
+        where = f"nested {path}" if ">" in path else path
+        findings.append(Finding(
+            rel_path, block_idx, "3.19", "ERROR",
+            f"{where} has no value: no value slot (value_*, observations) reads a source "
+            f"variable or a literal -- each row emits a {cls_name} with no value. Add the "
+            f"value, or remove it",
+        ))
+        return True
+
     def visit(cls_name: str, cls_def: dict, where: str) -> None:
         slots = cls_def.get("slot_derivations")
         if not isinstance(slots, dict):
@@ -1150,6 +1195,8 @@ def check_empty_source(
                 if not isinstance(ndef, dict):
                     continue
                 path = f"{where}{cls_name}.{slot_name}>{ncls}"
+                if no_value(ncls, ndef, path):
+                    continue
                 phvs = empty(ndef)
                 if phvs is None:
                     visit(ncls, ndef, f"{where}{cls_name}.{slot_name}>")
@@ -1165,8 +1212,19 @@ def check_empty_source(
                 ))
 
     for cls_name, cls_def in class_derivs.items():
-        if isinstance(cls_def, dict):
-            visit(cls_name, cls_def, "")
+        if not isinstance(cls_def, dict) or no_value(cls_name, cls_def, cls_name):
+            continue
+        # One top-level class of several can be empty while the block as a whole is not.
+        phvs = empty(cls_def) if len(class_derivs) > 1 else None
+        if phvs:
+            findings.append(Finding(
+                rel_path, block_idx, "3.19", "ERROR",
+                f"Every source variable of class {cls_name} has no value at {release} "
+                f"(var_report n = 0): {named(phvs)} -- each row emits a {cls_name} with no "
+                f"value. Remove it, or repoint it to a variable that has data",
+            ))
+            continue
+        visit(cls_name, cls_def, "")
     return findings
 
 

@@ -433,3 +433,99 @@ def test_prune_and_update_together_are_refused_before_anything_is_written(tmp_pa
                           capture_output=True, text=True, encoding="utf-8")
     assert comp.returncode == 1 and "refusing to run with both" in comp.stdout, comp.stdout[-1500:]
     assert (t.ki.read_bytes(), t.baseline.read_bytes()) == before
+
+
+# -- Review round 5: guards no test reached, each through the real main() -----------------------
+
+def _spirometry_obs(b: dict) -> list:
+    sd = b["class_derivations"]["MeasurementObservationSet"]["slot_derivations"]
+    return sd["observations"]["class_derivations"]
+
+
+def _obs_type(o: dict) -> str:
+    return o["MeasurementObservation"]["slot_derivations"]["observation_type"]["value"]
+
+
+def test_319_reports_an_empty_quantity_two_levels_down_through_main(tmp_path):
+    """Review 5 A S2: the recursion into a nested class that is not wholly empty. The
+    predicted-FVC observation also reads a filled variable (method_type), so only its Quantity
+    -- Set > observation > Quantity -- reads nothing but pfvca4 (n = 0)."""
+    t = E.Tree(tmp_path, "MESA")
+    b = copy.deepcopy(E.fixture_block("mesa_spirometry_b0.yaml"))
+    obs = _spirometry_obs(b)
+    obs[:] = [o for o in obs if _obs_type(o) != "OMOP:3022891"]
+    fvc = next(o for o in obs if _obs_type(o) == "OMOP:3002094")
+    fvc["MeasurementObservation"]["slot_derivations"]["method_type"] = {
+        "populated_from": "phv00083474"}
+    t.write("spirometry.yaml", [b])
+    res = E.phase3(t, "validate_semantic.py")
+    assert res.returncode == 1, res.stdout[-1500:]
+    lines = [x for x in t.suggested(res) if '"3.19"' in x]
+    assert len(lines) == 1, lines
+    assert ("nested MeasurementObservationSet.observations>MeasurementObservation"
+            ".value_quantity>Quantity" in lines[0] and "pfvca4" in lines[0])
+
+
+def test_319_a_value_class_with_no_value_slot_fails_through_main(tmp_path):
+    """Review 5 A S1 / B S1: ARIC insulin_blood b3's value_quantity is commented out (#410), so
+    every row of pht006444 emits an insulin observation with no value. It reads no value phv,
+    so the empty-source arm cannot see it."""
+    t = E.Tree(tmp_path, "ARIC")
+    b = E.fixture_block("aric_insulin_blood_b3.yaml")
+    t.write("insulin_blood.yaml", [b])
+    res = E.phase3(t, "validate_semantic.py")
+    assert res.returncode == 1, res.stdout[-1500:]
+    lines = t.suggested(res)
+    assert len(lines) == 1 and '"3.19"' in lines[0], lines
+    assert 'block: "MeasurementObservation@pht006444:-"' in lines[0]
+    assert "MeasurementObservation has no value" in lines[0]
+    # Restored, the block passes.
+    fixed = copy.deepcopy(b)
+    fixed["class_derivations"]["MeasurementObservation"]["slot_derivations"]["value_quantity"] = {
+        "class_derivations": [{"Quantity": {"populated_from": "pht006444", "slot_derivations": {
+            "value_decimal": {"populated_from": "phv00296699"},
+            "unit": {"value": "pmol/L"}}}}]}
+    t.write("insulin_blood.yaml", [fixed])
+    assert "[3.19]" not in E.phase3(t, "validate_semantic.py").stdout
+
+
+def test_319_a_nested_observation_with_no_value_slot_fails_through_main(tmp_path):
+    """A Set's observation with no value slot is reported on its own; the Set has values."""
+    t = E.Tree(tmp_path, "MESA")
+    b = copy.deepcopy(E.fixture_block("mesa_spirometry_b0.yaml"))
+    obs = _spirometry_obs(b)
+    obs[:] = [o for o in obs if _obs_type(o) not in ("OMOP:3002094", "OMOP:3022891")]
+    del obs[0]["MeasurementObservation"]["slot_derivations"]["value_quantity"]
+    t.write("spirometry.yaml", [b])
+    res = E.phase3(t, "validate_semantic.py")
+    assert res.returncode == 1, res.stdout[-1500:]
+    lines = [x for x in t.suggested(res) if '"3.19"' in x]
+    assert len(lines) == 1, lines
+    assert ("nested MeasurementObservationSet.observations>MeasurementObservation has no value"
+            in lines[0])
+
+
+def test_319_no_value_arm_skips_classes_that_are_their_own_datum():
+    """Person, Visit, ResearchStudy and Condition carry no value_* slot by design."""
+    for cls in ("Person", "Visit", "ResearchStudy", "Condition"):
+        block = {"class_derivations": {cls: {"populated_from": PHT, "slot_derivations": {
+            "associated_participant": {"expr": "str({phv00000009})"}}}}}
+        assert _empty_source(block, {"phv00000009": 10}) == [], cls
+    # A literal is a value: a Quantity with value_decimal: 5 is not reported.
+    assert _empty_source(_no_phv_block(None), {}) == []
+
+
+def test_319_reports_an_empty_top_level_class_beside_a_filled_one():
+    """Review 5 B N2: a block with two top-level classes, one reading only an empty variable."""
+    block = {"class_derivations": {
+        "Condition": {"populated_from": PHT, "slot_derivations": {
+            "condition_status": {"populated_from": "phv00000001",
+                                 "value_mappings": {"1": "PRESENT"}}}},
+        "MeasurementObservation": {"populated_from": PHT, "slot_derivations": {
+            "value_quantity": {"class_derivations": [{"Quantity": {"slot_derivations": {
+                "value_decimal": {"populated_from": "phv00000002"}}}}]}}},
+    }}
+    msgs = _empty_source(block, {"phv00000001": 0, "phv00000002": 40})
+    assert len(msgs) == 1 and "of class Condition" in msgs[0], msgs
+    assert _empty_source(block, {"phv00000001": 3, "phv00000002": 40}) == []
+
