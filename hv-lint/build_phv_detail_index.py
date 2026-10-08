@@ -247,6 +247,13 @@ def main() -> int:
 
     output = Path(args.output_dir)
     output.mkdir(parents=True, exist_ok=True)
+    # Checked BEFORE any index is written: the build loop writes straight into `output`, and an
+    # index left there by a run whose manifest write is then refused has no recorded release.
+    try:
+        _cohorts.read_manifest_for_update(output)
+    except _cohorts.ManifestUnreadable as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
 
     print(f"Source cache: {source}")
     print(f"Output dir:   {output}")

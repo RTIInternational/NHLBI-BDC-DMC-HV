@@ -360,3 +360,4 @@ def test_the_standalone_builders_refuse_an_unreadable_manifest(tmp_path, monkeyp
     assert builder.main() == 1
     assert "manifest.json" in capsys.readouterr().err
     assert (out / _cohorts.MANIFEST_NAME).read_text(encoding="utf-8") == "{not json"
+    assert list(out.glob("*.json.gz")) == [], "no index is published without provenance"
