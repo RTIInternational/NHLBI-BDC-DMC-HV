@@ -191,7 +191,8 @@ list).
 
 ### Cache artifacts are named by STUDY RELEASE, not by cohort
 
-As of 2026-09-10 the three cache artifacts for a study are keyed `<phs######>.<v#>`:
+As of 2026-09-10 the two cache artifacts for a study are keyed `<phs######>.<v#>`, and each
+release has an entry in `dbgap-cache/manifest.json` recording its study, version and build date:
 
 ```
 phs000280.v8.json.gz          PHV -> PHT index          (Phase 3, Phase 5 checks 5.3 + 5.4)
