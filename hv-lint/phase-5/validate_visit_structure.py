@@ -1186,7 +1186,7 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument(
         "--cache-dir", default=None,
-        help="Directory with per-cohort .json.gz PHV indexes (check 5.4)",
+        help="Directory with the release-keyed PHV and detail indexes (checks 5.3, 5.4, 5.8)",
     )
     return p.parse_args()
 
