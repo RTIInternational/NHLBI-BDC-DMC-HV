@@ -13,7 +13,7 @@
           value: MONDO:0005098
           range: string
         condition_status:
-          expr: case(({phv00085752} == 1, 'UNKNOWN'), ({phv00085752} == -9, 'UNKNOWN'), ({phv00085753} != 1, 'UNKNOWN'), ({phv00085760} == 0, 'ABSENT'), ({phv00085760} == 1, 'HISTORICAL'), (True, 'UNKNOWN'))
+          expr: case(({phv00085752} == 1, 'UNKNOWN'), ({phv00085752} == -9, 'UNKNOWN'), ({phv00085753} != 1, 'UNKNOWN'), ({phv00085760} == 0, 'ABSENT'), ({phv00085760} == 1, 'PRESENT'), (True, 'UNKNOWN'))
         condition_provenance:
           value: PATIENT_SELF_REPORT
           range: string
@@ -37,7 +37,7 @@
           populated_from: phv00087144
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
             '9': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
@@ -63,7 +63,7 @@
           populated_from: phv00087145
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
             '9': UNKNOWN
         condition_provenance:
           value: PATIENT_SELF_REPORT
@@ -93,7 +93,7 @@
           populated_from: phv00087876
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
           range: string
@@ -128,7 +128,7 @@
           populated_from: phv00087876
           value_mappings:
             '0': ABSENT
-            '1': HISTORICAL
+            '1': PRESENT
         condition_provenance:
           value: PHYSICIAN_ADJUDICATION
           range: string
