@@ -15,6 +15,9 @@ Checks:
          - ERROR: a block with exactly one label disagrees with the exam its FHS table encodes
            in its dbGaP short name (``ex<cohort>_<exam>s``, ``..._ex<NN>_<cohort>[b]_...``).
            This is the check that found #782's 11 real wrong labels.
+         - ERROR: on any table, a block with exactly one label disagrees with a label carried by
+           at least MAJORITY_MIN_BLOCKS of the table's other single-label blocks, making up at
+           least MAJORITY_MIN_SHARE of them (a copy-paste label on a single-exam table).
          - WARNING: two blocks of one table carry label sets that overlap while neither contains
            the other.
 
@@ -29,7 +32,7 @@ import argparse
 import os
 import re
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -181,6 +184,42 @@ def _fmt(labels) -> str:
     return "{" + ", ".join(f"'{x}'" for x in sorted(labels)) + "}"
 
 
+# A single-label block disagreeing with a strong majority of its table's single-label blocks is
+# an ERROR. Warrant (all cohorts, 2026-10-08): of 5,573 single-label blocks on 566 tables, the
+# largest share of "other" blocks agreeing on a different label that any block faces is 28%
+# (ARIC pht012853, a wide multi-exam table), so 5 and 80% leave a wide margin, give 0 findings,
+# and arm the rule on 163 tables (4,409 blocks; 10 and 90% arm 103). Lower them only with a new
+# census of that maximum share.
+MAJORITY_MIN_BLOCKS = 5
+MAJORITY_MIN_SHARE = 0.8
+
+
+def _majority_label(pht: str, candidates: list[PhtVisitRef],
+                    refs: list[PhtVisitRef]) -> list[Finding]:
+    """1.8 outside the FHS name rule: the #782 copy-paste label on a single-exam table."""
+    singles = [r for r in refs if len(r.labels) == 1]
+    counts = Counter(next(iter(r.labels)) for r in singles)
+    out: list[Finding] = []
+    for ref in candidates:
+        if len(ref.labels) != 1:
+            continue
+        (label,) = ref.labels
+        others = counts.copy()
+        others[label] -= 1
+        total = sum(others.values())
+        if not total:
+            continue
+        top, n = max(others.items(), key=lambda kv: (kv[1], kv[0]))
+        if top != label and n >= MAJORITY_MIN_BLOCKS and n / total >= MAJORITY_MIN_SHARE:
+            out.append(Finding(
+                ref.file, ref.block_index, "1.8", "ERROR",
+                f"{pht}: this {ref.bdchm_class} block labels its rows '{label}', but {n} of the "
+                f"{total} other single-label blocks of this table label theirs '{top}' -- likely "
+                f"a copy-paste visit label",
+            ))
+    return out
+
+
 def check_cross_file_pht_consistency(
     all_refs: list[PhtVisitRef],
     table_names: dict[str, dict[str, str]] | None = None,
@@ -201,15 +240,19 @@ def check_cross_file_pht_consistency(
         table = table_names.get(pht) or {}
         short = table.get("name", "")
         expected = expected_fhs_labels(short, table.get("description", "")) if short else None
+        flagged: set[int] = set()
         if expected:
             for ref in refs:
                 if len(ref.labels) == 1 and not ref.labels <= expected:
+                    flagged.add(id(ref))
                     findings.append(Finding(
                         ref.file, ref.block_index, "1.8", "ERROR",
                         f"{pht} ({short}) is {_fmt(expected)} by its dbGaP table name, but this "
                         f"{ref.bdchm_class} block labels its rows {_fmt(ref.labels)} -- wrong visit "
                         f"label",
                     ))
+
+        findings.extend(_majority_label(pht, [r for r in refs if id(r) not in flagged], refs))
 
         sets = sorted({ref.labels for ref in refs}, key=lambda x: (len(x), sorted(x)))
         first_block: dict[frozenset[str], PhtVisitRef] = {}

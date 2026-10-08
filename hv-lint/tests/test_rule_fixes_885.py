@@ -143,6 +143,47 @@ def test_18_partial_overlap_is_a_warning():
     assert checks(c18.check_cross_file_pht_consistency([a, b])) == [("1.8", "WARNING")]
 
 
+def _single(label: str, i: int, pht: str = "pht001116"):
+    return c18.PhtVisitRef(pht, frozenset({label}), f"MESA-ingest/f{i}.yaml", 0,
+                           "MeasurementObservation")
+
+
+def test_18_copy_paste_label_against_a_strong_majority_is_an_error():
+    """Review round 1 F1: MESA hdl b1 relabelled EXAM 2 among 118 EXAM 1 blocks passed."""
+    n = c18.MAJORITY_MIN_BLOCKS
+    refs = [_single("MESA CLASSIC EXAM 1", i) for i in range(n)] + [_single("MESA CLASSIC EXAM 2",
+                                                                            99)]
+    f = c18.check_cross_file_pht_consistency(refs)
+    assert checks(f) == [("1.8", "ERROR")] and f[0].file == "MESA-ingest/f99.yaml"
+    assert "'MESA CLASSIC EXAM 1'" in f[0].message
+
+
+def test_18_majority_thresholds_hold_at_their_edges():
+    n, share = c18.MAJORITY_MIN_BLOCKS, c18.MAJORITY_MIN_SHARE
+    few = [_single("E1", i) for i in range(n - 1)] + [_single("E2", 99)]
+    assert c18.check_cross_file_pht_consistency(few) == []          # n - 1 agree: too few
+
+    def lone(m):  # n blocks agree, m blocks each carry their own label
+        refs = [_single("E1", i) for i in range(n)] + [_single(f"X{j}", 50 + j) for j in range(m)]
+        return len(c18.check_cross_file_pht_consistency(refs))
+
+    m = 1
+    while n / (n + m) >= share:     # the most lone blocks that still each face >= share
+        m += 1
+    assert lone(m) == m and lone(m + 1) == 0
+    multi = [_single(f"EXAM {i % 5}", i) for i in range(40)]      # a multi-exam table
+    assert c18.check_cross_file_pht_consistency(multi) == []
+
+
+def test_18_majority_ignores_case_blocks_and_other_tables():
+    n = c18.MAJORITY_MIN_BLOCKS
+    refs = [_single("E1", i) for i in range(n)]
+    refs.append(c18.PhtVisitRef("pht001116", frozenset({"E1", "E2"}), "MESA-ingest/c.yaml", 0,
+                                "Condition"))
+    refs.append(_single("E2", 98, pht="pht009999"))
+    assert c18.check_cross_file_pht_consistency(refs) == []
+
+
 # -- 1.2 -----------------------------------------------------------------------------------------
 
 def test_12_blood_pressure_replicates_do_not_collide():

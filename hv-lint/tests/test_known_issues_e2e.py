@@ -199,3 +199,29 @@ def test_file_run_scopes_entries_and_refuses_an_update(tmp_path):
     refused = t.run(script, "--file", str(t.dir / "b.yaml"), mode="update")
     assert refused.returncode == 1 and "refusing to update on a --file run" in refused.stdout
     assert not t.baseline.exists() or json.loads(t.baseline.read_text())["warnings"] == {}
+
+
+def _labelled(phv: str, label: str) -> dict:
+    seed = "phv00084441"
+    return {"class_derivations": {"MeasurementObservation": {
+        "populated_from": "pht001116", "slot_derivations": {
+            "associated_participant": {
+                "expr": f'uuid5("https://w3id.org/bdchm/Participant", str({{{seed}}}) + ":MESA")'},
+            "associated_visit": {
+                "expr": f'uuid5("https://w3id.org/bdchm/Visit", str({{{seed}}}) + ":{label}")'},
+            "observation_type": {"value": "OMOP:4041720"},
+            "value_quantity": {"class_derivations": [{"Quantity": {"slot_derivations": {
+                "value_decimal": {"populated_from": phv}, "unit": {"value": "mg/dL"}}}}]},
+        }}}}
+
+
+def test_18_copy_paste_label_fails_phase1_through_main(tmp_path):
+    """Review round 1 F1: one block relabelled on a single-exam MESA table must fail CI."""
+    t = E.Tree(tmp_path, "MESA")
+    good = [_labelled(f"phv0008497{i}", "MESA CLASSIC EXAM 1") for i in range(6)]
+    t.write("hdl.yaml", good)
+    script = "phase-1/check_cross_file_pht_consistency.py"
+    assert t.run(script, "--cohort", "MESA").returncode == 0
+    t.write("hdl.yaml", good[:5] + [_labelled("phv00084975", "MESA CLASSIC EXAM 2")])
+    res = t.run(script, "--cohort", "MESA")
+    assert res.returncode == 1 and "likely a copy-paste visit label" in res.stdout
