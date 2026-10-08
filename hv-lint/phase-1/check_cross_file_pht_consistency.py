@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
 """HV-Lint Phase 1: Cross-file PHT visit label consistency (Rule 1.8).
 
-For each populated_from PHT used across all YAML files in a cohort,
-collects every associated_visit label paired with that PHT.  If a PHT
-appears with more than one DISTINCT visit label, the minority usage is
-flagged as ERROR -- this is always a copy-paste bug.
+Every data block names the visit(s) its rows belong to. Blocks that read the same dbGaP table
+should agree on them. The unit of comparison is a block's label SET: a block whose
+``associated_visit`` is a ``case()`` over a cohort or phase code legitimately emits several labels,
+and two blocks of one multi-exam table legitimately emit different ones, so counting labels across
+blocks (and calling the rarer one a copy-paste error) reports differences that are design.
 
-Handles both static associated_visit values (value: "...") and
-expr-based visit references (including uuid5 patterns).  For expr-based
-visits, visit labels are extracted using regex parsing of case() results
-and uuid5 seed strings.
+Labels come from the shared enumerator (``_visit_ids``): comparison operands are never labels,
+and a ``(True, ...)`` fallback arm (``FHS UNKNOWN VISIT``) is dropped.
 
 Checks:
-    1.8  Cross-file PHT visit label consistency -- a given PHT should
-         map to the same visit label everywhere in the cohort.
+    1.8  Cross-file PHT visit label consistency
+         - ERROR: a block with exactly one label disagrees with the exam its FHS table encodes
+           in its dbGaP short name (``ex<cohort>_<exam>s``, ``..._ex<NN>_<cohort>[b]_...``).
+           This is the check that found #782's 11 real wrong labels.
+         - WARNING: two blocks of one table carry label sets that overlap while neither contains
+           the other.
 
 Usage:
     python hv-lint/phase-1/check_cross_file_pht_consistency.py
@@ -34,98 +37,71 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
+import _cohorts  # noqa: E402
+import _visit_ids  # noqa: E402
 
 TRANSFORM_DIR = find_transform_dir()
 
 PHT_RE = re.compile(r"pht\d{6}")
 
-# -- Regex patterns for visit label extraction from expressions -----------
-# Replicates Phase 5's extract_visit_labels_from_expr() locally, since
-# phases are independent modules.
-
-# Matches the result string in a case tuple: , "RESULT") or , 'RESULT')
-CASE_RESULT_DQ_RE = re.compile(r',\s*"([^"]+)"\s*\)')
-CASE_RESULT_SQ_RE = re.compile(r",\s*'([^']+)'\s*\)")
-
-# Matches string concatenated after closing paren: ) + "SUFFIX" or ) + 'SUFFIX'
-SUFFIX_AFTER_PAREN_DQ_RE = re.compile(r'\)\s*\+\s*"([^"]*)"')
-SUFFIX_AFTER_PAREN_SQ_RE = re.compile(r"\)\s*\+\s*'([^']*)'")
-
-# Matches a case() branch whose result is a whole uuid5() call, with the visit label in the
-# seed: , uuid5("<ns>", str({phv}) + ":LABEL")
-#
-# Without this the branch result is not a bare quoted string, nothing matches above, and the
-# function falls through to the "no case()" path below -- which returns every quoted string in
-# the expression, including the DISCRIMINATOR CODES being compared against. A pht then appears
-# to carry twice the labels it has, which reads as a cross-file inconsistency that is not there.
-# COPDGene's shipped specs use this form in 48 associated_visit blocks, so the fallback
-# mis-parses production output, not only generated output.
-CASE_RESULT_UUID5_RE = re.compile(r""",\s*uuid5\(.*?\+\s*['"]:?([^'"]+)['"]\s*\)""")
-
-# Matches any quoted string (double or single)
-QUOTED_DQ_RE = re.compile(r'"([^"]+)"')
-QUOTED_SQ_RE = re.compile(r"'([^']+)'")
-
 SEVERITY_RANK = {"CRITICAL": 5, "ERROR": 4, "HIGH": 3, "WARNING": 2, "INFO": 1}
+
+# FHS cohort codes as they appear in table short names and IDTYPE values.
+FHS_COHORT_CODE = {
+    "0": "ORIGINAL", "1": "OFFSPRING", "2": "NEW OFFSPRING SPOUSE", "3": "GENERATION 3",
+    "7": "OMNI 1", "72": "OMNI 2",
+}
+_FHS_EXAM_SHORT_RE = re.compile(r"^ex(\d+)_(\d+)s$")
+_FHS_EXAM_LONG_RE = re.compile(r"(?:^|_)ex(\d+)_(\d+)(b?)(?:_|$)")
+
+
+_EXAM_RANGE_RE = re.compile(r"Exams?\s+(\d+)\s*-\s*(?:Exam\s+)?(\d+)", re.IGNORECASE)
+
+
+def expected_fhs_labels(short_name: str, description: str = "") -> set[str] | None:
+    """The visit labels an FHS table's dbGaP short name allows, or None when it encodes none.
+
+    ``ex0_7s`` names Original Exam 7 but holds Exams 1-7, which its description says ("Original
+    Cohort Exams 1 - 7"), so a description range widens the set. ``l_cortisol_ex06_1b_0495s``
+    is Offspring Exam 6; its ``b`` marks a table shared with Omni 1, whose exam number is five
+    lower (the Offspring / Omni 1 exam alignment). ``..._ex01_3b_...`` is Gen 3 Exam 1 shared
+    with New Offspring Spouse and Omni 2. Derived ``vr_`` tables carry one column per exam, so
+    their name encodes no single exam.
+    """
+    if short_name.startswith("vr_"):
+        return None
+    m = _FHS_EXAM_SHORT_RE.match(short_name)
+    if m:
+        cohort = FHS_COHORT_CODE.get(m.group(1))
+        if not cohort:
+            return None
+        exam = int(m.group(2))
+        r = _EXAM_RANGE_RE.search(description or "")
+        exams = range(int(r.group(1)), int(r.group(2)) + 1) if r else [exam]
+        return {f"FHS {cohort} EXAM {n}" for n in exams}
+    m = _FHS_EXAM_LONG_RE.search(short_name)
+    if not m:
+        return None
+    exam, code, shared = int(m.group(1)), m.group(2), m.group(3)
+    if code == "1" and shared:
+        return {f"FHS OFFSPRING EXAM {exam}", f"FHS OMNI 1 EXAM {exam - 5}"}
+    if code == "3" and shared:
+        return {f"FHS GENERATION 3 EXAM {exam}", f"FHS NEW OFFSPRING SPOUSE EXAM {exam}",
+                f"FHS OMNI 2 EXAM {exam}"}
+    cohort = FHS_COHORT_CODE.get(code)
+    return {f"FHS {cohort} EXAM {exam}"} if cohort else None
 
 
 def _extract_labels_from_expr(expr: str) -> set[str]:
-    """Extract human-readable visit labels from a uuid5 or case expression.
+    """The visit labels an ``associated_visit`` expression can emit, fallback arms excluded.
 
-    Handles:
-      - Simple case(): case((..., "LABEL1"), (..., "LABEL2"))
-      - Case + suffix: case((..., "PREFIX1"), ...) + " SUFFIX"
-      - UUID5 wrapping: uuid5("URL", ... + case(...) + " SUFFIX")
-      - FHS Pattern A: str({phv}) + ":LABEL"
-      - Single-label uuid5: uuid5("URL", str({phv}) + ":LABEL")
+    Delegates to the shared enumerator, so 1.8 and Phase 5 read one parse of each expression.
+    An expression the enumerator cannot model yields no labels.
     """
-    expr_str = str(expr)
-
-    # Extract case() result strings (both quote flavours)
-    case_results = (
-        CASE_RESULT_DQ_RE.findall(expr_str)
-        + CASE_RESULT_SQ_RE.findall(expr_str)
-        + CASE_RESULT_UUID5_RE.findall(expr_str)
-    )
-
-    if case_results:
-        # Look for suffix concatenated after case(): ) + "SUFFIX"
-        suffixes = (
-            SUFFIX_AFTER_PAREN_DQ_RE.findall(expr_str)
-            + SUFFIX_AFTER_PAREN_SQ_RE.findall(expr_str)
-        )
-        visit_suffix = ""
-        for s in suffixes:
-            stripped = s.strip()
-            if (stripped
-                    and not stripped.startswith("http")
-                    and stripped != ":"
-                    # `.lstrip(':')`: a suffix keeps its leading colon where a captured
-                    # label does not, so comparing raw lets a label be appended to itself.
-                    and s.lstrip(":") not in case_results
-                    and any(c.isalpha() for c in stripped)):
-                visit_suffix = s
-                break
-        return {
-            (cr + visit_suffix).lstrip(":")
-            for cr in case_results
-        }
-
-    # No case() -- extract quoted strings as candidate labels
-    all_quoted = (
-        QUOTED_DQ_RE.findall(expr_str)
-        + QUOTED_SQ_RE.findall(expr_str)
-    )
-    labels = {
-        s.lstrip(":")
-        for s in all_quoted
-        if not s.startswith("http")
-        and len(s) > 1
-        and any(c.isalpha() for c in s)
-        and s.lstrip(":") != ""
-    }
-    labels.discard("")
-    return labels
+    try:
+        return _visit_ids.labels(_visit_ids.enumerate_ids(str(expr)))
+    except _visit_ids.Unparsed:
+        return set()
 
 
 @dataclass
@@ -153,9 +129,9 @@ class Finding:
 
 @dataclass
 class PhtVisitRef:
-    """A single (PHT, visit_label) reference from a data block."""
+    """One data block's visit labels for the PHT it reads."""
     pht: str
-    visit_label: str
+    labels: frozenset[str]
     file: str
     block_index: int
     bdchm_class: str
@@ -176,143 +152,81 @@ def find_yaml_files(base_dir: Path, cohort: str) -> list[Path]:
 def _extract_visit_refs(
     block: dict, block_idx: int, rel_path: str,
 ) -> list[PhtVisitRef]:
-    """Extract (PHT, visit_label) pairs from a block.
+    """One ref per top-level data class that reads a PHT and names a visit.
 
-    Handles BOTH static ``value:`` and ``expr:`` (including uuid5)
-    visit references.  Skips visit.yaml blocks (Visit class) since
-    they define visits rather than reference them.
-
-    For expr-based visits, extracts visit labels using regex parsing
-    of case() results and uuid5 seed strings.  Each extracted label
-    generates a separate PhtVisitRef.
+    Visit blocks (visit.yaml) define visits rather than reference them and are skipped.
     """
     refs: list[PhtVisitRef] = []
     class_derivs = block.get("class_derivations")
     if not isinstance(class_derivs, dict):
         return refs
-
     for cls_name, cls_def in class_derivs.items():
-        if not isinstance(cls_def, dict):
+        if not isinstance(cls_def, dict) or cls_name == "Visit":
             continue
-
-        # Skip visit.yaml Visit blocks -- they define, not reference
-        if cls_name == "Visit":
-            continue
-
         pht = cls_def.get("populated_from")
         if not isinstance(pht, str) or not PHT_RE.fullmatch(pht):
             continue
-
         slot_derivs = cls_def.get("slot_derivations")
         if not isinstance(slot_derivs, dict):
             continue
-
-        visit_def = slot_derivs.get("associated_visit")
-        if not isinstance(visit_def, dict):
-            continue
-
-        # Try static value first
-        visit_value = visit_def.get("value")
-        if isinstance(visit_value, str) and visit_value.strip():
-            if not visit_def.get("expr"):
-                refs.append(PhtVisitRef(
-                    pht=pht,
-                    visit_label=visit_value.strip(),
-                    file=rel_path,
-                    block_index=block_idx,
-                    bdchm_class=cls_name,
-                ))
-                continue
-
-        # Try expr-based visit (uuid5, case, etc.)
-        visit_expr = visit_def.get("expr")
-        if isinstance(visit_expr, str) and visit_expr.strip():
-            labels = _extract_labels_from_expr(visit_expr)
-            for label in labels:
-                if label.strip():
-                    refs.append(PhtVisitRef(
-                        pht=pht,
-                        visit_label=label.strip(),
-                        file=rel_path,
-                        block_index=block_idx,
-                        bdchm_class=cls_name,
-                    ))
-
+        visit = slot_derivs.get("associated_visit")
+        labels = frozenset(_visit_ids.labels(_visit_ids.slot_ids(visit)))
+        if labels:
+            refs.append(PhtVisitRef(pht, labels, rel_path, block_idx, cls_name))
     return refs
+
+
+def _fmt(labels) -> str:
+    return "{" + ", ".join(f"'{x}'" for x in sorted(labels)) + "}"
 
 
 def check_cross_file_pht_consistency(
     all_refs: list[PhtVisitRef],
+    table_names: dict[str, dict[str, str]] | None = None,
 ) -> list[Finding]:
-    """Check 1.8: Cross-file PHT visit label consistency.
+    """Check 1.8 over every data block of one run.
 
-    Groups references by PHT.  For each PHT with >1 distinct visit
-    label, identifies the majority label and flags minority occurrences
-    as ERROR.  If there's no clear majority (equal split), all
-    occurrences are flagged so the user can investigate.
+    ``table_names`` maps a PHT to its dbGaP short name (FHS's ``_tables`` index); without it the
+    ERROR sub-check has nothing to compare against and only the overlap WARNING runs.
     """
     findings: list[Finding] = []
+    table_names = table_names or {}
 
-    # Group by PHT
-    pht_refs: dict[str, list[PhtVisitRef]] = defaultdict(list)
+    by_pht: dict[str, list[PhtVisitRef]] = defaultdict(list)
     for ref in all_refs:
-        pht_refs[ref.pht].append(ref)
+        by_pht[ref.pht].append(ref)
 
-    for pht, refs in sorted(pht_refs.items()):
-        # Count distinct labels
-        label_counts: dict[str, int] = defaultdict(int)
-        label_refs: dict[str, list[PhtVisitRef]] = defaultdict(list)
-        for ref in refs:
-            label_counts[ref.visit_label] += 1
-            label_refs[ref.visit_label].append(ref)
-
-        if len(label_counts) <= 1:
-            continue  # Consistent -- nothing to flag
-
-        # Find majority label
-        sorted_labels = sorted(label_counts.items(), key=lambda x: -x[1])
-        majority_label, majority_count = sorted_labels[0]
-        second_count = sorted_labels[1][1]
-
-        if majority_count == second_count:
-            # No clear majority -- flag ALL occurrences
-            all_labels = ", ".join(
-                f"'{lb}' ({ct}x)" for lb, ct in sorted_labels
-            )
+    for pht, refs in sorted(by_pht.items()):
+        table = table_names.get(pht) or {}
+        short = table.get("name", "")
+        expected = expected_fhs_labels(short, table.get("description", "")) if short else None
+        if expected:
             for ref in refs:
-                findings.append(Finding(
-                    file=ref.file,
-                    block=ref.block_index,
-                    check="1.8",
-                    severity="ERROR",
-                    message=(
-                        f"{pht} has inconsistent visit labels across files: "
-                        f"{all_labels} -- no clear majority, manual review needed"
-                    ),
-                ))
-        else:
-            # Clear majority -- flag minority occurrences only
-            for label, label_count in sorted_labels[1:]:
-                majority_files = sorted(set(
-                    r.file.rsplit("/", 1)[-1] for r in label_refs[majority_label]
-                ))
-                majority_examples = ", ".join(majority_files[:3])
-                if len(majority_files) > 3:
-                    majority_examples += f" (+{len(majority_files) - 3} more)"
-
-                for ref in label_refs[label]:
+                if len(ref.labels) == 1 and not ref.labels <= expected:
                     findings.append(Finding(
-                        file=ref.file,
-                        block=ref.block_index,
-                        check="1.8",
-                        severity="ERROR",
-                        message=(
-                            f"{pht} uses visit label '{ref.visit_label}' here "
-                            f"but '{majority_label}' in {majority_count} other "
-                            f"block(s) ({majority_examples}) -- likely copy-paste error"
-                        ),
+                        ref.file, ref.block_index, "1.8", "ERROR",
+                        f"{pht} ({short}) is {_fmt(expected)} by its dbGaP table name, but this "
+                        f"{ref.bdchm_class} block labels its rows {_fmt(ref.labels)} -- wrong visit "
+                        f"label",
                     ))
 
+        sets = sorted({ref.labels for ref in refs}, key=lambda x: (len(x), sorted(x)))
+        first_block: dict[frozenset[str], PhtVisitRef] = {}
+        for ref in refs:
+            first_block.setdefault(ref.labels, ref)
+        for i, a_set in enumerate(sets):
+            for b_set in sets[i + 1:]:
+                if a_set & b_set and not (a_set <= b_set or b_set <= a_set):
+                    other = first_block[a_set]
+                    for ref in refs:
+                        if ref.labels == b_set:
+                            findings.append(Finding(
+                                ref.file, ref.block_index, "1.8", "WARNING",
+                                f"{pht}: this block's visit labels {_fmt(b_set)} overlap "
+                                f"{_fmt(a_set)} in {other.file.rsplit('/', 1)[-1]} block "
+                                f"{other.block_index}, and neither contains the other -- check "
+                                f"which visits the table holds",
+                            ))
     return findings
 
 
@@ -368,7 +282,11 @@ def main() -> int:
                 _extract_visit_refs(block, idx, rel_path)
             )
 
-    findings = check_cross_file_pht_consistency(all_refs)
+    cache_dir = Path(__file__).resolve().parent.parent / "dbgap-cache"
+    table_names: dict[str, dict[str, str]] = {}
+    for _name, key in _cohorts.cohorts_to_load(args.cohort, cache_dir, base_dir):
+        table_names.update(_cohorts.load_table_names(cache_dir, key))
+    findings = check_cross_file_pht_consistency(all_refs, table_names)
 
     # -- Report --------------------------------------------------------
     fail_rank = SEVERITY_RANK[args.fail_on.upper()]

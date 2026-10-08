@@ -139,15 +139,9 @@ The dbGaP variable list pages (`GetListOfAllObjects.cgi`) return HTML tables. Th
 - **Assumption**: The HTML table has 5 columns: variable accession, variable name, variable description, dataset accession, dataset name
 - **Assumption**: Stripping the version suffix (`.vN.pN`) yields the canonical accession
 
-### A6: Cross-Table PHV References for Known Slot Patterns Are Expected
+### A6: Cross-Table PHV References Resolve Only Through a Join
 
-Many YAML blocks reference PHVs from a different table than the class's `populated_from`. Three categories are treated as **expected** (downgraded to INFO):
-
-1. **Slots with explicit joins**: PHV belongs to a table declared in the block's `joins` array
-2. **Participant/visit linkage slots**: `associated_participant`, `associated_visit` -- these always reference a subject-level table
-3. **Age-related slots**: Any slot starting with `age_at_` or `age_of_` -- age variables are routinely stored in a shared demographics/visit table
-
-All other cross-table references are flagged as WARNING for human review.
+linkml-map 0.5.3 (run with dm-bip's own schema step and map call) reaches another table's column only through a join: a declared `joins` entry, a dotted `{pht.phv}` reference, or a nested derivation whose `populated_from` names that table (the last two are joins it synthesizes on `dbGaP_Subject_ID`). A BARE `{phv}` from another table is not a slot of the row: the value is None on every row, with one pre-flight log line. So no slot is "expected" to read another table bare -- not the linkage slots, not the age slots (rule 3.5).
 
 ### A7: Known Issues Are Skipped Entirely
 
@@ -155,20 +149,11 @@ The `KNOWN_ISSUES` dict in each phase script allows specific files to be exclude
 
 ### A8: Duplicate Detection Identity
 
-Blocks are considered duplicates within a file if they share the same 5-tuple:
+Rules 1.2 (within a file) and 1.12 (across files) share one identity, `check_cross_file_duplicates.block_identities`:
 
-`(class_name, pht, visit_label, concept_value, distinguishing_phv)`
+`(class, populated_from table, source, concept, associated_visit, value_mappings)`
 
-Where `distinguishing_phv` varies by class:
-
-| Class | `concept_value` source | `distinguishing_phv` source |
-|-------|----------------------|---------------------------|
-| `Condition` | `condition_concept.value` | `condition_status.populated_from` or `.expr` |
-| `MeasurementObservation` | `observation_type.value` | `value_quantity` Quantity `value_decimal.populated_from` or `.expr` |
-| `Observation`, `SdohObservation` | `observation_type.value` | Same as MeasurementObservation |
-| `DrugExposure` | `drug_concept.value` or `.expr` | -- |
-| `Visit` | `id.expr` | -- |
-| `Demography` | -- | `sorted(slot_names)` |
+where the source and mappings come from `condition_status` / `exposure_status` / `procedure_status`, or from the Quantity value slot / `value_enum` for observations, and the concept from `condition_concept` / `drug_concept` / `procedure_concept` / `observation_type`. Other classes (MeasurementObservationSet, Visit, Demography, ...) are identified by their whole body. Context slots (provenance, ages, method_type) are not part of the identity: two blocks that differ only there still emit the same records twice.
 
 ### A9: Severity Levels and Exit Code Behavior
 
@@ -212,9 +197,9 @@ Validate all `expr` fields for syntactic correctness.
 
 ### 1.2 Duplicate Block Detection
 
-Detect `class_derivation` blocks with identical identity tuples within a file. See assumption A8 for the identity schema.
+Detect two blocks in one file that emit the same records, using rule 1.12's identity (assumption A8). The message names the context slots in which the two copies differ, or says they are byte-identical.
 
-- **Catches**: Copy-paste duplicates, blocks that would produce identical output records
+- **Catches**: Copy-paste duplicates, blocks that would produce identical output records. Blood-pressure replicates and per-drug blocks that read different source variables are not duplicates.
 - **Severity**: ERROR
 
 ### 1.3 Inline Comment Detection
@@ -239,12 +224,12 @@ Detect DrugExposure blocks within a file that share the same source PHV(s) in `d
 
 ### 1.8 Cross-File PHT Visit Label Consistency
 
-Detect cases where the same `populated_from` PHT is associated with different visit labels across different YAML files within the same cohort. A given PHT should map to the same visit label everywhere.
+Each data block's `associated_visit` is read as a label SET by the shared enumerator (`hv-lint/_visit_ids.py`): every case() arm is enumerated, comparison operands (`'P2'`, CARDIA `'HBP'`) are never labels, and a `(True, ...)` fallback arm (`FHS UNKNOWN VISIT`) is dropped. Blocks are grouped by PHT.
 
-- **Logic**: Extracts `(populated_from, associated_visit)` pairs from both static `value:` and `expr:`-based visit references (including uuid5 patterns). Groups by PHT across all files. If a PHT appears with >1 distinct visit label, identifies the majority label and flags minority occurrences.
+- **ERROR**: a block with exactly one label disagrees with the exam its FHS table encodes in its dbGaP short name (`ex<cohort>_<exam>s`, `..._ex<NN>_<cohort>[b]_...`; a description range such as "Original Cohort Exams 1 - 7" widens it; derived `vr_` tables encode no single exam). The short names and descriptions come from `<release>_tables.json.gz` (`build_phv_stats_index.py --tables`), committed for FHS only.
+- **WARNING**: two blocks of one table carry label sets that overlap while neither contains the other (COPDGene phase subsets).
+- Not reported: a block whose label set is a superset of another's (MESA potassium b0's Exam 3/4 case beside Exam 4 blocks), or different single exams of one multi-exam table.
 - **Excluded**: Visit class blocks (visit.yaml defines visits, not consumes them)
-- **uuid5 support**: Parses visit labels from uuid5 expressions, closing a coverage regression where the uuid5 migration made static-only checks blind.
-- **Severity**: ERROR
 
 ### 1.9 Common Typo Detection
 
@@ -312,7 +297,8 @@ Validate every class name used as keys in `class_derivations` against the BDCHM 
 Validate that each BDCHM class block includes its required and recommended context slots.
 
 - **Source of truth**: BDCHM schema `required` and `recommended` annotations per class -- not a hardcoded list
-- **Severity**: ERROR for required; INFO for recommended
+- **Severity**: ERROR for a missing required slot; INFO for recommended. A required slot that is present but written as a `case()` with no `(True, ...)` arm is a WARNING: it is null on every row no arm matches (Procedure blocks whose ABSENT rows carry no `procedure_concept`).
+- **`id` is not checked per block**: it is required on every class, but linkml-map 0.5.3 does not generate it (only Person, Participant and Visit derive one). One note per run; the decision is with the HM / dm-bip owners (#873).
 - **Extension**: Advisory `age_at_observation` check on MeasurementObservation blocks (INFO severity -- the slot is optional in bdchm but its absence is a completeness gap)
 
 ### 2.5 Object Derivation Structure Validation
@@ -356,8 +342,8 @@ Validate all ontology reference values matching `PREFIX:IDENTIFIER` against per-
 
 Validates that values assigned to enum-typed slots are members of the BDCHM-defined permissible value sets. Resolves enum inheritance and `include` sections recursively; accepts both PV key names and their `meaning` CURIEs. Enums with `reachable_from` (dynamic/ontology-derived) are skipped.
 
-- **Covers**: `value:` static assignments (ERROR), `value_mappings:` target values (ERROR), `expr:` case() result strings (WARNING)
-- **Extension**: Cross-file enum consistency check for consistency-critical slots (currently `relationship_to_participant`). Flags when the same slot uses different values in different files. Severity: WARNING.
+- **Covers**: `value:` static assignments, `value_mappings:` target values, and `expr:` case() arm results -- element `[1]` of each arm, read from the parse tree, so a membership tuple such as `in ("1","2")` is never taken for a result. All ERROR.
+- The cross-file consistency extension is removed: every finding was a family-history file, where relatives are meant to differ.
 
 ### 2.8 PHV Deduplication
 
@@ -369,17 +355,13 @@ Flag any PHV accession that is mapped as a measured value in more than one harmo
 
 ### 2.10 Unconditional age_at_condition_start on Binary Conditions
 
-Flag Condition blocks where `age_at_condition_start` is populated unconditionally but `condition_status` maps both PRESENT and ABSENT rows. ABSENT rows would incorrectly receive an age value.
+Flag Condition blocks where `age_at_condition_start` is populated unconditionally but `condition_status` maps both PRESENT and ABSENT rows. ABSENT rows would incorrectly receive an age value. An age written `None if <test on the block's own status variable> else ...` is guarded.
 
 - **Severity**: WARNING
 
-### 2.11 Condition Missing ABSENT in condition_status
+### 2.11 Condition Missing ABSENT in condition_status (not checked)
 
-Flag Condition blocks where `condition_status.value_mappings` maps PRESENT or HISTORICAL but has no ABSENT mapping. Negative responses may be silently dropped.
-
-- **Severity**: WARNING
-
----
+Removed. As written it recommended mapping a follow-up question's "No" to ABSENT, the defect 3.18 rejects, and every one of its 127 findings on main was a false positive. An observed code a block drops is rule 3.9's, which weighs it by rows and skips follow-up questions.
 
 ## Phase 3: dbGaP Structure & Cross-Reference
 
@@ -406,33 +388,25 @@ For every PHV reference in every YAML file, verify it exists in the dbGaP variab
 - **Extraction scope**: `populated_from`, `expr` (regex search), `value_mappings` keys, `expression_to_value_mappings` keys, recursive through `object_derivations`
 - **Severity**: ERROR
 
-### 3.4 PHV-to-PHT Membership
+### 3.4 Qualified Reference Membership
 
-When a PHV exists in the index but belongs to a different PHT than the class's `populated_from`, categorized into three tiers:
+A dotted `{pht.phv}` (or `populated_from: pht.phv`) must name the table the PHV is in; otherwise the synthesized join reads the wrong table. **Severity**: ERROR. A correct dotted reference produces no finding.
 
-| Tier | Condition | Severity |
-|------|-----------|----------|
-| **Covered by joins** | PHV's actual PHT is in the block's `joins` array | INFO |
-| **Expected cross-table** | Slot is `associated_participant`, `associated_visit`, or `age_at_*` | INFO |
-| **Unexpected cross-table** | All other cases | WARNING |
+### 3.5 Cross-Table Reference Without a Join
 
-### 3.5 Cross-Table Reference Detection
-
-Implemented as part of check 3.4 (see above). Unexpected cross-table references without joins are flagged as WARNING.
+A BARE `{phv}` or bare `populated_from` whose table is not the block's class table, not the `populated_from` of an enclosing nested derivation, and not a declared join, in any slot (assumption A6). **Severity**: ERROR.
 
 ### 3.9 value_mappings Completeness
 
-Validates that `value_mappings` entries cover the full set of coded values defined in dbGaP for the referenced PHV. Catches silent data loss when a source code is unmapped.
+Flags values the source holds that `value_mappings` drops (silent data loss), at every depth (nested `Quantity.value_concept` included).
 
-- **Severity**: Tiered --
-  - **ERROR** for high-impact slots (`race`, `annotated_sex`, `sex`, `condition_status`, `value_enum`)
-  - **WARNING** for all other slots
-  - **INFO** for codes matching skip patterns (unknown, refuse, missing, N/A, etc.)
-- **Design note**: `ethnicity` is excluded from the high-impact set because it frequently shares a PHV with race.
+- **Reference set**: the var_report's OBSERVED values (`<release>_stats.json.gz`). A declared code no row carries loses nothing. A value written as its label (JHS) counts as mapped when the label is a key. Without var_report counts the declared codes are used, capped at WARNING; with neither, INFO "could not be validated".
+- **Not reported**: the negative answer of a conditional follow-up (`check_status_semantic.detect_followup`; 3.18 rejects mapping it to ABSENT), a code the race/ethnicity sibling slot maps from the same PHV, a severity code labelled none/no.
+- **Severity by rows lost** (share of observed rows the dropped value carries): ERROR from 50% on a high-impact slot (`race`, `sex`, `annotated_sex`, `ethnicity`, `condition_status`, `exposure_status`, `procedure_status`, `value_enum`), WARNING from 10%, INFO below. Skip labels (unknown, refused, missing, ...) are INFO.
 
 ### 3.10 PHV Data Type vs Slot Role Compatibility
 
-Validates that the dbGaP data type of a source PHV is compatible with the target slot's usage role. Catches adjacent-variable errors where a continuous variable is used where a categorical indicator was needed.
+Validates that the dbGaP data type of a source PHV is compatible with the target slot's usage role. Catches adjacent-variable errors where a continuous variable is used where a categorical indicator was needed. Walks every slot at every depth: every `value_decimal` / `value_integer` on main is nested in a Quantity.
 
 - **Severity**: ERROR
 
@@ -469,9 +443,13 @@ Validates that `unit_conversion` blocks specify a `source_unit` consistent with 
 
 ### 3.15 Phantom Code Detection
 
-Validates that `value_mappings` keys actually exist in the dbGaP coded value list for the source PHV. The inverse of Rule 3.9: a phantom code is a YAML mapping key that never matches any real data row.
+Against the var_report's observed values, at every depth:
 
-- **Severity**: ERROR for high-impact slots (race, annotated_sex, sex, condition_status, value_enum); WARNING otherwise
+- key observed: no finding (observed but undeclared: INFO, its meaning is undocumented);
+- key equal to an observed value except for case or spacing: **ERROR**, it never matches (linkml-map compares exact strings);
+- no key of the slot matches any observed value: **ERROR**, unless it is a severity slot whose observed values all mean "none" (MESA copd b5 / b17);
+- key neither observed nor declared: INFO (dead defensive key). A declared code no row carries is not reported.
+- Without var_report counts: a key outside the declared codes is a WARNING.
 
 ### 3.16 Quantity Missing Unit
 
@@ -542,11 +520,7 @@ Two visit ID strategies are supported:
 
 ### Visit Label Extraction from Expressions
 
-Expressions are parsed using regex:
-1. **case() result strings**: Both double-quoted and single-quoted
-2. **Suffix concatenation**: Detects `case(...) + " SUFFIX"` pattern
-3. **Colon stripping**: FHS Pattern-A (`str({phv}) + ":LABEL"`) -- leading colons stripped
-4. **Fallback detection**: Labels containing "UNKNOWN", "DEFAULT", or "OTHER" flagged as INFO
+Expressions are parsed with `ast` by the shared enumerator `hv-lint/_visit_ids.py` (also used by 1.8 and 5.11), not by regex. Every value an `id` / `associated_visit` expression can emit is enumerated: case() arms, `+` concatenation (so FHS visit.yaml's `case(...) + ' EXAM 7'` inside a uuid5 seed composes), and the uuid5 seed's `str({phv})` placeholders. Comparison operands are never labels. A `(True, ...)` arm of a case() that has other non-None arms is a fallback and is dropped.
 
 ### 5.0 Missing visit.yaml
 
@@ -559,8 +533,8 @@ Flag cohorts that have an ingest directory but no `visit.yaml` file.
 Within a cohort's `visit.yaml`, no two Visit blocks should produce the same visit ID.
 
 - **Static IDs**: Exact string comparison
-- **Dynamic IDs**: Uniqueness check on extracted labels (uuid5 is deterministic)
-- **Severity**: ERROR
+- **Dynamic IDs**: Uniqueness check on extracted labels (uuid5 is deterministic); fallback labels are not compared
+- **Severity**: ERROR when two blocks of the SAME table emit one label; WARNING "Visit id emitted by N tables" (listing their age expressions) when the blocks read different tables -- a multi-table visit by design whose duplicate Visit rows can disagree on age
 
 ### 5.2 Visit ID Referential Integrity
 

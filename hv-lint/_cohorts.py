@@ -446,13 +446,14 @@ def study_mismatch(cache_dir: Path | str, cache_key: str, expect: str) -> str | 
 def discover_cache_keys(cache_dir: Path | str) -> list[str]:
     """Every cache key present in ``cache_dir``, from the ``*.json.gz`` files themselves.
 
-    Detail and value-count indexes (``<key>_detail.json.gz``, ``<key>_stats.json.gz``) are
-    folded onto their base key, so a release with all three files appears once.
+    Detail, value-count and table-name indexes (``<key>_detail.json.gz``,
+    ``<key>_stats.json.gz``, ``<key>_tables.json.gz``) are folded onto their base key, so a
+    release with several files appears once.
     """
     keys: set[str] = set()
     for path in Path(cache_dir).glob("*.json.gz"):
         stem = path.name[: -len(".json.gz")]
-        for suffix in ("_detail", "_stats"):
+        for suffix in ("_detail", "_stats", "_tables"):
             if stem.endswith(suffix):
                 stem = stem[: -len(suffix)]
                 break
@@ -474,3 +475,19 @@ def ingest_cohorts(transform_dir: Path | str) -> list[str]:
         d.name[: -len("-ingest")] for d in base.iterdir()
         if d.is_dir() and d.name.endswith("-ingest")
     )
+
+
+def load_table_names(cache_dir: Path | str, cache_key: str) -> dict[str, dict[str, str]]:
+    """``{pht: {"name", "description"}}`` from ``<cache_key>_tables.json.gz``; ``{}`` when absent.
+
+    Built by ``build_phv_stats_index.py --tables`` from the release's data dictionaries (the
+    short name in each filename and the table's own description). Only FHS's index is committed:
+    rule 1.8 reads it for FHS's ``ex<cohort>_<exam>s`` names.
+    """
+    import gzip  # noqa: PLC0415
+
+    path = Path(cache_dir) / f"{cache_key}_tables.json.gz"
+    if not path.is_file():
+        return {}
+    with gzip.open(path, "rt", encoding="utf-8") as fh:
+        return dict(json.load(fh))

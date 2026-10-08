@@ -43,7 +43,9 @@ import yaml
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
 import _cohorts  # noqa: E402
-from _derivations import iter_nested_class_derivs  # noqa: E402
+from _derivations import iter_nested_class_derivs, walk_slot_derivations  # noqa: E402
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import check_status_semantic as _css  # noqa: E402  (stats reader and follow-up detector)
 
 
 
@@ -71,9 +73,21 @@ SKIP_LABEL_RE = re.compile(
 # NOTE: ethnicity excluded -- frequently shares a PHV with race, so
 # race-category codes would be false-positive ERRORs on ethnicity.
 HIGH_IMPACT_SLOTS = {
-    "race", "annotated_sex", "sex",
-    "condition_status", "value_enum",
+    "race", "annotated_sex", "sex", "ethnicity",
+    "condition_status", "exposure_status", "procedure_status", "value_enum",
 }
+
+# Rule 3.9 severity by the share of observed rows a block drops (#784 addendum 5-7): ERROR from
+# half the rows on a high-impact slot, WARNING from a tenth, INFO below. Declared-code fallbacks
+# (no var_report counts) are capped at WARNING because nothing says the code occurs.
+LOST_SHARE_ERROR = 0.5
+LOST_SHARE_WARNING = 0.1
+
+# Severity codes that mean "no severity": leaving them unmapped is correct.
+_NO_SEVERITY_RE = re.compile(r"^\s*(none|no\b|no copd|normal)", re.IGNORECASE)
+
+# The two slots that commonly read one PHV between them; a code mapped by the sibling is used.
+_SIBLING_SLOTS = {"race": "ethnicity", "ethnicity": "race"}
 
 # Rule 3.10: Slot role -> expected dbGaP type mapping.
 # Slots whose semantic role implies a specific data type.
@@ -278,83 +292,127 @@ def _filename_domain_keywords(filename: str) -> set[str]:
 # ---------------------------------------------------------------------------
 
 
+def observed_values(stats, pf: str) -> dict[str, int] | None:
+    """``{value: rows}`` observed for ``pf`` in the var_report, or None when it has no counts."""
+    if not stats or pf not in stats:
+        return None
+    return {str(k): int(v) for k, v in stats[pf].counts.items() if int(v) > 0}
+
+
+def _vm_slots(block: dict):
+    """Every slot (any depth) whose values come from ``value_mappings`` on one PHV, no expr."""
+    for site in walk_slot_derivations(block):
+        sd = site.slot_def
+        vm = sd.get("value_mappings")
+        if not isinstance(vm, dict) or not vm or sd.get("expr"):
+            continue
+        pf = sd.get("populated_from")
+        if isinstance(pf, str) and PHV_RE.fullmatch(pf):
+            yield site, pf, vm
+
+
+def _sibling_mapped(block: dict, site, pf: str) -> set[str]:
+    """Keys mapped by the race/ethnicity sibling of ``site`` from the same PHV."""
+    sib = _SIBLING_SLOTS.get(site.slot_name)
+    if not sib:
+        return set()
+    for other, opf, ovm in _vm_slots(block):
+        if other.slot_name == sib and opf == pf and other.class_name == site.class_name:
+            return {str(k) for k in ovm}
+    return set()
+
+
 def check_value_mappings_completeness(
     block: dict, block_idx: int, rel_path: str,
     detail_idx: DetailIndex,
+    stats: dict | None = None,
+    followup_idx=None,
 ) -> list[Finding]:
-    """Check 3.9: Flag dbGaP coded values absent from value_mappings."""
+    """Check 3.9: values the source holds that ``value_mappings`` drops (silent data loss).
+
+    The universe is the var_report's OBSERVED values (``stats``); declared codes are a fallback
+    capped at WARNING, and a PHV with neither is reported at INFO as not validatable. A declared
+    code no row carries loses nothing; a value written as its label (JHS) is mapped when the
+    label is a key. Not reported: the negative answer of a conditional follow-up question (its
+    "No" is not "no condition", the defect 3.18 rejects), a code the race/ethnicity sibling slot
+    maps from the same PHV, and a severity code labelled none/no. Severity scales with the share
+    of observed rows dropped.
+    """
     findings: list[Finding] = []
-    class_derivs = block.get("class_derivations")
-    if not isinstance(class_derivs, dict):
-        return findings
+    for site, pf, vm in _vm_slots(block):
+        cls_name, slot_name = site.class_name, site.slot_name
+        detail = detail_idx.records.get(pf)
+        declared = (detail.codes or {}) if detail else {}
+        observed = observed_values(stats, pf)
+        keys = {str(k) for k in vm}
 
-    for cls_name, cls_def in class_derivs.items():
-        if not isinstance(cls_def, dict):
+        if observed is not None:
+            universe, basis = observed, "observed"
+        elif declared:
+            universe, basis = {c: 0 for c in declared}, "declared"
+        else:
+            findings.append(Finding(
+                rel_path, block_idx, "3.9", "INFO",
+                f"value_mappings on {cls_name}.{slot_name} ({pf}) could not be validated -- "
+                f"no coded values in the data dictionary or the var_report",
+            ))
             continue
-        slot_derivs = cls_def.get("slot_derivations")
-        if not isinstance(slot_derivs, dict):
+
+        def _label(code: str) -> str:
+            return str(declared.get(code, "")) if declared else ""
+
+        missing = []
+        for code in sorted(universe):
+            if code in keys or (_label(code) and _label(code) in keys):
+                continue
+            missing.append(code)
+        if not missing:
             continue
-        class_pht = cls_def.get("populated_from", "")
 
-        for slot_name, slot_def in slot_derivs.items():
-            if not isinstance(slot_def, dict):
+        followup = None
+        if slot_name == "condition_status" and followup_idx is not None:
+            followup = _css.detect_followup(pf, followup_idx, stats)
+        sibling = _sibling_mapped(block, site, pf)
+        total = sum(universe.values()) or 0
+
+        for code in missing:
+            label = _label(code)
+            rows = universe.get(code, 0)
+            if code in sibling:
                 continue
-
-            # Only check slots that use value_mappings as the sole mechanism
-            vm = slot_def.get("value_mappings")
-            if not isinstance(vm, dict) or not vm:
+            if followup is not None and _css.classify_label(label, code) == "negative":
                 continue
-
-            # Skip if there's also an expr (expr may handle additional logic)
-            if slot_def.get("expr"):
+            if slot_name.endswith("_severity") and _NO_SEVERITY_RE.match(label or code):
                 continue
-
-            # Determine source PHV
-            pf = slot_def.get("populated_from")
-            if not isinstance(pf, str) or not PHV_RE.fullmatch(pf):
+            where = f"value_mappings on {cls_name}.{slot_name} ({pf})"
+            what = f"'{code}'" + (f' ("{label}")' if label else "")
+            if label and SKIP_LABEL_RE.search(label):
+                findings.append(Finding(
+                    rel_path, block_idx, "3.9", "INFO",
+                    f"{where} drops {basis} code {what}"
+                    + (f", {rows:,} rows" if basis == "observed" else "")
+                    + " -- likely intentional skip",
+                ))
                 continue
-
-            detail = detail_idx.records.get(pf)
-            if not detail or not detail.codes:
-                continue
-
-            # Compare: dbGaP codes vs value_mappings keys
-            dbgap_codes = set(detail.codes.keys())
-            yaml_codes = set(str(k) for k in vm.keys())
-
-            missing = dbgap_codes - yaml_codes
-            if not missing:
-                continue
-
-            for code in sorted(missing):
-                label = detail.codes.get(code, "")
-                if SKIP_LABEL_RE.search(label):
-                    # Known skip pattern -- downgrade to INFO
-                    findings.append(Finding(
-                        file=rel_path,
-                        block=block_idx,
-                        check="3.9",
-                        severity="INFO",
-                        message=(
-                            f"value_mappings on {cls_name}.{slot_name} "
-                            f"({pf}) missing dbGaP code '{code}' "
-                            f"(\"{label}\") -- likely intentional skip"
-                        ),
-                    ))
+            if basis == "observed":
+                share = rows / total if total else 0.0
+                if share >= LOST_SHARE_ERROR and slot_name in HIGH_IMPACT_SLOTS:
+                    sev = "ERROR"
+                elif share >= LOST_SHARE_WARNING:
+                    sev = "WARNING"
                 else:
-                    sev = "ERROR" if slot_name in HIGH_IMPACT_SLOTS else "WARNING"
-                    findings.append(Finding(
-                        file=rel_path,
-                        block=block_idx,
-                        check="3.9",
-                        severity=sev,
-                        message=(
-                            f"value_mappings on {cls_name}.{slot_name} "
-                            f"({pf}) missing dbGaP code '{code}' "
-                            f"(\"{label}\") -- possible data loss"
-                        ),
-                    ))
-
+                    sev = "INFO"
+                findings.append(Finding(
+                    rel_path, block_idx, "3.9", sev,
+                    f"{where} drops observed value {what}: {rows:,} of {total:,} rows "
+                    f"({share:.0%}) emit no value -- possible data loss",
+                ))
+            else:
+                findings.append(Finding(
+                    rel_path, block_idx, "3.9", "WARNING",
+                    f"{where} omits declared code {what}; no var_report counts, so whether any "
+                    f"row carries it is unknown",
+                ))
     return findings
 
 
@@ -367,86 +425,78 @@ def check_phv_type_compatibility(
     block: dict, block_idx: int, rel_path: str,
     detail_idx: DetailIndex,
 ) -> list[Finding]:
-    """Check 3.10: Flag PHVs whose dbGaP type conflicts with slot role."""
+    """Check 3.10: Flag PHVs whose dbGaP type conflicts with slot role.
+
+    Walks every slot at every depth: all ``value_decimal`` / ``value_integer`` slots are nested
+    inside a Quantity, so a top-level walk never reaches the numeric branch.
+    """
     findings: list[Finding] = []
-    class_derivs = block.get("class_derivations")
-    if not isinstance(class_derivs, dict):
-        return findings
+    for site in walk_slot_derivations(block):
+        cls_name, slot_name, slot_def = site.class_name, site.slot_name, site.slot_def
 
-    for cls_name, cls_def in class_derivs.items():
-        if not isinstance(cls_def, dict):
+        # Only check bare populated_from (no expr wrapping)
+        pf = slot_def.get("populated_from")
+        if not isinstance(pf, str) or not PHV_RE.fullmatch(pf):
             continue
-        slot_derivs = cls_def.get("slot_derivations")
-        if not isinstance(slot_derivs, dict):
+        # Skip if expr is present -- the expression handles conversion
+        if slot_def.get("expr"):
+            continue
+        # Skip if value_mappings -- the mappings handle type conversion
+        if slot_def.get("value_mappings"):
             continue
 
-        for slot_name, slot_def in slot_derivs.items():
-            if not isinstance(slot_def, dict):
-                continue
+        detail = detail_idx.records.get(pf)
+        if not detail:
+            continue
 
-            # Only check bare populated_from (no expr wrapping)
-            pf = slot_def.get("populated_from")
-            if not isinstance(pf, str) or not PHV_RE.fullmatch(pf):
-                continue
-            # Skip if expr is present -- the expression handles conversion
-            if slot_def.get("expr"):
-                continue
-            # Skip if value_mappings -- the mappings handle type conversion
-            if slot_def.get("value_mappings"):
-                continue
+        vtype = detail.type.lower()  # e.g., "encoded value", "decimal", "integer"
+        unit = (detail.unit or "").lower()
 
-            detail = detail_idx.records.get(pf)
-            if not detail:
-                continue
+        # Check enum slots fed by numeric types
+        if slot_name in ENUM_SLOTS:
+            if vtype in ("decimal", "integer", "num"):
+                suggestion = _suggest_adjacent(
+                    detail_idx, detail.pht, detail.name,
+                    {"encoded value", "encoded"},
+                )
+                msg = (
+                    f"{cls_name}.{slot_name} populated_from "
+                    f"{pf} ({detail.name}) has type '{detail.type}'"
+                )
+                if "day" in unit:
+                    msg += f" with unit '{detail.unit}'"
+                msg += " -- expected 'encoded value' for this slot"
+                if suggestion:
+                    msg += f". Did you mean {suggestion}?"
+                findings.append(Finding(
+                    file=rel_path,
+                    block=block_idx,
+                    check="3.10",
+                    severity="ERROR",
+                    message=msg,
+                ))
 
-            vtype = detail.type.lower()  # e.g., "encoded value", "decimal", "integer"
-            unit = (detail.unit or "").lower()
-
-            # Check enum slots fed by numeric types
-            if slot_name in ENUM_SLOTS:
-                if vtype in ("decimal", "integer", "num"):
-                    suggestion = _suggest_adjacent(
-                        detail_idx, detail.pht, detail.name,
-                        {"encoded value", "encoded"},
-                    )
-                    msg = (
-                        f"{cls_name}.{slot_name} populated_from "
-                        f"{pf} ({detail.name}) has type '{detail.type}'"
-                    )
-                    if "day" in unit:
-                        msg += f" with unit '{detail.unit}'"
-                    msg += " -- expected 'encoded value' for this slot"
-                    if suggestion:
-                        msg += f". Did you mean {suggestion}?"
-                    findings.append(Finding(
-                        file=rel_path,
-                        block=block_idx,
-                        check="3.10",
-                        severity="ERROR",
-                        message=msg,
-                    ))
-
-            # Check numeric slots fed by encoded types
-            if slot_name in NUMERIC_SLOTS:
-                if vtype in ("encoded value", "encoded"):
-                    suggestion = _suggest_adjacent(
-                        detail_idx, detail.pht, detail.name,
-                        {"decimal", "integer", "num"},
-                    )
-                    msg = (
-                        f"{cls_name}.{slot_name} populated_from "
-                        f"{pf} ({detail.name}) has type '{detail.type}'"
-                        f" -- expected numeric type for this slot"
-                    )
-                    if suggestion:
-                        msg += f". Did you mean {suggestion}?"
-                    findings.append(Finding(
-                        file=rel_path,
-                        block=block_idx,
-                        check="3.10",
-                        severity="ERROR",
-                        message=msg,
-                    ))
+        # Check numeric slots fed by encoded types
+        if slot_name in NUMERIC_SLOTS:
+            if vtype in ("encoded value", "encoded"):
+                suggestion = _suggest_adjacent(
+                    detail_idx, detail.pht, detail.name,
+                    {"decimal", "integer", "num"},
+                )
+                msg = (
+                    f"{cls_name}.{slot_name} populated_from "
+                    f"{pf} ({detail.name}) has type '{detail.type}'"
+                    f" -- expected numeric type for this slot"
+                )
+                if suggestion:
+                    msg += f". Did you mean {suggestion}?"
+                findings.append(Finding(
+                    file=rel_path,
+                    block=block_idx,
+                    check="3.10",
+                    severity="ERROR",
+                    message=msg,
+                ))
 
     return findings
 
@@ -634,35 +684,9 @@ def _units_compatible(ucum_unit: str, dbgap_unit: str) -> bool:
 
 
 def _walk_slot_derivations(block: dict):
-    """Yield (class_name, slot_name, slot_def, parent_pht) for all slot_derivations.
-
-    Handles both top-level class_derivations and nested object_derivations
-    (e.g., Quantity inside value_quantity).
-    """
-    class_derivs = block.get("class_derivations")
-    if not isinstance(class_derivs, dict):
-        return
-
-    for cls_name, cls_def in class_derivs.items():
-        if not isinstance(cls_def, dict):
-            continue
-        pht = cls_def.get("populated_from")
-        slot_derivs = cls_def.get("slot_derivations")
-        if isinstance(slot_derivs, dict):
-            for slot_name, slot_def in slot_derivs.items():
-                if isinstance(slot_def, dict):
-                    yield cls_name, slot_name, slot_def, pht
-                    # Check nested class derivations (e.g., Quantity), both
-                    # list-based class_derivations and legacy object_derivations
-                    for ncls, ncls_def in iter_nested_class_derivs(slot_def):
-                        if not isinstance(ncls_def, dict):
-                            continue
-                        nested_pht = ncls_def.get("populated_from", pht)
-                        nested_sd = ncls_def.get("slot_derivations")
-                        if isinstance(nested_sd, dict):
-                            for ns_name, ns_def in nested_sd.items():
-                                if isinstance(ns_def, dict):
-                                    yield ncls, ns_name, ns_def, nested_pht
+    """Yield (class_name, slot_name, slot_def, nearest_pht) for every slot at every depth."""
+    for site in walk_slot_derivations(block):
+        yield site.class_name, site.slot_name, site.slot_def, site.pht
 
 
 def check_unit_conversion_mismatch(
@@ -894,71 +918,79 @@ def check_condition_null_default(
 def check_phantom_codes(
     block: dict, block_idx: int, rel_path: str,
     detail_idx: DetailIndex,
+    stats: dict | None = None,
 ) -> list[Finding]:
-    """Check 3.15: Flag value_mappings keys that don't exist in dbGaP coded values.
+    """Check 3.15: ``value_mappings`` keys no row can match.
 
-    Inverse of rule 3.9. Rule 3.9 catches dbGaP codes MISSING from YAML;
-    this rule catches YAML codes that don't exist in dbGaP -- indicating a
-    typo, copy-paste from another cohort, or stale value from a version
-    migration.
+    Against the var_report's observed values:
+      - a key that is observed: nothing (an observed code the dictionary omits is INFO, so the
+        target can be checked against study documentation);
+      - a key equal to an observed value except for case or whitespace: ERROR, it never matches
+        (linkml-map compares exact strings) and those rows lose their value;
+      - a slot none of whose keys matches any observed value: ERROR, the whole slot is dead --
+        unless it is a severity slot whose only observed values mean "none";
+      - a key neither observed nor declared (a defensive code no row carries): INFO. A declared
+        code no row carries is not reported.
+    Without var_report counts the declared codes are the reference, and a key outside them is a
+    WARNING.
     """
     findings: list[Finding] = []
-    class_derivs = block.get("class_derivations")
-    if not isinstance(class_derivs, dict):
-        return findings
+    for site, pf, vm in _vm_slots(block):
+        cls_name, slot_name = site.class_name, site.slot_name
+        detail = detail_idx.records.get(pf)
+        declared = {str(k): str(v) for k, v in ((detail.codes or {}) if detail else {}).items()}
+        observed = observed_values(stats, pf)
+        keys = [str(k) for k in vm]
+        where = f"value_mappings on {cls_name}.{slot_name} ({pf}{', ' + detail.name if detail else ''})"
 
-    for cls_name, cls_def in class_derivs.items():
-        if not isinstance(cls_def, dict):
+        if observed is None:
+            if not declared:
+                continue
+            for key in keys:
+                if key not in declared and key not in declared.values():
+                    findings.append(Finding(
+                        rel_path, block_idx, "3.15", "WARNING",
+                        f"{where} has key '{key}', which is not a declared code; no var_report "
+                        f"counts to check it against. Declared: {sorted(declared)}",
+                    ))
             continue
-        slot_derivs = cls_def.get("slot_derivations")
-        if not isinstance(slot_derivs, dict):
-            continue
 
-        for slot_name, slot_def in slot_derivs.items():
-            if not isinstance(slot_def, dict):
-                continue
+        def _norm(x: str) -> str:
+            return " ".join(x.split()).casefold()
 
-            vm = slot_def.get("value_mappings")
-            if not isinstance(vm, dict) or not vm:
-                continue
-
-            # Skip if there's also an expr (expr may handle additional logic)
-            if slot_def.get("expr"):
-                continue
-
-            # Determine source PHV
-            pf = slot_def.get("populated_from")
-            if not isinstance(pf, str) or not PHV_RE.fullmatch(pf):
-                continue
-
-            detail = detail_idx.records.get(pf)
-            if not detail or not detail.codes:
-                continue
-
-            # Compare: YAML keys vs dbGaP codes
-            dbgap_codes = set(detail.codes.keys())
-            yaml_codes = set(str(k) for k in vm.keys())
-
-            phantom = yaml_codes - dbgap_codes
-            if not phantom:
-                continue
-
-            for code in sorted(phantom):
-                sev = "ERROR" if slot_name in HIGH_IMPACT_SLOTS else "WARNING"
+        obs_norm = {_norm(v): v for v in observed}
+        matched = [k for k in keys if k in observed]
+        if not matched and observed:
+            labels = [declared.get(v, v) for v in observed]
+            if not (slot_name.endswith("_severity")
+                    and all(_NO_SEVERITY_RE.match(lbl) for lbl in labels)):
                 findings.append(Finding(
-                    file=rel_path,
-                    block=block_idx,
-                    check="3.15",
-                    severity=sev,
-                    message=(
-                        f"value_mappings on {cls_name}.{slot_name} "
-                        f"({pf}) has code '{code}' which does not exist "
-                        f"in dbGaP coded values for {detail.name} -- "
-                        f"possible typo or cross-cohort copy-paste error. "
-                        f"Valid codes: {sorted(dbgap_codes)}"
-                    ),
+                    rel_path, block_idx, "3.15", "ERROR",
+                    f"{where}: no key matches any observed value -- every row emits no value. "
+                    f"Keys {sorted(keys)}; observed {sorted(observed)}",
                 ))
-
+                continue
+        for key in keys:
+            if key in observed:
+                if declared and key not in declared and key not in declared.values():
+                    findings.append(Finding(
+                        rel_path, block_idx, "3.15", "INFO",
+                        f"{where} key '{key}' is observed ({observed[key]:,} rows) but not in the "
+                        f"data dictionary -- its meaning is undocumented, check the target",
+                    ))
+                continue
+            twin = obs_norm.get(_norm(key))
+            if twin is not None and twin not in keys:
+                findings.append(Finding(
+                    rel_path, block_idx, "3.15", "ERROR",
+                    f"{where} key '{key}' never matches: the data holds '{twin}' "
+                    f"({observed[twin]:,} rows), which differs only in case or spacing",
+                ))
+            elif twin is None and key not in declared and key not in declared.values():
+                findings.append(Finding(
+                    rel_path, block_idx, "3.15", "INFO",
+                    f"{where} key '{key}' matches no observed value (dead key)",
+                ))
     return findings
 
 
@@ -1094,11 +1126,18 @@ def main() -> int:
 
     # Load detail indexes
     indexes: dict[str, DetailIndex] = {}
+    stats_by_cohort: dict[str, dict | None] = {}
     pairs = _cohorts.cohorts_to_load(args.cohort, cache_dir, find_transform_dir())
     missing: list[tuple[str, str]] = []
     for cohort_name, cache_key in pairs:
         try:
             indexes[cohort_name] = load_detail_index(cache_dir, cache_key)
+            stats_by_cohort[cohort_name] = _css.load_stats_index(cache_dir, cache_key)
+            if stats_by_cohort[cohort_name] is None:
+                print(f"ERROR: no {cache_key}_stats.json.gz for {cohort_name}: 3.9 / 3.15 "
+                      f"compare against observed values and cannot run without it.",
+                      file=sys.stderr)
+                return 1
             count = len(indexes[cohort_name].records)
             coded = sum(1 for r in indexes[cohort_name].records.values() if r.codes)
             print(f"  Loaded {cohort_name}: {count:,} PHVs ({coded:,} coded) "
@@ -1154,6 +1193,7 @@ def main() -> int:
 
     # Run checks
     all_findings: list[Finding] = []
+    followup_idx: dict[str, object] = {}
     files_checked = 0
     blocks_checked = 0
 
@@ -1176,6 +1216,9 @@ def main() -> int:
         blocks = data if isinstance(data, list) else [data]
         files_checked += 1
         detail_idx = indexes[cohort]
+        stats = stats_by_cohort.get(cohort)
+        if cohort not in followup_idx:
+            followup_idx[cohort] = _css.DetailIndex.from_records(detail_idx.records)
 
         # Pre-compute file domain for 3.12
         file_domain = _filename_domain_keywords(file_path.name)
@@ -1188,7 +1231,7 @@ def main() -> int:
             if "3.9" in enabled_checks:
                 all_findings.extend(
                     check_value_mappings_completeness(
-                        block, idx, rel_path, detail_idx
+                        block, idx, rel_path, detail_idx, stats, followup_idx[cohort]
                     )
                 )
             if "3.10" in enabled_checks:
@@ -1218,7 +1261,7 @@ def main() -> int:
             if "3.15" in enabled_checks:
                 all_findings.extend(
                     check_phantom_codes(
-                        block, idx, rel_path, detail_idx
+                        block, idx, rel_path, detail_idx, stats
                     )
                 )
             if "3.16" in enabled_checks:

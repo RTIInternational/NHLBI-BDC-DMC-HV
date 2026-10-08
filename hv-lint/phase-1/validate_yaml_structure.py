@@ -6,7 +6,7 @@ No schema, no linkml imports, no dbGaP data required -- PyYAML only.
 
 Checks:
     1.1  Expression syntax validation (balanced braces, non-empty)
-    1.2  Duplicate block detection (same class + pht + visit + concept)
+    1.2  Duplicate block detection (rule 1.12 identity: class, table, source, concept, visit, mappings)
     1.3  Inline comment detection (trailing # on active code lines)
     1.4  Unquoted brace unit detection ({xxx}/yyy pattern not surrounded by quotes)
     1.5  Unquoted expr value starting with { (YAML will misparse as flow mapping)
@@ -40,6 +40,8 @@ import yaml
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
 from _derivations import iter_nested_class_derivs  # noqa: E402
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import check_cross_file_duplicates as xfd  # noqa: E402  (rule 1.12 owns block identity)
 
 TRANSFORM_DIR = find_transform_dir()
 
@@ -288,207 +290,32 @@ def check_expr_with_value_mappings(block: dict, block_idx: int, rel_path: str) -
 # Check 1.2: Duplicate block detection
 # ---------------------------------------------------------------------------
 
-def get_block_identity(block: dict) -> list[tuple]:
-    """Extract distinguishing identity for each class in a block.
-
-    Identity tuple: (class, pht, visit, concept, distinguishing_phv)
-    See assumption A8 in HV-Lint-Reference.md for the full identity schema.
-    """
-    if not isinstance(block, dict):
-        return []
-    identities = []
-    class_derivs = block.get("class_derivations")
-    if not isinstance(class_derivs, dict):
-        return identities
-
-    def _d(val) -> dict:
-        return val if isinstance(val, dict) else {}
-
-    def _s(val, maxlen: int = 0) -> str:
-        t = val if isinstance(val, str) else str(val) if val is not None else ""
-        return t[:maxlen] if maxlen else t
-
-    for cls_name, cls_def in class_derivs.items():
-        if not isinstance(cls_def, dict):
-            continue
-        pht = cls_def.get("populated_from", "")
-        slots = cls_def.get("slot_derivations")
-        slots = slots if isinstance(slots, dict) else {}
-
-        av = _d(slots.get("associated_visit"))
-        visit = (_s(av.get("value", ""))
-                 or _s(av.get("populated_from", ""))
-                 or _s(av.get("expr", "")))
-
-        concept = ""
-        distinguishing_phv = ""
-
-        if cls_name == "Condition":
-            cc = _d(slots.get("condition_concept"))
-            concept = (_s(cc.get("value", ""))
-                       or _s(cc.get("populated_from", ""))
-                       or _s(cc.get("expr", "")))
-            cs = _d(slots.get("condition_status"))
-            cs_phv = (_s(cs.get("populated_from", ""))
-                      or _s(cs.get("expr", "")))
-            # Include value_mappings to distinguish blocks with same PHV
-            # but different coded interpretations (e.g., PRESENT vs
-            # HISTORICAL, or partial vs full mappings)
-            vm = cs.get("value_mappings")
-            vm_sig = ("|".join(f"{k}:{v}" for k, v in sorted(vm.items()))
-                      if isinstance(vm, dict) else "")
-            # Include condition_provenance to distinguish clinical vs
-            # self-reported diagnoses from the same source variable
-            cp = _s(_d(slots.get("condition_provenance")).get("value", ""))
-            distinguishing_phv = f"{cs_phv}|{cp}|{vm_sig}"
-        elif cls_name == "ResearchStudy":
-            nm = _d(slots.get("name"))
-            concept = (_s(nm.get("value", ""))
-                       or _s(nm.get("expr", "")))
-        elif cls_name == "MeasurementObservationSet":
-            mt = _d(slots.get("method_type"))
-            concept = (_s(mt.get("value", ""))
-                       or _s(mt.get("expr", "")))
-            # Extract nested observation PHV (direct nesting pattern)
-            obs = _d(slots.get("observations"))
-            for nested_cls, nested_def in obs.items():
-                nd = _d(nested_def)
-                ns = _d(nd.get("slot_derivations"))
-                vd = _d(ns.get("value_decimal") or ns.get("value_integer"))
-                phv = (_s(vd.get("populated_from", ""))
-                       or _s(vd.get("expr", "")))
-                if phv:
-                    distinguishing_phv = phv
-                    break
-        elif cls_name in ("MeasurementObservation", "Observation", "SdohObservation"):
-            ot = _d(slots.get("observation_type"))
-            concept = (_s(ot.get("value", ""))
-                       or _s(ot.get("expr", ""))
-                       or _s(ot.get("populated_from", "")))
-            # Include method_type in identity -- blocks with different
-            # method_type values (e.g., fasting protocol variations)
-            # are NOT duplicates
-            mt = _d(slots.get("method_type"))
-            mt_sig = (_s(mt.get("value", ""))
-                      or _s(mt.get("expr", ""))
-                      or _s(mt.get("populated_from", "")))
-            for qty_name, qty in iter_nested_class_derivs(slots.get("value_quantity")):
-                if qty_name != "Quantity":
-                    continue
-                qty_slots = _d(_d(qty).get("slot_derivations"))
-                # Bug fix: also check value_concept, not just
-                # value_decimal/value_integer -- blocks mapping
-                # different PHVs via value_concept are NOT duplicates
-                vd = _d(qty_slots.get("value_decimal")
-                        or qty_slots.get("value_integer")
-                        or qty_slots.get("value_concept"))
-                distinguishing_phv = (_s(vd.get("populated_from", ""))
-                                      or _s(vd.get("expr", "")))
-                break
-            # Fallback: value_enum (direct slot, not nested in Quantity)
-            if not distinguishing_phv:
-                ve = _d(slots.get("value_enum"))
-                distinguishing_phv = (_s(ve.get("populated_from", ""))
-                                      or _s(ve.get("expr", "")))
-            # Append method_type signature to distinguisher
-            if mt_sig:
-                distinguishing_phv = f"{distinguishing_phv}|mt:{mt_sig}"
-        elif cls_name == "DrugExposure":
-            dc = _d(slots.get("drug_concept"))
-            concept = _s(dc.get("value", "")) or _s(dc.get("expr", ""))
-        elif cls_name == "Procedure":
-            pc = _d(slots.get("procedure_concept"))
-            concept = (_s(pc.get("value", ""))
-                       or _s(pc.get("expr", ""))
-                       or _s(pc.get("populated_from", "")))
-        elif cls_name == "Person":
-            # Distinguish Person blocks by nested cause_of_death concept
-            # (e.g., ARIC cause_of_death.yaml has ~11 blocks per table,
-            # each mapping a different ICD-10 code + order)
-            # Bug fix: collect ALL derivations, not just the first -- Person
-            # blocks may have multiple cause_of_death derivations with distinct
-            # cause concepts
-            cod_parts = []
-            for cod_name, cod_cls in iter_nested_class_derivs(slots.get("cause_of_death")):
-                if cod_name != "CauseOfDeath":
-                    continue
-                cod_slots = _d(_d(cod_cls).get("slot_derivations"))
-                cause = _d(cod_slots.get("cause") or cod_slots.get("cause_of_death_concept"))
-                part = (_s(cause.get("value", ""))
-                        or _s(cause.get("expr", ""))
-                        or _s(cause.get("populated_from", "")))
-                if part:
-                    cod_parts.append(part)
-            distinguishing_phv = "|".join(cod_parts)
-        elif cls_name == "Visit":
-            # Bug fix: check id.value, id.expr, AND name -- FHS Visit
-            # blocks have no id slot; they use name.expr with different
-            # "EXAM N" suffixes and different age PHVs
-            id_deriv = _d(slots.get("id"))
-            name_deriv = _d(slots.get("name"))
-            concept = (_s(id_deriv.get("value", ""))
-                       or _s(id_deriv.get("expr", ""))
-                       or _s(name_deriv.get("value", ""))
-                       or _s(name_deriv.get("expr", "")))
-            # Also use age_at_visit_start as distinguisher (different
-            # exams reference different age PHVs)
-            avs = _d(slots.get("age_at_visit_start"))
-            distinguishing_phv = (_s(avs.get("populated_from", ""))
-                                  or _s(avs.get("expr", "")))
-        elif cls_name == "Demography":
-            # Include actual slot values (not just slot names) to
-            # distinguish blocks with identical keys but different
-            # PHV assignments or expressions
-            slot_vals = []
-            for sn, sv in sorted(slots.items()):
-                sd = _d(sv)
-                pf = sd.get("populated_from", "")
-                ex = sd.get("expr", "")
-                val = sd.get("value", "")
-                slot_vals.append(f"{sn}:{pf or ex or val}")
-            distinguishing_phv = "|".join(slot_vals)
-
-        identities.append(
-            (cls_name, _s(pht), _s(visit), _s(concept), _s(distinguishing_phv))
-        )
-    return identities
-
-
 def check_duplicates(blocks: list[dict], rel_path: str) -> list[Finding]:
-    """Check 1.2: Detect duplicate blocks within a single file."""
-    findings: list[Finding] = []
-    seen: dict[tuple[str, str, str, str, str], int] = {}
+    """Check 1.2: two blocks in one file that emit the same records.
 
+    Uses rule 1.12's identity (class, table, source variable, concept, visit, status / value
+    mappings) -- the same check at file scope, so the two rules cannot disagree on what a
+    duplicate is. Blocks that read different source variables are never duplicates, which is
+    what every blood-pressure replicate and per-drug block on main does. Context slots
+    (provenance, ages) are not part of the identity: a pair that differs only there still emits
+    the same status for the same person twice, so it is reported and the differing slots named.
+    """
+    findings: list[Finding] = []
+    seen: dict[tuple, int] = {}
     for idx, block in enumerate(blocks):
-        for identity in get_block_identity(block):
-            if identity in seen:
-                first_idx = seen[identity]
-                cls, pht, visit, concept, dist = identity
-                # Truncate only for display -- full strings used for comparison
-                v_disp = visit[:80] + "..." if len(visit) > 80 else visit
-                c_disp = concept[:80] + "..." if len(concept) > 80 else concept
-                # Content-equality safety guard: only flag as ERROR
-                # if blocks are byte-identical.  Identity-only
-                # collisions (same tuple, different content) are
-                # WARNINGS -- the identity function may be incomplete.
-                import yaml as _yaml
-                b1 = _yaml.dump(blocks[first_idx], sort_keys=True)
-                b2 = _yaml.dump(block, sort_keys=True)
-                if b1 == b2:
-                    severity = "ERROR"
-                    suffix = ""
-                else:
-                    severity = "WARNING"
-                    suffix = (" -- identity collision but content DIFFERS; "
-                              "review manually before removing")
-                findings.append(Finding(
-                    rel_path, idx, "1.2", severity,
-                    f"Duplicate block: {cls} with pht={pht} "
-                    f"visit='{v_disp}' concept='{c_disp}' "
-                    f"(first seen in block {first_idx}){suffix}"
-                ))
-            else:
+        for _cls, identity in xfd.block_identities(block):
+            if identity not in seen:
                 seen[identity] = idx
+                continue
+            first_idx = seen[identity]
+            diff = xfd._context_diff(blocks[first_idx], block)
+            detail = f"; differs only in {', '.join(diff)}" if diff else "; byte-identical"
+            src = identity[2] if len(identity) > 3 else "whole body"
+            findings.append(Finding(
+                rel_path, idx, "1.2", "ERROR",
+                f"Duplicate block: {identity[0]} on {identity[1] or 'no table'} reading "
+                f"{str(src)[:80]} emits the same records as block {first_idx}{detail}",
+            ))
     return findings
 
 

@@ -1,0 +1,22 @@
+# whi_sleep_duration_daily_b0: copied verbatim from HV main 731984f5 as a fixed test case for #885.
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht000990
+    slot_derivations:
+      associated_participant:
+        expr: uuid5("https://w3id.org/bdchm/Participant", str({phv00077450}) + ":WHI")
+      associated_visit:
+        expr: uuid5("https://w3id.org/bdchm/Visit", str({phv00077450}) + ":WHI YEAR 3")
+      observation_type:
+        value: OBA:2040171
+      method_type:
+        value: questionnaire
+      value_quantity:
+        class_derivations:
+        - Quantity:
+            populated_from: pht000990
+            slot_derivations:
+              value_decimal:
+                populated_from: phv00077490
+              unit:
+                value: h

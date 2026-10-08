@@ -40,6 +40,7 @@ from __future__ import annotations
 import argparse
 import gzip
 import json
+import re
 import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -139,6 +140,56 @@ def build_stats_index(
     return len(index)
 
 
+_DATA_DICT_NAME_RE = re.compile(r"^phs\d{6}\.v\d+\.(pht\d{6})\.v\d+\.(.+)\.data_dict\.xml$")
+
+
+def _table_description(path: Path) -> str:
+    """The ``<data_table>``'s own ``<description>`` (the first one, before any variable)."""
+    try:
+        for _event, elem in ET.iterparse(path, events=("end",)):
+            if elem.tag == "description":
+                return " ".join((elem.text or "").split())
+            if elem.tag == "variable":
+                return ""
+    except ET.ParseError:
+        return ""
+    return ""
+
+
+def build_tables_index(
+    cohort_key: str,
+    source_dir: Path,
+    output_dir: Path,
+    *,
+    study_prefix: str | None = None,
+) -> int:
+    """Write ``<cohort_key>_tables.json.gz``: ``{pht: {"name", "description"}}``. Returns count.
+
+    The short name is the segment dbGaP puts in every data-dictionary filename
+    (``phs000007.v35.pht000009.v2.ex0_7s.data_dict.xml`` -> ``ex0_7s``) and the table's own
+    ``<description>`` ("Clinic Exam, Original Cohort Exams 1 - 7"). FHS encodes the cohort and
+    exam in the name, which is what rule 1.8 checks a single-label block's visit against.
+    """
+    files = sorted(source_dir.glob("*.data_dict.xml"))
+    if study_prefix:
+        files = [f for f in files if f.name.startswith(study_prefix)]
+    names: dict[str, dict[str, str]] = {}
+    for f in files:
+        m = _DATA_DICT_NAME_RE.match(f.name)
+        if m:
+            names[m.group(1)] = {"name": m.group(2), "description": _table_description(f)}
+    if not names:
+        print(f"  [tables] No data_dict.xml files for {cohort_key} in {source_dir} -- skipping")
+        return 0
+    output_dir.mkdir(parents=True, exist_ok=True)
+    gz_path = output_dir / f"{cohort_key}_tables.json.gz"
+    payload = json.dumps(dict(sorted(names.items())), separators=(",", ":")).encode("utf-8")
+    with gz_path.open("wb") as raw, gzip.GzipFile(fileobj=raw, mode="wb", mtime=0) as gz:
+        gz.write(payload)
+    print(f"  [tables] {cohort_key:12s}: {len(names):>5,} tables -> {gz_path.name}")
+    return len(names)
+
+
 def main() -> int:
     p = argparse.ArgumentParser(
         description="Build PHV value-count indexes from dbGaP var_report files"
@@ -153,6 +204,9 @@ def main() -> int:
                    help="Only read files whose name starts with this, e.g. phs000287.v7.")
     p.add_argument("--output-dir", default=str(CACHE_DIR),
                    help="Output directory (default: hv-lint/dbgap-cache)")
+    p.add_argument("--tables", action="store_true",
+                   help="Write <key>_tables.json.gz (pht -> table short name, from the "
+                        "data_dict filenames) instead of the value-count index")
     args = p.parse_args()
 
     source = (Path(args.source_dir) if args.source_dir
@@ -160,6 +214,10 @@ def main() -> int:
     if not source.is_dir():
         print(f"ERROR: source directory not found: {source}", file=sys.stderr)
         return 1
+    if args.tables:
+        n = build_tables_index(args.cohort, source, Path(args.output_dir),
+                               study_prefix=args.study_prefix)
+        return 0 if n else 1
     n = build_stats_index(args.cohort, source, Path(args.output_dir),
                           study_prefix=args.study_prefix)
     return 0 if n else 1

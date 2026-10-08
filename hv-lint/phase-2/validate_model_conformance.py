@@ -8,16 +8,19 @@ Checks:
     2.1  LinkML-Map key validation (unknown keys at any nesting level)
     2.2  BDCHM slot name validation (per-class)
     2.3  BDCHM class name validation
-    2.4  Required/recommended slot enforcement (schema-driven)
+    2.4  Required/recommended slot enforcement (schema-driven); a required slot written as a
+         case() with no (True, ...) arm is a WARNING (present but null on unmatched rows)
          ext: Advisory age_at_observation on MeasurementObservation
     2.5  Object derivation structure validation
     2.5b Nested class range validation (class must match slot's schema range)
     2.6  CURIE format validation
          ext: Known-bad OMOP identifiers (380035630 ethnicity typo)
-    2.7  Enum / value set membership validation
-         ext: Cross-file enum consistency (e.g., SELF vs ONESELF)
-    2.10 Unconditional age_at_condition_start on binary Condition blocks
-    2.11 Condition missing ABSENT in condition_status value_mappings
+    2.7  Enum / value set membership validation (static values, value_mappings targets and
+         case() arm results, read from the parse tree -- all ERROR)
+    2.10 Unconditional age_at_condition_start on binary Condition blocks (an age written
+         ``None if <own status test> else ...`` is guarded)
+
+    2.11 is not checked: an observed code a block drops is rule 3.9's.
 
 Usage:
     python hv-lint/phase-2/validate_model_conformance.py
@@ -47,6 +50,7 @@ import yaml
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
 from _derivations import classify_derivation_item  # noqa: E402
+import _expr  # noqa: E402
 
 TRANSFORM_DIR = find_transform_dir()
 
@@ -432,11 +436,6 @@ def check_curies_in_expr(
 # Check 2.7: Enum / Value Set Membership
 # ---------------------------------------------------------------------------
 
-# Regex for extracting result strings from case() expressions
-_CASE_RESULT_DQ_RE = re.compile(r',\s*"([^"]+)"\s*\)')
-_CASE_RESULT_SQ_RE = re.compile(r",\s*'([^']+)'\s*\)")
-
-
 def check_enum_membership(
     slot_def: dict, class_name: str, slot_name: str,
     valid_pvs: frozenset[str], block_idx: int, rel_path: str,
@@ -477,21 +476,17 @@ def check_enum_membership(
                     f"(valid: {_format_pvs(valid_pvs)})"
                 ))
 
-    # 3. Case expression result values
+    # 3. Case expression result values: element [1] of each case() arm, read from the parse
+    # tree, so a membership tuple such as `in ("1", "2")` is never taken for a result.
     expr = slot_def.get("expr")
     if isinstance(expr, str) and "case(" in expr:
-        case_results = (
-            _CASE_RESULT_DQ_RE.findall(expr)
-            + _CASE_RESULT_SQ_RE.findall(expr)
-        )
-        for result_val in case_results:
-            # Skip None/null placeholders
+        for result_val in _expr.case_result_literals(expr) or []:
             if result_val.lower() in ("none", "null", ""):
                 continue
             if result_val not in valid_pvs:
                 findings.append(Finding(
-                    rel_path, block_idx, "2.7", "WARNING",
-                    f"case() result '{result_val}' may not be a valid member "
+                    rel_path, block_idx, "2.7", "ERROR",
+                    f"case() result '{result_val}' is not a valid member "
                     f"of the enum for {fqname} "
                     f"(valid: {_format_pvs(valid_pvs)})"
                 ))
@@ -723,7 +718,9 @@ def validate_class_derivations(
         # -- Check 2.4: Required/recommended slots --
         if class_name in ctx.required_slots:
             for req_slot in ctx.required_slots[class_name]:
-                # 'id' is typically auto-generated, skip it
+                # `id` is not checked per block. linkml-map 0.5.3 does NOT generate it: only
+                # Person, Participant and Visit derive one. main() prints one note per run; the
+                # decision (who mints ids) is with the HM / dm-bip owners (#873).
                 if req_slot == "id":
                     continue
                 if req_slot not in present_slots:
@@ -731,6 +728,17 @@ def validate_class_derivations(
                         rel_path, block_idx, "2.4", "ERROR",
                         f"{path_prefix}{class_name} missing required slot "
                         f"'{req_slot}'"
+                    ))
+                    continue
+                # Presence is not population: a required slot that IS a case() with no
+                # (True, ...) arm is null on every row no arm matches.
+                req_def = slot_derivs.get(req_slot) if slot_derivs else None
+                req_expr = req_def.get("expr") if isinstance(req_def, dict) else None
+                if isinstance(req_expr, str) and _expr.outer_case_lacks_default(req_expr):
+                    findings.append(Finding(
+                        rel_path, block_idx, "2.4", "WARNING",
+                        f"{path_prefix}{class_name}.{req_slot} is required but its case() has "
+                        f"no (True, ...) arm -- rows no arm matches are emitted without it"
                     ))
         if class_name in ctx.recommended_slots:
             for rec_slot in ctx.recommended_slots[class_name]:
@@ -770,7 +778,10 @@ def validate_class_derivations(
                     age_expr = age_slot.get("expr", "")
                     age_pf = age_slot.get("populated_from", "")
                     age_source = age_expr or age_pf
-                    if age_source and "case(" not in str(age_source):
+                    status_phv = cs_slot.get("populated_from")
+                    guarded = (isinstance(age_expr, str) and isinstance(status_phv, str)
+                               and _expr.guarded_by(age_expr, status_phv))
+                    if age_source and "case(" not in str(age_source) and not guarded:
                         findings.append(Finding(
                             rel_path, block_idx, "2.10", "WARNING",
                             f"{path_prefix}Condition.age_at_condition_start "
@@ -779,89 +790,10 @@ def validate_class_derivations(
                             f"None for ABSENT"
                         ))
 
-        # -- Check 2.11: Condition missing ABSENT in condition_status --
-        if class_name == "Condition" and not path_prefix:
-            cs_slot = slot_derivs.get("condition_status") if slot_derivs else None
-            if isinstance(cs_slot, dict):
-                cs_vm = cs_slot.get("value_mappings")
-                if isinstance(cs_vm, dict) and cs_vm:
-                    mapped_targets = set(cs_vm.values())
-                    has_present = any(
-                        v in ("PRESENT", "Condition.PRESENT",
-                              "HISTORICAL", "Condition.HISTORICAL")
-                        for v in mapped_targets
-                    )
-                    has_absent = any(
-                        v in ("ABSENT", "Condition.ABSENT")
-                        for v in mapped_targets
-                    )
-                    if has_present and not has_absent:
-                        findings.append(Finding(
-                            rel_path, block_idx, "2.11", "WARNING",
-                            f"{path_prefix}Condition.condition_status maps "
-                            f"PRESENT/HISTORICAL but has no ABSENT mapping -- "
-                            f"verify that ABSENT rows are handled (possibly "
-                            f"in a separate block)"
-                        ))
+        # 2.11 (PRESENT without ABSENT) is not checked: it recommended mapping a follow-up's
+        # "No" to ABSENT, the defect 3.18 rejects, and an observed code a block drops is 3.9's,
+        # which weighs it by rows and skips follow-up questions.
 
-    return findings
-
-
-# ---------------------------------------------------------------------------
-# Check 2.7 extension: Cross-file enum consistency
-# ---------------------------------------------------------------------------
-
-# Slots where cross-file consistency matters (different values across files
-# indicate an error -- the cohort should use one value everywhere).
-_CONSISTENCY_SLOTS = {"relationship_to_participant"}
-
-
-def _track_enum_values(
-    class_derivs: dict, rel_path: str,
-    tracker: dict[str, dict[str, set[str]]]
-) -> None:
-    """Collect static enum values per slot across files for consistency checks."""
-    if not isinstance(class_derivs, dict):
-        return
-    for cls_name, cls_def in class_derivs.items():
-        if not isinstance(cls_def, dict):
-            continue
-        slots = cls_def.get("slot_derivations")
-        if not isinstance(slots, dict):
-            continue
-        for slot_name in _CONSISTENCY_SLOTS:
-            slot_def = slots.get(slot_name)
-            if not isinstance(slot_def, dict):
-                continue
-            value = slot_def.get("value")
-            if isinstance(value, str) and value:
-                if slot_name not in tracker:
-                    tracker[slot_name] = {}
-                tracker[slot_name].setdefault(rel_path, set()).add(value)
-
-
-def check_cross_file_enum_consistency(
-    tracker: dict[str, dict[str, set[str]]]
-) -> list[Finding]:
-    """Check 2.7 ext: Flag slots where different enum values are used across files.
-
-    For example, relationship_to_participant should consistently use either
-    "SELF" or "ONESELF" across all files in a cohort -- not a mix.
-    """
-    findings: list[Finding] = []
-    for slot_name, file_values in tracker.items():
-        all_values: set[str] = set()
-        for vals in file_values.values():
-            all_values.update(vals)
-        if len(all_values) > 1:
-            val_summary = ", ".join(
-                f"'{v}' in {sum(1 for fv in file_values.values() if v in fv)} file(s)"
-                for v in sorted(all_values)
-            )
-            findings.append(Finding(
-                "(cross-file)", 0, "2.7", "WARNING",
-                f"Inconsistent '{slot_name}' values across files: {val_summary}"
-            ))
     return findings
 
 
@@ -943,8 +875,6 @@ def main() -> int:
     all_findings: list[Finding] = []
     files_checked = 0
     blocks_checked = 0
-    # Cross-file tracking for 2.7 consistency checks
-    enum_value_tracker: dict[str, dict[str, set[str]]] = {}  # {slot_name: {file: {values}}}
 
     for file_path in yaml_files:
         rel_path = file_path.as_posix()
@@ -987,11 +917,9 @@ def main() -> int:
                 all_findings.extend(validate_class_derivations(
                     class_derivs, idx, rel_path, ctx
                 ))
-                # Track enum slot values for cross-file consistency (2.7 ext)
-                _track_enum_values(class_derivs, rel_path, enum_value_tracker)
 
-    # Cross-file consistency checks (2.7 extension)
-    all_findings.extend(check_cross_file_enum_consistency(enum_value_tracker))
+    print("NOTE [2.4]: 'id' is required on every BDC-HM class but is not checked per block; "
+          "linkml-map 0.5.3 does not generate it (#873).")
 
     # -----------------------------------------------------------------------
     # Report

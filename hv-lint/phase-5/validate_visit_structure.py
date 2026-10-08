@@ -54,6 +54,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
 import _cohorts  # noqa: E402
+import _visit_ids  # noqa: E402
 from _derivations import iter_nested_class_derivs  # noqa: E402
 
 import yaml
@@ -70,31 +71,6 @@ SEVERITY_RANK = {"CRITICAL": 5, "ERROR": 4, "HIGH": 3, "WARNING": 2, "INFO": 1}
 
 # -- Regex patterns -----------------------------------------------------------
 
-# Matches the result string in a case tuple: , "RESULT") or , 'RESULT')
-# YAML single-quoted strings use '' for literal ', producing single-quoted
-# strings in the parsed Python value.  We need both quote flavours.
-CASE_RESULT_DQ_RE = re.compile(r',\s*"([^"]+)"\s*\)')
-CASE_RESULT_SQ_RE = re.compile(r",\s*'([^']+)'\s*\)")
-
-# Matches string concatenated after closing paren: ) + "SUFFIX" or ) + 'SUFFIX'
-SUFFIX_AFTER_PAREN_DQ_RE = re.compile(r'\)\s*\+\s*"([^"]*)"')
-SUFFIX_AFTER_PAREN_SQ_RE = re.compile(r"\)\s*\+\s*'([^']*)'")
-
-# Matches a case() branch whose result is a whole uuid5() call, with the visit label in the
-# seed: , uuid5("<ns>", str({phv}) + ":LABEL")
-#
-# Without this the branch result is not a bare quoted string, nothing matches above, and the
-# function falls through to the "no case()" path below -- which returns every quoted string in
-# the expression, including the DISCRIMINATOR CODES being compared against. A pht then appears
-# to carry twice the labels it has, which reads as a cross-file inconsistency that is not there.
-# COPDGene's shipped specs use this form in 48 associated_visit blocks, so the fallback
-# mis-parses production output, not only generated output.
-CASE_RESULT_UUID5_RE = re.compile(r""",\s*uuid5\(.*?\+\s*['"]:?([^'"]+)['"]\s*\)""")
-
-# Matches any quoted string (double or single)
-QUOTED_DQ_RE = re.compile(r'"([^"]+)"')
-QUOTED_SQ_RE = re.compile(r"'([^']+)'")
-
 # Matches PHV accessions (with or without braces)
 PHV_RE = re.compile(r'(phv\d{8})')
 
@@ -103,17 +79,6 @@ PHT_RE = re.compile(r'^pht\d{6}$')
 
 # Detects case() usage in expressions
 CASE_USAGE_RE = re.compile(r'\bcase\s*\(')
-
-
-def _strip_label_artifacts(label: str) -> str:
-    """Strip separator artifacts from extracted visit labels.
-
-    FHS Pattern-A embeds the colon separator inside the string:
-        str({phv}) + ":FHS OFFSPRING EXAM 1"
-    This produces labels like ":FHS OFFSPRING EXAM 1".
-    Strip the leading colon (it's a uuid5 seed separator, not part of the label).
-    """
-    return label.lstrip(":")
 
 
 # -- Data structures ----------------------------------------------------------
@@ -201,67 +166,21 @@ class TransformBlock:
 # -- Visit label extraction ---------------------------------------------------
 
 def extract_visit_labels_from_expr(expr: str) -> tuple[set[str], bool]:
-    """Extract human-readable visit labels from an id or associated_visit expression.
+    """The visit labels an id or associated_visit expression can emit, and whether it is dynamic.
 
-    Handles:
-      - Simple case(): case((..., "LABEL1"), (..., "LABEL2"))
-      - Case + suffix: case((..., "PREFIX1"), ...) + " SUFFIX"
-      - UUID5 wrapping: uuid5("URL", ... + case(...) + " SUFFIX")
-      - FHS Pattern A: str({phv}) + ":LABEL" -- colon prefix on label
-      - Single-quoted values: YAML '' escaping -> Python ' in parsed exprs
+    Delegates to the shared enumerator (``_visit_ids``), the parser 1.8 and 5.11 also use: case()
+    arms are enumerated, comparison operands are never labels, a nested case() inside a uuid5
+    seed composes with the text around it (FHS visit.yaml's ``case(...) + ' EXAM 7'``), and a
+    ``(True, ...)`` fallback arm is dropped. An expression the enumerator cannot model yields no
+    labels.
 
-    Returns (set_of_labels, is_dynamic).
+    Returns (set_of_labels, is_dynamic), where is_dynamic means the id is a uuid5.
     """
-    is_dynamic = "uuid5" in expr
-    expr_str = str(expr)
-
-    # Extract case() result strings (both quote flavours)
-    case_results = (
-        CASE_RESULT_DQ_RE.findall(expr_str)
-        + CASE_RESULT_SQ_RE.findall(expr_str)
-        + CASE_RESULT_UUID5_RE.findall(expr_str)
-    )
-
-    if case_results:
-        # Look for suffix concatenated after case(): ) + "SUFFIX"
-        suffixes = (
-            SUFFIX_AFTER_PAREN_DQ_RE.findall(expr_str)
-            + SUFFIX_AFTER_PAREN_SQ_RE.findall(expr_str)
-        )
-        visit_suffix = ""
-        for s in suffixes:
-            stripped = s.strip()
-            if (stripped
-                    and not stripped.startswith("http")
-                    and stripped != ":"
-                    # `.lstrip(':')`: a suffix keeps its leading colon where a captured
-                    # label does not, so comparing raw lets a label be appended to itself.
-                    and s.lstrip(":") not in case_results
-                    and any(c.isalpha() for c in stripped)):
-                visit_suffix = s
-                break
-        labels = {
-            _strip_label_artifacts(cr + visit_suffix)
-            for cr in case_results
-        }
-        return labels, is_dynamic
-
-    # No case() -- extract quoted strings as candidate labels
-    all_quoted = (
-        QUOTED_DQ_RE.findall(expr_str)
-        + QUOTED_SQ_RE.findall(expr_str)
-    )
-    non_url = {
-        _strip_label_artifacts(s)
-        for s in all_quoted
-        if not s.startswith("http")
-        and len(s) > 1
-        and any(c.isalpha() for c in s)
-        and s.lstrip(":") != ""
-    }
-    # Filter out bare separator artifacts that are only ":"
-    non_url.discard("")
-    return non_url, is_dynamic
+    is_dynamic = "uuid5" in str(expr)
+    try:
+        return _visit_ids.labels(_visit_ids.enumerate_ids(str(expr))), is_dynamic
+    except _visit_ids.Unparsed:
+        return set(), is_dynamic
 
 
 def extract_phvs_from_expr(expr: str) -> set[str]:
@@ -544,27 +463,44 @@ def _scan_nested_visit_refs(
 # -- Checks -------------------------------------------------------------------
 
 def check_5_1_uniqueness(registry: VisitRegistry) -> list[Finding]:
-    """5.1: No duplicate visit IDs within a cohort's visit.yaml."""
+    """5.1: one Visit id per (participant, label).
+
+    Two blocks of one table emitting the same label is an ERROR: the table yields two Visit
+    records with one id. Blocks of DIFFERENT tables emitting one label is a multi-table visit by
+    design (ARIC's exam tables, CHS annual and phone contacts), reported as a WARNING that names
+    the tables and their age expressions, because the duplicate Visit rows can disagree on age.
+    Fallback labels never fire on observed codes and are not compared.
+    """
     findings: list[Finding] = []
 
     if registry.uses_dynamic_ids:
-        # For uuid5-based IDs, check label uniqueness instead
-        seen_labels: dict[str, int] = {}
+        by_label: dict[str, list[VisitBlock]] = {}
         for vb in registry.blocks:
             for label in sorted(vb.visit_labels):
-                if label in seen_labels:
+                by_label.setdefault(label, []).append(vb)
+        for label, vbs in sorted(by_label.items()):
+            if len(vbs) < 2:
+                continue
+            phts = [vb.pht for vb in vbs]
+            same_table = len(set(phts)) < len(phts)
+            first = vbs[0]
+            for vb in vbs[1:]:
+                if same_table and phts.count(vb.pht) > 1:
                     findings.append(Finding(
-                        file=registry.file_path,
-                        block=vb.block_index,
-                        check="5.1",
+                        file=registry.file_path, block=vb.block_index, check="5.1",
                         severity="ERROR",
-                        message=(
-                            f"Duplicate visit label '{label}' -- "
-                            f"also in block {seen_labels[label]}"
-                        ),
+                        message=(f"Duplicate visit label '{label}' -- also in block "
+                                 f"{first.block_index}, from the same table {vb.pht}"),
                     ))
-                else:
-                    seen_labels[label] = vb.block_index
+                elif not same_table:
+                    ages = sorted({vb2.age_start_expr or "no age" for vb2 in vbs})
+                    findings.append(Finding(
+                        file=registry.file_path, block=vb.block_index, check="5.1",
+                        severity="WARNING",
+                        message=(f"Visit id '{label}' emitted by {len(vbs)} tables "
+                                 f"({', '.join(str(p) for p in phts)}); first in block "
+                                 f"{first.block_index}; age expressions: {'; '.join(ages)}"),
+                    ))
     else:
         # Static IDs -- check exact ID uniqueness
         seen_ids: dict[str, int] = {}
@@ -670,7 +606,7 @@ def check_5_3_visit_pht_consistency(
             continue
 
         if vb.pht not in known_phts:
-            label = vb.visit_id or next(iter(vb.visit_labels), f"block {vb.block_index}")
+            label = vb.visit_id or min(vb.visit_labels, default=f"block {vb.block_index}")
             findings.append(Finding(
                 file=registry.file_path,
                 block=vb.block_index,
@@ -694,7 +630,7 @@ def check_5_4_age_formula(
     findings: list[Finding] = []
 
     for vb in registry.blocks:
-        label = vb.visit_id or next(iter(vb.visit_labels), f"block {vb.block_index}")
+        label = vb.visit_id or min(vb.visit_labels, default=f"block {vb.block_index}")
 
         # Check that age slots exist
         if not vb.age_start_expr and not vb.age_end_expr:
