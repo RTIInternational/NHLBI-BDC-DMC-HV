@@ -34,12 +34,12 @@ jobs:
   # Unit tests for the linter itself: tmp_path fixtures, no committed cache, no network.
   # Three tests read the shipped specs (COPDGene bdy_hgt.yaml and FHS visit.yaml in
   # test_visit_label_extraction.py, and test_cohorts.py's check that every *-ingest/ cohort
-  # has a _manifest-<cohort>.yaml), so a spec PR that adds a cohort without a declaration or
-  # changes FHS visit ids fails this job. ENFORCED: these pin the resolver every phase
-  # manager calls to turn `--cohort` into a cache key, the visit-label extractor checks 1.8
-  # and 5.1 share, and the fail-closed exits of the phase mains. Runs alongside hv-lint
-  # rather than after it -- a lint backlog must not stop the linter's own regressions from
-  # being reported.
+  # has a _manifest-<cohort>.yaml and a visit.yaml), so a spec PR that adds a cohort without
+  # a declaration or a visit.yaml, or changes FHS visit ids, fails this job. ENFORCED: these
+  # pin the resolver every phase manager calls to turn `--cohort` into a cache key, the
+  # visit-label extractor checks 1.8 and 5.1 share, and the fail-closed exits of the phase
+  # mains. Runs alongside hv-lint rather than after it -- a lint backlog must not stop the
+  # linter's own regressions from being reported.
   unit-tests:
     runs-on: ubuntu-latest
     steps:
