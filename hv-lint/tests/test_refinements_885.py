@@ -625,3 +625,81 @@ def test_318_a_same_condition_sibling_outranks_a_gate_through_main(tmp_path):
     assert res.returncode == 1, res.stdout[-1500:]
     assert "DIABO38" in res.stdout and "vs DIABET37 (phv00104107) yes=" in res.stdout
     assert "gate question" not in res.stdout
+
+
+# -- Review round 5 B S4: findings that named whichever block was scanned first ----------------
+
+def _two_label_block(pht: str, seed: str, value_phv: str, labels: tuple[str, str]) -> dict:
+    case = (f"case(({{{seed}}} == 1, '{labels[0]}'), ({{{seed}}} == 2, '{labels[1]}'))")
+    return {"class_derivations": {"MeasurementObservation": {
+        "populated_from": pht, "slot_derivations": {
+            "associated_participant": {
+                "expr": f'uuid5("https://w3id.org/bdchm/Participant", str({{{seed}}}) + ":X")'},
+            "associated_visit": {
+                "expr": f'uuid5("https://w3id.org/bdchm/Visit", str({{{seed}}}) + ":" + {case})'},
+            "observation_type": {"value": "OMOP:3004249"},
+            "value_quantity": {"class_derivations": [{"Quantity": {"slot_derivations": {
+                "value_decimal": {"populated_from": value_phv}, "unit": {"value": "1"}}}}]},
+        }}}}
+
+
+def test_18_overlap_names_the_smallest_identity_not_the_first_file_through_main(tmp_path):
+    """b.yaml's block has the smaller identity, so the WARNING names it whatever sorts first;
+    a new file sorting before it with the same labels does not re-key the row."""
+    t = E.Tree(tmp_path, "COPDGene")
+    p12, p23 = ("COPDGene P1", "COPDGene P2"), ("COPDGene P2", "COPDGene P3")
+    t.write("a.yaml", [_two_label_block("pht002239", "phv00568800", "phv00568909", p12)])
+    t.write("b.yaml", [_two_label_block("pht002239", "phv00568800", "phv00568901", p12)])
+    t.write("c.yaml", [_two_label_block("pht002239", "phv00568800", "phv00568902", p23)])
+    first = t.run(P1, "--cohort", "COPDGene", mode="update")
+    assert "in b.yaml block" in first.stdout, first.stdout[-1500:]
+    t.write("0.yaml", [_two_label_block("pht002239", "phv00568800", "phv00568905", p12)])
+    res = t.run(P1, "--cohort", "COPDGene")
+    assert res.returncode == 0, res.stdout[-1500:]
+
+
+def _drug_block(phv: str, concept: str, extra: str | None = None) -> dict:
+    slots = {"drug_concept": {"expr": f"case(({{{phv}}} == 1, '{concept}'))"}}
+    if extra:
+        slots["exposure_status"] = {"populated_from": extra,
+                                    "value_mappings": {"1": "PRESENT"}}
+    return {"class_derivations": {"DrugExposure": {"populated_from": "pht000012",
+                                                   "slot_derivations": slots}}}
+
+
+def test_17_drug_duplicate_keeps_its_row_when_the_blocks_swap_through_main(tmp_path):
+    t = E.Tree(tmp_path, "FHS")
+    a = _drug_block("phv00001339", "RXNORM:1", extra="phv00001340")
+    b = _drug_block("phv00001339", "RXNORM:2")
+    t.write("meds.yaml", [a, b])
+    script = "phase-1/validate_yaml_structure.py"
+    first = t.run(script, "--cohort", "FHS", mode="update")
+    assert "[1.7]" in first.stdout, first.stdout[-1500:]
+    t.write("meds.yaml", [b, a])
+    res = t.run(script, "--cohort", "FHS")
+    assert res.returncode == 0, res.stdout[-1500:]
+
+
+def _status_block(phv: str, concept: str, extra: str | None = None) -> dict:
+    slots = {"condition_concept": {"value": concept},
+             "condition_status": {"populated_from": phv}}
+    if extra:
+        slots["condition_provenance"] = {"populated_from": extra}
+    return {"class_derivations": {"Condition": {"populated_from": "pht000012",
+                                                "slot_derivations": slots}}}
+
+
+def test_28_phv_in_two_concepts_keeps_its_entry_when_the_blocks_swap_through_main(tmp_path):
+    t = E.Tree(tmp_path, "FHS")
+    a = _status_block("phv00001339", "MONDO:0004981", extra="phv00001340")
+    b = _status_block("phv00001339", "MONDO:0005068")
+    t.write("x.yaml", [a, b])
+    script = "phase-2/check_phv_dedup.py"
+    first = t.run(script, "--cohort", "FHS")
+    assert first.returncode == 1 and "[2.8]" in first.stdout, first.stdout[-1500:]
+    lines = t.list_as_known(first, 885)
+    assert len(lines) == 1 and 'block: "Condition@pht000012:phv00001339"' in lines[0], lines
+    assert t.run(script, "--cohort", "FHS").returncode == 0
+    t.write("x.yaml", [b, a])
+    res = t.run(script, "--cohort", "FHS")
+    assert res.returncode == 0, res.stdout[-1500:]

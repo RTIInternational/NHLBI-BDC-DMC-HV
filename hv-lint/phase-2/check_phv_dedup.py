@@ -207,9 +207,8 @@ def main() -> int:
         return 1
     print(f"Found {len(yaml_files)} YAML files to check for PHV deduplication")
 
-    # Collect PHV -> (concept, file, block) mappings per cohort
-    # phv -> [(concept, file_path, block_index), ...]
-    phv_hits: dict[str, dict[str, list[tuple[str | None, str, int]]]] = {}
+    # Collect PHV -> (concept, file, block, block identity) mappings per cohort
+    phv_hits: dict[str, dict[str, list[tuple[str | None, str, int, str]]]] = {}
     parse_errors: list[tuple[str, str]] = []
 
     for file_path in yaml_files:
@@ -233,11 +232,12 @@ def main() -> int:
             continue
 
         blocks = data if isinstance(data, list) else [data]
+        ids = _known_issues.file_identities(blocks)
         for i, block in enumerate(blocks):
             if not isinstance(block, dict):
                 continue
             for phv, concept, block_index in extract_value_phvs(block, i):
-                phv_hits[cohort][phv].append((concept, rel_path, block_index))
+                phv_hits[cohort][phv].append((concept, rel_path, block_index, ids[i]))
 
     # Identify duplicates: PHVs mapped to multiple distinct concepts
     all_findings: list[Finding] = []
@@ -245,21 +245,21 @@ def main() -> int:
 
     for cohort in sorted(phv_hits):
         for phv in sorted(phv_hits[cohort]):
-            hits = phv_hits[cohort][phv]
-            concepts = {c for c, _, _ in hits}
+            # Listed by (file, block identity) and reported on the hit with the smallest
+            # identity, not in scan order: reordering files or blocks must not move the ERROR or
+            # reorder its message, which would re-key its known-issue entry.
+            hits = sorted(phv_hits[cohort][phv], key=lambda h: (h[1], h[3], h[2]))
+            concepts = {c for c, _, _, _ in hits}
             if len(concepts) > 1:
-                # Build a human-readable message
                 details = []
-                for concept, fpath, block_idx in hits:
+                for concept, fpath, block_idx, _ident in hits:
                     short = fpath.replace("priority_variables_transform/", "")
                     details.append(f"{concept} in {short} block {block_idx}")
                 msg = (f"PHV {phv} mapped to {len(concepts)} concepts in {cohort}: "
                        f"{'; '.join(details)}")
-                # Report on the first file that uses this PHV
-                first_file = hits[0][1]
-                first_block = hits[0][2]
+                _c, anchor_file, anchor_block, _i = min(hits, key=lambda h: (h[3], h[1], h[2]))
                 all_findings.append(Finding(
-                    first_file, first_block, "2.8", "ERROR", msg
+                    anchor_file, anchor_block, "2.8", "ERROR", msg
                 ))
 
     # A file that does not parse was not checked; that is a failure, not a pass.

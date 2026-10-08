@@ -147,6 +147,7 @@ class PhtVisitRef:
     block_index: int
     bdchm_class: str
     value_phvs: frozenset[str] = frozenset()
+    identity: str = ""            # known-issue block identity (_known_issues.file_identities)
 
 
 # Rule 1.14: where a cohort's dbGaP metadata names a block's exam, and how its labels spell it.
@@ -227,7 +228,7 @@ def find_yaml_files(base_dir: Path, cohort: str) -> list[Path]:
 
 
 def _extract_visit_refs(
-    block: dict, block_idx: int, rel_path: str,
+    block: dict, block_idx: int, rel_path: str, identity: str = "",
 ) -> list[PhtVisitRef]:
     """One ref per top-level data class that reads a PHT and names a visit.
 
@@ -250,7 +251,7 @@ def _extract_visit_refs(
         labels = frozenset(_visit_ids.labels(_visit_ids.slot_ids(visit)))
         if labels:
             refs.append(PhtVisitRef(pht, labels, rel_path, block_idx, cls_name,
-                                    frozenset(_known_issues.value_phvs(cls_def))))
+                                    frozenset(_known_issues.value_phvs(cls_def)), identity))
     return refs
 
 
@@ -331,9 +332,15 @@ def check_cross_file_pht_consistency(
         findings.extend(_majority_label(pht, [r for r in refs if id(r) not in flagged], refs))
 
         sets = sorted({ref.labels for ref in refs}, key=lambda x: (len(x), sorted(x)))
+        # Each label set's anchor is its block with the smallest known-issue identity, not the
+        # first one scanned (as 1.2 and 5.1 anchor theirs): the WARNING names the anchor's file,
+        # so a file added before it, or the file list reordered, must not re-key every row.
         first_block: dict[frozenset[str], PhtVisitRef] = {}
         for ref in refs:
-            first_block.setdefault(ref.labels, ref)
+            cur = first_block.get(ref.labels)
+            if cur is None or ((ref.identity, ref.file, ref.block_index)
+                               < (cur.identity, cur.file, cur.block_index)):
+                first_block[ref.labels] = ref
         for i, a_set in enumerate(sets):
             for b_set in sets[i + 1:]:
                 if a_set & b_set and not (a_set <= b_set or b_set <= a_set):
@@ -399,12 +406,13 @@ def main() -> int:
 
         blocks = data if isinstance(data, list) else [data]
         files_checked += 1
+        ids = _known_issues.file_identities(blocks)
 
         for idx, block in enumerate(blocks):
             if not isinstance(block, dict):
                 continue
             all_refs.extend(
-                _extract_visit_refs(block, idx, rel_path)
+                _extract_visit_refs(block, idx, rel_path, ids[idx])
             )
 
     cache_dir = Path(args.cache_dir)

@@ -403,6 +403,9 @@ def check_drug_exposure_duplicates(blocks: list[dict], rel_path: str) -> list[Fi
     for idx, src, concept in drug_blocks:
         by_source[src].append((idx, concept))
 
+    # Reported on the member with the smallest known-issue identity, as 1.2 anchors its groups:
+    # the first in file order would move the WARNING, and re-key its row, when blocks swap.
+    ki_ids = _known_issues.file_identities(blocks)
     for src, entries in by_source.items():
         if len(entries) < 2:
             continue
@@ -412,8 +415,9 @@ def check_drug_exposure_duplicates(blocks: list[dict], rel_path: str) -> list[Fi
         # Multiple blocks, same source, different concepts -- likely duplicates
         block_ids = ", ".join(str(i) for i, _ in entries)
         concept_strs = ", ".join(sorted(concepts))
+        anchor = min((i for i, _ in entries), key=lambda i: ki_ids[i])
         findings.append(Finding(
-            rel_path, entries[0][0], "1.7", "WARNING",
+            rel_path, anchor, "1.7", "WARNING",
             f"DrugExposure blocks {block_ids} share source "
             f"'{src}' but map to different concepts: {concept_strs} -- "
             f"possible semantic duplicate (same medication, multiple vocabs)"
