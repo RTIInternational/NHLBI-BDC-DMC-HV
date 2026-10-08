@@ -9,6 +9,7 @@ Run: python -m pytest hv-lint/tests/test_known_issues_e2e.py
 import copy
 import json
 import re
+import shutil
 import sys
 from pathlib import Path
 
@@ -164,9 +165,13 @@ def test_status_semantic_317_is_enforced_through_main(tmp_path):
                   "3.17", fixed)
 
 
-def _cache_without_stats(tmp_path) -> Path:
-    cache = tmp_path / "cache"
-    cache.mkdir()
+def _cache_without_stats(tree) -> Path:
+    """A copy of the committed cache minus its value-count indexes, with the release manifests
+    beside it so the cohort still resolves to its declared release."""
+    manifests = HVLINT.parent / "hv_dataqc" / "cache_fetcher" / "manifests"
+    shutil.copytree(manifests, tree.root / "hv_dataqc" / "cache_fetcher" / "manifests")
+    cache = tree.root / "hv-lint" / "cache"
+    cache.mkdir(parents=True)
     for f in E.CACHE.iterdir():
         if f.is_file() and not f.name.endswith("_stats.json.gz"):
             (cache / f.name).write_bytes(f.read_bytes())
@@ -174,13 +179,20 @@ def _cache_without_stats(tmp_path) -> Path:
 
 
 def test_missing_stats_index_fails_both_status_components(tmp_path):
+    """A block that passes with the full cache fails when only the value-count index is gone."""
     t = E.Tree(tmp_path, "ARIC")
-    t.write("x.yaml", [E.fixture_block("aric_carotid_plaque_b3.yaml")])
-    cache = _cache_without_stats(tmp_path)
+    clean = E.fixture_block("aric_carotid_plaque_b3.yaml")
+    clean["class_derivations"]["Condition"]["slot_derivations"]["condition_status"][
+        "value_mappings"] = {"0": "PRESENT", "1": "ABSENT"}
+    t.write("x.yaml", [clean])
+    cache = _cache_without_stats(t)
     for script in ("check_status_semantic.py", "validate_semantic.py"):
+        assert E.phase3(t, script, mode="update").returncode == 0, script
+        assert E.phase3(t, script).returncode == 0, script
         res = t.run(f"phase-3/{script}", "--cohort", "ARIC", "--cache-dir", str(cache),
                     "--fail-on", "error")
         assert res.returncode != 0, (script, res.stdout[-800:])
+        assert "_stats.json.gz" in res.stdout + res.stderr, script
 
 
 def test_file_run_scopes_entries_and_refuses_an_update(tmp_path):
