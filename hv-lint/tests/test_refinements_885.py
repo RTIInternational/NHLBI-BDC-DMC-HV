@@ -703,3 +703,23 @@ def test_28_phv_in_two_concepts_keeps_its_entry_when_the_blocks_swap_through_mai
     t.write("x.yaml", [b, a])
     res = t.run(script, "--cohort", "FHS")
     assert res.returncode == 0, res.stdout[-1500:]
+
+
+def test_a_join_added_to_a_listed_block_keeps_its_entry_through_main(tmp_path):
+    """A join's keys say how rows are linked, not what the block reads: adding one (the WHI #500
+    fix adds `joins: pht000998` to 96 blocks) must not re-key the block's entries. Its keys are
+    not source variables for 3.19 either, so the empty block is still reported."""
+    t = E.Tree(tmp_path, "CARDIA")
+    b = E.fixture_block("cardia_hist_cor_bypg_b0.yaml")
+    t.write("hist_cor_bypg.yaml", [b])
+    first = E.phase3(t, "validate_semantic.py")
+    lines = t.list_as_known(first, 884)
+    assert len(lines) == 1 and '"3.19"' in lines[0], lines
+    assert E.phase3(t, "validate_semantic.py").returncode == 0
+    joined = copy.deepcopy(b)
+    joined["class_derivations"]["Procedure"]["joins"] = {
+        "pht001870": {"source_key": "phv00121257", "lookup_key": "phv00121382"}}
+    t.write("hist_cor_bypg.yaml", [joined])
+    res = E.phase3(t, "validate_semantic.py")
+    assert res.returncode == 0, res.stdout[-1500:]
+    assert "[3.19]" in res.stdout and "known issue #884" in res.stdout

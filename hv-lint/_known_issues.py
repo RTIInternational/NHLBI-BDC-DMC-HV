@@ -119,9 +119,10 @@ _QUOTED_RE = re.compile(r"((?<!\w)'(?:[^']|(?<=\w)'(?=\w))*'(?!\w)|\"[^\"]*\")")
 # A number glued to a word, a dot or a colon is part of a name (phv00012345, OMOP:4041720).
 _NUMBER_RE = re.compile(r"(?<![\w.:])\d[\d,]*(?:\.\d+)?%?")
 _PHV_RE = re.compile(r"phv\d{8}")
-# Slots that say WHOSE row it is and WHEN, not WHAT the block measures: a fix to a participant
-# seed (#882) or an age formula must not change the identity of the block's other findings.
-_IDENTITY_SKIP = {"id", "associated_participant", "associated_visit"}
+# Keys that say WHOSE row it is, WHEN, and HOW rows are linked, not WHAT the block measures: a fix
+# to a participant seed (#882), an age formula or a join (WHI #500 adds `joins: pht000998`) must
+# not change the identity of the block's other findings, and a join key is not a value for 3.19.
+_IDENTITY_SKIP = {"id", "associated_participant", "associated_visit", "joins"}
 
 
 def message_key(message: str) -> str:
@@ -146,7 +147,8 @@ def _value_phvs(node, out: set[str]) -> None:
 
 def value_phvs(node) -> set[str]:
     """The phvs ``node`` (a block's class_derivations, or one nested class) reads, minus the
-    ``id`` / ``associated_*`` / ``age_*`` slots: what the record measures, not whose or when."""
+    ``id`` / ``associated_*`` / ``age_*`` slots and ``joins`` keys: what the record measures,
+    not whose, when or how it is linked."""
     out: set[str] = set()
     _value_phvs(node, out)
     return out
