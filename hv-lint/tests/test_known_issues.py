@@ -310,3 +310,17 @@ def test_committed_baseline_is_fingerprints(committed):
             assert rows == sorted(set(rows)), (rule, cohort)
             for r in rows:
                 assert r.count(" | ") >= 2 and K.cohort_of(r.split(" | ")[0]) == cohort, r
+
+
+def test_committed_entries_and_rows_are_written_in_normal_form(committed):
+    """A hand-written entry whose message is not message_key() form can never match."""
+    def normal(msg: str) -> bool:
+        base = re.sub(r" \(#\d+\)$", "", msg)      # the ordinal of a repeated fingerprint
+        return base == K.message_key(base)
+
+    for e in K.load_entries():
+        assert normal(e.message), e.describe()
+    for rule, by_cohort in K.load_baseline().items():
+        for rows in by_cohort.values():
+            for r in rows:
+                assert normal(r.split(" | ", 2)[2]), r

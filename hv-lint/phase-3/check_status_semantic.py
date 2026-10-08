@@ -635,11 +635,17 @@ def main() -> int:
 
     indexes: dict[str, DetailIndex] = {}
     stats_by_cohort: dict[str, dict[str, PhvStats] | None] = {}
-    missing_stats: list[str] = []
+    missing_index: list[str] = []
     for cohort_name, cache_key in cohort_cache_pairs(args.cohort, cache_dir):
         try:
             indexes[cohort_name] = load_detail_index(cache_dir, cache_key)
         except FileNotFoundError:
+            # A cohort with no detail index would have every file skipped; a new cohort with no
+            # known-issue entries would then pass unchecked, so this fails like a missing stats
+            # index does.
+            print(f"ERROR: no {cache_key}_detail.json.gz for {cohort_name} in {cache_dir}: "
+                  f"3.17 / 3.18 DID NOT RUN for it.", file=sys.stderr)
+            missing_index.append(cohort_name)
             continue
         stats_by_cohort[cohort_name] = load_stats_index(cache_dir, cache_key)
         st = stats_by_cohort[cohort_name]
@@ -649,12 +655,12 @@ def main() -> int:
             print(f"ERROR: no {cache_key}_stats.json.gz for {cohort_name} in {cache_dir}: "
                   f"3.17b and the 3.18 count signal cannot run. Build it with "
                   f"hv-lint/build_phv_stats_index.py --cohort {cache_key}.", file=sys.stderr)
-            missing_stats.append(cohort_name)
+            missing_index.append(cohort_name)
             continue
         print(f"  Loaded {cohort_name}: {len(indexes[cohort_name].records):,} PHVs, "
               f"{len(st):,} with var_report counts")
 
-    if missing_stats:
+    if missing_index:
         return 1
 
     if not indexes:

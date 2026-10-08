@@ -988,8 +988,9 @@ def check_phantom_codes(
                 if key not in declared and key not in declared.values():
                     findings.append(Finding(
                         rel_path, block_idx, "3.15", "WARNING",
-                        f"{where} has key '{key}', which is not a declared code; no var_report "
-                        f"counts to check it against. Declared: {sorted(declared)}",
+                        f"{where} has key '{key}', which is not a declared code, and the "
+                        f"var_report records no coded value for the variable (all null, or "
+                        f"uncoded), so no row is known to carry it. Declared: {sorted(declared)}",
                     ))
             continue
 

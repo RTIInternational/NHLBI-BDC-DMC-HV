@@ -261,6 +261,18 @@ def test_210_age_gated_on_own_status_is_guarded():
     assert _expr.guarded_by("None if str({phv00113376}) != '2' else float({phv00113379}) * 365",
                             "phv00113376")
     assert not _expr.guarded_by("float({phv00113379}) * 365", "phv00113376")
+    # CARDIA: '2' -> PRESENT, '1' -> ABSENT: None on every ABSENT code, a value on PRESENT
+    assert _expr.guarded_by("None if str({phv00113376}) != '2' else float({phv00113379}) * 365",
+                            "phv00113376", absent_codes=["1"], present_codes=["2"])
+
+
+def test_210_reversed_guard_is_not_guarded():
+    """Review round 1 B 9c: None on the PRESENT code and the age on ABSENT rows is the defect."""
+    expr = "None if {phv00000001} == 1 else float({phv00000002}) * 365"
+    assert not _expr.guarded_by(expr, "phv00000001", absent_codes=["0"], present_codes=["1"])
+    assert _expr.guarded_by(expr, "phv00000001", absent_codes=["1"], present_codes=["0"])
+    both = "None if {phv00000001} in (0, 1) else float({phv00000002}) * 365"
+    assert not _expr.guarded_by(both, "phv00000001", absent_codes=["0"], present_codes=["1"])
 
 
 def test_24_case_without_default():

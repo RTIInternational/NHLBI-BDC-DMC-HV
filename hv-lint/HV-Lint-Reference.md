@@ -394,7 +394,7 @@ Flag any PHV accession that is mapped as a measured value in more than one harmo
 
 ### 2.12 Bare None as a value_mappings Target
 
-`'0': None` in a `value_mappings`, in any slot at any depth. YAML reads `None` as the string "None", and linkml-map writes that string into the record (`"value_enum": "None"`, `"condition_severity": "None"`). Delete the entry: an unmapped code already emits null (#736, #883 item 9). Rule 2.7 skips these targets so one defect is reported once.
+`'0': None` in a `value_mappings`, in any slot at any depth. YAML reads `None` as the string "None", and linkml-map writes that string into the record (`"value_enum": "None"`, `"condition_severity": "None"`). Map the code to the value it means; delete the entry only when the code means missing, since an unmapped code emits null (#736, #883 item 9). Deleting a code that carries meaning is a real loss, and 3.9 then reports it -- WHI lvh_ekg b1 `'5'` "Present", 412 of 3,608 rows, is the case. Rule 2.7 skips these targets so one defect is reported once.
 
 - **Severity**: ERROR
 

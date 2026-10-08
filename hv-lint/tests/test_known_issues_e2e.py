@@ -165,15 +165,16 @@ def test_status_semantic_317_is_enforced_through_main(tmp_path):
                   "3.17", fixed)
 
 
-def _cache_without_stats(tree) -> Path:
-    """A copy of the committed cache minus its value-count indexes, with the release manifests
+def _cache_without(tree, suffix: str, name: str = "cache") -> Path:
+    """A copy of the committed cache minus every ``*<suffix>`` file, with the release manifests
     beside it so the cohort still resolves to its declared release."""
     manifests = HVLINT.parent / "hv_dataqc" / "cache_fetcher" / "manifests"
-    shutil.copytree(manifests, tree.root / "hv_dataqc" / "cache_fetcher" / "manifests")
-    cache = tree.root / "hv-lint" / "cache"
+    shutil.copytree(manifests, tree.root / "hv_dataqc" / "cache_fetcher" / "manifests",
+                    dirs_exist_ok=True)
+    cache = tree.root / "hv-lint" / name
     cache.mkdir(parents=True)
     for f in E.CACHE.iterdir():
-        if f.is_file() and not f.name.endswith("_stats.json.gz"):
+        if f.is_file() and not f.name.endswith(suffix):
             (cache / f.name).write_bytes(f.read_bytes())
     return cache
 
@@ -185,7 +186,7 @@ def test_missing_stats_index_fails_both_status_components(tmp_path):
     clean["class_derivations"]["Condition"]["slot_derivations"]["condition_status"][
         "value_mappings"] = {"0": "PRESENT", "1": "ABSENT"}
     t.write("x.yaml", [clean])
-    cache = _cache_without_stats(t)
+    cache = _cache_without(t, "_stats.json.gz")
     for script in ("check_status_semantic.py", "validate_semantic.py"):
         assert E.phase3(t, script, mode="update").returncode == 0, script
         assert E.phase3(t, script).returncode == 0, script
@@ -193,6 +194,16 @@ def test_missing_stats_index_fails_both_status_components(tmp_path):
                     "--fail-on", "error")
         assert res.returncode != 0, (script, res.stdout[-800:])
         assert "_stats.json.gz" in res.stdout + res.stderr, script
+
+
+def test_missing_detail_index_fails_the_status_component(tmp_path):
+    """Review round 1 B 9e: the cohort's files were skipped with no finding."""
+    t = E.Tree(tmp_path, "ARIC")
+    t.write("x.yaml", [E.fixture_block("aric_carotid_plaque_b3.yaml")])
+    cache = _cache_without(t, "_detail.json.gz")
+    res = t.run("phase-3/check_status_semantic.py", "--cohort", "ARIC", "--cache-dir", str(cache),
+                "--fail-on", "error")
+    assert res.returncode == 1 and "_detail.json.gz for ARIC" in res.stderr
 
 
 def test_file_run_scopes_entries_and_refuses_an_update(tmp_path):

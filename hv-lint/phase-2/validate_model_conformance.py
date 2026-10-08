@@ -615,8 +615,9 @@ def validate_class_derivations(
                             rel_path, block_idx, "2.12", "ERROR",
                             f"value_mappings '{src_key}' -> None on "
                             f"{path_prefix}{class_name}.{slot_name}: linkml-map writes the "
-                            f"string 'None'; delete the entry (an unmapped code already emits "
-                            f"null)"
+                            f"string 'None'; map the code to the value it means, or delete the "
+                            f"entry only if the code means missing (an unmapped code emits null, "
+                            f"and 3.9 reports the rows when the code carried meaning)"
                         ))
 
             # -- Check 2.7: Enum / value set membership --
@@ -792,8 +793,11 @@ def validate_class_derivations(
                     age_pf = age_slot.get("populated_from", "")
                     age_source = age_expr or age_pf
                     status_phv = cs_slot.get("populated_from")
+                    absent = [k for k, v in cs_vm.items() if v in ("ABSENT", "Condition.ABSENT")]
+                    present = [k for k, v in cs_vm.items()
+                               if v in ("PRESENT", "HISTORICAL", "Condition.PRESENT")]
                     guarded = (isinstance(age_expr, str) and isinstance(status_phv, str)
-                               and _expr.guarded_by(age_expr, status_phv))
+                               and _expr.guarded_by(age_expr, status_phv, absent, present))
                     if age_source and "case(" not in str(age_source) and not guarded:
                         findings.append(Finding(
                             rel_path, block_idx, "2.10", "WARNING",
