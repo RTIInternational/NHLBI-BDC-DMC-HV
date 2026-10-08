@@ -334,6 +334,25 @@ def test_51_a_changed_age_multiplier_changes_the_fingerprint(tmp_path, cohort):
     assert "* 12" in res.stdout
 
 
+@pytest.mark.parametrize("cohort", ["CHS", "CARDIA"])
+def test_51_reordering_visit_blocks_keeps_the_baseline(tmp_path, cohort):
+    """Review round 3 A M1: 5.1 listed the tables in file order and put the WARNING on every
+    table after the first in the file, so reversing visit.yaml re-keyed its baselined rows."""
+    t = E.Tree(tmp_path, cohort)
+    if cohort == "CHS":
+        blocks = [E.fixture_block("chs_visit_b1.yaml"), E.fixture_block("chs_visit_b2.yaml")]
+    else:
+        blocks = [_cardia_y20("pht003298", "phv00190551", None),
+                  _cardia_y20("pht001999", "phv00129484", "phv00129493"),
+                  _cardia_y20("pht001851", "phv00120733", None)]
+    t.write("visit.yaml", blocks)
+    assert E.phase5(t, mode="update").returncode == 0
+    assert "5.1" in t.baseline.read_text(encoding="utf-8")
+    t.write("visit.yaml", blocks[::-1])
+    res = E.phase5(t)
+    assert res.returncode == 0, res.stdout[-2000:]
+
+
 def test_51_no_age_expression_in_a_message_has_a_masked_multiplier():
     """Every quoting repr_age can produce keeps the expression's numbers in the fingerprint."""
     for expr in ("{phv00098799} * 365",

@@ -520,7 +520,9 @@ def check_5_1_uniqueness(registry: VisitRegistry) -> list[Finding]:
                     ))
                 else:
                     first_of[vb.pht] = vb
-            tables = list(first_of.values())
+            # Sorted by table, not file order: reordering Visit blocks must not move the WARNING
+            # to another block or reorder the message, which would re-key its baseline row.
+            tables = sorted(first_of.values(), key=lambda v: str(v.pht))
             if len(tables) > 1:
                 ages = sorted({vb2.age_start_expr or "no age" for vb2 in tables})
                 for vb in tables[1:]:
