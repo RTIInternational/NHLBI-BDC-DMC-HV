@@ -1243,14 +1243,28 @@ def main() -> int:
             unrun_check = True
             continue
 
+        # Under `all` a directory without visit.yaml is a documented 5.0 WARNING (every shipped
+        # cohort has one). A cohort NAMED on the command line was asked for, and none of
+        # 5.1-5.10 ran for it, so there it is an unrun check like the branch above.
         if not visit_file.exists():
-            all_findings.append(Finding(
-                file=f"priority_variables_transform/{cohort}-ingest/",
-                block=-1,
-                check="5.0",
-                severity="WARNING",
-                message=f"No visit.yaml found for cohort {cohort}",
-            ))
+            if named:
+                all_findings.append(Finding(
+                    file=f"priority_variables_transform/{cohort}-ingest/",
+                    block=-1,
+                    check="5.0",
+                    severity="ERROR",
+                    message=(f"No visit.yaml found for cohort {cohort}, so Phase 5 DID NOT "
+                             f"RUN for it"),
+                ))
+                unrun_check = True
+            else:
+                all_findings.append(Finding(
+                    file=f"priority_variables_transform/{cohort}-ingest/",
+                    block=-1,
+                    check="5.0",
+                    severity="WARNING",
+                    message=f"No visit.yaml found for cohort {cohort}",
+                ))
             cohorts_skipped.append(cohort)
             continue
 
@@ -1464,9 +1478,10 @@ def main() -> int:
         # `--fail-on critical` did exactly that, and the run then reported PASSED having
         # skipped 5.3/5.4/5.8 for the cohort whose cache was the wrong release.
         print("\nFAILED: at least one check DID NOT RUN -- a named cohort has no ingest "
-              "directory, a visit.yaml could not be parsed or has no Visit blocks, the "
-              "mandatory dbGaP release check did not pass, or a required cache input was "
-              "missing (see the ERROR findings above). This is not weighed against --fail-on.")
+              "directory or no visit.yaml, a visit.yaml could not be parsed or has no Visit "
+              "blocks, the mandatory dbGaP release check did not pass, or a required cache "
+              "input was missing (see the ERROR findings above). This is not weighed against "
+              "--fail-on.")
         return 1
     else:
         if all_findings:

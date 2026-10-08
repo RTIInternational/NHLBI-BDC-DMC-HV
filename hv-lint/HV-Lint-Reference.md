@@ -511,9 +511,9 @@ Expressions are parsed using regex:
 
 ### 5.0 Missing visit.yaml
 
-Flag cohorts that have an ingest directory but no `visit.yaml` file. A cohort named with `--cohort` that has no ingest directory at all was never checked, so it is an ERROR and fails the run regardless of `--fail-on`. So is a `visit.yaml` that cannot be parsed or has no Visit blocks: none of 5.1-5.10 can run without it.
+Flag cohorts that have an ingest directory but no `visit.yaml` file. Under `--cohort all` that is a WARNING (every shipped cohort has a `visit.yaml`). A cohort named with `--cohort` that has no ingest directory, or an ingest directory but no `visit.yaml`, was never checked, so it is an ERROR and fails the run regardless of `--fail-on`. So is a `visit.yaml` that cannot be parsed or has no Visit blocks, under any `--cohort`: none of 5.1-5.10 can run without it.
 
-- **Severity**: WARNING (no `visit.yaml`); ERROR (named cohort with no ingest directory; `visit.yaml` unparseable or with no Visit blocks)
+- **Severity**: WARNING (no `visit.yaml`, under `--cohort all`); ERROR (named cohort with no ingest directory or no `visit.yaml`; `visit.yaml` unparseable or with no Visit blocks)
 
 ### 5.1 Visit ID Uniqueness
 

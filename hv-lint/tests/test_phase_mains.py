@@ -134,7 +134,7 @@ def test_run_phase5_fails_on_an_unknown_cohort(tmp_path, monkeypatch, capsys):
 
 def test_a_cohort_without_visit_yaml_under_all_is_still_a_warning(tmp_path, monkeypatch, capsys):
     """Scope guard: under `all` the cohorts come from the directories, and a directory with no
-    visit.yaml stays a 5.0 WARNING."""
+    visit.yaml stays a 5.0 WARNING. Only a NAMED cohort without one is an unrun check."""
     cache = _make_tree(tmp_path)
     (tmp_path / "priority_variables_transform" / "EXTRA-ingest").mkdir()
     rc = _run_vvs(monkeypatch, tmp_path, "--cohort", "all", "--cache-dir", str(cache),
@@ -142,6 +142,20 @@ def test_a_cohort_without_visit_yaml_under_all_is_still_a_warning(tmp_path, monk
     out = capsys.readouterr().out
     assert rc == 0, out
     assert "No visit.yaml found for cohort EXTRA" in out
+
+
+@pytest.mark.parametrize("fail_on", ["error", "critical"])
+def test_a_named_cohort_without_visit_yaml_fails_the_run(tmp_path, monkeypatch, capsys, fail_on):
+    """Naming a cohort asks for it to be checked; an ingest directory with no visit.yaml means
+    none of 5.1-5.10 ran for it, which is an unrun check at any threshold."""
+    cache = _make_tree(tmp_path)
+    (tmp_path / "priority_variables_transform" / "HCHS-ingest" / "visit.yaml").unlink()
+    rc = _run_vvs(monkeypatch, tmp_path, "--cohort", "HCHS", "--cache-dir", str(cache),
+                  "--fail-on", fail_on)
+    out = capsys.readouterr().out
+    assert rc == 1, out
+    assert "No visit.yaml found for cohort HCHS" in out
+    assert "PASSED" not in out
 
 
 @pytest.mark.parametrize("content", [
