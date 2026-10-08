@@ -481,7 +481,7 @@ def study_label(cache_dir: Path | str, cache_key: str) -> str:
 EXPECT_STUDY_NEEDS_ONE_COHORT = (
     "--expect-study needs one named --cohort: it pins ONE release, and under --cohort all it "
     "would be compared with every cohort's cache. Name the cohort it is for (e.g. --cohort ARIC "
-    "--expect-study phs000280.v9)."
+    "--expect-study phs000280.v8)."
 )
 
 
