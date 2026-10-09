@@ -227,6 +227,10 @@ def _write_stats(path, data):
     import json
     with gzip.open(path, "wt", encoding="utf-8") as fh:
         json.dump(data, fh)
+    # Recorded as the builder records it: the loader refuses an artifact with no record.
+    key = path.name[: -len("_stats.json.gz")]
+    css._cohorts.write_manifest_entries(path.parent, {key: {css._cohorts.ARTIFACTS_FIELD: {
+        path.name: css._cohorts.artifact_record(path)}}})
 
 
 def test_load_stats_index_by_cache_key(tmp_path):

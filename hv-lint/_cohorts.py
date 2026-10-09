@@ -530,7 +530,11 @@ def load_cache_artifact(cache_dir: Path | str, cache_key: str, suffix: str = "")
                 f"no cache artifact '{cache_key}{suffix}.json.gz' (or .json) in {base}")
     data = path.read_bytes()
     payload = _decode_artifact(path, data)
-    remedy = f"Rebuild it with: {rebuild_command(base, cache_key)}"
+    # `update_data.py` builds only the PHV and detail indexes; the value-count and table-name
+    # indexes have their own builder, so their remedy must name it.
+    remedy = "Rebuild it with: " + (
+        stats_rebuild_command(cache_key, tables=suffix == "_tables")
+        if suffix in ("_stats", "_tables") else rebuild_command(base, cache_key))
     entry = manifest_entry(base, cache_key)
     if not entry:
         raise CacheIntegrityError(
@@ -702,11 +706,10 @@ def load_table_names(cache_dir: Path | str, cache_key: str) -> dict[str, dict[st
     Built by ``build_phv_stats_index.py --tables`` from the release's data dictionaries (the
     short name in each filename and the table's own description). FHS's and MESA's are
     committed: rule 1.8 reads FHS's ``ex<cohort>_<exam>s`` names, rule 1.14 MESA's ``ExamN``.
+    Raises :class:`CacheIntegrityError` when the file does not match its manifest record.
     """
-    import gzip  # noqa: PLC0415
-
-    path = Path(cache_dir) / f"{cache_key}_tables.json.gz"
-    if not path.is_file():
+    try:
+        payload = load_cache_artifact(cache_dir, cache_key, "_tables")
+    except FileNotFoundError:
         return {}
-    with gzip.open(path, "rt", encoding="utf-8") as fh:
-        return dict(json.load(fh))
+    return dict(payload) if isinstance(payload, dict) else {}

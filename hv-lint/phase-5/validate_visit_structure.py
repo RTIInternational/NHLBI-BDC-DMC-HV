@@ -1487,8 +1487,15 @@ def main() -> int:
         cache_key = _cohorts.cache_key_for(cohort, args.cache_dir or "")
 
         # 5.12 (and 5.2 for fallback labels): id expressions the label rules could not check.
-        stats = (_css.load_stats_index(Path(args.cache_dir), cache_key)
-                 if args.cache_dir else None) or {}
+        try:
+            stats = (_css.load_stats_index(Path(args.cache_dir), cache_key)
+                     if args.cache_dir else None) or {}
+        except _cohorts.CacheIntegrityError as exc:
+            stats = {}
+            all_findings.append(Finding(
+                f"priority_variables_transform/{cohort}-ingest", 0, "5.12", "ERROR",
+                f"{exc} -- so the observed-code half of check 5.12 DID NOT RUN"))
+            unrun_check = True
         all_findings.extend(check_5_12_id_coverage(
             yaml_files, hv_root, registry,
             lambda phv: stats[phv].counts if phv in stats else None))

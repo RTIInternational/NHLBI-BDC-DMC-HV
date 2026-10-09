@@ -58,6 +58,22 @@ def test_build_respects_study_prefix_and_is_reproducible(tmp_path):
     assert (out / "chs_stats.json.gz").read_bytes() == first
 
 
+def test_both_builds_record_what_the_loader_verifies(tmp_path):
+    """The stats and --tables builds each record their artifact, so the loader reads it."""
+    src = tmp_path / "src"
+    src.mkdir()
+    (src / "phs000287.v7.pht001474.v1.p1.YR10.var_report.xml").write_text(
+        VAR_REPORT, encoding="utf-8")
+    (src / "phs000287.v7.pht001474.v1.YR10.data_dict.xml").write_text(
+        "<data_table><description>Year 10</description></data_table>", encoding="utf-8")
+    out = tmp_path / "out"
+    assert bsi.build_stats_index("k", src, out, study_prefix="phs000287.v7.") == 3
+    assert bsi.build_tables_index("k", src, out, study_prefix="phs000287.v7.") == 1
+    assert len(bsi._cohorts.load_cache_artifact(out, "k", "_stats")) == 3
+    assert bsi._cohorts.load_table_names(out, "k") == {
+        "pht001474": {"name": "YR10", "description": "Year 10"}}
+
+
 def test_a_coded_variable_with_no_stat_has_no_n_and_is_not_empty(tmp_path):
     """Review 5 A N1 / B N3: no <stat> means n unknown. n = 0 would read as empty in 3.19."""
     import gzip as _gz
@@ -73,6 +89,7 @@ def test_a_coded_variable_with_no_stat_has_no_n_and_is_not_empty(tmp_path):
     assert recs["phv00100001"] == {"c": {"1": 3}}
     with _gz.open(tmp_path / "k_stats.json.gz", "wt", encoding="utf-8") as fh:
         json.dump(recs, fh)
+    bsi._record_artifact(tmp_path, "k", tmp_path / "k_stats.json.gz")
     nonnull = css.load_nonnull_counts(tmp_path, "k")
     assert "phv00100001" not in nonnull and nonnull["phv00101324"] == 5531
     assert css.load_stats_index(tmp_path, "k")["phv00100001"].counts == {"1": 3}

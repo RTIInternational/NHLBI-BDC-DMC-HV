@@ -199,6 +199,9 @@ def test_319_needs_n_for_uncoded_variables(tmp_path):
         raw = json.load(fh)
     with gzip.open(stats, "wt", encoding="utf-8") as fh:
         json.dump({k: v for k, v in raw.items() if "c" in v}, fh)
+    # Re-recorded, so the run reaches the 3.19 guard rather than stopping at the integrity check.
+    css._cohorts.write_manifest_entries(cache, {"phs000285.v3": {
+        css._cohorts.ARTIFACTS_FIELD: {stats.name: css._cohorts.artifact_record(stats)}}})
     res = t.run("phase-3/validate_semantic.py", "--cohort", "CARDIA", "--cache-dir", str(cache),
                 "--fail-on", "error")
     assert res.returncode == 1 and "3.19 cannot run" in res.stderr, res.stderr[-800:]

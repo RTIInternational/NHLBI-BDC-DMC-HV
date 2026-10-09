@@ -51,6 +51,21 @@ from pathlib import Path
 HVLINT_DIR = Path(__file__).resolve().parent
 CACHE_DIR = HVLINT_DIR / "dbgap-cache"
 
+sys.path.insert(0, str(HVLINT_DIR))
+import _cohorts  # noqa: E402
+
+
+def _record_artifact(output_dir: Path, cohort_key: str, gz_path: Path) -> None:
+    """Record ``gz_path``'s sha256 and counts under ``cohort_key`` in the manifest.
+
+    ``_cohorts.load_cache_artifact`` refuses an artifact with no record, so an index written
+    without one is unreadable. Merged field-wise (``write_manifest_entries`` -> ``merge_entry``):
+    the release's provenance and its other artifacts' records survive.
+    """
+    _cohorts.write_manifest_entries(
+        output_dir,
+        {cohort_key: {_cohorts.ARTIFACTS_FIELD: {gz_path.name: _cohorts.artifact_record(gz_path)}}})
+
 
 def parse_var_report(path: Path) -> dict[str, dict]:
     """Parse one ``*.var_report.xml`` and return ``{base_phv: {"n"[, "c"]}}``.
@@ -134,6 +149,8 @@ def build_stats_index(
     for f in files:
         index.update(parse_var_report(f))
 
+    # Checked BEFORE writing: an index the manifest then refuses to record cannot be read.
+    _cohorts.read_manifest_for_update(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     gz_path = output_dir / f"{cohort_key}_stats.json.gz"
     json_bytes = json.dumps(
@@ -145,6 +162,7 @@ def build_stats_index(
         fileobj=raw, mode="wb", mtime=0
     ) as gz:
         gz.write(json_bytes)
+    _record_artifact(output_dir, cohort_key, gz_path)
 
     coded = sum(1 for rec in index.values() if "c" in rec)
     print(
@@ -196,11 +214,13 @@ def build_tables_index(
     if not names:
         print(f"  [tables] No data_dict.xml files for {cohort_key} in {source_dir} -- skipping")
         return 0
+    _cohorts.read_manifest_for_update(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     gz_path = output_dir / f"{cohort_key}_tables.json.gz"
     payload = json.dumps(dict(sorted(names.items())), separators=(",", ":")).encode("utf-8")
     with gz_path.open("wb") as raw, gzip.GzipFile(fileobj=raw, mode="wb", mtime=0) as gz:
         gz.write(payload)
+    _record_artifact(output_dir, cohort_key, gz_path)
     print(f"  [tables] {cohort_key:12s}: {len(names):>5,} tables -> {gz_path.name}")
     return len(names)
 
@@ -229,12 +249,12 @@ def main() -> int:
     if not source.is_dir():
         print(f"ERROR: source directory not found: {source}", file=sys.stderr)
         return 1
-    if args.tables:
-        n = build_tables_index(args.cohort, source, Path(args.output_dir),
-                               study_prefix=args.study_prefix)
-        return 0 if n else 1
-    n = build_stats_index(args.cohort, source, Path(args.output_dir),
-                          study_prefix=args.study_prefix)
+    builder = build_tables_index if args.tables else build_stats_index
+    try:
+        n = builder(args.cohort, source, Path(args.output_dir), study_prefix=args.study_prefix)
+    except _cohorts.ManifestUnreadable as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
     return 0 if n else 1
 
 

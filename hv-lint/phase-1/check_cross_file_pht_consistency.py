@@ -419,18 +419,25 @@ def main() -> int:
     table_names: dict[str, dict[str, str]] = {}
     details: dict = {}
     for name, key in _cohorts.cohorts_to_load(args.cohort, cache_dir, base_dir):
-        table_names.update(_cohorts.load_table_names(cache_dir, key))
+        # The 1.14 detail read sits inside this try so an integrity failure of either artifact
+        # is reported, never raised.
+        try:
+            tables = _cohorts.load_table_names(cache_dir, key)
+            table_names.update(tables)
+            if name in VISIT_EVIDENCE and VISIT_EVIDENCE[name][0] == "description":
+                details.update(_cvs.load_detail_index(cache_dir, key).records)
+        except FileNotFoundError:
+            print(f"ERROR: no {key}_detail.json.gz for {name}: 1.14 DID NOT RUN for it.",
+                  file=sys.stderr)
+            return 1
+        except _cohorts.CacheIntegrityError as exc:
+            print(f"ERROR: cache integrity check for '{name}': {exc} -- 1.8 and 1.14 DID NOT "
+                  f"RUN for it.", file=sys.stderr)
+            return 1
         if name in VISIT_EVIDENCE:
             # 1.14 reads the pinned release's metadata; a missing index is a skipped check.
             kind = VISIT_EVIDENCE[name][0]
-            if kind == "description":
-                try:
-                    details.update(_cvs.load_detail_index(cache_dir, key).records)
-                except FileNotFoundError:
-                    print(f"ERROR: no {key}_detail.json.gz for {name}: 1.14 DID NOT RUN for it.",
-                          file=sys.stderr)
-                    return 1
-            elif not _cohorts.load_table_names(cache_dir, key):
+            if kind != "description" and not tables:
                 print(f"ERROR: no {key}_tables.json.gz for {name}: 1.14 DID NOT RUN for it. "
                       f"Build it with {_cohorts.stats_rebuild_command(key, tables=True)}",
                       file=sys.stderr)

@@ -34,8 +34,6 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import gzip
-import json
 import os
 import re
 import sys
@@ -385,11 +383,15 @@ def load_nonnull_counts(cache_dir: Path, cache_key: str) -> dict[str, int] | Non
 
 
 def _read_stats(cache_dir: Path, cache_key: str) -> dict | None:
-    gz_path = Path(cache_dir) / f"{cache_key}_stats.json.gz"
-    if not gz_path.exists():
+    """The raw value-count index, verified against the manifest; None when absent.
+
+    Raises ``_cohorts.CacheIntegrityError`` when its content is not what the manifest records.
+    """
+    try:
+        raw = _cohorts.load_cache_artifact(cache_dir, cache_key, "_stats")
+    except FileNotFoundError:
         return None
-    with gzip.open(gz_path, "rt", encoding="utf-8") as f:
-        return json.load(f)
+    return raw if isinstance(raw, dict) else None
 
 
 # ---------------------------------------------------------------------------
@@ -779,7 +781,11 @@ def main() -> int:
         if release_error:
             print(release_error, file=sys.stderr)
             return 1
-        stats_by_cohort[cohort_name] = load_stats_index(cache_dir, cache_key)
+        try:
+            stats_by_cohort[cohort_name] = load_stats_index(cache_dir, cache_key)
+        except _cohorts.CacheIntegrityError as exc:
+            print(f"ERROR: cache integrity check for '{cohort_name}': {exc}", file=sys.stderr)
+            return 1
         st = stats_by_cohort[cohort_name]
         if st is None:
             # Without counts 3.17b cannot run and 3.18 loses its count signal; a weakened rule

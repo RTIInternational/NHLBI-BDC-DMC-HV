@@ -100,7 +100,7 @@ def _make_tree(root: Path, *, manifest: object = "ok") -> Path:
     if isinstance(entries, dict) and isinstance(entries.get(KEY), dict):
         entries[KEY] = {**entries[KEY], _cohorts.ARTIFACTS_FIELD: {
             name: _cohorts.artifact_record(cache / name)
-            for name in (f"{KEY}.json.gz", f"{KEY}_detail.json.gz")}}
+            for name in (f"{KEY}.json.gz", f"{KEY}_detail.json.gz", f"{KEY}_stats.json.gz")}}
     if entries is not None:
         (cache / "manifest.json").write_text(
             json.dumps({"manifest_version": 1, "entries": entries}), encoding="utf-8")
@@ -546,6 +546,49 @@ def test_an_artifact_with_no_digest_record_fails_closed(tmp_path, monkeypatch, c
     err = capsys.readouterr().err
     assert rc == 1, err
     assert "has no sha256/count record" in err
+
+
+def _swap_stats(cache: Path) -> None:
+    """Another release's value-count index copied over this one's name: three PHVs, not two."""
+    with gzip.open(cache / f"{KEY}_stats.json.gz", "wt", encoding="utf-8") as f:
+        json.dump({p: {"n": 1} for p in ("phv00000001", "phv00000002", "phv00000003")}, f)
+
+
+@pytest.mark.parametrize("module", ["validate_semantic", "check_status_semantic"])
+def test_phase_3_fails_on_a_swapped_stats_index(tmp_path, monkeypatch, capsys, module):
+    cache = _make_tree(tmp_path)
+    _swap_stats(cache)
+    rc = _run_phase3_validator(monkeypatch, module, tmp_path, cache, "HCHS")
+    err = capsys.readouterr().err
+    assert rc == 1, err
+    assert f"{KEY}_stats.json.gz does not match its manifest.json record" in err
+    assert "3 PHVS on disk, 2 recorded" in err
+    assert "build_phv_stats_index.py --cohort " + KEY in err
+
+
+def test_phase_5_fails_on_a_swapped_stats_index(tmp_path, monkeypatch, capsys):
+    cache = _make_tree(tmp_path)
+    _swap_stats(cache)
+    rc = _phase5_critical(monkeypatch, tmp_path, cache)
+    out = capsys.readouterr().out
+    assert rc == 1, out
+    assert f"{KEY}_stats.json.gz does not match its manifest.json record" in out
+    assert "5.12 DID NOT RUN" in out
+
+
+def test_a_swapped_tables_index_is_refused(tmp_path):
+    """``_tables`` (rules 1.8 / 1.14) is read through the same check as every other artifact."""
+    cache = _make_tree(tmp_path)
+    tables = cache / f"{KEY}_tables.json.gz"
+    with gzip.open(tables, "wt", encoding="utf-8") as f:
+        json.dump({PHT: {"name": "a", "description": ""}}, f)
+    _cohorts.write_manifest_entries(cache, {KEY: {_cohorts.ARTIFACTS_FIELD: {
+        tables.name: _cohorts.artifact_record(tables)}}})
+    assert _cohorts.load_table_names(cache, KEY) == {PHT: {"name": "a", "description": ""}}
+    with gzip.open(tables, "wt", encoding="utf-8") as f:
+        json.dump({PHT: {"name": "b", "description": ""}}, f)
+    with pytest.raises(_cohorts.CacheIntegrityError, match="sha256"):
+        _cohorts.load_table_names(cache, KEY)
 
 
 def test_a_same_count_rebuild_is_caught_by_the_digest(tmp_path):
