@@ -18,7 +18,9 @@ labels it has, and 1.8/5.1 report a cross-file inconsistency that does not exist
 
 **This is not a generated-output problem.** COPDGene's shipped specs use the nested form in 48
 ``associated_visit`` blocks, so the fallback mis-parsed production's own files: ``bdy_hgt.yaml``
-returned its four real labels plus ``P1``/``P2``/``P3``/``P3B``.
+returned its four real labels plus ``P1``/``P2``/``P3``/``P3B``. That expression is pinned as a
+frozen fixture; the shipped tree is checked only by invariants, so a curator's correct change to a
+spec cannot fail this file.
 
 Both nestings are in production and neither is going away -- FHS (448 blocks) and SPIROMICS (19)
 write the label-in-case form, COPDGene (48) writes the nested one -- so the extractor has to read
@@ -126,29 +128,58 @@ def test_the_nested_form_does_not_append_its_own_label_as_a_suffix():
         assert ":" not in label
 
 
-# -- against production's own files ------------------------------------------
+# -- COPDGene's nested form, from a frozen copy -----------------------------------
+#
+# The reproduction case is a real expression, but it is pinned here as a FIXTURE: a test that read
+# COPDGene-ingest/bdy_hgt.yaml and demanded exactly these four labels would fail a curator who
+# correctly adds a fifth visit arm. The string is verbatim from that file's associated_visit as of
+# this test's writing (whitespace folded); the shipped tree is checked by INVARIANT, below.
+
+COPDGENE_BDY_HGT_VISIT = (
+    "case(({phv00568798} == 'P1', uuid5('https://w3id.org/bdchm/Visit', str({phv00159568}) + "
+    "':COPDGene P1')), ({phv00568798} == 'P2', uuid5('https://w3id.org/bdchm/Visit', "
+    "str({phv00159568}) + ':COPDGene P2')), ({phv00568798} == 'P3', "
+    "uuid5('https://w3id.org/bdchm/Visit', str({phv00159568}) + ':COPDGene P3')), "
+    "({phv00568798} == 'P3B', uuid5('https://w3id.org/bdchm/Visit', str({phv00159568}) + "
+    "':COPDGene P3B')))"
+)
 
 
-def test_copdgene_shipped_spec_parses_to_its_four_real_labels():
-    """The reproduction case: a real file in this repo, mis-parsed before the fix.
+def test_copdgene_nested_form_parses_to_its_four_real_labels():
+    """The reproduction case: mis-parsed before the fix as the four labels plus P1/P2/P3/P3B."""
+    want = {"COPDGene P1", "COPDGene P2", "COPDGene P3", "COPDGene P3B"}
+    assert c18._extract_labels_from_expr(COPDGENE_BDY_HGT_VISIT) == want
+    assert vvs.extract_visit_labels_from_expr(COPDGENE_BDY_HGT_VISIT)[0] == want
 
-    Skips rather than fails if the ingest tree is not present, so the suite still runs in a
-    checkout without it.
-    """
-    import re
 
+def _shipped_ingest(cohort: str) -> Path:
     import pytest
 
-    spec = _HV_LINT.parent / "priority_variables_transform" / "COPDGene-ingest" / "bdy_hgt.yaml"
-    if not spec.exists():
-        pytest.skip(f"{spec} not present in this checkout")
+    ingest = _HV_LINT.parent / "priority_variables_transform" / f"{cohort}-ingest"
+    if not (ingest / "visit.yaml").exists():
+        pytest.skip(f"{ingest / 'visit.yaml'} not present in this checkout")
+    return ingest
 
-    text = spec.read_text(encoding="utf-8")
-    match = re.search(r"associated_visit:\s*\n\s*expr:\s*(.+?)(?=\n\s{0,10}\w+:)", text, re.S)
-    assert match, "no associated_visit expr found -- the spec's shape changed"
 
-    labels = c18._extract_labels_from_expr(" ".join(match.group(1).split()))
-    assert labels == {"COPDGene P1", "COPDGene P2", "COPDGene P3", "COPDGene P3B"}
+def test_every_label_a_copdgene_spec_emits_is_defined_in_its_visit_yaml():
+    """Against the shipped tree, as an invariant rather than a count: a label an associated_visit
+    emits that no Visit block defines is either a mis-parse (the discriminator codes this file's
+    defect produced) or a broken link -- and neither depends on how many visits COPDGene has.
+    """
+    ingest = _shipped_ingest("COPDGene")
+    hv_root = ingest.parent.parent
+    registry = vvs.build_visit_registry(ingest / "visit.yaml", hv_root)
+    assert registry is not None and registry.all_labels, "COPDGene visit.yaml defines no labels"
+    undefined: dict[str, set[str]] = {}
+    for spec in sorted(ingest.glob("*.yaml")):
+        if spec.name == "visit.yaml":
+            continue
+        refs, _ = vvs.scan_transform_file(spec, hv_root)
+        for ref in refs:
+            extra = ref.visit_labels - registry.all_labels
+            if extra:
+                undefined.setdefault(spec.name, set()).update(extra)
+    assert not undefined, f"labels no COPDGene Visit block defines: {undefined}"
 
 
 # -- FHS's conditional visit ids ---------------------------------------------
@@ -223,7 +254,8 @@ def test_fhs_associated_visit_label_in_case_form_is_unchanged():
 def test_every_fhs_visit_block_id_parses_to_its_name_labels():
     """Against the shipped file: every Visit block in FHS-ingest/visit.yaml, id vs name.
 
-    Skips if the ingest tree is absent, so the suite still runs in a checkout without it.
+    An invariant, not a census: it holds for any number of blocks, so adding or removing an FHS
+    exam cannot fail it. Skips if the ingest tree is absent, so the suite still runs without it.
     """
     import pytest
     import yaml
@@ -250,4 +282,5 @@ def test_every_fhs_visit_block_id_parses_to_its_name_labels():
                 assert id_labels == name_labels, (id_expr, name_expr)
                 assert c18._extract_labels_from_expr(str(id_expr)) == id_labels
                 checked += 1
-    assert checked >= 10, f"only {checked} Visit blocks with id+name exprs -- shape changed"
+    if not checked:
+        pytest.skip("FHS visit.yaml has no Visit block with both id and name exprs")
