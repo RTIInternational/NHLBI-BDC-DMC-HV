@@ -159,6 +159,12 @@ CURIE_RULES: dict[str, tuple[re.Pattern, str]] = {
     "RxCUI": (re.compile(r"^\d{3,8}$"), "numeric, 3-8 digits"),
 }
 
+# Prefixes HV specs use that the BDC-HM schema's prefix map does not declare: the drug
+# vocabularies of DrugExposure.drug_concept (ATC, RxCUI, NDFRT, VANDF, MeSH), NCBITaxon (the
+# schema declares lower-case `ncbitaxon`) and LOINC (CURIE_RULES checks its format). Any
+# other undeclared prefix is an ERROR [2.6]: `MOND:0005015` is a typo, not a vocabulary.
+HV_EXTRA_PREFIXES = frozenset({"ATC", "LOINC", "MeSH", "NCBITaxon", "NDFRT", "RxCUI", "VANDF"})
+
 # Precompiled regexes for CURIE extraction
 _CURIE_PREFIX_RE = re.compile(r'^[A-Za-z][A-Za-z0-9_]*:')
 _CURIE_IN_EXPR_RE = re.compile(r"['\"]([A-Za-z][A-Za-z0-9_]*:\S+?)['\"]")
@@ -205,6 +211,8 @@ class ValidationContext:
     class_ancestors: dict[str, set[str]] = field(default_factory=dict)  # {class: {self, parent, ...}}
     # Check 2.7: {class: {slot: frozenset(valid_enum_values)}} -- only static enums
     slot_enum_values: dict[str, dict[str, frozenset[str]]] = field(default_factory=dict)
+    # Check 2.6: the schema's declared CURIE prefixes, plus HV_EXTRA_PREFIXES
+    prefixes: frozenset[str] = frozenset()
 
 
 # ---------------------------------------------------------------------------
@@ -304,6 +312,8 @@ def load_bdchm_schema(bdchm_ref: str, bdchm_schema: str | None) -> ValidationCon
                         ctx.slot_enum_values[cls_name] = {}
                     ctx.slot_enum_values[cls_name][s.name] = pvs
 
+    ctx.prefixes = frozenset(sv.schema.prefixes or {}) | HV_EXTRA_PREFIXES
+
     enum_count = sum(1 for v in enum_pvs.values() if v is not None)
     print(f"  Loaded {len(ctx.valid_classes)} classes, {enum_count} validatable enums")
     return ctx
@@ -375,9 +385,12 @@ def check_slot_derivation_keys(
 
 def check_curie_value(
     value: str, class_name: str, slot_name: str,
-    block_idx: int, rel_path: str
+    block_idx: int, rel_path: str, prefixes: frozenset[str] | None = None
 ) -> list[Finding]:
-    """Check 2.6: Validate CURIE format for a static value."""
+    """Check 2.6: Validate CURIE format for a static value.
+
+    With ``prefixes`` (the schema's map plus HV_EXTRA_PREFIXES), an undeclared prefix is an
+    ERROR."""
     findings = []
     if ":" not in value:
         return findings
@@ -407,6 +420,14 @@ def check_curie_value(
             f"CURIE has extra whitespace: '{value}' on {class_name}.{slot_name}"
         ))
 
+    if prefixes is not None and prefix not in prefixes:
+        findings.append(Finding(
+            rel_path, block_idx, "2.6", "ERROR",
+            f"Unknown CURIE prefix '{prefix}' in '{value}' on {class_name}.{slot_name}: not "
+            f"declared in the pinned BDC-HM schema's prefixes or HV_EXTRA_PREFIXES"
+        ))
+        return findings
+
     if prefix in CURIE_RULES:
         pat, desc = CURIE_RULES[prefix]
         if not pat.match(identifier):
@@ -430,14 +451,14 @@ def check_curie_value(
 
 def check_curies_in_expr(
     expr: str, class_name: str, slot_name: str,
-    block_idx: int, rel_path: str
+    block_idx: int, rel_path: str, prefixes: frozenset[str] | None = None
 ) -> list[Finding]:
     """Check 2.6: Extract and validate CURIEs embedded in expressions."""
     findings = []
     for match in _CURIE_IN_EXPR_RE.finditer(expr):
         curie = match.group(1)
         findings.extend(check_curie_value(
-            curie, class_name, slot_name, block_idx, rel_path
+            curie, class_name, slot_name, block_idx, rel_path, prefixes
         ))
     return findings
 
@@ -596,14 +617,14 @@ def validate_class_derivations(
             value = slot_def.get("value")
             if isinstance(value, str):
                 findings.extend(check_curie_value(
-                    value, class_name, slot_name, block_idx, rel_path
+                    value, class_name, slot_name, block_idx, rel_path, ctx.prefixes or None
                 ))
 
             # -- Check 2.6: CURIEs in expr --
             expr = slot_def.get("expr")
             if isinstance(expr, str):
                 findings.extend(check_curies_in_expr(
-                    expr, class_name, slot_name, block_idx, rel_path
+                    expr, class_name, slot_name, block_idx, rel_path, ctx.prefixes or None
                 ))
 
             # -- Check 2.12: bare None as a value_mappings target --

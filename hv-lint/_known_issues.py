@@ -90,8 +90,9 @@ PRUNE_REMOVED_CMD = ("HVLINT_PRUNE=1 HVLINT_PRUNE_REMOVED=1 python hv-lint/run_a
 # (3.9, 3.15), a visit label visit.yaml does not define (5.2), and an id expression the visit
 # checks could not read (5.12). The baseline update never ADDS a row for one: accepting such a
 # finding is a known_issues.yaml entry that names its issue. Existing rows stay (#885 gate v2).
-# The severities the ratchet holds to the baseline.
-RATCHETED = ("WARNING",)
+# The severities the ratchet holds to the baseline. HIGH (2.6 CURIE format) neither fails at
+# --fail-on error nor is an ERROR, so without the ratchet a new one would pass silently.
+RATCHETED = ("WARNING", "HIGH")
 NO_BASELINE_RULES = frozenset({"1.0", "1.8", "2.0", "2.4", "3.9", "3.15", "5.2", "5.12"})
 
 
@@ -415,7 +416,7 @@ def write_baseline(rows: dict[str, dict[str, list[str]]], path: Path | str | Non
         if by_c:
             clean[r] = by_c
     out = {
-        "about": "Every WARNING finding, by rule and cohort, as 'file | block | message' "
+        "about": "Every WARNING and HIGH finding, by rule and cohort, as 'file | block | message' "
                  "(hv-lint/_known_issues.py). CI fails on a fingerprint not listed here and on "
                  f"a listed one that no finding has. Drop fixed rows: {PRUNE_CMD}. "
                  f"Accept new ones (a reviewed change): {UPDATE_CMD}",
@@ -597,11 +598,13 @@ def finalize(
 
     # WARNING ratchet: exact fingerprint sets per rule and cohort.
     current: dict[str, dict[str, set[str]]] = {}
+    severity_of: dict[tuple[str, str, str], str] = {}
     for f in findings:
         k = keys.get(id(f))
         if k is None or f.severity not in RATCHETED or k.rule not in checks:
             continue
         current.setdefault(k.rule, {}).setdefault(str(cohort_of(k.file)), set()).add(k.text())
+        severity_of[(k.rule, str(cohort_of(k.file)), k.text())] = f.severity
     base = load_baseline() if baseline is None else baseline
 
     def row_in_scope(rule: str, text: str) -> bool:
@@ -695,13 +698,14 @@ def finalize(
         for r, c, t in sorted(unbaselinable):
             extra.append(make_finding(
                 "hv-lint/warning_baseline.json", -1, "RATCHET", "ERROR",
-                f"refusing to add a baseline row for new WARNING [{r}] in {c}: {t}. "
+                f"refusing to add a baseline row for new {severity_of[(r, c, t)]} [{r}] in "
+                f"{c}: {t}. "
                 + known_issue_instead(r, t)))
     else:
         for r, c, t in new:
             extra.append(make_finding(
                 "hv-lint/warning_baseline.json", -1, "RATCHET", "ERROR",
-                f"new WARNING [{r}] in {c}: {t}. " + (
+                f"new {severity_of[(r, c, t)]} [{r}] in {c}: {t}. " + (
                     known_issue_instead(r, t) if (r, c, t) in unbaselinable else
                     f"Fix it; or, if it is accepted, add it to the baseline in this PR "
                     f"({UPDATE_CMD}) and say why")))

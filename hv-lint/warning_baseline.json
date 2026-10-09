@@ -1,5 +1,5 @@
 {
- "about": "Every WARNING finding, by rule and cohort, as 'file | block | message' (hv-lint/_known_issues.py). CI fails on a fingerprint not listed here and on a listed one that no finding has. Drop fixed rows: HVLINT_PRUNE=1 python hv-lint/run_all.py --cohort all. Accept new ones (a reviewed change): HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all",
+ "about": "Every WARNING and HIGH finding, by rule and cohort, as 'file | block | message' (hv-lint/_known_issues.py). CI fails on a fingerprint not listed here and on a listed one that no finding has. Drop fixed rows: HVLINT_PRUNE=1 python hv-lint/run_all.py --cohort all. Accept new ones (a reviewed change): HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all",
  "warnings": {
   "1.8": {
    "COPDGene": [

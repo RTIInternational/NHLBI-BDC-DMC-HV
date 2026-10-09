@@ -165,7 +165,7 @@ A matching finding is reported at INFO with `[known issue #N, status]` appended.
 
 - **stale entry** (`KI`): an entry for a rule the component ran, on a file it scanned (or a cohort it ran in full, for a cohort-level entry), that matches nothing -- the issue is fixed;
 - **removed entry or row** (`KI` / `RATCHET`): one that matches nothing because its file no longer exists (deleted or renamed), or because no block of its file still has its class and table (deleted, or moved to another file). That is lost data, not a fix, so it is reported as "file removed" / "block removed" and a plain prune refuses it. A block whose value phvs changed on the same table (a 3.5 fix) counts as fixed; deleting one of several blocks on one table still reads as fixed, which only a base-vs-head inventory (gate review B2) can see;
-- **new WARNING** (`RATCHET`): a WARNING fingerprint that `hv-lint/warning_baseline.json` does not list. The ratchet compares fingerprints, so fixing one WARNING and adding another of the same rule fails;
+- **new WARNING** (`RATCHET`): a WARNING or HIGH fingerprint that `hv-lint/warning_baseline.json` does not list. The ratchet compares fingerprints, so fixing one WARNING and adding another of the same rule fails;
 - **fixed WARNING** (`RATCHET`): a baseline fingerprint, in scope, that no finding has.
 
 Fingerprints are unique per run (two findings with one fingerprint get ` (#2)`), so an entry matches at most one finding; a duplicate entry is rejected when the file is read.
@@ -191,11 +191,11 @@ where the source and mappings come from `condition_status` / `exposure_status` /
 |----------|---------|----------------------|
 | `CRITICAL` | Silently broken transform -- key ignored by pipeline | Fails |
 | `ERROR` | Wrong data in output (typo, bad reference) | Fails (default `--fail-on`) |
-| `HIGH` | Likely wrong but may be intentional (CURIE format) | Does not fail by default |
+| `HIGH` | Likely wrong but may be intentional (CURIE format) | Does not fail by itself; ratcheted like WARNING, so a new one fails |
 | `WARNING` | Suspicious, needs human review | Does not fail |
 | `INFO` | Advisory, expected patterns | Does not fail |
 
-The `--fail-on` flag controls the threshold. CI runs every phase at `--fail-on error`; known findings are listed in `hv-lint/known_issues.yaml` (A7), and the WARNING count per rule and cohort is ratcheted against `hv-lint/warning_baseline.json`.
+The `--fail-on` flag controls the threshold. CI runs every phase at `--fail-on error`; known findings are listed in `hv-lint/known_issues.yaml` (A7), and every WARNING and HIGH fingerprint is ratcheted against `hv-lint/warning_baseline.json`.
 
 ### A10: CURIE Validation Does Not Check Ontology Existence
 
@@ -382,15 +382,16 @@ Validate all ontology reference values matching `PREFIX:IDENTIFIER` against per-
   | Prefix | Regex Pattern | Description |
   |--------|--------------|-------------|
   | `OMOP:` | `^\d{4,9}$` | Numeric, 4-9 digits |
-  | `RxCUI:` | `^\d+$` | Numeric only |
-  | `OBA:` | `^\d{7}$` | Exactly 7 digits |
+  | `RxCUI:` | `^\d{3,8}$` | Numeric, 3-8 digits |
+  | `OBA:` | `^(\d{7}\|VT\d{7})$` | 7 digits, or VT followed by 7 digits |
   | `MONDO:` | `^\d{7}$` | Exactly 7 digits |
   | `HP:` | `^\d{7}$` | Exactly 7 digits |
   | `NCIT:` | `^C\d+$` | C followed by digits |
   | `LOINC:` | `^\d+-\d$` | Digits-dash-digit |
 
 - **Additional checks**: Extra whitespace in CURIE, space after colon, known-bad `OMOP:380035630` (common ethnicity typo)
-- **Severity**: HIGH (format only -- see A10)
+- **Unknown prefix (ERROR)**: a prefix the pinned BDC-HM schema's `prefixes:` map does not declare, and that is not in `HV_EXTRA_PREFIXES` (the drug vocabularies of `drug_concept` -- ATC, RxCUI, NDFRT, VANDF, MeSH -- plus NCBITaxon, which the schema declares as lower-case `ncbitaxon`, and LOINC). `MOND:0005015` is an ERROR. On main 2a28934a + #885 no value has an undeclared prefix.
+- **Severity**: HIGH for a format problem (see A10). HIGH does not fail at `--fail-on error`, but it is ratcheted like WARNING (A7): a HIGH fingerprint not in `warning_baseline.json` fails. The tree has no 2.6 HIGH finding, so none is baselined.
 
 ### 2.7 Enum / Value Set Membership
 

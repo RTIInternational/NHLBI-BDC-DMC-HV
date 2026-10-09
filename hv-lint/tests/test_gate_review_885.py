@@ -1,0 +1,90 @@
+"""The independent gate review (2026-10-08): each test fails if its guard is removed.
+
+B6: HIGH findings are ratcheted, and an undeclared CURIE prefix is an ERROR. The component main()
+paths for B3 and B4 are in test_known_issues_e2e.py.
+
+Run: python -m pytest hv-lint/tests/test_gate_review_885.py
+"""
+
+import sys
+from dataclasses import dataclass
+from pathlib import Path
+
+import pytest
+import yaml
+
+HVLINT = Path(__file__).resolve().parent.parent
+for sub in ("", "phase-2"):
+    sys.path.insert(0, str(HVLINT / sub))
+import _known_issues as K  # noqa: E402
+import validate_model_conformance as vmc  # noqa: E402
+
+
+@dataclass
+class F:
+    file: str
+    block: int
+    check: str
+    severity: str
+    message: str
+
+
+@pytest.fixture
+def tree(tmp_path, monkeypatch):
+    d = tmp_path / "priority_variables_transform" / "CHS-ingest"
+    d.mkdir(parents=True)
+    spec = d / "diabetes.yaml"
+    spec.write_text(yaml.safe_dump([{"class_derivations": {"Condition": {
+        "populated_from": "pht001452", "slot_derivations": {
+            "condition_concept": {"value": "MONDO:005015"}}}}}]), encoding="utf-8")
+    ki, bl = tmp_path / "ki.yaml", tmp_path / "bl.json"
+    ki.write_text("", encoding="utf-8")
+    monkeypatch.setenv("HVLINT_KNOWN_ISSUES", str(ki))
+    monkeypatch.setenv("HVLINT_WARNING_BASELINE", str(bl))
+    for v in ("HVLINT_PRUNE", "HVLINT_UPDATE_BASELINE", "HVLINT_RUN_ALL",
+              "HVLINT_PRUNE_REMOVED"):
+        monkeypatch.delenv(v, raising=False)
+    return spec
+
+
+# -- B6: HIGH is ratcheted -----------------------------------------------------------------------
+
+def test_a_new_high_finding_fails_and_an_accepted_one_passes(tree, monkeypatch):
+    """`MONDO:005015` (6 digits) is a HIGH 2.6 finding. It used to print and then PASS."""
+    high = F(str(tree), 0, "2.6", "HIGH", "Invalid MONDO identifier '005015' (expected exactly "
+                                          "7 digits): 'MONDO:005015' on Condition.condition_concept")
+    extra = K.finalize([high], checks={"2.6"}, scanned_files=[tree], make_finding=F)
+    assert [x.severity for x in extra] == ["ERROR"]
+    assert extra[0].message.startswith("new HIGH [2.6] in CHS")
+    monkeypatch.setenv(K.RUN_ALL_ENV, "1")
+    assert K.finalize([high], checks={"2.6"}, scanned_files=[tree], make_finding=F,
+                      mode="update") == []
+    assert K.finalize([high], checks={"2.6"}, scanned_files=[tree], make_finding=F) == []
+
+
+# -- B6: an undeclared CURIE prefix --------------------------------------------------------------
+
+PREFIXES = frozenset({"MONDO", "OMOP", "HP"}) | vmc.HV_EXTRA_PREFIXES
+
+
+def _concept_block(value: str) -> dict:
+    return {"Condition": {"populated_from": "pht001452", "slot_derivations": {
+        "condition_concept": {"value": value},
+        "condition_status": {"expr": f"case(({{phv00100001}} == 1, '{value}'))"}}}}
+
+
+def test_an_undeclared_prefix_is_an_error_in_value_and_expr():
+    ctx = vmc.ValidationContext(prefixes=PREFIXES)
+    found = [f for f in vmc.validate_class_derivations(_concept_block("MOND:0005015"), 0,
+                                                       "CHS-ingest/x.yaml", ctx)
+             if f.check == "2.6"]
+    assert len(found) == 2 and {f.severity for f in found} == {"ERROR"}
+    assert all("Unknown CURIE prefix 'MOND'" in f.message for f in found)
+
+
+@pytest.mark.parametrize("value", ["MONDO:0005015", "ATC:C02", "RxCUI:5470", "NCBITaxon:9606"])
+def test_a_declared_or_hv_prefix_passes(value):
+    ctx = vmc.ValidationContext(prefixes=PREFIXES)
+    assert [f for f in vmc.validate_class_derivations(_concept_block(value), 0,
+                                                      "CHS-ingest/x.yaml", ctx)
+            if f.check == "2.6"] == []
