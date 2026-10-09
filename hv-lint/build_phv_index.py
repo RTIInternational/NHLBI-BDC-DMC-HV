@@ -31,6 +31,7 @@ import argparse
 import datetime as _dt
 import gzip
 import json
+import shutil
 import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -40,18 +41,23 @@ import _cohorts  # noqa: E402
 
 
 def parse_data_dict_xml(path: Path) -> dict[str, str]:
-    """Parse one FTP ``*.data_dict.xml`` and return {base_phv: base_pht}."""
+    """Parse one FTP ``*.data_dict.xml`` and return {base_phv: base_pht}.
+
+    Raises :class:`_cohorts.DataDictUnreadable` when the file cannot be read or parsed, or its
+    root names no ``pht`` table: returning ``{}`` would drop the table from an index whose
+    manifest digest then vouches for it.
+    """
     try:
         tree = ET.parse(path)
-    except ET.ParseError as exc:
-        print(f"  WARN: XML parse error in {path.name}: {exc}", file=sys.stderr)
-        return {}
+    except (ET.ParseError, OSError) as exc:
+        raise _cohorts.DataDictUnreadable(f"{path}: XML parse error: {exc}") from exc
 
     root = tree.getroot()
     table_id_raw = root.get("id", "")
     base_pht = table_id_raw.split(".")[0] if table_id_raw else ""
     if not base_pht.startswith("pht"):
-        return {}
+        raise _cohorts.DataDictUnreadable(
+            f"{path}: root element names no pht table (id={table_id_raw!r})")
 
     mapping: dict[str, str] = {}
     for var_elem in root.iter("variable"):
@@ -220,7 +226,7 @@ def main() -> int:
 
     output = Path(args.output_dir)
     output.mkdir(parents=True, exist_ok=True)
-    # Checked BEFORE any index is written: the build loop writes straight into `output`, and an
+    # Checked BEFORE any index is published: indexes land before the manifest does, and an
     # index left there by a run whose manifest write is then refused has no recorded release.
     try:
         _cohorts.read_manifest_for_update(output)
@@ -234,15 +240,31 @@ def main() -> int:
 
     total_phvs = 0
     manifest: dict[str, dict] = {}
-    for cohort_dir in sorted(source.iterdir()):
-        if not cohort_dir.is_dir():
-            continue
-        entry = build_one(cohort_dir, output, source)
-        if entry is None:
-            continue
-        total_phvs += entry["phvs"]
-        if entry.get("study"):
-            manifest[f"{entry['study']}.{entry['study_version']}"] = entry
+    # Listed BEFORE the scratch directory exists, and dot-directories skipped: `source` and
+    # `output` are the same directory by default, so the scratch dir would otherwise be built.
+    cohort_dirs = [d for d in sorted(source.iterdir())
+                   if d.is_dir() and not d.name.startswith(".")]
+    # Every index is built into scratch and published only when ALL cohorts built: an
+    # unreadable data dictionary aborts the run with the cache and manifest untouched.
+    scratch = output / ".build-phv-index"
+    shutil.rmtree(scratch, ignore_errors=True)
+    scratch.mkdir()
+    try:
+        for cohort_dir in cohort_dirs:
+            entry = build_one(cohort_dir, scratch, source)
+            if entry is None:
+                continue
+            total_phvs += entry["phvs"]
+            if entry.get("study"):
+                manifest[f"{entry['study']}.{entry['study_version']}"] = entry
+        for built in sorted(scratch.glob("*.json.gz")):
+            built.replace(output / built.name)
+    except _cohorts.DataDictUnreadable as exc:
+        print(f"ERROR: {exc}\nPublishing nothing: no index or {_cohorts.MANIFEST_NAME} "
+              f"entry was written.", file=sys.stderr)
+        return 1
+    finally:
+        shutil.rmtree(scratch, ignore_errors=True)
 
     print(f"\nTotal: {total_phvs:,} PHVs indexed")
     if manifest:

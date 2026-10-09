@@ -394,6 +394,15 @@ class ManifestUnreadable(RuntimeError):
     """``manifest.json`` exists but is not a manifest, so it cannot be merged into safely."""
 
 
+class DataDictUnreadable(RuntimeError):
+    """A ``*.data_dict.xml`` selected for a build could not be parsed as a dbGaP data table.
+
+    Builders raise it instead of skipping the file: a skipped table yields an index that lacks
+    it while the manifest records a valid digest for that thinner index, so the loss is
+    invisible to every consumer. Callers abort the build and publish nothing.
+    """
+
+
 def read_manifest_for_update(cache_dir: Path | str) -> dict[str, dict]:
     """The manifest's ``entries`` for a WRITER: ``{}`` only when the file is absent.
 
