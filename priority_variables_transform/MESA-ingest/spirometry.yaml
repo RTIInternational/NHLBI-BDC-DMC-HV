@@ -82,9 +82,9 @@
                       populated_from: pht001112
                       slot_derivations:
                         value_decimal:
-                          expr: '{phv00083482} * 100'
+                          populated_from: phv00083482
                         unit:
-                          value: '%'
+                          value: '{ratio}'
                           range: string
           - MeasurementObservation:
               populated_from: pht001112
@@ -92,7 +92,7 @@
                 associated_participant:
                   expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00083440}) + ":MESA")'
                 observation_type:
-                  value: OMOP:3024594
+                  value: OMOP:4196583
                   range: string
                 age_at_observation:
                   expr: '{phv00083452} * 365'
@@ -196,9 +196,9 @@
                       populated_from: pht001114
                       slot_derivations:
                         value_decimal:
-                          expr: '{phv00083717} * 100'
+                          populated_from: phv00083717
                         unit:
-                          value: '%'
+                          value: '{ratio}'
                           range: string
           - MeasurementObservation:
               populated_from: pht001114
@@ -258,7 +258,7 @@
                 associated_participant:
                   expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00083675}) + ":MESA")'
                 observation_type:
-                  value: OMOP:3024594
+                  value: OMOP:4196583
                   range: string
                 age_at_observation:
                   expr: '{phv00083687} * 365'
@@ -358,9 +358,9 @@
                       populated_from: pht001122
                       slot_derivations:
                         value_decimal:
-                          expr: '{phv00087708} * 100'
+                          populated_from: phv00087708
                         unit:
-                          value: '%'
+                          value: '{ratio}'
                           range: string
           - MeasurementObservation:
               populated_from: pht001122
@@ -380,9 +380,9 @@
                       populated_from: pht001122
                       slot_derivations:
                         value_decimal:
-                          populated_from: phv00087833
+                          expr: '{phv00087833} / 100'
                         unit:
-                          value: '%'
+                          value: '{ratio}'
                           range: string
           - MeasurementObservation:
               populated_from: pht001122
