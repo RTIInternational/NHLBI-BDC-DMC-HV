@@ -254,7 +254,8 @@ def main() -> int:
         # removal must read as a removal in the PR, never as a fix.
         if removed and not refusals:
             summary.write(f"\nREMOVED, not fixed ({_known_issues.PRUNE_REMOVED_ENV}=1): "
-                          f"{len(removed)} entry/row(s) whose file or block no longer exists:\n")
+                          f"{len(removed)} entry/row(s) whose file or block no longer exists, "
+                          f"appended to hv-lint/removed.yaml:\n")
             for d in removed:
                 summary.write(f"  - {d}\n")
         if refusals:

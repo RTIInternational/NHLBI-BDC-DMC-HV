@@ -643,6 +643,10 @@ def test_deleting_a_spec_with_an_entry_does_not_go_green_through_plain_prune(tmp
     assert acked.returncode == 0, acked.stdout[-2000:]
     assert "REMOVED, not fixed (HVLINT_PRUNE_REMOVED=1): 1 entry/row(s)" in acked.stdout
     assert "FHS-ingest/afib.yaml" in acked.stdout.split("REMOVED, not fixed")[1]
+    logged = yaml.safe_load(t.ki.with_name("removed.yaml").read_text(encoding="utf-8"))
+    assert [(x["rule"], x["file"], x["issue"]) for x in logged] == [
+        ("5.11", "FHS-ingest/afib.yaml", 882)]
+    assert "appended to hv-lint/removed.yaml" in acked.stdout
     assert K.load_entries(t.ki) == [] and run().returncode == 0
 
 

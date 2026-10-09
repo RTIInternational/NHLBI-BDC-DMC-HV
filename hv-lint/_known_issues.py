@@ -29,7 +29,8 @@ is rejected when the file is read. What keeps the list honest, each an ERROR:
   (or a cohort it ran in full), that matched nothing -- the defect was fixed, so the entry goes;
 * **removed entry/row** (``KI`` / ``RATCHET``): one that matches nothing because its file or its
   block no longer exists. That is lost data, not a fix: :data:`PRUNE_CMD` refuses it, and only
-  :data:`PRUNE_REMOVED_CMD` removes it, naming each one in the run log;
+  :data:`PRUNE_REMOVED_CMD` removes it, naming each one in the run log and appending it to
+  ``hv-lint/removed.yaml``, so the PR diff shows the removal;
 * **new WARNING** (``RATCHET``): a WARNING fingerprint that ``hv-lint/warning_baseline.json``
   does not list. Fixing one WARNING and adding another fails: the ratchet compares fingerprints,
   not counts;
@@ -52,6 +53,7 @@ Entry fields: ``rule``, ``file``, ``block``, ``message`` (the fingerprint), ``is
 
 from __future__ import annotations
 
+import datetime
 import hashlib
 import json
 import os
@@ -121,6 +123,34 @@ def known_issues_path() -> Path:
 
 def baseline_path() -> Path:
     return Path(os.environ.get("HVLINT_WARNING_BASELINE") or BASELINE_FILE)
+
+
+def removed_path() -> Path:
+    """``removed.yaml`` beside ``known_issues.yaml`` (so a test's tmp list gets a tmp log)."""
+    return known_issues_path().with_name("removed.yaml")
+
+
+REMOVED_HEADER = (
+    "# Known-issue entries and WARNING baseline rows pruned with HVLINT_PRUNE_REMOVED=1: their\n"
+    "# file or block was REMOVED, not fixed. Appended by the prune, one line each, never edited;\n"
+    "# CI lists the lines a PR adds in its job summary. `issue` is the entry's issue (null for a\n"
+    "# baseline row); `why` is what the lint saw.\n")
+
+
+def append_removed(records: list[dict], path: Path | str | None = None) -> None:
+    """Append one ``removed.yaml`` line per acknowledged removal. Nothing else reads the file:
+    it is the PR's record that a deletion was a deletion."""
+    if not records:
+        return
+    p = Path(path) if path else removed_path()
+    text = p.read_text(encoding="utf-8") if p.is_file() else REMOVED_HEADER
+    if text and not text.endswith("\n"):
+        text += "\n"
+    for r in records:
+        text += ("- {" + ", ".join(f"{k}: {json.dumps(r.get(k))}" for k in
+                                   ("rule", "file", "block", "message", "issue", "date", "why"))
+                 + "}\n")
+    p.write_text(text, encoding="utf-8")
 
 
 def cohort_relative(path) -> str | None:
@@ -477,15 +507,19 @@ def _stage(record: dict) -> bool:
 
 
 def _prune_or_stage(stale: list[Entry], gone: list[tuple[str, str, str]],
-                    base: dict[str, dict[str, list[str]]], removed: Iterable[str] = ()) -> bool:
+                    base: dict[str, dict[str, list[str]]], removed: Iterable[str] = (),
+                    removed_records: Iterable[dict] = ()) -> bool:
     """Stage the removals for run_all.py (True), or, with no stage, write them now (False).
 
     ``removed`` describes the entries and rows whose file or block no longer exists; run_all.py
-    prints each in its summary, so the PR log names every one."""
+    prints each in its summary, and ``removed_records`` go to ``removed.yaml``, so the PR diff
+    names every one."""
     record = {"entries": [list(astuple(e.key)) for e in stale],
-              "rows": [list(g) for g in gone], "removed": list(removed)}
+              "rows": [list(g) for g in gone], "removed": list(removed),
+              "removed_records": list(removed_records)}
     if _stage(record):
         return True
+    append_removed(record["removed_records"])
     if stale:
         prune_entries(stale)
     if gone:
@@ -518,6 +552,7 @@ def apply_staged_prune(stage: Path | str) -> tuple[int, int, list[str]]:
         return 0, 0, refusals
     keys = {Key(*k) for r in records for k in r.get("entries", [])}
     rows = {tuple(g) for r in records for g in r.get("rows", [])}
+    append_removed([x for r in records for x in r.get("removed_records", [])])
     stale = [e for e in load_entries() if e.key in keys]
     if stale:
         prune_entries(stale)
@@ -675,7 +710,15 @@ def finalize(
                     for e in stale if e.key in stale_removed]
                    + [f"baseline row [{g[0]}] {g[2]} -- {gone_removed[g]}"
                       for g in gone if g in gone_removed])
-        staged = _prune_or_stage(stale, gone, base, removed)
+        today = datetime.date.today().isoformat()
+        records = ([{"rule": e.rule, "file": e.file, "block": e.block, "message": e.message,
+                     "issue": e.issue, "date": today, "why": stale_removed[e.key]}
+                    for e in stale if e.key in stale_removed]
+                   + [{"rule": g[0], **dict(zip(("file", "block", "message"),
+                                                (g[2].split(" | ", 2) + ["", ""])[:3])),
+                       "issue": None, "date": today, "why": gone_removed[g]}
+                      for g in gone if g in gone_removed])
+        staged = _prune_or_stage(stale, gone, base, removed, records)
         verb = "staged for prune" if staged else "pruned"
         for e in stale:
             if e.key in stale_removed:

@@ -433,6 +433,11 @@ def test_a_deleted_files_row_and_entry_are_removed_not_fixed(tree, monkeypatch):
     pruned = _run([], tree, mode="prune")
     assert len([x for x in pruned if "REMOVED" in x.message and x.severity == "INFO"]) == 2
     assert K.load_entries() == [] and K.load_baseline().get("5.11", {}).get("FHS", []) == []
+    # Follow-up review F4: the acknowledged removal lands in the repo, one line each.
+    logged = yaml.safe_load(K.removed_path().read_text(encoding="utf-8"))
+    assert sorted(((x["rule"], x["file"], x["issue"]) for x in logged), key=str) == [
+        ("5.11", "FHS-ingest/gone.yaml", 882), ("5.11", "FHS-ingest/gone.yaml", None)]
+    assert all(x["date"] and "file removed" in x["why"] for x in logged)
     monkeypatch.delenv(K.PRUNE_REMOVED_ENV)
     # a --file run still leaves another file's rows alone
     _baseline(_at(tree["other"], 0, "5.11", "WARNING", "w"))
