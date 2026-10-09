@@ -9,7 +9,7 @@ How to run HV-Lint locally against your branch before submitting a PR.
 | Requirement | Details |
 |---|---|
 | Python 3.12 or 3.13 | 3.14 works but Phase 2 uses frozen fallback (see Warnings below) |
-| The CI versions | `pyyaml==6.0.3 yamllint==1.38.0 linkml-runtime==1.12.0 linkml-map==0.5.3` (`hv-lint/requirements-lint.in`; CI installs the hashed lock, Reference A12) |
+| The CI versions | `pyyaml==6.0.3 yamllint==1.38.0 linkml-runtime==1.12.0 linkml-map==0.5.3` plus `pytest==9.1.1` (`hv-lint/requirements-lint.in`; CI and the setup below install the hashed lock, Reference A12) |
 | dbGaP indexes present | `hv-lint/dbgap-cache/*.json.gz` (committed -- no action needed unless updating) |
 
 > **Tip**: Use the HV repo's existing venv if one exists: `.venv/Scripts/Activate.ps1` (Windows) or `source .venv/bin/activate` (Linux/Mac).
@@ -19,7 +19,9 @@ How to run HV-Lint locally against your branch before submitting a PR.
 ## One-time setup: create venv and install deps
     python -m venv .venv
     .venv\Scripts\Activate.ps1
-    pip install -r hv-lint/requirements-lint.in
+    pip install --require-hashes -r hv-lint/requirements-lint.txt
+
+The lock is universal (Reference A12): the same hashed install CI runs works on Windows, Linux and macOS, pytest included.
 
 ---
 

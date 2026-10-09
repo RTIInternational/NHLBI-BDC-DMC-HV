@@ -60,11 +60,10 @@ jobs:
         with:
           python-version: "3.12"
 
-      # pyyaml is the only third-party import these tests reach: _cohorts is stdlib-only,
-      # and the phase-1, phase-3 and phase-5 modules they exercise import yaml and nothing
-      # else. The lint job's linkml-runtime is not needed here.
+      # The lint job's hashed lock, pytest included: the end-to-end tests drive Phase 2's main,
+      # which needs linkml-runtime and linkml-map, and skip without them.
       - name: Install dependencies
-        run: pip install pytest pyyaml
+        run: pip install --require-hashes -r hv-lint/requirements-lint.txt
 
       - name: Run hv-lint unit tests
         run: python -m pytest -q hv-lint/tests/
@@ -83,7 +82,7 @@ jobs:
           python-version: "3.12"
 
       # Every package is pinned with its hashes (hv-lint/requirements-lint.txt, compiled from
-      # requirements-lint.in for linux / Python 3.12): the ratchet compares findings, so a new
+      # requirements-lint.in, universal, for Python 3.12): the ratchet compares findings, so a new
       # yamllint, linkml-runtime or PyYAML release must not change them under an unrelated PR.
       # linkml-map is the model Phase 2's 2.1 reads its valid keys from; without it Phase 2
       # fails in CI rather than fall back to the frozen v0.3.9 key sets (Assumption A2). 0.5.3
