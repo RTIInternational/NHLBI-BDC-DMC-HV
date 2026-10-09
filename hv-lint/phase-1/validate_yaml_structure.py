@@ -322,7 +322,7 @@ def check_value_mapping_key_types(block: dict, block_idx: int, rel_path: str) ->
                         if not isinstance(key, str):
                             findings.append(Finding(
                                 rel_path, block_idx, "1.15", "ERROR",
-                                f"value_mappings key {key!r} on {prefix}{class_name}.{slot_name} "
+                                f"value_mappings key '{key}' on {prefix}{class_name}.{slot_name} "
                                 f"parses as {type(key).__name__}, not a string -- linkml-map "
                                 f"matches str(source value) and never finds it; quote the key"
                             ))

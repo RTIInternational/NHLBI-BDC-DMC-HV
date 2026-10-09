@@ -234,3 +234,13 @@ def test_a_nested_value_mappings_target_is_checked():
     found = [f for f in vmc.validate_class_derivations(cd, 0, "CHS-ingest/x.yaml", ctx)
              if f.check == "2.6"]
     assert [f.message.split(":")[0] for f in found] == ["CURIE has space after colon"]
+
+
+def test_a_1_15_fingerprint_names_its_key():
+    """Follow-up F7: `{key!r}` of an int printed it bare, so number masking collapsed `0:` and
+    `1:` into one fingerprint and an entry could not say which key it accepts."""
+    sys.path.insert(0, str(HVLINT / "phase-1"))
+    import validate_yaml_structure as vys
+    block = yaml.safe_load(_status("            0: ABSENT\n            1: PRESENT\n"))[0]
+    keys = {K.message_key(f.message) for f in vys.check_value_mapping_key_types(block, 0, "x")}
+    assert len(keys) == 2 and any("key '0'" in k for k in keys), keys
