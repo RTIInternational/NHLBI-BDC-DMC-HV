@@ -81,17 +81,19 @@ Two of the six were not curator-directed — they came from machine-checking eve
 live code against Table S1 — and those are the ones worth a second opinion. The
 doc opens with what to read and what to skip; the three questions are at the
 bottom. Short version: does the `vege_serving` servings-intake reading hold, was
-`cig_smok`'s old code ever intentional, and should FHS's fasting lipids be
-distinct S4 rows or rolled into HDL/Triglycerides?
+`cig_smok`'s old code ever intentional (superseded: now open in #849), and
+should FHS's fasting lipids be distinct S4 rows or rolled into
+HDL/Triglycerides?
 
 **For the schema owner — specs and BDCHM enums disagree.** Raised in
 [`history/SPEC_CODE_CORRECTIONS_20260803.md`](history/SPEC_CODE_CORRECTIONS_20260803.md)
 §"Open items"; unresolved:
 
-- `cig_smok` now uses the curator-directed `OMOP:35811013`, but
-  `MeasurementObservationTypeEnum` binds `SMOKING_STATUS` to the old
-  `OMOP:4282779`. One of them has to move. Same shape, less urgent, for
-  `vege_serving` `OMOP:37311566` and Basophils `OMOP:3006315`.
+- `cig_smok`: the curator-directed `OMOP:35811013` was **not** merged.
+  `main` uses the enum's `OMOP:4282779` in all 11 cohorts (#849, `c409e828`),
+  and the remaining choice between that and `OMOP:43054909` is open in #849.
+  The same shape, less urgent, applies to `vege_serving` `OMOP:37311566` and
+  Basophils `OMOP:3006315`, which are also not enum values.
 - `edu_lvl` has four different shapes across six cohorts, and neither candidate
   concept code is a permissible `observation_type` value today.
 - `alpha1_antitrypsin` (LTRC) is correctly coded but has no Table S1 row.
@@ -229,7 +231,8 @@ Four things, and that is the whole directory.
   in [`SPEC_SOURCED_S4_DESIGN.md`](SPEC_SOURCED_S4_DESIGN.md).
 - `config/s4_layout.yaml` — canonical cohort columns and template row order.
 - `spec_code_fixes_20260803.tsv` — the six concept-code corrections, in the form
-  handed to the spec owner.
+  handed to the spec owner. Its `cig_smok` row is superseded; the other five
+  landed on `main` in `011d3a04`.
 - `history/` — completed work kept for its reasoning. None of it is required
   reading; consult it when something current looks arbitrary.
   - `S1_LABEL_SOURCE_MIGRATION.md` — the `harmonized_vars.tsv` → Table S1

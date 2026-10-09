@@ -1,5 +1,30 @@
 # Transform spec concept-code corrections (2026-08-03)
 
+> **Status update 2026-10-09: the `cig_smok` change (§1) is superseded and
+> was NOT merged.** The spec edits were removed from this branch, so this
+> document no longer describes a diff that ships with it.
+>
+> - **Five of the six corrections already landed on `main`** in `011d3a04`
+>   (2026-08-28, "Cross-study CURIE consistency update"), with the same codes:
+>   `vege_serving`, `cd40`, `lympho_ct`, `troponin`, and `carotid_imt`. That
+>   commit also removed the `range: string` lines under FHS `troponin.yaml`'s
+>   `observation_type`, and this branch no longer re-adds them.
+> - **`cig_smok` went the other way on `main`.** All 11 cohorts, SPIROMICS
+>   included, use `OMOP:4282779` (checked at `main` `2a28934a`, 2026-10-08).
+>   SPIROMICS moved *off* `OMOP:35811013` in `c409e828` (#849, 2026-10-05),
+>   because `OMOP:4282779` is a permissible `MeasurementObservationTypeEnum`
+>   value and `OMOP:35811013` is not. Merging §1 would have undone that and
+>   left 10 cohorts on `35811013` and SPIROMICS on `4282779`.
+> - **The code choice is still open, in issue #849.** That issue asks for
+>   `OMOP:43054909` (LOINC "Tobacco smoking status"), which is also a
+>   permissible enum value. The candidates are `4282779` (current `main`),
+>   `43054909` (#849), and `35811013` (the 2026-08-03 curator direction
+>   below). Decide there, and change all 11 cohorts together.
+>
+> The rest of this document is kept as written, as the record of the
+> 2026-08-03 reasoning. Where it says the specs "now" use `OMOP:35811013`,
+> read that as the state of this branch on that date, not of `main`.
+
 ## Curators: yes, this is worth reading, and here is the short version
 
 The **code changes** were reviewed and approved. What was never circulated is
@@ -60,6 +85,9 @@ minority of specs disagreed with the rest and with S1. For `vege_serving` the
 detailed below.
 
 ## 1. `cig_smok`: `OMOP:4282779` -> `OMOP:35811013`
+
+> **Superseded, not merged.** See the status update at the top. `main` uses
+> `OMOP:4282779` in all 11 cohorts, and the code choice is open in #849.
 
 98 occurrences across ARIC, CARDIA, CHS, COPDGene, FHS, HCHS, JHS, LTRC, MESA,
 WHI. **SPIROMICS already used `OMOP:35811013`** and needed no change — the other
@@ -212,7 +240,10 @@ BDCHM enum value `CAROTID_IMT`.
 are for the BDCHM schema owner — they are about which values the schema permits,
 not about what a concept means.*
 
-**A. `cig_smok` conflicts with the BDCHM schema.** The curator directed
+**A. `cig_smok` conflicts with the BDCHM schema.** *(Resolved on `main` in
+favour of the schema code `OMOP:4282779` (#849, `c409e828`); the remaining
+`4282779` vs `43054909` choice is open in #849. See the status update at the
+top.)* The curator directed
 `OMOP:35811013`, but `MeasurementObservationTypeEnum` binds
 `SMOKING_STATUS` to the *old* code `OMOP:4282779`. `OMOP:35811013` is not a
 permissible value. The specs and the schema now disagree, and one of them has
@@ -276,14 +307,16 @@ settled or addressed to someone else.
 2. **`cig_smok` -> `OMOP:35811013`** (§1): any cohort where `OMOP:4282779` was
    intentional rather than copied? Note open item A — the code you directed is
    not currently a permissible value in the BDCHM schema, so either the schema
-   moves or this decision is revisited.
+   moves or this decision is revisited. *(Superseded: this question now
+   belongs in #849, which also proposes `OMOP:43054909`.)*
 3. **FHS fasting lipids** ("What was NOT changed"): keep the fasting- and
    specimen-specific codes as distinct Table S4 rows, or roll them up into
    HDL / Triglycerides? Nothing was changed pending this answer.
 
-The full diff is the ground truth and is small — every line a single-token code
-swap:
+The full diff was the ground truth and was small — every line a single-token
+code swap. It is no longer on this branch (see the status update at the top).
+The five corrections that landed can be read in `main`'s own commit:
 
 ```
-git diff origin/main -- priority_variables_transform/
+git show 011d3a04 -- priority_variables_transform/
 ```
