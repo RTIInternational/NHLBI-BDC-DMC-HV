@@ -125,11 +125,41 @@ def test_main_publishes_nothing_over_a_truncated_xml(tmp_path, monkeypatch, caps
         ddict.write_text(TRUNCATED_DATA_DICT, encoding="utf-8")
     else:
         report.write_text(VAR_REPORT[: len(VAR_REPORT) // 2], encoding="utf-8")
-    monkeypatch.setattr(sys, "argv", ["build_phv_stats_index.py", "--cohort", "k",
+    monkeypatch.setattr(sys, "argv", ["build_phv_stats_index.py", "--cohort", "phs000287.v7",
                                       "--source-dir", str(src), "--output-dir", str(out),
                                       "--study-prefix", "phs000287.v7."]
                         + (["--tables"] if tables else []))
     assert bsi.main() == 1
     err = capsys.readouterr().err
     assert "Publishing nothing" in err and ("data_dict" if tables else "var_report") in err
+    assert {p.name: p.read_bytes() for p in out.iterdir()} == prior
+
+
+@pytest.mark.parametrize("tables", [False, True], ids=["stats", "tables"])
+@pytest.mark.parametrize("argv, why", [
+    (["--cohort", "fhs"], "not a release key"),
+    (["--cohort", "phs000287.v7", "--study-prefix", "phs000287.v6."], "does not match"),
+    (["--cohort", "phs000287.v7"], None),  # files carry no release stamp
+], ids=["cohort-name", "other-release", "unstamped"])
+def test_main_publishes_nothing_without_a_single_release(tmp_path, monkeypatch, capsys,
+                                                         tables, argv, why):
+    """A key that is not one release wrote `<key>_stats.json.gz` with no provenance."""
+    src = tmp_path / "src"
+    src.mkdir()
+    stamped = argv[1] != "phs000287.v7" or why is not None
+    stem = "phs000287.v7.pht001474.v1." if stamped else ""
+    (src / f"{stem}p1.YR10.var_report.xml").write_text(VAR_REPORT, encoding="utf-8")
+    (src / f"{stem}YR10.data_dict.xml").write_text(
+        "<data_table><description>Y</description></data_table>", encoding="utf-8")
+    out = tmp_path / "out"
+    out.mkdir()
+    (out / "manifest.json").write_text('{"manifest_version": 1, "entries": {}}',
+                                       encoding="utf-8")
+    prior = {p.name: p.read_bytes() for p in out.iterdir()}
+    monkeypatch.setattr(sys, "argv", ["build_phv_stats_index.py", *argv,
+                                      "--source-dir", str(src), "--output-dir", str(out)]
+                        + (["--tables"] if tables else []))
+    assert bsi.main() == 1
+    if why:
+        assert why in capsys.readouterr().err
     assert {p.name: p.read_bytes() for p in out.iterdir()} == prior

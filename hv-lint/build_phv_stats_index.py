@@ -32,8 +32,8 @@ Usage (the hv-lint cache holds no var_report files, so name the directory that d
 ``update_data.py`` fetches only the data dictionaries, so the var_report
 files come from any staging of the pinned release (the hv_dataqc cache
 fetcher's ``--include-var-reports``, or the AI repo's ``data/dbgap/``).
-Pass ``--study-prefix`` so files from another release in the same
-directory are ignored. ``--cohort`` is the cache key the detail index uses,
+Only files stamped ``<cohort>.`` are read, so files from another release in the
+same directory are ignored. ``--cohort`` is the cache key the detail index uses,
 which is the study release (``phs000287.v7``); the output is named
 ``<key>_stats.json.gz`` next to ``<key>_detail.json.gz``.
 """
@@ -175,6 +175,7 @@ def build_stats_index(
     return len(index)
 
 
+_RELEASE_KEY_RE = re.compile(r"^phs\d{6}\.v\d+$")
 _DATA_DICT_NAME_RE = re.compile(r"^phs\d{6}\.v\d+\.(pht\d{6})\.v\d+\.(.+)\.data_dict\.xml$")
 
 
@@ -244,7 +245,8 @@ def main() -> int:
                    help="Directory of *.var_report.xml (default: "
                         "hv-lint/dbgap-cache/<cohort>/pheno_variable_summaries)")
     p.add_argument("--study-prefix", default=None,
-                   help="Only read files whose name starts with this, e.g. phs000287.v7.")
+                   help="Only read files whose name starts with this, e.g. phs000287.v7. "
+                        "Defaults to '<cohort>.'; any other value is refused.")
     p.add_argument("--output-dir", default=str(CACHE_DIR),
                    help="Output directory (default: hv-lint/dbgap-cache)")
     p.add_argument("--tables", action="store_true",
@@ -252,6 +254,21 @@ def main() -> int:
                         "data_dict filenames) instead of the value-count index")
     args = p.parse_args()
 
+    # The key must name ONE release, and only files stamped with it are read. A cohort name
+    # (`fhs`) wrote `fhs_stats.json.gz` under a manifest entry with no release, which the
+    # release check can never verify -- the same unprovenanced artifact the PHV builders no
+    # longer write. There is no fallback name.
+    if not _RELEASE_KEY_RE.match(args.cohort):
+        print(f"ERROR: --cohort {args.cohort!r} is not a release key (phs######.v#). Publishing "
+              f"nothing: an index keyed by anything else has no release to verify.",
+              file=sys.stderr)
+        return 1
+    prefix = f"{args.cohort}."
+    if args.study_prefix not in (None, prefix):
+        print(f"ERROR: --study-prefix {args.study_prefix!r} does not match --cohort "
+              f"{args.cohort!r}. Publishing nothing: the index would be keyed by one release "
+              f"and built from another.", file=sys.stderr)
+        return 1
     source = (Path(args.source_dir) if args.source_dir
               else CACHE_DIR / args.cohort / "pheno_variable_summaries")
     if not source.is_dir():
@@ -259,7 +276,7 @@ def main() -> int:
         return 1
     builder = build_tables_index if args.tables else build_stats_index
     try:
-        n = builder(args.cohort, source, Path(args.output_dir), study_prefix=args.study_prefix)
+        n = builder(args.cohort, source, Path(args.output_dir), study_prefix=prefix)
     except _cohorts.ManifestUnreadable as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
