@@ -35,12 +35,21 @@ def _fhs_tree(tmp_path):
 
 
 def _clean_block():
-    """afib b0 seeded from shareid and reading its own table: no 5.11 / 3.5 finding."""
+    """afib b0 seeded from shareid: no 5.11 finding. It still reads phv00001339 (another
+    table's variable, a 3.5 the phase-5 tests do not run): a fix keeps the variable it fixes,
+    and a block that stops reading it reads as REMOVED (block_removed_why)."""
     b = copy.deepcopy(E.fixture_block("fhs_afib_b0.yaml"))
     slots = b["class_derivations"]["Condition"]["slot_derivations"]
     for s in ("associated_participant", "associated_visit"):
         slots[s]["expr"] = slots[s]["expr"].replace("phv00001558", "phv00001559")
-    slots["condition_status"]["populated_from"] = "phv00001560"
+    return b
+
+
+def _other_block():
+    """A clean block of the same table reading its own variable: a different identity."""
+    b = _clean_block()
+    b["class_derivations"]["Condition"]["slot_derivations"]["condition_status"][
+        "populated_from"] = "phv00001560"
     return b
 
 
@@ -60,7 +69,7 @@ def test_phase5_known_issue_lifecycle(tmp_path):
     assert E.phase5(t).returncode == 1
     t.ki.write_text(lines[0] + "\n", encoding="utf-8")
 
-    t.write("afib.yaml", [_clean_block(), E.fixture_block("fhs_afib_b0.yaml")])
+    t.write("afib.yaml", [_other_block(), E.fixture_block("fhs_afib_b0.yaml")])
     shifted = E.phase5(t)                                       # block 0 -> 1: still listed
     assert shifted.returncode == 0, shifted.stdout
 

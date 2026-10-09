@@ -258,6 +258,7 @@ class _Identities:
     def __init__(self, scanned_abs: dict[str, Path]):
         self._abs = scanned_abs
         self._cache: dict[str, list[str] | None] = {}
+        self._phvs: dict[str, set[str] | None] = {}
 
     def get(self, rel: str, index) -> str:
         if rel.endswith("/"):
@@ -269,19 +270,57 @@ class _Identities:
             return f"index:{index}"
         return ids[index]
 
+    def _load(self, rel: str) -> None:
+        if rel in self._cache:
+            return
+        self._cache[rel] = None
+        self._phvs[rel] = None
+        p = self._abs.get(rel)
+        if p is None:
+            return
+        try:
+            data = yaml.load(Path(p).read_text(encoding="utf-8"), Loader=_Loader)
+        except (OSError, UnicodeDecodeError, yaml.YAMLError):
+            data = None
+        if data is not None:
+            blocks = data if isinstance(data, list) else [data]
+            self._cache[rel] = file_identities(blocks)
+            self._phvs[rel] = value_phvs([b.get("class_derivations") for b in blocks
+                                          if isinstance(b, dict)])
+
     def all(self, rel: str) -> list[str] | None:
         """Every block identity of a scanned file, or None when it was not scanned or parsed."""
-        if rel not in self._cache:
-            self._cache[rel] = None
-            p = self._abs.get(rel)
-            if p is not None:
-                try:
-                    data = yaml.load(Path(p).read_text(encoding="utf-8"), Loader=_Loader)
-                except (OSError, UnicodeDecodeError, yaml.YAMLError):
-                    data = None
-                if data is not None:
-                    self._cache[rel] = file_identities(data if isinstance(data, list) else [data])
+        self._load(rel)
         return self._cache[rel]
+
+    def phvs(self, rel: str) -> set[str] | None:
+        """The value phvs every block of a scanned file reads, or None (not scanned/parsed)."""
+        self._load(rel)
+        return self._phvs[rel]
+
+
+def block_removed_why(rel: str, block: str, ids: list[str],
+                      file_phvs: set[str] | None) -> str | None:
+    """Why ``block``, which no identity in ``ids`` (the file's blocks) equals, was REMOVED rather
+    than fixed; None when it reads as a fix.
+
+    Removed when no block of the file keeps its ``Class@table`` head, or when none of the phvs
+    its identity names is read by any block of the file. A real fix keeps the phv: a 3.5 fix
+    qualifies it (``{pht.phv}``) or joins on it, a repoint keeps the source it repoints from. A
+    deletion drops it. Deleting one block whose phvs another block of the file also reads still
+    reads as fixed; only a base-vs-head inventory (#885 gate v2) can see that.
+    """
+    if block.startswith("block:"):
+        return f"block removed: {rel} has no block {block} any more"
+    head, _, items = block.partition(":")
+    if not any(i.split(":", 1)[0] == head for i in ids):
+        return (f"block removed: {rel} has no {head} block any more (deleted, moved to "
+                f"another file, or its class or table changed)")
+    named = set(_PHV_RE.findall(items))
+    if named and file_phvs is not None and not named & file_phvs:
+        return (f"block removed: no block of {rel} reads {', '.join(sorted(named))} any more "
+                f"(deleted; a fix keeps the variable it fixes)")
+    return None
 
 
 def fingerprints(findings: list, identities: _Identities) -> dict[int, Key]:
@@ -568,17 +607,7 @@ def finalize(
         ids = idents.all(rel)
         if ids is None or block in ids:
             return None
-        # A block is REMOVED when no block of the file still has its class and table. Its value
-        # phvs are not the test: fixing a cross-table read (3.5) swaps a phv and re-keys the
-        # block, and that is a fix. Deleting one of several blocks on one table still reads as
-        # fixed here; only a base-vs-head inventory can see that.
-        if block.startswith("block:"):
-            return f"block removed: {rel} has no block {block} any more"
-        head = block.split(":", 1)[0]
-        if any(i.split(":", 1)[0] == head for i in ids):
-            return None
-        return (f"block removed: {rel} has no {head} block any more (deleted, moved to "
-                f"another file, or its class or table changed)")
+        return block_removed_why(rel, block, ids, idents.phvs(rel))
 
     # Known issues: exact fingerprint match.
     entries = load_entries() if entries is None else entries

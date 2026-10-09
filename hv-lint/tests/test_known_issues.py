@@ -376,12 +376,15 @@ def test_a_test_sees_neither_the_committed_files_nor_a_mode():
 
 def test_a_deleted_block_is_removed_not_fixed(tree, monkeypatch):
     """The file is still there but no block has the entry's class and table: REMOVED, not
-    fixed. A block on the same table whose value phv changed (a 3.5 fix) is a fix."""
+    fixed. A block that still reads the entry's phv under a new identity (a 3.5 fix joins or
+    qualifies it) is a fix."""
     e = _at(tree["afib"], 1)
     _list(tree, e)
     blocks = yaml.safe_load(tree["afib"].read_text(encoding="utf-8"))
-    tree["afib"].write_text(yaml.safe_dump([blocks[0], _block("phv00000005")]),
-                            encoding="utf-8")
+    fixed = _block("phv00000002")
+    fixed["class_derivations"]["Condition"]["slot_derivations"]["condition_concept"] = {
+        "expr": "case(({phv00000006} == 1, 'MONDO:0004981'))"}
+    tree["afib"].write_text(yaml.safe_dump([blocks[0], fixed]), encoding="utf-8")
     extra = _run([], tree)
     assert len(extra) == 1 and "the issue is fixed here" in extra[0].message
     tree["afib"].write_text(yaml.safe_dump([_block("phv00000001", pht="pht000013")]),
@@ -446,3 +449,21 @@ def test_a_file_run_leaves_a_deleted_files_row_and_entry_alone(tree):
     gone.unlink()
     assert _run([], tree, scanned=[tree["afib"]], partial=True) == []
     assert _run([], tree, scanned=[tree["afib"]]) != []      # the same run, not partial
+
+
+def test_deleting_one_of_several_blocks_on_a_table_is_removed(tree, monkeypatch):
+    """Follow-up review F3: the other blocks keep the Class@table head, so the head test calls
+    the deletion a fix. No block of the file reads the deleted block's phv any more: REMOVED. A
+    block whose only value phv was replaced by another reads the same way (a fix keeps it)."""
+    e = _at(tree["afib"], 1)
+    _list(tree, e)
+    blocks = yaml.safe_load(tree["afib"].read_text(encoding="utf-8"))
+    for remaining in ([blocks[0], blocks[2]], [blocks[0], _block("phv00000005"), blocks[2]]):
+        tree["afib"].write_text(yaml.safe_dump(remaining), encoding="utf-8")
+        extra = _run([], tree)
+        assert len(extra) == 1, [x.message for x in extra]
+        assert "no block of FHS-ingest/afib.yaml reads phv00000002" in extra[0].message
+        assert "not a fix" in extra[0].message
+    monkeypatch.setenv("HVLINT_RUN_ALL", "1")
+    assert [x for x in _run([], tree, mode="prune") if "refusing to prune" in x.message]
+    assert len(K.load_entries()) == 1
