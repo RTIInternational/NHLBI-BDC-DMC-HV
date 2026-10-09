@@ -510,3 +510,30 @@ def test_a_same_count_rebuild_is_caught_by_the_digest(tmp_path):
         json.dump({"phv00000001": PHT, "phv00000009": PHT}, f)
     with pytest.raises(_cohorts.CacheIntegrityError, match="sha256"):
         _cohorts.load_cache_artifact(cache, KEY)
+
+
+CORRUPT_ARTIFACTS = {
+    "truncated-gzip": lambda data: data[: len(data) // 2],
+    "not-gzip": lambda data: b"this is not a gzip stream",
+    "gzip-of-non-json": lambda data: gzip.compress(b"{not json"),
+}
+
+
+@pytest.mark.parametrize("corrupt", CORRUPT_ARTIFACTS.values(), ids=CORRUPT_ARTIFACTS.keys())
+@pytest.mark.parametrize("phase", ["phase-3", "phase-5"])
+def test_an_undecodable_artifact_is_an_integrity_error_not_a_traceback(
+        tmp_path, monkeypatch, capsys, corrupt, phase):
+    """A decode failure raised before the digest check escaped every phase's handler."""
+    cache = _make_tree(tmp_path)
+    path = cache / f"{KEY}.json.gz"
+    path.write_bytes(corrupt(path.read_bytes()))
+    if phase == "phase-3":
+        rc = _run_crossref(monkeypatch, tmp_path, cache)
+    else:
+        rc = _phase5_critical(monkeypatch, tmp_path, cache)
+    captured = capsys.readouterr()
+    text = captured.out + captured.err
+    assert rc == 1, text
+    assert f"{KEY}.json.gz cannot be read as a cache artifact" in text
+    assert "update_data.py --build-only --cohort hchs_sol" in text
+    assert "Traceback" not in text

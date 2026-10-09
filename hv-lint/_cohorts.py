@@ -35,6 +35,7 @@ import hashlib
 import json
 import os
 import re
+import zlib
 from pathlib import Path
 
 MANIFEST_NAME = "manifest.json"
@@ -527,7 +528,8 @@ def load_cache_artifact(cache_dir: Path | str, cache_key: str, suffix: str = "")
 
     **Every cache read goes through here.** Raises :class:`FileNotFoundError` when neither file
     exists and :class:`CacheIntegrityError` -- fail closed -- when the manifest records no entry,
-    no record for this file, or a sha256 or PHV/PHT count that differs from what is on disk.
+    no record for this file, a sha256 or PHV/PHT count that differs from what is on disk, or
+    a file that cannot be read or decoded (truncated, not gzip, not JSON).
     The bytes hashed are the bytes parsed and returned, never a second read.
     """
     base = Path(cache_dir)
@@ -537,9 +539,18 @@ def load_cache_artifact(cache_dir: Path | str, cache_key: str, suffix: str = "")
         if not path.is_file():
             raise FileNotFoundError(
                 f"no cache artifact '{cache_key}{suffix}.json.gz' (or .json) in {base}")
-    data = path.read_bytes()
-    payload = _decode_artifact(path, data)
     remedy = f"Rebuild it with: {rebuild_command(base, cache_key)}"
+    # A truncated, non-gzip or non-JSON file is an integrity failure like a digest mismatch:
+    # every phase catches CacheIntegrityError and reports it, while a raw decode error escapes
+    # as a traceback. ValueError covers JSONDecodeError and UnicodeDecodeError; OSError covers
+    # BadGzipFile and the read itself.
+    try:
+        data = path.read_bytes()
+        payload = _decode_artifact(path, data)
+    except (OSError, EOFError, zlib.error, ValueError) as exc:
+        raise CacheIntegrityError(
+            f"{path.name} cannot be read as a cache artifact ({type(exc).__name__}: {exc}), "
+            f"so it cannot be verified against release {cache_key}. {remedy}") from exc
     entry = manifest_entry(base, cache_key)
     if not entry:
         raise CacheIntegrityError(
