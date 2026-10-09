@@ -122,3 +122,24 @@ def test_a_non_string_value_mappings_key_fails_phase1_through_main(tmp_path, key
     (t.dir / "diabetes.yaml").write_text(_status(keys_text), encoding="utf-8")
     res = t.run(P1, "--cohort", "CHS")
     assert res.returncode == 1 and "[1.15]" in res.stdout and f"parses as {kind}" in res.stdout
+
+
+# -- S2 / N4: the frozen linkml-map keys are an ERROR in CI --------------------------------------
+
+def test_frozen_key_fallback_fails_in_ci_and_names_the_real_exception(tmp_path):
+    """A linkml_map that cannot be imported: under GITHUB_ACTIONS Phase 2 exits 1 before any
+    check, and the message is the real exception, not a guess about Python 3.14."""
+    import os
+    import subprocess
+    stub = tmp_path / "stub" / "linkml_map"
+    stub.mkdir(parents=True)
+    (stub / "__init__.py").write_text("raise ImportError('stub: linkml-map not installed')\n",
+                                      encoding="utf-8")
+    env = {k: v for k, v in os.environ.items() if not k.startswith("HVLINT_")}
+    env.update(GITHUB_ACTIONS="true", PYTHONPATH=str(stub.parent), PYTHONIOENCODING="utf-8")
+    res = subprocess.run([sys.executable, str(HVLINT / "phase-2/validate_model_conformance.py"),
+                          "--cohort", "CHS"], env=env, capture_output=True, text=True,
+                         encoding="utf-8")
+    assert res.returncode == 1, res.stdout[-1000:] + res.stderr[-1000:]
+    assert "linkml_map import failed: ImportError: stub: linkml-map not installed" in res.stderr
+    assert "DID NOT RUN" in res.stderr and "3.14" not in res.stderr

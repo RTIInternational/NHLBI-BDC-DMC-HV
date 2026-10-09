@@ -76,8 +76,11 @@ jobs:
         with:
           python-version: "3.12"
 
+      # linkml-map is the model Phase 2's 2.1 reads its valid keys from; without it Phase 2
+      # fails in CI rather than fall back to the frozen v0.3.9 key sets (Assumption A2). 0.5.3
+      # is the version the pipeline runs (A6).
       - name: Install dependencies
-        run: pip install pyyaml yamllint linkml-runtime
+        run: pip install pyyaml yamllint linkml-runtime linkml-map==0.5.3
 
       - name: Detect changed cohort
         id: detect

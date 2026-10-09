@@ -79,19 +79,21 @@ BDCHM_URL_TEMPLATE = (
 # See HV-Lint-Reference.md Assumption A2 for rationale.
 #
 # Captured from NHLBI-BDC-DMC-HV/.venv (Python 3.12, linkml-map 0.3.9) by
-# reading transformer_model.py directly -- the import path crashes on Python 3.14
-# due to ucumvert/pint initializing at module level (KeyError: 'millimeter_Hg').
-# When the import fails, _derive_valid_keys() returns these frozen constants
-# and prints a warning.  CI (Python 3.12) always uses the live import.
+# reading transformer_model.py directly. When the import fails (linkml-map not
+# installed, or an import-time crash such as ucumvert/pint's KeyError:
+# 'millimeter_Hg' on Python 3.14), _derive_valid_keys() returns these frozen
+# constants and the reason. The frozen sets are a strict subset of 0.5.3's, so
+# they reject valid keys (missing_values, offset, ...): under GITHUB_ACTIONS the
+# fallback is an ERROR, and the lint job installs linkml-map==0.5.3 (Assumption A2).
 #
 # HV-specific extensions ('value', 'object_derivations') are added
 # manually -- see Assumption A3.
 def _derive_valid_keys():
     """Derive valid key sets from the installed linkml-map model.
 
-    Tries a live import first (accurate, Python 3.12 / CI).  Falls back to
-    frozen constants captured from linkml-map v0.3.9 when the import fails
-    (e.g., Python 3.14 pint/ucumvert incompatibility -- Assumption A2).
+    Returns ``(ts_keys, cd_keys, sd_keys, fallback_reason)``. Tries a live import
+    first; when it fails, returns the frozen linkml-map v0.3.9 constants and the
+    real exception as ``fallback_reason`` (None on a live import -- Assumption A2).
     """
     # --- frozen fallback (linkml-map v0.3.9, extracted 2026-03-15) -----------
     _TS_FROZEN = frozenset({
@@ -132,15 +134,15 @@ def _derive_valid_keys():
             "class_derivations",
             "object_derivations",
         }
-        return ts_keys, cd_keys, sd_keys
-    except Exception:
+        return ts_keys, cd_keys, sd_keys, None
+    except Exception as exc:  # noqa: BLE001 - any import failure means the fallback
+        reason = f"linkml_map import failed: {type(exc).__name__}: {exc}"
         print(
-            "WARNING: linkml_map import failed (likely Python 3.14 + ucumvert "
-            "incompatibility). Using frozen key sets from linkml-map v0.3.9. "
-            "Check results may be slightly stale if the model has changed.",
+            f"WARNING: {reason}. Using frozen key sets from linkml-map v0.3.9, which "
+            f"reject keys valid in 0.5.3 (missing_values, offset, expression_mappings, ...).",
             file=sys.stderr,
         )
-        return _TS_FROZEN, _CD_FROZEN, _SD_FROZEN
+        return _TS_FROZEN, _CD_FROZEN, _SD_FROZEN, reason
 
 
 # Populated lazily in main() so --help works without linkml_map installed.
@@ -882,7 +884,15 @@ def main() -> int:
 
     # Derive valid linkml-map keys (deferred so --help works without linkml_map).
     # _derive_valid_keys() handles its own fallback -- it never raises.
-    VALID_TRANSFORMATION_SPEC_KEYS, VALID_CLASS_DERIVATION_KEYS, VALID_SLOT_DERIVATION_KEYS = _derive_valid_keys()
+    (VALID_TRANSFORMATION_SPEC_KEYS, VALID_CLASS_DERIVATION_KEYS, VALID_SLOT_DERIVATION_KEYS,
+     fallback) = _derive_valid_keys()
+    # In CI the frozen keys would fail a correct spec (2.1 CRITICAL on missing_values), so the
+    # lint job must run against the linkml-map it pins.
+    if fallback and in_ci:
+        print(f"ERROR: {fallback}. CI must import the linkml-map the lint job "
+              f"pins (.github/workflows/hv_lint.yml); 2.1 DID NOT RUN against the live model.",
+              file=sys.stderr)
+        return 1
 
     # Load BDCHM schema
     try:

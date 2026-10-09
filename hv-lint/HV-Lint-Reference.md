@@ -106,19 +106,21 @@ Phase 2 loads the BDCHM schema directly from GitHub via URL at validation time, 
 - **Implication**: CI requires network access to `raw.githubusercontent.com`
 - **Override**: `--bdchm-schema /path/to/local/bdchm.yaml` for offline/locked validation
 
-### A2: linkml-map Model Fields -- Live Import with Frozen Fallback
+### A2: linkml-map Model Fields -- Live Import, Frozen Fallback Local Only
 
-`_derive_valid_keys()` in `validate_model_conformance.py` attempts a **live import** of `linkml_map.datamodel.transformer_model` at runtime to get valid key sets. If the import fails, it falls back to **frozen constants** captured from v0.3.9 and prints a `WARNING:` to stderr.
+`_derive_valid_keys()` in `validate_model_conformance.py` attempts a **live import** of `linkml_map.datamodel.transformer_model` at runtime to get valid key sets. If the import fails, it falls back to **frozen constants** captured from v0.3.9 and prints a `WARNING:` naming the real exception (`linkml_map import failed: <type>: <message>`).
 
-**Why the import can fail (Python 3.14):**
-`linkml_map/__init__.py` eagerly imports `ObjectTransformer` which crashes with `KeyError: 'millimeter_Hg'` on Python 3.14. The HV repo's `pyproject.toml` pins `requires-python = ">=3.12,<=3.13"` for this reason.
+The frozen sets are a strict subset of linkml-map 0.5.3's, so the fallback cannot let a bad key through, but it rejects valid 0.5.3 keys (`missing_values`, `offset`, `expression_mappings`, `pivot_operation` and 11 TransformationSpecification metadata keys): a correct spec using `missing_values:` fails 2.1 as CRITICAL.
+
+**Why the import can fail:** `linkml-map` is not installed, or it crashes on import (on Python 3.14, `ObjectTransformer` raises `KeyError: 'millimeter_Hg'` from ucumvert/pint; the HV repo's `pyproject.toml` pins `requires-python = ">=3.12,<=3.13"` for this reason).
 
 | Environment | Behavior |
 |---|---|
-| CI (Python 3.12, `linkml-map` installed) | Live import succeeds -- always accurate |
-| Local (Python 3.14, no `linkml-map`) | Falls back to frozen v0.3.9 constants -- prints WARNING |
+| CI (`GITHUB_ACTIONS=true`; the lint job installs `linkml-map==0.5.3`) | Live import. If it fails, Phase 2 exits 1 with `ERROR: linkml_map import failed ...` before any check |
+| Local, `linkml-map` importable | Live import |
+| Local, import fails | Frozen v0.3.9 constants, with the WARNING above |
 
-**Action required if `linkml-map` is upgraded:** Update both the frozen constants in `validate_model_conformance.py` and this assumption note.
+**Action required if `linkml-map` is upgraded:** change the pin in `.github/workflows/hv_lint.yml`, and update the frozen constants in `validate_model_conformance.py` and this note.
 
 ### A3: HV Extensions (`value`, `object_derivations`) Are Valid Keys
 
