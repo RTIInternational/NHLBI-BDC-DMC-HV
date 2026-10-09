@@ -728,6 +728,12 @@ def finalize(
               f"tracked in an issue, add its line (set issue and status):")
         for k in unlisted[:50]:
             print("  " + entry_line(k))
+    if unbaselinable:
+        print(f"\n{len(unbaselinable)} new WARNING(s) of a lost-or-unlinked rule, which the "
+              f"baseline cannot accept. Fix them; or, when one is tracked in an issue, add its "
+              f"line to {meta} (set issue and status):")
+        for r, _c, t in sorted(unbaselinable)[:50]:
+            print("  " + entry_line(_row_key(r, t)))
 
     dump = os.environ.get("HVLINT_DUMP_FINDINGS")
     if dump:

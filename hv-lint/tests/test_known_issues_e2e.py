@@ -663,9 +663,9 @@ def test_update_refuses_a_new_unlinked_visit_label_through_main(tmp_path):
     assert t.baseline.read_text(encoding="utf-8") == before
     assert E.phase5(t).returncode == 1                          # still red
 
-    line = re.search(r"(- \{rule: \"5\.2\".*?\})", upd.stdout).group(1)
-    t.ki.write_text(line.replace("<issue>", "999").replace("<status>", "defect") + "\n",
-                    encoding="utf-8")
+    lines = t.suggested(red)                   # printed at line start, ready to copy
+    assert len(lines) == 1 and lines[0].startswith('- {rule: "5.2"')
+    assert t.list_as_known(red, 999) and "issue: 999" in t.ki.read_text(encoding="utf-8")
     listed = E.phase5(t)
     assert listed.returncode == 0 and "known issue #999, defect" in listed.stdout, \
         listed.stdout[-2000:]
