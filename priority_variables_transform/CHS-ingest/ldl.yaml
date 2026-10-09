@@ -1,29 +1,5 @@
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht001451
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00099663}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00099663}) + ":CHS BASELINE 2")'
-        observation_type:
-          value: OBA:VT0000181
-          range: string
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht001451
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00100282
-                unit:
-                  value: mg/dL
-                  range: string
-        method_type:
-          value: adjusted
-          range: string
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht001452
       slot_derivations:
         associated_participant:
@@ -42,32 +18,6 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00100492
-                unit:
-                  value: mg/dL
-                  range: string
-        method_type:
-          value: adjusted
-          range: string
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht001490
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00105099}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
-        age_at_observation:
-          expr: '{phv00105622} * 365'
-        observation_type:
-          value: OBA:VT0000181
-          range: string
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht001490
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00106416
                 unit:
                   value: mg/dL
                   range: string

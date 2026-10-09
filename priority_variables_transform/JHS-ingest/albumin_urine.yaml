@@ -5,7 +5,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401725}) + ":JHS")'
         associated_visit: 
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401725}) + ":JHS Exam 1")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401725}) + ":JHS Exam 3")'
         observation_type: 
           value: OBA:VT0002871
         method_type:
@@ -17,27 +17,6 @@
               slot_derivations:
                 value_decimal:
                   populated_from: phv00401741
-                unit: 
-                  value: mg/L
-- class_derivations:
-    MeasurementObservation:
-      populated_from: pht008742
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00401725}) + ":JHS")'
-        associated_visit: 
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00401725}) + ":JHS Exam 1")'
-        observation_type: 
-          value: OBA:VT0002871
-        method_type:
-          value: "urine assay"
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht008742
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00401742
                 unit: 
                   value: mg/L
 - class_derivations:

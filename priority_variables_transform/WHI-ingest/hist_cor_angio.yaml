@@ -23,12 +23,10 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
         age_at_procedure:
           expr: 'case(({phv00193199} == 1, ({phv00078437} * 365) + {phv00193200}))'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193141}) + ":WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED")'
         procedure_concept:
-          expr: case(({phv00193199} == 1, "OMOP:4006788"))
+          expr: case(({phv00193199} == 1, "OMOP:4184832"))
         procedure_provenance:
-          value: PATIENT_SELF_REPORT
+          value: PHYSICIAN_ADJUDICATION
         procedure_status:
           populated_from: phv00193199
           value_mappings:

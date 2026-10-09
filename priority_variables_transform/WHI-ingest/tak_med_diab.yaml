@@ -8,7 +8,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00078435}) + ":WHI SCREENING")'
           range: string
         drug_concept:
-          expr: 'case(({phv00078470} == 1, "ATC:A10B"))'
+          value: ATC:A10B
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -20,14 +20,17 @@
 - class_derivations:
     DrugExposure:
       populated_from: pht002769
+      joins:
+        pht000998:
+          source_key: phv00170566
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00170566}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00170566}) + ":WHI CAD")'
-          range: string
+        age_at_exposure_start:
+          expr: 'case(({phv00170599} == 1, ({pht000998.phv00078437} * 365) + {phv00170600}))'
         drug_concept:
-          expr: 'case(({phv00170599} == 1, "ATC:A10B"))'
+          value: ATC:A10B
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -46,7 +49,7 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00170648}) + ":WHI SCREENING")'
           range: string
         drug_concept:
-          expr: 'case(({phv00170681} == 1, "ATC:A10B"))'
+          value: ATC:A10B
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -58,14 +61,17 @@
 - class_derivations:
     DrugExposure:
       populated_from: pht003413
+      joins:
+        pht000998:
+          source_key: phv00193628
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193628}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193628}) + ":WHI EXTENSION STUDY 2 MRC")'
-          range: string
+        age_at_exposure_start:
+          expr: 'case(({phv00193673} == 1, ({pht000998.phv00078437} * 365) + {phv00193674}))'
         drug_concept:
-          expr: 'case(({phv00193673} == 1, "ATC:A10B"))'
+          value: ATC:A10B
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
@@ -77,14 +83,17 @@
 - class_derivations:
     DrugExposure:
       populated_from: pht003414
+      joins:
+        pht000998:
+          source_key: phv00193686
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
-          range: string
+        age_at_exposure_start:
+          expr: 'case(({phv00193785} == 1, ({pht000998.phv00078437} * 365) + {phv00193786}))'
         drug_concept:
-          expr: 'case(({phv00193785} == 1, "ATC:A10B"))'
+          value: ATC:A10B
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
