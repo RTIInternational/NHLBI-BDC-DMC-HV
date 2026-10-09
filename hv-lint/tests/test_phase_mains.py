@@ -22,6 +22,7 @@ _HV_LINT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_HV_LINT))
 sys.path.insert(0, str(_HV_LINT / "phase-5"))
 
+import _cohorts  # noqa: E402
 import run_phase5  # noqa: E402
 import validate_visit_structure as vvs  # noqa: E402
 
@@ -94,6 +95,12 @@ def _make_tree(root: Path, *, manifest: object = "ok") -> Path:
         entries: object = {KEY: {"cohort": "HCHS", "study": STUDY, "study_version": VERSION}}
     else:
         entries = manifest
+    # Every entry for KEY records the artifacts actually written, as the builders do, so a test
+    # of the release check reaches it instead of stopping at the integrity check before it.
+    if isinstance(entries, dict) and isinstance(entries.get(KEY), dict):
+        entries[KEY] = {**entries[KEY], _cohorts.ARTIFACTS_FIELD: {
+            name: _cohorts.artifact_record(cache / name)
+            for name in (f"{KEY}.json.gz", f"{KEY}_detail.json.gz")}}
     if entries is not None:
         (cache / "manifest.json").write_text(
             json.dumps({"manifest_version": 1, "entries": entries}), encoding="utf-8")
@@ -483,3 +490,68 @@ def test_phase_3_validators_each_run_the_release_check(tmp_path, monkeypatch, ca
     captured = capsys.readouterr()
     assert rc == 1, captured.out + captured.err
     assert expect in captured.err
+
+
+# -- Cache integrity: the manifest records content, not just a release label (S1) ------------
+
+
+def _swap_in_other_release(cache: Path, name: str) -> None:
+    """Overwrite ``name`` with a same-shaped artifact built from different content, as copying
+    another release's file over this release's name does. The manifest label is untouched."""
+    other = {"phv00000001": PHT, "phv00000002": PHT, "phv00000003": "pht000002"}
+    payload = other if name == f"{KEY}.json.gz" else {p: {"pht": t} for p, t in other.items()}
+    with gzip.open(cache / name, "wt", encoding="utf-8") as f:
+        json.dump(payload, f)
+
+
+@pytest.mark.parametrize("name", [f"{KEY}.json.gz", f"{KEY}_detail.json.gz"],
+                         ids=["phv-index", "detail-index"])
+def test_phase_3_fails_on_an_artifact_swapped_for_another_release(
+        tmp_path, monkeypatch, capsys, name):
+    cache = _make_tree(tmp_path)
+    _swap_in_other_release(cache, name)
+    run = _run_crossref if name == f"{KEY}.json.gz" else (
+        lambda mp, root, c: _run_semantic(mp, root, "--cache-dir", str(c), "--cohort", "HCHS",
+                                          "--fail-on", "critical"))
+    rc = run(monkeypatch, tmp_path, cache)
+    err = capsys.readouterr().err
+    assert rc == 1, err
+    assert f"{name} does not match its manifest.json record" in err
+    assert "3 PHVS on disk, 2 recorded" in err
+    assert "update_data.py --build-only --cohort hchs_sol" in err
+
+
+@pytest.mark.parametrize("name, check", [(f"{KEY}.json.gz", "5.3/5.4"),
+                                         (f"{KEY}_detail.json.gz", "5.8")],
+                         ids=["phv-index", "detail-index"])
+def test_phase_5_fails_on_an_artifact_swapped_for_another_release(
+        tmp_path, monkeypatch, capsys, name, check):
+    cache = _make_tree(tmp_path)
+    _swap_in_other_release(cache, name)
+    rc = _phase5_critical(monkeypatch, tmp_path, cache)
+    out = capsys.readouterr().out
+    assert rc == 1, out
+    assert f"{name} does not match its manifest.json record" in out
+    assert "DID NOT RUN" in out
+
+
+def test_an_artifact_with_no_digest_record_fails_closed(tmp_path, monkeypatch, capsys):
+    """An entry carrying the right release label but no record for the file is not trusted."""
+    cache = _make_tree(tmp_path, manifest={
+        KEY: {"cohort": "HCHS", "study": STUDY, "study_version": VERSION}})
+    data = json.loads((cache / "manifest.json").read_text(encoding="utf-8"))
+    del data["entries"][KEY][_cohorts.ARTIFACTS_FIELD]
+    (cache / "manifest.json").write_text(json.dumps(data), encoding="utf-8")
+    rc = _run_crossref(monkeypatch, tmp_path, cache)
+    err = capsys.readouterr().err
+    assert rc == 1, err
+    assert "has no sha256/count record" in err
+
+
+def test_a_same_count_rebuild_is_caught_by_the_digest(tmp_path):
+    """Counts alone miss a stale artifact of the same table set; the sha256 does not."""
+    cache = _make_tree(tmp_path)
+    with gzip.open(cache / f"{KEY}.json.gz", "wt", encoding="utf-8") as f:
+        json.dump({"phv00000001": PHT, "phv00000009": PHT}, f)
+    with pytest.raises(_cohorts.CacheIntegrityError, match="sha256"):
+        _cohorts.load_cache_artifact(cache, KEY)

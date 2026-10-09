@@ -769,6 +769,9 @@ def main() -> int:
                   f"3.17 / 3.18 DID NOT RUN for it.", file=sys.stderr)
             missing_index.append(cohort_name)
             continue
+        except _cohorts.CacheIntegrityError as exc:
+            print(f"ERROR: cache integrity check for '{cohort_name}': {exc}", file=sys.stderr)
+            return 1
         # The release this component reads is checked here too, so run alone it cannot pass on a
         # superseded cache that only a sibling component would have caught.
         release_error = _cohorts.release_check_error(cohort_name, cache_dir, cache_key,

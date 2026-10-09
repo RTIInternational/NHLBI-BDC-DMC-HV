@@ -33,8 +33,6 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import gzip
-import json
 import os
 import re
 import sys
@@ -187,19 +185,8 @@ class Finding:
 
 def load_detail_index(cache_dir: Path, cache_key: str) -> DetailIndex:
     """Load the extended detail index for a cohort."""
-    gz_path = cache_dir / f"{cache_key}_detail.json.gz"
-    json_path = cache_dir / f"{cache_key}_detail.json"
-
-    if gz_path.exists():
-        with gzip.open(gz_path, "rt", encoding="utf-8") as f:
-            raw = json.load(f)
-    elif json_path.exists():
-        with json_path.open(encoding="utf-8") as f:
-            raw = json.load(f)
-    else:
-        raise FileNotFoundError(
-            f"No detail index for '{cache_key}': expected {gz_path} or {json_path}"
-        )
+    # Verified against the manifest; raises _cohorts.CacheIntegrityError on a mismatch.
+    raw = _cohorts.load_cache_artifact(cache_dir, cache_key, "_detail")
 
     idx = DetailIndex()
     for phv, rec in raw.items():
@@ -1335,6 +1322,9 @@ def main() -> int:
             release_by_cohort[cohort_name] = cache_key
         except FileNotFoundError:
             missing.append((cohort_name, cache_key))
+        except _cohorts.CacheIntegrityError as exc:
+            print(f"ERROR: cache integrity check for '{cohort_name}': {exc}", file=sys.stderr)
+            return 1
 
     # A cache the run asked for and did not get is a HARD failure naming what it looked for.
     # Previously an unresolvable cohort produced an empty dict and the generic message "No dbGaP

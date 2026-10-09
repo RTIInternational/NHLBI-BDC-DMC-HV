@@ -166,6 +166,8 @@ def build_one(cohort_dir: Path, output: Path, source: Path) -> dict | None:
     with gzip.open(gz_path, "wb") as f:
         f.write(json_bytes)
 
+    # The digest and counts the loader verifies on every read (`_cohorts.load_cache_artifact`).
+    entry[_cohorts.ARTIFACTS_FIELD] = {gz_path.name: _cohorts.artifact_record(gz_path)}
     gz_size = gz_path.stat().st_size
     print(
         f"  {cohort_dir.name:12s}: {len(mapping):>7,} PHVs "

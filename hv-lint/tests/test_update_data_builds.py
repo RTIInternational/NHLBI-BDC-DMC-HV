@@ -86,6 +86,18 @@ def test_it_records_provenance_so_the_mandatory_release_check_can_pass(staged):
     assert "PROVENANCE UNKNOWN" not in _cohorts.study_label(staged, "phs009999.v3")
 
 
+def test_both_artifacts_are_recorded_by_digest_and_load_through_the_verifying_loader(staged):
+    """Each builder records only its own artifact; the merge must keep both, and the records
+    must be of the PUBLISHED files (built in a scratch dir, then moved)."""
+    _build()
+    records = _cohorts.manifest_entry(staged, "phs009999.v3")[_cohorts.ARTIFACTS_FIELD]
+    assert set(records) == {"phs009999.v3.json.gz", "phs009999.v3_detail.json.gz"}
+    assert records["phs009999.v3.json.gz"]["phvs"] == 2
+    assert records["phs009999.v3.json.gz"]["phts"] == 2
+    assert _cohorts.load_cache_artifact(staged, "phs009999.v3")
+    assert _cohorts.load_cache_artifact(staged, "phs009999.v3", "_detail")
+
+
 def test_the_release_is_read_from_the_data_not_from_what_the_cohort_declares(staged):
     """A cohort declaring v9 over data dictionaries that say v3 must yield v3.
 

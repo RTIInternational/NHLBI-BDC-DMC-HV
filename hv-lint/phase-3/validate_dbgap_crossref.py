@@ -30,8 +30,6 @@ or, for a ``populated_from`` whose column is in no loaded table, the entity run 
 from __future__ import annotations
 
 import argparse
-import gzip
-import json
 import os
 import re
 import sys
@@ -120,21 +118,12 @@ class DbGaPIndex:
 # ---------------------------------------------------------------------------
 
 def load_dbgap_index(cache_dir: Path, cache_key: str) -> DbGaPIndex:
-    """Load compressed phv->pht index for a cohort."""
-    gz_path = cache_dir / f"{cache_key}.json.gz"
-    json_path = cache_dir / f"{cache_key}.json"
+    """Load compressed phv->pht index for a cohort, verified against the manifest.
 
-    if gz_path.exists():
-        with gzip.open(gz_path, "rt", encoding="utf-8") as f:
-            mapping = json.load(f)
-    elif json_path.exists():
-        with json_path.open(encoding="utf-8") as f:
-            mapping = json.load(f)
-    else:
-        raise FileNotFoundError(
-            f"No dbGaP index for '{cache_key}': "
-            f"expected {gz_path} or {json_path}"
-        )
+    Raises ``FileNotFoundError`` when absent and ``_cohorts.CacheIntegrityError`` when its
+    content is not what the manifest records.
+    """
+    mapping = _cohorts.load_cache_artifact(cache_dir, cache_key)
 
     idx = DbGaPIndex()
     idx.phv_to_pht = mapping
@@ -545,6 +534,9 @@ def main() -> int:
                 return 1
         except FileNotFoundError:
             missing.append((cohort_name, cache_key))
+        except _cohorts.CacheIntegrityError as exc:
+            print(f"ERROR: cache integrity check for '{cohort_name}': {exc}", file=sys.stderr)
+            return 1
 
     # A cache the run asked for and did not get is a HARD failure naming what it looked for.
     # Previously an unresolvable cohort produced an empty dict and the generic message "No dbGaP

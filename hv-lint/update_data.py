@@ -402,7 +402,10 @@ def process_cohort(
                                    ("detail index", build_phv_detail_index)):
                 entry = builder.build_one(cohort_dir, scratch, CACHE_DIR)
                 if entry and entry.get("study"):
-                    entries[f"{entry['study']}.{entry['study_version']}"] = entry
+                    # Merged, not assigned: both builders return the same key, and each
+                    # carries only its own artifact's digest record.
+                    key = f"{entry['study']}.{entry['study_version']}"
+                    entries[key] = _cohorts.merge_entry(entries.get(key), entry)
                 else:
                     missing.append(label)
             if missing:
