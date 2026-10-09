@@ -1,0 +1,22 @@
+# chs_hist_mi_mihosp59: copied verbatim from HV main 731984f5 as a fixed test case for #885.
+class_derivations:
+  Condition:
+    populated_from: pht001474
+    slot_derivations:
+      associated_participant:
+        expr: uuid5("https://w3id.org/bdchm/Participant", str({phv00101324}) + ":CHS")
+      associated_visit:
+        expr: uuid5("https://w3id.org/bdchm/Visit", str({phv00101324}) + ":CHS YEAR 10")
+      condition_concept:
+        value: MONDO:0005068
+        range: string
+      condition_status:
+        populated_from: phv00101487
+        value_mappings:
+          '1': PRESENT
+      condition_provenance:
+        value: HEALTH_RECORD
+        range: string
+      relationship_to_participant:
+        value: ONESELF
+        range: string

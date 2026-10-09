@@ -15,6 +15,11 @@ Checks:
   5.8  Collection Interval Mismatch -- data PHV coll_interval vs visit case
   5.9  Visit uuid5 Format Compliance -- visit IDs must use uuid5 expressions
   5.10 Visit uuid5 Namespace -- uuid5 must use canonical bdchm namespace URL
+  5.11 Participant / visit seed -- the variable that seeds a participant or visit id must be
+       the table's participant ID, the same one for both, and in the block's own table
+  5.12 Id expression coverage -- an id / associated_visit / associated_participant expression
+       the shared enumerator cannot parse was not checked by 1.8, 5.1, 5.2 or 5.11: WARNING.
+       (5.2 also reports a fallback label with no Visit block that observed codes reach.)
 
 Checks 5.5 (Multi-Visit Table Coverage) and 5.7 (Visit PHT/Label Alignment) were REMOVED on
 2026-09-10. Both rested entirely on a visit cache produced by regex-matching dbGaP variable
@@ -52,7 +57,12 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
 import _cohorts  # noqa: E402
+import _known_issues  # noqa: E402
+import _visit_ids  # noqa: E402
 from _derivations import iter_nested_class_derivs  # noqa: E402
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "phase-3"))
+import check_status_semantic as _css  # noqa: E402  (the one reader of the value-count index)
 
 import yaml
 
@@ -68,38 +78,6 @@ SEVERITY_RANK = {"CRITICAL": 5, "ERROR": 4, "HIGH": 3, "WARNING": 2, "INFO": 1}
 
 # -- Regex patterns -----------------------------------------------------------
 
-# Matches the result string in a case tuple: , "RESULT") or , 'RESULT')
-# YAML single-quoted strings use '' for literal ', producing single-quoted
-# strings in the parsed Python value.  We need both quote flavours.
-CASE_RESULT_DQ_RE = re.compile(r',\s*"([^"]+)"\s*\)')
-CASE_RESULT_SQ_RE = re.compile(r",\s*'([^']+)'\s*\)")
-
-# Matches string concatenated after closing paren: ) + "SUFFIX" or ) + 'SUFFIX'
-SUFFIX_AFTER_PAREN_DQ_RE = re.compile(r'\)\s*\+\s*"([^"]*)"')
-SUFFIX_AFTER_PAREN_SQ_RE = re.compile(r"\)\s*\+\s*'([^']*)'")
-
-# Matches a case() branch whose result is a whole uuid5() call, with the visit label in the
-# seed: , uuid5("<ns>", str({phv}) + ":LABEL")
-#
-# Without this the branch result is not a bare quoted string, nothing matches above, and the
-# function falls through to the "no case()" path below -- which returns every quoted string in
-# the expression, including the DISCRIMINATOR CODES being compared against. A pht then appears
-# to carry twice the labels it has, which reads as a cross-file inconsistency that is not there.
-# COPDGene's shipped specs use this form in 48 associated_visit blocks, so the fallback
-# mis-parses production output, not only generated output.
-#
-# The seed must END in that literal with no case() inside the uuid5 call. FHS's conditional ids
-# wrap the whole label-in-case form in a branch -- case((cond, uuid5(<ns>, str({phv}) + ":" +
-# case(..., 'FHS OFFSPRING') + ' EXAM 4')), (True, None)) -- and there the trailing literal is
-# the SUFFIX, not a label. Matching it would return ' EXAM 4' as a label and leave the prefixes
-# unsuffixed, so every FHS exam 4-10 id reads as a duplicate bare cohort label (5.1) and every
-# reference as an unknown visit (5.2). The inner case() results are read by the patterns above.
-CASE_RESULT_UUID5_RE = re.compile(r""",\s*uuid5\((?:(?!case\s*\().)*?\+\s*['"]:?([^'"]+)['"]\s*\)""")
-
-# Matches any quoted string (double or single)
-QUOTED_DQ_RE = re.compile(r'"([^"]+)"')
-QUOTED_SQ_RE = re.compile(r"'([^']+)'")
-
 # Matches PHV accessions (with or without braces)
 PHV_RE = re.compile(r'(phv\d{8})')
 
@@ -108,17 +86,6 @@ PHT_RE = re.compile(r'^pht\d{6}$')
 
 # Detects case() usage in expressions
 CASE_USAGE_RE = re.compile(r'\bcase\s*\(')
-
-
-def _strip_label_artifacts(label: str) -> str:
-    """Strip separator artifacts from extracted visit labels.
-
-    FHS Pattern-A embeds the colon separator inside the string:
-        str({phv}) + ":FHS OFFSPRING EXAM 1"
-    This produces labels like ":FHS OFFSPRING EXAM 1".
-    Strip the leading colon (it's a uuid5 seed separator, not part of the label).
-    """
-    return label.lstrip(":")
 
 
 # -- Data structures ----------------------------------------------------------
@@ -170,6 +137,7 @@ class VisitBlock:
     age_phvs: set[str]            # PHVs referenced in age expressions
     all_phvs: set[str]            # PHVs referenced in ANY expression in this block
     has_participant: bool
+    identity: str = ""            # known-issue block identity (_known_issues.file_identities)
 
 
 @dataclass
@@ -206,67 +174,21 @@ class TransformBlock:
 # -- Visit label extraction ---------------------------------------------------
 
 def extract_visit_labels_from_expr(expr: str) -> tuple[set[str], bool]:
-    """Extract human-readable visit labels from an id or associated_visit expression.
+    """The visit labels an id or associated_visit expression can emit, and whether it is dynamic.
 
-    Handles:
-      - Simple case(): case((..., "LABEL1"), (..., "LABEL2"))
-      - Case + suffix: case((..., "PREFIX1"), ...) + " SUFFIX"
-      - UUID5 wrapping: uuid5("URL", ... + case(...) + " SUFFIX")
-      - FHS Pattern A: str({phv}) + ":LABEL" -- colon prefix on label
-      - Single-quoted values: YAML '' escaping -> Python ' in parsed exprs
+    Delegates to the shared enumerator (``_visit_ids``), the parser 1.8 and 5.11 also use: case()
+    arms are enumerated, comparison operands are never labels, a nested case() inside a uuid5
+    seed composes with the text around it (FHS visit.yaml's ``case(...) + ' EXAM 7'``), and a
+    ``(True, ...)`` fallback arm is dropped. An expression the enumerator cannot model yields no
+    labels.
 
-    Returns (set_of_labels, is_dynamic).
+    Returns (set_of_labels, is_dynamic), where is_dynamic means the id is a uuid5.
     """
-    is_dynamic = "uuid5" in expr
-    expr_str = str(expr)
-
-    # Extract case() result strings (both quote flavours)
-    case_results = (
-        CASE_RESULT_DQ_RE.findall(expr_str)
-        + CASE_RESULT_SQ_RE.findall(expr_str)
-        + CASE_RESULT_UUID5_RE.findall(expr_str)
-    )
-
-    if case_results:
-        # Look for suffix concatenated after case(): ) + "SUFFIX"
-        suffixes = (
-            SUFFIX_AFTER_PAREN_DQ_RE.findall(expr_str)
-            + SUFFIX_AFTER_PAREN_SQ_RE.findall(expr_str)
-        )
-        visit_suffix = ""
-        for s in suffixes:
-            stripped = s.strip()
-            if (stripped
-                    and not stripped.startswith("http")
-                    and stripped != ":"
-                    # `.lstrip(':')`: a suffix keeps its leading colon where a captured
-                    # label does not, so comparing raw lets a label be appended to itself.
-                    and s.lstrip(":") not in case_results
-                    and any(c.isalpha() for c in stripped)):
-                visit_suffix = s
-                break
-        labels = {
-            _strip_label_artifacts(cr + visit_suffix)
-            for cr in case_results
-        }
-        return labels, is_dynamic
-
-    # No case() -- extract quoted strings as candidate labels
-    all_quoted = (
-        QUOTED_DQ_RE.findall(expr_str)
-        + QUOTED_SQ_RE.findall(expr_str)
-    )
-    non_url = {
-        _strip_label_artifacts(s)
-        for s in all_quoted
-        if not s.startswith("http")
-        and len(s) > 1
-        and any(c.isalpha() for c in s)
-        and s.lstrip(":") != ""
-    }
-    # Filter out bare separator artifacts that are only ":"
-    non_url.discard("")
-    return non_url, is_dynamic
+    is_dynamic = "uuid5" in str(expr)
+    try:
+        return _visit_ids.labels(_visit_ids.enumerate_ids(str(expr))), is_dynamic
+    except _visit_ids.Unparsed:
+        return set(), is_dynamic
 
 
 def extract_phvs_from_expr(expr: str) -> set[str]:
@@ -302,12 +224,22 @@ def detect_cohort(file_path: Path) -> str:
     return "UNKNOWN"
 
 
+def yaml_parse_error(file_path: Path) -> str | None:
+    """The first line of the reason ``file_path`` cannot be read as YAML, or None if it can."""
+    try:
+        with file_path.open(encoding="utf-8") as f:
+            yaml.safe_load(f)
+    except (OSError, UnicodeDecodeError, yaml.YAMLError) as e:
+        return str(e).strip().splitlines()[0] if str(e).strip() else type(e).__name__
+    return None
+
+
 def parse_yaml_safe(file_path: Path) -> list[dict] | None:
     """Parse a YAML file and return its block list, or None on error."""
     try:
         with file_path.open(encoding="utf-8") as f:
             data = yaml.safe_load(f)
-    except (OSError, yaml.YAMLError):
+    except (OSError, UnicodeDecodeError, yaml.YAMLError):
         return None
     if data is None:
         return None
@@ -329,6 +261,7 @@ def build_visit_registry(visit_file: Path, hv_root: Path) -> VisitRegistry | Non
     static_ids: set[str] = set()
     all_labels: set[str] = set()
     uses_dynamic = False
+    identities = _known_issues.file_identities(blocks_data)
 
     for idx, block in enumerate(blocks_data):
         if not isinstance(block, dict):
@@ -417,6 +350,7 @@ def build_visit_registry(visit_file: Path, hv_root: Path) -> VisitRegistry | Non
             age_phvs=age_phvs,
             all_phvs=all_block_phvs,
             has_participant=has_participant,
+            identity=identities[idx],
         ))
 
     if not visit_blocks:
@@ -548,28 +482,76 @@ def _scan_nested_visit_refs(
 
 # -- Checks -------------------------------------------------------------------
 
+
+def repr_age(expr: str) -> str:
+    """An age expression quoted for a finding message: the known-issue fingerprint masks
+    unquoted numbers, and a multiplier (`* 365` vs `* 12`) is the part that must not be masked.
+
+    The quote must not occur inside the expression, or it ends the quoted run early and the
+    numbers after it are masked (CARDIA YEAR 20: `... == 'M' else float(...) * 365`). An
+    expression holding a single quote is wrapped in double quotes, with any double quote inside
+    it shown as a single quote."""
+    if expr == "no age":
+        return expr
+    if "'" not in expr:
+        return f"'{expr}'"
+    return '"' + expr.replace('"', "'") + '"'
+
 def check_5_1_uniqueness(registry: VisitRegistry) -> list[Finding]:
-    """5.1: No duplicate visit IDs within a cohort's visit.yaml."""
+    """5.1: one Visit id per (participant, label).
+
+    Two blocks of one table emitting the same label is an ERROR: the table yields two Visit
+    records with one id. Blocks of DIFFERENT tables emitting one label is a multi-table visit by
+    design (ARIC's exam tables, CHS annual and phone contacts), reported as a WARNING that names
+    the tables and their age expressions, because the duplicate Visit rows can disagree on age.
+    Fallback labels are not compared: a (True, ...) arm is not a visit the table holds. Where
+    observed codes do reach one that no Visit block defines, 5.2 reports it (check_5_12_id_coverage).
+    """
     findings: list[Finding] = []
 
     if registry.uses_dynamic_ids:
-        # For uuid5-based IDs, check label uniqueness instead
-        seen_labels: dict[str, int] = {}
+        by_label: dict[str, list[VisitBlock]] = {}
         for vb in registry.blocks:
             for label in sorted(vb.visit_labels):
-                if label in seen_labels:
+                by_label.setdefault(label, []).append(vb)
+        for label, vbs in sorted(by_label.items()):
+            if len(vbs) < 2:
+                continue
+            # Each table's anchor is its block with the smallest known-issue identity, not its
+            # first in file order (as 1.2 anchors a duplicate group): the same-table ERROR is
+            # reported on every other block of the table, and the anchor carries any
+            # multi-table WARNING, so reordering visit.yaml re-keys neither, even when the two
+            # blocks emit different label sets and so have different identities.
+            by_pht: dict = {}
+            for vb in vbs:
+                by_pht.setdefault(vb.pht, []).append(vb)
+            first_of: dict = {}
+            for pht, members in by_pht.items():
+                anchor = min(members, key=lambda v: v.identity)
+                first_of[pht] = anchor
+                for vb in members:
+                    if vb is anchor:
+                        continue
                     findings.append(Finding(
-                        file=registry.file_path,
-                        block=vb.block_index,
-                        check="5.1",
+                        file=registry.file_path, block=vb.block_index, check="5.1",
                         severity="ERROR",
-                        message=(
-                            f"Duplicate visit label '{label}' -- "
-                            f"also in block {seen_labels[label]}"
-                        ),
+                        message=(f"Duplicate visit label '{label}' -- also in block "
+                                 f"{anchor.block_index}, from the same table {pht}"),
                     ))
-                else:
-                    seen_labels[label] = vb.block_index
+            # Sorted by table, not file order: reordering Visit blocks must not move the WARNING
+            # to another block or reorder the message, which would re-key its baseline row.
+            tables = sorted(first_of.values(), key=lambda v: str(v.pht))
+            if len(tables) > 1:
+                ages = sorted({vb2.age_start_expr or "no age" for vb2 in tables})
+                for vb in tables[1:]:
+                    findings.append(Finding(
+                        file=registry.file_path, block=vb.block_index, check="5.1",
+                        severity="WARNING",
+                        message=(f"Visit id '{label}' emitted by {len(tables)} tables "
+                                 f"({', '.join(str(x.pht) for x in tables)}); first in block "
+                                 f"{tables[0].block_index}; age expressions: "
+                                 f"{'; '.join(repr_age(a) for a in ages)}"),
+                    ))
     else:
         # Static IDs -- check exact ID uniqueness
         seen_ids: dict[str, int] = {}
@@ -639,6 +621,87 @@ def check_5_2_referential_integrity(
     return findings
 
 
+_ID_SLOTS = ("id", "associated_visit", "associated_participant")
+
+
+def _id_exprs(block: dict):
+    """``(class name, slot, expr)`` for every id-like slot at any depth of a block."""
+    def walk(cls_name, cls_def):
+        slots = cls_def.get("slot_derivations")
+        if not isinstance(slots, dict):
+            return
+        for slot in _ID_SLOTS:
+            sd = slots.get(slot)
+            if isinstance(sd, dict) and sd.get("expr") not in (None, ""):
+                yield cls_name, slot, str(sd["expr"])
+        for sd in slots.values():
+            if isinstance(sd, dict):
+                for ncls, ndef in iter_nested_class_derivs(sd):
+                    if isinstance(ndef, dict):
+                        yield from walk(ncls, ndef)
+
+    cds = block.get("class_derivations") if isinstance(block, dict) else None
+    if isinstance(cds, dict):
+        for cls_name, cls_def in cds.items():
+            if isinstance(cls_def, dict):
+                yield from walk(cls_name, cls_def)
+
+
+def _fmt_codes(phv: str, codes: dict[str, int]) -> str:
+    return f"{phv} " + ", ".join(f"'{c}' ({n:,} rows)" for c, n in sorted(codes.items()))
+
+
+def check_5_12_id_coverage(
+    yaml_files: list[Path], hv_root: Path, registry: VisitRegistry, counts_for,
+) -> list[Finding]:
+    """5.12, and 5.2 for fallback labels: what the label rules could not, or did not, check.
+
+    * 5.12 WARNING: an id-like expression the enumerator cannot parse yields no labels and no
+      seeds, so 1.8, 5.1, 5.2 and 5.11 skip it; a skip is reported, not silent.
+    * 5.2 WARNING: an ``associated_visit`` fallback arm (``(True, 'FHS UNKNOWN VISIT')``) whose
+      label no Visit block defines, when the table's observed codes reach it -- those rows link
+      to a Visit that does not exist -- or when the reach cannot be evaluated. A fallback that
+      no observed code reaches is not reported. ``counts_for(phv)`` gives ``{code: rows}``.
+    """
+    findings: list[Finding] = []
+    for yf in yaml_files:
+        rel = yf.relative_to(hv_root).as_posix()
+        for idx, block in enumerate(parse_yaml_safe(yf) or []):
+            for cls_name, slot, expr in _id_exprs(block):
+                try:
+                    values = _visit_ids.enumerate_ids(expr)
+                except _visit_ids.Unparsed as exc:
+                    findings.append(Finding(
+                        file=rel, block=idx, check="5.12", severity="WARNING",
+                        message=(f"{cls_name}.{slot} expression cannot be parsed ({exc}), so "
+                                 f"1.8, 5.1, 5.2 and 5.11 did not check it")))
+                    continue
+                if slot != "associated_visit" or cls_name == "Visit":
+                    continue
+                missing = {v.label for v in values
+                           if v.fallback and v.label and v.label not in registry.all_labels}
+                if not missing:
+                    continue
+                try:
+                    phv, reach = _visit_ids.fallback_reach(expr, counts_for)
+                except _visit_ids.Unparsed as exc:
+                    for label in sorted(missing):
+                        findings.append(Finding(
+                            file=rel, block=idx, check="5.2", severity="WARNING",
+                            message=(f"{cls_name}.associated_visit fallback label '{label}' has "
+                                     f"no Visit block, and whether observed codes reach it "
+                                     f"cannot be evaluated ({exc})")))
+                    continue
+                for label in sorted(missing & set(reach)):
+                    findings.append(Finding(
+                        file=rel, block=idx, check="5.2", severity="WARNING",
+                        message=(f"{cls_name}.associated_visit fallback label '{label}' has no "
+                                 f"Visit block, and observed codes reach it: "
+                                 f"{_fmt_codes(phv, reach[label])} -- those rows link to a "
+                                 f"Visit that does not exist")))
+    return findings
+
+
 def check_5_3_visit_pht_consistency(
     registry: VisitRegistry,
     phv_index: dict[str, str],
@@ -675,7 +738,7 @@ def check_5_3_visit_pht_consistency(
             continue
 
         if vb.pht not in known_phts:
-            label = vb.visit_id or next(iter(vb.visit_labels), f"block {vb.block_index}")
+            label = vb.visit_id or min(vb.visit_labels, default=f"block {vb.block_index}")
             findings.append(Finding(
                 file=registry.file_path,
                 block=vb.block_index,
@@ -699,7 +762,7 @@ def check_5_4_age_formula(
     findings: list[Finding] = []
 
     for vb in registry.blocks:
-        label = vb.visit_id or next(iter(vb.visit_labels), f"block {vb.block_index}")
+        label = vb.visit_id or min(vb.visit_labels, default=f"block {vb.block_index}")
 
         # Check that age slots exist
         if not vb.age_start_expr and not vb.age_end_expr:
@@ -707,8 +770,9 @@ def check_5_4_age_formula(
                 file=registry.file_path,
                 block=vb.block_index,
                 check="5.4",
-                severity="WARNING",
-                message=f"Visit '{label}' has no age_at_visit_start or age_at_visit_end",
+                severity="INFO",
+                message=f"Visit '{label}' has no age_at_visit_start or age_at_visit_end "
+                        f"(age is optional on Visit)",
             ))
             continue
 
@@ -1147,6 +1211,104 @@ def check_5_10_uuid5_namespace(
     return findings
 
 
+#: dbGaP names of a participant-ID variable. A seed named anything else (FHS ``idtype``, the
+#: cohort code 0/1/2/3/7/72) collapses every row of a block onto one fake participant per value.
+PARTICIPANT_ID_NAMES = frozenset(n.casefold() for n in (
+    "shareid", "SUBJECT_ID", "SUBJID", "Individual_ID", "sidno", "New_SUBJID", "GENEVA_ID",
+    "dbGaP_Subject_ID",
+))
+
+
+def _seeds(slot_def) -> list[_visit_ids.Seed]:
+    out: list[_visit_ids.Seed] = []
+    for v in _visit_ids.slot_ids(slot_def):
+        if v.namespace is not None or not v.label:
+            out.extend(v.seeds)
+    return list(dict.fromkeys(out))
+
+
+def check_5_11_participant_seed(
+    yaml_files: list[Path], hv_root: Path, detail_idx: dict[str, dict],
+) -> list[Finding]:
+    """5.11: the seed of every participant / visit id is the table's participant ID.
+
+    For each Visit ``id``, ``associated_visit`` and ``associated_participant`` at any depth, the
+    ``str({phv})`` seeds are read by the shared enumerator and checked BY NAME against the detail
+    index:
+
+      (a) a seed whose dbGaP name is not a participant ID (``idtype``, ``IDTYPE``, ...);
+      (b) a visit seed set that differs from the participant seed set at the same level (the
+          participant is inherited from the enclosing class when a nested one has none);
+      (c) an unqualified seed in no enclosing table (the class's ``populated_from`` and those of
+          the classes around it, as 3.5 reads reachability): a bare reference to another table
+          is None in linkml-map, so participant and visit are emitted empty.
+
+    Name-based on purpose: shareid and idtype are adjacent accessions in FHS tables but the
+    distance varies by table, so a distance rule would be wrong. One ERROR per reason, so a
+    second defect in a block that is already a known issue is a finding of its own.
+    """
+    findings: list[Finding] = []
+
+    def name_of(seed: _visit_ids.Seed) -> tuple[str | None, str | None]:
+        if not seed.phv.startswith("phv"):
+            return seed.phv, None        # a bare column name such as {dbGaP_Subject_ID}
+        rec = detail_idx.get(seed.phv)
+        if not rec:
+            return None, None
+        return rec.get("name"), rec.get("pht")
+
+    for yf in yaml_files:
+        rel = yf.relative_to(hv_root).as_posix()
+        blocks = parse_yaml_safe(yf) or []
+        for idx, block in enumerate(blocks):
+            if not isinstance(block, dict):
+                continue
+            cds = block.get("class_derivations")
+            if not isinstance(cds, dict):
+                continue
+            reasons: list[str] = []
+
+            def level(cls_name, cls_def, tables, inherited):
+                slots = cls_def.get("slot_derivations")
+                if not isinstance(slots, dict):
+                    return
+                visit = _seeds(slots.get("id") if cls_name == "Visit"
+                               else slots.get("associated_visit"))
+                own_part = _seeds(slots.get("associated_participant"))
+                part = own_part or inherited
+                for seed in visit + own_part:
+                    name, pht = name_of(seed)
+                    label = f"{{{seed.phv}}}" + (f" ({name}, {pht})" if pht else "")
+                    if name is None:
+                        continue
+                    if name.casefold() not in PARTICIPANT_ID_NAMES:
+                        reasons.append(f"seed {label} is not a participant ID")
+                    if pht and not seed.table and tables and pht not in tables:
+                        reasons.append(f"seed {label} is in another table than "
+                                       f"{', '.join(tables)} and has no join, so it is None")
+                if visit and part and {s.phv for s in visit} != {s.phv for s in part}:
+                    reasons.append(
+                        f"visit seed {sorted({s.phv for s in visit})} differs from participant "
+                        f"seed {sorted({s.phv for s in part})}")
+                for slot_def in slots.values():
+                    if isinstance(slot_def, dict):
+                        for ncls, ndef in iter_nested_class_derivs(slot_def):
+                            if isinstance(ndef, dict):
+                                npht = ndef.get("populated_from")
+                                level(ncls, ndef, tables + ((npht,) if npht else ()), part)
+
+            for cls_name, cls_def in cds.items():
+                if isinstance(cls_def, dict):
+                    top = cls_def.get("populated_from")
+                    level(cls_name, cls_def, (top,) if top else (), [])
+            for reason in dict.fromkeys(reasons):
+                findings.append(Finding(
+                    file=rel, block=idx, check="5.11", severity="ERROR",
+                    message=f"participant / visit id seed: {reason}",
+                ))
+    return findings
+
+
 # -- Index loading ------------------------------------------------------------
 
 def load_phv_index(cache_dir: Path, cache_key: str) -> dict[str, str] | None:
@@ -1223,6 +1385,7 @@ def main() -> int:
     unrun_check = False
     cohorts_processed = 0
     cohorts_skipped: list[str] = []
+    scanned_files: list[Path] = []
 
     for cohort in cohort_dirs:
         ingest_dir = base_dir / f"{cohort}-ingest"
@@ -1245,28 +1408,19 @@ def main() -> int:
             unrun_check = True
             continue
 
-        # Under `all` a directory without visit.yaml is a documented 5.0 WARNING (every shipped
-        # cohort has one). A cohort NAMED on the command line was asked for, and none of
-        # 5.1-5.10 ran for it, so there it is an unrun check like the branch above.
+        # An ingest directory without visit.yaml means none of 5.1-5.12 ran for that cohort, so
+        # it is an unrun check whether the cohort was named or found under `all`: CI lints
+        # `--cohort all`, and a deleted visit.yaml must fail it at any `--fail-on`.
         if not visit_file.exists():
-            if named:
-                all_findings.append(Finding(
-                    file=f"priority_variables_transform/{cohort}-ingest/",
-                    block=-1,
-                    check="5.0",
-                    severity="ERROR",
-                    message=(f"No visit.yaml found for cohort {cohort}, so Phase 5 DID NOT "
-                             f"RUN for it"),
-                ))
-                unrun_check = True
-            else:
-                all_findings.append(Finding(
-                    file=f"priority_variables_transform/{cohort}-ingest/",
-                    block=-1,
-                    check="5.0",
-                    severity="WARNING",
-                    message=f"No visit.yaml found for cohort {cohort}",
-                ))
+            all_findings.append(Finding(
+                file=f"priority_variables_transform/{cohort}-ingest/",
+                block=-1,
+                check="5.0",
+                severity="ERROR",
+                message=(f"No visit.yaml found for cohort {cohort}, so Phase 5 DID NOT "
+                         f"RUN for it"),
+            ))
+            unrun_check = True
             cohorts_skipped.append(cohort)
             continue
 
@@ -1289,7 +1443,21 @@ def main() -> int:
 
         # Scan all non-visit YAML files
         yaml_files = find_yaml_files(base_dir, cohort)
+        scanned_files.extend(yaml_files)
         non_visit_files = [f for f in yaml_files if f.name != "visit.yaml"]
+
+        # A spec Phase 5 cannot parse reads as empty to every check below, so its findings
+        # vanish and a prune would remove their entries: it is an unrun check, at any --fail-on.
+        for yf in non_visit_files:
+            error = yaml_parse_error(yf)
+            if error:
+                all_findings.append(Finding(
+                    file=yf.relative_to(hv_root).as_posix(), block=-1, check="5.0",
+                    severity="ERROR",
+                    message=(f"Could not parse {yf.name} ({error}), so Phase 5 DID NOT RUN on "
+                             f"it"),
+                ))
+                unrun_check = True
 
         cohort_refs: list[VisitReference] = []
         cohort_blocks: list[TransformBlock] = []
@@ -1317,6 +1485,21 @@ def main() -> int:
         all_findings.extend(check_5_2_referential_integrity(registry, cohort_refs))
 
         cache_key = _cohorts.cache_key_for(cohort, args.cache_dir or "")
+
+        # 5.12 (and 5.2 for fallback labels): id expressions the label rules could not check.
+        try:
+            stats = (_css.load_stats_index(Path(args.cache_dir), cache_key)
+                     if args.cache_dir else None) or {}
+        except _cohorts.CacheIntegrityError as exc:
+            stats = {}
+            all_findings.append(Finding(
+                f"priority_variables_transform/{cohort}-ingest", 0, "5.12", "ERROR",
+                f"{exc} -- so the observed-code half of check 5.12 DID NOT RUN"))
+            unrun_check = True
+        all_findings.extend(check_5_12_id_coverage(
+            yaml_files, hv_root, registry,
+            lambda phv: stats[phv].counts if phv in stats else None))
+
         phv_index = None
         mismatch = None
         release_ok = True
@@ -1423,11 +1606,15 @@ def main() -> int:
                 pass  # reported above; the run already fails
             elif detail_idx is None:
                 all_findings.append(Finding(
-                    f"priority_variables_transform/{cohort}-ingest", 0, "5.8", "ERROR",
+                    f"priority_variables_transform/{cohort}-ingest", 0, "5.8/5.11", "ERROR",
                     f"no detail index for {cohort} (looked for '{cache_key}_detail.json.gz' "
-                    f"in {args.cache_dir}), so check 5.8 DID NOT RUN"))
+                    f"in {args.cache_dir}), so checks 5.8 and 5.11 DID NOT RUN"))
                 unrun_check = True
             else:
+                # 5.11: participant / visit seeds, by dbGaP variable name
+                all_findings.extend(
+                    check_5_11_participant_seed(yaml_files, hv_root, detail_idx)
+                )
                 # Check if this cohort has any coll_interval data
                 n_ci = sum(1 for v in detail_idx.values() if v.get("coll_interval"))
                 if n_ci > 0:
@@ -1437,7 +1624,13 @@ def main() -> int:
                         )
                     )
                 else:
-                    print(f"  INFO: No coll_interval data for {cohort} -- skipping 5.8")
+                    # A skip that prints nothing reads as "no mismatch": say it in the findings,
+                    # so a 5.8 pass is not taken for coverage this cohort does not have.
+                    all_findings.append(Finding(
+                        f"priority_variables_transform/{cohort}-ingest", 0, "5.8", "WARNING",
+                        f"5.8 did not run for {cohort}: its detail index has no coll_interval "
+                        f"(collection interval) for any variable, so collection-interval "
+                        f"mismatches are not checked here"))
 
         # 5.9: Visit uuid5 format compliance
         all_findings.extend(check_5_9_uuid5_format(registry, cohort_refs))
@@ -1450,6 +1643,12 @@ def main() -> int:
         )
 
         cohorts_processed += 1
+
+    # Known issues, stale entries and the WARNING ratchet (hv-lint/_known_issues.py).
+    all_findings.extend(_known_issues.finalize(
+        all_findings,
+        checks={"5.0", "5.1", "5.2", "5.3", "5.4", "5.6", "5.8", "5.9", "5.10", "5.11", "5.12"},
+        scanned_files=scanned_files, make_finding=Finding))
 
     # -- Print findings grouped by file --
     findings_by_file: dict[str, list[Finding]] = {}
@@ -1497,8 +1696,8 @@ def main() -> int:
         # `--fail-on critical` did exactly that, and the run then reported PASSED having
         # skipped 5.3/5.4/5.8 for the cohort whose cache was the wrong release.
         print("\nFAILED: at least one check DID NOT RUN -- a named cohort has no ingest "
-              "directory or no visit.yaml, a visit.yaml could not be parsed or has no Visit "
-              "blocks, the mandatory dbGaP release check did not pass, or a required cache "
+              "directory, a cohort has no visit.yaml, a visit.yaml could not be parsed or has "
+              "no Visit blocks, another spec could not be parsed, the mandatory dbGaP release check did not pass, or a required cache "
               "input was missing (see the ERROR findings above). This is not weighed against "
               "--fail-on.")
         return 1

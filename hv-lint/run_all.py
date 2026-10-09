@@ -10,6 +10,10 @@ Usage:
     python hv-lint/run_all.py --cohort ARIC --skip phase2
     python hv-lint/run_all.py --cohort FHS --fail-on warning
     python hv-lint/run_all.py --cohort WHI --no-report
+    HVLINT_PRUNE=1 python hv-lint/run_all.py --cohort all            # drop fixed known issues
+    HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all  # accept WARNING changes
+    HVLINT_PRUNE=1 HVLINT_PRUNE_REMOVED=1 python hv-lint/run_all.py --cohort all
+                                     # also drop entries whose file/block was removed (listed)
 """
 
 from __future__ import annotations
@@ -19,6 +23,7 @@ import io
 import os
 import subprocess
 import sys
+import tempfile
 from datetime import datetime
 from pathlib import Path
 
@@ -27,6 +32,7 @@ REPORTS_DIR = SCRIPT_DIR / "reports"
 
 sys.path.insert(0, str(SCRIPT_DIR))
 import _cohorts  # noqa: E402
+import _known_issues  # noqa: E402
 
 PHASES = {
     "phase1": {
@@ -85,7 +91,8 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument(
         "--bdchm-ref", default=None,
-        help="Git ref for BDCHM schema in Phase 2 (default: main)"
+        help="Git ref for BDCHM schema in Phase 2 (default: the pinned BDCHM_REF in "
+             "phase-2/validate_model_conformance.py)"
     )
     p.add_argument(
         "--bdchm-schema", default=None,
@@ -156,6 +163,23 @@ def main() -> int:
     # Default cache-dir
     cache_dir = args.cache_dir or str(SCRIPT_DIR / "dbgap-cache")
 
+    # Both rewriting modes at once: update writes the baseline directly while prune stages, so
+    # one of them would report "nothing written" over a write. Refuse before any phase runs.
+    if _known_issues.both_modes_set():
+        print(f"ERROR: {_known_issues.BOTH_MODES_MESSAGE}", file=sys.stderr)
+        return 2
+
+    # The known-issue prune and baseline update modes run only under this flag: a phase or a
+    # component started on its own may cover part of a cohort (hv-lint/_known_issues.py).
+    os.environ["HVLINT_RUN_ALL"] = "1"
+    # A prune is staged by the components and written here, only when every phase ran clean.
+    stage: Path | None = None
+    if os.environ.get(_known_issues.PRUNE_ENV) == "1":
+        fd, name = tempfile.mkstemp(prefix="hvlint-prune-", suffix=".jsonl")
+        os.close(fd)
+        stage = Path(name)
+        os.environ[_known_issues.STAGE_ENV] = str(stage)
+
     # Propagate --hv-root
     if args.hv_root:
         os.environ["HV_ROOT"] = str(Path(args.hv_root).resolve())
@@ -211,6 +235,39 @@ def main() -> int:
         summary.write(f"\n{len(failed)} phase(s) failed.\n")
     else:
         summary.write("\nAll phases passed.\n")
+
+    if stage is not None:
+        os.environ.pop(_known_issues.STAGE_ENV, None)
+        refusals: list[str] = []
+        n_entries = n_rows = 0
+        if failed:
+            refusals.append(f"{len(failed)} phase(s) failed ({', '.join(failed)})")
+        # A skipped phase proved nothing fixed, and a phase that ran can read a defect it
+        # cannot parse as absent, which only the skipped phase would have reported.
+        skipped = [n for n in PHASES if n in args.skip]
+        if skipped:
+            refusals.append(f"{len(skipped)} phase(s) skipped ({', '.join(skipped)})")
+        removed = _known_issues.staged_removed(stage)
+        if not refusals:
+            n_entries, n_rows, refusals = _known_issues.apply_staged_prune(stage)
+        stage.unlink(missing_ok=True)
+        # Every entry or row pruned because its file or block is gone is named in the log: a
+        # removal must read as a removal in the PR, never as a fix.
+        if removed and not refusals:
+            summary.write(f"\nREMOVED, not fixed ({_known_issues.PRUNE_REMOVED_ENV}=1): "
+                          f"{len(removed)} entry/row(s) whose file or block no longer exists, "
+                          f"appended to hv-lint/removed.yaml:\n")
+            for d in removed:
+                summary.write(f"  - {d}\n")
+        if refusals:
+            summary.write("\nPrune REFUSED, nothing written: " + "; ".join(dict.fromkeys(refusals))
+                          + ". A prune removes only what a run where every phase passes proves "
+                          "fixed.\n")
+            failed = failed or ["prune"]
+        else:
+            summary.write(f"\nPrune applied: {n_entries} known-issue entr"
+                          f"{'y' if n_entries == 1 else 'ies'} and {n_rows} baseline row(s) "
+                          f"removed.\n")
 
     summary_text = summary.getvalue()
     print(summary_text, end="")

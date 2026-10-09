@@ -1,0 +1,20 @@
+# fhs_cig_smok_b36: copied verbatim from HV main 731984f5 as a fixed test case for #885 (fallback 'FHS UNKNOWN VISIT' reached by idtype 2/3/72).
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht012916
+    slot_derivations:
+      associated_participant:
+        expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00525296}) + ":FHS")'
+      associated_visit:
+        expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00525296}) + ":" + case(({phv00525297} == ''1'', ''FHS OFFSPRING EXAM 5''), ({phv00525297} == ''7'', ''FHS OMNI 1 EXAM 5''), (True, ''FHS UNKNOWN VISIT'')))'
+      age_at_observation:
+        expr: '{pht003099.phv00177938} * 365'
+      observation_type:
+        value: OMOP:4282779
+        range: string
+      value_enum:
+        populated_from: phv00525302
+        value_mappings:
+          '0': OMOP:45883537
+          '1': OMOP:45883458
+          '2': OMOP:40766945

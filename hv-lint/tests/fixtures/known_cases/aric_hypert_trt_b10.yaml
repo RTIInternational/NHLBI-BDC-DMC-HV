@@ -1,0 +1,21 @@
+# aric_hypert_trt_b10: copied verbatim from HV main 731984f5 as a fixed test case for #885.
+class_derivations:
+  DrugExposure:
+    populated_from: pht012813
+    slot_derivations:
+      associated_participant:
+        expr: uuid5("https://w3id.org/bdchm/Participant", str({phv00511942}) + ":ARIC")
+      associated_visit:
+        expr: uuid5("https://w3id.org/bdchm/Visit", str({phv00511942}) + ":ARIC EXAM 4")
+        range: string
+      drug_concept:
+        value: ATC:C02
+      exposure_provenance:
+        value: PATIENT_SELF_REPORTED_MEDICATION
+        range: string
+      exposure_status:
+        populated_from: phv00511981
+        value_mappings:
+          '0': ABSENT
+          '1': PRESENT
+          T: UNKNOWN

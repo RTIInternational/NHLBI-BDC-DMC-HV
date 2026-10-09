@@ -1,0 +1,10 @@
+# Direct dependencies of the hv-lint CI jobs (the lint job and the unit-test job). Compile the
+# hashed lock from this file, universal so --require-hashes installs on Linux, Windows and macOS:
+#   uv pip compile hv-lint/requirements-lint.in --universal --python-version 3.12 --generate-hashes -o hv-lint/requirements-lint.txt
+pyyaml==6.0.3
+yamllint==1.38.0
+linkml-runtime==1.12.0
+linkml-map==0.5.3
+# The unit-test job's runner. It was already in the lock through a dependency; pinned here so a
+# dependency dropping it cannot unpin the job.
+pytest==9.1.1

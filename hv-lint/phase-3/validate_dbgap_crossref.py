@@ -15,8 +15,16 @@ Checks implemented:
     3.1  PHV/PHT accession format -- malformed accessions flagged
     3.2  PHT existence -- referenced PHTs must exist in dbGaP index
     3.3  PHV existence -- referenced PHVs must exist in dbGaP index
-    3.4  PHV-to-PHT membership -- PHVs must belong to the declared table
-    3.5  Cross-table reference -- PHV from a different table without joins
+    3.4  Qualified reference -- a dotted ``{pht.phv}`` must name the table the PHV is in (ERROR)
+    3.5  Cross-table reference without a join -- a BARE ``{phv}`` (or bare ``populated_from``)
+         whose table is neither the block's class table, the ``populated_from`` of an enclosing
+         nested derivation, nor a declared join (ERROR, every slot)
+
+How linkml-map 0.5.3 resolves references (dm-bip's own schema step and map call): a dotted
+``{pht.phv}`` and a nested derivation's ``populated_from`` table are reached through a join it
+synthesizes on ``dbGaP_Subject_ID``, so they produce no finding. A bare reference to another
+table's column makes no join: the value is None on every row (exit 0, one pre-flight log line),
+or, for a ``populated_from`` whose column is in no loaded table, the entity run aborts.
 """
 
 from __future__ import annotations
@@ -31,8 +39,9 @@ from pathlib import Path
 # Path resolution -- works in both control center and HV repo
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
+import _known_issues  # noqa: E402
 import _cohorts  # noqa: E402
-from _derivations import iter_nested_class_derivs  # noqa: E402
+from _derivations import iter_nested_class_derivs, walk_slot_derivations  # noqa: E402
 
 import yaml
 
@@ -43,22 +52,12 @@ import yaml
 # Constants
 # ---------------------------------------------------------------------------
 
-# Files to skip entirely. Each entry suppresses cross-reference checks for one
-# file while a tracked data issue is resolved -- remove the entry once fixed.
-KNOWN_ISSUES: dict[str, str] = {}
-
 SEVERITY_RANK = {"CRITICAL": 5, "ERROR": 4, "HIGH": 3, "WARNING": 2, "INFO": 1}
 
-# Slots that routinely reference a different table (e.g.,
-# associated_participant always comes from the subject table,
-# age_at_* slots reference the visit/age table).
-EXPECTED_CROSS_TABLE_SLOTS = {
-    "associated_participant", "associated_visit",
-}
-# Slot name prefixes where cross-table references are normal
-EXPECTED_CROSS_TABLE_PREFIXES = (
-    "age_at_", "age_of_",
-)
+# A reference inside an expression: ``{phv}`` or the qualified ``{pht.phv}``.
+REF_RE = re.compile(r"\{(?:(pht\d{6})\.)?(phv\d{8})\}")
+# A ``populated_from`` may also be qualified: ``pht003099.phv00177932``.
+QUALIFIED_PF_RE = re.compile(r"^(?:(pht\d{6})\.)?(phv\d{8})$")
 
 # ---------------------------------------------------------------------------
 # Accession format regexes
@@ -157,78 +156,36 @@ def detect_cohort(file_path: Path) -> str:
 # Reference extraction
 # ---------------------------------------------------------------------------
 
-def extract_slot_refs(
-    slot_derivs: dict, class_name: str
-) -> tuple[list[tuple[str, str]], set[str]]:
-    """Extract PHV references and join PHTs from slot_derivations.
+def _slot_references(block: dict):
+    """Yield ``(site, phv, qualifier_pht_or_None, context)`` for every PHV a slot reads."""
+    for site in walk_slot_derivations(block):
+        sd = site.slot_def
+        context = f"{site.slot_name} on {site.class_name}"
+        seen: set[tuple[str, str | None]] = set()
 
-    Returns:
-        phv_refs: list of (phv, "slot_name on ClassName")
-        join_phts: set of PHTs declared via joins
-    """
-    phv_refs_seen: set[tuple[str, str]] = set()
-    phv_refs: list[tuple[str, str]] = []
-    join_phts: set[str] = set()
+        def _emit(phv, qual, ctx):
+            if (phv, qual) not in seen:
+                seen.add((phv, qual))
+                return [(site, phv, qual, ctx)]
+            return []
 
-    def _add_ref(phv: str, context: str) -> None:
-        key = (phv, context)
-        if key not in phv_refs_seen:
-            phv_refs_seen.add(key)
-            phv_refs.append(key)
-
-    if not isinstance(slot_derivs, dict):
-        return phv_refs, join_phts
-
-    for slot_name, slot_def in slot_derivs.items():
-        if not isinstance(slot_def, dict):
-            continue
-
-        # Direct populated_from
-        pf = slot_def.get("populated_from")
-        if isinstance(pf, str) and PHV_STRICT_RE.fullmatch(pf):
-            _add_ref(pf, f"{slot_name} on {class_name}")
-
-        # PHVs in expr (within {phv...} or plain references)
-        expr = slot_def.get("expr")
+        out = []
+        pf = sd.get("populated_from")
+        if isinstance(pf, str):
+            m = QUALIFIED_PF_RE.match(pf.strip())
+            if m:
+                out += _emit(m.group(2), m.group(1), context)
+        expr = sd.get("expr")
         if isinstance(expr, str):
-            for m in PHV_STRICT_RE.finditer(expr):
-                _add_ref(m.group(), f"expr in {slot_name} on {class_name}")
-
-        # PHVs in value_mappings keys
-        vm = slot_def.get("value_mappings")
-        if isinstance(vm, dict):
-            for k in vm:
-                if isinstance(k, str):
-                    for m in PHV_STRICT_RE.finditer(k):
-                        _add_ref(m.group(), f"value_mappings key in {slot_name} on {class_name}")
-
-        # PHVs in expression_to_value_mappings keys
-        evm = slot_def.get("expression_to_value_mappings")
-        if isinstance(evm, dict):
-            for k in evm:
-                if isinstance(k, str):
-                    for m in PHV_STRICT_RE.finditer(k):
-                        _add_ref(m.group(), f"expression_to_value_mappings in {slot_name} on {class_name}")
-
-        # Recurse into nested class derivations (list-based or legacy
-        # object_derivations)
-        for nested_cls, nested_def in iter_nested_class_derivs(slot_def):
-            if isinstance(nested_def, dict):
-                nested_slots = nested_def.get("slot_derivations")
-                nested_slots = nested_slots if isinstance(nested_slots, dict) else {}
-                nested_phvs, nested_joins = extract_slot_refs(nested_slots, nested_cls)
-                for ref in nested_phvs:
-                    if ref not in phv_refs_seen:
-                        phv_refs_seen.add(ref)
-                        phv_refs.append(ref)
-                join_phts.update(nested_joins)
-
-                # Nested class populated_from PHT
-                npht = nested_def.get("populated_from")
-                if isinstance(npht, str) and PHT_STRICT_RE.fullmatch(npht):
-                    join_phts.add(npht)
-
-    return phv_refs, join_phts
+            for m in REF_RE.finditer(expr):
+                out += _emit(m.group(2), m.group(1), f"expr in {context}")
+        for key_name in ("value_mappings", "expression_to_value_mappings"):
+            mapping = sd.get(key_name)
+            if isinstance(mapping, dict):
+                for k in mapping:
+                    for m in PHV_STRICT_RE.finditer(str(k)):
+                        out += _emit(m.group(), None, f"{key_name} key in {context}")
+        yield from out
 
 
 # ---------------------------------------------------------------------------
@@ -451,58 +408,38 @@ def check_block(
                     f"PHV '{phv}' ({context}) not found in dbGaP index"
                 ))
 
-        # Extract PHV references from slot derivations
-        phv_refs, nested_join_phts = extract_slot_refs(slot_derivs, class_name)
-        join_phts.update(nested_join_phts)
-
-        # Track which non-class PHTs are reachable via joins
-        all_reachable_phts = ({class_pht} if class_pht else set()) | join_phts
-
-        for phv, context in phv_refs:
-            # -- Check 3.3: PHV existence --
+        # -- Checks 3.3 / 3.4 / 3.5 over every slot at every depth --
+        block_view = {"class_derivations": {class_name: class_def}}
+        for site, phv, qualifier, context in _slot_references(block_view):
             if phv not in dbgap.phv_to_pht:
                 findings.append(Finding(
                     rel_path, block_idx, "3.3", "ERROR",
                     f"PHV '{phv}' ({context}) not found in dbGaP index"
                 ))
                 continue
-
             actual_pht = dbgap.phv_to_pht[phv]
-
-            # -- Check 3.4 / 3.5: PHV-to-PHT membership --
+            if qualifier:
+                if qualifier != actual_pht:
+                    findings.append(Finding(
+                        rel_path, block_idx, "3.4", "ERROR",
+                        f"'{{{qualifier}.{phv}}}' ({context}) names {qualifier}, but {phv} is in "
+                        f"{actual_pht} -- the synthesized join reads the wrong table"
+                    ))
+                continue
             if not class_pht:
                 continue
-            if actual_pht != class_pht:
-                # Determine the slot name from context string
-                slot_in_context = context.split(" on ")[0] if " on " in context else ""
-                # For "expr in slot_name" patterns, extract the actual slot
-                bare_slot = slot_in_context.replace("expr in ", "").replace(
-                    "value_mappings key in ", ""
-                ).replace("expression_to_value_mappings in ", "")
-
-                if actual_pht in all_reachable_phts:
-                    # Cross-table but covered by a join
-                    findings.append(Finding(
-                        rel_path, block_idx, "3.4", "INFO",
-                        f"PHV '{phv}' ({context}) belongs to {actual_pht}, "
-                        f"not class PHT {class_pht} (covered by joins)"
-                    ))
-                elif (bare_slot in EXPECTED_CROSS_TABLE_SLOTS
-                      or any(bare_slot.startswith(pfx) for pfx in EXPECTED_CROSS_TABLE_PREFIXES)):
-                    # Expected cross-table pattern
-                    findings.append(Finding(
-                        rel_path, block_idx, "3.4", "INFO",
-                        f"PHV '{phv}' ({context}) belongs to {actual_pht}, "
-                        f"not class PHT {class_pht} (expected cross-table)"
-                    ))
-                else:
-                    # Unexpected cross-table reference
-                    findings.append(Finding(
-                        rel_path, block_idx, "3.5", "WARNING",
-                        f"PHV '{phv}' ({context}) belongs to {actual_pht}, "
-                        f"not class PHT {class_pht} - possible cross-table "
-                        f"reference without joins"
-                    ))
+            reachable = set(site.tables) | join_phts
+            if actual_pht in reachable:
+                continue
+            findings.append(Finding(
+                rel_path, block_idx, "3.5", "ERROR",
+                f"PHV '{phv}' ({context}) belongs to {actual_pht}, which is not the class table "
+                f"{class_pht}"
+                + (f", an enclosing nested table ({', '.join(site.tables[1:])})"
+                   if len(site.tables) > 1 else "")
+                + " or a declared join -- a bare cross-table reference resolves to None in "
+                f"linkml-map (write {{{actual_pht}.{phv}}} or use the block's own table's variable)"
+            ))
 
     return findings
 
@@ -633,9 +570,6 @@ def main() -> int:
     for file_path in yaml_files:
         rel_path = file_path.relative_to(hv_root).as_posix()
 
-        if rel_path in KNOWN_ISSUES:
-            continue
-
         cohort = detect_cohort(file_path)
         if cohort not in indexes:
             skipped_no_index.append(rel_path)
@@ -644,7 +578,7 @@ def main() -> int:
         try:
             with file_path.open(encoding="utf-8") as f:
                 data = yaml.safe_load(f)
-        except (OSError, yaml.YAMLError) as exc:
+        except (OSError, UnicodeDecodeError, yaml.YAMLError) as exc:
             all_findings.append(Finding(
                 check="3.0", severity="ERROR",
                 file=rel_path, block=0,
@@ -679,6 +613,10 @@ def main() -> int:
                 file=skipped_file, block=0,
                 message="No dbGaP index available for cohort -- file not validated",
             ))
+
+    # Known issues, stale entries and the WARNING ratchet (hv-lint/_known_issues.py).
+    all_findings.extend(_known_issues.finalize(
+        all_findings, checks={"3.0", "3.1", "3.2", "3.3", "3.4", "3.5"}, scanned_files=yaml_files, make_finding=Finding))
 
     fail_rank = SEVERITY_RANK[args.fail_on.upper()]
 

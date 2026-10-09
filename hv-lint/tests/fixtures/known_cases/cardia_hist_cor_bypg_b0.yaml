@@ -1,0 +1,21 @@
+# cardia_hist_cor_bypg_b0: block 0 of CARDIA-ingest/hist_cor_bypg.yaml at the #885 branch tip after main c0307803, a fixed test case for #885.
+class_derivations:
+  Procedure:
+    populated_from: pht001869
+    slot_derivations:
+      associated_participant:
+        expr: uuid5("https://w3id.org/bdchm/Participant", str({phv00121257}) + ":CARDIA")
+      associated_visit:
+        expr: uuid5("https://w3id.org/bdchm/Visit", str({phv00121257}) + ":CARDIA
+          MEDICAL HISTORY")
+        range: string
+      procedure_concept:
+        expr: case(({phv00121381} == 2, "OMOP:4336464"))
+      procedure_provenance:
+        value: PATIENT_SELF_REPORT
+        range: string
+      procedure_status:
+        populated_from: phv00121381
+        value_mappings:
+          '1': ABSENT
+          '2': PRESENT

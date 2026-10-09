@@ -59,7 +59,14 @@ COMPONENTS = {
     },
     "cross-file-pht": {
         "script": SCRIPT_DIR / "check_cross_file_pht_consistency.py",
-        "label": "Cross-File PHT Visit Label Consistency (1.8)",
+        "label": "Cross-File PHT Visit Label Consistency (1.8, 1.14)",
+        "cohort_flag": "--cohort",
+        "extra_args": [],
+        "supports_fail_on": True,
+    },
+    "cross-file-dup": {
+        "script": SCRIPT_DIR / "check_cross_file_duplicates.py",
+        "label": "Cross-File Identical Blocks (1.12)",
         "cohort_flag": "--cohort",
         "extra_args": [],
         "supports_fail_on": True,

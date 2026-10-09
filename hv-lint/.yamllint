@@ -12,6 +12,8 @@
 #   - new-line-at-end-of-file: disabled (not a functional concern)
 #   - new-lines: disabled (Windows CRLF is normal in this environment)
 #   - document-start: disabled (files don't use --- consistently)
+#   - comments-indentation: disabled (#885) -- every hit was a commented-out YAML line kept by
+#     the repo convention; none affects parsing or output (664 on main 731984f5)
 
 extends: default
 
@@ -22,6 +24,7 @@ rules:
   new-line-at-end-of-file: disable
   new-lines: disable
   document-start: disable
+  comments-indentation: disable
 
   # --- Enabled rules ---
   indentation:
@@ -32,8 +35,11 @@ rules:
   key-duplicates:
     level: error
 
+  # error, not warning: yamllint exits 0 on warnings and run_yamllint.py does not pass them to
+  # the known-issue step, so a warning is neither fatal nor ratcheted. A bare Yes:/No:/on: key
+  # parses as a bool, which linkml-map never matches (rule 1.15).
   truthy:
-    level: warning
+    level: error
     allowed-values: ['true', 'false']
     check-keys: true
 

@@ -11,12 +11,18 @@ on:
       # must run this workflow -- otherwise the one change the check exists to police is the
       # one change that never reaches it.
       - 'hv_dataqc/cache_fetcher/manifests/**'
+  # main itself, after every merge, over every cohort (Detect runs on pull_request only, so the
+  # config step falls back to `all`). Two PRs each green on its own base can be red together --
+  # one adds the block another adds in a different file (1.12), or one fixes the finding whose
+  # entry another relies on -- and without this no run shows it.
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
       bdchm_ref:
-        description: "BDCHM schema git ref (branch/tag/SHA)"
+        description: "BDCHM schema git ref (branch/tag/SHA); empty = the pinned BDCHM_REF"
         required: false
-        default: "main"
+        default: ""
       cohort:
         description: "Cohort to validate (ARIC, CHS, etc.) or 'all'"
         required: false
@@ -31,15 +37,18 @@ on:
         default: "50"
 
 jobs:
-  # Unit tests for the linter itself: tmp_path fixtures, no committed cache, no network.
-  # Three tests read the shipped specs (COPDGene bdy_hgt.yaml and FHS visit.yaml in
-  # test_visit_label_extraction.py, and test_cohorts.py's check that every *-ingest/ cohort
-  # has a _manifest-<cohort>.yaml and a visit.yaml), so a spec PR that adds a cohort without
-  # a declaration or a visit.yaml, or changes FHS visit ids, fails this job. ENFORCED: these
-  # pin the resolver every phase manager calls to turn `--cohort` into a cache key, the
-  # visit-label extractor checks 1.8 and 5.1 share, and the fail-closed exits of the phase
-  # mains. Runs alongside hv-lint rather than after it -- a lint backlog must not stop the
-  # linter's own regressions from being reported.
+  # Unit tests for the linter itself: tmp_path fixtures, the committed cache, known-case
+  # fixtures, no network. Some tests read the shipped specs: COPDGene bdy_hgt.yaml and FHS
+  # visit.yaml (test_visit_label_extraction.py), every *-ingest/ cohort has a
+  # _manifest-<cohort>.yaml and a visit.yaml (test_cohorts.py), every id expression parses
+  # (test_rule_fixes_885.py), and every known_issues.yaml entry names a file that exists
+  # (test_known_issues.py). So a spec PR that adds a cohort without a declaration or a
+  # visit.yaml, changes FHS visit ids, writes an id expression the enumerator cannot read, or
+  # deletes a file a known issue names fails this job. ENFORCED: these pin the resolver every
+  # phase manager calls to turn `--cohort` into a cache key, the shared visit-id enumerator,
+  # each rule on its known cases, known_issues.yaml's schema (every entry names an issue), and
+  # the fail-closed exits of the phase mains. Runs alongside hv-lint rather than after it -- a
+  # lint failure must not stop the linter's own regressions from being reported.
   unit-tests:
     runs-on: ubuntu-latest
     steps:
@@ -51,11 +60,10 @@ jobs:
         with:
           python-version: "3.12"
 
-      # pyyaml is the only third-party import these tests reach: _cohorts is stdlib-only,
-      # and the phase-1, phase-3 and phase-5 modules they exercise import yaml and nothing
-      # else. The lint job's linkml-runtime is not needed here.
+      # The lint job's hashed lock, pytest included: the end-to-end tests drive Phase 2's main,
+      # which needs linkml-runtime and linkml-map, and skip without them.
       - name: Install dependencies
-        run: pip install pytest pyyaml
+        run: pip install --require-hashes -r hv-lint/requirements-lint.txt
 
       - name: Run hv-lint unit tests
         run: python -m pytest -q hv-lint/tests/
@@ -73,14 +81,26 @@ jobs:
         with:
           python-version: "3.12"
 
+      # Every package is pinned with its hashes (hv-lint/requirements-lint.txt, compiled from
+      # requirements-lint.in, universal, for Python 3.12): the ratchet compares findings, so a new
+      # yamllint, linkml-runtime or PyYAML release must not change them under an unrelated PR.
+      # linkml-map is the model Phase 2's 2.1 reads its valid keys from; without it Phase 2
+      # fails in CI rather than fall back to the frozen v0.3.9 key sets (Assumption A2). 0.5.3
+      # is the version the pipeline runs (A6).
       - name: Install dependencies
-        run: pip install pyyaml yamllint linkml-runtime
+        run: pip install --require-hashes -r hv-lint/requirements-lint.txt
 
       - name: Detect changed cohort
         id: detect
         if: github.event_name == 'pull_request'
         run: |
           BASE=${{ github.event.pull_request.base.sha }}
+          # A change to HV-Lint itself (a rule, known_issues.yaml, warning_baseline.json) or to
+          # this workflow can change the result for every cohort, and the known-issue and
+          # ratchet state spans all of them, so such a PR lints `all` whatever specs it touches.
+          # A diff that fails widens to `all` too, as the spec diff below already does.
+          TOOLING=$(git diff --name-only "$BASE" HEAD -- hv-lint/ .github/workflows/hv_lint.yml) \
+            || TOOLING="(git diff failed)"
           # Cohorts whose ingest directory changed.
           SPECS=$(git diff --name-only "$BASE" HEAD -- priority_variables_transform/ \
             | { grep -- '-ingest/' || true; } \
@@ -104,7 +124,7 @@ jobs:
             | sort -u \
             | tr '\n' ',' \
             | sed 's/,$//')
-          if [ -z "$CHANGED" ]; then
+          if [ -n "$TOOLING" ] || [ -z "$CHANGED" ]; then
             echo "cohort=all" >> "$GITHUB_OUTPUT"
           elif [ "$(echo "$CHANGED" | tr ',' '\n' | wc -l)" -gt 1 ]; then
             echo "cohort=all" >> "$GITHUB_OUTPUT"
@@ -119,38 +139,45 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "cohort=${{ github.event.inputs.cohort || 'all' }}" >> "$GITHUB_OUTPUT"
             echo "fail_on=${{ github.event.inputs.fail_on || 'error' }}" >> "$GITHUB_OUTPUT"
-            echo "bdchm_ref=${{ github.event.inputs.bdchm_ref || 'main' }}" >> "$GITHUB_OUTPUT"
+            echo "bdchm_ref=${{ github.event.inputs.bdchm_ref }}" >> "$GITHUB_OUTPUT"
           else
             echo "cohort=${{ steps.detect.outputs.cohort || 'all' }}" >> "$GITHUB_OUTPUT"
             echo "fail_on=error" >> "$GITHUB_OUTPUT"
-            echo "bdchm_ref=main" >> "$GITHUB_OUTPUT"
+            echo "bdchm_ref=" >> "$GITHUB_OUTPUT"
           fi
 
-      # Phases 1/2/5 and the Phase 3 semantic checks are ADVISORY: they run and
-      # publish findings but do not fail the job (existing backlogs). Enforcement
-      # is handled by the dedicated "Gate:" steps below. `exit 0` keeps these
-      # advisory regardless of pipefail behavior.
-      - name: "Phase 1: YAML structural & formatting checks (advisory)"
+      # Every phase is ENFORCED: a finding at or above --fail-on (ERROR on pull requests) fails
+      # the job. Main stays green through hv-lint/known_issues.yaml -- one entry per known
+      # finding, keyed by fingerprint and naming its issue and status -- not through advisory
+      # steps. An entry that no longer matches fails too (rule KI), and so does any WARNING
+      # fingerprint added to or gone from hv-lint/warning_baseline.json (rule RATCHET). After a
+      # fix: HVLINT_PRUNE=1 python hv-lint/run_all.py --cohort all.
+      # Each step runs `if: always()` so one failing phase still reports the others, and
+      # `exit "${PIPESTATUS[0]}"` keeps tee from masking the exit code.
+      - name: "Phase 1: YAML structural & formatting checks"
         id: phase1
         run: |
           python hv-lint/phase-1/run_phase1.py \
             --cohort "${{ steps.config.outputs.cohort }}" \
             --fail-on "${{ steps.config.outputs.fail_on }}" \
             2>&1 | tee phase1-output.txt
-          exit 0
+          exit "${PIPESTATUS[0]}"
 
-      - name: "Phase 2: BDC-HM model conformance checks (advisory)"
+      - name: "Phase 2: BDC-HM model conformance + PHV deduplication 2.8"
         id: phase2
         if: always()
         run: |
+          # The schema ref is pinned in phase-2/validate_model_conformance.py (BDCHM_REF);
+          # a manual run may override it.
+          BDCHM_REF="${{ steps.config.outputs.bdchm_ref }}"
           python hv-lint/phase-2/run_phase2.py \
-            --bdchm-ref "${{ steps.config.outputs.bdchm_ref }}" \
+            ${BDCHM_REF:+--bdchm-ref "$BDCHM_REF"} \
             --cohort "${{ steps.config.outputs.cohort }}" \
             --fail-on "${{ steps.config.outputs.fail_on }}" \
             2>&1 | tee phase2-output.txt
-          exit 0
+          exit "${PIPESTATUS[0]}"
 
-      - name: "Phase 3: dbGaP cross-reference + semantic checks (advisory)"
+      - name: "Phase 3: dbGaP cross-reference + semantic + status checks"
         id: phase3
         if: always()
         run: |
@@ -158,9 +185,9 @@ jobs:
             --cohort "${{ steps.config.outputs.cohort }}" \
             --fail-on "${{ steps.config.outputs.fail_on }}" \
             2>&1 | tee phase3-output.txt
-          exit 0
+          exit "${PIPESTATUS[0]}"
 
-      - name: "Phase 5: Visit structure validation (advisory)"
+      - name: "Phase 5: Visit structure validation"
         id: phase5
         if: always()
         run: |
@@ -168,39 +195,17 @@ jobs:
             --cohort "${{ steps.config.outputs.cohort }}" \
             --fail-on "${{ steps.config.outputs.fail_on }}" \
             2>&1 | tee phase5-output.txt
-          exit 0
-
-      # ENFORCED gates: checks green across all cohorts. A failure here fails
-      # the PR. `exit ${PIPESTATUS[0]}` propagates the script's exit code past
-      # the `tee` pipe (otherwise tee masks it).
-      - name: "Gate: PHV deduplication 2.8 (enforced)"
-        id: gate_phase2
-        if: always()
-        run: |
-          python hv-lint/phase-2/run_phase2.py \
-            --cohort "${{ steps.config.outputs.cohort }}" \
-            --fail-on "${{ steps.config.outputs.fail_on }}" \
-            --skip conformance \
-            2>&1 | tee gate-phase2-output.txt
           exit "${PIPESTATUS[0]}"
 
-      # Cross-reference (3.1-3.5) + value-semantic (3.11), enforced across all
-      # cohorts. FHS person.yaml is suppressed via KNOWN_ISSUES in
-      # validate_dbgap_crossref.py (real mapping error, tracked in #594);
-      # everything else is enforced. Semantic (3.9-3.16) stays advisory.
-      - name: "Gate: dbGaP cross-reference 3.1-3.5 + value-semantic 3.11 (enforced)"
-        id: gate_phase3
-        if: always()
-        run: |
-          python hv-lint/phase-3/run_phase3.py \
-            --cohort "${{ steps.config.outputs.cohort }}" \
-            --fail-on "${{ steps.config.outputs.fail_on }}" \
-            --skip semantic \
-            2>&1 | tee gate-phase3-output.txt
-          exit "${PIPESTATUS[0]}"
-
+      # The icon is each phase step's own outcome (its exit code), not a grep of its log: a log
+      # can print both PASSED and FAILED (one component of a phase passes, another fails).
       - name: Publish step summary
         if: always()
+        env:
+          OUTCOME_1: ${{ steps.phase1.outcome }}
+          OUTCOME_2: ${{ steps.phase2.outcome }}
+          OUTCOME_3: ${{ steps.phase3.outcome }}
+          OUTCOME_5: ${{ steps.phase5.outcome }}
         run: |
           COHORT="${{ steps.config.outputs.cohort }}"
           LIMIT="${{ github.event.inputs.summary_limit || '50' }}"
@@ -211,18 +216,12 @@ jobs:
           for phase in 1 2 3 5; do
             f="phase${phase}-output.txt"
             if [ -f "$f" ]; then
-              # Extract pass/fail from last lines
-              STATUS="unknown"
-              if grep -q "PASSED" "$f"; then STATUS="passed"; fi
-              if grep -q "FAILED" "$f"; then STATUS="FAILED"; fi
-
-              if [ "$STATUS" = "passed" ]; then
-                ICON="white_check_mark"
-              elif [ "$STATUS" = "FAILED" ]; then
-                ICON="x"
-              else
-                ICON="question"
-              fi
+              var="OUTCOME_${phase}"
+              case "${!var}" in
+                success) ICON="white_check_mark" ;;
+                failure) ICON="x" ;;
+                *) ICON="question" ;;
+              esac
 
               echo "### :${ICON}: Phase ${phase}" >> "$GITHUB_STEP_SUMMARY"
               echo "" >> "$GITHUB_STEP_SUMMARY"
@@ -236,6 +235,16 @@ jobs:
               echo "" >> "$GITHUB_STEP_SUMMARY"
             fi
           done
+
+      # Every known_issues.yaml entry, warning_baseline.json row and removed.yaml line the PR
+      # adds over its merge base (what `git diff origin/<base>...HEAD` shows), so a reviewer
+      # sees "this PR silences N findings" without reading those files' diffs. fetch-depth: 0
+      # above makes origin/<base> and the merge base available.
+      - name: Silencing summary
+        if: always() && github.event_name == 'pull_request'
+        run: |
+          python hv-lint/silencing_summary.py --base "origin/${{ github.base_ref }}" \
+            >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload full findings
         if: always()

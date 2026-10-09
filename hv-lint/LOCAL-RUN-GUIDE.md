@@ -9,8 +9,7 @@ How to run HV-Lint locally against your branch before submitting a PR.
 | Requirement | Details |
 |---|---|
 | Python 3.12 or 3.13 | 3.14 works but Phase 2 uses frozen fallback (see Warnings below) |
-| PyYAML + yamllint | `pip install pyyaml yamllint` |
-| linkml-runtime | `pip install linkml-runtime` (Phase 2 schema validation) |
+| The CI versions | `pyyaml==6.0.3 yamllint==1.38.0 linkml-runtime==1.12.0 linkml-map==0.5.3` plus `pytest==9.1.1` (`hv-lint/requirements-lint.in`; CI and the setup below install the hashed lock, Reference A12) |
 | dbGaP indexes present | `hv-lint/dbgap-cache/*.json.gz` (committed -- no action needed unless updating) |
 
 > **Tip**: Use the HV repo's existing venv if one exists: `.venv/Scripts/Activate.ps1` (Windows) or `source .venv/bin/activate` (Linux/Mac).
@@ -20,7 +19,9 @@ How to run HV-Lint locally against your branch before submitting a PR.
 ## One-time setup: create venv and install deps
     python -m venv .venv
     .venv\Scripts\Activate.ps1
-    pip install pyyaml yamllint linkml-runtime
+    pip install --require-hashes -r hv-lint/requirements-lint.txt
+
+The lock is universal (Reference A12): the same hashed install CI runs works on Windows, Linux and macOS, pytest included.
 
 ---
 
@@ -103,7 +104,7 @@ python hv-lint/phase-5/run_phase5.py --cohort ARIC --fail-on error
 | `--cohort <NAME>` | All phases | ARIC, CARDIA, CHS, COPDGene, FHS, HCHS, JHS, MESA, SPIROMICS, WHI, or `all` |
 | `--fail-on <level>` | All phases | Exit code threshold: `critical`, `error`, `high`, `warning`, `info` (default: `error`) |
 | `--skip <component>` | All phases | Skip one or more sub-components by name |
-| `--bdchm-ref <ref>` | Phase 2 | Git ref for BDCHM schema (default: `main`) |
+| `--bdchm-ref <ref>` | Phase 2 | Git ref for BDCHM schema (default: the pinned `BDCHM_REF`, HM 3fe055ed) |
 | `--bdchm-schema <path>` | Phase 2 | Local schema file (overrides `--bdchm-ref`) |
 | `--cache-dir <path>` | Phase 3, 5, run_all | Path to index directory (default: auto-detected from script location) |
 | `--hv-root <path>` | All phases | Override HV repo root detection |
@@ -131,6 +132,25 @@ python hv-lint/update_data.py --summary
 See [MAINTENANCE.md](MAINTENANCE.md) for full documentation on version bumps, new cohort onboarding, and troubleshooting.
 
 ---
+
+## Known Issues and the WARNING Baseline
+
+CI fails on every ERROR that `hv-lint/known_issues.yaml` does not list, on a listed entry that no
+longer matches, and on any change to the WARNING fingerprints in `hv-lint/warning_baseline.json`
+(HV-Lint-Reference A7).
+
+```bash
+# Your PR fixed listed defects or WARNINGs: remove exactly those entries and rows (never adds)
+HVLINT_PRUNE=1 python hv-lint/run_all.py --cohort all
+
+# Your PR changes WARNINGs on purpose: rewrite the baseline, then review its diff
+HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all
+```
+
+An unlisted ERROR prints the `known_issues.yaml` line that would list it; fill in `issue` and
+`status` only when the defect is tracked in an issue. Both commands refuse a `--file` run and a
+component run on its own. The prune also refuses a run with `--skip`: it writes only from a run of
+every phase.
 
 ## Expected Warnings (Not Errors)
 

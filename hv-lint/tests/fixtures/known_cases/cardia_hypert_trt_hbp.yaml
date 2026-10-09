@@ -1,0 +1,17 @@
+# cardia_hypert_trt_hbp: copied verbatim from HV main 731984f5 as a fixed test case for #885.
+class_derivations:
+  DrugExposure:
+    populated_from: pht001571
+    slot_derivations:
+      associated_participant:
+        expr: uuid5("https://w3id.org/bdchm/Participant", str({phv00113153}) + ":CARDIA")
+      associated_visit:
+        expr: case(({phv00113154} == 'HBP', uuid5('https://w3id.org/bdchm/Visit', str({phv00113153}) + ':CARDIA YEAR 0')), (True, None))
+        range: string
+      drug_concept:
+        expr: case(({phv00113154} == "HBP", "ATC:C02"))
+      exposure_provenance:
+        value: PATIENT_SELF_REPORTED_MEDICATION
+        range: string
+      exposure_status:
+        expr: case(({phv00113154} == 'HBP' and {phv00113155} == 1, 'ABSENT'), ({phv00113154} == 'HBP' and {phv00113155} == 2, 'PRESENT'), ({phv00113154} == 'HBP' and {phv00113155} == 'M', 'UNKNOWN'))

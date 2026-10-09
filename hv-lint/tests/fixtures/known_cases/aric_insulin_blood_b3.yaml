@@ -1,0 +1,27 @@
+# aric_insulin_blood_b3: block 3 of ARIC-ingest/insulin_blood.yaml on main 2a28934a (value_quantity commented out pending #410), a fixed test case for #885.
+class_derivations:
+  MeasurementObservation:
+    populated_from: pht006444
+    slot_derivations:
+      associated_participant:
+        expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00296690}) + ":ARIC")'
+      associated_visit:
+        expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00296690}) + ":ARIC EXAM 5")'
+      observation_type:
+        value: OBA:2060174
+      method_type:
+        value: "blood assay"
+#        value_quantity:
+#          object_derivations:
+#          - class_derivations:
+#              Quantity:
+#                populated_from: pht006444
+#                slot_derivations:
+#                  value_decimal:
+#                    populated_from: phv00296699
+#                    unit_conversion:
+#                      source_unit: "u[IU]/mL"
+#                      target_unit: "pmol/L"
+#                  unit:
+#                    value: "pmol/L"
+#                    range: string

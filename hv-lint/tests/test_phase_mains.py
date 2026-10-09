@@ -80,8 +80,17 @@ def _make_tree(root: Path, *, manifest: object = "ok") -> Path:
     index = {"phv00000001": PHT, "phv00000002": PHT}
     with gzip.open(cache / f"{KEY}.json.gz", "wt", encoding="utf-8") as f:
         json.dump(index, f)
+    # A collection interval on the visit seed lets 5.8 run, so the tree raises no 5.8 "did not
+    # run" WARNING: these tests must pass on their own tree, not on a row in the committed
+    # warning_baseline.json (tests/conftest.py gives every test an empty one).
+    detail = {phv: {"pht": pht} for phv, pht in index.items()}
+    detail["phv00000001"]["coll_interval"] = "Collected in: P1"
     with gzip.open(cache / f"{KEY}_detail.json.gz", "wt", encoding="utf-8") as f:
-        json.dump({phv: {"pht": pht} for phv, pht in index.items()}, f)
+        json.dump(detail, f)
+    # The value-count index 3.9 / 3.15, 3.19 and 5.12 read; validate_semantic refuses to run
+    # without it, or when it has no n for uncoded variables (3.19).
+    with gzip.open(cache / f"{KEY}_stats.json.gz", "wt", encoding="utf-8") as f:
+        json.dump({phv: {"n": 1} for phv in index}, f)
     if manifest == "ok":
         entries: object = {KEY: {"cohort": "HCHS", "study": STUDY, "study_version": VERSION}}
     else:
@@ -91,7 +100,7 @@ def _make_tree(root: Path, *, manifest: object = "ok") -> Path:
     if isinstance(entries, dict) and isinstance(entries.get(KEY), dict):
         entries[KEY] = {**entries[KEY], _cohorts.ARTIFACTS_FIELD: {
             name: _cohorts.artifact_record(cache / name)
-            for name in (f"{KEY}.json.gz", f"{KEY}_detail.json.gz")}}
+            for name in (f"{KEY}.json.gz", f"{KEY}_detail.json.gz", f"{KEY}_stats.json.gz")}}
     if entries is not None:
         (cache / "manifest.json").write_text(
             json.dumps({"manifest_version": 1, "entries": entries}), encoding="utf-8")
@@ -152,16 +161,18 @@ def test_run_phase5_fails_on_an_unknown_cohort(tmp_path, monkeypatch, capsys):
     assert run_phase5.main() == 1
 
 
-def test_a_cohort_without_visit_yaml_under_all_is_still_a_warning(tmp_path, monkeypatch, capsys):
-    """Scope guard: under `all` the cohorts come from the directories, and a directory with no
-    visit.yaml stays a 5.0 WARNING. Only a NAMED cohort without one is an unrun check."""
+def test_a_cohort_without_visit_yaml_under_all_fails_the_run(tmp_path, monkeypatch, capsys):
+    """Under `all` the cohorts come from the directories; a directory with no visit.yaml had
+    none of 5.1-5.12 run, so it is the same unrun check as for a NAMED cohort: CI lints `all`,
+    and a deleted visit.yaml must fail it even at `--fail-on critical`."""
     cache = _make_tree(tmp_path)
     (tmp_path / "priority_variables_transform" / "EXTRA-ingest").mkdir()
     rc = _run_vvs(monkeypatch, tmp_path, "--cohort", "all", "--cache-dir", str(cache),
                   "--fail-on", "critical")
     out = capsys.readouterr().out
-    assert rc == 0, out
-    assert "No visit.yaml found for cohort EXTRA" in out
+    assert rc == 1, out
+    assert "ERROR" in out and "No visit.yaml found for cohort EXTRA" in out
+    assert "PASSED" not in out
 
 
 @pytest.mark.parametrize("fail_on", ["error", "critical"])
@@ -327,6 +338,7 @@ _EXPECT_ENTRY_POINTS = {
     "validate_dbgap_crossref": ("phase-3", []),
     "validate_semantic": ("phase-3", []),
     "check_value_semantic": ("phase-3", []),
+    "check_status_semantic": ("phase-3", []),
 }
 
 
@@ -384,7 +396,8 @@ def test_phase_3_undeclared_cohort_says_where_the_override_applies(tmp_path, mon
 # checked no file. Each validator canonicalises `--cohort` against the tree, and a NAMED cohort
 # with no YAML is a failure, not a pass.
 
-_PHASE3_VALIDATORS = ["validate_dbgap_crossref", "validate_semantic", "check_value_semantic"]
+_PHASE3_VALIDATORS = ["validate_dbgap_crossref", "validate_semantic", "check_value_semantic",
+                      "check_status_semantic"]
 
 
 def _run_phase3_validator(monkeypatch, module: str, root: Path, cache: Path, cohort: str) -> int:
@@ -447,6 +460,38 @@ def test_phase_5_reads_a_padded_all_as_all(tmp_path, monkeypatch, capsys, token)
     assert "1 cohort(s) processed, 0 skipped" in out
 
 
+@pytest.mark.parametrize("module", _PHASE3_VALIDATORS)
+@pytest.mark.parametrize("case, expect", [
+    ("wrong-release", f"built from {STUDY}.v2"),
+    ("no-manifest", "no recorded study provenance"),
+    ("undeclared", "declares no dbGaP release"),
+    ("expect-study", f"--expect-study {STUDY}.v3"),
+])
+def test_phase_3_validators_each_run_the_release_check(tmp_path, monkeypatch, capsys, module,
+                                                       case, expect):
+    """Review round 2 B F2: every Phase 3 component checks the release it reads, so a component
+    run directly cannot pass on a superseded cache because a sibling would have caught it."""
+    entries = {"wrong-release": {KEY: {"cohort": "HCHS", "study": STUDY, "study_version": "v2"}},
+               "no-manifest": None}.get(case, "ok")
+    cache = _make_tree(tmp_path, manifest=entries)
+    if case == "undeclared":
+        (tmp_path / "hv_dataqc" / "cache_fetcher" / "manifests" /
+         "_manifest-hchs_sol.yaml").unlink()
+    import importlib
+    monkeypatch.setenv("HV_ROOT", str(tmp_path))
+    monkeypatch.syspath_prepend(str(_HV_LINT / "phase-3"))
+    mod = importlib.import_module(module)
+    argv = [f"{module}.py", "--cache-dir", str(cache), "--cohort", "HCHS", "--fail-on",
+            "critical"]
+    if case == "expect-study":
+        argv += ["--expect-study", f"{STUDY}.v3"]
+    monkeypatch.setattr(sys, "argv", argv)
+    rc = mod.main()
+    captured = capsys.readouterr()
+    assert rc == 1, captured.out + captured.err
+    assert expect in captured.err
+
+
 # -- Cache integrity: the manifest records content, not just a release label (S1) ------------
 
 
@@ -501,6 +546,49 @@ def test_an_artifact_with_no_digest_record_fails_closed(tmp_path, monkeypatch, c
     err = capsys.readouterr().err
     assert rc == 1, err
     assert "has no sha256/count record" in err
+
+
+def _swap_stats(cache: Path) -> None:
+    """Another release's value-count index copied over this one's name: three PHVs, not two."""
+    with gzip.open(cache / f"{KEY}_stats.json.gz", "wt", encoding="utf-8") as f:
+        json.dump({p: {"n": 1} for p in ("phv00000001", "phv00000002", "phv00000003")}, f)
+
+
+@pytest.mark.parametrize("module", ["validate_semantic", "check_status_semantic"])
+def test_phase_3_fails_on_a_swapped_stats_index(tmp_path, monkeypatch, capsys, module):
+    cache = _make_tree(tmp_path)
+    _swap_stats(cache)
+    rc = _run_phase3_validator(monkeypatch, module, tmp_path, cache, "HCHS")
+    err = capsys.readouterr().err
+    assert rc == 1, err
+    assert f"{KEY}_stats.json.gz does not match its manifest.json record" in err
+    assert "3 PHVS on disk, 2 recorded" in err
+    assert "build_phv_stats_index.py --cohort " + KEY in err
+
+
+def test_phase_5_fails_on_a_swapped_stats_index(tmp_path, monkeypatch, capsys):
+    cache = _make_tree(tmp_path)
+    _swap_stats(cache)
+    rc = _phase5_critical(monkeypatch, tmp_path, cache)
+    out = capsys.readouterr().out
+    assert rc == 1, out
+    assert f"{KEY}_stats.json.gz does not match its manifest.json record" in out
+    assert "5.12 DID NOT RUN" in out
+
+
+def test_a_swapped_tables_index_is_refused(tmp_path):
+    """``_tables`` (rules 1.8 / 1.14) is read through the same check as every other artifact."""
+    cache = _make_tree(tmp_path)
+    tables = cache / f"{KEY}_tables.json.gz"
+    with gzip.open(tables, "wt", encoding="utf-8") as f:
+        json.dump({PHT: {"name": "a", "description": ""}}, f)
+    _cohorts.write_manifest_entries(cache, {KEY: {_cohorts.ARTIFACTS_FIELD: {
+        tables.name: _cohorts.artifact_record(tables)}}})
+    assert _cohorts.load_table_names(cache, KEY) == {PHT: {"name": "a", "description": ""}}
+    with gzip.open(tables, "wt", encoding="utf-8") as f:
+        json.dump({PHT: {"name": "b", "description": ""}}, f)
+    with pytest.raises(_cohorts.CacheIntegrityError, match="sha256"):
+        _cohorts.load_table_names(cache, KEY)
 
 
 def test_a_same_count_rebuild_is_caught_by_the_digest(tmp_path):

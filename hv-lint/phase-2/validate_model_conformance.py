@@ -8,16 +8,20 @@ Checks:
     2.1  LinkML-Map key validation (unknown keys at any nesting level)
     2.2  BDCHM slot name validation (per-class)
     2.3  BDCHM class name validation
-    2.4  Required/recommended slot enforcement (schema-driven)
-         ext: Advisory age_at_observation on MeasurementObservation
+    2.4  Required/recommended slot enforcement (schema-driven); a required slot written as a
+         case() with no (True, ...) arm is a WARNING (present but null on unmatched rows)
     2.5  Object derivation structure validation
     2.5b Nested class range validation (class must match slot's schema range)
     2.6  CURIE format validation
          ext: Known-bad OMOP identifiers (380035630 ethnicity typo)
-    2.7  Enum / value set membership validation
-         ext: Cross-file enum consistency (e.g., SELF vs ONESELF)
-    2.10 Unconditional age_at_condition_start on binary Condition blocks
-    2.11 Condition missing ABSENT in condition_status value_mappings
+    2.7  Enum / value set membership validation (static values, value_mappings targets and
+         case() arm results, read from the parse tree -- all ERROR)
+    2.10 Unconditional age_at_condition_start on binary Condition blocks (an age written
+         ``None if <own status test> else ...`` is guarded)
+    2.12 Bare ``None`` as a value_mappings target, in any slot at any depth (linkml-map
+         writes the string "None")
+
+    2.11 is not checked: an observed code a block drops is rule 3.9's.
 
 Usage:
     python hv-lint/phase-2/validate_model_conformance.py
@@ -46,7 +50,9 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from _paths import find_transform_dir  # noqa: E402
+import _known_issues  # noqa: E402
 from _derivations import classify_derivation_item  # noqa: E402
+import _expr  # noqa: E402
 
 TRANSFORM_DIR = find_transform_dir()
 
@@ -54,6 +60,14 @@ TRANSFORM_DIR = find_transform_dir()
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
+
+# The BDC-HM schema every Phase 2 run checks against, pinned to one commit of
+# RTIInternational/NHLBI-BDC-DMC-HM: Phase 2 is enforced and its WARNINGs are ratcheted, so a live
+# `main` would let an upstream schema commit fail every HV PR. 3fe055ed (2026-09-25) is the HM
+# main the #885 census ran on. To bump it: change this value in an HV PR, run
+# `HVLINT_UPDATE_BASELINE=1 python hv-lint/run_all.py --cohort all`, and review the
+# known_issues.yaml / warning_baseline.json changes in that PR. `--bdchm-ref` overrides it per run.
+BDCHM_REF = "3fe055edaa6f456e6322fa3d573c32f397546dff"
 
 BDCHM_URL_TEMPLATE = (
     "https://raw.githubusercontent.com/RTIInternational/"
@@ -65,19 +79,22 @@ BDCHM_URL_TEMPLATE = (
 # See HV-Lint-Reference.md Assumption A2 for rationale.
 #
 # Captured from NHLBI-BDC-DMC-HV/.venv (Python 3.12, linkml-map 0.3.9) by
-# reading transformer_model.py directly -- the import path crashes on Python 3.14
-# due to ucumvert/pint initializing at module level (KeyError: 'millimeter_Hg').
-# When the import fails, _derive_valid_keys() returns these frozen constants
-# and prints a warning.  CI (Python 3.12) always uses the live import.
+# reading transformer_model.py directly. When the import fails (linkml-map not
+# installed, or an import-time crash such as ucumvert/pint's KeyError:
+# 'millimeter_Hg' on Python 3.14), _derive_valid_keys() returns these frozen
+# constants and the reason. The frozen sets are a strict subset of 0.5.3's, so
+# they reject valid keys (missing_values, offset, ...): under GITHUB_ACTIONS the
+# fallback is an ERROR, and the lint job installs linkml-map==0.5.3 from
+# hv-lint/requirements-lint.txt (Assumption A2).
 #
 # HV-specific extensions ('value', 'object_derivations') are added
 # manually -- see Assumption A3.
 def _derive_valid_keys():
     """Derive valid key sets from the installed linkml-map model.
 
-    Tries a live import first (accurate, Python 3.12 / CI).  Falls back to
-    frozen constants captured from linkml-map v0.3.9 when the import fails
-    (e.g., Python 3.14 pint/ucumvert incompatibility -- Assumption A2).
+    Returns ``(ts_keys, cd_keys, sd_keys, fallback_reason)``. Tries a live import
+    first; when it fails, returns the frozen linkml-map v0.3.9 constants and the
+    real exception as ``fallback_reason`` (None on a live import -- Assumption A2).
     """
     # --- frozen fallback (linkml-map v0.3.9, extracted 2026-03-15) -----------
     _TS_FROZEN = frozenset({
@@ -118,15 +135,15 @@ def _derive_valid_keys():
             "class_derivations",
             "object_derivations",
         }
-        return ts_keys, cd_keys, sd_keys
-    except Exception:
+        return ts_keys, cd_keys, sd_keys, None
+    except Exception as exc:  # noqa: BLE001 - any import failure means the fallback
+        reason = f"linkml_map import failed: {type(exc).__name__}: {exc}"
         print(
-            "WARNING: linkml_map import failed (likely Python 3.14 + ucumvert "
-            "incompatibility). Using frozen key sets from linkml-map v0.3.9. "
-            "Check results may be slightly stale if the model has changed.",
+            f"WARNING: {reason}. Using frozen key sets from linkml-map v0.3.9, which "
+            f"reject keys valid in 0.5.3 (missing_values, offset, expression_mappings, ...).",
             file=sys.stderr,
         )
-        return _TS_FROZEN, _CD_FROZEN, _SD_FROZEN
+        return _TS_FROZEN, _CD_FROZEN, _SD_FROZEN, reason
 
 
 # Populated lazily in main() so --help works without linkml_map installed.
@@ -144,6 +161,12 @@ CURIE_RULES: dict[str, tuple[re.Pattern, str]] = {
     "LOINC": (re.compile(r"^\d+-\d$"),  "digits-dash-digit"),
     "RxCUI": (re.compile(r"^\d{3,8}$"), "numeric, 3-8 digits"),
 }
+
+# Prefixes HV specs use that the BDC-HM schema's prefix map does not declare: the drug
+# vocabularies of DrugExposure.drug_concept (ATC, RxCUI, NDFRT, VANDF, MeSH), NCBITaxon (the
+# schema declares lower-case `ncbitaxon`) and LOINC (CURIE_RULES checks its format). Any
+# other undeclared prefix is an ERROR [2.6]: `MOND:0005015` is a typo, not a vocabulary.
+HV_EXTRA_PREFIXES = frozenset({"ATC", "LOINC", "MeSH", "NCBITaxon", "NDFRT", "RxCUI", "VANDF"})
 
 # Precompiled regexes for CURIE extraction
 _CURIE_PREFIX_RE = re.compile(r'^[A-Za-z][A-Za-z0-9_]*:')
@@ -191,6 +214,16 @@ class ValidationContext:
     class_ancestors: dict[str, set[str]] = field(default_factory=dict)  # {class: {self, parent, ...}}
     # Check 2.7: {class: {slot: frozenset(valid_enum_values)}} -- only static enums
     slot_enum_values: dict[str, dict[str, frozenset[str]]] = field(default_factory=dict)
+    # Check 2.6: the schema's declared CURIE prefixes, plus HV_EXTRA_PREFIXES
+    prefixes: frozenset[str] = frozenset()
+    # Check 2.6 runs only on these {class: {slot}}: a slot whose range takes a CURIE. None (a
+    # context built without the schema) checks every slot -- over-reporting, never silence.
+    curie_slots: dict[str, set[str]] | None = None
+
+    def takes_curie(self, class_name: str, slot_name: str) -> bool:
+        if self.curie_slots is None:
+            return True
+        return slot_name in self.curie_slots.get(class_name, ())
 
 
 # ---------------------------------------------------------------------------
@@ -290,6 +323,37 @@ def load_bdchm_schema(bdchm_ref: str, bdchm_schema: str | None) -> ValidationCon
                         ctx.slot_enum_values[cls_name] = {}
                     ctx.slot_enum_values[cls_name][s.name] = pvs
 
+    # Check 2.6 scope: a slot takes a CURIE when its range is a uriorcurie/uri/curie type, or an
+    # enum that is open (no static values: reachable_from, or inherits one) or whose values are
+    # CURIEs. A free-text string slot is out of scope: `Questionnaire: self-report` in
+    # associated_evidence is correct text, not a malformed CURIE.
+    curie_types = {"uriorcurie", "uri", "curie"}
+    all_types = sv.all_types()
+
+    def _is_curie_type(name: str) -> bool:
+        seen = set()
+        while name and name not in seen:
+            if name in curie_types:
+                return True
+            seen.add(name)
+            tdef = all_types.get(name)
+            name = getattr(tdef, "typeof", None) if tdef is not None else None
+        return False
+
+    def _enum_takes_curie(name: str) -> bool:
+        pvs = enum_pvs.get(name)
+        return pvs is None or any(_CURIE_PREFIX_RE.match(v) for v in pvs)
+
+    ctx.curie_slots = {}
+    for cls_name in ctx.valid_classes:
+        ctx.curie_slots[cls_name] = {
+            s.name for s in sv.class_induced_slots(cls_name)
+            if (s.range in enum_names and _enum_takes_curie(s.range))
+            or (s.range in all_types and _is_curie_type(s.range))
+        }
+
+    ctx.prefixes = frozenset(sv.schema.prefixes or {}) | HV_EXTRA_PREFIXES
+
     enum_count = sum(1 for v in enum_pvs.values() if v is not None)
     print(f"  Loaded {len(ctx.valid_classes)} classes, {enum_count} validatable enums")
     return ctx
@@ -361,9 +425,12 @@ def check_slot_derivation_keys(
 
 def check_curie_value(
     value: str, class_name: str, slot_name: str,
-    block_idx: int, rel_path: str
+    block_idx: int, rel_path: str, prefixes: frozenset[str] | None = None
 ) -> list[Finding]:
-    """Check 2.6: Validate CURIE format for a static value."""
+    """Check 2.6: Validate CURIE format for a static value.
+
+    With ``prefixes`` (the schema's map plus HV_EXTRA_PREFIXES), an undeclared prefix is an
+    ERROR."""
     findings = []
     if ":" not in value:
         return findings
@@ -393,6 +460,14 @@ def check_curie_value(
             f"CURIE has extra whitespace: '{value}' on {class_name}.{slot_name}"
         ))
 
+    if prefixes is not None and prefix not in prefixes:
+        findings.append(Finding(
+            rel_path, block_idx, "2.6", "ERROR",
+            f"Unknown CURIE prefix '{prefix}' in '{value}' on {class_name}.{slot_name}: not "
+            f"declared in the pinned BDC-HM schema's prefixes or HV_EXTRA_PREFIXES"
+        ))
+        return findings
+
     if prefix in CURIE_RULES:
         pat, desc = CURIE_RULES[prefix]
         if not pat.match(identifier):
@@ -416,14 +491,14 @@ def check_curie_value(
 
 def check_curies_in_expr(
     expr: str, class_name: str, slot_name: str,
-    block_idx: int, rel_path: str
+    block_idx: int, rel_path: str, prefixes: frozenset[str] | None = None
 ) -> list[Finding]:
     """Check 2.6: Extract and validate CURIEs embedded in expressions."""
     findings = []
     for match in _CURIE_IN_EXPR_RE.finditer(expr):
         curie = match.group(1)
         findings.extend(check_curie_value(
-            curie, class_name, slot_name, block_idx, rel_path
+            curie, class_name, slot_name, block_idx, rel_path, prefixes
         ))
     return findings
 
@@ -431,11 +506,6 @@ def check_curies_in_expr(
 # ---------------------------------------------------------------------------
 # Check 2.7: Enum / Value Set Membership
 # ---------------------------------------------------------------------------
-
-# Regex for extracting result strings from case() expressions
-_CASE_RESULT_DQ_RE = re.compile(r',\s*"([^"]+)"\s*\)')
-_CASE_RESULT_SQ_RE = re.compile(r",\s*'([^']+)'\s*\)")
-
 
 def check_enum_membership(
     slot_def: dict, class_name: str, slot_name: str,
@@ -466,7 +536,9 @@ def check_enum_membership(
     vm = slot_def.get("value_mappings")
     if isinstance(vm, dict):
         for source_key, target_val in vm.items():
-            if not isinstance(target_val, str):
+            # A bare None is rule 2.12's, which sees every slot; reporting it here too would
+            # count one defect twice.
+            if not isinstance(target_val, str) or target_val == "None":
                 continue
             if target_val not in valid_pvs:
                 findings.append(Finding(
@@ -477,21 +549,17 @@ def check_enum_membership(
                     f"(valid: {_format_pvs(valid_pvs)})"
                 ))
 
-    # 3. Case expression result values
+    # 3. Case expression result values: element [1] of each case() arm, read from the parse
+    # tree, so a membership tuple such as `in ("1", "2")` is never taken for a result.
     expr = slot_def.get("expr")
     if isinstance(expr, str) and "case(" in expr:
-        case_results = (
-            _CASE_RESULT_DQ_RE.findall(expr)
-            + _CASE_RESULT_SQ_RE.findall(expr)
-        )
-        for result_val in case_results:
-            # Skip None/null placeholders
+        for result_val in _expr.case_result_literals(expr) or []:
             if result_val.lower() in ("none", "null", ""):
                 continue
             if result_val not in valid_pvs:
                 findings.append(Finding(
-                    rel_path, block_idx, "2.7", "WARNING",
-                    f"case() result '{result_val}' may not be a valid member "
+                    rel_path, block_idx, "2.7", "ERROR",
+                    f"case() result '{result_val}' is not a valid member "
                     f"of the enum for {fqname} "
                     f"(valid: {_format_pvs(valid_pvs)})"
                 ))
@@ -585,19 +653,40 @@ def validate_class_derivations(
                 block_idx, rel_path, path_prefix
             ))
 
-            # -- Check 2.6: CURIE format on value --
-            value = slot_def.get("value")
-            if isinstance(value, str):
-                findings.extend(check_curie_value(
-                    value, class_name, slot_name, block_idx, rel_path
-                ))
+            # -- Check 2.6: CURIE format on value, expr and value_mappings targets, on a slot
+            # whose range takes a CURIE. A mapping target is how a coded variable reaches a
+            # concept slot, so it is checked like a static value. Nested derivations are reached
+            # by this function's own recursion below.
+            if ctx.takes_curie(class_name, slot_name):
+                prefixes = ctx.prefixes or None
+                value = slot_def.get("value")
+                if isinstance(value, str):
+                    findings.extend(check_curie_value(
+                        value, class_name, slot_name, block_idx, rel_path, prefixes))
+                expr = slot_def.get("expr")
+                if isinstance(expr, str):
+                    findings.extend(check_curies_in_expr(
+                        expr, class_name, slot_name, block_idx, rel_path, prefixes))
+                vm_targets = slot_def.get("value_mappings")
+                if isinstance(vm_targets, dict):
+                    for target in vm_targets.values():
+                        if isinstance(target, str):
+                            findings.extend(check_curie_value(
+                                target, class_name, slot_name, block_idx, rel_path, prefixes))
 
-            # -- Check 2.6: CURIEs in expr --
-            expr = slot_def.get("expr")
-            if isinstance(expr, str):
-                findings.extend(check_curies_in_expr(
-                    expr, class_name, slot_name, block_idx, rel_path
-                ))
+            # -- Check 2.12: bare None as a value_mappings target --
+            vm = slot_def.get("value_mappings")
+            if isinstance(vm, dict):
+                for src_key, target in vm.items():
+                    if target == "None":
+                        findings.append(Finding(
+                            rel_path, block_idx, "2.12", "ERROR",
+                            f"value_mappings '{src_key}' -> None on "
+                            f"{path_prefix}{class_name}.{slot_name}: linkml-map writes the "
+                            f"string 'None'; map the code to the value it means, or delete the "
+                            f"entry only if the code means missing (an unmapped code emits null, "
+                            f"and 3.9 reports the rows when the code carried meaning)"
+                        ))
 
             # -- Check 2.7: Enum / value set membership --
             valid_pvs = ctx.slot_enum_values.get(
@@ -723,7 +812,9 @@ def validate_class_derivations(
         # -- Check 2.4: Required/recommended slots --
         if class_name in ctx.required_slots:
             for req_slot in ctx.required_slots[class_name]:
-                # 'id' is typically auto-generated, skip it
+                # `id` is not checked per block. linkml-map 0.5.3 does NOT generate it: only
+                # Person, Participant and Visit derive one. main() prints one note per run; the
+                # decision (who mints ids) is with the HM / dm-bip owners (#873).
                 if req_slot == "id":
                     continue
                 if req_slot not in present_slots:
@@ -731,6 +822,17 @@ def validate_class_derivations(
                         rel_path, block_idx, "2.4", "ERROR",
                         f"{path_prefix}{class_name} missing required slot "
                         f"'{req_slot}'"
+                    ))
+                    continue
+                # Presence is not population: a required slot that IS a case() with no
+                # (True, ...) arm is null on every row no arm matches.
+                req_def = slot_derivs.get(req_slot) if slot_derivs else None
+                req_expr = req_def.get("expr") if isinstance(req_def, dict) else None
+                if isinstance(req_expr, str) and _expr.outer_case_lacks_default(req_expr):
+                    findings.append(Finding(
+                        rel_path, block_idx, "2.4", "WARNING",
+                        f"{path_prefix}{class_name}.{req_slot} is required but its case() has "
+                        f"no (True, ...) arm -- rows no arm matches are emitted without it"
                     ))
         if class_name in ctx.recommended_slots:
             for rec_slot in ctx.recommended_slots[class_name]:
@@ -740,18 +842,6 @@ def validate_class_derivations(
                         f"{path_prefix}{class_name} missing recommended slot "
                         f"'{rec_slot}'"
                     ))
-
-        # -- Check 2.4 ext: Advisory age_at_observation on MeasurementObservation --
-        # age_at_observation is optional (not required or recommended in
-        # bdchm schema) but its absence is a completeness gap worth noting.
-        if (class_name == "MeasurementObservation"
-                and not path_prefix
-                and "age_at_observation" not in present_slots):
-            findings.append(Finding(
-                rel_path, block_idx, "2.4", "INFO",
-                f"{path_prefix}{class_name} missing age_at_observation "
-                f"(optional but recommended for completeness)"
-            ))
 
         # -- Check 2.10: Unconditional age_at_condition_start on binary Condition --
         if class_name == "Condition" and not path_prefix:
@@ -770,7 +860,13 @@ def validate_class_derivations(
                     age_expr = age_slot.get("expr", "")
                     age_pf = age_slot.get("populated_from", "")
                     age_source = age_expr or age_pf
-                    if age_source and "case(" not in str(age_source):
+                    status_phv = cs_slot.get("populated_from")
+                    absent = [k for k, v in cs_vm.items() if v in ("ABSENT", "Condition.ABSENT")]
+                    present = [k for k, v in cs_vm.items()
+                               if v in ("PRESENT", "HISTORICAL", "Condition.PRESENT")]
+                    guarded = (isinstance(age_expr, str) and isinstance(status_phv, str)
+                               and _expr.guarded_by(age_expr, status_phv, absent, present))
+                    if age_source and "case(" not in str(age_source) and not guarded:
                         findings.append(Finding(
                             rel_path, block_idx, "2.10", "WARNING",
                             f"{path_prefix}Condition.age_at_condition_start "
@@ -779,89 +875,10 @@ def validate_class_derivations(
                             f"None for ABSENT"
                         ))
 
-        # -- Check 2.11: Condition missing ABSENT in condition_status --
-        if class_name == "Condition" and not path_prefix:
-            cs_slot = slot_derivs.get("condition_status") if slot_derivs else None
-            if isinstance(cs_slot, dict):
-                cs_vm = cs_slot.get("value_mappings")
-                if isinstance(cs_vm, dict) and cs_vm:
-                    mapped_targets = set(cs_vm.values())
-                    has_present = any(
-                        v in ("PRESENT", "Condition.PRESENT",
-                              "HISTORICAL", "Condition.HISTORICAL")
-                        for v in mapped_targets
-                    )
-                    has_absent = any(
-                        v in ("ABSENT", "Condition.ABSENT")
-                        for v in mapped_targets
-                    )
-                    if has_present and not has_absent:
-                        findings.append(Finding(
-                            rel_path, block_idx, "2.11", "WARNING",
-                            f"{path_prefix}Condition.condition_status maps "
-                            f"PRESENT/HISTORICAL but has no ABSENT mapping -- "
-                            f"verify that ABSENT rows are handled (possibly "
-                            f"in a separate block)"
-                        ))
+        # 2.11 (PRESENT without ABSENT) is not checked: it recommended mapping a follow-up's
+        # "No" to ABSENT, the defect 3.18 rejects, and an observed code a block drops is 3.9's,
+        # which weighs it by rows and skips follow-up questions.
 
-    return findings
-
-
-# ---------------------------------------------------------------------------
-# Check 2.7 extension: Cross-file enum consistency
-# ---------------------------------------------------------------------------
-
-# Slots where cross-file consistency matters (different values across files
-# indicate an error -- the cohort should use one value everywhere).
-_CONSISTENCY_SLOTS = {"relationship_to_participant"}
-
-
-def _track_enum_values(
-    class_derivs: dict, rel_path: str,
-    tracker: dict[str, dict[str, set[str]]]
-) -> None:
-    """Collect static enum values per slot across files for consistency checks."""
-    if not isinstance(class_derivs, dict):
-        return
-    for cls_name, cls_def in class_derivs.items():
-        if not isinstance(cls_def, dict):
-            continue
-        slots = cls_def.get("slot_derivations")
-        if not isinstance(slots, dict):
-            continue
-        for slot_name in _CONSISTENCY_SLOTS:
-            slot_def = slots.get(slot_name)
-            if not isinstance(slot_def, dict):
-                continue
-            value = slot_def.get("value")
-            if isinstance(value, str) and value:
-                if slot_name not in tracker:
-                    tracker[slot_name] = {}
-                tracker[slot_name].setdefault(rel_path, set()).add(value)
-
-
-def check_cross_file_enum_consistency(
-    tracker: dict[str, dict[str, set[str]]]
-) -> list[Finding]:
-    """Check 2.7 ext: Flag slots where different enum values are used across files.
-
-    For example, relationship_to_participant should consistently use either
-    "SELF" or "ONESELF" across all files in a cohort -- not a mix.
-    """
-    findings: list[Finding] = []
-    for slot_name, file_values in tracker.items():
-        all_values: set[str] = set()
-        for vals in file_values.values():
-            all_values.update(vals)
-        if len(all_values) > 1:
-            val_summary = ", ".join(
-                f"'{v}' in {sum(1 for fv in file_values.values() if v in fv)} file(s)"
-                for v in sorted(all_values)
-            )
-            findings.append(Finding(
-                "(cross-file)", 0, "2.7", "WARNING",
-                f"Inconsistent '{slot_name}' values across files: {val_summary}"
-            ))
     return findings
 
 
@@ -874,8 +891,8 @@ def parse_args() -> argparse.Namespace:
         description="HV-Lint Phase 2: BDC-HM model conformance checks"
     )
     p.add_argument(
-        "--bdchm-ref", default="main",
-        help="Git ref (branch/tag/SHA) for BDCHM schema (default: main)"
+        "--bdchm-ref", default=BDCHM_REF,
+        help=f"Git ref (branch/tag/SHA) for BDCHM schema (default: the pinned {BDCHM_REF[:8]})"
     )
     p.add_argument(
         "--bdchm-schema", default=None,
@@ -912,7 +929,15 @@ def main() -> int:
 
     # Derive valid linkml-map keys (deferred so --help works without linkml_map).
     # _derive_valid_keys() handles its own fallback -- it never raises.
-    VALID_TRANSFORMATION_SPEC_KEYS, VALID_CLASS_DERIVATION_KEYS, VALID_SLOT_DERIVATION_KEYS = _derive_valid_keys()
+    (VALID_TRANSFORMATION_SPEC_KEYS, VALID_CLASS_DERIVATION_KEYS, VALID_SLOT_DERIVATION_KEYS,
+     fallback) = _derive_valid_keys()
+    # In CI the frozen keys would fail a correct spec (2.1 CRITICAL on missing_values), so the
+    # lint job must run against the linkml-map it pins.
+    if fallback and in_ci:
+        print(f"ERROR: {fallback}. CI must import the linkml-map the lint job "
+              f"pins (hv-lint/requirements-lint.txt); 2.1 DID NOT RUN against the live model.",
+              file=sys.stderr)
+        return 1
 
     # Load BDCHM schema
     try:
@@ -943,8 +968,6 @@ def main() -> int:
     all_findings: list[Finding] = []
     files_checked = 0
     blocks_checked = 0
-    # Cross-file tracking for 2.7 consistency checks
-    enum_value_tracker: dict[str, dict[str, set[str]]] = {}  # {slot_name: {file: {values}}}
 
     for file_path in yaml_files:
         rel_path = file_path.as_posix()
@@ -953,7 +976,7 @@ def main() -> int:
         try:
             with file_path.open(encoding="utf-8") as f:
                 data = yaml.safe_load(f)
-        except (OSError, yaml.YAMLError) as e:
+        except (OSError, UnicodeDecodeError, yaml.YAMLError) as e:
             all_findings.append(Finding(
                 rel_path, 0, "2.0", "ERROR", f"Failed to parse YAML: {e}"
             ))
@@ -987,15 +1010,18 @@ def main() -> int:
                 all_findings.extend(validate_class_derivations(
                     class_derivs, idx, rel_path, ctx
                 ))
-                # Track enum slot values for cross-file consistency (2.7 ext)
-                _track_enum_values(class_derivs, rel_path, enum_value_tracker)
 
-    # Cross-file consistency checks (2.7 extension)
-    all_findings.extend(check_cross_file_enum_consistency(enum_value_tracker))
+    print("NOTE [2.4]: 'id' is required on every BDC-HM class but is not checked per block; "
+          "linkml-map 0.5.3 does not generate it (#873).")
 
     # -----------------------------------------------------------------------
     # Report
     # -----------------------------------------------------------------------
+    # Known issues, stale entries and the WARNING ratchet (hv-lint/_known_issues.py).
+    all_findings.extend(_known_issues.finalize(
+        all_findings, checks={"2.0", "2.1", "2.2", "2.3", "2.4", "2.5", "2.5b", "2.6", "2.7", "2.10", "2.12"}, scanned_files=yaml_files, make_finding=Finding,
+        partial=bool(args.file)))
+
     fail_rank = SEVERITY_RANK[args.fail_on.upper()]
 
     counts: dict[str, int] = {}
