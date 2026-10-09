@@ -15,7 +15,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Electrocardiogram
@@ -40,7 +40,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Electrocardiogram
@@ -65,7 +65,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Electrocardiogram
@@ -90,7 +90,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Electrocardiogram
@@ -115,7 +115,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Electrocardiogram
@@ -140,7 +140,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Electrocardiogram
@@ -165,7 +165,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Electrocardiogram
@@ -190,7 +190,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Electrocardiogram
@@ -215,7 +215,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Electrocardiogram
@@ -240,7 +240,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Electrocardiogram
@@ -265,7 +265,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Electrocardiogram
@@ -290,7 +290,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Electrocardiogram
@@ -315,11 +315,11 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: Electrocardiogram
-          range: string
+        # associated_evidence:
+        #   value: Electrocardiogram
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -328,9 +328,9 @@
       populated_from: pht000031
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008378}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008379}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008378}) + ":FHS OFFSPRING EXAM 2")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008379}) + ":FHS OFFSPRING EXAM 2")'
         condition_concept:
           value: MONDO:0004981
           range: string
@@ -340,7 +340,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Electrocardiogram
@@ -353,9 +353,9 @@
       populated_from: pht000031
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008378}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008379}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008378}) + ":FHS OFFSPRING EXAM 2")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008379}) + ":FHS OFFSPRING EXAM 2")'
         condition_concept:
           value: MONDO:0004981
           range: string
@@ -365,7 +365,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Electrocardiogram
@@ -378,9 +378,9 @@
       populated_from: pht000032
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008742}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00008743}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008742}) + ":FHS OFFSPRING EXAM 3")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00008743}) + ":FHS OFFSPRING EXAM 3")'
         condition_concept:
           value: MONDO:0004981
           range: string
@@ -390,7 +390,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Electrocardiogram
@@ -415,7 +415,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Electrocardiogram
@@ -441,11 +441,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -454,9 +454,9 @@
       populated_from: pht000747
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00072044}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00072580}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00072044}) + ":FHS OFFSPRING EXAM 8")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00072580}) + ":FHS OFFSPRING EXAM 8")'
         condition_concept:
           value: MONDO:0004981
           range: string
@@ -467,11 +467,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -480,9 +480,9 @@
       populated_from: pht000747
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00072044}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00072580}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00072044}) + ":FHS OFFSPRING EXAM 8")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00072580}) + ":FHS OFFSPRING EXAM 8")'
         condition_concept:
           value: MONDO:0004981
           range: string
@@ -491,13 +491,39 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
-            '2': UNKNOWN
+            '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: Medical History
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
+        relationship_to_participant:
+          value: ONESELF
           range: string
+- class_derivations:
+    Condition:
+      populated_from: pht004815
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00251262}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00251262}) + ":FHS OMNI 1 EXAM 3")'
+        condition_concept:
+          value: MONDO:0004981
+          range: string
+        condition_status:
+          populated_from: phv00251359
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': PRESENT
+        condition_provenance:
+          value: HEALTH_RECORD
+          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -519,11 +545,37 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: Medical History
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
+        relationship_to_participant:
+          value: ONESELF
           range: string
+- class_derivations:
+    Condition:
+      populated_from: pht006006
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00274193}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00274193}) + ":FHS OMNI 2 EXAM 1")'
+        condition_concept:
+          value: MONDO:0004981
+          range: string
+        condition_status:
+          populated_from: phv00566034
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': UNKNOWN
+        condition_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -544,7 +596,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Electrocardiogram
@@ -557,9 +609,9 @@
       populated_from: pht000012
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00001558}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00001559}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001558}) + ":FHS ORIGINAL EXAM 10")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00001559}) + ":FHS ORIGINAL EXAM 10")'
         condition_concept:
           value: MONDO:0004981
           range: string
@@ -569,7 +621,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Electrocardiogram

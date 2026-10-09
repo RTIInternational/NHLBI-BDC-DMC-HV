@@ -16,9 +16,9 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -37,9 +37,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -58,9 +58,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -79,9 +79,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -100,9 +100,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -121,9 +121,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -142,7 +142,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: "self-report questionnaire"
         relationship_to_participant:
@@ -163,7 +163,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
         associated_evidence:
           value: "Electrocardiogram"
         relationship_to_participant:
@@ -174,8 +174,7 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193046}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193046}) + ":WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP")'
+        # excluded: age_at_condition_start -- pht003406 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: MONDO:0004981
         condition_status:
@@ -183,9 +182,9 @@
           value_mappings:
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "hospital record abstraction"
+          value: PHYSICIAN_ADJUDICATION
+        # associated_evidence:
+        #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -194,8 +193,7 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193046}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193046}) + ":WHI ELECTROCARDIOGRAM -MYOCARDIAL INFARCTION NOVACODE FOLLOW-UP")'
+        # excluded: age_at_condition_start -- pht003406 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: MONDO:0004981
         condition_status:
@@ -205,9 +203,9 @@
             '0': ABSENT
             '9': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "hospital record abstraction"
+          value: PHYSICIAN_ADJUDICATION
+        # associated_evidence:
+        #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -218,8 +216,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
         age_at_condition_start:
           expr: 'case(({phv00193154} == 1, ({phv00078437} * 365) + {phv00193155}))'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193141}) + ":WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED")'
         condition_concept:
           value: MONDO:0004981
         condition_status:
@@ -228,9 +224,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "adjudicated event"
+          value: PHYSICIAN_ADJUDICATION
+        # associated_evidence:
+        #   value: "adjudicated event"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -241,8 +237,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_condition_start:
           expr: 'case(({phv00193727} == 1, ({phv00078437} * 365) + {phv00193728}))'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
         condition_concept:
           value: MONDO:0004981
         condition_status:
@@ -251,9 +245,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -274,8 +268,8 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "hospital record abstraction"
+          value: HEALTH_RECORD
+        # associated_evidence:
+        #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF

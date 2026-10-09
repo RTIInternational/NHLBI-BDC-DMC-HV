@@ -7,7 +7,12 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00226250}) + ":HCHS EXAM")'
         drug_concept:
-          expr: 'case(({phv00226329} == 1, "RxCUI:1191"))'
+          value: RxCUI:1191
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00226329
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT

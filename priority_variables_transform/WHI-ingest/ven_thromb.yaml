@@ -12,9 +12,9 @@
           expr: case(({phv00078472} == 0, "ABSENT"), ({phv00078473} == 0, "HISTORICAL"),
             (True, "PRESENT"))
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -31,19 +31,23 @@
           expr: case(({phv00078475} == 0, "ABSENT"), ({phv00078476} == 0, "HISTORICAL"),
             (True, "PRESENT"))
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
     Condition:
       populated_from: pht002769
+      joins:
+        pht000998:
+          source_key: phv00170566
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00170566}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00170566}) + ":WHI CAD")'
+        age_at_condition_start:
+          expr: 'case(({phv00170567} == 1, ({pht000998.phv00078437} * 365) + {phv00170568}))'
         condition_concept:
           value: HP:0002625
         condition_status:
@@ -52,17 +56,21 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
     Condition:
       populated_from: pht002769
+      joins:
+        pht000998:
+          source_key: phv00170566
+          lookup_key: phv00078435
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00170566}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00170566}) + ":WHI CAD")'
+        age_at_condition_start:
+          expr: 'case(({phv00170569} == 1, ({pht000998.phv00078437} * 365) + {phv00170570}))'
         condition_concept:
           value: MONDO:0005279
         condition_status:
@@ -71,7 +79,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -90,7 +98,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -109,7 +117,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -120,8 +128,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00192476}) + ":WHI")'
         age_at_condition_start:
           expr: 'case(({phv00192501} == 1, ({phv00078437} * 365) + {phv00192502}))'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00192476}) + ":WHI CAD")'
         condition_concept:
           value: HP:0002625
         condition_status:
@@ -130,9 +136,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PHYSICIAN_ADJUDICATION
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -143,8 +149,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
         age_at_condition_start:
           expr: 'case(({phv00193178} == 1, ({phv00078437} * 365) + {phv00193179}))'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193141}) + ":WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED")'
         condition_concept:
           value: HP:0002625
         condition_status:
@@ -153,9 +157,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: "adjudicated event"
+          value: PHYSICIAN_ADJUDICATION
+        # associated_evidence:
+        #   value: "adjudicated event"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -164,8 +168,7 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193552}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193552}) + ":WHI DVTPE")'
+        # excluded: age_at_condition_start -- pht003410 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: HP:0002625
         condition_status:
@@ -173,7 +176,7 @@
           value_mappings:
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PHYSICIAN_ADJUDICATION
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -182,8 +185,7 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193552}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193552}) + ":WHI DVTPE")'
+        # excluded: age_at_condition_start -- pht003410 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: MONDO:0005279
         condition_status:
@@ -191,7 +193,7 @@
           value_mappings:
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PHYSICIAN_ADJUDICATION
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -200,8 +202,7 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193552}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193552}) + ":WHI DVTPE")'
+        # excluded: age_at_condition_start -- pht003410 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: HP:0002625
         condition_status:
@@ -210,7 +211,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -219,8 +220,7 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193552}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193552}) + ":WHI DVTPE")'
+        # excluded: age_at_condition_start -- pht003410 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: HP:0002625
         condition_status:
@@ -229,7 +229,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -238,8 +238,7 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193552}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193552}) + ":WHI DVTPE")'
+        # excluded: age_at_condition_start -- pht003410 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: HP:0002625
         condition_status:
@@ -248,7 +247,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -257,8 +256,7 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193552}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193552}) + ":WHI DVTPE")'
+        # excluded: age_at_condition_start -- pht003410 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: HP:0002625
         condition_status:
@@ -267,7 +265,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -276,8 +274,7 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193552}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193552}) + ":WHI DVTPE")'
+        # excluded: age_at_condition_start -- pht003410 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: HP:0002625
         condition_status:
@@ -286,7 +283,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -295,8 +292,7 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193552}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193552}) + ":WHI DVTPE")'
+        # excluded: age_at_condition_start -- pht003410 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: MONDO:0005279
         condition_status:
@@ -305,7 +301,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -314,8 +310,7 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193552}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193552}) + ":WHI DVTPE")'
+        # excluded: age_at_condition_start -- pht003410 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: MONDO:0005279
         condition_status:
@@ -324,7 +319,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -333,8 +328,7 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193552}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193552}) + ":WHI DVTPE")'
+        # excluded: age_at_condition_start -- pht003410 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: MONDO:0005279
         condition_status:
@@ -343,7 +337,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -352,8 +346,7 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193552}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193552}) + ":WHI DVTPE")'
+        # excluded: age_at_condition_start -- pht003410 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: MONDO:0005279
         condition_status:
@@ -362,7 +355,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -371,8 +364,7 @@
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193552}) + ":WHI")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193552}) + ":WHI DVTPE")'
+        # excluded: age_at_condition_start -- pht003410 (WHI Form 121/126/132 outcome table) has no day variable; timing of the form is not documented (#799)
         condition_concept:
           value: MONDO:0005279
         condition_status:
@@ -381,7 +373,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -392,8 +384,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_condition_start:
           expr: 'case(({phv00202394} == 1, ({phv00078437} * 365) + {phv00202395}))'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
         condition_concept:
           value: HP:0002625
         condition_status:
@@ -402,9 +392,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -415,8 +405,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_condition_start:
           expr: 'case(({phv00193691} == 1, ({phv00078437} * 365) + {phv00193692}))'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
         condition_concept:
           value: MONDO:0005279
         condition_status:
@@ -425,9 +413,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -438,8 +426,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_condition_start:
           expr: 'case(({phv00193693} == 1, ({phv00078437} * 365) + {phv00193694}))'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
         condition_concept:
           value: MONDO:0005279
         condition_status:
@@ -448,9 +434,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -461,8 +447,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_condition_start:
           expr: 'case(({phv00193695} == 1, ({phv00078437} * 365) + {phv00193696}))'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
         condition_concept:
           value: MONDO:0005399
         condition_status:
@@ -471,9 +455,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -484,8 +468,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193686}) + ":WHI")'
         age_at_condition_start:
           expr: 'case(({phv00193697} == 1, ({phv00078437} * 365) + {phv00193698}))'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193686}) + ":WHI EXTENSION STUDY 2 SRC")'
         condition_concept:
           value: MONDO:0005399
         condition_status:
@@ -494,9 +476,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "self-report questionnaire"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "self-report questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -517,9 +499,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "hospital record abstraction"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -540,9 +522,9 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "hospital record abstraction"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -563,8 +545,8 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-        associated_evidence:
-          value: "hospital record abstraction"
+          value: PATIENT_SELF_REPORT
+        # associated_evidence:
+        #   value: "hospital record abstraction"
         relationship_to_participant:
           value: ONESELF

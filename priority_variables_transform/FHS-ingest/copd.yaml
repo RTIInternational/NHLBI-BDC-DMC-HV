@@ -15,36 +15,11 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
-        associated_evidence:
-          value: Respiratory Disease Questionnaire
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht006005
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00273700}) + ":FHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00273700}) + ":FHS NEW OFFSPRING SPOUSE EXAM 1")'
-        condition_concept:
-          value: MONDO:0005002
-          range: string
-        condition_status:
-          populated_from: phv00274134
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
-          range: string
-        associated_evidence:
-          value: Respiratory Disease Questionnaire
-          range: string
+        # associated_evidence:
+        #   value: Respiratory Disease Questionnaire
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -67,11 +42,11 @@
         condition_provenance:
           populated_from: phv00274135
           value_mappings:
-            '0': PATIENT_SELF-REPORTED_CONDITION
-            '1': CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: Respiratory Disease Questionnaire
-          range: string
+            '0': PATIENT_SELF_REPORT
+            '1': PATIENT_SELF_REPORT_DR_CONFIRMED
+        # associated_evidence:
+        #   value: Respiratory Disease Questionnaire
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -94,11 +69,11 @@
         condition_provenance:
           populated_from: phv00251718
           value_mappings:
-            '0': PATIENT_SELF-REPORTED_CONDITION
-            '1': CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: Respiratory Disease Questionnaire
-          range: string
+            '0': PATIENT_SELF_REPORT
+            '1': PATIENT_SELF_REPORT_DR_CONFIRMED
+        # associated_evidence:
+        #   value: Respiratory Disease Questionnaire
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -119,11 +94,11 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
-        associated_evidence:
-          value: Respiratory Disease Questionnaire
-          range: string
+        # associated_evidence:
+        #   value: Respiratory Disease Questionnaire
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -143,12 +118,40 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '8': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: Medical History
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
+        relationship_to_participant:
+          value: ONESELF
           range: string
+- class_derivations:
+    Condition:
+      populated_from: pht006006
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00274193}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00274193}) + ":FHS OMNI 2 EXAM 1")'
+        condition_concept:
+          value: MONDO:0005002
+          range: string
+        condition_status:
+          populated_from: phv00566295
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          populated_from: phv00566296
+          value_mappings:
+            '0': PATIENT_SELF_REPORT
+            '1': PATIENT_SELF_REPORT_DR_CONFIRMED
+        # associated_evidence:
+        #   value: Respiratory Disease Questionnaire
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -169,11 +172,11 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -182,9 +185,9 @@
       populated_from: pht006008
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00275064}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00275063}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275064}) + ":FHS ORIGINAL EXAM 32")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275063}) + ":FHS ORIGINAL EXAM 32")'
         condition_concept:
           value: MONDO:0005002
           range: string
@@ -194,11 +197,11 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -207,9 +210,9 @@
       populated_from: pht000747
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00072044}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00072580}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00072044}) + ":FHS OFFSPRING EXAM 8")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00072580}) + ":FHS OFFSPRING EXAM 8")'
         condition_concept:
           value: MONDO:0005002
           range: string
@@ -221,11 +224,11 @@
         condition_provenance:
           populated_from: phv00072501
           value_mappings:
-            '0': PATIENT_SELF-REPORTED_CONDITION
-            '1': CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: Respiratory Disease Questionnaire
-          range: string
+            '0': PATIENT_SELF_REPORT
+            '1': PATIENT_SELF_REPORT_DR_CONFIRMED
+        # associated_evidence:
+        #   value: Respiratory Disease Questionnaire
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -248,11 +251,11 @@
         condition_provenance:
           populated_from: phv00021308
           value_mappings:
-            '0': PATIENT_SELF-REPORTED_CONDITION
-            '1': CLINICAL_DIAGNOSIS
-        associated_evidence:
-          value: Respiratory Disease Questionnaire
-          range: string
+            '0': PATIENT_SELF_REPORT
+            '1': PATIENT_SELF_REPORT_DR_CONFIRMED
+        # associated_evidence:
+        #   value: Respiratory Disease Questionnaire
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -272,12 +275,13 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '8': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -297,12 +301,13 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
+            '8': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string

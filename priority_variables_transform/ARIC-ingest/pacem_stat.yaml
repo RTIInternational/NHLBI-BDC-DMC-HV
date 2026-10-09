@@ -1,5 +1,5 @@
 - class_derivations:
-    MeasurementObservation:
+    Procedure:
       populated_from: pht004067
       slot_derivations:
         associated_participant:
@@ -7,21 +7,18 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00205057}) + ":ARIC EXAM 4")'
           range: string
-        value_enum:
+        procedure_concept:
+          expr: case(({phv00205047} == 'Y', "OMOP:45772840"))
+        procedure_provenance:
+          expr: case(({phv00205047} == 'Y', "PATIENT_SELF_REPORT"))
+        procedure_status:
           populated_from: phv00205047
           value_mappings:
             'N': ABSENT
             'Y': PRESENT
-            U: UNKNOWN
-        observation_type:
-          value: OMOP:45772840
-        body_position:
-          value: "SUPINE_BODY_POSITION"
-        method_type:
-          value: "Electrocardiogram"
-          range: string
+            'U': UNKNOWN
 - class_derivations:
-    MeasurementObservation:
+    Procedure:
       populated_from: pht004102
       slot_derivations:
         associated_participant:
@@ -29,20 +26,17 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207055}) + ":ARIC Hospital Form")'
           range: string
-        value_enum:
+        procedure_concept:
+          expr: case(({phv00206911} == 'Y', "OMOP:45772840"))
+        procedure_provenance:
+          expr: case(({phv00206911} == 'Y', "EHR"))
+        procedure_status:
           populated_from: phv00206911
           value_mappings:
             'N': ABSENT
             'Y': PRESENT
-        observation_type:
-          value: OMOP:45772840
-        body_position:
-          value: "SUPINE_BODY_POSITION"
-        method_type:
-          value: "Electrocardiogram"
-          range: string
 - class_derivations:
-    MeasurementObservation:
+    Procedure:
       populated_from: pht004128
       slot_derivations:
         associated_participant:
@@ -50,15 +44,12 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00207836}) + ":ARIC EXAM 3")'
           range: string
-        value_enum:
+        procedure_concept:
+          expr: case(({phv00207815} == 'Y', "OMOP:45772840"))
+        procedure_provenance:
+          expr: case(({phv00207815} == 'Y', "PATIENT_SELF_REPORT"))
+        procedure_status:
           populated_from: phv00207815
           value_mappings:
             'N': ABSENT
             'Y': PRESENT
-        observation_type:
-          value: OMOP:45772840
-        body_position:
-          value: "SUPINE_BODY_POSITION"
-        method_type:
-          value: "Electrocardiogram"
-          range: string

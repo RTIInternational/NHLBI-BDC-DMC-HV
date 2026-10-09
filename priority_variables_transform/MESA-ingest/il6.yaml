@@ -77,7 +77,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00159198}) + ":MESA")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00159198}) + ":MESA ABD BODY COMPOSITION")'
+          expr: 'case(({phv00160529} == 2, uuid5("https://w3id.org/bdchm/Visit", str({phv00159198}) + ":MESA CLASSIC EXAM 2")), ({phv00160529} == 3, uuid5("https://w3id.org/bdchm/Visit", str({phv00159198}) + ":MESA CLASSIC EXAM 3")))'
         observation_type:
           value: OBA:2052890
           range: string

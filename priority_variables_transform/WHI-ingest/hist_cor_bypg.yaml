@@ -15,7 +15,7 @@
             '1': PRESENT
             '0': ABSENT
         procedure_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
 - class_derivations:
     Procedure:
@@ -25,9 +25,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00193141}) + ":WHI")'
         age_at_procedure:
           expr: 'case(({phv00193157} == 1, ({phv00078437} * 365) + {phv00193158}))'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00193141}) + ":WHI OUTCOMES - CLINICAL TRIALS + OBSERVATIONAL STUDY ADJUDICATED")'
-          range: string
         procedure_concept:
           value: OMOP:4336464
         procedure_status:
@@ -36,7 +33,7 @@
             '1': PRESENT
             '0': ABSENT
         procedure_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PHYSICIAN_ADJUDICATION
           range: string
 - class_derivations:
     Procedure:
@@ -57,5 +54,5 @@
             '1': PRESENT
             '0': ABSENT
         procedure_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string

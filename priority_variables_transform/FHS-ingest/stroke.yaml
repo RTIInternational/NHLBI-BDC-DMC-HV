@@ -1,5 +1,31 @@
 - class_derivations:
     Condition:
+      populated_from: pht004815
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00251262}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00251262}) + ":FHS OMNI 1 EXAM 3")'
+        condition_concept:
+          value: MONDO:0005098
+          range: string
+        condition_status:
+          populated_from: phv00251387
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': PRESENT
+        condition_provenance:
+          value: HEALTH_RECORD
+          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
       populated_from: pht006005
       slot_derivations:
         associated_participant:
@@ -16,11 +42,11 @@
             '1': PRESENT
             '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -42,11 +68,11 @@
             '1': PRESENT
             '2': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: WORKING_DIAGNOSIS
           range: string
-        associated_evidence:
-          value: Clinical Diagnostic Impression
-          range: string
+        # associated_evidence:
+        #   value: Clinical Diagnostic Impression
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -69,11 +95,11 @@
             '2': UNKNOWN
             '8': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -96,11 +122,63 @@
             '2': UNKNOWN
             '8': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: Medical History
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
+        relationship_to_participant:
+          value: ONESELF
           range: string
+- class_derivations:
+    Condition:
+      populated_from: pht006006
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00274193}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00274193}) + ":FHS OMNI 2 EXAM 1")'
+        condition_concept:
+          value: MONDO:0005098
+          range: string
+        condition_status:
+          populated_from: phv00566060
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': PRESENT
+        condition_provenance:
+          value: HEALTH_RECORD
+          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht006006
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00274193}) + ":FHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00274193}) + ":FHS OMNI 2 EXAM 1")'
+        condition_concept:
+          value: MONDO:0005098
+          range: string
+        condition_status:
+          populated_from: phv00566179
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+            '2': UNKNOWN
+        condition_provenance:
+          value: WORKING_DIAGNOSIS
+          range: string
+        # associated_evidence:
+        #   value: Clinical Diagnostic Impression
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -123,11 +201,11 @@
             '2': UNKNOWN
             '8': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -150,11 +228,11 @@
             '2': UNKNOWN
             '8': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -177,11 +255,11 @@
             '2': UNKNOWN
             '8': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -190,9 +268,9 @@
       populated_from: pht006008
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00275064}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00275063}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275064}) + ":FHS ORIGINAL EXAM 32")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275063}) + ":FHS ORIGINAL EXAM 32")'
         condition_concept:
           value: MONDO:0005098
           range: string
@@ -204,11 +282,11 @@
             '2': UNKNOWN
             '8': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -217,9 +295,9 @@
       populated_from: pht006008
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00275064}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00275063}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275064}) + ":FHS ORIGINAL EXAM 32")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275063}) + ":FHS ORIGINAL EXAM 32")'
         condition_concept:
           value: MONDO:0005098
           range: string
@@ -231,11 +309,11 @@
             '2': UNKNOWN
             '8': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -244,9 +322,9 @@
       populated_from: pht006008
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00275064}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00275063}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275064}) + ":FHS ORIGINAL EXAM 32")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00275063}) + ":FHS ORIGINAL EXAM 32")'
         condition_concept:
           value: MONDO:0005098
           range: string
@@ -258,11 +336,11 @@
             '2': UNKNOWN
             '8': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -271,9 +349,9 @@
       populated_from: pht000026
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00006031}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00006325}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006031}) + ":FHS ORIGINAL EXAM 24")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00006325}) + ":FHS ORIGINAL EXAM 24")'
         condition_concept:
           value: MONDO:0005098
           range: string
@@ -285,7 +363,7 @@
             '2': UNKNOWN
             '8': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Medical History
@@ -300,7 +378,7 @@
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00010138}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010138}) + ":FHS ORIGINAL EXAM 6")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00010138}) + ":FHS OFFSPRING EXAM 6")'
         condition_concept:
           value: MONDO:0005098
           range: string
@@ -312,7 +390,7 @@
             '2': UNKNOWN
             '8': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Awareness of Coronary Factors Questionnaire
@@ -325,9 +403,9 @@
       populated_from: pht000747
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00072044}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00072580}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00072044}) + ":FHS ORIGINAL EXAM 8")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00072580}) + ":FHS OFFSPRING EXAM 8")'
         condition_concept:
           value: MONDO:0005098
           range: string
@@ -336,25 +414,24 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
-            '2': UNKNOWN
-            '8': UNKNOWN
+            '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
 - class_derivations:
     Condition:
-      populated_from: pht000747
+      populated_from: pht000074
       slot_derivations:
         associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00072044}) + ":FHS")'
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00021427}) + ":FHS")'
         associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00072044}) + ":FHS GENERATION 3 EXAM 1")'
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00021427}) + ":FHS GENERATION 3 EXAM 1")'
         condition_concept:
           value: MONDO:0005098
           range: string
@@ -363,14 +440,13 @@
           value_mappings:
             '0': ABSENT
             '1': PRESENT
-            '2': UNKNOWN
-            '8': UNKNOWN
+            '2': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -393,7 +469,7 @@
             '2': UNKNOWN
             '8': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Medical History
@@ -423,7 +499,7 @@
             '18': MONDO:0005264
             '19': MONDO:0011057
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         condition_status:
           populated_from: phv00276966
@@ -438,9 +514,9 @@
             '17': PRESENT
             '18': PRESENT
             '19': UNKNOWN
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -463,7 +539,7 @@
             '2': UNKNOWN
             '8': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: Medical History
@@ -493,7 +569,7 @@
             '18': MONDO:0005264
             '19': MONDO:0011057
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         condition_status:
           populated_from: phv00276972
@@ -508,9 +584,9 @@
             '17': PRESENT
             '18': PRESENT
             '19': UNKNOWN
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -533,11 +609,11 @@
             '2': UNKNOWN
             '8': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: HEALTH_RECORD
           range: string
-        associated_evidence:
-          value: Medical History
-          range: string
+        # associated_evidence:
+        #   value: Medical History
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string

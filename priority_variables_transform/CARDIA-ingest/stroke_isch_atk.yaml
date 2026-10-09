@@ -15,11 +15,11 @@
             '1': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PHYSICIAN_ADJUDICATION
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -41,11 +41,11 @@
             '3': PRESENT
             '8': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PHYSICIAN_ADJUDICATION
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -65,12 +65,13 @@
             '1': ABSENT
             '2': PRESENT
             '8': UNKNOWN
+            'M': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -91,11 +92,11 @@
             '2': PRESENT
             '8': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -108,7 +109,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119801}) + ":CARDIA YEAR 15")'
         age_at_condition_start:
-          expr: "None if str({phv00119967}) == 'M' else float({phv00119967}) * 365"
+          expr: "None if str({phv00119926}) == 'M' else float({phv00119926}) * 365"
         condition_concept:
           value: MONDO:0005264
         condition_status:
@@ -118,11 +119,11 @@
             '2': PRESENT
             '8': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -139,15 +140,14 @@
         condition_status:
           populated_from: phv00121463
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            '1': ABSENT
             '2': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -164,15 +164,15 @@
         condition_status:
           populated_from: phv00117941
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            '1': ABSENT
             '2': PRESENT
+            'M': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -189,15 +189,15 @@
         condition_status:
           populated_from: phv00117970
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            '1': ABSENT
             '2': PRESENT
+            'M': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string

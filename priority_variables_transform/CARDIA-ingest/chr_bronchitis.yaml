@@ -7,7 +7,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113261}) + ":CARDIA YEAR 0")'
         age_at_condition_start:
-          expr: "None if str({phv00113387}) == 'M' else float({phv00113387}) * 365"
+          expr: "None if str({phv00113376}) != '2' else (None if str({phv00113379}) == 'M' else float({phv00113379}) * 365)"
         condition_concept:
           value: MONDO:0005607
         condition_status:
@@ -15,8 +15,9 @@
           value_mappings:
             '1': ABSENT
             '2': PRESENT
+            'M': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: "self-report questionnaire"
@@ -33,7 +34,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113261}) + ":CARDIA YEAR 0")'
         age_at_condition_start:
-          expr: "None if str({phv00113387}) == 'M' else float({phv00113387}) * 365"
+          expr: "None if str({phv00113376}) != '2' else (None if str({phv00113379}) == 'M' else float({phv00113379}) * 365)"
         condition_concept:
           value: MONDO:0005607
         condition_status:
@@ -41,8 +42,9 @@
           value_mappings:
             '1': ABSENT
             '2': PRESENT
+            'M': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: "self-report questionnaire"
@@ -59,7 +61,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00113261}) + ":CARDIA YEAR 0")'
         age_at_condition_start:
-          expr: "None if str({phv00113387}) == 'M' else float({phv00113387}) * 365"
+          expr: "None if str({phv00113376}) != '2' else (None if str({phv00113379}) == 'M' else float({phv00113379}) * 365)"
         condition_concept:
           value: MONDO:0005607
         condition_status:
@@ -67,12 +69,13 @@
           value_mappings:
             '1': ABSENT
             '2': PRESENT
+            'M': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -92,8 +95,9 @@
             '1': ABSENT
             '2': PRESENT
             '8': ABSENT
+            'M': UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: "self-report questionnaire"
@@ -118,7 +122,7 @@
             '2': PRESENT
             '8': ABSENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: "self-report questionnaire"
@@ -135,7 +139,7 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00119801}) + ":CARDIA YEAR 15")'
         age_at_condition_start:
-          expr: "None if str({phv00119967}) == 'M' else float({phv00119967}) * 365"
+          expr: "None if str({phv00119928}) == 'M' else float({phv00119928}) * 365"
         condition_concept:
           value: MONDO:0005607
         condition_status:
@@ -145,7 +149,7 @@
             '2': PRESENT
             '8': ABSENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: "self-report questionnaire"
@@ -161,8 +165,6 @@
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00190551}) + ":CARDIA")'
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00190551}) + ":CARDIA YEAR 20")'
-        age_at_condition_start:
-          expr: "None if str({phv00190622}) == 'M' else float({phv00190622}) * 365"
         condition_concept:
           value: MONDO:0005607
         condition_status:
@@ -171,7 +173,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: "self-report questionnaire"

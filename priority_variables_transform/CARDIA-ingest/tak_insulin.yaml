@@ -7,6 +7,11 @@
         associated_visit:
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00118359}) + ":CARDIA YEAR 10")'
         drug_concept:
-          expr: case(({phv00118386} == 2, 'ATC:A10A'))
+          value: ATC:A10
         exposure_provenance:
           value: PATIENT_SELF_REPORTED_MEDICATION
+        exposure_status:
+          populated_from: phv00118386
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT

@@ -15,14 +15,14 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001451
@@ -40,39 +40,14 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht001451
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00099663}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00099663}) + ":CHS BASELINE 2")'
-        condition_concept:
-          value: MONDO:0004981
-          range: string
-        condition_status:
-          populated_from: phv00100069
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-        associated_evidence:
-          value: "Electrocardiogram"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001452
@@ -90,14 +65,14 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001452
@@ -115,7 +90,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -126,11 +101,15 @@
 - class_derivations:
     Condition:
       populated_from: pht001456
+      joins:
+        pht001452:
+          source_key: phv00100677
+          lookup_key: phv00100285
       slot_derivations:
         associated_participant:
           expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00100677}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00100677}) + ":ATRIAL FIBRILLATION DATA")'
+        age_at_condition_start:
+          expr: '{pht001452.phv00100487} * 365'
         condition_concept:
           value: MONDO:0004981
           range: string
@@ -140,14 +119,14 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PHYSICIAN_ADJUDICATION
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001474
@@ -166,14 +145,14 @@
             '1': PRESENT
             '2': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001474
@@ -191,14 +170,14 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001474
@@ -216,7 +195,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -241,14 +220,14 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001475
@@ -266,7 +245,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -292,14 +271,14 @@
             '1': PRESENT
             '2': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001476
@@ -318,14 +297,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001477
@@ -344,14 +323,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001478
@@ -370,14 +349,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001479
@@ -396,14 +375,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001480
@@ -422,14 +401,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001481
@@ -448,14 +427,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001482
@@ -474,14 +453,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001483
@@ -500,14 +479,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001484
@@ -526,14 +505,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001485
@@ -552,14 +531,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001486
@@ -578,14 +557,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001487
@@ -604,14 +583,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001488
@@ -629,14 +608,14 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001488
@@ -654,14 +633,14 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001488
@@ -679,7 +658,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -704,14 +683,14 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001489
@@ -729,7 +708,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -754,39 +733,14 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
-- class_derivations:
-    Condition:
-      populated_from: pht001490
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00105099}) + ":CHS")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00105099}) + ":CHS YEAR 5 NEW")'
-        condition_concept:
-          value: MONDO:0004981
-          range: string
-        condition_status:
-          populated_from: phv00106361
-          value_mappings:
-            '0': ABSENT
-            '1': PRESENT
-        condition_provenance:
-          value: CLINICAL_DIAGNOSIS
-          range: string
-        relationship_to_participant:
-          value: ONESELF
-          range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001490
@@ -804,14 +758,14 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001491
@@ -831,14 +785,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001491
@@ -856,7 +810,7 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -881,13 +835,89 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001492
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00107443}) + ":CHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00107443}) + ":CHS YEAR 6")'
+        condition_concept:
+          value: MONDO:0004981
+          range: string
+        condition_status:
+          populated_from: phv00107949
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT
+            '3': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001492
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00107443}) + ":CHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00107443}) + ":CHS YEAR 6")'
+        condition_concept:
+          value: MONDO:0004981
+          range: string
+        condition_status:
+          populated_from: phv00108187
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001492
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00107443}) + ":CHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00107443}) + ":CHS YEAR 6")'
+        condition_concept:
+          value: MONDO:0004981
+          range: string
+        condition_status:
+          populated_from: phv00108176
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: STUDY_RECORD
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
         associated_evidence:
-          value: "self-report questionnaire"
+          value: "Electrocardiogram"
           range: string
 - class_derivations:
     Condition:
@@ -906,14 +936,14 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001493
@@ -932,14 +962,14 @@
             '2': PRESENT
             '3': PRESENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
-          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
 - class_derivations:
     Condition:
       populated_from: pht001493
@@ -957,7 +987,108 @@
             '0': ABSENT
             '1': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        associated_evidence:
+          value: "self-report questionnaire"
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001494
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00109056}) + ":CHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109056}) + ":CHS YEAR 8")'
+        condition_concept:
+          value: MONDO:0004981
+          range: string
+        condition_status:
+          populated_from: phv00109390
+          value_mappings:
+            '1': ABSENT
+            '2': PRESENT
+            '3': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001494
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00109056}) + ":CHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109056}) + ":CHS YEAR 8")'
+        condition_concept:
+          value: MONDO:0004981
+          range: string
+        condition_status:
+          populated_from: phv00109249
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001494
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00109056}) + ":CHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109056}) + ":CHS YEAR 8")'
+        condition_concept:
+          value: MONDO:0004981
+          range: string
+        condition_status:
+          populated_from: phv00109328
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: STUDY_RECORD
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        associated_evidence:
+          value: "Electrocardiogram"
+          range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001495
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00109768}) + ":CHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109768}) + ":CHS YEAR 9")'
+        condition_concept:
+          value: MONDO:0004981
+          range: string
+        condition_status:
+          populated_from: phv00109876
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: STUDY_RECORD
           range: string
         relationship_to_participant:
           value: ONESELF
@@ -977,16 +1108,42 @@
           value: MONDO:0004981
           range: string
         condition_status:
-          populated_from: phv00109876
+          populated_from: phv00110052
           value_mappings:
-            '0': ABSENT
-            '1': PRESENT
+            '1': ABSENT
+            '2': PRESENT
+            '3': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT
           range: string
         relationship_to_participant:
           value: ONESELF
           range: string
-        associated_evidence:
-          value: "self-report questionnaire"
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string
+- class_derivations:
+    Condition:
+      populated_from: pht001495
+      slot_derivations:
+        associated_participant:
+          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00109768}) + ":CHS")'
+        associated_visit:
+          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00109768}) + ":CHS YEAR 9")'
+        condition_concept:
+          value: MONDO:0004981
           range: string
+        condition_status:
+          populated_from: phv00110499
+          value_mappings:
+            '0': ABSENT
+            '1': PRESENT
+        condition_provenance:
+          value: PATIENT_SELF_REPORT
+          range: string
+        relationship_to_participant:
+          value: ONESELF
+          range: string
+        # associated_evidence:
+        #   value: "self-report questionnaire"
+        #   range: string

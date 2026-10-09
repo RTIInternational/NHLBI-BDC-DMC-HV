@@ -16,13 +16,13 @@
           populated_from: phv00128093
           value_mappings:
             'No': ABSENT
-            'Yes': HISTORICAL
+            'Yes': PRESENT
             Dont know: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
-        associated_evidence:
-          value: "Personal and Family History Questionnaire"
+        # associated_evidence:
+        #   value: "Personal and Family History Questionnaire"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -42,12 +42,12 @@
           populated_from: phv00128395
           value_mappings:
             'No': ABSENT
-            'Yes': HISTORICAL
+            'Yes': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
-        associated_evidence:
-          value: "Stroke Symptom Screening"
+        # associated_evidence:
+        #   value: "Stroke Symptom Screening"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -67,13 +67,13 @@
           populated_from: phv00400912
           value_mappings:
             N: ABSENT
-            Y: HISTORICAL
+            Y: PRESENT
             U: UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
-        associated_evidence:
-          value: "Annual Follow-Up"
+        # associated_evidence:
+        #   value: "Annual Follow-Up"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -92,12 +92,12 @@
         condition_status:
           populated_from: phv00401072
           value_mappings:
-            'Yes': HISTORICAL
+            'Yes': PRESENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
           range: string
-        associated_evidence:
-          value: "Event Adjudication"
+        # associated_evidence:
+        #   value: "Event Adjudication"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -116,13 +116,13 @@
         condition_status:
           populated_from: phv00401073
           value_mappings:
-            'Yes': HISTORICAL
+            'Yes': PRESENT
             'No': ABSENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
           range: string
-        associated_evidence:
-          value: "Event Adjudication"
+        # associated_evidence:
+        #   value: "Event Adjudication"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -141,13 +141,13 @@
         condition_status:
           populated_from: phv00401074
           value_mappings:
-            'Yes': HISTORICAL
+            'Yes': PRESENT
             'No': ABSENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
           range: string
-        associated_evidence:
-          value: "Event Adjudication"
+        # associated_evidence:
+        #   value: "Event Adjudication"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -166,13 +166,13 @@
         condition_status:
           populated_from: phv00401075
           value_mappings:
-            'Yes': HISTORICAL
+            'Yes': PRESENT
             'No': ABSENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
           range: string
-        associated_evidence:
-          value: "Event Adjudication"
+        # associated_evidence:
+        #   value: "Event Adjudication"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -191,13 +191,13 @@
         condition_status:
           populated_from: phv00401076
           value_mappings:
-            'Yes': HISTORICAL
+            'Yes': PRESENT
             'No': ABSENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PHYSICIAN_ADJUDICATION
           range: string
-        associated_evidence:
-          value: "Event Adjudication"
+        # associated_evidence:
+        #   value: "Event Adjudication"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -216,10 +216,10 @@
         condition_status:
           populated_from: phv00401207
           value_mappings:
-            'Yes': HISTORICAL
+            'Yes': PRESENT
             'No': ABSENT
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: "Analysis derived"
@@ -241,13 +241,13 @@
         condition_status:
           populated_from: phv00401345
           value_mappings:
-            'Yes': HISTORICAL
+            'Yes': PRESENT
             'No': ABSENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "Analysis derived"
+        # associated_evidence:
+        #   value: "Analysis derived"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -266,13 +266,13 @@
         condition_status:
           populated_from: phv00401472
           value_mappings:
-            'Yes': HISTORICAL
+            'Yes': PRESENT
             'No': ABSENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "Analysis derived"
+        # associated_evidence:
+        #   value: "Analysis derived"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -293,14 +293,15 @@
         condition_status:
           populated_from: phv00402801
           value_mappings:
-            '1': HISTORICAL
+            '1': PRESENT
             '2': ABSENT
             '7': UNKNOWN
+            '9': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "Health History Questionnaire"
+        # associated_evidence:
+        #   value: "Health History Questionnaire"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -319,13 +320,13 @@
         condition_status:
           populated_from: phv00402849
           value_mappings:
-            'Yes': HISTORICAL
+            'Yes': PRESENT
             'No': ABSENT
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "Event Adjudication"
+        # associated_evidence:
+        #   value: "Event Adjudication"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -344,14 +345,14 @@
         condition_status:
           populated_from: phv00403327
           value_mappings:
-            '1': HISTORICAL
+            '1': PRESENT
             '2': ABSENT
             '7': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "Self-Report Questionnaire"
+        # associated_evidence:
+        #   value: "Self-Report Questionnaire"
         relationship_to_participant:
           value: ONESELF
 - class_derivations:
@@ -369,14 +370,14 @@
         condition_status:
           populated_from: phv00403381
           value_mappings:
-            '1': HISTORICAL
+            '1': PRESENT
             '2': ABSENT
             '7': UNKNOWN
         condition_provenance:
-          value: PATIENT_SELF-REPORTED_CONDITION
+          value: PATIENT_SELF_REPORT
           range: string
-        associated_evidence:
-          value: "Self-Report Questionnaire"
+        # associated_evidence:
+        #   value: "Self-Report Questionnaire"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -397,11 +398,12 @@
         condition_status:
           populated_from: phv00403634
           value_mappings:
-            'Yes': HISTORICAL
+            'Yes': PRESENT
             'No': ABSENT
             Don't know: UNKNOWN
+            "Don't Know": UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: STUDY_RECORD
           range: string
         associated_evidence:
           value: "Personal and Family History Questionnaire"
@@ -423,14 +425,15 @@
         condition_status:
           populated_from: phv00403887
           value_mappings:
-            'Yes': HISTORICAL
+            'Yes': PRESENT
             'No': ABSENT
             Don't know: UNKNOWN
+            "Don't Know": UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
-        associated_evidence:
-          value: "Stroke Symptom Screening"
+        # associated_evidence:
+        #   value: "Stroke Symptom Screening"
         relationship_to_participant:
           value: ONESELF
           range: string
@@ -449,14 +452,15 @@
         condition_status:
           populated_from: phv00403990
           value_mappings:
-            'Yes': HISTORICAL
+            'Yes': PRESENT
             'No': ABSENT
             Don't know: UNKNOWN
+            "Don't Know": UNKNOWN
         condition_provenance:
-          value: CLINICAL_DIAGNOSIS
+          value: PATIENT_SELF_REPORT_DR_CONFIRMED
           range: string
-        associated_evidence:
-          value: "Stroke Symptom Screening"
+        # associated_evidence:
+        #   value: "Stroke Symptom Screening"
         relationship_to_participant:
           value: ONESELF
           range: string

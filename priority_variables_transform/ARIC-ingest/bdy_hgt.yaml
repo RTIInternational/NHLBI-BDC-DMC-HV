@@ -11,7 +11,7 @@
         observation_type:
           value: OBA:VT0001253
         body_position:
-          value: "STANDING_POSITION"
+          value: "ORTHOSTATIC_BODY_POSITION"
         method_type:
           value: "anthropometry"
         value_quantity:
@@ -35,7 +35,7 @@
         observation_type:
           value: OBA:VT0001253
         body_position:
-          value: "STANDING_POSITION"
+          value: "ORTHOSTATIC_BODY_POSITION"
         method_type:
           value: "anthropometry"
         value_quantity:
@@ -112,7 +112,7 @@
         observation_type:
           value: OBA:VT0001253
         body_position:
-          value: "STANDING_POSITION"
+          value: "ORTHOSTATIC_BODY_POSITION"
         method_type:
           value: "anthropometry"
         value_quantity:
@@ -137,7 +137,7 @@
         observation_type:
           value: OBA:VT0001253
         body_position:
-          value: "STANDING_POSITION"
+          value: "ORTHOSTATIC_BODY_POSITION"
         method_type:
           value: "anthropometry"
         value_quantity:
@@ -162,7 +162,7 @@
         observation_type:
           value: OBA:VT0001253
         body_position:
-          value: "STANDING_POSITION"
+          value: "ORTHOSTATIC_BODY_POSITION"
         method_type:
           value: "anthropometry"
         value_quantity:
@@ -185,7 +185,7 @@
         observation_type:
           value: OBA:VT0001253
         body_position:
-          value: "STANDING_POSITION"
+          value: "ORTHOSTATIC_BODY_POSITION"
         method_type:
           value: "anthropometry"
         value_quantity:
@@ -234,7 +234,7 @@
         observation_type:
           value: OBA:VT0001253
         body_position:
-          value: "STANDING_POSITION"
+          value: "ORTHOSTATIC_BODY_POSITION"
         method_type:
           value: "anthropometry"
         value_quantity:
@@ -257,7 +257,7 @@
         observation_type:
           value: OBA:VT0001253
         body_position:
-          value: "STANDING_POSITION"
+          value: "ORTHOSTATIC_BODY_POSITION"
         method_type:
           value: "anthropometry"
         value_quantity:
@@ -297,29 +297,6 @@
 #                     value: "cm"
 - class_derivations:
     MeasurementObservation:
-      populated_from: pht006419
-      slot_derivations:
-        associated_participant:
-          expr: 'uuid5("https://w3id.org/bdchm/Participant", str({phv00294834}) + ":ARIC")'
-        associated_visit:
-          expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00294834}) + ":ARIC EXAM 5")'
-        observation_type:
-          value: OBA:VT0001253
-        body_position:
-          value: "STANDING_POSITION"
-        method_type:
-          value: "anthropometry"
-        value_quantity:
-          class_derivations:
-          - Quantity:
-              populated_from: pht006419
-              slot_derivations:
-                value_decimal:
-                  populated_from: phv00294838
-                unit:
-                  value: "cm"
-- class_derivations:
-    MeasurementObservation:
       populated_from: pht012855
       slot_derivations:
         associated_participant:
@@ -329,7 +306,7 @@
         observation_type:
           value: OBA:VT0001253
         body_position:
-          value: "STANDING_POSITION"
+          value: "ORTHOSTATIC_BODY_POSITION"
         method_type:
           value: "anthropometry"
         value_quantity:

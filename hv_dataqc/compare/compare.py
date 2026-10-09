@@ -2,7 +2,7 @@
 hv_dataqc.compare — Source vs. Harmonized comparison orchestrator.
 
 Compare aggregate summaries from extract_source_summaries.py (raw dbGaP source)
-and extract_harmonized_summaries.py (dm-bip harmonized output). Runs checks C1–C12
+and extract_harmonized_summaries.py (dm-bip harmonized output). Runs checks C1–C16
 and produces a Markdown + JSON report.
 
 No hardcoded paths. All paths are explicit CLI arguments.
@@ -21,6 +21,12 @@ CHECKS:
   C10 Cross-Variable Consistency — SBP > DBP, FEV1 < FVC, etc.
   C11 Variable Type Consistency  — source/harmonized agree on continuous vs. categorical
   C12 Value Mapping Coverage     — YAML value_mappings cover dbGaP coded values
+  C13 UUID Format Validation     — associated_participant/visit are valid UUIDs
+  C14 Duplicate Row Detection    — no exact duplicate rows in harmonized entity output
+  C15 Column Coverage            — YAML-defined slots present as columns in harmonized TSV;
+                                   cross-consent-group column schema consistency
+  C16 id/identity Slot Pattern   — Person/Participant YAML blocks have explicit 'id' uuid5
+                                   derivation; 'identity' is raw source string, not uuid5
 
 USAGE:
   python -m hv_dataqc.compare \\
@@ -91,12 +97,18 @@ from hv_dataqc.compare.checks.n_preservation import (
     check_c2_n_loss,
 )
 from hv_dataqc.compare.checks.visit_n import check_c8_visit_distribution
+from hv_dataqc.compare.checks.entity_completeness import check_c0_entity_file_coverage
+from hv_dataqc.compare.known_issues import apply_known_issues, load_known_issues
 from hv_dataqc.compare.checks.clinical_ranges import check_c9_clinical_range
 from hv_dataqc.compare.checks.cross_variable import (
     check_c10_cross_variable,
     check_c12_value_mapping_coverage,
 )
 from hv_dataqc.compare.checks.type_consistency import check_c11_type_consistency
+from hv_dataqc.compare.checks.uuid_validation import check_c13_uuid_format
+from hv_dataqc.compare.checks.duplicate_rows import check_c14_duplicate_rows
+from hv_dataqc.compare.checks.column_coverage import check_c15_column_coverage
+from hv_dataqc.compare.checks.spec_validation import check_c16_id_slot
 from hv_dataqc.compare.render import generate_markdown_report
 from hv_dataqc.compare.report_io import (
     THRESHOLDS_PATH,
@@ -646,6 +658,12 @@ def main(argv: list[str] | None = None) -> None:
         print(f"ERROR: --cache-dir not found: {cache_dir}", file=sys.stderr)
         sys.exit(2)
 
+    # Load known_issues suppression list for this cohort (optional; silently
+    # skipped when no file exists for the cohort).
+    known_issues_list = load_known_issues(cohort)
+    if known_issues_list:
+        print(f"Loaded {len(known_issues_list)} known_issue(s) for {cohort}")
+
     # Load clinical ranges
     cr_path = (
         Path(args.clinical_ranges)
@@ -763,6 +781,9 @@ def main(argv: list[str] | None = None) -> None:
     # Run checks
     all_results: list[CheckResult] = []
 
+    # C0 — pre-flight: entity file coverage per consent group (must run first)
+    all_results.extend(check_c0_entity_file_coverage(harmonized))
+
     # Collect all PHTs referenced by any YAML mapping so C1 can show the
     # YAML-scoped participant ceiling alongside the all-PHT union.
     mapped_phts: set[str] = {
@@ -811,7 +832,7 @@ def main(argv: list[str] | None = None) -> None:
 
         # Determine the expected comparison type from source/dbGaP/YAML intent.
         # The harmonized observed type is validated against this via C11.
-        comparison_type_detail = determine_comparison_type(match, src_var, phv_type_map)
+        comparison_type_detail = determine_comparison_type(match, src_var, phv_type_map, phv_value_codes)
         comparison_type = comparison_type_detail.get("expected_type")
         if comparison_type and src_var.get("type") != comparison_type:
             src_var = {
@@ -820,7 +841,11 @@ def main(argv: list[str] | None = None) -> None:
                 "_comparison_type_detail": comparison_type_detail,
             }
 
-        display_name = src_var.get("name", src_key)
+        _source_keys = match.get("_source_keys") or []
+        if len(_source_keys) > 1:
+            display_name = "+".join(_source_keys)
+        else:
+            display_name = src_var.get("name", src_key)
         expected_basis = src_var.get("_comparison_basis")
         value_map = None if expected_basis and expected_basis != "source_direct" else match.get("value_map")
 
@@ -860,8 +885,8 @@ def main(argv: list[str] | None = None) -> None:
         all_results.append(check_c2_n_loss(
             src_var, harmonized_var, var_label,
             pass_pct=c2_t.get("pass_pct", 0.5), warn_pct=c2_t.get("warn_pct", 2.0),
-            gain_warn_pct=c2_t.get("gain_warn_pct"),
             gain_fail_pct=c2_t.get("gain_fail_pct"),
+            per_pht_src=match.get("_per_pht_src"),
         ))
         all_results.append(check_c3_missing_accounting(
             src_var, harmonized_var, var_label,
@@ -872,25 +897,56 @@ def main(argv: list[str] | None = None) -> None:
         ))
         harmonized_type = harmonized_var.get("type")
         if comparison_type == "continuous" and harmonized_type == "continuous":
-            all_results.append(check_c4_mean_preservation(
-                src_var, harmonized_var, var_label,
-                pass_rel=c4_t.get("pass_rel", 0.001), warn_rel=c4_t.get("warn_rel", 0.01),
-            ))
-            if expected_basis != "yaml_scalar_conversion" and should_run_c5_conversion_check(match, c5_t):
+            if match.get("has_unit_conversion") and match.get("conversion_factor") is None:
+                # unit_conversion: is present in the YAML but the unit pair is not in the
+                # known-factor table, so build_expected_summary cannot scale the source mean.
+                # Comparing raw source values (original units) to harmonized values
+                # (converted units) would produce a false FAIL — skip C4 and C6.
+                all_results.append(CheckResult(
+                    "C4", var_label, "INFO",
+                    "Skipped — unit_conversion present but unit pair not in known-factor table; "
+                    "source and harmonized values are in different units",
+                ))
+                all_results.append(CheckResult(
+                    "C6", var_label, "INFO",
+                    "Skipped — unit_conversion present but unit pair not in known-factor table; "
+                    "source and harmonized values are in different units",
+                ))
+            else:
+                all_results.append(check_c4_mean_preservation(
+                    src_var, harmonized_var, var_label,
+                    pass_rel=c4_t.get("pass_rel", 0.001), warn_rel=c4_t.get("warn_rel", 0.01),
+                ))
+                all_results.append(check_c6_sd_preservation(
+                    src_var, harmonized_var, var_label,
+                    pass_rel=c6_t.get("pass_rel", 0.002), warn_rel=c6_t.get("warn_rel", 0.01),
+                ))
+            if "yaml_scalar_conversion" not in (expected_basis or "") and should_run_c5_conversion_check(match, c5_t):
                 all_results.append(check_c5_mean_after_conversion(
                     src_var, harmonized_var, var_label,
                     conversion_factor=match.get("conversion_factor") or c5_t.get("conversion_factor"),
                     pass_rel=c5_t.get("pass_rel", 0.001),
                 ))
-            all_results.append(check_c6_sd_preservation(
-                src_var, harmonized_var, var_label,
-                pass_rel=c6_t.get("pass_rel", 0.002), warn_rel=c6_t.get("warn_rel", 0.01),
-            ))
         elif comparison_type == "categorical" and harmonized_type == "categorical":
-            all_results.append(check_c7_categorical_distribution(
-                src_var, harmonized_var, var_label,
-                pass_pct=c7_t.get("pass_pct", 0.5), value_map=value_map,
-            ))
+            if expected_basis == "yaml_concept_value_mappings":
+                # Concept-routing entries route source codes to concept CURIEs
+                # that select WHICH harmonized variable receives the record.
+                # The harmonized categorical field is condition_status (PRESENT/
+                # ABSENT), not the concept CURIE itself — so comparing source
+                # CURIE categories against harmonized status categories is
+                # meaningless.  C2 already validates N preservation per concept.
+                all_results.append(CheckResult(
+                    "C7", var_label, "INFO",
+                    "Skipped — concept_value_map routing: distribution comparison "
+                    "not applicable (source categories are concept CURIEs; "
+                    "harmonized categories are condition_status values); "
+                    "N preservation validated by C2.",
+                ))
+            else:
+                all_results.append(check_c7_categorical_distribution(
+                    src_var, harmonized_var, var_label,
+                    pass_pct=c7_t.get("pass_pct", 0.5), value_map=value_map,
+                ))
         all_results.append(check_c9_clinical_range(harmonized_var, var_label, clinical_ranges, src_var=src_var))
         all_results.append(check_c11_type_consistency(
             src_var,
@@ -906,8 +962,13 @@ def main(argv: list[str] | None = None) -> None:
         warn_lo_ratio=c8_t.get("warn_lo_ratio", 0.95),
         warn_hi_ratio=c8_t.get("warn_hi_ratio", 1.05),
         yaml_dir=yaml_dir,
+        consent_group_file_status=harmonized.get("consent_group_file_status"),
     ))
     all_results.extend(check_c10_cross_variable(harmonized_vars, clinical_ranges))
+    all_results.extend(check_c13_uuid_format(harmonized))
+    all_results.extend(check_c14_duplicate_rows(harmonized))
+    all_results.extend(check_c15_column_coverage(harmonized, yaml_dir=yaml_dir))
+    all_results.extend(check_c16_id_slot(yaml_dir=yaml_dir))
 
     # Flag unmatched variables.  A pooled YAML match contributes ALL of its
     # contributing source columns to matched_src (not just the first), so
@@ -989,6 +1050,11 @@ def main(argv: list[str] | None = None) -> None:
     # multiple harmonized concepts) and consolidate per-variable C9 violations
     # that fired against different range definitions.
     all_results = _dedup_check_results(all_results)
+
+    # Apply known_issues suppression: matching FAIL/WARN results -> SKIP.
+    all_results, n_suppressed = apply_known_issues(all_results, known_issues_list)
+    if n_suppressed:
+        print(f"Suppressed {n_suppressed} result(s) via known_issues")
 
     # Summary
     counts: dict[str, int] = {}

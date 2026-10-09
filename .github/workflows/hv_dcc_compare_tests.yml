@@ -1,0 +1,54 @@
+name: HV-DCC-Compare Tests
+
+on:
+  pull_request:
+    paths:
+      - 'hv-dcc-compare/**'
+      - '.github/workflows/hv_dcc_compare_tests.yml'
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install ruff
+        run: pip install ruff==0.14.8
+
+      - name: Lint hv-dcc-compare
+        run: ruff check hv-dcc-compare/
+
+  unittest:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: hv-dcc-compare
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        run: pip install uv
+
+      # --frozen resolves from the committed uv.lock rather than re-resolving,
+      # so CI exercises the same pandas/numpy the enclave gets and a stale lock
+      # fails the job instead of being silently worked around.
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      - name: Run hv-dcc-compare smoke tests
+        # Synthetic fixtures only -- no restricted data, no network. The
+        # 'test*.py' pattern matches the hv_dataqc convention.
+        run: uv run python -m unittest discover -s tests -p 'test*.py' -v

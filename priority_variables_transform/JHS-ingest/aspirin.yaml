@@ -8,10 +8,16 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00127753}) + ":JHS Exam 1")'
           range: string
         drug_concept:
-          expr: case(({phv00127944} == "Y", "RxCUI:1191"))
+          value: RxCUI:1191
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00127944
+          value_mappings:
+            D: UNKNOWN
+            N: ABSENT
+            Y: PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht008725
@@ -22,10 +28,20 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00400849}) + ":JHS AFU")'
           range: string
         drug_concept:
-          expr: case(({phv00400887} == "Y", "RxCUI:1191"))
+          value: RxCUI:1191
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00400887
+          value_mappings:
+            A: UNKNOWN
+            K: UNKNOWN
+            M: UNKNOWN
+            N: ABSENT
+            R: UNKNOWN
+            U: UNKNOWN
+            Y: PRESENT
 - class_derivations:
     DrugExposure:
       populated_from: pht008768
@@ -36,10 +52,18 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403315}) + ":JHS Exam 2")'
           range: string
         drug_concept:
-          expr: case(({phv00403340} == 1, "RxCUI:1191"))
+          value: RxCUI:1191
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00403340
+          value_mappings:
+            '1': PRESENT
+            '2': ABSENT
+            '7': UNKNOWN
+            '8': UNKNOWN
+            '9': UNKNOWN
 - class_derivations:
     DrugExposure:
       populated_from: pht008769
@@ -50,7 +74,15 @@
           expr: 'uuid5("https://w3id.org/bdchm/Visit", str({phv00403369}) + ":JHS Exam 3")'
           range: string
         drug_concept:
-          expr: case(({phv00403394} == 1, "RxCUI:1191"))
+          value: RxCUI:1191
         exposure_provenance:
-          value: PATIENT SELF-REPORTED MEDICATION
+          value: PATIENT_SELF_REPORTED_MEDICATION
           range: string
+        exposure_status:
+          populated_from: phv00403394
+          value_mappings:
+            '1': PRESENT
+            '2': ABSENT
+            '7': UNKNOWN
+            '8': UNKNOWN
+            '9': UNKNOWN

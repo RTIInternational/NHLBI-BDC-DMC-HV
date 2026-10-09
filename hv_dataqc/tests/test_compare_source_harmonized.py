@@ -69,6 +69,7 @@ from hv_dataqc.compare.crosswalk import (  # noqa: E402
     _build_variables_by_name,
     _pick_single_pht_summary,
 )
+from hv_dataqc.compare.yaml_crosswalk import build_yaml_crosswalk  # noqa: E402
 from hv_dataqc.compare.checks.visit_n import _synthesize_source_visit_counts  # noqa: E402
 from hv_dataqc.extract_harmonized.extract_harmonized_summaries import (  # noqa: E402
     merge_variable_summaries,
@@ -119,12 +120,48 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         self.assertEqual(comparison["expected_type"], "continuous")
         self.assertEqual(comparison["basis"], "dbgap_phv_type_consensus")
 
-    def test_determine_comparison_type_uses_yaml_intent_when_dbgap_missing(self) -> None:
+    def test_determine_comparison_type_entity_class_overrides_dbgap(self) -> None:
         comparison = determine_comparison_type(
             {
                 "entity_class": "Condition",
                 "concept_value_map": {"1": "MONDO:0000001"},
             },
+            {"type": "continuous"},
+            {},
+        )
+
+        self.assertEqual(comparison["expected_type"], "categorical")
+        self.assertEqual(comparison["basis"], "entity_class_always_categorical")
+
+    def test_determine_comparison_type_coded_values_override_numeric_type(self) -> None:
+        # PHV declared NUMERIC in dbGaP but has coded values (0=NO, 1=YES) --
+        # should be classified as categorical, not continuous.
+        comparison = determine_comparison_type(
+            {"_source_phvs": ["phv00000001"]},
+            {"type": "continuous"},
+            {"phv00000001": "continuous"},
+            phv_value_codes={"phv00000001": {"0", "1"}},
+        )
+
+        self.assertEqual(comparison["expected_type"], "categorical")
+        self.assertEqual(comparison["basis"], "dbgap_phv_type_consensus")
+
+    def test_determine_comparison_type_no_coded_values_uses_type_tag(self) -> None:
+        # PHV has no coded values (genuinely continuous) -- <type> tag should win.
+        comparison = determine_comparison_type(
+            {"_source_phvs": ["phv00000002"]},
+            {"type": "categorical"},
+            {"phv00000002": "continuous"},
+            phv_value_codes={},
+        )
+
+        self.assertEqual(comparison["expected_type"], "continuous")
+        self.assertEqual(comparison["basis"], "dbgap_phv_type_consensus")
+
+    def test_determine_comparison_type_yaml_intent_fallback(self) -> None:
+        # No entity class, no dbGaP type, value_map present -- yaml_intent wins.
+        comparison = determine_comparison_type(
+            {"value_map": {"0": "ABSENT", "1": "PRESENT"}},
             {"type": "continuous"},
             {},
         )
@@ -600,6 +637,41 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
 
         self.assertEqual(result.status, "PASS")
 
+    def test_c7_sums_harmonized_keys_that_collapse_to_same_category(self) -> None:
+        """Two representations of one harmonized category ("OMOP:8527" and
+        "['OMOP:8527']") must have their mass summed, mirroring the source
+        side. Overwriting (last-writer-wins) would drop a bucket and mismatch
+        a distribution that actually matches."""
+        src = {
+            "type": "categorical",
+            "distribution": {"OMOP:8527": {"n": 100, "pct": 100.0}},
+        }
+        out = {
+            "type": "categorical",
+            "distribution": {
+                "OMOP:8527": {"n": 70, "pct": 70.0},
+                "['OMOP:8527']": {"n": 30, "pct": 30.0},
+            },
+        }
+
+        result = check_c7_categorical_distribution(src, out, "race")
+
+        # With summing: 70+30=100 matches source 100 -> PASS.
+        # Without the fix, only one bucket (30 or 70) survives -> mismatch.
+        self.assertEqual(result.status, "PASS")
+
+    def test_c3_skips_when_no_denominator_and_pct_missing_absent(self) -> None:
+        """When totals are absent/zero (n_valid fallback cannot run) and a side
+        has no pct_missing, C3 must SKIP rather than default both rates to 0 and
+        report a false 'Missing rate: 0%' PASS on data never compared."""
+        src = {"n_valid": 500}  # no n_total, no pct_missing
+        out = {}  # harmonized side has neither total nor pct_missing
+
+        result = check_c3_missing_accounting(src, out, "sparse var")
+
+        self.assertEqual(result.status, "SKIP")
+        self.assertIn("Insufficient data", result.message)
+
     def test_static_case_expr_does_not_become_c7_category(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             tmp_path = Path(tmp)
@@ -990,6 +1062,34 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         self.assertEqual(results[0].status, "INFO")
         self.assertIn("missing_sentinel_codes", results[0].detail)
 
+    def test_c12_unobserved_dbgap_code_is_info_not_warn(self) -> None:
+        """Codes defined in dbGaP but never observed in source data → INFO, not WARN."""
+        match = {
+            "_yaml_entries": [
+                {
+                    "yaml_file": "afib.yaml",
+                    "phv_id": "phv1",
+                    "value_map": {"N": "HP:0005110", "Y": "HP:0005110"},
+                    "source_summary": {
+                        "type": "categorical",
+                        # Only N and Y observed in actual data
+                        "distribution": {"N": {"n": 800}, "Y": {"n": 120}},
+                    },
+                }
+            ]
+        }
+        # dbGaP data dict defines A/K/M/R/U/N/Y but only N and Y appear in data
+        results = check_c12_value_mapping_coverage(
+            match, {"phv1": {"A", "K", "M", "N", "R", "U", "Y"}}
+        )
+
+        self.assertEqual(results[0].status, "INFO")
+        self.assertIn("missing_unobserved_codes", results[0].detail)
+        self.assertEqual(
+            sorted(results[0].detail["missing_unobserved_codes"]), ["A", "K", "M", "R", "U"]
+        )
+        self.assertNotIn("missing_semantic_codes", results[0].detail)
+
     def test_c12_uses_concept_phv_summary_for_concept_value_mappings(self) -> None:
         match = {
             "_source_summaries_by_phv": {
@@ -1070,6 +1170,77 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         self.assertEqual(results[0].status, "WARN")
         self.assertEqual(results[0].detail["comparison_confidence"], "unsupported")
 
+    def test_c8_crosswalk_resolves_string_visit_codes_to_canonical_labels(self) -> None:
+        """Column-based cohorts (SPIROMICS, COPDGene): raw TSV visit codes translated
+        via visit.yaml case() to canonical labels; C8 should PASS per-visit, not WARN."""
+        visit_yaml = """
+- class_derivations:
+    Visit:
+      populated_from: pht000001
+      slot_derivations:
+        name:
+          expr: "case(({phv000001} == 'V1', 'Study Visit 1'), ({phv000001} == 'V2', 'Study Visit 2'), ({phv000001} == 'V3', 'Study Visit 3'))"
+"""
+        source = {"rows_per_visit": {"V1": 100, "V2": 200, "V3": 150}}
+        harmonized = {"rows_per_visit": {"Study Visit 1": 100, "Study Visit 2": 200, "Study Visit 3": 150}}
+
+        with tempfile.TemporaryDirectory() as tmp:
+            yaml_dir = Path(tmp)
+            (yaml_dir / "visit.yaml").write_text(visit_yaml, encoding="utf-8")
+            results = check_c8_visit_distribution(source, harmonized, yaml_dir=yaml_dir)
+
+        statuses = {r.variable: r.status for r in results}
+        self.assertEqual(statuses.get("visit_Study Visit 1"), "PASS")
+        self.assertEqual(statuses.get("visit_Study Visit 2"), "PASS")
+        self.assertEqual(statuses.get("visit_Study Visit 3"), "PASS")
+        self.assertNotIn("_visits", statuses)
+
+    def test_c8_crosswalk_resolves_integer_visit_codes_to_canonical_labels(self) -> None:
+        """Integer-coded visit discriminators (e.g. FHS-style): crosswalk handles
+        numeric comparisons in case() expression."""
+        visit_yaml = """
+- class_derivations:
+    Visit:
+      populated_from: pht000002
+      slot_derivations:
+        name:
+          expr: "case(({phv000002} == 0, 'Cohort Baseline'), ({phv000002} == 1, 'Cohort Exam 2'))"
+"""
+        source = {"rows_per_visit": {"0": 500, "1": 480}}
+        harmonized = {"rows_per_visit": {"Cohort Baseline": 500, "Cohort Exam 2": 480}}
+
+        with tempfile.TemporaryDirectory() as tmp:
+            yaml_dir = Path(tmp)
+            (yaml_dir / "visit.yaml").write_text(visit_yaml, encoding="utf-8")
+            results = check_c8_visit_distribution(source, harmonized, yaml_dir=yaml_dir)
+
+        statuses = {r.variable: r.status for r in results}
+        self.assertEqual(statuses.get("visit_Cohort Baseline"), "PASS")
+        self.assertEqual(statuses.get("visit_Cohort Exam 2"), "PASS")
+        self.assertNotIn("_visits", statuses)
+
+    def test_c8_crosswalk_falls_back_to_warn_when_crosswalk_cannot_resolve(self) -> None:
+        """When visit.yaml has no case() expression that maps the source labels,
+        C8 still falls back to the total-count WARN."""
+        visit_yaml = """
+- class_derivations:
+    Visit:
+      populated_from: pht000003
+      slot_derivations:
+        name:
+          value: "Fixed Visit Label"
+"""
+        source = {"rows_per_visit": {"RAW_CODE": 100}}
+        harmonized = {"rows_per_visit": {"Other Visit": 100}}
+
+        with tempfile.TemporaryDirectory() as tmp:
+            yaml_dir = Path(tmp)
+            (yaml_dir / "visit.yaml").write_text(visit_yaml, encoding="utf-8")
+            results = check_c8_visit_distribution(source, harmonized, yaml_dir=yaml_dir)
+
+        self.assertEqual(results[0].status, "WARN")
+        self.assertEqual(results[0].detail["comparison_confidence"], "unsupported")
+
     def test_c8_synthesis_marks_multi_label_pht_unsupported(self) -> None:
         visit_yaml = """
 - class_derivations:
@@ -1099,7 +1270,7 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
         self.assertEqual(unsupported[0]["rows"], 100)
         self.assertEqual(unsupported[0]["labels"], ["VISIT A", "VISIT B"])
 
-    def test_c9_source_carried_red_flag_warns(self) -> None:
+    def test_c9_all_out_src_demoted_to_info(self) -> None:
         ranges = {
             "weight": {
                 "common_phv_names": ["weight"],
@@ -1114,7 +1285,7 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
 
         result = check_c9_clinical_range(out, "weight", ranges, src_var=src)
 
-        self.assertEqual(result.status, "WARN")
+        self.assertEqual(result.status, "INFO")
         self.assertIn("[out+src]", result.message)
 
     def test_c9_uses_min_max_from_numeric_encoded_source(self) -> None:
@@ -1132,7 +1303,7 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
 
         result = check_c9_clinical_range(out, "weight", ranges, src_var=src)
 
-        self.assertEqual(result.status, "WARN")
+        self.assertEqual(result.status, "INFO")
         self.assertIn("[out+src]", result.message)
 
     def test_c9_detail_reports_exact_name_match(self) -> None:
@@ -1204,7 +1375,6 @@ class CompareSourceHarmonizedTests(unittest.TestCase):
             src,
             out,
             "fanout",
-            gain_warn_pct=2.0,
             gain_fail_pct=10.0,
         )
 
@@ -1691,6 +1861,10 @@ from compare import (  # noqa: E402
     _extract_crosswalk_from_class_derivations,
     _normalize_harmonized_vars,
 )
+from hv_dataqc.compare.expected_summary import (  # noqa: E402
+    _has_true_catchall,
+    _true_arm_output_phvs,
+)
 
 
 class CrosswalkConceptExtractionTests(unittest.TestCase):
@@ -1813,6 +1987,131 @@ class CrosswalkConceptExtractionTests(unittest.TestCase):
         self.assertIn(("phv000002", "age_at_observation"), roles)
         self.assertIn(("phv000003", "value"), roles)
         self.assertEqual(cw[0]["conversion_factor"], 2.0)
+
+    def test_standalone_measurement_with_method_type_keeps_bare_key(self) -> None:
+        """A STANDALONE MeasurementObservation with a method_type slot must keep a
+        BARE harmonized_key (no |method suffix). process_measurements() groups
+        standalone MO by observation_type only, so a |method-suffixed crosswalk key
+        is falsely reported 'not matched in source' (ARIC measurement regression,
+        e.g. bmi.yaml method_type: 'calculated')."""
+        cd = {
+            "MeasurementObservation": {
+                "populated_from": "pht004063",
+                "slot_derivations": {
+                    "associated_participant": {"populated_from": "phv000001"},
+                    "observation_type": {"value": "OBA:2045455"},
+                    "method_type": {"value": "calculated"},
+                    "value_quantity": {
+                        "object_derivations": [
+                            {"class_derivations": {"Quantity": {"slot_derivations": {
+                                "value_decimal": {"populated_from": "phv000003"}}}}}
+                        ]
+                    },
+                },
+            }
+        }
+        phv_names = {"phv000001": "ID", "phv000003": "BMI"}
+        cw: list[dict] = []
+        _extract_crosswalk_from_class_derivations(cd, "bmi.yaml", phv_names, cw)  # inside_mos=False
+        self.assertEqual(len(cw), 1)
+        self.assertEqual(cw[0]["harmonized_key"], "measurement_OBA:2045455")
+        self.assertIsNone(cw[0]["method_type"])
+
+    def test_mos_nested_measurement_with_method_type_keeps_suffix(self) -> None:
+        """MO nested inside a MeasurementObservationSet keeps the |method suffix,
+        mirroring process_measurement_observation_sets() (observation_type+method_type)."""
+        inner = {
+            "MeasurementObservation": {
+                "populated_from": "pht000001",
+                "slot_derivations": {
+                    "associated_participant": {"populated_from": "phv000001"},
+                    "observation_type": {"value": "OMOP:4152194"},
+                    "method_type": {"value": "auscultatory"},
+                    "value_quantity": {
+                        "object_derivations": [
+                            {"class_derivations": {"Quantity": {"slot_derivations": {
+                                "value_decimal": {"populated_from": "phv000003"}}}}}
+                        ]
+                    },
+                },
+            }
+        }
+        phv_names = {"phv000001": "ID", "phv000003": "SBP"}
+        cw: list[dict] = []
+        _extract_crosswalk_from_class_derivations(inner, "bp.yaml", phv_names, cw, inside_mos=True)
+        self.assertEqual(len(cw), 1)
+        self.assertEqual(cw[0]["harmonized_key"], "measurement_OMOP:4152194|auscultatory")
+        self.assertEqual(cw[0]["method_type"], "auscultatory")
+
+    def test_nested_quantity_class_name_key_form_extracts_value_phv(self) -> None:
+        """value_quantity using the '- Quantity:' (class-name-as-key) list form must
+        yield a crosswalk entry. Production HV YAML (ARIC/COPDGene) uses this
+        spelling; the parser previously handled only '- name: Quantity', so these
+        measurement blocks produced NO crosswalk entry and every such concept was
+        falsely reported 'not matched in source'. Requires a populated phv_names
+        (entries with an unknown source name are skipped)."""
+        cd = {
+            "MeasurementObservation": {
+                "populated_from": "pht000001",
+                "slot_derivations": {
+                    "associated_participant": {"populated_from": "phv000001"},
+                    "observation_type": {"value": "OBA:2045455"},
+                    "value_quantity": {
+                        "class_derivations": [
+                            {"Quantity": {"populated_from": "pht000001", "slot_derivations": {
+                                "value_decimal": {"populated_from": "phv000003"},
+                                "unit": {"value": "kg/m2"}}}}
+                        ]
+                    },
+                },
+            }
+        }
+        phv_names = {"phv000001": "ID", "phv000003": "BMI"}
+        cw: list[dict] = []
+        _extract_crosswalk_from_class_derivations(cd, "bmi.yaml", phv_names, cw)
+        self.assertEqual(len(cw), 1)
+        self.assertEqual(cw[0]["harmonized_key"], "measurement_OBA:2045455")
+        self.assertEqual(cw[0]["phv_id"], "phv000003")
+
+    def test_scalar_factor_extracted_from_null_guard_ternary_expr(self) -> None:
+        """Regression: expr with two occurrences of the same PHV (null-guard ternary)
+        must still yield a conversion_factor.
+        Pattern: ``None if str({phv}) in ('M', '') else float({phv}) * 6.945``
+        Previously failed because the check required len(findall) == 1 (found 2)."""
+        cd = {
+            "MeasurementObservation": {
+                "populated_from": "pht001234",
+                "slot_derivations": {
+                    "associated_participant": {"populated_from": "phv000001"},
+                    "observation_type": {"value": "OBA:2060174"},
+                    "value_quantity": {
+                        "object_derivations": [
+                            {
+                                "class_derivations": {
+                                    "Quantity": {
+                                        "slot_derivations": {
+                                            "value_decimal": {
+                                                "expr": (
+                                                    "None if str({phv000002}) in ('M', '') "
+                                                    "else float({phv000002}) * 6.945"
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                },
+            }
+        }
+        phv_names = {"phv000001": "TOPICID", "phv000002": "AL4INS"}
+        cw: list[dict] = []
+
+        _extract_crosswalk_from_class_derivations(cd, "insulin_blood.yaml", phv_names, cw)
+
+        self.assertEqual(len(cw), 1)
+        self.assertAlmostEqual(cw[0]["conversion_factor"], 6.945, places=4)
 
     def test_case_expr_observation_type_generates_multiple_entries(self) -> None:
         """case() on observation_type generates one crosswalk entry per CURIE.
@@ -2912,5 +3211,742 @@ class JointDistributionOptionBTests(unittest.TestCase):
         self.assertEqual(result["_comparison_confidence"], "unsupported")
 
 
+class RenderDbGaPStudyIdTests(unittest.TestCase):
+    """Tests for the study_id extraction logic in generate_markdown_report (#643)."""
+
+    def _report(self, source_dirs: list[str]) -> str:
+        from hv_dataqc.compare.render import generate_markdown_report
+        return generate_markdown_report(
+            results=[],
+            cohort="TEST",
+            source_meta={"source_dirs": source_dirs, "cohort": "TEST"},
+            harmonized_meta={},
+        )
+
+    def test_bdc_topmed_form_resolves_study_id(self) -> None:
+        """BDC TOPMed directory (phs…-v…-r…-c…) should produce a dbGaP link."""
+        report = self._report(["nih-nhlbi-topmed-parent-hchs-sol-phs000810-v2-r1-c1"])
+        self.assertIn("phs000810.v2.p2", report)
+
+    def test_pilotparent_form_resolves_study_id(self) -> None:
+        """PilotParent directory (phs…-v…-p…-c…) should produce a dbGaP link."""
+        report = self._report(["parent-CHS_DS-CVD-MDS_-phs000287-v7-p1-c3"])
+        self.assertIn("phs000287.v7.p1", report)
+
+    def test_pilotparent_participant_set_extracted_from_dir(self) -> None:
+        """Participant set number should come from the directory, not be hardcoded."""
+        report = self._report(["parent-ARIC-phs000280-v9-p3-c1"])
+        self.assertIn("phs000280.v9.p3", report)
+
+    def test_no_matching_dir_produces_no_dbgap_link(self) -> None:
+        """When no recognised directory pattern is present, no dbGaP link is rendered."""
+        report = self._report(["some-unrecognised-directory"])
+        self.assertNotIn("dbgap.ncbi.nlm.nih.gov", report)
+        self.assertNotIn("dbGaP", report)
+
+
+class MultiBlockVarLabelTests(unittest.TestCase):
+    """C2-C11 var_label must include all contributing source variable names (#641).
+
+    When two YAML blocks map to the same harmonized concept (e.g. MONDO:0004981),
+    the crosswalk builds a single match with _source_keys = ["ecga271", "mhea7"].
+    The display_name in compare.py should join those names with '+' rather than
+    showing only the primary block's name.
+    """
+
+    _TWO_BLOCK_YAML = """\
+- class_derivations:
+    Condition:
+      populated_from: pht000001
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00000001
+        condition_concept:
+          value: MONDO:test_afib
+        condition_status:
+          populated_from: phv00000002
+          value_mappings:
+            '1': PRESENT
+            '0': ABSENT
+---
+- class_derivations:
+    Condition:
+      populated_from: pht000001
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00000001
+        condition_concept:
+          value: MONDO:test_afib
+        condition_status:
+          populated_from: phv00000003
+          value_mappings:
+            '1': PRESENT
+            '0': ABSENT
+"""
+
+    def _setup(self, tmp_path: Path) -> tuple[Path, Path]:
+        """Write a cache dir (two PHVs) and yaml dir (two-block YAML) into tmp."""
+        pheno_dir = tmp_path / "pheno_variable_summaries"
+        pheno_dir.mkdir()
+        (pheno_dir / "phs000000.v1.pht000001.v1.p1.test.data_dict.xml").write_text(
+            '<?xml version="1.0"?>\n'
+            "<data_table>\n"
+            '  <variable id="phv00000001.v1"><name>subj_id</name></variable>\n'
+            '  <variable id="phv00000002.v1"><name>ecga271</name></variable>\n'
+            '  <variable id="phv00000003.v1"><name>mhea7</name></variable>\n'
+            "</data_table>\n",
+            encoding="utf-8",
+        )
+        yaml_dir = tmp_path / "yaml"
+        yaml_dir.mkdir()
+        (yaml_dir / "afib.yaml").write_text(self._TWO_BLOCK_YAML, encoding="utf-8")
+        return tmp_path, yaml_dir
+
+    def _source_vars(self) -> dict:
+        return {
+            "ecga271": {"pht000001": {"type": "categorical", "n_valid": 100, "n_total": 100, "distribution": {"PRESENT": {"n": 50}, "ABSENT": {"n": 50}}}},
+            "mhea7":   {"pht000001": {"type": "categorical", "n_valid": 100, "n_total": 100, "distribution": {"PRESENT": {"n": 40}, "ABSENT": {"n": 60}}}},
+        }
+
+    def test_two_block_crosswalk_populates_source_keys_with_both_names(self) -> None:
+        """build_variable_crosswalk sets _source_keys = ['ecga271', 'mhea7'] for
+        a two-block YAML where each block maps a different PHV to the same concept."""
+        with tempfile.TemporaryDirectory() as tmp:
+            cache_dir, yaml_dir = self._setup(Path(tmp))
+            matches = build_variable_crosswalk(
+                variables_by_name=self._source_vars(),
+                harmonized_vars={"condition_MONDO:test_afib": {"type": "categorical", "n_valid": 130}},
+                yaml_dir=yaml_dir,
+                cache_dir=cache_dir,
+                source_doc={"total_participants": 100, "total_rows_by_pht": {"pht000001": 100}},
+            )
+
+        self.assertEqual(len(matches), 1)
+        self.assertEqual(matches[0]["_source_keys"], ["ecga271", "mhea7"])
+
+    def test_two_block_match_display_name_joins_source_keys(self) -> None:
+        """The display_name computed from _source_keys is 'ecga271+mhea7', not just 'ecga271'."""
+        with tempfile.TemporaryDirectory() as tmp:
+            cache_dir, yaml_dir = self._setup(Path(tmp))
+            matches = build_variable_crosswalk(
+                variables_by_name=self._source_vars(),
+                harmonized_vars={"condition_MONDO:test_afib": {"type": "categorical", "n_valid": 130}},
+                yaml_dir=yaml_dir,
+                cache_dir=cache_dir,
+                source_doc={"total_participants": 100, "total_rows_by_pht": {"pht000001": 100}},
+            )
+
+        match = matches[0]
+        _source_keys = match.get("_source_keys") or []
+        src_var = match.get("_resolved_src") or {}
+        src_key = match.get("source_key", "")
+        if len(_source_keys) > 1:
+            display_name = "+".join(_source_keys)
+        else:
+            display_name = src_var.get("name", src_key)
+
+        self.assertEqual(display_name, "ecga271+mhea7")
+
+    def test_single_block_match_display_name_uses_primary_name(self) -> None:
+        """A single-block YAML (_source_keys has one entry) still falls back to src_var name."""
+        single_block_yaml = """\
+- class_derivations:
+    Condition:
+      populated_from: pht000001
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00000001
+        condition_concept:
+          value: MONDO:test_afib
+        condition_status:
+          populated_from: phv00000002
+          value_mappings:
+            '1': PRESENT
+            '0': ABSENT
+"""
+        with tempfile.TemporaryDirectory() as tmp:
+            cache_dir, yaml_dir = self._setup(Path(tmp))
+            (yaml_dir / "afib.yaml").write_text(single_block_yaml, encoding="utf-8")
+            matches = build_variable_crosswalk(
+                variables_by_name=self._source_vars(),
+                harmonized_vars={"condition_MONDO:test_afib": {"type": "categorical", "n_valid": 100}},
+                yaml_dir=yaml_dir,
+                cache_dir=cache_dir,
+                source_doc={"total_participants": 100, "total_rows_by_pht": {"pht000001": 100}},
+            )
+
+        self.assertEqual(len(matches), 1)
+        self.assertEqual(len(matches[0]["_source_keys"]), 1)
+        self.assertEqual(matches[0]["_source_keys"], ["ecga271"])
+
+    def test_block_with_no_value_phv_is_skipped_not_mislabelled(self) -> None:
+        """A YAML block where value_quantity/condition_status is absent (commented out)
+        must not produce a crosswalk entry labelled with the participant-ID PHV (#644).
+
+        Tested via build_yaml_crosswalk (one level below build_variable_crosswalk)
+        so we can assert 0 entries without triggering the CrosswalkBuildError that
+        fires when the whole yaml_dir is empty."""
+        # Only associated_participant mapped; condition_status absent — simulates
+        # a block where value_quantity is commented out pending unit-conversion work.
+        no_value_yaml = """\
+- class_derivations:
+    Condition:
+      populated_from: pht000001
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00000001
+        condition_concept:
+          value: MONDO:test_afib
+"""
+        phv_names = {"phv00000001": "subj_id", "phv00000002": "ecga271"}
+
+        with tempfile.TemporaryDirectory() as tmp:
+            yaml_dir = Path(tmp) / "yaml"
+            yaml_dir.mkdir()
+            (yaml_dir / "afib.yaml").write_text(no_value_yaml, encoding="utf-8")
+            entries = build_yaml_crosswalk(yaml_dir, phv_names)
+
+        # The block produces no entries — it was skipped rather than emitting
+        # an entry labelled with the participant-ID variable.
+        self.assertEqual(entries, [])
+        source_keys = [e["source_key"] for e in entries]
+        self.assertNotIn("subj_id", source_keys)
+
+
+class UnitConversionFlagTests(unittest.TestCase):
+    """Tests for the has_unit_conversion flag (#647) and related [in_us] factor entry."""
+
+    # Minimal YAML block with a unit_conversion (known pair [lb_av] → kg)
+    _YAML_WITH_UNIT_CONVERSION = """\
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000001
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00000001
+        observation_type:
+          value: OBA:VT0001259
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000001
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00000002
+                    unit_conversion:
+                      source_unit: '[lb_av]'
+                      target_unit: kg
+                  unit:
+                    value: kg
+                    range: string
+"""
+
+    # Identical structure but without any unit_conversion key
+    _YAML_WITHOUT_UNIT_CONVERSION = """\
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000001
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00000001
+        observation_type:
+          value: OBA:VT0001259
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000001
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00000002
+                  unit:
+                    value: kg
+                    range: string
+"""
+
+    # YAML with an unknown unit pair (not in _COMMON_UNIT_FACTORS) to verify
+    # has_unit_conversion is True even when conversion_factor cannot be computed.
+    _YAML_UNKNOWN_UNIT_PAIR = """\
+- class_derivations:
+    MeasurementObservation:
+      populated_from: pht000001
+      slot_derivations:
+        associated_participant:
+          populated_from: phv00000001
+        observation_type:
+          value: OBA:VT0001259
+        value_quantity:
+          object_derivations:
+          - class_derivations:
+              Quantity:
+                populated_from: pht000001
+                slot_derivations:
+                  value_decimal:
+                    populated_from: phv00000002
+                    unit_conversion:
+                      source_unit: 'fathom'
+                      target_unit: 'meter'
+                  unit:
+                    value: meter
+                    range: string
+"""
+
+    def _write_yaml_and_get_entries(self, yaml_text: str) -> list[dict]:
+        """Write a single YAML file and return build_yaml_crosswalk results."""
+        phv_names = {"phv00000001": "subj_id", "phv00000002": "weight_src"}
+        with tempfile.TemporaryDirectory() as tmp:
+            yaml_dir = Path(tmp) / "yaml"
+            yaml_dir.mkdir()
+            (yaml_dir / "weight.yaml").write_text(yaml_text, encoding="utf-8")
+            return build_yaml_crosswalk(yaml_dir, phv_names)
+
+    def test_in_us_to_cm_factor_is_in_factor_table(self) -> None:
+        """[in_us] → cm unit pair is now in _COMMON_UNIT_FACTORS (added for #647)."""
+        self.assertEqual(
+            _unit_conversion_factor({"source_unit": "[in_us]", "target_unit": "cm"}),
+            2.54,
+        )
+
+    def test_crosswalk_entry_has_unit_conversion_true_for_known_unit_pair(self) -> None:
+        """A block with unit_conversion: [lb_av] → kg emits has_unit_conversion=True."""
+        entries = self._write_yaml_and_get_entries(self._YAML_WITH_UNIT_CONVERSION)
+        self.assertEqual(len(entries), 1)
+        entry = entries[0]
+        self.assertTrue(entry.get("has_unit_conversion"), msg="has_unit_conversion should be True")
+        self.assertAlmostEqual(entry.get("conversion_factor"), 0.453592, places=5)
+
+    def test_crosswalk_entry_has_unit_conversion_false_without_unit_conversion(self) -> None:
+        """A block without unit_conversion: emits has_unit_conversion=False."""
+        entries = self._write_yaml_and_get_entries(self._YAML_WITHOUT_UNIT_CONVERSION)
+        self.assertEqual(len(entries), 1)
+        self.assertFalse(entries[0].get("has_unit_conversion"),
+                         msg="has_unit_conversion should be False when no unit_conversion key")
+
+    def test_crosswalk_entry_has_unit_conversion_true_for_unknown_unit_pair(self) -> None:
+        """A block with an unknown unit pair sets has_unit_conversion=True, conversion_factor=None.
+
+        This combination triggers the C4/C6 INFO bypass in compare.py: the YAML
+        specifies a conversion but the tool cannot compute the factor, so comparing
+        raw source values to harmonized values would produce a false FAIL.
+        """
+        entries = self._write_yaml_and_get_entries(self._YAML_UNKNOWN_UNIT_PAIR)
+        self.assertEqual(len(entries), 1)
+        entry = entries[0]
+        self.assertTrue(entry.get("has_unit_conversion"),
+                        msg="has_unit_conversion should be True even for unknown unit pair")
+        self.assertIsNone(entry.get("conversion_factor"),
+                          msg="conversion_factor should be None for unknown pair")
+
+    def test_c5_guard_fires_for_mixed_source_direct_plus_yaml_scalar_basis(self) -> None:
+        """The C5 guard string-contains check blocks C5 for mixed pooled bases.
+
+        When some blocks use yaml_scalar_conversion and some use source_direct,
+        the pooled basis is "source_direct+yaml_scalar_conversion".  The old
+        exact-equality guard (basis != "yaml_scalar_conversion") would let C5 run,
+        double-applying the conversion factor.  The new substring guard catches it.
+        """
+        # Simulate the mixed-basis resolved source as returned by build_expected_summary
+        resolved_src = {
+            "type": "continuous",
+            "mean": 72.503,  # already post-conversion (kg)
+            "sd": 15.0,
+            "n_valid": 10000,
+            "_comparison_basis": "source_direct+yaml_scalar_conversion",
+        }
+        basis = resolved_src["_comparison_basis"]
+        # New guard: "yaml_scalar_conversion" in basis → C5 should be SKIPPED
+        self.assertIn("yaml_scalar_conversion", basis)
+        # The old guard (exact equality) would have been False → C5 would run
+        self.assertNotEqual(basis, "yaml_scalar_conversion")
+        # The new guard prevents C5 from running
+        self.assertFalse("yaml_scalar_conversion" not in basis,
+                         msg="New guard should prevent C5 when basis contains yaml_scalar_conversion")
+
+
+class C2PerPhtBreakdownTests(unittest.TestCase):
+    """Tests for C2 per-PHT source breakdown and harmonized n_total split (#662)."""
+
+    def test_c2_fail_includes_per_pht_breakdown_in_detail(self) -> None:
+        """check_c2_n_loss populates per_pht_src_breakdown when given _pht/_phv-stamped data."""
+        src_var = {"n_valid": 10000, "type": "continuous"}
+        harmonized_var = {"n_valid": 9000, "n_total": 9000}
+        per_pht = [
+            {"_pht": "pht000001", "_phv": "phv00000002", "n_valid": 6000},
+            {"_pht": "pht000002", "_phv": "phv00000003", "n_valid": 4000},
+        ]
+        result = check_c2_n_loss(
+            src_var, harmonized_var, "weight",
+            pass_pct=0.5, warn_pct=2.0,
+            per_pht_src=per_pht,
+        )
+        self.assertEqual(result.status, "FAIL")
+        breakdown = result.detail.get("per_pht_src_breakdown", [])
+        self.assertEqual(len(breakdown), 2)
+        self.assertEqual(breakdown[0], {"phv": "phv00000002", "pht": "pht000001", "source_n_valid": 6000})
+        self.assertEqual(breakdown[1], {"phv": "phv00000003", "pht": "pht000002", "source_n_valid": 4000})
+
+    def test_c2_single_pht_no_breakdown(self) -> None:
+        """check_c2_n_loss does not add breakdown when only one PHT is present."""
+        src_var = {"n_valid": 1000, "type": "continuous"}
+        harmonized_var = {"n_valid": 900, "n_total": 900}
+        per_pht = [{"_pht": "pht000001", "n_valid": 1000}]
+        result = check_c2_n_loss(
+            src_var, harmonized_var, "weight",
+            per_pht_src=per_pht,
+        )
+        self.assertNotIn("per_pht_src_breakdown", result.detail)
+
+    def test_c2_harmonized_n_total_differs_adds_detail(self) -> None:
+        """When harmonized n_total > n_valid, null-status row count appears in detail."""
+        src_var = {"n_valid": 26561, "type": "categorical"}
+        harmonized_var = {"n_valid": 11256, "n_total": 26561}
+        result = check_c2_n_loss(src_var, harmonized_var, "ecglvh1c")
+        self.assertEqual(result.status, "FAIL")
+        self.assertEqual(result.detail.get("harmonized_n_total"), 26561)
+        self.assertEqual(result.detail.get("harmonized_null_status_rows"), 15305)
+
+    def test_c2_harmonized_n_total_equal_to_n_valid_not_added(self) -> None:
+        """When n_total == n_valid, no extra n_total key is added to detail."""
+        src_var = {"n_valid": 500, "type": "categorical"}
+        harmonized_var = {"n_valid": 480, "n_total": 480}
+        result = check_c2_n_loss(src_var, harmonized_var, "some_var")
+        self.assertNotIn("harmonized_n_total", result.detail)
+
+    def test_c2_per_pht_breakdown_entries_without_pht_key_are_skipped(self) -> None:
+        """Per-PHT summaries lacking both _pht and _phv are silently skipped."""
+        src_var = {"n_valid": 1000, "type": "continuous"}
+        harmonized_var = {"n_valid": 900, "n_total": 900}
+        per_pht = [
+            {"n_valid": 600},          # no _pht or _phv key — should be ignored
+            {"_phv": "phv00000002", "n_valid": 400},  # only _phv, no _pht — still included
+        ]
+        result = check_c2_n_loss(src_var, harmonized_var, "weight", per_pht_src=per_pht)
+        # One entry survives (_phv present) → only 1 row, need >1 to trigger table
+        self.assertNotIn("per_pht_src_breakdown", result.detail)
+
+    def test_c2_phv_only_entries_can_trigger_breakdown(self) -> None:
+        """Entries with _phv but no _pht still appear in the breakdown when len > 1."""
+        src_var = {"n_valid": 1000, "type": "continuous"}
+        harmonized_var = {"n_valid": 900, "n_total": 900}
+        per_pht = [
+            {"_phv": "phv00000002", "n_valid": 600},
+            {"_phv": "phv00000003", "n_valid": 400},
+        ]
+        result = check_c2_n_loss(src_var, harmonized_var, "weight", per_pht_src=per_pht)
+        breakdown = result.detail.get("per_pht_src_breakdown", [])
+        self.assertEqual(len(breakdown), 2)
+        self.assertEqual(breakdown[0]["phv"], "phv00000002")
+        self.assertEqual(breakdown[1]["phv"], "phv00000003")
+
+
+class TrueCatchallFixTests(unittest.TestCase):
+    """Tests for issue #639: True catch-all in case() → expected N = n_total.
+    Also covers issue #663: True-arm PHV output driver added to comparison pool.
+    """
+
+    # -----------------------------------------------------------------------
+    # _true_arm_output_phvs — issue #663
+    # -----------------------------------------------------------------------
+
+    def test_true_arm_output_phvs_single_phv(self) -> None:
+        """MESA tnfa LLOD/ULOD: True arm has a different PHV from conditions."""
+        result = _true_arm_output_phvs(
+            "case(({phv00160541} == -333, 'LLOD'), ({phv00160541} == -555, 'ULOD'), (True, {phv00160540}))"
+        )
+        self.assertEqual(result, {"phv00160540"})
+
+    def test_true_arm_output_phvs_arithmetic_two_phvs(self) -> None:
+        """bdy_hgt feet+inches: True arm arithmetic over two PHVs."""
+        result = _true_arm_output_phvs(
+            "case(({phv00401596} <= 0, None),(True, {phv00401596} * 30.48 + {phv00401597} * 2.54))"
+        )
+        self.assertEqual(result, {"phv00401596", "phv00401597"})
+
+    def test_true_arm_output_phvs_literal_value_returns_empty(self) -> None:
+        """(True, 'ABSENT') literal arm: no PHV refs → empty set (handled by _has_true_catchall)."""
+        result = _true_arm_output_phvs(
+            "case(({phv00226270} == 'X', 'PRESENT'), (True, 'ABSENT'))"
+        )
+        self.assertEqual(result, set())
+
+    def test_true_arm_output_phvs_no_true_arm_returns_empty(self) -> None:
+        """No (True, ...) arm → empty set."""
+        result = _true_arm_output_phvs(
+            "case(({phv00001234} == 1, 'PRESENT'), ({phv00001234} == 0, 'ABSENT'))"
+        )
+        self.assertEqual(result, set())
+
+    def test_true_arm_output_phvs_same_phv_as_condition(self) -> None:
+        """Sub-type A: True arm has the same PHV already in conditions (set dedup no-op)."""
+        result = _true_arm_output_phvs(
+            "case(({phv00172161} > 3.0, {phv00172161}), ({phv00227069} == 1, None), (True, {phv00172161}))"
+        )
+        # Returns the PHV — set.update() on comparison_phvs will dedup it
+        self.assertEqual(result, {"phv00172161"})
+
+    def test_true_arm_output_phvs_non_case_expr_returns_empty(self) -> None:
+        """Non-case expressions: empty."""
+        self.assertEqual(_true_arm_output_phvs("{phv00001234} * 365"), set())
+        self.assertEqual(_true_arm_output_phvs(""), set())
+
+    # -----------------------------------------------------------------------
+    # _has_true_catchall: PHV-ref True arm correctly returns False (#663 guard)
+    # -----------------------------------------------------------------------
+
+    def test_has_true_catchall_phv_ref_arm_is_false(self) -> None:
+        """(True, {phv}) arm: _case_branches can't parse it → _has_true_catchall False."""
+        self.assertFalse(
+            _has_true_catchall(
+                "case(({phv00160541} == -333, 'LLOD'), ({phv00160541} == -555, 'ULOD'), (True, {phv00160540}))"
+            )
+        )
+
+    # -----------------------------------------------------------------------
+    # _has_true_catchall detection — issue #639
+    # -----------------------------------------------------------------------
+
+    def test_has_true_catchall_absent_arm(self) -> None:
+        """Standard HCHS afib Block 0 pattern: (True, 'ABSENT') → True."""
+        self.assertTrue(
+            _has_true_catchall(
+                "case(({phv00226270} == 'Atrial fibrillation', 'PRESENT'), (True, 'ABSENT'))"
+            )
+        )
+
+    def test_has_true_catchall_present_arm(self) -> None:
+        """ARIC asthma pattern: (True, 'PRESENT') → True."""
+        self.assertTrue(
+            _has_true_catchall(
+                "case(({phv00209714} == 0, 'ABSENT'), ({phv00209717} == 0, 'HISTORICAL'), (True, 'PRESENT'))"
+            )
+        )
+
+    def test_has_true_catchall_unknown_arm(self) -> None:
+        """HCHS asthma block: (True, 'UNKNOWN') → True."""
+        self.assertTrue(
+            _has_true_catchall(
+                "case(({phv00226387} == 0, 'ABSENT'), ({phv00526887} == 1, 'PRESENT'), (True, 'UNKNOWN'))"
+            )
+        )
+
+    def test_has_true_catchall_none_arm_is_false(self) -> None:
+        """(True, None) catch-all → False: null rows produce no record, n_valid is correct."""
+        self.assertFalse(
+            _has_true_catchall(
+                "case(({phv00258106} == 0, 'OMOP:45883537'), (True, None))"
+            )
+        )
+
+    def test_has_true_catchall_no_true_arm_is_false(self) -> None:
+        """No True arm at all → False."""
+        self.assertFalse(
+            _has_true_catchall(
+                "case(({phv00001234} == 1, 'PRESENT'), ({phv00001234} == 0, 'ABSENT'))"
+            )
+        )
+
+    def test_has_true_catchall_non_case_expr_is_false(self) -> None:
+        """Non-case expression → False."""
+        self.assertFalse(_has_true_catchall("{phv00001234} * 365"))
+        self.assertFalse(_has_true_catchall(""))
+
+    # -----------------------------------------------------------------------
+    # _aggregate_source_summaries with _expected_n_basis
+    # -----------------------------------------------------------------------
+
+    def test_aggregate_single_true_fallback_sets_effective_n_valid(self) -> None:
+        """Single True-fallback entry: _effective_n_valid = n_total, n_valid unchanged."""
+        summary = {
+            "type": "categorical",
+            "n_valid": 0,
+            "n_total": 11831,
+            "n_missing": 11831,
+            "_expected_n_basis": "n_total",
+        }
+        result = _aggregate_source_summaries([summary])
+        self.assertEqual(result["n_valid"], 0)          # unchanged for other checks
+        self.assertEqual(result["_effective_n_valid"], 11831)
+
+    def test_aggregate_single_normal_entry_no_effective_n_valid(self) -> None:
+        """Normal (non-True-fallback) single entry: no _effective_n_valid added."""
+        summary = {"type": "categorical", "n_valid": 11812, "n_total": 11831, "n_missing": 19}
+        result = _aggregate_source_summaries([summary])
+        self.assertNotIn("_effective_n_valid", result)
+
+    def test_aggregate_multi_block_true_fallback_sets_effective_n_valid(self) -> None:
+        """HCHS afib: Block 0 (True-fallback, n_valid=0, n_total=11831) + Block 1
+        (normal, n_valid=11812) → _effective_n_valid = 11831+11812 = 23643."""
+        block0 = {
+            "type": "categorical",
+            "n_valid": 0,
+            "n_total": 11831,
+            "n_missing": 11831,
+            "_expected_n_basis": "n_total",
+            "_phv": "phv00226270",
+        }
+        block1 = {
+            "type": "categorical",
+            "n_valid": 11812,
+            "n_total": 11831,
+            "n_missing": 19,
+            "_phv": "phv00526613",
+        }
+        result = _aggregate_source_summaries([block0, block1])
+        self.assertEqual(result["n_valid"], 11812)          # raw sum, used by C7 etc.
+        self.assertEqual(result["_effective_n_valid"], 23643)  # corrected sum for C2
+
+    def test_aggregate_multi_block_no_true_fallback_no_effective_n_valid(self) -> None:
+        """All-normal multi-block: no _effective_n_valid when sums are equal."""
+        block0 = {"type": "categorical", "n_valid": 5000, "n_total": 5100, "n_missing": 100}
+        block1 = {"type": "categorical", "n_valid": 4800, "n_total": 4900, "n_missing": 100}
+        result = _aggregate_source_summaries([block0, block1])
+        self.assertNotIn("_effective_n_valid", result)
+        self.assertEqual(result["n_valid"], 9800)
+
+    # -----------------------------------------------------------------------
+    # check_c2_n_loss with _effective_n_valid
+    # -----------------------------------------------------------------------
+
+    def test_c2_true_fallback_null_phv_passes_when_harmonized_matches_n_total(self) -> None:
+        """HCHS afib scenario: Block 0 n_valid=0, n_total=11831, True→ABSENT.
+
+        Combined source: _effective_n_valid=23643, harmonized n_valid=23643 → PASS.
+        Without the fix this would be FAIL (11812 → 23643, +100%).
+        """
+        src_var = {
+            "type": "categorical",
+            "n_valid": 11812,           # raw pooled n_valid (Block 1 only)
+            "_effective_n_valid": 23643, # corrected (Block 0 n_total + Block 1 n_valid)
+        }
+        harmonized_var = {"n_valid": 23643, "n_total": 23643}
+        result = check_c2_n_loss(src_var, harmonized_var, "condition_MONDO:0004981")
+        self.assertEqual(result.status, "PASS",
+                         f"Expected PASS but got {result.status}: {result.message}")
+
+    def test_c2_true_fallback_null_phv_fails_on_real_n_loss(self) -> None:
+        """When harmonized N is genuinely low vs corrected source, FAIL is correct."""
+        src_var = {
+            "type": "categorical",
+            "n_valid": 100,
+            "_effective_n_valid": 11931,  # Block 0 n_total=11831 + Block 1 n_valid=100
+        }
+        harmonized_var = {"n_valid": 10000, "n_total": 10000}
+        result = check_c2_n_loss(src_var, harmonized_var, "condition_MONDO:0004981")
+        self.assertEqual(result.status, "FAIL")
+
+    # -----------------------------------------------------------------------
+    # breakdown table shows n_total for True-fallback blocks
+    # -----------------------------------------------------------------------
+
+    def test_c2_breakdown_uses_n_total_for_true_fallback_block(self) -> None:
+        """Per-block breakdown table shows n_total (not n_valid=0) for True-fallback."""
+        src_var = {"n_valid": 11812, "_effective_n_valid": 23643}
+        harmonized_var = {"n_valid": 23500, "n_total": 23643}  # slight loss → FAIL
+        per_pht = [
+            {
+                "_phv": "phv00226270", "_pht": "pht004715",
+                "n_valid": 0, "n_total": 11831,
+                "_expected_n_basis": "n_total",
+            },
+            {
+                "_phv": "phv00526613", "_pht": "pht004715",
+                "n_valid": 11812, "n_total": 11831,
+            },
+        ]
+        result = check_c2_n_loss(src_var, harmonized_var, "ecga271+mhea7", per_pht_src=per_pht)
+        breakdown = result.detail.get("per_pht_src_breakdown", [])
+        self.assertEqual(len(breakdown), 2)
+        # Block 0 (True-fallback): should show n_total=11831, not n_valid=0
+        self.assertEqual(breakdown[0]["source_n_valid"], 11831)
+        # Block 1 (normal): should show n_valid=11812
+        self.assertEqual(breakdown[1]["source_n_valid"], 11812)
+
+
+class TestKnownIssuesSuppression(unittest.TestCase):
+    """Tests for the known_issues suppression module."""
+
+    def _make_result(self, check_id, variable, status, message="test message"):
+        from hv_dataqc.compare._common import CheckResult
+        return CheckResult(check_id, variable, status, message)
+
+    def test_variable_tokens_compound_with_phv_suffix(self):
+        from hv_dataqc.compare.known_issues import _variable_tokens
+        tokens = _variable_tokens("a12cbron+a12cbstl+d08bron [phv00113376+phv00113377 / pht001575]")
+        self.assertEqual(tokens, {"a12cbron", "a12cbstl", "d08bron"})
+
+    def test_variable_tokens_plain_name(self):
+        from hv_dataqc.compare.known_issues import _variable_tokens
+        self.assertEqual(_variable_tokens("_total"), {"_total"})
+        self.assertEqual(_variable_tokens("entity_file_coverage"), {"entity_file_coverage"})
+
+    def test_variable_tokens_concept_curie(self):
+        from hv_dataqc.compare.known_issues import _variable_tokens
+        self.assertEqual(_variable_tokens("measurement_OBA:2060174"), {"measurement_OBA:2060174"})
+
+    def test_entry_matches_basic(self):
+        from hv_dataqc.compare.known_issues import _entry_matches
+        entry = {"checks": ["C2"], "variable_key": "a12cbron"}
+        self.assertTrue(_entry_matches(entry, "C2", "a12cbron+a12cbstl [phv / pht]"))
+        # wrong check id
+        self.assertFalse(_entry_matches(entry, "C3", "a12cbron+a12cbstl [phv / pht]"))
+        # variable key not in compound
+        self.assertFalse(_entry_matches(entry, "C2", "a12cbstl+d08bron [phv / pht]"))
+
+    def test_entry_matches_multiple_checks(self):
+        from hv_dataqc.compare.known_issues import _entry_matches
+        entry = {"checks": ["C2", "C3"], "variable_key": "a07liqr"}
+        self.assertTrue(_entry_matches(entry, "C2", "a07liqr+a07beer [phv / pht]"))
+        self.assertTrue(_entry_matches(entry, "C3", "a07liqr+a07beer [phv / pht]"))
+        self.assertFalse(_entry_matches(entry, "C6", "a07liqr+a07beer [phv / pht]"))
+
+    def test_apply_suppresses_fail_to_skip(self):
+        from hv_dataqc.compare.known_issues import apply_known_issues
+        results = [
+            self._make_result("C2", "a12cbron+a12cbstl [phv00113376 / pht001575]", "FAIL"),
+            self._make_result("C3", "other_var [phv99 / pht99]", "FAIL"),
+        ]
+        known = [{"checks": ["C2"], "variable_key": "a12cbron", "summary": "multi-block", "related_issues": [651]}]
+        out, n = apply_known_issues(results, known)
+        self.assertEqual(n, 1)
+        self.assertEqual(out[0].status, "SKIP")
+        self.assertIn("issue #651", out[0].message)
+        self.assertEqual(out[0].detail["original_message"], "test message")
+        # C3 result was not suppressed
+        self.assertEqual(out[1].status, "FAIL")
+
+    def test_apply_preserves_pass_warn_skip(self):
+        from hv_dataqc.compare.known_issues import apply_known_issues
+        results = [
+            self._make_result("C2", "a07liqr [phv / pht]", "PASS"),
+            self._make_result("C2", "a07liqr [phv / pht]", "WARN"),
+            self._make_result("C2", "a07liqr [phv / pht]", "SKIP"),
+        ]
+        known = [{"checks": ["C2"], "variable_key": "a07liqr", "summary": "x"}]
+        out, n = apply_known_issues(results, known)
+        # PASS is never suppressed; WARN is suppressed; SKIP is not in _SUPPRESSIBLE
+        self.assertEqual(n, 1)
+        self.assertEqual(out[0].status, "PASS")
+        self.assertEqual(out[1].status, "SKIP")   # WARN was suppressed
+        self.assertEqual(out[2].status, "SKIP")   # original SKIP unchanged (no re-suppression)
+
+    def test_apply_empty_known_issues(self):
+        from hv_dataqc.compare.known_issues import apply_known_issues
+        results = [self._make_result("C2", "a12cbron [phv / pht]", "FAIL")]
+        out, n = apply_known_issues(results, [])
+        self.assertEqual(n, 0)
+        self.assertEqual(out[0].status, "FAIL")
+
+    def test_curie_variable_key_matching(self):
+        """known_issue with variable_key containing colons (e.g. measurement_OBA:2060174)."""
+        from hv_dataqc.compare.known_issues import apply_known_issues
+        results = [self._make_result("C2", "measurement_OBA:2060174", "FAIL", "not matched")]
+        known = [{"checks": ["C2"], "variable_key": "measurement_OBA:2060174", "summary": "crosswalk gap"}]
+        out, n = apply_known_issues(results, known)
+        self.assertEqual(n, 1)
+        self.assertEqual(out[0].status, "SKIP")
+
+
 if __name__ == "__main__":
     unittest.main()
+
