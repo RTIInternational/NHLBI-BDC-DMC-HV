@@ -1,11 +1,14 @@
 """The independent gate review (2026-10-08): each test fails if its guard is removed.
 
-B6: HIGH findings are ratcheted, and an undeclared CURIE prefix is an ERROR. The component main()
-paths for B3 and B4 are in test_known_issues_e2e.py.
+B6: HIGH findings are ratcheted, and an undeclared CURIE prefix is an ERROR. B7: a non-string
+value_mappings key is an ERROR (1.15). S2/N4: the frozen linkml-map keys fail Phase 2 in CI. N2:
+2.0 is ratcheted. N3: yamllint truthy is an error. The component main() paths for B3 and B4 are
+in test_known_issues_e2e.py.
 
 Run: python -m pytest hv-lint/tests/test_gate_review_885.py
 """
 
+import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -143,3 +146,28 @@ def test_frozen_key_fallback_fails_in_ci_and_names_the_real_exception(tmp_path):
     assert res.returncode == 1, res.stdout[-1000:] + res.stderr[-1000:]
     assert "linkml_map import failed: ImportError: stub: linkml-map not installed" in res.stderr
     assert "DID NOT RUN" in res.stderr and "3.14" not in res.stderr
+
+
+# -- N2: Phase 2's "Empty file" is ratcheted; N3: yamllint truthy is fatal -----------------------
+
+def test_phase2_empty_file_is_a_new_finding_through_main(tmp_path):
+    """2.0 was outside Phase 2's checks= set, so its WARNING was never ratcheted."""
+    pytest.importorskip("linkml_runtime")
+    pytest.importorskip("linkml_map")
+    t = E.Tree(tmp_path, "CHS")
+    (t.dir / "diabetes.yaml").write_text(_status("            '0': ABSENT\n"
+                                                 "            '1': PRESENT\n"), encoding="utf-8")
+    (t.dir / "hdl.yaml").write_text("# every block commented out\n", encoding="utf-8")
+    res = t.run("phase-2/validate_model_conformance.py", "--cohort", "CHS")
+    if "Failed to load BDCHM schema" in res.stderr:
+        pytest.skip("the pinned BDC-HM schema could not be fetched")
+    assert res.returncode == 1, res.stdout[-1500:]
+    assert re.search(r"new WARNING \[2\.0\] in CHS: CHS-ingest/hdl\.yaml \| \S+ \| Empty file",
+                     res.stdout)
+    assert "lost or unlinked record" in res.stdout
+
+
+def test_yamllint_truthy_is_an_error():
+    """yamllint exits 0 on a warning and run_yamllint.py never ratchets one."""
+    cfg = yaml.safe_load((HVLINT / ".yamllint").read_text(encoding="utf-8"))
+    assert cfg["rules"]["truthy"]["level"] == "error"

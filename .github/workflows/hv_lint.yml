@@ -198,8 +198,15 @@ jobs:
             2>&1 | tee phase5-output.txt
           exit "${PIPESTATUS[0]}"
 
+      # The icon is each phase step's own outcome (its exit code), not a grep of its log: a log
+      # can print both PASSED and FAILED (one component of a phase passes, another fails).
       - name: Publish step summary
         if: always()
+        env:
+          OUTCOME_1: ${{ steps.phase1.outcome }}
+          OUTCOME_2: ${{ steps.phase2.outcome }}
+          OUTCOME_3: ${{ steps.phase3.outcome }}
+          OUTCOME_5: ${{ steps.phase5.outcome }}
         run: |
           COHORT="${{ steps.config.outputs.cohort }}"
           LIMIT="${{ github.event.inputs.summary_limit || '50' }}"
@@ -210,18 +217,12 @@ jobs:
           for phase in 1 2 3 5; do
             f="phase${phase}-output.txt"
             if [ -f "$f" ]; then
-              # Extract pass/fail from last lines
-              STATUS="unknown"
-              if grep -q "PASSED" "$f"; then STATUS="passed"; fi
-              if grep -q "FAILED" "$f"; then STATUS="FAILED"; fi
-
-              if [ "$STATUS" = "passed" ]; then
-                ICON="white_check_mark"
-              elif [ "$STATUS" = "FAILED" ]; then
-                ICON="x"
-              else
-                ICON="question"
-              fi
+              var="OUTCOME_${phase}"
+              case "${!var}" in
+                success) ICON="white_check_mark" ;;
+                failure) ICON="x" ;;
+                *) ICON="question" ;;
+              esac
 
               echo "### :${ICON}: Phase ${phase}" >> "$GITHUB_STEP_SUMMARY"
               echo "" >> "$GITHUB_STEP_SUMMARY"

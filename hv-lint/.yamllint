@@ -35,8 +35,11 @@ rules:
   key-duplicates:
     level: error
 
+  # error, not warning: yamllint exits 0 on warnings and run_yamllint.py does not pass them to
+  # the known-issue step, so a warning is neither fatal nor ratcheted. A bare Yes:/No:/on: key
+  # parses as a bool, which linkml-map never matches (rule 1.15).
   truthy:
-    level: warning
+    level: error
     allowed-values: ['true', 'false']
     check-keys: true
 

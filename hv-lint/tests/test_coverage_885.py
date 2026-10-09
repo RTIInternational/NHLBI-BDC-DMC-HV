@@ -63,11 +63,29 @@ git() {  # git diff --name-only BASE HEAD -- <pathspec>...: the changed files un
 '''
 
 
-def _detect(tmp_path, changed: list[str], fail_pathspec: str = "") -> str:
-    """Run the workflow's own Detect step under `bash -e`, as Actions does, on a fake diff."""
+def _posix_bash(tmp_path) -> str:
+    """A bash that runs a script given by its native path: the runner's, or Git bash.
+
+    On Windows `shutil.which("bash")` can find WSL's bash.exe, which cannot open a script by
+    its Windows path, so every Detect test would fail for a reason that is not the workflow's."""
     bash = shutil.which("bash")
     if not bash:
         pytest.skip("bash is not on PATH")
+    probe = tmp_path / "probe.sh"
+    probe.write_text("exit 0\n", encoding="utf-8", newline="\n")
+    try:
+        ok = subprocess.run([bash, str(probe)], capture_output=True, timeout=60).returncode == 0
+    except (OSError, subprocess.TimeoutExpired):
+        ok = False
+    if not ok:
+        pytest.skip(f"{bash} cannot run a script by its native path (WSL bash, not POSIX or "
+                    f"Git bash)")
+    return bash
+
+
+def _detect(tmp_path, changed: list[str], fail_pathspec: str = "") -> str:
+    """Run the workflow's own Detect step under `bash -e`, as Actions does, on a fake diff."""
+    bash = _posix_bash(tmp_path)
     wf = yaml.safe_load((HVLINT.parent / ".github" / "workflows" / "hv_lint.yml").read_text(
         encoding="utf-8"))
     step = next(s for j in wf["jobs"].values() for s in j["steps"] if s.get("id") == "detect")
