@@ -194,6 +194,8 @@ def build_one(cohort_dir: Path, output: Path, source: Path) -> dict | None:
     with gzip.open(gz_path, "wb") as f:
         f.write(json_bytes)
 
+    # The digest and counts the loader verifies on every read (`_cohorts.load_cache_artifact`).
+    entry[_cohorts.ARTIFACTS_FIELD] = {gz_path.name: _cohorts.artifact_record(gz_path)}
     gz_size = gz_path.stat().st_size
     n_coded = sum(1 for r in cohort_index.values() if r.get("codes"))
     print(

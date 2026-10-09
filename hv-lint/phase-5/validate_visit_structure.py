@@ -43,8 +43,6 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import gzip
-import json
 import os
 import re
 import sys
@@ -1152,21 +1150,23 @@ def check_5_10_uuid5_namespace(
 # -- Index loading ------------------------------------------------------------
 
 def load_phv_index(cache_dir: Path, cache_key: str) -> dict[str, str] | None:
-    """Load the basic PHV->PHT index for a cohort."""
-    gz_path = cache_dir / f"{cache_key}.json.gz"
-    if not gz_path.exists():
+    """The basic PHV->PHT index for a cohort, or ``None`` when absent.
+
+    Raises ``_cohorts.CacheIntegrityError`` when its content is not what the manifest records.
+    """
+    if not (cache_dir / f"{cache_key}.json.gz").exists():
         return None
-    with gzip.open(gz_path, "rt", encoding="utf-8") as f:
-        return json.load(f)
+    return _cohorts.load_cache_artifact(cache_dir, cache_key)  # type: ignore[return-value]
 
 
 def load_detail_index(cache_dir: Path, cache_key: str) -> dict[str, dict] | None:
-    """Load the extended PHV detail index (with coll_interval) for a cohort."""
-    gz_path = cache_dir / f"{cache_key}_detail.json.gz"
-    if not gz_path.exists():
+    """The extended PHV detail index (with coll_interval) for a cohort, or ``None`` when absent.
+
+    Raises ``_cohorts.CacheIntegrityError`` when its content is not what the manifest records.
+    """
+    if not (cache_dir / f"{cache_key}_detail.json.gz").exists():
         return None
-    with gzip.open(gz_path, "rt", encoding="utf-8") as f:
-        return json.load(f)
+    return _cohorts.load_cache_artifact(cache_dir, cache_key, "_detail")  # type: ignore[return-value]
 
 
 # -- Main ---------------------------------------------------------------------
@@ -1363,9 +1363,17 @@ def main() -> int:
             if not release_ok:
                 unrun_check = True
 
+        integrity_error = None
         if args.cache_dir and release_ok:
-            phv_index = load_phv_index(Path(args.cache_dir), cache_key)
-            if not phv_index:
+            try:
+                phv_index = load_phv_index(Path(args.cache_dir), cache_key)
+            except _cohorts.CacheIntegrityError as exc:
+                phv_index, integrity_error = None, exc
+                all_findings.append(Finding(
+                    f"priority_variables_transform/{cohort}-ingest", 0, "5.3/5.4", "ERROR",
+                    f"{exc} -- so check 5.3 and the PHV-index half of 5.4 DID NOT RUN"))
+                unrun_check = True
+            if not phv_index and integrity_error is None:
                 all_findings.append(Finding(
                     f"priority_variables_transform/{cohort}-ingest", 0, "5.3/5.4", "ERROR",
                     f"no PHV index for {cohort} (looked for '{cache_key}.json.gz' in "
@@ -1399,12 +1407,21 @@ def main() -> int:
                 f"no --cache-dir supplied, so check 5.8 DID NOT RUN for {cohort}"))
             unrun_check = True
         else:
-            detail_idx = load_detail_index(Path(args.cache_dir), cache_key)
+            try:
+                detail_idx = load_detail_index(Path(args.cache_dir), cache_key)
+            except _cohorts.CacheIntegrityError as exc:
+                detail_idx, integrity_error = None, exc
+                all_findings.append(Finding(
+                    f"priority_variables_transform/{cohort}-ingest", 0, "5.8", "ERROR",
+                    f"{exc} -- so check 5.8 DID NOT RUN"))
+                unrun_check = True
             # An ABSENT detail index is an ERROR, by the same rule stated above the PHV index
             # guard: a missing file made 5.8 exit clean, which reads as a pass. Only a detail
             # index that is PRESENT and holds no intervals is a legitimate skip -- that is a
             # fact about the cohort, not a missing input.
-            if detail_idx is None:
+            if integrity_error is not None and detail_idx is None:
+                pass  # reported above; the run already fails
+            elif detail_idx is None:
                 all_findings.append(Finding(
                     f"priority_variables_transform/{cohort}-ingest", 0, "5.8", "ERROR",
                     f"no detail index for {cohort} (looked for '{cache_key}_detail.json.gz' "

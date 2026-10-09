@@ -30,6 +30,8 @@ NOT in ``all``: it has no specs to check, so it can only contribute a failure.
 from __future__ import annotations
 
 import datetime as _dt
+import gzip
+import hashlib
 import json
 import os
 import re
@@ -435,9 +437,7 @@ def write_manifest_entries(cache_dir: Path | str, entries: dict[str, dict]) -> P
     # Field-wise, not entry-wise: `build_phv_index.py` and `build_phv_detail_index.py` write the
     # same fields today, but a field one writer sets and the next does not must survive.
     for key, entry in entries.items():
-        combined = dict(merged.get(key) or {})
-        combined.update(entry)
-        merged[key] = combined
+        merged[key] = merge_entry(merged.get(key), entry)
     payload = {
         "manifest_version": MANIFEST_VERSION,
         "updated": _dt.datetime.now(tz=_dt.UTC).date().isoformat(),
@@ -460,6 +460,117 @@ def write_manifest_entries(cache_dir: Path | str, entries: dict[str, dict]) -> P
 def manifest_entry(cache_dir: Path | str, cache_key: str) -> dict | None:
     """One cache key's provenance entry, or ``None`` when it has none."""
     return read_manifest(cache_dir).get(cache_key)
+
+
+#: The manifest field holding one record per cache artifact: ``{"<file name>": {"sha256", "phvs",
+#: "phts"}}``. The study/version fields are LABELS -- a file copied over another release's name
+#: keeps the label and changes the content -- so the release check is only as strong as this.
+ARTIFACTS_FIELD = "artifacts"
+
+
+class CacheIntegrityError(RuntimeError):
+    """A cache artifact's bytes or counts do not match its manifest record, or it has none."""
+
+
+def artifact_counts(payload: object) -> dict[str, int]:
+    """``{"phvs", "phts"}`` for any cache artifact, whatever its shape.
+
+    Keys are counted by prefix, so one rule covers the PHV index (``{phv: pht}``), the detail and
+    value-count indexes (``{phv: {..., "pht"}}``) and the table-name index (``{pht: {...}}``). A
+    PHV-keyed artifact's PHTs are the distinct tables its records name.
+    """
+    if not isinstance(payload, dict):
+        return {"phvs": 0, "phts": 0}
+    phvs = [k for k in payload if str(k).startswith("phv")]
+    phts = {str(k) for k in payload if str(k).startswith("pht")}
+    for key in phvs:
+        value = payload[key]
+        pht = value if isinstance(value, str) else (
+            value.get("pht") if isinstance(value, dict) else None)
+        if pht:
+            phts.add(str(pht))
+    return {"phvs": len(phvs), "phts": len(phts)}
+
+
+def _decode_artifact(path: Path, data: bytes) -> object:
+    raw = gzip.decompress(data) if path.name.endswith(".gz") else data
+    return json.loads(raw.decode("utf-8"))
+
+
+def artifact_record(path: Path | str) -> dict:
+    """The manifest record for one artifact on disk: its sha256 and its PHV/PHT counts."""
+    path = Path(path)
+    data = path.read_bytes()
+    return {"sha256": hashlib.sha256(data).hexdigest(),
+            **artifact_counts(_decode_artifact(path, data))}
+
+
+def rebuild_command(cache_dir: Path | str, cache_key: str) -> str:
+    """The command that rebuilds ``cache_key``'s artifacts and re-records their digests."""
+    entry = manifest_entry(cache_dir, cache_key) or {}
+    cohort = str(entry.get("cohort") or "")
+    target = ALIASES.get(cohort.upper(), cohort.lower()) if cohort else "<cohort>"
+    return f"python hv-lint/update_data.py --build-only --cohort {target}"
+
+
+def load_cache_artifact(cache_dir: Path | str, cache_key: str, suffix: str = "") -> object:
+    """Read ``<cache_key><suffix>.json.gz`` (or ``.json``) and verify it against the manifest.
+
+    **Every cache read goes through here.** Raises :class:`FileNotFoundError` when neither file
+    exists and :class:`CacheIntegrityError` -- fail closed -- when the manifest records no entry,
+    no record for this file, or a sha256 or PHV/PHT count that differs from what is on disk.
+    The bytes hashed are the bytes parsed and returned, never a second read.
+    """
+    base = Path(cache_dir)
+    path = base / f"{cache_key}{suffix}.json.gz"
+    if not path.is_file():
+        path = base / f"{cache_key}{suffix}.json"
+        if not path.is_file():
+            raise FileNotFoundError(
+                f"no cache artifact '{cache_key}{suffix}.json.gz' (or .json) in {base}")
+    data = path.read_bytes()
+    payload = _decode_artifact(path, data)
+    remedy = f"Rebuild it with: {rebuild_command(base, cache_key)}"
+    entry = manifest_entry(base, cache_key)
+    if not entry:
+        raise CacheIntegrityError(
+            f"cache '{cache_key}' has no recorded study provenance, so {path.name} cannot be "
+            f"verified. {remedy}")
+    records = entry.get(ARTIFACTS_FIELD)
+    record = records.get(path.name) if isinstance(records, dict) else None
+    if not isinstance(record, dict):
+        raise CacheIntegrityError(
+            f"{path.name} has no sha256/count record in {MANIFEST_NAME}, so its content cannot "
+            f"be verified against release {cache_key}. {remedy}")
+    problems: list[str] = []
+    digest = hashlib.sha256(data).hexdigest()
+    if record.get("sha256") != digest:
+        problems.append(f"sha256 {digest[:12]}... on disk, {str(record.get('sha256'))[:12]}... "
+                        f"recorded")
+    for field_name, got in artifact_counts(payload).items():
+        if record.get(field_name) != got:
+            problems.append(f"{got:,} {field_name.upper()} on disk, "
+                            f"{record.get(field_name)} recorded")
+    if problems:
+        raise CacheIntegrityError(
+            f"{path.name} does not match its {MANIFEST_NAME} record ({'; '.join(problems)}) -- "
+            f"it is not the artifact built for release {cache_key}. {remedy}")
+    return payload
+
+
+def merge_entry(old: dict | None, new: dict) -> dict:
+    """``new`` laid over ``old`` field-wise, with the per-artifact records merged by file.
+
+    Each builder records only the artifact it wrote, so a plain ``dict.update`` would let the
+    second builder of a cohort erase the first one's record.
+    """
+    combined = dict(old or {})
+    artifacts = dict(combined.get(ARTIFACTS_FIELD) or {})
+    artifacts.update(new.get(ARTIFACTS_FIELD) or {})
+    combined.update(new)
+    if artifacts:
+        combined[ARTIFACTS_FIELD] = dict(sorted(artifacts.items()))
+    return combined
 
 
 def study_label(cache_dir: Path | str, cache_key: str) -> str:

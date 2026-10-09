@@ -22,8 +22,6 @@ from __future__ import annotations
 
 import argparse
 import csv
-import gzip
-import json
 import os
 import re
 import sys
@@ -198,17 +196,8 @@ def load_omop_concepts(cache_root: Path) -> dict[int, str]:
 
 
 def load_detail_index(cache_dir: Path, cache_key: str) -> DetailIndex:
-    gz_path = cache_dir / f"{cache_key}_detail.json.gz"
-    json_path = cache_dir / f"{cache_key}_detail.json"
-
-    if gz_path.exists():
-        with gzip.open(gz_path, "rt", encoding="utf-8") as f:
-            raw = json.load(f)
-    elif json_path.exists():
-        with json_path.open(encoding="utf-8") as f:
-            raw = json.load(f)
-    else:
-        raise FileNotFoundError(f"No detail index for '{cache_key}'")
+    # Verified against the manifest; raises _cohorts.CacheIntegrityError on a mismatch.
+    raw = _cohorts.load_cache_artifact(cache_dir, cache_key, "_detail")
 
     idx = DetailIndex()
     for phv, rec in raw.items():
@@ -446,6 +435,9 @@ def main() -> int:
                 return 1
         except FileNotFoundError:
             missing.append((cohort_name, cache_key))
+        except _cohorts.CacheIntegrityError as exc:
+            print(f"ERROR: cache integrity check for '{cohort_name}': {exc}", file=sys.stderr)
+            return 1
 
     # A cache the run asked for and did not get is a HARD failure naming what it looked for.
     if missing:
