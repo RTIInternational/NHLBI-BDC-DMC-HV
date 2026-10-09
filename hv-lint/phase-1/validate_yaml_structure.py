@@ -15,6 +15,7 @@ Checks:
     1.10 Space-in-key detection (illegal spaces in YAML key names)
     1.11 expr + value_mappings on one slot (linkml-map evaluates expr and ignores the mappings)
     1.13 populated_from + expr on one slot (INFO: the populated_from is dead)
+    1.15 value_mappings key that does not parse as a string (ERROR: linkml-map never matches it)
 
 Usage:
     python hv-lint/phase-1/validate_yaml_structure.py
@@ -287,6 +288,47 @@ def check_expr_with_value_mappings(block: dict, block_idx: int, rel_path: str) -
                             {nested_name: nested_spec},
                             f"{prefix}{class_name}.{slot_name}."
                         )
+
+    _recurse(class_derivs)
+    return findings
+
+
+def check_value_mapping_key_types(block: dict, block_idx: int, rel_path: str) -> list[Finding]:
+    """Check 1.15: a ``value_mappings`` key whose parsed YAML type is not ``str`` is an ERROR.
+
+    linkml-map 0.5.3 looks a source value up as ``value_mappings.get(str(v))``, and its
+    SlotDerivation model rejects a non-string key: a bare ``0:`` parses as int 0, ``Yes:`` as
+    True, ``~:`` as None, so the mapping never matches (or the spec does not load). Rules that
+    compare codes (3.9, 3.15) stringify keys first and cannot see this. Quote every key.
+    """
+    findings: list[Finding] = []
+    class_derivs = block.get("class_derivations")
+    if not isinstance(class_derivs, dict):
+        return findings
+
+    def _recurse(class_derivs: dict, prefix: str = "") -> None:
+        for class_name, class_def in class_derivs.items():
+            if not isinstance(class_def, dict):
+                continue
+            slot_derivs = class_def.get("slot_derivations")
+            if not isinstance(slot_derivs, dict):
+                continue
+            for slot_name, slot_def in slot_derivs.items():
+                if not isinstance(slot_def, dict):
+                    continue
+                vm = slot_def.get("value_mappings")
+                if isinstance(vm, dict):
+                    for key in vm:
+                        if not isinstance(key, str):
+                            findings.append(Finding(
+                                rel_path, block_idx, "1.15", "ERROR",
+                                f"value_mappings key {key!r} on {prefix}{class_name}.{slot_name} "
+                                f"parses as {type(key).__name__}, not a string -- linkml-map "
+                                f"matches str(source value) and never finds it; quote the key"
+                            ))
+                for nested_name, nested_spec in iter_nested_class_derivs(slot_def):
+                    if isinstance(nested_spec, dict):
+                        _recurse({nested_name: nested_spec}, f"{prefix}{class_name}.{slot_name}.")
 
     _recurse(class_derivs)
     return findings
@@ -690,6 +732,9 @@ def main() -> int:
             # 1.11: expr + value_mappings on one slot
             all_findings.extend(check_expr_with_value_mappings(block, idx, rel_path))
 
+            # 1.15: a value_mappings key that does not parse as a string
+            all_findings.extend(check_value_mapping_key_types(block, idx, rel_path))
+
         # 1.2: Duplicate blocks within file
         all_findings.extend(check_duplicates(blocks, rel_path))
 
@@ -701,7 +746,7 @@ def main() -> int:
     # -----------------------------------------------------------------------
     # Known issues, stale entries and the WARNING ratchet (hv-lint/_known_issues.py).
     all_findings.extend(_known_issues.finalize(
-        all_findings, checks={"1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.7", "1.9", "1.10", "1.11", "1.13"}, scanned_files=yaml_files, make_finding=Finding,
+        all_findings, checks={"1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.7", "1.9", "1.10", "1.11", "1.13", "1.15"}, scanned_files=yaml_files, make_finding=Finding,
         partial=bool(args.file)))
 
     fail_rank = SEVERITY_RANK[args.fail_on.upper()]

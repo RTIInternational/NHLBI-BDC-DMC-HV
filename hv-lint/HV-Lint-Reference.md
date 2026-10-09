@@ -219,7 +219,7 @@ Scripts detect which cohort a file belongs to by extracting the directory name b
 
 ## Phase 1: YAML Structural & Formatting
 
-**Scripts**: `hv-lint/phase-1/validate_yaml_structure.py` (checks 1.1-1.5, 1.7, 1.9, 1.10, 1.11), `hv-lint/phase-1/run_yamllint.py`, `hv-lint/phase-1/check_quoting_rules.py`, `hv-lint/phase-1/check_cross_block_consistency.py` (1.6), `hv-lint/phase-1/check_cross_file_pht_consistency.py` (1.8, 1.14), `hv-lint/phase-1/check_cross_file_duplicates.py` (1.12)
+**Scripts**: `hv-lint/phase-1/validate_yaml_structure.py` (checks 1.1-1.5, 1.7, 1.9, 1.10, 1.11, 1.13, 1.15), `hv-lint/phase-1/run_yamllint.py`, `hv-lint/phase-1/check_quoting_rules.py`, `hv-lint/phase-1/check_cross_block_consistency.py` (1.6), `hv-lint/phase-1/check_cross_file_pht_consistency.py` (1.8, 1.14), `hv-lint/phase-1/check_cross_file_duplicates.py` (1.12)
 **Dependencies**: PyYAML
 **No schema or external data required** -- YAML files only.
 
@@ -314,6 +314,12 @@ A block with exactly one visit label whose own dbGaP metadata names a different 
 - **Not judged**: a label with no exam number (`ARIC CHEM 2`, `MESA LUNG CT`), metadata naming none, a block with several labels. A block whose value variables name several visits passes under any of them.
 - **Measured**: on main c0307803 it judges 673 of ARIC's 977 and 554 of MESA's 853 single-label blocks and reports 3, the ARIC labels confirmed wrong in review (afib ATRFIB41 `EXAM 3`, stroke TIAD04 and TIAE04 `EXAM 1`; listed under #872, fixed by #888). On main 2a28934a, after #888 and #889, it judges 673 of ARIC's 970 and 553 of MESA's 852 single-label blocks (297 and 299 name no exam) and reports none.
 - **Data**: a missing detail index (ARIC) or table-name index (MESA) fails the run.
+- **Severity**: ERROR
+
+### 1.15 value_mappings Key Is Not a String
+
+A `value_mappings` key whose parsed YAML type is not `str` -- bare `0:` (int), `Yes:` / `No:` (bool), `~:` (None), `1.5:` (float) -- at any nesting depth. linkml-map 0.5.3 looks a source value up as `value_mappings.get(str(v))`, and its `SlotDerivation` model rejects a non-string key, so the mapping never matches (or the spec does not load). The code rules (3.9, 3.15) stringify keys before comparing, so they cannot see it. On main 2a28934a + #885 no key is affected; the convention held by habit (gate review B7).
+
 - **Severity**: ERROR
 
 ---

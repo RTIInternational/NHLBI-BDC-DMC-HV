@@ -88,3 +88,37 @@ def test_a_declared_or_hv_prefix_passes(value):
     assert [f for f in vmc.validate_class_derivations(_concept_block(value), 0,
                                                       "CHS-ingest/x.yaml", ctx)
             if f.check == "2.6"] == []
+
+
+# -- B7: a value_mappings key that is not a string -----------------------------------------------
+
+sys.path.insert(0, str(HVLINT / "tests"))
+import _e2e as E  # noqa: E402
+
+P1 = "phase-1/validate_yaml_structure.py"
+
+
+def _status(keys_text: str) -> str:
+    return ("- class_derivations:\n"
+            "    Condition:\n"
+            "      populated_from: pht001452\n"
+            "      slot_derivations:\n"
+            "        condition_status:\n"
+            "          populated_from: phv00100001\n"
+            "          value_mappings:\n" + keys_text)
+
+
+@pytest.mark.parametrize("keys_text,kind", [
+    ("            0: ABSENT\n            1: PRESENT\n", "int"),
+    ("            Yes: PRESENT\n            No: ABSENT\n", "bool"),
+    ("            ~: ABSENT\n            '1': PRESENT\n", "NoneType"),
+])
+def test_a_non_string_value_mappings_key_fails_phase1_through_main(tmp_path, keys_text, kind):
+    t = E.Tree(tmp_path, "CHS")
+    (t.dir / "diabetes.yaml").write_text(_status("            '0': ABSENT\n"
+                                                 "            '1': PRESENT\n"), encoding="utf-8")
+    ok = t.run(P1, "--cohort", "CHS")
+    assert ok.returncode == 0, ok.stdout[-1500:]
+    (t.dir / "diabetes.yaml").write_text(_status(keys_text), encoding="utf-8")
+    res = t.run(P1, "--cohort", "CHS")
+    assert res.returncode == 1 and "[1.15]" in res.stdout and f"parses as {kind}" in res.stdout
